@@ -1,0 +1,6 @@
+*.xlsx
+*.json
+
+__pycache__
+
+output
