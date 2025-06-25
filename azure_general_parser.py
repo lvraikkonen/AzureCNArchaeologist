@@ -148,13 +148,33 @@ class AzurePricingParser:
             elif 'data factory' in title_text:
                 self.product_type = 'data-factory'
                 self.product_info.product_id = 'data-factory'
-            elif '异常检测' in title_text or 'anomaly detector' in title_text.lower():
+            elif '异常检测' in title_text or 'anomaly detector' in title_text:
                 self.product_type = 'anomaly-detector'
                 self.product_info.product_id = 'anomaly-detector'
-            elif ('认知服务' in title_text or 'cognitive' in title_text or 
-                  'ai 服务' in title_text or 'azure ai' in title_text):
-                self.product_type = 'cognitive-services'
-                self.product_info.product_id = 'cognitive-services'
+            elif 'search' in title_text and 'azure' in title_text:
+                self.product_type = 'search'
+                self.product_info.product_id = 'search'
+            elif 'cosmos db' in title_text or 'cosmosdb' in title_text:
+                self.product_type = 'cosmos-db'
+                self.product_info.product_id = 'cosmos-db'
+            elif 'postgresql' in title_text or 'postgres' in title_text:
+                self.product_type = 'postgresql'
+                self.product_info.product_id = 'postgresql'
+            elif 'machine learning' in title_text or '机器学习' in title_text:
+                self.product_type = 'machine-learning'
+                self.product_info.product_id = 'machine-learning'
+            elif 'power bi' in title_text or 'powerbi' in title_text:
+                self.product_type = 'power-bi'
+                self.product_info.product_id = 'power-bi'
+            elif 'search' in title_text and 'azure' in title_text:
+                self.product_type = 'search'
+                self.product_info.product_id = 'search'
+            elif 'sql database' in title_text or 'sql 数据库' in title_text:
+                self.product_type = 'sql-database'
+                self.product_info.product_id = 'sql-database'
+            elif 'entra' in title_text or 'external id' in title_text:
+                self.product_type = 'entra'
+                self.product_info.product_id = 'entra'
 
         # 检查meta标签
         if not self.product_type or self.product_type == "auto":
@@ -167,8 +187,20 @@ class AzurePricingParser:
                     self.product_type = 'ssis'
                 elif 'anomaly-detector' in service:
                     self.product_type = 'anomaly-detector'
-                elif 'cognitive-services' in service:
-                    self.product_type = 'cognitive-services'
+                elif 'search' in service:
+                    self.product_type = 'search'
+                elif 'cosmos' in service:
+                    self.product_type = 'cosmos-db'
+                elif 'postgresql' in service:
+                    self.product_type = 'postgresql'
+                elif 'machine-learning' in service:
+                    self.product_type = 'machine-learning'
+                elif 'power-bi' in service:
+                    self.product_type = 'power-bi'
+                elif 'search' in service:
+                    self.product_type = 'search'
+                elif 'sql-database' in service:
+                    self.product_type = 'sql-database'
 
         if not self.product_type or self.product_type == "auto":
             self.product_type = 'unknown'
@@ -185,10 +217,17 @@ class AzurePricingParser:
                 # 根据产品类型选择配置
                 product_key_map = {
                     'mysql': 'Azure Database for MySQL',
-                    'ssis': 'Azure Data Factory',
-                    'data-factory': 'Azure Data Factory',
-                    'anomaly-detector': 'Azure Cognitive Services',
-                    'cognitive-services': 'Azure Cognitive Services'
+                    'ssis': 'Data Factory SSIS',
+                    'data-factory': 'Data Factory Data Pipeline',
+                    'anomaly-detector': 'Anomaly Detector',
+                    'search': 'Azure Search',
+                    'cosmos-db': 'Azure Cosmos DB',
+                    'postgresql': 'Azure Database for PostgreSQL',
+                    'machine-learning': 'Machine Learning Server',
+                    'power-bi': 'Power BI Embedded',
+                    'search': 'Azure Search',
+                    'sql-database': 'Azure SQL Database',
+                    'entra': 'Microsoft Entra External ID'
                 }
                 
                 product_key = product_key_map.get(self.product_type, '')
@@ -302,7 +341,7 @@ class AzurePricingParser:
         banner = self.soup.find('div', class_='common-banner')
         if not banner:
             return
-            
+
         # 横幅配置
         banner_config = banner.get('data-config', '')
         if banner_config:
@@ -312,7 +351,7 @@ class AzurePricingParser:
                 self.product_info.banner_image = config.get('backgroundImage', '')
             except:
                 pass
-                
+
         # 产品名称
         h2 = banner.find('h2')
         if h2:
@@ -320,7 +359,7 @@ class AzurePricingParser:
             full_text = h2.get_text(strip=True)
             span = h2.find('span')
             small = h2.find('small')
-            
+
             if span:
                 # SSIS格式：主标题 <span>英文名</span>
                 self.product_info.product_name_en = span.get_text(strip=True)
@@ -331,25 +370,61 @@ class AzurePricingParser:
                 self.product_info.product_name = full_text.replace(self.product_info.product_name_en, '').strip()
             else:
                 self.product_info.product_name = full_text
-                
+
         # 产品描述
         h4 = banner.find('h4')
         if h4:
             self.product_info.description = h4.get_text(strip=True)
-            
+
         # 产品图标
         icon_img = banner.find('img')
         if icon_img and icon_img.get('src'):
             self.product_info.icon_url = icon_img['src']
 
+        # 从 pricing-page-section 中提取额外的产品描述信息
+        self._extract_additional_product_descriptions()
+
+    def _extract_additional_product_descriptions(self):
+        """从 pricing-page-section 中提取额外的产品描述信息"""
+        additional_descriptions = []
+
+        # 查找所有 pricing-page-section
+        sections = self.soup.find_all('div', class_='pricing-page-section')
+
+        for section in sections:
+            # 跳过包含FAQ的部分
+            if section.find('div', class_='more-detail'):
+                continue
+
+            # 跳过包含支持信息的部分
+            if section.find('h2') and '支持' in section.find('h2').get_text():
+                continue
+
+            # 提取段落文本
+            paragraphs = section.find_all('p')
+            for p in paragraphs:
+                text = p.get_text(strip=True)
+                if text and len(text) > 20:  # 过滤掉太短的文本
+                    additional_descriptions.append(text)
+
+        # 将额外描述添加到产品信息中
+        if additional_descriptions:
+            if self.product_info.description:
+                self.product_info.description += " " + " ".join(additional_descriptions)
+            else:
+                self.product_info.description = " ".join(additional_descriptions)
+
     def _parse_regions(self):
         """解析地区信息"""
+        # 使用集合来避免重复
+        seen_regions = set()
+
         # 尝试多种方式查找区域容器
         region_container = self.soup.find('div', class_='region-container')
         if not region_container:
             # SSIS页面可能使用不同的结构
             region_container = self.soup.find('div', class_='dropdown-container region-container')
-        
+
         if not region_container:
             # 查找任何包含地区选择的下拉框
             for dropdown in self.soup.find_all('div', class_='dropdown-container'):
@@ -366,7 +441,9 @@ class AzurePricingParser:
             region_id = option.get('id') or option.get('value', '')
             region_name = option.get_text(strip=True)
 
-            if region_id and region_name:
+            if region_id and region_name and region_id not in seen_regions:
+                seen_regions.add(region_id)
+
                 # 检查是否为激活状态
                 is_active = False
                 parent_li = option.find_parent('li')
@@ -389,6 +466,11 @@ class AzurePricingParser:
 
     def _parse_service_tiers(self):
         """解析服务层级结构"""
+        # SQL Database 特殊处理
+        if self.product_type == 'sql-database':
+            self._parse_sql_database_tiers()
+            return
+
         # SSIS页面可能没有服务层级，只有一个主产品
         if self.product_type == 'ssis':
             # 查找软件类型选择器
@@ -397,7 +479,7 @@ class AzurePricingParser:
                 for option in software_container.find_all(['a', 'option']):
                     tier_id = option.get('id', '').replace('home_', '')
                     tier_name = option.get_text(strip=True)
-                    
+
                     if tier_id and tier_name:
                         tier = ServiceTier(
                             tier_id=tier_id,
@@ -405,7 +487,7 @@ class AzurePricingParser:
                             tier_level=1
                         )
                         self.service_tiers.append(tier)
-            
+
             # 如果没有找到服务层级，创建一个默认的
             if not self.service_tiers:
                 tier = ServiceTier(
@@ -416,11 +498,16 @@ class AzurePricingParser:
                 self.service_tiers.append(tier)
             return
 
-        # MySQL的原始逻辑
+        # PostgreSQL 特殊处理
+        if self.product_type == 'postgresql':
+            self._parse_postgresql_tiers()
+            return
+
+        # MySQL和其他产品的原始逻辑
         main_tab_nav = self.soup.find('ul', class_='tab-nav')
         if not main_tab_nav:
             return
-            
+
         # 确保是顶级tab
         if main_tab_nav.find_parent('div', class_='tab-panel'):
             tab_panels = self.soup.find_all('div', class_='tab-panel')
@@ -430,43 +517,195 @@ class AzurePricingParser:
                     if nav:
                         main_tab_nav = nav
                         break
-                        
+
         # 解析顶级层级
         for li in main_tab_nav.find_all('li'):
             a = li.find('a')
             if not a:
                 continue
-                
+
             tier_id = a.get('id', '').replace('home_', '')
             tier_name = a.get_text(strip=True)
-            
+
             if not tier_id:
                 continue
-                
+
             panel_id = a.get('data-href', '').replace('#', '')
             panel = self.soup.find('div', id=panel_id)
-            
+
             tier = ServiceTier(
                 tier_id=tier_id,
                 tier_name=tier_name,
                 tier_level=1
             )
-            
+
             if panel:
                 desc_p = panel.find('p')
                 if desc_p:
                     tier.description = desc_p.get_text(strip=True)
-                    
+
                 features_ul = panel.find('ul')
                 if features_ul and desc_p and features_ul.previous_sibling == desc_p:
                     for li in features_ul.find_all('li'):
                         feature = li.get_text(strip=True)
                         if feature:
                             tier.features.append(feature)
-                            
+
                 tier.sub_tiers = self._parse_sub_tiers(panel, tier_id)
-                
+
             self.service_tiers.append(tier)
+
+    def _parse_sql_database_tiers(self):
+        """解析 SQL Database 的复杂层级结构"""
+        # SQL Database 有多层结构：OS/软件 → 弹性池/单个数据库 → 本地冗余/区域冗余
+
+        # 查找软件类型选择器
+        software_container = self.soup.find('div', class_='software-kind-container')
+        if software_container:
+            for option in software_container.find_all(['a', 'option']):
+                tier_id = option.get('id', '').replace('home_', '')
+                tier_name = option.get_text(strip=True)
+
+                if tier_id and tier_name:
+                    tier = ServiceTier(
+                        tier_id=tier_id,
+                        tier_name=tier_name,
+                        tier_level=1,
+                        description=f"SQL Database {tier_name} 选项"
+                    )
+
+                    # 查找对应的面板并解析子层级
+                    panel_id = option.get('data-href', '').replace('#', '')
+                    panel = self.soup.find('div', id=panel_id)
+                    if panel:
+                        tier.sub_tiers = self._parse_sql_database_sub_tiers(panel, tier_id)
+
+                    self.service_tiers.append(tier)
+
+        # 如果没有找到软件选择器，创建默认层级
+        if not self.service_tiers:
+            tier = ServiceTier(
+                tier_id='sql-database-default',
+                tier_name='SQL Database',
+                tier_level=1
+            )
+            self.service_tiers.append(tier)
+
+    def _parse_postgresql_tiers(self):
+        """解析 PostgreSQL 的层级结构"""
+        # PostgreSQL 有灵活服务器的层级结构
+        main_tab_nav = self.soup.find('ul', class_='tab-nav')
+        if not main_tab_nav:
+            # 创建默认层级
+            tier = ServiceTier(
+                tier_id='postgresql-flexible',
+                tier_name='灵活服务器',
+                tier_level=1,
+                description='具有灵活计算要求的工作负载。'
+            )
+            self.service_tiers.append(tier)
+            return
+
+        # 解析顶级层级
+        for li in main_tab_nav.find_all('li'):
+            a = li.find('a')
+            if not a:
+                continue
+
+            tier_id = a.get('id', '').replace('home_', '')
+            tier_name = a.get_text(strip=True)
+
+            if not tier_id:
+                continue
+
+            panel_id = a.get('data-href', '').replace('#', '')
+            panel = self.soup.find('div', id=panel_id)
+
+            tier = ServiceTier(
+                tier_id=tier_id,
+                tier_name=tier_name,
+                tier_level=1
+            )
+
+            if panel:
+                desc_p = panel.find('p')
+                if desc_p:
+                    tier.description = desc_p.get_text(strip=True)
+
+                tier.sub_tiers = self._parse_sub_tiers(panel, tier_id)
+
+            self.service_tiers.append(tier)
+
+    def _parse_sql_database_sub_tiers(self, panel, parent_id) -> List[ServiceTier]:
+        """解析 SQL Database 的子层级（弹性池/单个数据库等）"""
+        sub_tiers = []
+
+        # 查找子级导航
+        sub_nav = panel.find('ul', class_='tab-nav')
+        if not sub_nav:
+            return sub_tiers
+
+        for li in sub_nav.find_all('li'):
+            a = li.find('a')
+            if not a:
+                continue
+
+            sub_tier_id = a.get('id', '').replace('home_', '')
+            sub_tier_name = a.get_text(strip=True)
+
+            if not sub_tier_id:
+                continue
+
+            sub_panel_id = a.get('data-href', '').replace('#', '')
+            sub_panel = panel.find('div', id=sub_panel_id)
+
+            sub_tier = ServiceTier(
+                tier_id=sub_tier_id,
+                tier_name=sub_tier_name,
+                tier_level=2
+            )
+
+            if sub_panel:
+                desc_p = sub_panel.find('p')
+                if desc_p:
+                    sub_tier.description = desc_p.get_text(strip=True)
+
+                # 查找第三级层级（本地冗余/区域冗余）
+                sub_tier.sub_tiers = self._parse_sql_database_third_level(sub_panel, sub_tier_id)
+
+            sub_tiers.append(sub_tier)
+
+        return sub_tiers
+
+    def _parse_sql_database_third_level(self, panel, parent_id) -> List[ServiceTier]:
+        """解析 SQL Database 的第三级层级（本地冗余/区域冗余）"""
+        third_level_tiers = []
+
+        # 查找第三级导航
+        third_nav = panel.find('ul', class_='tab-nav')
+        if not third_nav:
+            return third_level_tiers
+
+        for li in third_nav.find_all('li'):
+            a = li.find('a')
+            if not a:
+                continue
+
+            tier_id = a.get('id', '').replace('home_', '')
+            tier_name = a.get_text(strip=True)
+
+            if not tier_id:
+                continue
+
+            tier = ServiceTier(
+                tier_id=tier_id,
+                tier_name=tier_name,
+                tier_level=3
+            )
+
+            third_level_tiers.append(tier)
+
+        return third_level_tiers
 
     def _parse_sub_tiers(self, panel, parent_id) -> List[ServiceTier]:
         """解析子层级"""
@@ -561,58 +800,61 @@ class AzurePricingParser:
     def _determine_table_type(self, table, table_id) -> str:
         """判断表格类型"""
         table_id_lower = table_id.lower()
-        
-        # 认知服务特定的表格类型判断
-        if self.product_type == 'cognitive-services':
-            if 'speech' in table_id_lower:
-                return 'speech_services'
-            elif 'training' in table_id_lower:
-                return 'training'
-            elif 'commitment' in table_id_lower:
-                return 'commitment_tier'
-            elif 'imageanalysis' in table_id_lower:
-                return 'image_analysis'
-            elif 'spatialanalysis' in table_id_lower:
-                return 'spatial_analysis'
+
+        # PostgreSQL 特定的表格类型判断
+        if self.product_type == 'postgresql':
+            if 'storage' in table_id_lower or 'backup' in table_id_lower:
+                return 'storage'
+            elif any(series in table_id_lower for series in ['burstable', 'general', 'memory', 'dsv3', 'ddsv4', 'ddsv5', 'esv3', 'edsv4', 'edsv5']):
+                return 'compute'
             else:
-                return 'cognitive_service'
-        
+                return 'compute'  # 默认为计算类型
+
+        # Azure Search 特定的表格类型判断
+        if self.product_type == 'search':
+            if 'search1' in table_id_lower or 'cognitive-search1' in table_id_lower:
+                return 'search_tiers'
+            elif 'search2' in table_id_lower or 'cognitive-search2' in table_id_lower:
+                return 'search_features'
+            else:
+                return 'search_service'
+
         # 异常检测器
         if self.product_type == 'anomaly-detector':
             return 'anomaly_detection'
-        
+
         # SSIS特定的表格类型判断
         if self.product_type == 'ssis':
             # SSIS的表格主要是虚拟机系列
-            if any(series in table_id_lower for series in ['a1v2', 'a2v2', 'a4v2', 'a8v2', 
+            if any(series in table_id_lower for series in ['a1v2', 'a2v2', 'a4v2', 'a8v2',
                                                            'd1v2', 'd2v2', 'd3v2', 'd4v2',
                                                            'd2v3', 'd4v3', 'd8v3', 'd16v3', 'd32v3', 'd64v3',
                                                            'e2v3', 'e4v3', 'e8v3', 'e16v3', 'e32v3', 'e64v3',
                                                            'e80ids']):
                 return 'vm_series'
             return 'compute'
-        
-        # MySQL的原始逻辑
+
+        # MySQL和其他数据库的逻辑
         if 'iops' in table_id_lower:
             return 'iops'
         elif 'storage' in table_id_lower:
             return 'storage'
         elif 'backup' in table_id_lower:
             return 'backup'
-            
+
         # 根据表头判断
         headers = []
         header_row = table.find('tr')
         if header_row:
             headers = [th.get_text(strip=True).lower() for th in header_row.find_all(['th', 'td'])]
-            
-        if any('vcore' in h for h in headers):
+
+        if any('vcore' in h or 'vcores' in h for h in headers):
             return 'compute'
-        elif any('gb/月' in h or 'gb/月' in h for h in headers):
+        elif any('gb/月' in h or 'gb/月' in h or '存储' in h for h in headers):
             return 'storage'
         elif any('iops' in h for h in headers):
             return 'iops'
-            
+
         return 'other'
 
     def _get_table_title(self, table) -> str:
@@ -621,16 +863,32 @@ class AzurePricingParser:
         for tag in ['h2', 'h3', 'h4']:
             title = table.find_previous(tag)
             if title:
+                title_text = title.get_text(strip=True)
+
                 # 确保标题和表格在同一个容器内
                 title_parent = title.find_parent('div', class_='tab-panel')
                 table_parent = table.find_parent('div', class_='tab-panel')
-                
+
                 # 对于SSIS，可能没有tab-panel
                 if not title_parent and not table_parent:
-                    return title.get_text(strip=True)
+                    return title_text
                 elif title_parent == table_parent:
-                    return title.get_text(strip=True)
-                    
+                    return title_text
+                # 对于 Azure Search，如果在同一个 tab-content 下也认为是相关的
+                elif self.product_type == 'search':
+                    title_content_parent = title.find_parent('div', class_='tab-content')
+                    table_content_parent = table.find_parent('div', class_='tab-content')
+                    if title_content_parent == table_content_parent:
+                        return title_text
+
+        # 如果没有找到标题，根据表格ID生成默认标题
+        table_id = table.get('id', '')
+        if table_id:
+            if 'search1' in table_id.lower():
+                return "Azure AI 搜索定价"
+            elif 'search2' in table_id.lower():
+                return "其他 Azure AI 搜索功能"
+
         return "未命名表格"
 
     def _parse_pricing_table(self, table, table_id: str, table_name: str, table_type: str) -> Optional[PricingTable]:
@@ -676,10 +934,10 @@ class AzurePricingParser:
             
         # 解析数据行
         rows = table.find_all('tr')[1:]  # 跳过表头
-        
+
         # 根据产品类型选择合适的解析方法
-        if self.product_type == 'cognitive-services':
-            self._parse_cognitive_services_rows(table, pricing_table)
+        if self.product_type == 'search':
+            self._parse_search_rows(table, pricing_table, table_type)
         elif self.product_type == 'anomaly-detector':
             for row in rows:
                 cells = row.find_all(['td', 'th'])
@@ -692,6 +950,17 @@ class AzurePricingParser:
                 cells = row.find_all(['td', 'th'])
                 if cells:
                     pricing_row = self._parse_ssis_row(cells)
+                    if pricing_row:
+                        pricing_table.rows.append(pricing_row)
+        elif self.product_type == 'postgresql':
+            # PostgreSQL 特殊处理
+            for row in rows:
+                cells = row.find_all(['td', 'th'])
+                if cells:
+                    if table_type == 'compute':
+                        pricing_row = self._parse_compute_row(cells)
+                    else:
+                        pricing_row = self._parse_simple_row(cells, table_type)
                     if pricing_row:
                         pricing_table.rows.append(pricing_row)
         elif table_type == 'compute':
@@ -751,96 +1020,7 @@ class AzurePricingParser:
             
         return None
 
-    def _parse_cognitive_services_rows(self, table, pricing_table: PricingTable):
-        """解析认知服务的复杂表格（处理rowspan）"""
-        rows = table.find_all('tr')[1:]  # 跳过表头
-        current_instance = None
-        current_category = None
-        
-        for row in rows:
-            cells = row.find_all(['td', 'th'])
-            if not cells:
-                continue
-                
-            # 处理rowspan的情况
-            cell_values = []
-            for cell in cells:
-                cell_values.append(cell.get_text(strip=True))
-                
-            # 根据单元格数量判断行类型
-            if len(cells) >= 3:
-                # 检查第一个单元格是否有rowspan
-                if cells[0].get('rowspan'):
-                    current_instance = cell_values[0]
-                    # 如果有第二个单元格也有rowspan，那是类别
-                    if len(cells) > 1 and cells[1].get('rowspan'):
-                        current_category = cell_values[1]
-                        feature = cell_values[2] if len(cell_values) > 2 else ""
-                        price = cell_values[3] if len(cell_values) > 3 else ""
-                    else:
-                        feature = cell_values[1] if len(cell_values) > 1 else ""
-                        price = cell_values[2] if len(cell_values) > 2 else ""
-                else:
-                    # 使用之前保存的instance
-                    if current_instance:
-                        feature = cell_values[0]
-                        price = cell_values[1] if len(cell_values) > 1 else ""
-                    else:
-                        # 可能是一个完整的行
-                        current_instance = cell_values[0]
-                        feature = cell_values[1] if len(cell_values) > 1 else ""
-                        price = cell_values[2] if len(cell_values) > 2 else ""
-                
-                # 创建定价行
-                pricing_row = PricingRow(
-                    instance_name=current_instance or "",
-                    memory=feature,  # 使用memory字段存储功能信息
-                    temp_storage=price  # 使用temp_storage存储原始价格文本
-                )
-                
-                # 解析价格
-                if price:
-                    self._parse_cognitive_price(price, pricing_row)
-                
-                # 添加类别信息
-                if current_category:
-                    pricing_row.vcores = 0  # 用vcores字段标记这是认知服务
-                    
-                pricing_table.rows.append(pricing_row)
-                
-    def _parse_cognitive_price(self, price_text: str, pricing_row: PricingRow):
-        """解析认知服务的价格文本"""
-        # 处理免费层
-        if '免费' in price_text:
-            pricing_row.price_monthly = 0
-            return
 
-        # 处理多级定价
-        price_lines = price_text.split('\n')
-        prices = []
-
-        for line in price_lines:
-            # 匹配不同的价格格式
-            patterns = [
-                r'￥\s*([\d,]+\.?\d*)\s*/\s*(\d+[,\d]*)\s*个',
-                r'每\s*(\d+[,\d]*)\s*个.*?￥\s*([\d,]+\.?\d*)',
-                r'￥\s*([\d,]+\.?\d*)\s*/\s*小时',
-                r'￥\s*([\d,]+\.?\d*)\s*/\s*月',
-                r'￥\s*([\d,]+\.?\d*)',
-            ]
-
-            for pattern in patterns:
-                match = re.search(pattern, line)
-                if match:
-                    prices.append(line.strip())
-                    break
-
-        # 如果找到价格，使用第一个作为主价格
-        if prices:
-            first_price_match = re.search(r'￥\s*([\d,]+\.?\d*)', prices[0])
-            if first_price_match:
-                price_str = first_price_match.group(1).replace(',', '')
-                pricing_row.price_monthly = float(price_str)
 
     def _parse_ssis_row(self, cells) -> Optional[PricingRow]:
         """解析SSIS定价行"""
@@ -882,20 +1062,129 @@ class AzurePricingParser:
             print(f"解析SSIS行时出错: {e}")
             return None
 
+    def _parse_search_rows(self, table, pricing_table: PricingTable, table_type: str):
+        """解析 Azure Search 的表格行"""
+        if table_type == 'search_tiers':
+            # 解析搜索层级表格（第一个表格）
+            self._parse_search_tiers_table(table, pricing_table)
+        elif table_type == 'search_features':
+            # 解析搜索功能表格（第二个表格）
+            self._parse_search_features_table(table, pricing_table)
+        else:
+            # 通用解析
+            rows = table.find_all('tr')[1:]  # 跳过表头
+            for row in rows:
+                cells = row.find_all(['td', 'th'])
+                if cells:
+                    pricing_row = self._parse_generic_row(cells)
+                    if pricing_row:
+                        pricing_table.rows.append(pricing_row)
+
+    def _parse_search_tiers_table(self, table, pricing_table: PricingTable):
+        """解析 Azure Search 层级表格"""
+        rows = table.find_all('tr')
+        if len(rows) < 2:
+            return
+
+        # 获取表头（层级名称）
+        header_row = rows[0]
+        tier_headers = []
+        for th in header_row.find_all(['th', 'td'])[1:]:  # 跳过第一列
+            tier_name = th.get_text(strip=True)
+            if tier_name:
+                tier_headers.append(tier_name)
+
+        # 解析数据行
+        for row in rows[1:]:
+            cells = row.find_all(['td', 'th'])
+            if len(cells) < 2:
+                continue
+
+            feature_name = cells[0].get_text(strip=True)
+
+            # 为每个层级创建一行数据
+            for i, cell in enumerate(cells[1:]):
+                if i < len(tier_headers):
+                    tier_name = tier_headers[i]
+                    cell_text = cell.get_text(strip=True)
+
+                    # 解析价格
+                    price_hourly, price_monthly = self._parse_price_text(cell_text)
+
+                    # 创建定价行
+                    pricing_row = PricingRow(
+                        instance_name=f"{tier_name} - {feature_name}",
+                        memory=cell_text,  # 存储原始文本
+                        price_hourly=price_hourly,
+                        price_monthly=price_monthly
+                    )
+
+                    # 如果是价格行，设置层级信息
+                    if '价格' in feature_name or '￥' in cell_text:
+                        pricing_row.temp_storage = tier_name  # 使用temp_storage存储层级名称
+
+                    pricing_table.rows.append(pricing_row)
+
+    def _parse_search_features_table(self, table, pricing_table: PricingTable):
+        """解析 Azure Search 功能表格"""
+        rows = table.find_all('tr')[1:]  # 跳过表头
+
+        for row in rows:
+            cells = row.find_all(['td', 'th'])
+            if len(cells) < 3:
+                continue
+
+            feature_name = cells[0].get_text(strip=True)
+            feature_description = cells[1].get_text(strip=True)
+            pricing_text = cells[2].get_text(strip=True)
+
+            # 解析价格
+            price_hourly, price_monthly = self._parse_price_text(pricing_text)
+
+            # 创建定价行
+            pricing_row = PricingRow(
+                instance_name=feature_name,
+                memory=feature_description,  # 使用memory字段存储功能描述
+                temp_storage=pricing_text,   # 存储原始价格文本
+                price_hourly=price_hourly,
+                price_monthly=price_monthly
+            )
+
+            pricing_table.rows.append(pricing_row)
+
     def _parse_compute_row(self, cells) -> Optional[PricingRow]:
         """解析计算资源行"""
-        if len(cells) < 4:
+        if len(cells) < 3:
             return None
-            
+
         try:
             instance_name = cells[0].get_text(strip=True)
-            vcores = int(cells[1].get_text(strip=True)) if len(cells) > 1 else None
+
+            # 解析 vCores - 处理不同的格式
+            vcores = None
+            if len(cells) > 1:
+                vcores_text = cells[1].get_text(strip=True)
+                # 尝试提取数字
+                vcores_match = re.search(r'(\d+)', vcores_text)
+                if vcores_match:
+                    vcores = int(vcores_match.group(1))
+
+            # 解析内存
             memory = cells[2].get_text(strip=True) if len(cells) > 2 else None
-            
-            # 解析价格
-            price_text = cells[3].get_text(strip=True) if len(cells) > 3 else ""
+
+            # 解析价格 - 价格可能在第3列或第4列
+            price_text = ""
+            if len(cells) > 3:
+                price_text = cells[3].get_text(strip=True)
+            elif len(cells) == 3:
+                # 如果只有3列，检查第3列是否包含价格
+                third_col = cells[2].get_text(strip=True)
+                if '￥' in third_col or '元' in third_col:
+                    price_text = third_col
+                    memory = None  # 重置内存，因为第3列是价格
+
             price_hourly, price_monthly = self._parse_price_text(price_text)
-            
+
             return PricingRow(
                 instance_name=instance_name,
                 vcores=vcores,
@@ -903,31 +1192,60 @@ class AzurePricingParser:
                 price_hourly=price_hourly,
                 price_monthly=price_monthly
             )
-        except:
+        except Exception as e:
+            print(f"解析计算行时出错: {e}")
             return None
 
     def _parse_simple_row(self, cells, table_type) -> Optional[PricingRow]:
         """解析简单定价行（存储、备份等）"""
         if len(cells) < 2:
             return None
-            
+
         try:
             name = cells[0].get_text(strip=True)
-            price_text = cells[1].get_text(strip=True)
-            
+
+            # 查找价格列 - 可能在不同位置
+            price_text = ""
+            for i in range(1, len(cells)):
+                cell_text = cells[i].get_text(strip=True)
+                if '￥' in cell_text or '元' in cell_text or any(keyword in cell_text for keyword in ['小时', '月', 'hour', 'month']):
+                    price_text = cell_text
+                    break
+
+            if not price_text and len(cells) > 1:
+                price_text = cells[1].get_text(strip=True)
+
             # 解析价格
-            price_match = re.search(r'￥\s*([\d.]+)', price_text)
-            if price_match:
-                price = float(price_match.group(1))
-                
+            price_hourly, price_monthly = self._parse_price_text(price_text)
+
+            # 如果没有解析到价格，尝试简单的数字匹配
+            if price_hourly == 0 and price_monthly == 0:
+                price_match = re.search(r'([\d.]+)', price_text)
+                if price_match:
+                    price = float(price_match.group(1))
+
+                    # 根据表格类型和文本内容判断是小时还是月度价格
+                    if '小时' in price_text or 'hour' in price_text.lower():
+                        price_hourly = price
+                    elif '月' in price_text or 'month' in price_text.lower() or table_type == 'storage':
+                        price_monthly = price
+                    else:
+                        # 存储通常是月度价格
+                        if table_type in ['storage', 'backup']:
+                            price_monthly = price
+                        else:
+                            price_hourly = price
+
+            if price_hourly > 0 or price_monthly > 0 or name:
                 return PricingRow(
                     instance_name=name,
-                    price_hourly=price if '小时' in price_text else 0,
-                    price_monthly=price if '月' in price_text else 0
+                    price_hourly=price_hourly,
+                    price_monthly=price_monthly
                 )
-        except:
-            pass
-            
+
+        except Exception as e:
+            print(f"解析简单行时出错: {e}")
+
         return None
 
     def _parse_generic_row(self, cells) -> Optional[PricingRow]:
@@ -966,26 +1284,71 @@ class AzurePricingParser:
         """解析价格文本，返回(小时价格, 月度价格)"""
         hourly = 0.0
         monthly = 0.0
-        
-        # 匹配小时价格
-        hourly_match = re.search(r'￥\s*([\d.]+)\s*/\s*小时', price_text)
-        if hourly_match:
-            hourly = float(hourly_match.group(1))
-            
+
+        if not price_text or price_text.strip() == '':
+            return hourly, monthly
+
+        # 处理免费或不可用的情况
+        if any(keyword in price_text.lower() for keyword in ['免费', 'free', '不可用', 'n/a', '-']):
+            return hourly, monthly
+
+        # 匹配小时价格（支持多种格式）
+        hourly_patterns = [
+            r'￥\s*([\d,]+\.?\d*)\s*/\s*小时',
+            r'￥\s*([\d,]+\.?\d*)\s*小时',
+            r'([\d,]+\.?\d*)\s*元\s*/\s*小时',
+            r'([\d,]+\.?\d*)\s*元\s*小时'
+        ]
+
+        for pattern in hourly_patterns:
+            hourly_match = re.search(pattern, price_text)
+            if hourly_match:
+                hourly_str = hourly_match.group(1).replace(',', '')
+                try:
+                    hourly = float(hourly_str)
+                    break
+                except ValueError:
+                    continue
+
         # 匹配月度价格（支持多种格式）
         monthly_patterns = [
-            r'约￥\s*([\d,]+)\s*/\s*月',
-            r'约￥\s*([\d,]+)/月',
-            r'（\s*约￥\s*([\d,]+)\s*/\s*月\s*）'
+            r'约￥\s*([\d,]+\.?\d*)\s*/\s*月',
+            r'约￥\s*([\d,]+\.?\d*)/月',
+            r'（\s*约￥\s*([\d,]+\.?\d*)\s*/\s*月\s*）',
+            r'￥\s*([\d,]+\.?\d*)\s*/\s*月',
+            r'￥\s*([\d,]+\.?\d*)\s*月',
+            r'([\d,]+\.?\d*)\s*元\s*/\s*月',
+            r'([\d,]+\.?\d*)\s*元\s*月'
         ]
-        
+
         for pattern in monthly_patterns:
             monthly_match = re.search(pattern, price_text)
             if monthly_match:
                 monthly_str = monthly_match.group(1).replace(',', '')
-                monthly = float(monthly_str)
-                break
-            
+                try:
+                    monthly = float(monthly_str)
+                    break
+                except ValueError:
+                    continue
+
+        # 如果只有一个数字且没有明确的时间单位，尝试推断
+        if hourly == 0.0 and monthly == 0.0:
+            simple_price_match = re.search(r'￥?\s*([\d,]+\.?\d*)', price_text)
+            if simple_price_match:
+                price_str = simple_price_match.group(1).replace(',', '')
+                try:
+                    price = float(price_str)
+                    # 根据上下文推断是小时还是月度价格
+                    if '小时' in price_text or 'hour' in price_text.lower():
+                        hourly = price
+                    elif '月' in price_text or 'month' in price_text.lower():
+                        monthly = price
+                    else:
+                        # 默认假设是小时价格
+                        hourly = price
+                except ValueError:
+                    pass
+
         return hourly, monthly
 
     def _parse_faqs(self):
@@ -994,12 +1357,8 @@ class AzurePricingParser:
         if not faq_section:
             return
             
-        # 认知服务的FAQ可能有分组（h3标签）
-        if self.product_type == 'cognitive-services':
-            self._parse_grouped_faqs(faq_section)
-        else:
-            # 其他产品使用原有逻辑
-            self._parse_simple_faqs(faq_section)
+        # 使用简单FAQ解析逻辑
+        self._parse_simple_faqs(faq_section)
     
     def _parse_simple_faqs(self, faq_section):
         """解析简单的FAQ列表"""
@@ -1051,46 +1410,7 @@ class AzurePricingParser:
                 
             self.faqs.append(faq)
     
-    def _parse_grouped_faqs(self, faq_section):
-        """解析分组的FAQ（认知服务）"""
-        current_category = 'general'
-        faq_order = 0
-        
-        # 遍历FAQ部分的所有元素
-        for elem in faq_section.descendants:
-            if elem.name == 'h3':
-                # 更新当前分类
-                category_text = elem.get_text(strip=True)
-                if '语音' in category_text:
-                    current_category = 'speech'
-                elif '视觉' in category_text:
-                    current_category = 'vision'
-                elif '内容安全' in category_text:
-                    current_category = 'content_safety'
-                elif '文本分析' in category_text or '语言' in category_text:
-                    current_category = 'text_analytics'
-                elif '翻译' in category_text:
-                    current_category = 'translation'
-                elif 'LUIS' in category_text or '语言理解' in category_text:
-                    current_category = 'luis'
-                else:
-                    current_category = 'general'
-                    
-            elif elem.name == 'li' and elem.find_parent('ul'):
-                # 确保是FAQ列表项
-                question_elem = elem.find('a')
-                answer_elem = elem.find('section')
-                
-                if question_elem and answer_elem:
-                    faq = FAQ(
-                        faq_id=question_elem.get('id', f'faq_{faq_order}'),
-                        question=question_elem.get_text(strip=True),
-                        answer=answer_elem.get_text(strip=True),
-                        category=current_category,
-                        order=faq_order
-                    )
-                    self.faqs.append(faq)
-                    faq_order += 1
+
 
     def _parse_pricing_rules(self):
         """解析定价规则"""
@@ -1102,26 +1422,26 @@ class AzurePricingParser:
         for p in content_sections:
             text = p.get_text(strip=True)
             
-            # 认知服务特定规则
-            if self.product_type == 'cognitive-services':
-                # 并发请求规则
-                if '并发请求' in text and 'TPS' in text:
-                    rules['concurrency'] = {
+            # Azure Search 特定规则
+            if self.product_type == 'search':
+                # 搜索单位规则
+                if '搜索单位' in text or '标准单位' in text:
+                    rules['search_units'] = {
                         'description': text
                     }
-                
-                # 字符计算规则
-                if '字符' in text and ('计算' in text or '计费' in text):
-                    rules['character_counting'] = {
+
+                # 存储规则
+                if '存储' in text and ('GB' in text or 'TB' in text):
+                    rules['storage'] = {
                         'description': text
                     }
-                    
-                # 事务定义
-                if '事务' in text and ('构成' in text or '定义' in text):
-                    rules['transaction_definition'] = {
+
+                # 查询规则
+                if '查询' in text and ('QPS' in text or '每秒' in text):
+                    rules['query_performance'] = {
                         'description': text
                     }
-                    
+
             # 异常检测器特定规则
             elif self.product_type == 'anomaly-detector':
                 # 事务定义
@@ -1181,10 +1501,10 @@ class AzurePricingParser:
                     }
         
         # 添加产品特定的默认规则
-        if self.product_type == 'cognitive-services' and 'sla' not in rules:
+        if self.product_type == 'search' and 'sla' not in rules:
             rules['sla'] = {
                 'availability': '99.9%',
-                'description': '标准级别运行的Azure AI 服务将在至少 99.9% 的时间可用'
+                'description': 'Azure AI 搜索将在至少 99.9% 的时间可用'
             }
                     
         self.pricing_rules = rules
