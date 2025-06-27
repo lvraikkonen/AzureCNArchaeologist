@@ -1,0 +1,558 @@
+{
+  "product_info": {
+    "product_id": "",
+    "product_name": "Azure AI 搜索",
+    "product_name_en": "Azure AI Search",
+    "description": "用于 Web 和移动应用程序开发的搜索即服务",
+    "icon_url": "/Images/marketing-resource/css/images/service/Icon-web-44-Search-Services.svg",
+    "banner_image": "/Images/marketing-resource/css/images/service/product_banner_app_service-01.png",
+    "banner_bg_color": "#e3f4ff",
+    "service_type": "search",
+    "meta_keywords": [
+      "azure 搜索",
+      "云平台",
+      "云搜索",
+      "微软 azure",
+      "azure"
+    ],
+    "meta_description": "查看AzureAzure AI 搜索(一种面向web和应用程序开发人员的云搜索即服务)的详细定价。没有前期费用。按量付费。免费使试用。",
+    "page_title": "价格 - Azure AI 搜索 | 微软搜索 Azure",
+    "canonical_url": "https://azure.microsoft.com/zh-cn/pricing/details/cognitive-search/"
+  },
+  "regions": [
+    {
+      "region_id": "north-china3",
+      "region_name": "中国北部 3",
+      "is_active": true
+    },
+    {
+      "region_id": "east-china2",
+      "region_name": "中国东部 2",
+      "is_active": false
+    },
+    {
+      "region_id": "north-china2",
+      "region_name": "中国北部 2",
+      "is_active": false
+    },
+    {
+      "region_id": "east-china",
+      "region_name": "中国东部",
+      "is_active": false
+    },
+    {
+      "region_id": "north-china",
+      "region_name": "中国北部",
+      "is_active": false
+    }
+  ],
+  "service_tiers": [],
+  "pricing_tables": [
+    {
+      "table_id": "Azure-Cognitive-Search1",
+      "table_name": "Azure AI 搜索定价",
+      "table_type": "search_tiers",
+      "description": "可以免费扩充有限数量的文档，或者附加付费的认知服务资源来处理更大、更频繁的工作负载。内置认知技能执行按认知服务价格详情收费，其费率与你以往直接执行任务的费率相同。详细了解技能执行。",
+      "headers": [
+        "",
+        "免费",
+        "基本",
+        "标准版S1",
+        "标准版S2",
+        "标准版S3",
+        "存储优化版 L1",
+        "存储优化版 L2"
+      ],
+      "rows": [
+        {
+          "instance_name": "免费 - 存储",
+          "vcores": null,
+          "memory": "50MB",
+          "temp_storage": null,
+          "price_hourly": 50.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "基本 - 存储",
+          "vcores": null,
+          "memory": "15GB（每服务最多 45 GB）",
+          "temp_storage": null,
+          "price_hourly": 15.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "标准版S1 - 存储",
+          "vcores": null,
+          "memory": "160GB（每服务最多 1.9 TB）",
+          "temp_storage": null,
+          "price_hourly": 160.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "标准版S2 - 存储",
+          "vcores": null,
+          "memory": "512 GB（每服务最多 6 TB）",
+          "temp_storage": null,
+          "price_hourly": 512.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "标准版S3 - 存储",
+          "vcores": null,
+          "memory": "1 TB（每服务最多 12 TB）",
+          "temp_storage": null,
+          "price_hourly": 1.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "存储优化版 L1 - 存储",
+          "vcores": null,
+          "memory": "2 TB(每服务最多 24 TB)",
+          "temp_storage": null,
+          "price_hourly": 2.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "存储优化版 L2 - 存储",
+          "vcores": null,
+          "memory": "4 TB(每服务最多 48 TB)",
+          "temp_storage": null,
+          "price_hourly": 4.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "免费 - 最大索引数/服务",
+          "vcores": null,
+          "memory": "3",
+          "temp_storage": null,
+          "price_hourly": 3.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "基本 - 最大索引数/服务",
+          "vcores": null,
+          "memory": "15",
+          "temp_storage": null,
+          "price_hourly": 15.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "标准版S1 - 最大索引数/服务",
+          "vcores": null,
+          "memory": "50",
+          "temp_storage": null,
+          "price_hourly": 50.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "标准版S2 - 最大索引数/服务",
+          "vcores": null,
+          "memory": "200",
+          "temp_storage": null,
+          "price_hourly": 200.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "标准版S3 - 最大索引数/服务",
+          "vcores": null,
+          "memory": "200 或 1000/分区（按高密度1模式）",
+          "temp_storage": null,
+          "price_hourly": 200.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "存储优化版 L1 - 最大索引数/服务",
+          "vcores": null,
+          "memory": "10",
+          "temp_storage": null,
+          "price_hourly": 10.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "存储优化版 L2 - 最大索引数/服务",
+          "vcores": null,
+          "memory": "10",
+          "temp_storage": null,
+          "price_hourly": 10.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "免费 - 横向扩展限制",
+          "vcores": null,
+          "memory": "N/A",
+          "temp_storage": null,
+          "price_hourly": 0.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "基本 - 横向扩展限制",
+          "vcores": null,
+          "memory": "最多可达 9 个单位/服务（最多 3 个分区；最多 3 个副本）",
+          "temp_storage": null,
+          "price_hourly": 9.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "标准版S1 - 横向扩展限制",
+          "vcores": null,
+          "memory": "最多可达 36 个单位/服务（最多 12 个分区；最多 12 个副本）",
+          "temp_storage": null,
+          "price_hourly": 36.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "标准版S2 - 横向扩展限制",
+          "vcores": null,
+          "memory": "最多可达 36 个单位/服务（最多 12 个分区；最多 12 个副本）",
+          "temp_storage": null,
+          "price_hourly": 36.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "标准版S3 - 横向扩展限制",
+          "vcores": null,
+          "memory": "最多可达 36 个单位/服务（最多 12 个分区；最多 12 个副本）最多 3 个高密度模式下的分区",
+          "temp_storage": null,
+          "price_hourly": 36.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "存储优化版 L1 - 横向扩展限制",
+          "vcores": null,
+          "memory": "最多可达 36 个单位/服务（最多 12 个分区；最多 12 个副本）",
+          "temp_storage": null,
+          "price_hourly": 36.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "存储优化版 L2 - 横向扩展限制",
+          "vcores": null,
+          "memory": "最多可达 36 个单位/服务（最多 12 个分区；最多 12 个副本）",
+          "temp_storage": null,
+          "price_hourly": 36.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "免费 - 价格/单位",
+          "vcores": null,
+          "memory": "免费",
+          "temp_storage": "免费",
+          "price_hourly": 0.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "基本 - 价格/单位",
+          "vcores": null,
+          "memory": "￥1.03/小时",
+          "temp_storage": "基本",
+          "price_hourly": 1.03,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "标准版S1 - 价格/单位",
+          "vcores": null,
+          "memory": "￥3.42/小时",
+          "temp_storage": "标准版S1",
+          "price_hourly": 3.42,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "标准版S2 - 价格/单位",
+          "vcores": null,
+          "memory": "￥13.68/小时",
+          "temp_storage": "标准版S2",
+          "price_hourly": 13.68,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "标准版S3 - 价格/单位",
+          "vcores": null,
+          "memory": "￥27.35 /小时",
+          "temp_storage": "标准版S3",
+          "price_hourly": 27.35,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "存储优化版 L1 - 价格/单位",
+          "vcores": null,
+          "memory": "￥39.072/小时",
+          "temp_storage": "存储优化版 L1",
+          "price_hourly": 39.072,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "存储优化版 L2 - 价格/单位",
+          "vcores": null,
+          "memory": "￥78.138/小时",
+          "temp_storage": "存储优化版 L2",
+          "price_hourly": 78.138,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        }
+      ],
+      "additional_info": {},
+      "current_region": "north-china3",
+      "applicable_regions": [
+        "north-china3",
+        "east-china2",
+        "north-china2",
+        "east-china",
+        "north-china"
+      ],
+      "excluded_regions": []
+    },
+    {
+      "table_id": "Azure-Cognitive-Search2",
+      "table_name": "其他 Azure AI 搜索功能(单独计费)",
+      "table_type": "search_features",
+      "description": "1高密度 (HD) 模式是一个可在标准 S3 服务中使用的选项，允许在单个服务中创建更多数量的索引。 借助 HD 模式，服务可创建多达 1,000\n                                                                    个索引，其中一个索引不得超过 1 百万个文档（即 2 GB 的存储空间），且所有索引的文档和存储空间总数不得超过 1.2 亿个文档/分区（即 200 GB/分区）。\n                                        了解有关服务限制和约束的更多信息",
+      "headers": [
+        "",
+        "此功能的作用",
+        "定价详细信息"
+      ],
+      "rows": [
+        {
+          "instance_name": "自定义实体查找技能",
+          "vcores": null,
+          "memory": "从用户定义的自定义字词和短语列表查找文本，并标记所有包含匹配实体的文档。适用于所有基本、标准和存储优化层。使用时间: 要在数据中定义并检测指定实体。",
+          "temp_storage": "0-1M 的文本记录 ￥10.176 每 1,000 条文本记录1M-3M 的文本记录 ￥7.632 每 1,000 条文本记录3M-10M 的文本记录 ￥3.0528 每 1,000 条文本记录10M 以上的文本记录 ￥2.544 每 1,000 条文本记录",
+          "price_hourly": 0.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "文档破解：图像提取",
+          "vcores": null,
+          "memory": "从扩充管道中的文件提取内容。文本提取免费。在执行初始文档破解步骤期间和调用“文档提取”技能时，对图像提取进行计费。使用时间: 具有包含图像的文档。",
+          "temp_storage": "0-1M 的图像 ￥10.18每 1,000 项事务1M-5M 的图像 ￥8.14每 1,000 项事务5M 以上的图像 ￥6.61 每 1,000 项事务",
+          "price_hourly": 0.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        },
+        {
+          "instance_name": "语义排名排序",
+          "vcores": null,
+          "memory": "使用 AI 模型，通过查找语义上类似于查询字词的内容，提高搜索结果的相关性。该服务仅适用于基本层、标准层(S1、S2 和 S3)和存储空间优化层(L1 和 L2)上的帐户，且在这些层中具有两个定价计划。何时使用: 要改进搜索结果的质量并优化用户体验。",
+          "temp_storage": "每月前 1,000 个请求免费。 每 1000 个额外请求￥10",
+          "price_hourly": 0.0,
+          "price_monthly": 0.0,
+          "price_with_ahb": null,
+          "ahb_savings_percent": null,
+          "price_with_license": null,
+          "price_without_license": null
+        }
+      ],
+      "additional_info": {},
+      "current_region": "north-china3",
+      "applicable_regions": [
+        "north-china3",
+        "east-china2",
+        "north-china2",
+        "east-china",
+        "north-china"
+      ],
+      "excluded_regions": []
+    }
+  ],
+  "faqs": [
+    {
+      "faq_id": "Data_Transfer_region",
+      "question": "我的账单上以什么形式反映标准单位使用量的收费？",
+      "answer": "对于 Microsoft Azure AI 搜索，我们基于任何给定小时使用的单位数量提供统一的可预测小时费率对你收费。",
+      "category": "general",
+      "order": 0
+    },
+    {
+      "faq_id": "Data_Transfer_question1",
+      "question": "如果我的服务纵向扩展或纵向缩减，将怎样收费？",
+      "answer": "将按任意小时中所设置的最大搜索单位数进行计费。如果你在一个小时内以两个单位开始，然后扩大到四个单位，随后再减少到两个单位，那么将按四个单位向你收费。",
+      "category": "general",
+      "order": 1
+    },
+    {
+      "faq_id": "Data_Transfer_question2",
+      "question": "如果我在Azure门户中单机“停止”按钮，是否仍会向我收费？",
+      "answer": "停止按钮用于停止服务实例的流量。结果是，你的服务仍将运行，并且会继续按小时费率收费。",
+      "category": "general",
+      "order": 2
+    },
+    {
+      "faq_id": "Data_Transfer_question2",
+      "question": "如果我的单位存在时间不足一个小时如何计费？",
+      "answer": "将按单位存在的每小时的统一费率对你收费，无论使用量是多少，也无论单位存在时间是否不足一个小时。例如，如果你创建一个单位，然后在五分钟后删除它，那么你的帐单将反映一个单位小时的收费。",
+      "category": "pricing",
+      "order": 3
+    },
+    {
+      "faq_id": "Data_Transfer_question2",
+      "question": "如果需要更多吞吐量或更多存储该怎么办？",
+      "answer": "Azure Azure AI 搜索单位组合提供额外吞吐量和存储。例如，要从 1,500 万份文档扩展到 3,000\n                                                万（额外分区），客户可以购买两个单位。要增加吞吐量（额外副本），他们可以购买两个单位。要同时增加存储和吞吐量，客户将需要购买四个单位（2\n                                                个副本 x 2 个分区 = 4 个搜索单位）。",
+      "category": "general",
+      "order": 4
+    },
+    {
+      "faq_id": "Data_Transfer_question2",
+      "question": "Azure AI 搜索提供的版本之间有什么差别？",
+      "answer": "“免费版”是 Azure AI 搜索的免费版本，设计用于为开发者提供沙盒以测试功能和实施 Azure\n                                                Azure AI 搜索。该版本不设计用于生产工作负载。“基本版”和“标准版”是生成从自主管理的搜索即服务解决方案中受益的应用程序的入门选项。Standard\n                                                提供随着应用程序需要扩展的存储和可预测吞吐量。",
+      "category": "general",
+      "order": 5
+    },
+    {
+      "faq_id": "Data_Transfer_question2",
+      "question": "如何创建Azure AI 搜索账户？",
+      "answer": "Azure AI 搜索在全新Azure 门户中提供。首先必须注册 Azure 订阅，可以通过预览门户中的库将\n                                                Azure AI 搜索帐户添加到 Azure 订阅。获取详细信息。",
+      "category": "general",
+      "order": 6
+    }
+  ],
+  "pricing_rules": {
+    "query_performance": {
+      "description": "Azure Azure AI 搜索以组合单位的形式提供，包括可靠的存储和吞吐量，可让开发人员快速且经济高效地建立和扩展搜索体验。随着应用程序的数据量或吞吐量需求不断变化，Azure\n                                    Azure AI 搜索可以先扩大以满足这些需求，然后重新减少以降低成本。要获取更高性能，客户可以组合这些单位以获得更多的每秒查询数和/或更高的文档计数。还可组合单位以提供高可用性或更快的数据采集。"
+    },
+    "storage": {
+      "description": "1高密度 (HD) 模式是一个可在标准 S3 服务中使用的选项，允许在单个服务中创建更多数量的索引。 借助 HD 模式，服务可创建多达 1,000\n                                                                    个索引，其中一个索引不得超过 1 百万个文档（即 2 GB 的存储空间），且所有索引的文档和存储空间总数不得超过 1.2 亿个文档/分区（即 200 GB/分区）。\n                                        了解有关服务限制和约束的更多信息"
+    },
+    "search_units": {
+      "description": "Azure Azure AI 搜索单位组合提供额外吞吐量和存储。例如，要从 1,500 万份文档扩展到 3,000\n                                                万（额外分区），客户可以购买两个单位。要增加吞吐量（额外副本），他们可以购买两个单位。要同时增加存储和吞吐量，客户将需要购买四个单位（2\n                                                个副本 x 2 个分区 = 4 个搜索单位）。"
+    },
+    "sla": {
+      "availability": "99.9%",
+      "description": "Azure AI 搜索将在至少 99.9% 的时间可用"
+    }
+  },
+  "region_filter_info": {
+    "active_region": "north-china3",
+    "filter_config": {},
+    "filtered_tables": [],
+    "total_filtered": 0
+  },
+  "extraction_metadata": {
+    "extracted_at": "2025-06-27T10:10:12.039884",
+    "parser_version": "2.0",
+    "product_type": "search",
+    "total_tables": 2,
+    "total_faqs": 7,
+    "total_regions": 5,
+    "filtered_tables_count": 0,
+    "region_info_included": true,
+    "region_info_mode": "full"
+  }
+}

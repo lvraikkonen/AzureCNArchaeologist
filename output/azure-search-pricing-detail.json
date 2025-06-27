@@ -1,0 +1,285 @@
+{
+  // === 产品基础信息 ===
+  "productNameZh": "Azure AI 搜索",
+  "productNameEn": "Azure AI Search",
+  "productCode": "azure-search",
+  "productCategory": "search",
+  "vendor": "azure",
+  "descriptionZh": "Azure AI 搜索以组合单位的形式提供，包括可靠的存储和吞吐量，可让开发人员快速且经济高效地建立和扩展搜索体验",
+  "descriptionEn": "Azure AI Search provides reliable storage and throughput in combined units for developers to quickly and cost-effectively build and scale search experiences",
+  "currency": "CNY",
+  "serviceRegions": ["中国北部 3", "中国东部 2", "中国北部 2", "中国东部", "中国北部"],
+  
+  // === 免费层信息 ===
+  "freeTier": {
+    "available": true,
+    "descriptionZh": "50MB存储，3个索引，适用于开发测试",
+    "descriptionEn": "50MB storage, 3 indexes, suitable for development and testing"
+  },
+  
+  // === 全局说明 ===
+  "notesZh": "按服务单位收费，可横向扩展以获得更多吞吐量和存储，某些AI功能单独计费",
+  "notesEn": "Charged per service unit, can scale out for more throughput and storage, some AI features charged separately",
+  
+  // === 完整定价数据 ===
+  "pricing": [
+    
+    // ========== 核心搜索服务层级 ==========
+    {
+      "id": "search-free",
+      "sku": "免费",
+      "tier": "免费层",
+      "region": "通用",
+      "unit": "/服务",
+      "price": 0,
+      "priceType": "免费层",
+      "licenseIncluded": true,
+      "storage": "50MB",
+      "maxIndexes": 3,
+      "scaleLimit": "无横向扩展",
+      "noteZh": "50MB存储，3个索引，不适用于生产环境",
+      "noteEn": "50MB storage, 3 indexes, not suitable for production"
+    },
+    {
+      "id": "search-basic",
+      "sku": "基本",
+      "tier": "基本层",
+      "region": "通用",
+      "unit": "/小时",
+      "price": 1.03,
+      "priceType": "现用现付",
+      "licenseIncluded": true,
+      "storage": "15GB（每服务最多45GB）",
+      "maxIndexes": 15,
+      "scaleLimit": "最多9个单位（3分区×3副本）",
+      "noteZh": "15GB存储，15个索引，适合小规模生产环境",
+      "noteEn": "15GB storage, 15 indexes, suitable for small production environments"
+    },
+    {
+      "id": "search-standard-s1",
+      "sku": "标准版S1",
+      "tier": "标准层",
+      "region": "通用",
+      "unit": "/小时",
+      "price": 3.42,
+      "priceType": "现用现付",
+      "licenseIncluded": true,
+      "storage": "160GB（每服务最多1.9TB）",
+      "maxIndexes": 50,
+      "scaleLimit": "最多36个单位（12分区×12副本）",
+      "noteZh": "160GB存储，50个索引，适合中等规模应用",
+      "noteEn": "160GB storage, 50 indexes, suitable for medium-scale applications"
+    },
+    {
+      "id": "search-standard-s2",
+      "sku": "标准版S2",
+      "tier": "标准层",
+      "region": "通用",
+      "unit": "/小时",
+      "price": 13.68,
+      "priceType": "现用现付",
+      "licenseIncluded": true,
+      "storage": "512GB（每服务最多6TB）",
+      "maxIndexes": 200,
+      "scaleLimit": "最多36个单位（12分区×12副本）",
+      "noteZh": "512GB存储，200个索引，适合大规模应用",
+      "noteEn": "512GB storage, 200 indexes, suitable for large-scale applications"
+    },
+    {
+      "id": "search-standard-s3",
+      "sku": "标准版S3",
+      "tier": "标准层",
+      "region": "通用",
+      "unit": "/小时",
+      "price": 27.35,
+      "priceType": "现用现付",
+      "licenseIncluded": true,
+      "storage": "1TB（每服务最多12TB）",
+      "maxIndexes": "200或1000/分区（高密度模式）",
+      "scaleLimit": "最多36个单位（12分区×12副本）最多3个高密度分区",
+      "noteZh": "1TB存储，支持高密度模式，适合企业级应用",
+      "noteEn": "1TB storage, supports high density mode, suitable for enterprise applications"
+    },
+    {
+      "id": "search-storage-l1",
+      "sku": "存储优化版L1",
+      "tier": "存储优化层",
+      "region": "通用",
+      "unit": "/小时",
+      "price": 39.072,
+      "priceType": "现用现付",
+      "licenseIncluded": true,
+      "storage": "2TB（每服务最多24TB）",
+      "maxIndexes": 10,
+      "scaleLimit": "最多36个单位（12分区×12副本）",
+      "noteZh": "2TB存储，专为大数据量场景优化",
+      "noteEn": "2TB storage, optimized for large data volume scenarios"
+    },
+    {
+      "id": "search-storage-l2",
+      "sku": "存储优化版L2",
+      "tier": "存储优化层",
+      "region": "通用",
+      "unit": "/小时",
+      "price": 78.138,
+      "priceType": "现用现付",
+      "licenseIncluded": true,
+      "storage": "4TB（每服务最多48TB）",
+      "maxIndexes": 10,
+      "scaleLimit": "最多36个单位（12分区×12副本）",
+      "noteZh": "4TB存储，适合超大规模数据存储",
+      "noteEn": "4TB storage, suitable for ultra-large scale data storage"
+    },
+    
+    // ========== AI功能：自定义实体查找技能（阶梯定价）==========
+    {
+      "id": "search-entity-recognition-tier0",
+      "sku": "自定义实体查找技能-0M-1M",
+      "tier": "AI功能",
+      "region": "通用",
+      "unit": "/1000条文本记录",
+      "price": 10.176,
+      "priceType": "按使用量计费",
+      "licenseIncluded": true,
+      "range": {
+        "min": 0,
+        "max": 1000000
+      },
+      "noteZh": "0M-1M文本记录的实体识别，适用于所有基本、标准和存储优化层",
+      "noteEn": "Entity recognition for 0M-1M text records, applicable to all basic, standard and storage optimized tiers"
+    },
+    {
+      "id": "search-entity-recognition-tier1",
+      "sku": "自定义实体查找技能-1M-3M",
+      "tier": "AI功能",
+      "region": "通用",
+      "unit": "/1000条文本记录",
+      "price": 7.632,
+      "priceType": "按使用量计费",
+      "licenseIncluded": true,
+      "range": {
+        "min": 1000000,
+        "max": 3000000
+      },
+      "noteZh": "1M-3M文本记录的实体识别，适用于所有基本、标准和存储优化层",
+      "noteEn": "Entity recognition for 1M-3M text records, applicable to all basic, standard and storage optimized tiers"
+    },
+    {
+      "id": "search-entity-recognition-tier2",
+      "sku": "实体识别-3M-10M",
+      "tier": "AI功能",
+      "region": "通用",
+      "unit": "/1000条文本记录",
+      "price": 3.0528,
+      "priceType": "按使用量计费",
+      "licenseIncluded": true,
+      "range": {
+        "min": 3000000,
+        "max": 10000000
+      },
+      "noteZh": "3M-10M文本记录的实体识别，价格递减",
+      "noteEn": "Entity recognition for 3M-10M text records, decreasing price"
+    },
+    {
+      "id": "search-entity-recognition-tier3",
+      "sku": "实体识别-10M+",
+      "tier": "AI功能",
+      "region": "通用",
+      "unit": "/1000条文本记录",
+      "price": 2.544,
+      "priceType": "按使用量计费",
+      "licenseIncluded": true,
+      "range": {
+        "min": 10000000,
+        "max": null
+      },
+      "noteZh": "10M以上文本记录的实体识别，最优惠价格",
+      "noteEn": "Entity recognition for 10M+ text records, best price"
+    },
+    
+    // ========== AI功能：图像提取（阶梯定价）==========
+    {
+      "id": "search-image-extraction-tier0",
+      "sku": "图像提取-0M-1M",
+      "tier": "AI功能",
+      "region": "通用",
+      "unit": "/1000项事务",
+      "price": 10.18,
+      "priceType": "按使用量计费",
+      "licenseIncluded": true,
+      "range": {
+        "min": 0,
+        "max": 1000000
+      },
+      "noteZh": "0M-1M图像的文档破解和图像提取",
+      "noteEn": "Document cracking and image extraction for 0M-1M images"
+    },
+    {
+      "id": "search-image-extraction-tier1",
+      "sku": "图像提取-1M-5M",
+      "tier": "AI功能",
+      "region": "通用",
+      "unit": "/1000项事务",
+      "price": 8.14,
+      "priceType": "按使用量计费",
+      "licenseIncluded": true,
+      "range": {
+        "min": 1000000,
+        "max": 5000000
+      },
+      "noteZh": "1M-5M图像的文档破解和图像提取",
+      "noteEn": "Document cracking and image extraction for 1M-5M images"
+    },
+    {
+      "id": "search-image-extraction-tier2",
+      "sku": "图像提取-5M+",
+      "tier": "AI功能",
+      "region": "通用",
+      "unit": "/1000项事务",
+      "price": 6.61,
+      "priceType": "按使用量计费",
+      "licenseIncluded": true,
+      "range": {
+        "min": 5000000,
+        "max": null
+      },
+      "noteZh": "5M以上图像的文档破解和图像提取，优惠价格",
+      "noteEn": "Document cracking and image extraction for 5M+ images, discounted price"
+    },
+    
+    // ========== AI功能：语义排名 ==========
+    {
+      "id": "search-semantic-ranking-free",
+      "sku": "语义排名排序-free",
+      "tier": "AI功能",
+      "region": "通用",
+      "unit": "按使用量",
+      "price": 0,
+      "priceType": "单独计费",
+      "licenseIncluded": true,
+      "noteZh": "每月前 1,000 个请求免费",
+      "noteEn": "Free of the first 1,000 requests per month"
+    },
+    {
+      "id": "search-semantic-ranking",
+      "sku": "语义排名排序-extra",
+      "tier": "AI功能",
+      "region": "通用",
+      "unit": "按使用量",
+      "price": 10,
+      "priceType": "单独计费",
+      "licenseIncluded": true,
+      "noteZh": "每 1000 个额外请求￥10",
+      "noteEn": "￥10 per 1000 additional requests"
+    }
+  ],
+  
+  // === 基础元数据 ===
+  "metadata": {
+    "version": "1.0",
+    "lastUpdated": "2025-06-26",
+    "dataSource": "https://www.azure.cn/pricing/details/search/index.html",
+    "totalPricingRecords": 12,
+    "extractionNote": "基于阶段一数据模型提取的Azure AI搜索完整定价信息，包含核心服务层级和AI功能定价"
+  }
+}

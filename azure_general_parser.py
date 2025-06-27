@@ -1665,7 +1665,7 @@ class AzurePricingParser:
 def test_parser(html_file_path: str, product_type: str = "auto",
                 config_file_path: str = "soft-category.json",
                 include_region_info: bool = True, 
-                region_info_mode: str = "hybrid"):
+                region_info_mode: str = "full"):
     """测试Azure定价解析器"""
     # 读取HTML文件
     with open(html_file_path, 'r', encoding='utf-8') as f:
@@ -1694,10 +1694,11 @@ if __name__ == "__main__":
     
     # 测试所有产品类型
     test_files = [
-        ('prod-html/ssis-index.html', 'SSIS'),
-        ('prod-html/anomaly-detector-index.html', '异常检测器'),
-        ('prod-html/cognitive-services-index.html', '认知服务'),
-        ('prod-html/mysql-index.html', 'Azure Database for MySQL')
+        # ('prod-html/ssis-index.html', 'SSIS'),
+        # ('prod-html/anomaly-detector-index.html', '异常检测器'),
+        # ('prod-html/cognitive-services-index.html', '认知服务'),
+        # ('prod-html/mysql-index.html', 'Azure Database for MySQL')
+        ('prod-html/search-index.html', 'Azure AI Search')
     ]
     
     for filename, product_name in test_files:
@@ -1716,21 +1717,6 @@ if __name__ == "__main__":
             print(f"服务层级数量: {len(results['service_tiers'])}")
             print(f"定价表数量: {len(results['pricing_tables'])}")
             print(f"FAQ数量: {len(results['faqs'])}")
-            print(f"定价规则: {list(results['pricing_rules'].keys())}")
-            
-            # 显示前几个定价表
-            if results['pricing_tables']:
-                print(f"\n前{min(3, len(results['pricing_tables']))}个定价表:")
-                for i, table in enumerate(results['pricing_tables'][:3]):
-                    print(f"  {i+1}. {table['table_name']} (ID: {table['table_id']})")
-                    print(f"     类型: {table['table_type']}")
-                    if table.get('vm_series'):
-                        print(f"     VM系列: {table['vm_series']}")
-                    if table.get('license_type'):
-                        print(f"     许可证: {table['license_type']}")
-                    if table.get('additional_info', {}).get('service_category'):
-                        print(f"     服务类别: {table['additional_info']['service_category']}")
-                    print(f"     行数: {len(table['rows'])}")
             
             # 显示FAQ分类统计
             if results['faqs']:
