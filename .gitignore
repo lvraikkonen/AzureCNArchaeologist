@@ -1,8 +1,11 @@
 *.xlsx
-# *.json
+*.json
 
 __pycache__
 
-# output
+output
+cms_output
 
 .env
+
+*.zip
