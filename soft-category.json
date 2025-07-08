@@ -348,6 +348,136 @@
     ]
   },
   {
+    "os": "Storage Files",
+    "region": "east-china",
+    "tableIDs": [
+      "#storage-files-date-storage-price-table2",
+      "#storage-files-date-storage-price-table3",
+      "#storage-files-date-storage-price-table4",
+      "#storage-files-date-storage-price-table-new1first",
+      "#storage-files-date-storage-price-table-new1",
+      "#storage-files-date-storage-price-table-new2",
+      "#storage-files-date-storage-price-table-new3",
+      "#storage-files-date-storage-price-table-new4s",
+      "#storage-files-date-storage-price-table-new1-north3",
+      "#storage-files-date-storage-price-table-new1-east3",
+      "#storage-files-date-storage-price-table-new2-north3",
+      "#storage-files-date-storage-price-table-new2-east3",
+      "#storage-files-data-storage-transactions-transfer-north3",
+      "#storage-files-data-storage-transactions-transfer-east3",
+      "#storage-files-date-storage-price-GZRS-table-china-north3",
+      "#storage-files-date-storage-price-ZRS-table-china-north3",
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3"
+    ]
+  },
+  {
+    "os": "Storage Files",
+    "region": "north-china",
+    "tableIDs": [
+      "#storage-files-date-storage-price-table2",
+      "#storage-files-date-storage-price-table3",
+      "#storage-files-date-storage-price-table4",
+      "#storage-files-date-storage-price-table-new1first",
+      "#storage-files-date-storage-price-table-new1",
+      "#storage-files-date-storage-price-table-new2",
+      "#storage-files-date-storage-price-table-new3",
+      "#storage-files-date-storage-price-table-new4s",
+      "#storage-files-date-storage-price-table-new1-north3",
+      "#storage-files-date-storage-price-table-new1-east3",
+      "#storage-files-date-storage-price-table-new2-north3",
+      "#storage-files-date-storage-price-table-new2-east3",
+      "#storage-files-data-storage-transactions-transfer-north3",
+      "#storage-files-data-storage-transactions-transfer-east3",
+      "#storage-files-date-storage-price-GZRS-table-china-north3",
+      "#storage-files-date-storage-price-ZRS-table-china-north3",    
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3"
+    ]
+  },
+  {
+    "os": "Storage Files",
+    "region": "east-china2",
+    "tableIDs": [
+      "#storage-files-date-storage-price-table",
+      "#storage-files-date-storage-price-table-new1s",
+      "#storage-files-date-storage-price-table-new2s",
+      "#storage-files-date-storage-price-table-new3s",
+      "#storage-files-date-storage-price-table-new1-north3",
+      "#storage-files-date-storage-price-table-new1-east3",
+      "#storage-files-date-storage-price-table-new2-north3",
+      "#storage-files-date-storage-price-table-new2-east3",
+      "#storage-files-data-storage-transactions-transfer-north3",
+      "#storage-files-data-storage-transactions-transfer-east3",
+      "#storage-files-date-storage-price-GZRS-table-china-north3",
+      "#storage-files-date-storage-price-ZRS-table-china-north3",    
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3"
+    ]
+  },
+  {
+    "os": "Storage Files",
+    "region": "north-china2",
+    "tableIDs": [
+      "#storage-files-date-storage-price-table",
+      "#storage-files-date-storage-price-table-new1s",
+      "#storage-files-date-storage-price-table-new2s",
+      "#storage-files-date-storage-price-table-new3s",
+      "#storage-files-date-storage-price-table-new1-north3",
+      "#storage-files-date-storage-price-table-new1-east3",
+      "#storage-files-date-storage-price-table-new2-north3",
+      "#storage-files-date-storage-price-table-new2-east3",
+      "#storage-files-data-storage-transactions-transfer-north3",
+      "#storage-files-data-storage-transactions-transfer-east3",
+      "#storage-files-date-storage-price-GZRS-table-china-north3",
+      "#storage-files-date-storage-price-ZRS-table-china-north3",      
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3"
+    ]
+  },
+  {
+    "os": "Storage Files",
+    "region": "east-china3",
+    "tableIDs": [
+      "#storage-files-date-storage-price-table",
+      "#storage-files-date-storage-price-table-new1-east3",
+      "#storage-files-date-storage-price-table-new1first",
+      "#storage-files-date-storage-price-table-new1s",
+      "#storage-files-date-storage-price-table-new2-east3",
+      "#storage-files-date-storage-price-table-new2",
+      "#storage-files-date-storage-price-table-new2s",
+      "#storage-files-date-storage-price-table-new3",
+      "#storage-files-date-storage-price-table-new3s",
+      "#storage-files-data-storage-transactions-transfer",
+      "#storage-files-date-storage-price-table-new4s",
+      "#storage-files-data-storage-price-zrs-table",
+      "#storage-files-data-storage-transactions-transfer-east3",
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
+      "#storage-files-date-storage-price-ZRS-table-china-north3",
+      "#storage-files-date-storage-price-GZRS-table-china-north3"
+    ]
+  },
+  {
+    "os": "Storage Files",
+    "region": "north-china3",
+    "tableIDs": [
+      "#storage-files-date-storage-price-table",
+      "#storage-files-date-storage-price-table-new1-east3",
+      "#storage-files-date-storage-price-table-new1first",
+      "#storage-files-date-storage-price-table-new1s",
+      "#storage-files-date-storage-price-table-new2-east3",
+      "#storage-files-date-storage-price-table-new2",
+      "#storage-files-date-storage-price-table-new2s",
+      "#storage-files-date-storage-price-table-new3",
+      "#storage-files-date-storage-price-table-new3s",
+      "#storage-files-data-storage-transactions-transfer",
+      "#storage-files-date-storage-price-table-new4s",
+      "#storage-files-data-storage-price-zrs-table",
+      "#storage-files-data-storage-transactions-transfer-east3",
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3"
+    ]
+  },
+  {
     "os": "Azure Cosmos DB",
     "region": "east-china3",
     "tableIDs": [

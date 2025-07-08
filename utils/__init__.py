@@ -5,11 +5,10 @@ HTML处理工具包
 用于Azure定价页面的HTML内容提取和处理
 """
 
-from .html_processor import (
-    RegionFilterProcessor,
-    HTMLProcessor, 
-    HTMLBuilder,
-    validate_html_structure
+from utils.enhanced_html_processor import (
+        RegionFilterProcessor, 
+        FixedHTMLProcessor, 
+        verify_table_content
 )
 
 __version__ = "1.0.0"
