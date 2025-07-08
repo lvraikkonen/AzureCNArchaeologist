@@ -1,0 +1,570 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+统一CMS提取器命令行入口
+支持多产品、多区域的Azure页面CMS HTML提取功能
+"""
+
+import argparse
+import os
+import sys
+from pathlib import Path
+from typing import Dict, List, Optional
+
+# 添加当前目录到Python路径以支持模块导入
+sys.path.insert(0, str(Path(__file__).parent))
+
+def print_logo():
+    """打印项目LOGO - Claude Code风格"""
+    logo = """
+  ╭─────────────────────────────────────────────────────────────────╮
+  │                                                                 │
+  │      ░█████╗░░█████╗░███╗░░██╗                                  │
+  │      ██╔══██╗██╔══██╗████╗░██║                                  │
+  │      ███████║██║░░╚═╝██╔██╗██║                                  │
+  │      ██╔══██║██║░░██╗██║╚████║                                  │
+  │      ██║░░██║╚█████╔╝██║░╚███║                                  │
+  │      ╚═╝░░╚═╝░╚════╝░╚═╝░░╚══╝                                  │
+  │                                                                 │
+  │    ██████╗░███████╗███████╗██╗███╗░░██╗███████╗                │
+  │    ██╔══██╗██╔════╝██╔════╝██║████╗░██║██╔════╝                │
+  │    ██████╔╝█████╗░░█████╗░░██║██╔██╗██║█████╗░░                │
+  │    ██╔══██╗██╔══╝░░██╔══╝░░██║██║╚████║██╔══╝░░                │
+  │    ██║░░██║███████╗██║░░░░░██║██║░╚███║███████╗                │
+  │    ╚═╝░░╚═╝╚══════╝╚═╝░░░░░╚═╝╚═╝░░╚══╝╚══════╝                │
+  │                                                                 │
+  │                      ✨ ACN REFINE ✨                           │
+  │               Azure China Networks Refiner v2.0                │
+  │                                                                 │
+  │           🔍 Intelligent CMS Content Extraction Tool           │
+  │                                                                 │
+  │   ┌─ Supported Products ──────────────────────────────────────┐ │
+  │   │  🗄️  MySQL Database    📁 Storage Files                  │ │
+  │   └─────────────────────────────────────────────────────────────┘ │
+  │                                                                 │
+  │   ┌─ Supported Regions ───────────────────────────────────────┐ │
+  │   │  🏢 North China • East China • North China 2            │ │
+  │   │  🏢 East China 2 • North China 3 • East China 3         │ │
+  │   └─────────────────────────────────────────────────────────────┘ │
+  │                                                                 │
+  │   ┌─ Key Features ────────────────────────────────────────────┐ │
+  │   │  ⚡ Modular Architecture   🔄 Batch Processing            │ │
+  │   │  ✅ Quality Verification   🎨 CMS Optimization           │ │
+  │   │  🌐 Multi-Region Support   📊 Statistical Reports        │ │
+  │   └─────────────────────────────────────────────────────────────┘ │
+  │                                                                 │
+  ╰─────────────────────────────────────────────────────────────────╯
+
+     Built with ❤️  using modular architecture
+     Generates clean HTML optimized for CMS import
+     Supports region filtering, content cleaning & quality validation
+    
+"""
+    print(logo)
+
+try:
+    from cms_extractors import (
+        MySQLCMSExtractor,
+        AzureStorageFilesCMSExtractor,
+        ConfigManager
+    )
+except ImportError as e:
+    print_logo()
+    print(f"❌ 模块导入失败: {e}")
+    print("💡 请确保在正确的Python环境中运行:")
+    print("   conda activate azure-calculator")
+    print("   或使用: /Users/lvshuo/miniforge3/envs/azure-calculator/bin/python")
+    sys.exit(1)
+
+
+class UnifiedCMSExtractor:
+    """统一CMS提取器 - 支持多产品处理"""
+    
+    # 支持的产品映射
+    SUPPORTED_PRODUCTS = {
+        "mysql": {
+            "name": "Azure Database for MySQL",
+            "display_name": "MySQL数据库",
+            "class": MySQLCMSExtractor,
+            "default_files": ["mysql-index.html"],
+            "icon": "🗄️"
+        },
+        "storage-files": {
+            "name": "Azure Storage Files", 
+            "display_name": "文件存储",
+            "class": AzureStorageFilesCMSExtractor,
+            "default_files": ["storage-files-index.html"],
+            "icon": "📁"
+        }
+    }
+    
+    def __init__(self, config_file: str = "soft-category.json"):
+        """
+        初始化统一CMS提取器
+        
+        Args:
+            config_file: 配置文件路径
+        """
+        self.config_file = config_file
+        self.config_manager = ConfigManager(config_file)
+        
+        print("🎯 系统初始化完成")
+        print(f"📋 已加载 {len(self.SUPPORTED_PRODUCTS)} 个产品支持")
+        print(f"🌍 已配置 {len(self.config_manager.get_supported_regions())} 个区域")
+        print("─" * 70)
+    
+    def extract_product(self, product: str, html_file: str, region: str, 
+                       output_dir: str, custom_filename: str = "") -> Dict:
+        """
+        提取指定产品的CMS HTML
+        
+        Args:
+            product: 产品类型 (mysql, storage-files)
+            html_file: 源HTML文件路径
+            region: 目标区域
+            output_dir: 输出目录
+            custom_filename: 自定义文件名
+            
+        Returns:
+            提取结果字典
+        """
+        
+        if product not in self.SUPPORTED_PRODUCTS:
+            raise ValueError(f"不支持的产品: {product}。支持的产品: {list(self.SUPPORTED_PRODUCTS.keys())}")
+        
+        if not os.path.exists(html_file):
+            raise FileNotFoundError(f"HTML文件不存在: {html_file}")
+        
+        if region not in self.config_manager.get_supported_regions():
+            raise ValueError(f"不支持的区域: {region}。支持的区域: {self.config_manager.get_supported_regions()}")
+        
+        # 获取产品信息
+        product_info = self.SUPPORTED_PRODUCTS[product]
+        extractor_class = product_info["class"]
+        
+        print(f"\n{product_info['icon']} 开始提取 {product_info['display_name']} CMS HTML")
+        print(f"📁 源文件: {html_file}")
+        print(f"🌍 目标区域: {region} ({self.config_manager.get_region_display_name(region)})")
+        print(f"📂 输出目录: {output_dir}")
+        print("═" * 70)
+        
+        # 创建提取器实例
+        extractor = extractor_class(self.config_file, output_dir)
+        
+        # 执行提取
+        result = extractor.extract_cms_html_for_region(html_file, region)
+        
+        if result["success"]:
+            # 保存结果
+            output_file = extractor.save_cms_html(result, region, custom_filename)
+            result["output_file"] = output_file
+            
+            print(f"\n✅ {product_info['display_name']} CMS HTML提取完成！")
+            print(f"📄 输出文件: {output_file}")
+        else:
+            print(f"\n❌ {product_info['display_name']} 提取失败: {result.get('error', '未知错误')}")
+        
+        return result
+    
+    def extract_batch(self, product: str, html_file: str, regions: List[str], 
+                     output_dir: str) -> Dict[str, Dict]:
+        """
+        批量提取多个区域的CMS HTML
+        
+        Args:
+            product: 产品类型
+            html_file: 源HTML文件路径
+            regions: 区域列表
+            output_dir: 输出目录
+            
+        Returns:
+            批量提取结果字典
+        """
+        
+        if product not in self.SUPPORTED_PRODUCTS:
+            raise ValueError(f"不支持的产品: {product}")
+        
+        if not os.path.exists(html_file):
+            raise FileNotFoundError(f"HTML文件不存在: {html_file}")
+        
+        # 验证区域
+        supported_regions = self.config_manager.get_supported_regions()
+        invalid_regions = [r for r in regions if r not in supported_regions]
+        if invalid_regions:
+            raise ValueError(f"不支持的区域: {invalid_regions}。支持的区域: {supported_regions}")
+        
+        # 获取产品信息
+        product_info = self.SUPPORTED_PRODUCTS[product]
+        extractor_class = product_info["class"]
+        
+        print(f"\n🌍 开始批量提取 {product_info['display_name']} CMS HTML")
+        print(f"📁 源文件: {html_file}")
+        print(f"🎯 目标区域: {len(regions)} 个")
+        for region in regions:
+            print(f"   • {region} ({self.config_manager.get_region_display_name(region)})")
+        print(f"📂 输出目录: {output_dir}")
+        print("═" * 70)
+        
+        # 创建提取器实例
+        extractor = extractor_class(self.config_file, output_dir)
+        
+        # 执行批量提取
+        batch_results = extractor.extract_all_regions_cms(html_file, regions)
+        
+        return batch_results
+    
+    def extract_multi_product(self, html_dir: str, output_base_dir: str, 
+                             regions: Optional[List[str]] = None,
+                             products: Optional[List[str]] = None) -> Dict[str, Dict]:
+        """
+        多产品批量提取
+        
+        Args:
+            html_dir: HTML文件目录
+            output_base_dir: 输出基础目录
+            regions: 区域列表（默认所有区域）
+            products: 产品列表（默认所有产品）
+            
+        Returns:
+            多产品提取结果字典
+        """
+        
+        if regions is None:
+            regions = self.config_manager.get_supported_regions()
+        
+        if products is None:
+            products = list(self.SUPPORTED_PRODUCTS.keys())
+        
+        # 验证产品
+        invalid_products = [p for p in products if p not in self.SUPPORTED_PRODUCTS]
+        if invalid_products:
+            raise ValueError(f"不支持的产品: {invalid_products}")
+        
+        print(f"\n🏭 开始多产品批量提取")
+        print(f"📁 HTML目录: {html_dir}")
+        print(f"📂 输出基础目录: {output_base_dir}")
+        
+        print(f"\n🎯 产品列表 ({len(products)} 个):")
+        for product in products:
+            info = self.SUPPORTED_PRODUCTS[product]
+            print(f"   {info['icon']} {product} - {info['display_name']}")
+        
+        print(f"\n🌍 区域列表 ({len(regions)} 个):")
+        for region in regions:
+            print(f"   • {region} ({self.config_manager.get_region_display_name(region)})")
+        
+        print("═" * 70)
+        
+        all_results = {}
+        
+        for i, product in enumerate(products, 1):
+            product_info = self.SUPPORTED_PRODUCTS[product]
+            
+            print(f"\n{'═'*70}")
+            print(f"{product_info['icon']} 处理产品 [{i}/{len(products)}]: {product_info['display_name']}")
+            print(f"{'═'*70}")
+            
+            # 查找对应的HTML文件
+            html_file = self._find_html_file(html_dir, product)
+            if not html_file:
+                print(f"⚠️  跳过产品 {product}: 未找到对应的HTML文件")
+                expected_files = self.SUPPORTED_PRODUCTS[product]["default_files"]
+                print(f"   预期文件: {', '.join(expected_files)}")
+                all_results[product] = {
+                    "success": False,
+                    "error": "HTML文件不存在",
+                    "expected_files": expected_files
+                }
+                continue
+            
+            # 创建产品特定的输出目录
+            product_output_dir = os.path.join(output_base_dir, f"{product}_cms_output")
+            os.makedirs(product_output_dir, exist_ok=True)
+            
+            try:
+                # 批量提取该产品的所有区域
+                batch_results = self.extract_batch(product, html_file, regions, product_output_dir)
+                all_results[product] = {
+                    "success": True,
+                    "html_file": html_file,
+                    "output_dir": product_output_dir,
+                    "regions": batch_results
+                }
+                
+                # 统计成功率
+                successful_regions = sum(1 for r in batch_results.values() if r.get("success", False))
+                print(f"✅ {product_info['display_name']} 完成: {successful_regions}/{len(regions)} 个区域成功")
+                
+            except Exception as e:
+                print(f"❌ {product_info['display_name']} 处理失败: {e}")
+                all_results[product] = {
+                    "success": False,
+                    "error": str(e),
+                    "html_file": html_file
+                }
+        
+        # 生成总结报告
+        self._generate_multi_product_summary(all_results, output_base_dir)
+        
+        return all_results
+    
+    def _find_html_file(self, html_dir: str, product: str) -> Optional[str]:
+        """
+        查找产品对应的HTML文件
+        
+        Args:
+            html_dir: HTML文件目录
+            product: 产品类型
+            
+        Returns:
+            HTML文件路径，如果未找到返回None
+        """
+        
+        default_files = self.SUPPORTED_PRODUCTS[product]["default_files"]
+        
+        for filename in default_files:
+            file_path = os.path.join(html_dir, filename)
+            if os.path.exists(file_path):
+                return file_path
+        
+        return None
+    
+    def _generate_multi_product_summary(self, results: Dict, output_base_dir: str):
+        """
+        生成多产品处理总结报告
+        
+        Args:
+            results: 处理结果字典
+            output_base_dir: 输出基础目录
+        """
+        
+        from datetime import datetime
+        import json
+        
+        summary = {
+            "processing_info": {
+                "processed_at": datetime.now().isoformat(),
+                "extraction_version": "2.0_unified_cli",
+                "extractor_name": "Azure CN Archaeologist",
+                "total_products": len(results),
+                "successful_products": sum(1 for r in results.values() if r.get("success", False))
+            },
+            "products": results,
+            "overall_statistics": {
+                "total_regions_processed": 0,
+                "successful_extractions": 0,
+                "failed_extractions": 0
+            }
+        }
+        
+        # 计算总体统计
+        for product, result in results.items():
+            if result.get("success", False) and "regions" in result:
+                regions_data = result["regions"]
+                summary["overall_statistics"]["total_regions_processed"] += len(regions_data)
+                summary["overall_statistics"]["successful_extractions"] += sum(
+                    1 for r in regions_data.values() if r.get("success", False)
+                )
+                summary["overall_statistics"]["failed_extractions"] += sum(
+                    1 for r in regions_data.values() if not r.get("success", False)
+                )
+        
+        # 保存总结报告
+        summary_path = os.path.join(output_base_dir, f"acn_refine_summary_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
+        os.makedirs(output_base_dir, exist_ok=True)
+        
+        with open(summary_path, 'w', encoding='utf-8') as f:
+            json.dump(summary, f, ensure_ascii=False, indent=2)
+        
+        print(f"\n📋 多产品处理总结:")
+        print(f"✅ 成功产品: {summary['processing_info']['successful_products']}/{summary['processing_info']['total_products']}")
+        print(f"📊 总提取次数: {summary['overall_statistics']['successful_extractions']}")
+        print(f"❌ 失败次数: {summary['overall_statistics']['failed_extractions']}")
+        print(f"📁 输出目录: {output_base_dir}")
+        print(f"📊 总结报告: {summary_path}")
+
+
+def main():
+    """主程序入口"""
+    
+    # 首先显示LOGO
+    print_logo()
+    
+    parser = argparse.ArgumentParser(
+        description="ACN REFINE - Azure China Networks Refiner",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+🌟 使用示例:
+  
+  单产品单区域提取:
+    %(prog)s mysql prod-html/mysql-index.html -r north-china3 -o mysql_output
+    
+  单产品多区域提取:
+    %(prog)s storage-files prod-html/storage-files-index.html -a -o storage_output
+    
+  指定多个区域:
+    %(prog)s mysql prod-html/mysql-index.html --regions north-china3 east-china2 -o output
+    
+  多产品批量提取:
+    %(prog)s --multi-product -i prod-html -o multi_output
+    
+  列出支持的产品和区域:
+    %(prog)s --list-products
+    %(prog)s --list-regions
+
+🎯 支持的产品:
+  mysql        - 🗄️  Azure Database for MySQL (MySQL数据库)
+  storage-files - 📁 Azure Storage Files (文件存储)
+  
+🌍 支持的区域:
+  north-china, east-china, north-china2, east-china2, north-china3, east-china3
+        """
+    )
+    
+    # 基础参数
+    parser.add_argument("product", nargs="?", choices=list(UnifiedCMSExtractor.SUPPORTED_PRODUCTS.keys()),
+                       help="产品类型")
+    parser.add_argument("html_file", nargs="?", help="HTML源文件路径")
+    
+    # 区域参数
+    parser.add_argument("-r", "--region", help="目标区域 (单区域模式)")
+    parser.add_argument("-a", "--all-regions", action="store_true", help="提取所有区域")
+    parser.add_argument("--regions", nargs="+", help="指定要提取的区域列表")
+    
+    # 输出参数
+    parser.add_argument("-o", "--output", default="cms_output", help="输出目录 (默认: cms_output)")
+    parser.add_argument("--filename", help="指定输出文件名")
+    
+    # 配置参数
+    parser.add_argument("-c", "--config", default="soft-category.json", help="配置文件路径")
+    
+    # 多产品模式
+    parser.add_argument("--multi-product", action="store_true", help="多产品批量提取模式")
+    parser.add_argument("-i", "--input-dir", help="HTML文件输入目录 (多产品模式)")
+    parser.add_argument("--products", nargs="+", help="指定要处理的产品列表 (多产品模式)")
+    
+    # 信息查询
+    parser.add_argument("--list-products", action="store_true", help="列出支持的产品")
+    parser.add_argument("--list-regions", action="store_true", help="列出支持的区域")
+    
+    args = parser.parse_args()
+    
+    # 验证配置文件
+    if not os.path.exists(args.config):
+        print(f"❌ 配置文件不存在: {args.config}")
+        return 1
+    
+    try:
+        # 创建统一提取器
+        extractor = UnifiedCMSExtractor(args.config)
+        
+        # 处理信息查询
+        if args.list_products:
+            print("\n📋 支持的产品:")
+            print("─" * 70)
+            for key, info in UnifiedCMSExtractor.SUPPORTED_PRODUCTS.items():
+                print(f"  {info['icon']} {key:15} - {info['display_name']}")
+                print(f"    {'':15}   技术名称: {info['name']}")
+                print(f"    {'':15}   默认文件: {', '.join(info['default_files'])}")
+                print()
+            return 0
+        
+        if args.list_regions:
+            print("\n🌍 支持的区域:")
+            print("─" * 70)
+            for region in extractor.config_manager.get_supported_regions():
+                region_name = extractor.config_manager.get_region_display_name(region)
+                print(f"  🏢 {region:15} - {region_name}")
+            return 0
+        
+        # 多产品模式
+        if args.multi_product:
+            if not args.input_dir:
+                print("❌ 多产品模式需要指定输入目录 (-i/--input-dir)")
+                return 1
+            
+            if not os.path.exists(args.input_dir):
+                print(f"❌ 输入目录不存在: {args.input_dir}")
+                return 1
+            
+            # 确定区域列表
+            if args.all_regions:
+                regions = extractor.config_manager.get_supported_regions()
+            elif args.regions:
+                regions = args.regions
+            else:
+                regions = extractor.config_manager.get_supported_regions()
+                print(f"ℹ️  未指定区域，使用所有支持的区域: {len(regions)} 个")
+            
+            # 确定产品列表
+            products = args.products or list(UnifiedCMSExtractor.SUPPORTED_PRODUCTS.keys())
+            
+            # 执行多产品提取
+            results = extractor.extract_multi_product(args.input_dir, args.output, regions, products)
+            
+            # 显示结果
+            successful_products = sum(1 for r in results.values() if r.get("success", False))
+            print(f"\n🎉 多产品提取完成！")
+            print(f"✅ 成功: {successful_products}/{len(products)} 个产品")
+            
+            return 0
+        
+        # 单产品模式
+        if not args.product:
+            print("❌ 请指定产品类型，或使用 --multi-product 进行多产品提取")
+            print("💡 使用 --list-products 查看支持的产品")
+            return 1
+        
+        if not args.html_file:
+            print("❌ 请指定HTML源文件路径")
+            return 1
+        
+        # 确定区域列表
+        if args.all_regions:
+            regions = extractor.config_manager.get_supported_regions()
+            # 批量提取
+            results = extractor.extract_batch(args.product, args.html_file, regions, args.output)
+            
+            successful_count = sum(1 for r in results.values() if r.get("success", False))
+            print(f"\n🎉 批量提取完成！")
+            print(f"✅ 成功: {successful_count}/{len(regions)} 个区域")
+            
+        elif args.regions:
+            # 指定区域列表批量提取
+            results = extractor.extract_batch(args.product, args.html_file, args.regions, args.output)
+            
+            successful_count = sum(1 for r in results.values() if r.get("success", False))
+            print(f"\n🎉 批量提取完成！")
+            print(f"✅ 成功: {successful_count}/{len(args.regions)} 个区域")
+            
+        elif args.region:
+            # 单区域提取
+            result = extractor.extract_product(args.product, args.html_file, args.region, 
+                                             args.output, args.filename)
+            
+            if result["success"]:
+                print(f"✅ 单区域提取完成")
+            else:
+                print(f"❌ 提取失败: {result.get('error', '未知错误')}")
+                return 1
+        else:
+            print("❌ 请指定区域 (-r)、所有区域 (-a) 或区域列表 (--regions)")
+            return 1
+        
+        print("\n" + "═" * 70)
+        print("🎊 任务完成！生成的HTML文件已针对CMS导入进行优化")
+        print("📝 文件特点: 干净结构 • 区域过滤 • 质量验证 • 响应式样式")
+        print("💡 建议在导入CMS前预览检查文件质量")
+        print("═" * 70)
+        
+        return 0
+        
+    except Exception as e:
+        print(f"❌ 提取过程中发生错误: {e}")
+        import traceback
+        traceback.print_exc()
+        return 1
+
+
+if __name__ == "__main__":
+    exit(main())
