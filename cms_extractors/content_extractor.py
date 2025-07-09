@@ -73,6 +73,10 @@ class ContentExtractor:
             if element.find_parent('table'):
                 continue
             
+            # 跳过已经被FAQ处理过的元素（避免重复处理）
+            if element.find_parent('li') and element.find_parent('li').find('i', class_='icon icon-plus'):
+                continue
+            
             # 检查是否为重要的section标题 - 优先保留
             if element.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
                 if self._is_important_section_title(element, important_section_titles):
@@ -265,12 +269,27 @@ class ContentExtractor:
                         new_element.string = text_content
             
             elif original_element.name in ['ul', 'ol']:
-                # 列表：保留结构但简化，也要处理链接
+                # 列表：保留结构但简化，也要处理链接，特别处理FAQ结构
+                # print(f"    📋 处理列表元素: {original_element.name}, 包含 {len(original_element.find_all('li', recursive=False))} 个列表项")
+                
+                # 检查是否为FAQ列表
+                is_faq_list = any(self._is_faq_item(li) for li in original_element.find_all('li', recursive=False))
+                
+                # 如果是FAQ列表，添加特殊class
+                if is_faq_list:
+                    new_element['class'] = 'faq-list'
+                
                 for li in original_element.find_all('li', recursive=False):
                     new_li = soup.new_tag('li')
                     
-                    # 检查li中是否有链接
-                    if li.find('a'):
+                    # 检查是否为FAQ结构 (有icon和div结构) - 优先检查
+                    if self._is_faq_item(li):
+                        # 处理FAQ项
+                        # print(f"    ✓ 发现FAQ项，正在处理...")
+                        self._process_faq_item(li, new_li, soup)
+                    elif li.find('a') and not li.find('i', class_='icon icon-plus'):
+                        # 普通包含链接的列表项（排除FAQ项）
+                        # print(f"    📎 处理包含链接的列表项")
                         for child in li.children:
                             if hasattr(child, 'name') and child.name == 'a':
                                 link_element = self._create_simple_element(child, soup)
@@ -281,6 +300,8 @@ class ContentExtractor:
                                 if text:
                                     new_li.append(text)
                     else:
+                        # 普通列表项
+                        # print(f"    📄 处理普通列表项")
                         li_text = li.get_text(strip=True)
                         if li_text:
                             new_li.string = li_text
@@ -325,3 +346,49 @@ class ContentExtractor:
             
             if new_tr.find_all():  # 只添加非空行
                 new_table.append(new_tr)
+    
+    def _is_faq_item(self, li: Tag) -> bool:
+        """检查是否为FAQ项结构"""
+        
+        # 检查是否有icon和div结构
+        has_icon = li.find('i', class_='icon icon-plus')
+        has_div = li.find('div')
+        
+        if has_icon and has_div:
+            # 检查div内是否有a标签（问题）和section标签（答案）
+            div = li.find('div')
+            has_question = div.find('a')
+            has_answer = div.find('section')
+            
+            # print(f"    🔍 FAQ检查: icon={bool(has_icon)}, div={bool(has_div)}, question={bool(has_question)}, answer={bool(has_answer)}")
+            
+            return bool(has_question and has_answer)
+        
+        return False
+    
+    def _process_faq_item(self, li: Tag, new_li: Tag, soup: BeautifulSoup):
+        """处理FAQ项，提取问题和答案，使用美化的HTML结构"""
+        
+        div = li.find('div')
+        if not div:
+            return
+        
+        # 提取问题
+        question_a = div.find('a')
+        if question_a:
+            question_text = question_a.get_text(strip=True)
+            if question_text:
+                # 创建问题div容器
+                question_div = soup.new_tag('div', **{'class': 'faq-question'})
+                question_div.string = question_text
+                new_li.append(question_div)
+        
+        # 提取答案
+        answer_section = div.find('section')
+        if answer_section:
+            answer_text = answer_section.get_text(strip=True)
+            if answer_text:
+                # 创建答案div容器
+                answer_div = soup.new_tag('div', **{'class': 'faq-answer'})
+                answer_div.string = answer_text
+                new_li.append(answer_div)

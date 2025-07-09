@@ -241,6 +241,42 @@ class ConfigManager:
             color: #0078d4;
             border-bottom: 2px solid #0078d4;
             padding-bottom: 0.5rem;
+        }}
+        
+        /* FAQ 项目样式 - 只应用于 .faq-list */
+        .faq-list li {{
+            margin-bottom: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 0;
+            list-style: none;
+        }}
+        
+        .faq-question {{
+            background-color: #f8f9fa;
+            padding: 0.75rem;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 1.05rem;
+        }}
+        
+        .faq-answer {{
+            padding: 0.75rem;
+            line-height: 1.5;
+            color: #666;
+            background-color: #ffffff;
+        }}
+        
+        /* 普通列表样式 */
+        ul {{
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }}
+        
+        ul li {{
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
         }}"""
         
         # Storage Files特定样式

@@ -157,7 +157,8 @@ class HTMLProcessor:
         # 要保留的重要class（会进一步过滤）
         important_classes = {
             'common-banner', 'common-banner-image', 'common-banner-title',
-            'pricing-page-section', 'more-detail', 'storage-specific-content'
+            'pricing-page-section', 'more-detail', 'storage-specific-content',
+            'icon', 'icon-plus'  # 保留FAQ展开图标的class
         }
         
         for tag in soup.find_all():
