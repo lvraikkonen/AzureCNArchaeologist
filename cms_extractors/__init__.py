@@ -10,6 +10,10 @@ from .verification_manager import VerificationManager
 from .config_manager import ConfigManager
 from .mysql_cms_extractor import MySQLCMSExtractor
 from .storage_files_cms_extractor import AzureStorageFilesCMSExtractor
+from .postgresql_cms_extractor import PostgreSQLCMSExtractor
+from .anomaly_detector_extractor import AnomalyDetectorCMSExtractor
+from .pbi_embedded_extractor import PowerBIEmbeddedCMSExtractor
+from .ssis_extractor import SSISCMSExtractor
 
 __all__ = [
     'BaseCMSExtractor',
@@ -18,5 +22,9 @@ __all__ = [
     'VerificationManager',
     'ConfigManager',
     'MySQLCMSExtractor',
-    'AzureStorageFilesCMSExtractor'
+    'AzureStorageFilesCMSExtractor',
+    'PostgreSQLCMSExtractor',
+    'AnomalyDetectorCMSExtractor',
+    'PowerBIEmbeddedCMSExtractor',
+    'SSISCMSExtractor'
 ]

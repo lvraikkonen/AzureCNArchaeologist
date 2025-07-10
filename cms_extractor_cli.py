@@ -39,8 +39,9 @@ def print_logo():
   │           🔍 Intelligent CMS Content Extraction Tool           │
   │                                                                 │
   │   ┌─ Supported Products ──────────────────────────────────────┐ │
-  │   │  🗄️  MySQL Database    📁 Storage Files                  │ │
-  │   └─────────────────────────────────────────────────────────────┘ │
+  │   │  🗄️  MySQL Database    📁 Storage Files   🐘 Postgresql    │ │
+  │   │  🤖  AnomalyDetector   📊 Power BI Embedded  🔧 SSIS       | |
+  │   └───────────────────────────────────────────────────────────┘ │
   │                                                                 │
   │   ┌─ Supported Regions ───────────────────────────────────────┐ │
   │   │  🏢 North China • East China • North China 2            │ │
@@ -48,10 +49,10 @@ def print_logo():
   │   └─────────────────────────────────────────────────────────────┘ │
   │                                                                 │
   │   ┌─ Key Features ────────────────────────────────────────────┐ │
-  │   │  ⚡ Modular Architecture   🔄 Batch Processing            │ │
-  │   │  ✅ Quality Verification   🎨 CMS Optimization           │ │
-  │   │  🌐 Multi-Region Support   📊 Statistical Reports        │ │
-  │   └─────────────────────────────────────────────────────────────┘ │
+  │   │  ⚡ Modular Architecture   🔄 Batch Processing             │ │
+  │   │  ✅ Quality Verification   🎨 CMS Optimization             │ │
+  │   │  🌐 Multi-Region Support   📊 Statistical Reports          │ │
+  │   └────────────────────────────────────────────────────── ────┘ │
   │                                                                 │
   ╰─────────────────────────────────────────────────────────────────╯
 
@@ -66,6 +67,10 @@ try:
     from cms_extractors import (
         MySQLCMSExtractor,
         AzureStorageFilesCMSExtractor,
+        PostgreSQLCMSExtractor,
+        AnomalyDetectorCMSExtractor,
+        PowerBIEmbeddedCMSExtractor,
+        SSISCMSExtractor,
         ConfigManager
     )
 except ImportError as e:
@@ -95,6 +100,34 @@ class UnifiedCMSExtractor:
             "class": AzureStorageFilesCMSExtractor,
             "default_files": ["storage-files-index.html"],
             "icon": "📁"
+        },
+        "postgresql": {
+            "name": "Azure Database for PostgreSQL",
+            "display_name": "PostgreSQL数据库", 
+            "class": PostgreSQLCMSExtractor,
+            "default_files": ["postgresql-index.html"],
+            "icon": "🐘"
+        },
+        "anomaly-detector": {
+            "name": "AI异常检测器",
+            "display_name": "AI异常检测器",
+            "class": AnomalyDetectorCMSExtractor,
+            "default_files": ["anomaly-detector-index.html"],
+            "icon": "🤖",
+        },
+        "power-bi-embedded": {
+            "name": "Power BI嵌入式分析",
+            "display_name": "Power BI Embedded",
+            "class": PowerBIEmbeddedCMSExtractor,
+            "default_files": ["power-bi-embedded-index.html"],
+            "icon": "📊",
+        },
+        "ssis": {
+            "name": "数据工厂SSIS",
+            "display_name": "Data Factory SSIS",
+            "class": SSISCMSExtractor,
+            "default_files": ["ssis-index.html"],
+            "icon": "🔧", 
         }
     }
     
@@ -415,6 +448,7 @@ def main():
 🎯 支持的产品:
   mysql        - 🗄️  Azure Database for MySQL (MySQL数据库)
   storage-files - 📁 Azure Storage Files (文件存储)
+  postgresql   - 🐘 Azure Database for PostgreSQL (PostgreSQL数据库)
   
 🌍 支持的区域:
   north-china, east-china, north-china2, east-china2, north-china3, east-china3

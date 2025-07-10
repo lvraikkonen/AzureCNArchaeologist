@@ -141,6 +141,88 @@ class ConfigManager:
             })
             return storage_config
         
+        # PostgreSQL特定配置
+        elif "postgresql" in product_name.lower():
+            postgresql_config = default_config.copy()
+            postgresql_config.update({
+                "table_class": "postgresql-pricing-table",
+                "important_section_titles": {
+                    "定价详细信息", "定价详情", "pricing details",
+                    "常见问题", "faq", "frequently asked questions",
+                    "服务层", "service tier", "性能层", "performance tier",
+                    "支持和服务级别协议", "support", "sla", "service level agreement",
+                    # PostgreSQL特有的
+                    "单个服务器", "single server", "灵活服务器", "flexible server",
+                    "可突发", "burstable", "常规用途", "general purpose", 
+                    "内存优化", "memory optimized", "基本", "basic",
+                    "计算", "compute", "存储", "storage", "备份", "backup",
+                    "Gen 5", "第五代计算", "Dsv3", "Ddsv4", "Ddsv5", "Esv3", "Edsv4", "Edsv5"
+                },
+                "css_template": "postgresql"
+            })
+            return postgresql_config
+        
+        # Anomaly Detector特定配置
+        elif "异常检测" in product_name or "anomaly detector" in product_name.lower():
+            anomaly_detector_config = default_config.copy()
+            anomaly_detector_config.update({
+                "table_class": "anomaly-detector-pricing-table",
+                "important_section_titles": {
+                    "定价详细信息", "定价详情", "pricing details",
+                    "常见问题", "faq", "frequently asked questions",
+                    "支持和服务级别协议", "support", "sla", "service level agreement",
+                    # Anomaly Detector特有的
+                    "AI异常检测器定价", "anomaly detector pricing",
+                    "免费实例", "free tier", "标准实例", "standard tier",
+                    "事务", "transaction", "时序数据", "time series",
+                    "异常检测", "anomaly detection", "数据点", "data points",
+                    "常规", "general", "软件保障", "software assurance"
+                },
+                "css_template": "anomaly_detector"
+            })
+            return anomaly_detector_config
+        
+        # Power BI Embedded特定配置
+        elif "power bi embedded" in product_name.lower():
+            power_bi_config = default_config.copy()
+            power_bi_config.update({
+                "table_class": "power-bi-embedded-pricing-table",
+                "important_section_titles": {
+                    "定价详细信息", "定价详情", "pricing details",
+                    "常见问题", "faq", "frequently asked questions",
+                    "支持和服务级别协议", "support", "sla", "service level agreement",
+                    # Power BI Embedded特有的
+                    "节点类型", "node type", "虚拟内核", "virtual core", "v核心",
+                    "内存", "memory", "ram", "前端", "后端", "frontend", "backend",
+                    "专用容量", "dedicated capacity", "峰值呈现", "peak rendering",
+                    "嵌入", "embedded", "仪表板", "dashboard", "报表", "report",
+                    "可视化", "visualization", "数据分析", "data analysis"
+                },
+                "css_template": "power_bi_embedded"
+            })
+            return power_bi_config
+        
+        # SSIS特定配置
+        elif "ssis" in product_name.lower() or "data factory ssis" in product_name.lower():
+            ssis_config = default_config.copy()
+            ssis_config.update({
+                "table_class": "ssis-pricing-table",
+                "important_section_titles": {
+                    "定价详细信息", "定价详情", "pricing details",
+                    "常见问题", "faq", "frequently asked questions",
+                    "支持和服务级别协议", "support", "sla", "service level agreement",
+                    # SSIS特有的
+                    "sql server integration services", "ssis", "数据工厂",
+                    "integration runtime", "集成运行时", "标准", "standard", "企业", "enterprise",
+                    "虚拟机", "virtual machine", "vm", "av2", "dv2", "dv3", "ev3", "ev4",
+                    "azure混合优惠", "azure hybrid benefit", "混合权益", "软件保障", "software assurance",
+                    "许可证", "license", "vcore", "虚拟核心", "内存", "memory", "临时存储", "temp storage",
+                    "etl", "数据集成", "data integration", "云托管", "cloud hosted"
+                },
+                "css_template": "ssis"
+            })
+            return ssis_config
+        
         # 其他产品使用默认配置
         return default_config
     
