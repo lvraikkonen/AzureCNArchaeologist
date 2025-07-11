@@ -42,7 +42,8 @@ class ConfigManager:
             "north-china2": "中国北部2", 
             "east-china2": "中国东部2",
             "north-china3": "中国北部3",
-            "east-china3": "中国东部3"
+            "east-china3": "中国东部3",
+            "allregion": "全球统一定价"  # 添加allregion支持
         }
         
         # 初始化区域过滤器
@@ -222,6 +223,76 @@ class ConfigManager:
                 "css_template": "ssis"
             })
             return ssis_config
+        
+        # Microsoft Entra External ID特定配置
+        elif "microsoft entra external id" in product_name.lower() or "entra external id" in product_name.lower():
+            entra_config = default_config.copy()
+            entra_config.update({
+                "table_class": "entra-external-id-pricing-table",
+                "important_section_titles": {
+                    "定价详细信息", "定价详情", "pricing details",
+                    "常见问题", "faq", "frequently asked questions",
+                    "支持和服务级别协议", "support", "sla", "service level agreement",
+                    # Microsoft Entra External ID特有的
+                    "Microsoft Entra External ID定价", "entra external id pricing",
+                    "外部身份验证", "external authentication", "身份管理", "identity management", 
+                    "用户认证", "user authentication", "多租户", "multi-tenant",
+                    "消费者身份", "consumer identity", "B2C", "企业身份", "enterprise identity",
+                    "月活跃用户", "monthly active users", "MAU", "存储的用户对象", "stored user objects",
+                    "高级功能", "premium features", "基础", "basic", "标准", "standard",
+                    "自定义策略", "custom policies", "条件访问", "conditional access"
+                },
+                "css_template": "entra_external_id"
+            })
+            return entra_config
+        
+        # Azure Cosmos DB特定配置
+        elif "cosmos db" in product_name.lower() or "cosmosdb" in product_name.lower():
+            cosmos_config = default_config.copy()
+            cosmos_config.update({
+                "table_class": "cosmos-db-pricing-table",
+                "important_section_titles": {
+                    "定价详细信息", "定价详情", "pricing details",
+                    "常见问题", "faq", "frequently asked questions",
+                    "支持和服务级别协议", "support", "sla", "service level agreement",
+                    # Cosmos DB特有的
+                    "Azure Cosmos DB定价", "cosmos db pricing", "cosmosdb pricing",
+                    "请求单位", "request units", "ru", "吞吐量", "throughput",
+                    "预配吞吐量", "provisioned throughput", "无服务器", "serverless",
+                    "自动缩放", "autoscale", "标准", "standard", "预留容量", "reserved capacity",
+                    "多区域写入", "multi-region writes", "多主数据库", "multi-master",
+                    "存储", "storage", "备份", "backup", "还原", "restore",
+                    "SQL API", "MongoDB API", "Cassandra API", "Gremlin API", "Table API",
+                    "分析存储", "analytical storage", "Synapse Link", "全局分发", "global distribution",
+                    "专用网关", "dedicated gateway", "计算", "compute", "事务", "transaction"
+                },
+                "css_template": "cosmos_db"
+            })
+            return cosmos_config
+        
+        # Azure Search特定配置
+        elif "认知搜索" in product_name or "azure search" in product_name.lower() or "cognitive search" in product_name.lower():
+            search_config = default_config.copy()
+            search_config.update({
+                "table_class": "azure-search-pricing-table",
+                "important_section_titles": {
+                    "定价详细信息", "定价详情", "pricing details",
+                    "常见问题", "faq", "frequently asked questions",
+                    "支持和服务级别协议", "support", "sla", "service level agreement",
+                    # Azure Search特有的
+                    "Azure 认知搜索定价", "azure cognitive search pricing", "search pricing",
+                    "搜索服务", "search service", "认知搜索", "cognitive search",
+                    "搜索单元", "search units", "存储", "storage", "查询", "queries",
+                    "免费层", "free tier", "基本", "basic", "标准", "standard", "高级", "premium",
+                    "搜索单位", "search unit", "文档", "documents", "索引", "index", "索引器", "indexers",
+                    "技能集", "skillsets", "知识存储", "knowledge store", "AI充实", "ai enrichment",
+                    "语义搜索", "semantic search", "专用数据平面", "dedicated data plane",
+                    "传输中加密", "encryption in transit", "静态加密", "encryption at rest",
+                    "认知服务", "cognitive services", "文本分析", "text analytics", "翻译", "translator"
+                },
+                "css_template": "azure_search"
+            })
+            return search_config
         
         # 其他产品使用默认配置
         return default_config

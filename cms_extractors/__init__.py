@@ -14,6 +14,9 @@ from .postgresql_cms_extractor import PostgreSQLCMSExtractor
 from .anomaly_detector_extractor import AnomalyDetectorCMSExtractor
 from .pbi_embedded_extractor import PowerBIEmbeddedCMSExtractor
 from .ssis_extractor import SSISCMSExtractor
+from .entra_external_id_extractor import MicrosoftEntraExternalIDCMSExtractor
+from .cosmos_db_extractor import CosmosDBCMSExtractor
+from .search_extractor import AzureSearchCMSExtractor
 
 __all__ = [
     'BaseCMSExtractor',
@@ -26,5 +29,8 @@ __all__ = [
     'PostgreSQLCMSExtractor',
     'AnomalyDetectorCMSExtractor',
     'PowerBIEmbeddedCMSExtractor',
-    'SSISCMSExtractor'
+    'SSISCMSExtractor',
+    'MicrosoftEntraExternalIDCMSExtractor',
+    'CosmosDBCMSExtractor',
+    'AzureSearchCMSExtractor'
 ]

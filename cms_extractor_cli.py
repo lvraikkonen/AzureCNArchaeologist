@@ -41,6 +41,7 @@ def print_logo():
   │   ┌─ Supported Products ──────────────────────────────────────┐ │
   │   │  🗄️  MySQL Database    📁 Storage Files   🐘 Postgresql    │ │
   │   │  🤖  AnomalyDetector   📊 Power BI Embedded  🔧 SSIS       | |
+  │   │  🔐  Entra External ID 🌐 Cosmos DB        🔍 Search       | |
   │   └───────────────────────────────────────────────────────────┘ │
   │                                                                 │
   │   ┌─ Supported Regions ───────────────────────────────────────┐ │
@@ -71,6 +72,9 @@ try:
         AnomalyDetectorCMSExtractor,
         PowerBIEmbeddedCMSExtractor,
         SSISCMSExtractor,
+        MicrosoftEntraExternalIDCMSExtractor,
+        CosmosDBCMSExtractor,
+        AzureSearchCMSExtractor,
         ConfigManager
     )
 except ImportError as e:
@@ -128,6 +132,28 @@ class UnifiedCMSExtractor:
             "class": SSISCMSExtractor,
             "default_files": ["ssis-index.html"],
             "icon": "🔧", 
+        },
+        "microsoft-entra-external-id": {
+            "name": "Microsoft Entra External ID",
+            "display_name": "Microsoft Entra External ID",
+            "class": MicrosoftEntraExternalIDCMSExtractor,
+            "default_files": ["microsoft-entra-external-id-index.html"],
+            "icon": "🔐",
+            "has_regional_pricing": False,  # 各区统一定价，无区域差异
+        },
+        "cosmos-db": {
+            "name": "Azure Cosmos DB",
+            "display_name": "Azure Cosmos DB",
+            "class": CosmosDBCMSExtractor,
+            "default_files": ["cosmos-db-index.html"],
+            "icon": "🌐",
+        },
+        "search": {
+            "name": "Azure 认知搜索",
+            "display_name": "Azure 认知搜索",
+            "class": AzureSearchCMSExtractor,
+            "default_files": ["search-index.html"],
+            "icon": "🔍",
         }
     }
     
@@ -220,31 +246,67 @@ class UnifiedCMSExtractor:
         if not os.path.exists(html_file):
             raise FileNotFoundError(f"HTML文件不存在: {html_file}")
         
-        # 验证区域
-        supported_regions = self.config_manager.get_supported_regions()
-        invalid_regions = [r for r in regions if r not in supported_regions]
-        if invalid_regions:
-            raise ValueError(f"不支持的区域: {invalid_regions}。支持的区域: {supported_regions}")
-        
         # 获取产品信息
         product_info = self.SUPPORTED_PRODUCTS[product]
         extractor_class = product_info["class"]
         
-        print(f"\n🌍 开始批量提取 {product_info['display_name']} CMS HTML")
-        print(f"📁 源文件: {html_file}")
-        print(f"🎯 目标区域: {len(regions)} 个")
-        for region in regions:
-            print(f"   • {region} ({self.config_manager.get_region_display_name(region)})")
-        print(f"📂 输出目录: {output_dir}")
-        print("═" * 70)
+        # 检查是否有区域定价差异
+        has_regional_pricing = product_info.get("has_regional_pricing", True)
         
-        # 创建提取器实例
-        extractor = extractor_class(self.config_file, output_dir)
+        if not has_regional_pricing:
+            # 无区域差异，生成单个allregion文件
+            print(f"\n🌍 {product_info['display_name']} 使用全球统一定价")
+            print(f"📁 源文件: {html_file}")
+            print(f"📄 将生成单个HTML文件 (allregion)")
+            print(f"📂 输出目录: {output_dir}")
+            print("═" * 70)
+            
+            # 创建提取器实例
+            extractor = extractor_class(self.config_file, output_dir)
+            
+            # 生成单个allregion文件（使用第一个区域作为模板）
+            result = extractor.extract_cms_html_for_region(html_file, regions[0] if regions else "north-china")
+            
+            if result["success"]:
+                # 修改区域信息为allregion
+                result["region"] = {
+                    "id": "allregion",
+                    "name": "全球统一定价"
+                }
+                
+                # 保存文件
+                output_file = extractor.save_cms_html(result, "allregion")
+                result["output_file"] = output_file
+                
+                print(f"✅ {product_info['display_name']} 全球统一定价HTML提取完成")
+            else:
+                print(f"❌ {product_info['display_name']} 提取失败")
+            
+            return {"allregion": result}
         
-        # 执行批量提取
-        batch_results = extractor.extract_all_regions_cms(html_file, regions)
-        
-        return batch_results
+        else:
+            # 有区域差异，按现有逻辑处理
+            # 验证区域
+            supported_regions = self.config_manager.get_supported_regions()
+            invalid_regions = [r for r in regions if r not in supported_regions]
+            if invalid_regions:
+                raise ValueError(f"不支持的区域: {invalid_regions}。支持的区域: {supported_regions}")
+            
+            print(f"\n🌍 开始批量提取 {product_info['display_name']} CMS HTML")
+            print(f"📁 源文件: {html_file}")
+            print(f"🎯 目标区域: {len(regions)} 个")
+            for region in regions:
+                print(f"   • {region} ({self.config_manager.get_region_display_name(region)})")
+            print(f"📂 输出目录: {output_dir}")
+            print("═" * 70)
+            
+            # 创建提取器实例
+            extractor = extractor_class(self.config_file, output_dir)
+            
+            # 执行批量提取
+            batch_results = extractor.extract_all_regions_cms(html_file, regions)
+            
+            return batch_results
     
     def extract_multi_product(self, html_dir: str, output_base_dir: str, 
                              regions: Optional[List[str]] = None,
@@ -325,8 +387,14 @@ class UnifiedCMSExtractor:
                 }
                 
                 # 统计成功率
-                successful_regions = sum(1 for r in batch_results.values() if r.get("success", False))
-                print(f"✅ {product_info['display_name']} 完成: {successful_regions}/{len(regions)} 个区域成功")
+                if "allregion" in batch_results:
+                    # 无区域差异的产品
+                    success = batch_results["allregion"].get("success", False)
+                    print(f"✅ {product_info['display_name']} 完成: {'成功' if success else '失败'} (全球统一定价)")
+                else:
+                    # 有区域差异的产品
+                    successful_regions = sum(1 for r in batch_results.values() if r.get("success", False))
+                    print(f"✅ {product_info['display_name']} 完成: {successful_regions}/{len(regions)} 个区域成功")
                 
             except Exception as e:
                 print(f"❌ {product_info['display_name']} 处理失败: {e}")
@@ -435,6 +503,9 @@ def main():
   单产品多区域提取:
     %(prog)s storage-files prod-html/storage-files-index.html -a -o storage_output
     
+  全球统一定价产品提取:
+    %(prog)s microsoft-entra-external-id prod-html/microsoft-entra-external-id-index.html -a -o output
+    
   指定多个区域:
     %(prog)s mysql prod-html/mysql-index.html --regions north-china3 east-china2 -o output
     
@@ -446,9 +517,15 @@ def main():
     %(prog)s --list-regions
 
 🎯 支持的产品:
-  mysql        - 🗄️  Azure Database for MySQL (MySQL数据库)
-  storage-files - 📁 Azure Storage Files (文件存储)
-  postgresql   - 🐘 Azure Database for PostgreSQL (PostgreSQL数据库)
+  mysql                      - 🗄️  Azure Database for MySQL (MySQL数据库)
+  storage-files              - 📁 Azure Storage Files (文件存储)
+  postgresql                 - 🐘 Azure Database for PostgreSQL (PostgreSQL数据库)
+  anomaly-detector           - 🤖 AI异常检测器 (Anomaly Detector)
+  power-bi-embedded          - 📊 Power BI嵌入式分析 (Power BI Embedded)
+  ssis                       - 🔧 数据工厂SSIS (Data Factory SSIS)
+  microsoft-entra-external-id - 🔐 Microsoft Entra External ID
+  cosmos-db                  - 🌐 Azure Cosmos DB
+  search                     - 🔍 Azure 认知搜索 (Azure Cognitive Search)
   
 🌍 支持的区域:
   north-china, east-china, north-china2, east-china2, north-china3, east-china3
@@ -541,6 +618,15 @@ def main():
             print(f"\n🎉 多产品提取完成！")
             print(f"✅ 成功: {successful_products}/{len(products)} 个产品")
             
+            # 显示详细结果
+            for product, result in results.items():
+                if result.get("success", False):
+                    if "regions" in result and "allregion" in result["regions"]:
+                        print(f"   🔐 {product}: 全球统一定价 HTML 已生成")
+                    else:
+                        region_count = len(result.get("regions", {}))
+                        print(f"   📊 {product}: {region_count} 个区域文件已生成")
+            
             return 0
         
         # 单产品模式
@@ -559,17 +645,31 @@ def main():
             # 批量提取
             results = extractor.extract_batch(args.product, args.html_file, regions, args.output)
             
-            successful_count = sum(1 for r in results.values() if r.get("success", False))
-            print(f"\n🎉 批量提取完成！")
-            print(f"✅ 成功: {successful_count}/{len(regions)} 个区域")
+            if "allregion" in results:
+                # 无区域差异的产品
+                success = results["allregion"].get("success", False)
+                print(f"\n🎉 批量提取完成！")
+                print(f"✅ {'成功' if success else '失败'}: 全球统一定价 HTML 已生成")
+            else:
+                # 有区域差异的产品
+                successful_count = sum(1 for r in results.values() if r.get("success", False))
+                print(f"\n🎉 批量提取完成！")
+                print(f"✅ 成功: {successful_count}/{len(regions)} 个区域")
             
         elif args.regions:
             # 指定区域列表批量提取
             results = extractor.extract_batch(args.product, args.html_file, args.regions, args.output)
             
-            successful_count = sum(1 for r in results.values() if r.get("success", False))
-            print(f"\n🎉 批量提取完成！")
-            print(f"✅ 成功: {successful_count}/{len(args.regions)} 个区域")
+            if "allregion" in results:
+                # 无区域差异的产品
+                success = results["allregion"].get("success", False)
+                print(f"\n🎉 批量提取完成！")
+                print(f"✅ {'成功' if success else '失败'}: 全球统一定价 HTML 已生成")
+            else:
+                # 有区域差异的产品
+                successful_count = sum(1 for r in results.values() if r.get("success", False))
+                print(f"\n🎉 批量提取完成！")
+                print(f"✅ 成功: {successful_count}/{len(args.regions)} 个区域")
             
         elif args.region:
             # 单区域提取

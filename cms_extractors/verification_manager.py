@@ -67,6 +67,12 @@ class VerificationManager:
             verification.update(self._verify_power_bi_embedded_specific(html_content, verification_soup))
         elif "ssis" in product_name.lower() or "data factory ssis" in product_name.lower():
             verification.update(self._verify_ssis_specific(html_content, verification_soup))
+        elif "microsoft entra external id" in product_name.lower() or "entra external id" in product_name.lower():
+            verification.update(self._verify_entra_external_id_specific(html_content, verification_soup))
+        elif "cosmos db" in product_name.lower() or "cosmosdb" in product_name.lower():
+            verification.update(self._verify_cosmos_db_specific(html_content, verification_soup))
+        elif "认知搜索" in product_name or "azure search" in product_name.lower() or "cognitive search" in product_name.lower():
+            verification.update(self._verify_azure_search_specific(html_content, verification_soup))
         
         # 验证表格内容
         table_verification = verify_table_content(html_content)
@@ -523,6 +529,344 @@ class VerificationManager:
         ssis_verification["has_synapse_content"] = synapse_found
         
         return ssis_verification
+
+    def _verify_entra_external_id_specific(self, html_content: str, soup: BeautifulSoup) -> Dict[str, Any]:
+        """Microsoft Entra External ID产品特定验证"""
+        
+        entra_verification = {}
+        
+        # 检查Entra External ID特定的表格类
+        entra_tables = soup.find_all('table', class_='entra-external-id-pricing-table')
+        if not entra_tables:
+            # 检查包含entra相关ID的表格
+            entra_tables = soup.find_all('table', id=lambda x: x and 'entra' in x.lower())
+            if not entra_tables:
+                # 检查包含external-id相关ID的表格
+                entra_tables = soup.find_all('table', id=lambda x: x and 'external-id' in x.lower())
+                if not entra_tables:
+                    entra_tables = soup.find_all('table')
+        
+        entra_verification["entra_table_count"] = len(entra_tables)
+        entra_verification["has_entra_tables"] = len(entra_tables) > 0
+        
+        # 检查Entra External ID特定关键词
+        entra_keywords = [
+            'microsoft entra external id', 'entra external id', 'external id',
+            '外部身份验证', 'external authentication', '身份管理', 'identity management', 
+            '用户认证', 'user authentication', '多租户', 'multi-tenant',
+            '消费者身份', 'consumer identity', 'b2c', '企业身份', 'enterprise identity',
+            '月活跃用户', 'monthly active users', 'mau', '认证', 'authentication'
+        ]
+        found_keywords = []
+        for keyword in entra_keywords:
+            if keyword.lower() in html_content.lower():
+                found_keywords.append(keyword)
+        
+        entra_verification["entra_keywords_found"] = found_keywords
+        entra_verification["has_entra_keywords"] = len(found_keywords) > 0
+        
+        # 检查定价模式
+        pricing_models_found = []
+        pricing_models = [
+            '月活跃用户', 'monthly active users', 'mau',
+            '存储的用户对象', 'stored user objects', '免费', 'free',
+            '基础', 'basic', '标准', 'standard', '高级', 'premium'
+        ]
+        for model in pricing_models:
+            if model.lower() in html_content.lower():
+                pricing_models_found.append(model)
+        
+        entra_verification["pricing_models_found"] = list(set(pricing_models_found))
+        entra_verification["has_pricing_models"] = len(pricing_models_found) > 0
+        
+        # 检查功能特性
+        features_found = []
+        features = [
+            '自定义策略', 'custom policies', '条件访问', 'conditional access',
+            '多因素认证', 'multi-factor authentication', 'mfa',
+            '单点登录', 'single sign-on', 'sso', '社交登录', 'social login',
+            'api', '令牌', 'token', '安全', 'security'
+        ]
+        for feature in features:
+            if feature.lower() in html_content.lower():
+                features_found.append(feature)
+        
+        entra_verification["features_found"] = features_found
+        entra_verification["has_features"] = len(features_found) > 0
+        
+        # 检查用户管理相关
+        user_management = [
+            '用户', 'user', '对象', 'object', '存储', 'storage',
+            '目录', 'directory', '租户', 'tenant', '应用程序', 'application'
+        ]
+        user_mgmt_found = []
+        for term in user_management:
+            if term.lower() in html_content.lower():
+                user_mgmt_found.append(term)
+        
+        entra_verification["user_management_found"] = user_mgmt_found
+        entra_verification["has_user_management"] = len(user_mgmt_found) > 0
+        
+        # 检查价格相关信息
+        pricing_info = [
+            '￥', '¥', '/月', '月', '免费', 'free', '用户/月', '每月',
+            '50,000', '50000', '无限制', 'unlimited'
+        ]
+        pricing_found = any(info in html_content for info in pricing_info)
+        entra_verification["has_pricing_info"] = pricing_found
+        
+        # 检查FAQ主题
+        faq_topics = [
+            '身份验证', '用户管理', '安全', '集成', '许可证',
+            '限制', '配额', 'b2c', 'b2b', '自定义域'
+        ]
+        faq_found = []
+        for topic in faq_topics:
+            if topic.lower() in html_content.lower():
+                faq_found.append(topic)
+        
+        entra_verification["faq_topics_found"] = faq_found
+        entra_verification["has_faq_content"] = len(faq_found) > 0
+        
+        return entra_verification
+
+    def _verify_cosmos_db_specific(self, html_content: str, soup: BeautifulSoup) -> Dict[str, Any]:
+        """Azure Cosmos DB产品特定验证"""
+        
+        cosmos_verification = {}
+        
+        # 检查Cosmos DB特定的表格类
+        cosmos_tables = soup.find_all('table', class_='cosmos-db-pricing-table')
+        if not cosmos_tables:
+            # 检查包含cosmos相关ID的表格
+            cosmos_tables = soup.find_all('table', id=lambda x: x and 'cosmos' in x.lower())
+            if not cosmos_tables:
+                cosmos_tables = soup.find_all('table')
+        
+        cosmos_verification["cosmos_table_count"] = len(cosmos_tables)
+        cosmos_verification["has_cosmos_tables"] = len(cosmos_tables) > 0
+        
+        # 检查Cosmos DB特定关键词
+        cosmos_keywords = [
+            'cosmos db', 'cosmosdb', 'azure cosmos', 'nosql',
+            '请求单位', 'request units', 'ru', '吞吐量', 'throughput',
+            '预配吞吐量', 'provisioned throughput', '无服务器', 'serverless',
+            '自动缩放', 'autoscale', '全局分发', 'global distribution'
+        ]
+        found_keywords = []
+        for keyword in cosmos_keywords:
+            if keyword.lower() in html_content.lower():
+                found_keywords.append(keyword)
+        
+        cosmos_verification["cosmos_keywords_found"] = found_keywords
+        cosmos_verification["has_cosmos_keywords"] = len(found_keywords) > 0
+        
+        # 检查API类型
+        api_types_found = []
+        api_types = [
+            'sql api', 'mongodb api', 'cassandra api', 'gremlin api', 
+            'table api', 'core sql', 'mongo', 'cassandra', 'gremlin', 'table'
+        ]
+        for api in api_types:
+            if api.lower() in html_content.lower():
+                api_types_found.append(api)
+        
+        cosmos_verification["api_types_found"] = list(set(api_types_found))
+        cosmos_verification["has_api_types"] = len(api_types_found) > 0
+        
+        # 检查定价模式
+        pricing_models_found = []
+        pricing_models = [
+            '请求单位', 'request unit', 'ru', '预配', 'provisioned',
+            '无服务器', 'serverless', '自动缩放', 'autoscale',
+            '标准', 'standard', '预留容量', 'reserved capacity'
+        ]
+        for model in pricing_models:
+            if model.lower() in html_content.lower():
+                pricing_models_found.append(model)
+        
+        cosmos_verification["pricing_models_found"] = list(set(pricing_models_found))
+        cosmos_verification["has_pricing_models"] = len(pricing_models_found) > 0
+        
+        # 检查存储和备份
+        storage_features = [
+            '存储', 'storage', '备份', 'backup', '还原', 'restore',
+            '事务性存储', 'transactional storage', '分析存储', 'analytical storage',
+            'synapse link', '连续备份', 'continuous backup'
+        ]
+        storage_found = []
+        for feature in storage_features:
+            if feature.lower() in html_content.lower():
+                storage_found.append(feature)
+        
+        cosmos_verification["storage_features_found"] = storage_found
+        cosmos_verification["has_storage_features"] = len(storage_found) > 0
+        
+        # 检查地理分发
+        geo_features = [
+            '多区域', 'multi-region', '全局', 'global', '复制', 'replication',
+            '写入区域', 'write region', '读取区域', 'read region',
+            '一致性', 'consistency', '强一致性', 'strong consistency'
+        ]
+        geo_found = []
+        for feature in geo_features:
+            if feature.lower() in html_content.lower():
+                geo_found.append(feature)
+        
+        cosmos_verification["geo_features_found"] = geo_found
+        cosmos_verification["has_geo_features"] = len(geo_found) > 0
+        
+        # 检查价格信息
+        pricing_indicators = [
+            '￥', '¥', '/100 ru', '/ru', '每100', '每月', '/月',
+            'gb/月', '每gb', '/gb', '每秒', '/秒'
+        ]
+        pricing_found = any(indicator in html_content for indicator in pricing_indicators)
+        cosmos_verification["has_pricing_indicators"] = pricing_found
+        
+        # 检查FAQ主题
+        faq_topics = [
+            '请求单位', '吞吐量', '存储', '备份', '一致性',
+            '多区域', '计费', '限制', '配额', 'sla'
+        ]
+        faq_found = []
+        for topic in faq_topics:
+            if topic.lower() in html_content.lower():
+                faq_found.append(topic)
+        
+        cosmos_verification["faq_topics_found"] = faq_found
+        cosmos_verification["has_faq_content"] = len(faq_found) > 0
+        
+        return cosmos_verification
+
+    def _verify_azure_search_specific(self, html_content: str, soup: BeautifulSoup) -> Dict[str, Any]:
+        """Azure Search产品特定验证"""
+        
+        search_verification = {}
+        
+        # 检查Azure Search特定的表格类
+        search_tables = soup.find_all('table', class_='azure-search-pricing-table')
+        if not search_tables:
+            # 检查包含search相关ID的表格
+            search_tables = soup.find_all('table', id=lambda x: x and 'search' in x.lower())
+            if not search_tables:
+                # 检查包含cognitive相关ID的表格
+                search_tables = soup.find_all('table', id=lambda x: x and 'cognitive' in x.lower())
+                if not search_tables:
+                    search_tables = soup.find_all('table')
+        
+        search_verification["search_table_count"] = len(search_tables)
+        search_verification["has_search_tables"] = len(search_tables) > 0
+        
+        # 检查Azure Search特定关键词
+        search_keywords = [
+            'azure search', 'cognitive search', 'azure 认知搜索', '认知搜索',
+            '搜索服务', 'search service', '搜索单元', 'search units',
+            '索引', 'index', '查询', 'queries', '文档', 'documents',
+            '搜索', 'search', '全文搜索', 'full-text search'
+        ]
+        found_keywords = []
+        for keyword in search_keywords:
+            if keyword.lower() in html_content.lower():
+                found_keywords.append(keyword)
+        
+        search_verification["search_keywords_found"] = found_keywords
+        search_verification["has_search_keywords"] = len(found_keywords) > 0
+        
+        # 检查服务层级
+        service_tiers_found = []
+        service_tiers = [
+            '免费', 'free', '基本', 'basic', '标准', 'standard', 
+            '高级', 'premium', 's1', 's2', 's3', 'l1', 'l2'
+        ]
+        for tier in service_tiers:
+            if tier.lower() in html_content.lower():
+                service_tiers_found.append(tier)
+        
+        search_verification["service_tiers_found"] = list(set(service_tiers_found))
+        search_verification["has_service_tiers"] = len(service_tiers_found) > 0
+        
+        # 检查搜索功能
+        search_features = [
+            '索引器', 'indexers', '技能集', 'skillsets', '知识存储', 'knowledge store',
+            'ai充实', 'ai enrichment', '语义搜索', 'semantic search',
+            '自动完成', 'autocomplete', '建议', 'suggestions', '分面', 'facets',
+            '筛选器', 'filters', '排序', 'sorting'
+        ]
+        features_found = []
+        for feature in search_features:
+            if feature.lower() in html_content.lower():
+                features_found.append(feature)
+        
+        search_verification["search_features_found"] = features_found
+        search_verification["has_search_features"] = len(features_found) > 0
+        
+        # 检查存储和查询
+        storage_query = [
+            '存储', 'storage', '查询', 'queries', '每秒查询', 'queries per second',
+            'qps', '文档', 'documents', '索引大小', 'index size',
+            'gb存储', 'gb storage', '每月查询', 'monthly queries'
+        ]
+        storage_query_found = []
+        for item in storage_query:
+            if item.lower() in html_content.lower():
+                storage_query_found.append(item)
+        
+        search_verification["storage_query_found"] = storage_query_found
+        search_verification["has_storage_query"] = len(storage_query_found) > 0
+        
+        # 检查认知服务集成
+        cognitive_services = [
+            '认知服务', 'cognitive services', '文本分析', 'text analytics',
+            '翻译', 'translator', '计算机视觉', 'computer vision',
+            '表单识别', 'form recognizer', '自定义技能', 'custom skills',
+            'rest api', 'api调用', 'api calls'
+        ]
+        cognitive_found = []
+        for service in cognitive_services:
+            if service.lower() in html_content.lower():
+                cognitive_found.append(service)
+        
+        search_verification["cognitive_services_found"] = cognitive_found
+        search_verification["has_cognitive_services"] = len(cognitive_found) > 0
+        
+        # 检查安全功能
+        security_features = [
+            '加密', 'encryption', '传输中', 'in transit', '静态', 'at rest',
+            '专用数据平面', 'dedicated data plane', '私有终结点', 'private endpoint',
+            '网络安全', 'network security', 'ip限制', 'ip restrictions'
+        ]
+        security_found = []
+        for feature in security_features:
+            if feature.lower() in html_content.lower():
+                security_found.append(feature)
+        
+        search_verification["security_features_found"] = security_found
+        search_verification["has_security_features"] = len(security_found) > 0
+        
+        # 检查价格信息
+        pricing_indicators = [
+            '￥', '¥', '/月', '每月', '/gb', '每gb', 
+            '/搜索单元', '/search unit', '/查询', '/query',
+            '每1000', 'per 1000', '每万', 'per 10000'
+        ]
+        pricing_found = any(indicator in html_content for indicator in pricing_indicators)
+        search_verification["has_pricing_indicators"] = pricing_found
+        
+        # 检查FAQ主题
+        faq_topics = [
+            '搜索单元', '存储限制', '查询限制', '索引器', '技能集',
+            '账单', '计费', '免费层', '升级', '扩展'
+        ]
+        faq_found = []
+        for topic in faq_topics:
+            if topic.lower() in html_content.lower():
+                faq_found.append(topic)
+        
+        search_verification["faq_topics_found"] = faq_found
+        search_verification["has_faq_content"] = len(faq_found) > 0
+        
+        return search_verification
     
     def _check_content_completeness(self, verification: Dict[str, Any]) -> Dict[str, bool]:
         """检查内容完整性"""
