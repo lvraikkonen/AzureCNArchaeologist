@@ -193,37 +193,17 @@ class BaseCMSExtractor(ABC):
         return main_content
     
     def _apply_region_filtering(self, soup: BeautifulSoup, region: str) -> Tuple[int, int]:
-        """应用区域过滤"""
-        
+        """应用区域过滤 - 通过设置scroll-table div的display属性"""
+
         print(f"🔍 第二步：应用区域过滤 (区域: {region})...")
-        
-        # 统计过滤前的表格数量
-        all_tables = soup.find_all('table')
-        total_tables = len(all_tables)
-        
-        # 应用过滤
-        filtered_count = 0
-        tables_to_remove = []
-        
-        for table in all_tables:
-            table_id = table.get('id', '')
-            if table_id and self.config_manager.region_filter.should_filter_table(table_id):
-                tables_to_remove.append(table)
-                filtered_count += 1
-        
-        # 移除被过滤的表格及其标题
-        for table in tables_to_remove:
-            # 移除前面的标题（如果存在）
-            prev_sibling = table.find_previous_sibling()
-            if prev_sibling and prev_sibling.name in ['h2', 'h3', 'h4'] and prev_sibling.get('class') == ['table-title']:
-                prev_sibling.decompose()
-            
-            table.decompose()
-        
-        retained_count = total_tables - filtered_count
-        
-        print(f"  📊 过滤了 {filtered_count} 个表格，保留 {retained_count} 个表格")
-        
+
+        # 使用HTML处理器的精确过滤方法
+        filtered_count, retained_count, retained_table_ids = self.html_processor.filter_tables_precisely(
+            soup, region, self.product_name
+        )
+
+        print(f"  ✓ 过滤完成: 隐藏 {filtered_count} 个表格，显示 {retained_count} 个表格")
+
         return filtered_count, retained_count
     
     def _prepare_for_cms(self, soup: BeautifulSoup, region: str) -> BeautifulSoup:

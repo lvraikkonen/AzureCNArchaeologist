@@ -42,6 +42,7 @@ def print_logo():
   │   │  🗄️  MySQL Database    📁 Storage Files   🐘 Postgresql    │ │
   │   │  🤖  AnomalyDetector   📊 Power BI Embedded  🔧 SSIS       | |
   │   │  🔐  Entra External ID 🌐 Cosmos DB        🔍 Search       | |
+  │   │  🔗  API Management                                        | |
   │   └───────────────────────────────────────────────────────────┘ │
   │                                                                 │
   │   ┌─ Supported Regions ───────────────────────────────────────┐ │
@@ -75,6 +76,7 @@ try:
         MicrosoftEntraExternalIDCMSExtractor,
         CosmosDBCMSExtractor,
         AzureSearchCMSExtractor,
+        APIManagementCMSExtractor,
         ConfigManager
     )
 except ImportError as e:
@@ -154,6 +156,13 @@ class UnifiedCMSExtractor:
             "class": AzureSearchCMSExtractor,
             "default_files": ["search-index.html"],
             "icon": "🔍",
+        },
+        "api-management": {
+            "name": "Azure API Management",
+            "display_name": "Azure API Management",
+            "class": APIManagementCMSExtractor,
+            "default_files": ["api-management-index.html"],
+            "icon": "🔗",
         }
     }
     
@@ -286,26 +295,42 @@ class UnifiedCMSExtractor:
         
         else:
             # 有区域差异，按现有逻辑处理
-            # 验证区域
-            supported_regions = self.config_manager.get_supported_regions()
-            invalid_regions = [r for r in regions if r not in supported_regions]
-            if invalid_regions:
-                raise ValueError(f"不支持的区域: {invalid_regions}。支持的区域: {supported_regions}")
-            
+            # 创建提取器实例以获取产品名称
+            extractor = extractor_class(self.config_file, output_dir)
+            product_name = extractor.product_name
+
+            # 获取该产品实际支持的区域
+            product_supported_regions = self.config_manager.get_product_supported_regions(product_name)
+
+            if not product_supported_regions:
+                print(f"⚠️ 产品 {product_info['display_name']} 在配置中没有找到支持的区域")
+                print(f"💡 将使用所有标准区域进行处理")
+                product_supported_regions = self.config_manager.get_supported_regions()
+
+            # 过滤出该产品实际支持的区域
+            valid_regions = [r for r in regions if r in product_supported_regions]
+            unsupported_regions = [r for r in regions if r not in product_supported_regions]
+
+            if unsupported_regions:
+                print(f"⚠️ 产品 {product_info['display_name']} 不支持以下区域: {unsupported_regions}")
+                print(f"✅ 将处理支持的区域: {valid_regions}")
+
+            if not valid_regions:
+                print(f"❌ 没有找到产品 {product_info['display_name']} 支持的区域")
+                return {}
+
             print(f"\n🌍 开始批量提取 {product_info['display_name']} CMS HTML")
             print(f"📁 源文件: {html_file}")
-            print(f"🎯 目标区域: {len(regions)} 个")
-            for region in regions:
+            print(f"🎯 产品支持的区域: {len(product_supported_regions)} 个")
+            print(f"🎯 实际处理区域: {len(valid_regions)} 个")
+            for region in valid_regions:
                 print(f"   • {region} ({self.config_manager.get_region_display_name(region)})")
             print(f"📂 输出目录: {output_dir}")
             print("═" * 70)
-            
-            # 创建提取器实例
-            extractor = extractor_class(self.config_file, output_dir)
-            
-            # 执行批量提取
-            batch_results = extractor.extract_all_regions_cms(html_file, regions)
-            
+
+            # 执行批量提取（只处理支持的区域）
+            batch_results = extractor.extract_all_regions_cms(html_file, valid_regions)
+
             return batch_results
     
     def extract_multi_product(self, html_dir: str, output_base_dir: str, 
@@ -526,6 +551,7 @@ def main():
   microsoft-entra-external-id - 🔐 Microsoft Entra External ID
   cosmos-db                  - 🌐 Azure Cosmos DB
   search                     - 🔍 Azure 认知搜索 (Azure Cognitive Search)
+  api-management             - 🔗 Azure API Management (API管理)
   
 🌍 支持的区域:
   north-china, east-china, north-china2, east-china2, north-china3, east-china3

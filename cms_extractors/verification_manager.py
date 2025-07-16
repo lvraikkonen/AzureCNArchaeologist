@@ -73,6 +73,8 @@ class VerificationManager:
             verification.update(self._verify_cosmos_db_specific(html_content, verification_soup))
         elif "认知搜索" in product_name or "azure search" in product_name.lower() or "cognitive search" in product_name.lower():
             verification.update(self._verify_azure_search_specific(html_content, verification_soup))
+        elif "api management" in product_name.lower() or "api管理" in product_name or "apim" in product_name.lower():
+            verification.update(self._verify_api_management_specific(html_content, verification_soup))
         
         # 验证表格内容
         table_verification = verify_table_content(html_content)
@@ -865,9 +867,109 @@ class VerificationManager:
         
         search_verification["faq_topics_found"] = faq_found
         search_verification["has_faq_content"] = len(faq_found) > 0
-        
+
         return search_verification
-    
+
+    def _verify_api_management_specific(self, html_content: str, soup: BeautifulSoup) -> Dict[str, Any]:
+        """Azure API Management产品特定验证"""
+
+        api_management_verification = {}
+
+        # 检查API Management特定的表格类
+        api_tables = soup.find_all('table', class_='api-management-pricing-table')
+        if not api_tables:
+            # 检查包含api相关ID的表格
+            api_tables = soup.find_all('table', id=lambda x: x and 'api' in x.lower())
+            if not api_tables:
+                # 检查包含management相关ID的表格
+                api_tables = soup.find_all('table', id=lambda x: x and 'management' in x.lower())
+                if not api_tables:
+                    api_tables = soup.find_all('table')
+
+        api_management_verification["api_table_count"] = len(api_tables)
+        api_management_verification["has_api_tables"] = len(api_tables) > 0
+
+        # 检查API Management特定关键词
+        api_keywords = [
+            'api management', 'apim', 'api管理', 'api网关', 'api gateway',
+            '开发人员', 'developer', '基本', 'basic', '标准', 'standard',
+            '高级', 'premium', '消费', 'consumption', '隔离', 'isolated',
+            'api调用', 'api calls', '请求', 'requests', '吞吐量', 'throughput'
+        ]
+        found_keywords = []
+        for keyword in api_keywords:
+            if keyword.lower() in html_content.lower():
+                found_keywords.append(keyword)
+
+        api_management_verification["api_keywords_found"] = found_keywords
+        api_management_verification["has_api_keywords"] = len(found_keywords) > 0
+
+        # 检查服务层级
+        service_tiers_found = []
+        service_tiers = [
+            '开发人员', 'developer', '基本', 'basic', '标准', 'standard',
+            '高级', 'premium', '消费', 'consumption', '隔离', 'isolated'
+        ]
+        for tier in service_tiers:
+            if tier.lower() in html_content.lower():
+                service_tiers_found.append(tier)
+
+        api_management_verification["service_tiers_found"] = list(set(service_tiers_found))
+        api_management_verification["has_service_tiers"] = len(service_tiers_found) > 0
+
+        # 检查API Management功能
+        api_features = [
+            '网关', 'gateway', '门户', 'portal', '开发人员门户', 'developer portal',
+            '策略', 'policies', '转换', 'transformations', '缓存', 'caching',
+            '分析', 'analytics', '监视', 'monitoring', '日志记录', 'logging',
+            '安全', 'security', '身份验证', 'authentication', '授权', 'authorization'
+        ]
+        features_found = []
+        for feature in api_features:
+            if feature.lower() in html_content.lower():
+                features_found.append(feature)
+
+        api_management_verification["api_features_found"] = features_found
+        api_management_verification["has_api_features"] = len(features_found) > 0
+
+        # 检查安全功能
+        security_features = [
+            'oauth', 'jwt', '证书', 'certificates', 'ip筛选', 'ip filtering',
+            '虚拟网络', 'virtual network', 'vnet', '专用终结点', 'private endpoint',
+            '多区域', 'multi-region', '可用性区域', 'availability zones'
+        ]
+        security_found = []
+        for feature in security_features:
+            if feature.lower() in html_content.lower():
+                security_found.append(feature)
+
+        api_management_verification["security_features_found"] = security_found
+        api_management_verification["has_security_features"] = len(security_found) > 0
+
+        # 检查价格信息
+        pricing_indicators = [
+            '￥', '¥', '/月', '每月', '/调用', '每调用',
+            '/api', '每api', '/请求', '每请求',
+            '每1000', 'per 1000', '每万', 'per 10000'
+        ]
+        pricing_found = any(indicator in html_content for indicator in pricing_indicators)
+        api_management_verification["has_pricing_indicators"] = pricing_found
+
+        # 检查FAQ主题
+        faq_topics = [
+            'api调用', '请求限制', '吞吐量', '网关', '门户',
+            '账单', '计费', '免费层', '升级', '扩展'
+        ]
+        faq_found = []
+        for topic in faq_topics:
+            if topic.lower() in html_content.lower():
+                faq_found.append(topic)
+
+        api_management_verification["faq_topics_found"] = faq_found
+        api_management_verification["has_faq_content"] = len(faq_found) > 0
+
+        return api_management_verification
+
     def _check_content_completeness(self, verification: Dict[str, Any]) -> Dict[str, bool]:
         """检查内容完整性"""
         

@@ -67,6 +67,21 @@ class ConfigManager:
     def get_region_display_name(self, region: str) -> str:
         """获取区域显示名称"""
         return self.region_names.get(region, region)
+
+    def get_product_supported_regions(self, product_name: str) -> list:
+        """获取特定产品支持的区域列表"""
+        try:
+            # 从region_filter中获取产品配置
+            product_config = self.region_filter.region_filter_config.get(product_name, {})
+            supported_regions = list(product_config.keys())
+
+            # 只返回在标准区域映射中存在的区域
+            valid_regions = [region for region in supported_regions if region in self.region_names]
+
+            return sorted(valid_regions)
+        except Exception as e:
+            print(f"⚠ 获取产品支持区域失败 ({product_name}): {e}")
+            return []
     
     def get_product_config(self, product_name: str) -> Dict:
         """

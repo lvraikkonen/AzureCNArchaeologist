@@ -366,3 +366,117 @@ class HTMLProcessor:
         except Exception as e:
             print(f"    ⚠ 创建简化元素失败: {e}")
             return None
+
+    def filter_tables_precisely(self, soup: BeautifulSoup, region: str,
+                               product: str = "Azure Database for MySQL"):
+        """精确过滤表格，移除不需要的表格及其容器"""
+        from typing import Tuple, List
+
+        if not self.region_filter:
+            return 0, 0, []
+
+        self.region_filter.set_active_region(region, product)
+
+        all_tables = soup.find_all('table')
+        total_tables = len(all_tables)
+
+        print(f"📊 开始精确表格过滤: 总计{total_tables}个表格")
+
+        # 先标记要移除的表格，不要立即删除
+        tables_to_remove = []
+        retained_table_ids = []
+
+        for table in all_tables:
+            table_id = table.get('id', '')
+
+            if self.region_filter.should_filter_table(table_id):
+                tables_to_remove.append(table)
+                print(f"  ✗ 标记过滤: {table_id}")
+            else:
+                if table_id:
+                    retained_table_ids.append(table_id)
+                print(f"  ✓ 保留表格: {table_id} (行数: {len(table.find_all('tr'))})")
+
+        # 批量移除标记的表格及其scroll-table容器
+        for table in tables_to_remove:
+            self._remove_table_and_scroll_container(table)
+
+        filtered_count = len(tables_to_remove)
+        retained_count = total_tables - filtered_count
+
+        print(f"📊 表格过滤完成: 过滤{filtered_count}个，保留{retained_count}个")
+
+        # 验证保留的表格内容完整性
+        remaining_tables = soup.find_all('table')
+        print(f"🔍 验证: 实际保留{len(remaining_tables)}个表格")
+        for table in remaining_tables:
+            table_id = table.get('id', 'no-id')
+            row_count = len(table.find_all('tr'))
+            print(f"  📋 {table_id}: {row_count}行数据")
+
+        return filtered_count, retained_count, retained_table_ids
+
+    def _find_scroll_table_container(self, table: Tag) -> Optional[Tag]:
+        """查找包含表格的scroll-table div容器"""
+        current = table.parent
+
+        # 向上查找最多5层，寻找scroll-table div
+        for _ in range(5):
+            if not current:
+                break
+
+            if (current.name == 'div' and
+                current.get('class') and
+                'scroll-table' in current.get('class')):
+                return current
+
+            current = current.parent
+
+        return None
+
+    def _remove_table_and_scroll_container(self, table: Tag):
+        """移除表格及其scroll-table容器"""
+        # 首先尝试找到scroll-table容器
+        scroll_container = self._find_scroll_table_container(table)
+
+        if scroll_container:
+            # 如果找到scroll-table容器，移除整个容器
+            print(f"    🗑️ 移除scroll-table容器及其内容: {table.get('id', 'no-id')}")
+            scroll_container.decompose()
+        else:
+            # 如果没有scroll-table容器，使用原来的方法移除表格和上下文
+            print(f"    🗑️ 移除表格及上下文: {table.get('id', 'no-id')}")
+            self._remove_table_and_context(table)
+
+    def _remove_table_and_context(self, table: Tag):
+        """移除表格及其上下文，但要谨慎处理"""
+        elements_to_remove = [table]
+
+        # 向前查找可能的相关标题
+        current = table.previous_sibling
+        search_count = 0
+
+        while current and search_count < 3:  # 限制搜索范围
+            if isinstance(current, Tag):
+                if current.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
+                    title_text = current.get_text(strip=True).lower()
+                    # 只移除明显相关的标题
+                    if len(title_text) < 50 and any(
+                        keyword in title_text for keyword in ['系列', '层级', 'tier']
+                    ):
+                        elements_to_remove.insert(0, current)
+                elif current.name == 'p':
+                    p_text = current.get_text(strip=True)
+                    # 只移除很短的描述性段落
+                    if len(p_text) < 100:
+                        elements_to_remove.insert(0, current)
+                    else:
+                        break  # 长段落很可能是重要内容
+                elif current.name == 'table':
+                    break  # 遇到其他表格，停止
+                search_count += 1
+            current = current.previous_sibling
+
+        # 移除所有标记的元素
+        for element in elements_to_remove:
+            element.decompose()

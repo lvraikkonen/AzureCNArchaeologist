@@ -478,6 +478,43 @@
     ]
   },
   {
+    "os": "API Management",
+    "region": "north-china",
+    "tableIDs": [
+      "#API-Management-preview",
+      "#API-Management-gateway"
+    ]
+  },
+  {
+    "os": "API Management",
+    "region": "east-china",
+    "tableIDs": [
+      "#API-Management-preview",
+      "#API-Management-gateway"
+    ]
+  },
+  {
+    "os": "API Management",
+    "region": "north-china2",
+    "tableIDs": [
+      "#API-Management-preview2"
+    ]
+  },
+  {
+    "os": "API Management",
+    "region": "east-china2",
+    "tableIDs": [
+      "#API-Management-preview2"
+    ]
+  },
+  {
+    "os": "API Management",
+    "region": "north-china3",
+    "tableIDs": [
+      "#API-Management-preview2"
+    ]
+  },
+  {
     "os": "Azure Cosmos DB",
     "region": "east-china3",
     "tableIDs": [

@@ -17,10 +17,11 @@ from .ssis_extractor import SSISCMSExtractor
 from .entra_external_id_extractor import MicrosoftEntraExternalIDCMSExtractor
 from .cosmos_db_extractor import CosmosDBCMSExtractor
 from .search_extractor import AzureSearchCMSExtractor
+from .api_management_extractor import APIManagementCMSExtractor
 
 __all__ = [
     'BaseCMSExtractor',
-    'HTMLProcessor', 
+    'HTMLProcessor',
     'ContentExtractor',
     'VerificationManager',
     'ConfigManager',
@@ -32,5 +33,6 @@ __all__ = [
     'SSISCMSExtractor',
     'MicrosoftEntraExternalIDCMSExtractor',
     'CosmosDBCMSExtractor',
-    'AzureSearchCMSExtractor'
+    'AzureSearchCMSExtractor',
+    'APIManagementCMSExtractor'
 ]
