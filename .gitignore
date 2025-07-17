@@ -1,6 +1,7 @@
 *.xlsx
-*.json
+# *.json
 
+.claude
 __pycache__
 
 output

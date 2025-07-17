@@ -79,6 +79,7 @@ try:
         APIManagementCMSExtractor,
         ConfigManager
     )
+    from cms_extractors.enhanced_cms_extractor import EnhancedCMSExtractor
 except ImportError as e:
     print_logo()
     print(f"❌ 模块导入失败: {e}")
@@ -537,6 +538,10 @@ def main():
   多产品批量提取:
     %(prog)s --multi-product -i prod-html -o multi_output
     
+  增强型CMS JSON导出 (新功能):
+    %(prog)s mysql prod-html/mysql-index.html --export-json --url https://www.azure.cn/pricing/details/mysql/
+    %(prog)s --multi-product -i prod-html --export-json --json-output-dir json_output
+    
   列出支持的产品和区域:
     %(prog)s --list-products
     %(prog)s --list-regions
@@ -583,6 +588,11 @@ def main():
     # 信息查询
     parser.add_argument("--list-products", action="store_true", help="列出支持的产品")
     parser.add_argument("--list-regions", action="store_true", help="列出支持的区域")
+    
+    # 增强型CMS JSON导出
+    parser.add_argument("--export-json", action="store_true", help="导出增强型CMS JSON格式（包含Banner、Q&A、各区域内容等模块）")
+    parser.add_argument("--url", help="页面URL（用于提取slug，JSON导出模式）")
+    parser.add_argument("--json-output-dir", default="enhanced_cms_output", help="JSON输出目录（默认: enhanced_cms_output）")
     
     args = parser.parse_args()
     
@@ -655,6 +665,10 @@ def main():
             
             return 0
         
+        # 检查是否使用增强型JSON导出
+        if args.export_json:
+            return handle_enhanced_json_export(args)
+        
         # 单产品模式
         if not args.product:
             print("❌ 请指定产品类型，或使用 --multi-product 进行多产品提取")
@@ -724,6 +738,163 @@ def main():
         import traceback
         traceback.print_exc()
         return 1
+
+
+def handle_enhanced_json_export(args):
+    """处理增强型JSON导出功能"""
+    
+    print("\n🆕 增强型CMS JSON导出模式")
+    print("📋 导出内容: Banner、描述、Q&A、各区域内容、元数据等")
+    print("═" * 70)
+    
+    # 创建增强型提取器
+    enhanced_extractor = EnhancedCMSExtractor(output_dir=args.json_output_dir)
+    
+    if args.multi_product:
+        # 多产品JSON导出
+        if not args.input_dir:
+            print("❌ 多产品模式需要指定输入目录 (-i/--input-dir)")
+            return 1
+        
+        if not os.path.exists(args.input_dir):
+            print(f"❌ 输入目录不存在: {args.input_dir}")
+            return 1
+        
+        print(f"🔧 批量处理目录: {args.input_dir}")
+        print(f"📁 JSON输出目录: {args.json_output_dir}")
+        
+        # 获取所有HTML文件
+        html_files = []
+        for filename in os.listdir(args.input_dir):
+            if filename.endswith('.html'):
+                html_files.append(os.path.join(args.input_dir, filename))
+        
+        if not html_files:
+            print(f"❌ 在目录 {args.input_dir} 中未找到HTML文件")
+            return 1
+        
+        print(f"📊 找到 {len(html_files)} 个HTML文件")
+        
+        successful_count = 0
+        failed_files = []
+        
+        for i, html_file in enumerate(html_files, 1):
+            print(f"\n处理文件 {i}/{len(html_files)}: {os.path.basename(html_file)}")
+            
+            try:
+                # 生成URL（如果可以推断的话）
+                url = generate_url_from_filename(html_file) if not args.url else args.url
+                
+                # 生成输出文件名
+                file_stem = Path(html_file).stem
+                output_filename = f"{file_stem}_enhanced_cms.json"
+                
+                # 提取内容
+                content = enhanced_extractor.process_html_file(
+                    html_file_path=html_file,
+                    url=url,
+                    output_filename=output_filename
+                )
+                
+                if "error" in content:
+                    print(f"❌ 提取失败: {content['error']}")
+                    failed_files.append(html_file)
+                else:
+                    print(f"✅ 提取成功！")
+                    successful_count += 1
+                    print_json_export_summary(content)
+                    
+            except Exception as e:
+                print(f"❌ 处理异常: {e}")
+                failed_files.append(html_file)
+        
+        # 批量处理总结
+        print(f"\n📊 批量JSON导出完成:")
+        print(f"✅ 成功: {successful_count} 个文件")
+        print(f"❌ 失败: {len(failed_files)} 个文件")
+        
+        if failed_files:
+            print(f"\n失败文件列表:")
+            for file in failed_files:
+                print(f"  - {os.path.basename(file)}")
+        
+        return 0 if successful_count > 0 else 1
+    
+    else:
+        # 单文件JSON导出
+        if not args.product:
+            print("❌ 请指定产品类型或使用 --multi-product 进行批量导出")
+            return 1
+        
+        if not args.html_file:
+            print("❌ 请指定HTML源文件路径")
+            return 1
+        
+        if not os.path.exists(args.html_file):
+            print(f"❌ 文件不存在: {args.html_file}")
+            return 1
+        
+        print(f"🔧 处理单个文件: {args.html_file}")
+        
+        # 提取内容
+        content = enhanced_extractor.process_html_file(
+            html_file_path=args.html_file,
+            url=args.url or "",
+            output_filename=args.filename or ""
+        )
+        
+        if "error" in content:
+            print(f"❌ 提取失败: {content['error']}")
+            return 1
+        else:
+            print(f"✅ 提取成功！")
+            print_json_export_summary(content)
+            return 0
+
+
+def generate_url_from_filename(html_file):
+    """根据文件名生成可能的URL"""
+    
+    filename = os.path.basename(html_file)
+    
+    # 移除-index.html后缀
+    if filename.endswith('-index.html'):
+        slug = filename.replace('-index.html', '')
+        return f"https://www.azure.cn/pricing/details/{slug}/"
+    
+    return ""
+
+
+def print_json_export_summary(content):
+    """打印JSON导出摘要"""
+    
+    print(f"\n📋 JSON导出摘要:")
+    print(f"  标题: {content.get('Title', 'N/A')}")
+    print(f"  语言: {content.get('Language', 'N/A')}")
+    print(f"  Slug: {content.get('Slug', 'N/A')}")
+    print(f"  包含区域: {content.get('HasRegion', False)}")
+    
+    # 内容长度统计
+    content_stats = {
+        'Banner': len(content.get('BannerContent', '')),
+        'Description': len(content.get('DescriptionContent', '')),
+        'Q&A': len(content.get('QaContent', '')),
+        'NoRegion': len(content.get('NoRegionContent', ''))
+    }
+    
+    # 区域内容统计
+    region_keys = ['NorthChinaContent', 'NorthChina2Content', 'NorthChina3Content', 
+                   'EastChinaContent', 'EastChina2Content', 'EastChina3Content']
+    
+    for key in region_keys:
+        if key in content:
+            region_name = key.replace('Content', '')
+            content_stats[region_name] = len(content.get(key, ''))
+    
+    print(f"\n📊 内容长度统计:")
+    for section, length in content_stats.items():
+        if length > 0:
+            print(f"  {section}: {length:,} 字符")
 
 
 if __name__ == "__main__":
