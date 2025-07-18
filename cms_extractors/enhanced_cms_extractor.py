@@ -202,6 +202,7 @@ class EnhancedCMSExtractor:
                 "Title": self._extract_title(processed_soup),
                 "MetaDescription": self._extract_meta_description(processed_soup),
                 "MetaKeywords": self._extract_meta_keywords(processed_soup),
+                "MSServiceName": self._extract_ms_service_name(processed_soup),
                 "Slug": self._extract_slug(url),
                 "DescriptionContent": self._extract_description_content(processed_soup),
                 "Language": self._detect_language(processed_soup),
@@ -326,6 +327,31 @@ class EnhancedCMSExtractor:
         meta_keywords = soup.find('meta', attrs={'name': 'keywords'})
         if meta_keywords:
             return meta_keywords.get('content', '')
+        return ""
+    
+    def _extract_ms_service_name(self, soup: BeautifulSoup) -> str:
+        """提取MSServiceName字段，从pure-content div内的tags元素中的ms.service属性"""
+        
+        print("🏷️ 提取MSServiceName...")
+        
+        # 查找pure-content div
+        pure_content_div = soup.find('div', class_='pure-content')
+        if pure_content_div:
+            # 在pure-content div内查找tags元素
+            tags_element = pure_content_div.find('tags')
+            if tags_element:
+                # 提取ms.service属性值
+                ms_service = tags_element.get('ms.service', '')
+                if ms_service:
+                    print(f"  ✓ 找到MSServiceName: {ms_service}")
+                    return ms_service
+                else:
+                    print("  ⚠ tags元素中没有ms.service属性")
+            else:
+                print("  ⚠ pure-content div中没有找到tags元素")
+        else:
+            print("  ⚠ 没有找到pure-content div")
+        
         return ""
     
     def _extract_slug(self, url: str) -> str:
