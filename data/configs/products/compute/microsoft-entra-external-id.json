@@ -1,0 +1,30 @@
+{
+  "display_name": "Microsoft Entra External ID",
+  "filename": "microsoft-entra-external-id-index.html", 
+  "url": "https://www.azure.cn/pricing/details/entra-external-id/",
+  "slug": "microsoft-entra-external-id",
+  "category": "compute",
+  "created_at": "2025-07-22",
+
+  "important_section_titles": [
+    "定价详细信息", "定价详情", "pricing details",
+    "常见问题", "faq", "frequently asked questions",
+    "entra", "external id", "identity"
+  ],
+
+  "html_processing": {
+    "type": "normal",
+    "estimated_size_mb": 0.5,
+    "processing_strategy": "standard"
+  },
+
+  "extraction_config": {
+    "priority_sections": ["pricing-tables", "banner", "description"],
+    "enable_region_processing": true
+  },
+
+  "validation_rules": {
+    "required_fields": ["Title", "BannerContent", "DescriptionContent"],
+    "min_content_length": 100
+  }
+}

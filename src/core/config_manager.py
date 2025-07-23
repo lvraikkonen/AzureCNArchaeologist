@@ -1,602 +1,73 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-配置管理器模块
-提供配置文件管理和区域过滤功能
+配置管理器
+简化版配置管理，保留现有接口的兼容性
 """
 
 import json
-from typing import Dict, Set
-
-try:
-    from utils.enhanced_html_processor import RegionFilterProcessor
-except ImportError:
-    class RegionFilterProcessor:
-        """备用区域过滤器"""
-        def __init__(self, config_file: str):
-            self.config_file = config_file
-            
-        def set_active_region(self, region: str, product: str):
-            pass
-            
-        def should_filter_table(self, table_id: str) -> bool:
-            return False
+import os
+from pathlib import Path
+from typing import Dict, List, Any, Optional
 
 
 class ConfigManager:
-    """配置管理器 - 负责配置文件管理和区域设置"""
-    
-    def __init__(self, config_file: str = "soft-category.json"):
-        """
-        初始化配置管理器
-        
-        Args:
-            config_file: 配置文件路径
-        """
-        self.config_file = config_file
-        
-        # 标准区域映射
-        self.region_names = {
-            "north-china": "中国北部",
-            "east-china": "中国东部",
-            "north-china2": "中国北部2", 
-            "east-china2": "中国东部2",
-            "north-china3": "中国北部3",
-            "east-china3": "中国东部3",
-            "allregion": "全球统一定价"  # 添加allregion支持
-        }
-        
-        # 初始化区域过滤器
-        self.region_filter = RegionFilterProcessor(config_file)
-        
-        # 产品特定配置缓存
-        self._product_configs = {}
-    
-    def get_region_names(self) -> Dict[str, str]:
-        """获取区域名称映射"""
-        return self.region_names.copy()
-    
-    def get_supported_regions(self) -> list:
-        """获取支持的区域列表"""
-        return list(self.region_names.keys())
-    
-    def is_valid_region(self, region: str) -> bool:
-        """检查区域是否有效"""
-        return region in self.region_names
-    
-    def get_region_display_name(self, region: str) -> str:
-        """获取区域显示名称"""
-        return self.region_names.get(region, region)
+    """简化的配置管理器，保持向后兼容"""
 
-    def get_product_supported_regions(self, product_name: str) -> list:
-        """获取特定产品支持的区域列表"""
-        try:
-            # 从region_filter中获取产品配置
-            product_config = self.region_filter.region_filter_config.get(product_name, {})
-            supported_regions = list(product_config.keys())
+    def __init__(self, config_dir: str = "data/configs"):
+        self.config_dir = Path(config_dir)
+        self.soft_category_file = self.config_dir / "soft-category.json"
+        self.soft_category_config = None
+        
+        print(f"✓ 配置管理器初始化完成")
+        print(f"📁 配置目录: {self.config_dir}")
 
-            # 只返回在标准区域映射中存在的区域
-            valid_regions = [region for region in supported_regions if region in self.region_names]
+    def load_soft_category_config(self) -> Dict[str, Any]:
+        """加载软件分类配置（保持兼容性）"""
+        if self.soft_category_config is None:
+            if self.soft_category_file.exists():
+                try:
+                    with open(self.soft_category_file, 'r', encoding='utf-8') as f:
+                        self.soft_category_config = json.load(f)
+                    print(f"📋 加载软件分类配置: {len(self.soft_category_config)} 项")
+                except Exception as e:
+                    print(f"⚠ 加载软件分类配置失败: {e}")
+                    self.soft_category_config = {}
+            else:
+                print(f"⚠ 软件分类配置文件不存在: {self.soft_category_file}")
+                self.soft_category_config = {}
+        
+        return self.soft_category_config
 
-            return sorted(valid_regions)
-        except Exception as e:
-            print(f"⚠ 获取产品支持区域失败 ({product_name}): {e}")
-            return []
-    
-    def get_product_config(self, product_name: str) -> Dict:
-        """
-        获取产品特定配置
-        
-        Args:
-            product_name: 产品名称
-            
-        Returns:
-            产品配置字典
-        """
-        
-        if product_name not in self._product_configs:
-            self._product_configs[product_name] = self._load_product_config(product_name)
-        
-        return self._product_configs[product_name]
-    
-    def _load_product_config(self, product_name: str) -> Dict:
-        """
-        加载产品特定配置
-        
-        Args:
-            product_name: 产品名称
-            
-        Returns:
-            产品配置字典
-        """
-        
-        # 默认配置
-        default_config = {
-            "table_class": "pricing-table",
-            "important_section_titles": set(),
-            "css_template": "default",
-            "extraction_options": {
-                "preserve_links": True,
-                "simplify_structure": True,
-                "remove_empty_containers": True
-            }
-        }
-        
-        # MySQL特定配置
-        if "mysql" in product_name.lower():
-            mysql_config = default_config.copy()
-            mysql_config.update({
-                "table_class": "pricing-table",
-                "important_section_titles": {
-                    "定价详细信息", "定价详情", "pricing details",
-                    "常见问题", "faq", "frequently asked questions",
-                    "服务层", "service tier", "性能层", "performance tier"
-                },
-                "css_template": "mysql"
-            })
-            return mysql_config
-        
-        # Azure Storage Files特定配置
-        elif "storage" in product_name.lower() and "files" in product_name.lower():
-            storage_config = default_config.copy()
-            storage_config.update({
-                "table_class": "storage-files-pricing-table",
-                "important_section_titles": {
-                    "定价详细信息", "定价详情", "pricing details",
-                    "了解存储选项", "存储选项", "storage options",
-                    "数据存储价格", "存储价格", "data storage pricing", "storage pricing",
-                    "事务和数据传输价格", "事务价格", "transaction pricing", "数据传输价格",
-                    "文件同步价格", "同步价格", "file sync pricing",
-                    "常见问题", "faq", "frequently asked questions",
-                    # 存储冗余类型标题
-                    "lrs", "grs", "zrs", "ragrs", "gzrs", "ra-grs",
-                    "本地冗余存储", "地理冗余存储", "区域冗余存储", 
-                    "读取访问地理冗余存储", "地理区域冗余存储"
-                },
-                "css_template": "storage_files"
-            })
-            return storage_config
-        
-        # PostgreSQL特定配置
-        elif "postgresql" in product_name.lower():
-            postgresql_config = default_config.copy()
-            postgresql_config.update({
-                "table_class": "postgresql-pricing-table",
-                "important_section_titles": {
-                    "定价详细信息", "定价详情", "pricing details",
-                    "常见问题", "faq", "frequently asked questions",
-                    "服务层", "service tier", "性能层", "performance tier",
-                    "支持和服务级别协议", "support", "sla", "service level agreement",
-                    # PostgreSQL特有的
-                    "单个服务器", "single server", "灵活服务器", "flexible server",
-                    "可突发", "burstable", "常规用途", "general purpose", 
-                    "内存优化", "memory optimized", "基本", "basic",
-                    "计算", "compute", "存储", "storage", "备份", "backup",
-                    "Gen 5", "第五代计算", "Dsv3", "Ddsv4", "Ddsv5", "Esv3", "Edsv4", "Edsv5"
-                },
-                "css_template": "postgresql"
-            })
-            return postgresql_config
-        
-        # Anomaly Detector特定配置
-        elif "异常检测" in product_name or "anomaly detector" in product_name.lower():
-            anomaly_detector_config = default_config.copy()
-            anomaly_detector_config.update({
-                "table_class": "anomaly-detector-pricing-table",
-                "important_section_titles": {
-                    "定价详细信息", "定价详情", "pricing details",
-                    "常见问题", "faq", "frequently asked questions",
-                    "支持和服务级别协议", "support", "sla", "service level agreement",
-                    # Anomaly Detector特有的
-                    "AI异常检测器定价", "anomaly detector pricing",
-                    "免费实例", "free tier", "标准实例", "standard tier",
-                    "事务", "transaction", "时序数据", "time series",
-                    "异常检测", "anomaly detection", "数据点", "data points",
-                    "常规", "general", "软件保障", "software assurance"
-                },
-                "css_template": "anomaly_detector"
-            })
-            return anomaly_detector_config
-        
-        # Power BI Embedded特定配置
-        elif "power bi embedded" in product_name.lower():
-            power_bi_config = default_config.copy()
-            power_bi_config.update({
-                "table_class": "power-bi-embedded-pricing-table",
-                "important_section_titles": {
-                    "定价详细信息", "定价详情", "pricing details",
-                    "常见问题", "faq", "frequently asked questions",
-                    "支持和服务级别协议", "support", "sla", "service level agreement",
-                    # Power BI Embedded特有的
-                    "节点类型", "node type", "虚拟内核", "virtual core", "v核心",
-                    "内存", "memory", "ram", "前端", "后端", "frontend", "backend",
-                    "专用容量", "dedicated capacity", "峰值呈现", "peak rendering",
-                    "嵌入", "embedded", "仪表板", "dashboard", "报表", "report",
-                    "可视化", "visualization", "数据分析", "data analysis"
-                },
-                "css_template": "power_bi_embedded"
-            })
-            return power_bi_config
-        
-        # SSIS特定配置
-        elif "ssis" in product_name.lower() or "data factory ssis" in product_name.lower():
-            ssis_config = default_config.copy()
-            ssis_config.update({
-                "table_class": "ssis-pricing-table",
-                "important_section_titles": {
-                    "定价详细信息", "定价详情", "pricing details",
-                    "常见问题", "faq", "frequently asked questions",
-                    "支持和服务级别协议", "support", "sla", "service level agreement",
-                    # SSIS特有的
-                    "sql server integration services", "ssis", "数据工厂",
-                    "integration runtime", "集成运行时", "标准", "standard", "企业", "enterprise",
-                    "虚拟机", "virtual machine", "vm", "av2", "dv2", "dv3", "ev3", "ev4",
-                    "azure混合优惠", "azure hybrid benefit", "混合权益", "软件保障", "software assurance",
-                    "许可证", "license", "vcore", "虚拟核心", "内存", "memory", "临时存储", "temp storage",
-                    "etl", "数据集成", "data integration", "云托管", "cloud hosted"
-                },
-                "css_template": "ssis"
-            })
-            return ssis_config
-        
-        # Microsoft Entra External ID特定配置
-        elif "microsoft entra external id" in product_name.lower() or "entra external id" in product_name.lower():
-            entra_config = default_config.copy()
-            entra_config.update({
-                "table_class": "entra-external-id-pricing-table",
-                "important_section_titles": {
-                    "定价详细信息", "定价详情", "pricing details",
-                    "常见问题", "faq", "frequently asked questions",
-                    "支持和服务级别协议", "support", "sla", "service level agreement",
-                    # Microsoft Entra External ID特有的
-                    "Microsoft Entra External ID定价", "entra external id pricing",
-                    "外部身份验证", "external authentication", "身份管理", "identity management", 
-                    "用户认证", "user authentication", "多租户", "multi-tenant",
-                    "消费者身份", "consumer identity", "B2C", "企业身份", "enterprise identity",
-                    "月活跃用户", "monthly active users", "MAU", "存储的用户对象", "stored user objects",
-                    "高级功能", "premium features", "基础", "basic", "标准", "standard",
-                    "自定义策略", "custom policies", "条件访问", "conditional access"
-                },
-                "css_template": "entra_external_id"
-            })
-            return entra_config
-        
-        # Azure Cosmos DB特定配置
-        elif "cosmos db" in product_name.lower() or "cosmosdb" in product_name.lower():
-            cosmos_config = default_config.copy()
-            cosmos_config.update({
-                "table_class": "cosmos-db-pricing-table",
-                "important_section_titles": {
-                    "定价详细信息", "定价详情", "pricing details",
-                    "常见问题", "faq", "frequently asked questions",
-                    "支持和服务级别协议", "support", "sla", "service level agreement",
-                    # Cosmos DB特有的
-                    "Azure Cosmos DB定价", "cosmos db pricing", "cosmosdb pricing",
-                    "请求单位", "request units", "ru", "吞吐量", "throughput",
-                    "预配吞吐量", "provisioned throughput", "无服务器", "serverless",
-                    "自动缩放", "autoscale", "标准", "standard", "预留容量", "reserved capacity",
-                    "多区域写入", "multi-region writes", "多主数据库", "multi-master",
-                    "存储", "storage", "备份", "backup", "还原", "restore",
-                    "SQL API", "MongoDB API", "Cassandra API", "Gremlin API", "Table API",
-                    "分析存储", "analytical storage", "Synapse Link", "全局分发", "global distribution",
-                    "专用网关", "dedicated gateway", "计算", "compute", "事务", "transaction"
-                },
-                "css_template": "cosmos_db"
-            })
-            return cosmos_config
-        
-        # Azure Search特定配置
-        elif "认知搜索" in product_name or "azure search" in product_name.lower() or "cognitive search" in product_name.lower():
-            search_config = default_config.copy()
-            search_config.update({
-                "table_class": "azure-search-pricing-table",
-                "important_section_titles": {
-                    "定价详细信息", "定价详情", "pricing details",
-                    "常见问题", "faq", "frequently asked questions",
-                    "支持和服务级别协议", "support", "sla", "service level agreement",
-                    # Azure Search特有的
-                    "Azure 认知搜索定价", "azure cognitive search pricing", "search pricing",
-                    "搜索服务", "search service", "认知搜索", "cognitive search",
-                    "搜索单元", "search units", "存储", "storage", "查询", "queries",
-                    "免费层", "free tier", "基本", "basic", "标准", "standard", "高级", "premium",
-                    "搜索单位", "search unit", "文档", "documents", "索引", "index", "索引器", "indexers",
-                    "技能集", "skillsets", "知识存储", "knowledge store", "AI充实", "ai enrichment",
-                    "语义搜索", "semantic search", "专用数据平面", "dedicated data plane",
-                    "传输中加密", "encryption in transit", "静态加密", "encryption at rest",
-                    "认知服务", "cognitive services", "文本分析", "text analytics", "翻译", "translator"
-                },
-                "css_template": "azure_search"
-            })
-            return search_config
-        
-        # 其他产品使用默认配置
-        return default_config
-    
-    def get_css_template(self, product_name: str, region_name: str) -> str:
-        """
-        获取产品特定的CSS模板
-        
-        Args:
-            product_name: 产品名称
-            region_name: 区域名称
-            
-        Returns:
-            CSS样式字符串
-        """
-        
-        config = self.get_product_config(product_name)
-        template_type = config.get("css_template", "default")
-        
-        # 基础样式
-        base_styles = """
-        /* CMS友好的基础样式 */
-        .product-banner {
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background-color: #f8f9fa;
-            border-left: 4px solid #0078d4;
-        }
-        
-        .product-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: #0078d4;
-        }
-        
-        .product-description {
-            color: #666;
-            line-height: 1.5;
-        }
-        
-        .region-info {
-            background-color: #e7f3ff;
-            padding: 0.5rem 1rem;
-            margin-bottom: 1rem;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            color: #0078d4;
-        }
-        
-        .pricing-content {
-            margin-bottom: 2rem;
-        }
-        
-        .table-title {
-            font-size: 1.2rem;
-            margin: 1.5rem 0 0.5rem 0;
-            color: #333;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 0.5rem;
-        }"""
-        
-        # MySQL特定样式
-        if template_type == "mysql":
-            table_class = config.get("table_class", "pricing-table")
-            return base_styles + f"""
-        
-        .{table_class} {{
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1.5rem;
-            background-color: white;
-        }}
-        
-        .{table_class} th,
-        .{table_class} td {{
-            border: 1px solid #ddd;
-            padding: 0.75rem;
-            text-align: left;
-        }}
-        
-        .{table_class} th {{
-            background-color: #f8f9fa;
-            font-weight: bold;
-            color: #333;
-        }}
-        
-        .{table_class} tr:nth-child(even) {{
-            background-color: #f9f9f9;
-        }}
-        
-        .faq-section {{
-            margin-top: 2rem;
-        }}
-        
-        .faq-title {{
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: #0078d4;
-            border-bottom: 2px solid #0078d4;
-            padding-bottom: 0.5rem;
-        }}
-        
-        /* FAQ 项目样式 - 只应用于 .faq-list */
-        .faq-list li {{
-            margin-bottom: 1rem;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            padding: 0;
-            list-style: none;
-        }}
-        
-        .faq-question {{
-            background-color: #f8f9fa;
-            padding: 0.75rem;
-            font-weight: bold;
-            color: #333;
-            border-bottom: 1px solid #e0e0e0;
-            font-size: 1.05rem;
-        }}
-        
-        .faq-answer {{
-            padding: 0.75rem;
-            line-height: 1.5;
-            color: #666;
-            background-color: #ffffff;
-        }}
-        
-        /* 普通列表样式 */
-        ul {{
-            margin-bottom: 1rem;
-            padding-left: 1.5rem;
-        }}
-        
-        ul li {{
-            margin-bottom: 0.5rem;
-            line-height: 1.5;
-        }}"""
-        
-        # Storage Files特定样式
-        elif template_type == "storage_files":
-            table_class = config.get("table_class", "storage-files-pricing-table")
-            return base_styles + f"""
-        
-        .{table_class} {{
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1.5rem;
-            background-color: white;
-        }}
-        
-        .{table_class} th,
-        .{table_class} td {{
-            border: 1px solid #ddd;
-            padding: 0.75rem;
-            text-align: left;
-        }}
-        
-        .{table_class} th {{
-            background-color: #f8f9fa;
-            font-weight: bold;
-            color: #333;
-        }}
-        
-        .{table_class} tr:nth-child(even) {{
-            background-color: #f9f9f9;
-        }}
-        
-        /* Section标题样式 */
-        h2 {{
-            font-size: 1.4rem;
-            color: #0078d4;
-            margin: 2rem 0 1rem 0;
-            border-bottom: 2px solid #0078d4;
-            padding-bottom: 0.5rem;
-        }}
-        
-        h3 {{
-            font-size: 1.2rem;
-            color: #333;
-            margin: 1.5rem 0 1rem 0;
-            border-left: 4px solid #0078d4;
-            padding-left: 0.5rem;
-        }}
-        
-        .storage-tier-section {{
-            margin-top: 2rem;
-            padding: 1rem;
-            background-color: #f0f8ff;
-            border-radius: 4px;
-        }}
-        
-        .transaction-section {{
-            margin-top: 2rem;
-        }}
-        
-        .bandwidth-section {{
-            margin-top: 2rem;
-            padding: 1rem;
-            background-color: #fff8e7;
-            border-radius: 4px;
-        }}"""
-        
-        # 默认样式
+    def get_region_config_for_product(self, product_key: str) -> Dict[str, List[str]]:
+        """获取产品的区域配置"""
+        soft_config = self.load_soft_category_config()
+        return soft_config.get(product_key, {})
+
+    def get_table_exclusions_for_region(self, product_key: str, region_id: str) -> List[str]:
+        """获取特定区域的表格排除列表"""
+        region_config = self.get_region_config_for_product(product_key)
+        return region_config.get(region_id, [])
+
+    def should_exclude_table(self, product_key: str, region_id: str, table_id: str) -> bool:
+        """检查是否应该排除特定表格"""
+        exclusion_list = self.get_table_exclusions_for_region(product_key, region_id)
+        return table_id in exclusion_list
+
+    def get_all_configured_products(self) -> List[str]:
+        """获取所有已配置的产品列表"""
+        soft_config = self.load_soft_category_config()
+        return list(soft_config.keys())
+
+    def get_all_configured_regions(self, product_key: str = None) -> List[str]:
+        """获取所有配置的区域列表"""
+        if product_key:
+            region_config = self.get_region_config_for_product(product_key)
+            return list(region_config.keys())
         else:
-            return base_styles + """
-        
-        .pricing-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1.5rem;
-            background-color: white;
-        }
-        
-        .pricing-table th,
-        .pricing-table td {
-            border: 1px solid #ddd;
-            padding: 0.75rem;
-            text-align: left;
-        }
-        
-        .pricing-table th {
-            background-color: #f8f9fa;
-            font-weight: bold;
-            color: #333;
-        }
-        
-        .pricing-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }"""
-    
-    def load_config_file(self) -> Dict:
-        """
-        加载配置文件
-        
-        Returns:
-            配置文件内容字典
-        """
-        
-        try:
-            with open(self.config_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except FileNotFoundError:
-            print(f"⚠ 配置文件不存在: {self.config_file}")
-            return {}
-        except json.JSONDecodeError as e:
-            print(f"⚠ 配置文件格式错误: {e}")
-            return {}
-    
-    def save_config_file(self, config_data: Dict):
-        """
-        保存配置文件
-        
-        Args:
-            config_data: 要保存的配置数据
-        """
-        
-        try:
-            with open(self.config_file, 'w', encoding='utf-8') as f:
-                json.dump(config_data, f, ensure_ascii=False, indent=2)
-            print(f"✓ 配置文件已保存: {self.config_file}")
-        except Exception as e:
-            print(f"❌ 保存配置文件失败: {e}")
-    
-    def get_extraction_options(self, product_name: str) -> Dict:
-        """
-        获取提取选项
-        
-        Args:
-            product_name: 产品名称
-            
-        Returns:
-            提取选项字典
-        """
-        
-        config = self.get_product_config(product_name)
-        return config.get("extraction_options", {})
-    
-    def update_product_config(self, product_name: str, updates: Dict):
-        """
-        更新产品配置
-        
-        Args:
-            product_name: 产品名称
-            updates: 更新的配置项
-        """
-        
-        if product_name not in self._product_configs:
-            self._product_configs[product_name] = self._load_product_config(product_name)
-        
-        self._product_configs[product_name].update(updates)
-        print(f"✓ 产品配置已更新: {product_name}")
+            # 获取所有产品的所有区域
+            soft_config = self.load_soft_category_config()
+            all_regions = set()
+            for product_config in soft_config.values():
+                all_regions.update(product_config.keys())
+            return sorted(list(all_regions))

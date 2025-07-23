@@ -2,321 +2,522 @@
 # -*- coding: utf-8 -*-
 """
 增强型CMS提取器
-基于新的分模块提取需求，提取Banner、描述、Q&A、各区域内容等模块
+整合所有最佳功能的主力提取器，支持大型HTML文件处理
 """
 
-import json
-import re
-from typing import Dict, List, Optional, Any
-from urllib.parse import urlparse
-from bs4 import BeautifulSoup, Tag
-from pathlib import Path
+import os
+import sys
 from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Any, Optional
+from bs4 import BeautifulSoup
+
+# 添加项目根目录到Python路径
+project_root = Path(__file__).parent.parent.parent
+sys.path.append(str(project_root))
+
+from src.core.product_manager import ProductManager
+from src.core.region_processor import RegionProcessor
+from src.core.config_manager import ConfigManager
+from src.utils.html_utils import (
+    create_simple_element, preprocess_image_paths, clean_html_content
+)
+from src.utils.faq_utils import extract_qa_content
+from src.utils.content_utils import (
+    find_main_content_area, extract_banner_text_content, 
+    extract_structured_content
+)
+from src.utils.validation_utils import validate_extracted_data
+from src.utils.large_html_utils import LargeHTMLProcessor
 
 
 class EnhancedCMSExtractor:
-    """增强型CMS提取器 - 按模块提取页面内容"""
-    
-    def __init__(self, output_dir: str = "enhanced_cms_output", config_file: str = "soft-category.json"):
-        """
-        初始化增强型CMS提取器
-        
-        Args:
-            output_dir: 输出目录
-            config_file: 配置文件路径
-        """
+    """增强型CMS提取器 - 整合所有最佳功能"""
+
+    def __init__(self, output_dir: str, config_file: str = ""):
         self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(exist_ok=True)
-        self.config_file = config_file
+        self.output_dir.mkdir(parents=True, exist_ok=True)
         
-        # 区域映射
-        self.region_mapping = {
-            "north-china": "NorthChinaContent",
-            "north-china2": "NorthChina2Content", 
-            "north-china3": "NorthChina3Content",
-            "east-china": "EastChinaContent",
-            "east-china2": "EastChina2Content",
-            "east-china3": "EastChina3Content"
-        }
+        # 初始化核心组件
+        self.product_manager = ProductManager()
+        self.region_processor = RegionProcessor(config_file)
+        self.config_manager = ConfigManager()
+        self.large_html_processor = LargeHTMLProcessor()
         
-        # 区域中文名映射
-        self.region_names = {
-            "north-china": "中国北部",
-            "north-china2": "中国北部2",
-            "north-china3": "中国北部3", 
-            "east-china": "中国东部",
-            "east-china2": "中国东部2",
-            "east-china3": "中国东部3"
-        }
-        
-        # 文件名到产品名称的映射表
-        self.filename_to_product_mapping = {
-            "anomaly-detector-index.html": "Anomaly Detector",
-            "api-management-index.html": "API Management",
-            "cosmos-db-index.html": "Azure Cosmos DB",
-            "machine-learning-index.html": "Machine Learning Server",
-            "mysql-index.html": "Azure Database for MySQL",
-            "postgresql-index.html": "Azure Database for PostgreSQL",
-            "power-bi-embedded-index.html": "Power BI Embedded",
-            "search-index.html": "Azure Search",
-            "ssis-index.html": "Data Factory SSIS",
-            "storage-files-index.html": "Storage Files",
-            "sql-database-index.html": "SQL Database",
-            "microsoft-entra-external-id-index.html": "Microsoft Entra External ID",
-            "data-factory-index.html": "Data Factory Data Pipeline",
-            "cognitive-services-index.html": "Cognitive Services"
-        }
-        
-        print(f"✓ 增强型CMS提取器初始化完成")
+        print(f"🚀 增强型CMS提取器初始化完成")
         print(f"📁 输出目录: {self.output_dir}")
-        print(f"📋 支持的产品数量: {len(self.filename_to_product_mapping)}")
-    
-    def detect_product_name(self, html_file_path: str) -> str:
-        """
-        从HTML文件路径检测产品名称
-        
-        Args:
-            html_file_path: HTML文件路径
-            
-        Returns:
-            产品名称（如果找到映射）或空字符串
-        """
-        
-        # 提取文件名
-        filename = Path(html_file_path).name
-        
-        # 查找直接映射
-        if filename in self.filename_to_product_mapping:
-            product_name = self.filename_to_product_mapping[filename]
-            print(f"🔍 检测到产品: {filename} -> {product_name}")
-            return product_name
-        
-        # 尝试模糊匹配（例如处理变体文件名）
-        for mapped_filename, product_name in self.filename_to_product_mapping.items():
-            # 提取核心名称部分（去掉-index.html后缀）
-            mapped_core = mapped_filename.replace('-index.html', '')
-            file_core = filename.replace('-index.html', '')
-            
-            if mapped_core == file_core:
-                print(f"🔍 模糊匹配到产品: {filename} -> {product_name}")
-                return product_name
-        
-        # 如果都没有找到，尝试从文件名推断
-        inferred_name = self._infer_product_name_from_filename(filename)
-        if inferred_name:
-            print(f"🔍 推断产品名称: {filename} -> {inferred_name}")
-            return inferred_name
-        
-        print(f"⚠️ 未找到产品映射: {filename}")
-        return ""
-    
-    def _infer_product_name_from_filename(self, filename: str) -> str:
-        """
-        从文件名推断产品名称
-        
-        Args:
-            filename: 文件名
-            
-        Returns:
-            推断的产品名称
-        """
-        
-        # 移除后缀
-        core_name = filename.replace('-index.html', '').replace('.html', '')
-        
-        # 特殊情况处理
-        special_cases = {
-            'storage-files': 'Storage Files',
-            'api-management': 'API Management',
-            'power-bi-embedded': 'Power BI Embedded',
-            'machine-learning': 'Machine Learning Server',
-            'anomaly-detector': 'Anomaly Detector',
-            'sql-database': 'SQL Database',
-            'microsoft-entra-external-id': 'Microsoft Entra External ID',
-            'data-factory': 'Data Factory Data Pipeline',
-            'cognitive-services': 'Cognitive Services'
-        }
-        
-        if core_name in special_cases:
-            return special_cases[core_name]
-        
-        # 通用规则：将连字符替换为空格，每个单词首字母大写
-        words = core_name.split('-')
-        title_case_words = []
-        
-        for word in words:
-            # 特殊单词处理
-            if word.lower() == 'mysql':
-                title_case_words.append('MySQL')
-            elif word.lower() == 'postgresql':
-                title_case_words.append('PostgreSQL')
-            elif word.lower() == 'cosmos':
-                title_case_words.append('Cosmos')
-            elif word.lower() == 'db':
-                title_case_words.append('DB')
-            elif word.lower() == 'azure':
-                title_case_words.append('Azure')
-            elif word.lower() == 'ssis':
-                title_case_words.append('SSIS')
-            else:
-                title_case_words.append(word.capitalize())
-        
-        result = ' '.join(title_case_words)
-        
-        # 如果结果包含数据库相关词汇，添加Azure前缀
-        if any(db_word in result.lower() for db_word in ['mysql', 'postgresql', 'cosmos']):
-            if not result.startswith('Azure'):
-                result = 'Azure Database for ' + result
-        
-        return result
-    
+
     def extract_cms_content(self, html_file_path: str, url: str = "") -> Dict[str, Any]:
-        """
-        提取CMS所需的分模块内容
-        
-        Args:
-            html_file_path: HTML文件路径
-            url: 页面URL（用于提取slug）
-            
-        Returns:
-            包含所有模块内容的字典
-        """
+        """提取CMS内容 - 智能处理大型文件"""
         
         print(f"\n🔧 开始提取增强型CMS内容")
         print(f"📁 源文件: {html_file_path}")
-        print(f"🔗 URL: {url}")
-        print("=" * 70)
+
+        # 检测产品类型
+        product_key = self._detect_product_key_from_path(html_file_path)
+        
+        if not product_key:
+            print("⚠ 无法检测产品类型，使用通用提取逻辑")
+            product_key = "unknown"
+
+        # 获取处理策略
+        try:
+            strategy = self.product_manager.get_processing_strategy(html_file_path, product_key)
+            print(f"📊 文件大小: {strategy['size_mb']:.2f} MB")
+            print(f"🚀 处理策略: {strategy['strategy']}")
+        except Exception as e:
+            print(f"⚠ 无法获取处理策略: {e}")
+            strategy = {"strategy": "normal", "size_mb": 0}
+
+        if strategy['strategy'] == 'streaming':
+            return self._extract_with_streaming(html_file_path, url, strategy, product_key)
+        elif strategy['strategy'] == 'chunked':
+            return self._extract_with_chunking(html_file_path, url, strategy, product_key)
+        else:
+            return self._extract_normal(html_file_path, url, product_key)
+
+    def _extract_normal(self, html_file_path: str, url: str, product_key: str) -> Dict[str, Any]:
+        """标准提取模式"""
+        print("📄 使用标准处理模式...")
         
         try:
             # 读取HTML文件
             with open(html_file_path, 'r', encoding='utf-8') as f:
                 html_content = f.read()
-            
+                
             soup = BeautifulSoup(html_content, 'html.parser')
             
             # 预处理图片路径
-            processed_soup = self._preprocess_image_paths(soup)
+            soup = preprocess_image_paths(soup)
             
-            # 提取各个模块
-            result = {
-                "Title": self._extract_title(processed_soup),
-                "MetaDescription": self._extract_meta_description(processed_soup),
-                "MetaKeywords": self._extract_meta_keywords(processed_soup),
-                "MSServiceName": self._extract_ms_service_name(processed_soup),
-                "Slug": self._extract_slug(url),
-                "DescriptionContent": self._extract_description_content(processed_soup),
-                "Language": self._detect_language(processed_soup),
-                "NavigationTitle": self._extract_navigation_title(processed_soup),
-                "BannerContent": self._extract_banner_content(processed_soup),
-                "QaContent": self._extract_qa_content(processed_soup),
-                "HasRegion": self._check_has_region(processed_soup),
-                "NoRegionContent": ""
-            }
+            # 提取内容
+            extracted_data = self._extract_content_from_soup(
+                soup, html_file_path, url, product_key
+            )
             
-            # 检查是否有区域选择
-            if result["HasRegion"]:
-                # 提取各区域内容
-                region_contents = self._extract_region_contents(processed_soup, html_file_path)
-                result.update(region_contents)
-            else:
-                # 没有区域选择，提取主体内容到NoRegionContent
-                result["NoRegionContent"] = self._extract_no_region_content(processed_soup)
-            
-            # 清理所有Content字段中的多余标签和符号
-            content_fields = ["DescriptionContent", "BannerContent", "QaContent", "NoRegionContent"]
-            
-            # 动态添加实际存在的区域内容字段
-            for field_name in result.keys():
-                if field_name.endswith("Content") and field_name not in content_fields:
-                    content_fields.append(field_name)
-            
-            for field in content_fields:
-                if field in result and result[field]:
-                    result[field] = self._clean_html_content(result[field])
-            
-            # 添加提取元数据
-            result["extraction_metadata"] = {
-                "extracted_at": datetime.now().isoformat(),
-                "source_file": html_file_path,
-                "extractor_version": "enhanced_cms_v1.0"
-            }
-            
-            print(f"\n✅ 增强型CMS内容提取完成！")
-            print(f"📊 包含区域: {result['HasRegion']}")
-            print(f"📄 Banner长度: {len(result['BannerContent'])} 字符")
-            print(f"📄 Q&A长度: {len(result['QaContent'])} 字符")
-            
-            return result
+            return extracted_data
             
         except Exception as e:
-            print(f"❌ 提取失败: {e}")
-            import traceback
-            traceback.print_exc()
-            return {"error": str(e)}
-    
-    def _preprocess_image_paths(self, soup: BeautifulSoup) -> BeautifulSoup:
-        """预处理图片路径，添加{img_hostname}占位符"""
+            print(f"❌ 标准提取失败: {e}")
+            return self._create_error_result(str(e))
+
+    def _extract_with_chunking(self, html_file_path: str, url: str,
+                              strategy: Dict[str, Any], product_key: str) -> Dict[str, Any]:
+        """分块处理模式"""
+        print("🧩 使用分块处理模式...")
         
-        print("🖼️ 预处理图片路径...")
-        
-        # 处理img标签的src属性
-        img_count = 0
-        for img in soup.find_all('img'):
-            src = img.get('src')
-            if src and src.startswith('/'):
-                img['src'] = f"{{img_hostname}}{src}"
-                img_count += 1
-        
-        # 处理style属性中的background-image
-        style_count = 0
-        for element in soup.find_all(style=True):
-            style = element.get('style', '')
-            if 'background-image:' in style and 'url(' in style:
-                # 匹配 url("/path/to/image") 或 url('/path/to/image')
-                pattern = r'url\(["\']?(/[^"\']*)["\']?\)'
-                def replace_url(match):
-                    path = match.group(1)
-                    return f'url("{{img_hostname}}{path}")'
+        try:
+            # 监控内存使用
+            initial_memory = self.large_html_processor.monitor_memory_usage()
+            print(f"  🧠 初始内存使用: {initial_memory:.1f}MB")
+            
+            # 读取HTML文件
+            with open(html_file_path, 'r', encoding='utf-8') as f:
+                html_content = f.read()
                 
-                new_style = re.sub(pattern, replace_url, style)
-                if new_style != style:
-                    element['style'] = new_style
-                    style_count += 1
+            soup = BeautifulSoup(html_content, 'html.parser')
+            
+            # 预处理图片路径
+            soup = preprocess_image_paths(soup)
+            
+            # 提取内容（与标准模式相同）
+            extracted_data = self._extract_content_from_soup(
+                soup, html_file_path, url, product_key
+            )
+            
+            # 检查内存使用
+            final_memory = self.large_html_processor.monitor_memory_usage()
+            memory_used = final_memory - initial_memory
+            print(f"  🧠 内存增长: {memory_used:.1f}MB")
+            
+            extracted_data["processing_info"] = {
+                "mode": "chunked",
+                "file_size_mb": strategy.get('size_mb', 0),
+                "memory_used_mb": memory_used,
+                "processing_time": datetime.now().isoformat()
+            }
+            
+            return extracted_data
+            
+        except Exception as e:
+            print(f"❌ 分块提取失败: {e}")
+            return self._create_error_result(str(e))
+
+    def _extract_with_streaming(self, html_file_path: str, url: str,
+                               strategy: Dict[str, Any], product_key: str) -> Dict[str, Any]:
+        """流式处理模式（为大型文件预留）"""
+        print("🌊 使用流式处理模式...")
         
-        # 处理data-config属性中的图片路径
-        data_config_count = 0
-        for element in soup.find_all(attrs={'data-config': True}):
-            data_config = element.get('data-config', '')
-            if data_config and ('backgroundImage' in data_config or 'background-image' in data_config):
-                # 匹配 backgroundImage 或 background-image 后面的图片路径
-                # 支持格式：'backgroundImage':'/path/to/image' 或 "backgroundImage":"/path/to/image"
-                pattern = r'(["\'](?:backgroundImage|background-image)["\']:\s*["\'])(/[^"\']*?)(["\'])'
-                def replace_bg_image(match):
-                    prefix = match.group(1)
-                    path = match.group(2)
-                    suffix = match.group(3)
-                    return f'{prefix}{{img_hostname}}{path}{suffix}'
+        # 目前使用分块处理的逻辑，未来可以实现真正的流式处理
+        result = self._extract_with_chunking(html_file_path, url, strategy, product_key)
+        if "processing_info" in result:
+            result["processing_info"]["mode"] = "streaming"
+        
+        print("  ⚠ 流式处理功能开发中，当前使用优化的分块处理")
+        
+        return result
+
+    def _extract_content_from_soup(self, soup: BeautifulSoup, html_file_path: str, 
+                                  url: str, product_key: str) -> Dict[str, Any]:
+        """从BeautifulSoup对象中提取内容"""
+        
+        print("🔍 开始内容提取...")
+        
+        # 获取产品配置
+        try:
+            product_config = self.product_manager.get_product_config(product_key)
+            important_section_titles = self.product_manager.get_important_section_titles(product_key)
+        except (ValueError, AttributeError) as e:
+            print(f"⚠ 无法获取产品配置: {e}")
+            product_config = {}
+            important_section_titles = []
+        
+        # 查找主要内容区域
+        main_content = find_main_content_area(soup)
+        
+        # 初始化提取结果（对齐重构前的字段结构）
+        extracted_data = {
+            "product_key": product_key,
+            "source_file": str(html_file_path),
+            "source_url": url or self._get_default_url(product_key),
+            "extraction_timestamp": datetime.now().isoformat(),
+            "Title": "",
+            "MetaDescription": "",
+            "MetaKeywords": "",
+            "MSServiceName": "",
+            "Slug": "",
+            "DescriptionContent": "",
+            "Language": "",
+            "NavigationTitle": "",
+            "BannerContent": "",
+            "QaContent": "",
+            "HasRegion": False,
+            "NoRegionContent": "",
+            "NorthChinaContent": "",
+            "NorthChina2Content": "",
+            "NorthChina3Content": "",
+            "EastChinaContent": "",
+            "EastChina2Content": "",
+            "EastChina3Content": "",
+            "PricingTables": [],
+            "RegionalContent": {},
+            "ServiceTiers": [],
+            "extraction_metadata": {}
+        }
+        
+        # 1. 提取标题
+        extracted_data["Title"] = self._extract_page_title(main_content or soup)
+        
+        # 2. 提取Meta信息
+        extracted_data["MetaDescription"] = self._extract_meta_description(soup)
+        extracted_data["MetaKeywords"] = self._extract_meta_keywords(soup)
+        extracted_data["MSServiceName"] = self._extract_ms_service_name(soup)
+        extracted_data["Slug"] = self._extract_slug(url)
+        extracted_data["Language"] = self._detect_language(soup)
+        
+        # 3. 提取Banner内容
+        banner_content = self._extract_banner_content(main_content or soup)
+        extracted_data["BannerContent"] = self._format_html_content(banner_content)
+        extracted_data["NavigationTitle"] = self._extract_navigation_title(soup)
+        
+        # 4. 提取描述内容
+        description_content = self._extract_description_content(main_content or soup, important_section_titles)
+        extracted_data["DescriptionContent"] = self._format_html_content(description_content)
+        
+        # 5. 提取定价表格
+        extracted_data["PricingTables"] = self._extract_pricing_tables(main_content or soup)
+        
+        # 6. 提取Q&A内容（对齐重构前的QaContent字段）
+        extracted_data["QaContent"] = extract_qa_content(main_content or soup)
+        
+        # 7. 检查区域并提取区域内容
+        extracted_data["HasRegion"] = self._check_has_region(soup)
+        
+        if extracted_data["HasRegion"]:
+            # 提取各区域内容
+            regional_content = self.region_processor.extract_region_contents(
+                soup, html_file_path
+            )
+            extracted_data["RegionalContent"] = regional_content
+            
+            # 映射到具体的区域字段
+            region_mapping = {
+                "china-north": "NorthChinaContent",
+                "china-north-2": "NorthChina2Content",
+                "china-north-3": "NorthChina3Content",
+                "china-east": "EastChinaContent",
+                "china-east-2": "EastChina2Content",
+                "china-east-3": "EastChina3Content"
+            }
+            
+            for region_key, field_name in region_mapping.items():
+                if region_key in regional_content:
+                    extracted_data[field_name] = regional_content[region_key]
+        else:
+            # 没有区域选择，提取主体内容到NoRegionContent
+            extracted_data["NoRegionContent"] = self._extract_no_region_content(soup)
+        
+        # 8. 提取结构化内容
+        structured_content = extract_structured_content(main_content or soup, important_section_titles)
+        extracted_data["ServiceTiers"] = structured_content.get("sections", [])
+        
+        # 8. 添加提取元数据
+        extracted_data["extraction_metadata"] = {
+            "extractor_version": "enhanced_v2.0",
+            "processing_mode": "standard",
+            "content_sections_found": len(structured_content.get("sections", [])),
+            "pricing_tables_found": len(extracted_data["PricingTables"]),
+            "regions_detected": len(extracted_data["RegionalContent"]),
+            "faq_length": len(extracted_data["FAQ"]),
+            "has_banner": bool(extracted_data["BannerContent"]),
+            "product_config_used": product_key != "unknown"
+        }
+        
+        # 9. 验证提取的数据
+        if product_config:
+            try:
+                validation_result = validate_extracted_data(extracted_data, product_config)
+                extracted_data["validation"] = validation_result
                 
-                new_data_config = re.sub(pattern, replace_bg_image, data_config)
-                if new_data_config != data_config:
-                    element['data-config'] = new_data_config
-                    data_config_count += 1
+                if not validation_result["is_valid"]:
+                    print(f"⚠ 数据验证发现问题: {validation_result['errors']}")
+            except Exception as e:
+                print(f"⚠ 数据验证失败: {e}")
         
-        print(f"  ✓ 处理了 {img_count} 个img标签、{style_count} 个style属性和 {data_config_count} 个data-config属性")
+        print(f"✅ 内容提取完成")
+        print(f"  📊 标题: {'✓' if extracted_data['Title'] else '✗'}")
+        print(f"  🎯 Banner: {'✓' if extracted_data['BannerContent'] else '✗'}")  
+        print(f"  📝 描述: {'✓' if extracted_data['DescriptionContent'] else '✗'}")
+        print(f"  📋 定价表格: {len(extracted_data['PricingTables'])} 个")
+        print(f"  ❓ FAQ: {'✓' if extracted_data['FAQ'] else '✗'}")
+        print(f"  🌏 区域: {len(extracted_data['RegionalContent'])} 个")
         
-        return soup
-    
-    def _extract_title(self, soup: BeautifulSoup) -> str:
+        return extracted_data
+
+    def _extract_page_title(self, soup: BeautifulSoup) -> str:
         """提取页面标题"""
-        
+        # 优先查找页面title标签
         title_tag = soup.find('title')
         if title_tag:
-            return title_tag.get_text(strip=True)
+            title = title_tag.get_text(strip=True)
+            if title and len(title) > 0:
+                return title
+        
+        # 查找主要标题元素
+        main_heading = soup.find(['h1', 'h2'])
+        if main_heading:
+            return main_heading.get_text(strip=True)
+        
         return ""
+
+    def _extract_banner_content(self, soup: BeautifulSoup) -> BeautifulSoup:
+        """提取Banner内容"""
+        print("  🎯 提取Banner内容...")
+        
+        # 查找banner相关元素
+        banner_selectors = [
+            '.banner', '.hero', '.jumbotron', '.page-header', 
+            'header', '.product-banner', '.intro-section', '.common-banner'
+        ]
+        
+        for selector in banner_selectors:
+            banner = soup.select_one(selector)
+            if banner:
+                # 创建简化的banner内容
+                simplified_banner = BeautifulSoup("<div class='banner-content'></div>", 'html.parser')
+                banner_div = simplified_banner.find('div')
+                
+                # 提取banner文本内容
+                banner_info = extract_banner_text_content(banner)
+                
+                if banner_info.get('title'):
+                    title_elem = simplified_banner.new_tag('h2', **{'class': 'banner-title'})
+                    title_elem.string = banner_info['title']
+                    banner_div.append(title_elem)
+                
+                if banner_info.get('description'):
+                    desc_elem = simplified_banner.new_tag('div', **{'class': 'banner-description'})
+                    desc_elem.string = banner_info['description']
+                    banner_div.append(desc_elem)
+                
+                if banner_info.get('features'):
+                    features_ul = simplified_banner.new_tag('ul', **{'class': 'banner-features'})
+                    for feature in banner_info['features'][:5]:  # 最多5个特性
+                        li = simplified_banner.new_tag('li')
+                        li.string = feature
+                        features_ul.append(li)
+                    banner_div.append(features_ul)
+                
+                return simplified_banner
+        
+        print("    ⚠ 未找到Banner内容")
+        return BeautifulSoup("", 'html.parser')
+
+    def _extract_description_content(self, soup: BeautifulSoup, 
+                                   important_section_titles: List[str]) -> BeautifulSoup:
+        """提取描述内容"""
+        print("  📝 提取描述内容...")
+        
+        simplified_content = BeautifulSoup("<div class='description-content'></div>", 'html.parser')
+        content_div = simplified_content.find('div')
+        
+        # 查找重要的section
+        headings = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+        
+        sections_found = 0
+        for heading in headings:
+            # 检查是否为重要标题
+            heading_text = heading.get_text(strip=True).lower()
+            
+            is_important = any(
+                title.lower() in heading_text 
+                for title in important_section_titles
+            ) if important_section_titles else True
+            
+            if is_important and sections_found < 5:  # 最多5个重要section
+                # 创建section
+                section_div = simplified_content.new_tag('div', **{'class': 'content-section'})
+                
+                # 添加标题
+                section_title = simplified_content.new_tag(heading.name)
+                section_title.string = heading.get_text(strip=True)
+                section_div.append(section_title)
+                
+                # 收集该section下的内容
+                next_sibling = heading.find_next_sibling()
+                content_parts = []
+                
+                while (next_sibling and 
+                       next_sibling.name not in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] and
+                       len(content_parts) < 3):  # 最多3个段落
+                    
+                    if next_sibling.name in ['p', 'div', 'ul', 'ol']:
+                        simple_element = create_simple_element(next_sibling, simplified_content)
+                        if simple_element:
+                            content_parts.append(simple_element)
+                    
+                    next_sibling = next_sibling.find_next_sibling()
+                
+                # 添加内容到section
+                for part in content_parts:
+                    section_div.append(part)
+                
+                if section_div.get_text(strip=True):  # 只添加有内容的section
+                    content_div.append(section_div)
+                    sections_found += 1
+        
+        if sections_found == 0:
+            print("    ⚠ 未找到重要的描述内容")
+        else:
+            print(f"    ✓ 找到 {sections_found} 个重要section")
+        
+        return simplified_content
+
+    def _extract_pricing_tables(self, soup: BeautifulSoup) -> List[str]:
+        """提取定价表格"""
+        print("  📋 提取定价表格...")
+        
+        pricing_tables = []
+        tables = soup.find_all('table')
+        
+        for i, table in enumerate(tables):
+            table_text = table.get_text(strip=True)
+            
+            # 检查是否为定价表格
+            if self._is_pricing_table(table_text):
+                # 创建简化的表格
+                simplified_table = BeautifulSoup("<table></table>", 'html.parser')
+                table_elem = simplified_table.find('table')
+                table_elem['class'] = ['pricing-table']
+                
+                # 复制表格结构
+                from src.utils.html_utils import copy_table_structure
+                copy_table_structure(table, table_elem, simplified_table)
+                
+                pricing_tables.append(str(simplified_table))
+        
+        print(f"    ✓ 找到 {len(pricing_tables)} 个定价表格")
+        return pricing_tables
+
+    def _is_pricing_table(self, table_text: str) -> bool:
+        """判断是否为定价表格"""
+        pricing_keywords = [
+            '价格', 'price', '定价', 'pricing', '费用', 'cost', 
+            '￥', '$', '元', '美元', 'usd', 'rmb', 'cny'
+        ]
+        
+        text_lower = table_text.lower()
+        return any(keyword in text_lower for keyword in pricing_keywords)
+
+    def _format_html_content(self, soup: BeautifulSoup) -> str:
+        """格式化HTML内容"""
+        if not soup or not soup.get_text(strip=True):
+            return ""
+        
+        html_str = str(soup)
+        return clean_html_content(html_str)
+
+    def _detect_product_key_from_path(self, html_file_path: str) -> Optional[str]:
+        """从文件路径检测产品类型"""
+        try:
+            return self.product_manager.detect_product_from_filename(html_file_path)
+        except Exception as e:
+            print(f"⚠ 产品类型检测失败: {e}")
+            return None
+
+    def _get_default_url(self, product_key: str) -> str:
+        """获取产品默认URL"""
+        try:
+            return self.product_manager.get_product_url(product_key)
+        except Exception:
+            return f"https://www.azure.cn/pricing/details/{product_key}/"
+
+    def _create_error_result(self, error_message: str) -> Dict[str, Any]:
+        """创建错误结果"""
+        return {
+            "error": True,
+            "error_message": error_message,
+            "extraction_timestamp": datetime.now().isoformat(),
+            "Title": "",
+            "BannerContent": "",
+            "DescriptionContent": "",
+            "PricingTables": [],
+            "FAQ": "",
+            "RegionalContent": {},
+            "ServiceTiers": [],
+            "extraction_metadata": {
+                "extractor_version": "enhanced_v2.0",
+                "processing_failed": True
+            }
+        }
+
+    def get_statistics(self) -> Dict[str, Any]:
+        """获取提取器统计信息"""
+        stats = {
+            "extractor_type": "EnhancedCMSExtractor",
+            "version": "2.0",
+            "large_file_support": True,
+            "streaming_support": "development"
+        }
+        
+        try:
+            stats["supported_products"] = len(self.product_manager.get_supported_products())
+            stats["cache_stats"] = self.product_manager.get_cache_stats()
+        except Exception as e:
+            print(f"⚠ 获取产品管理器统计失败: {e}")
+            stats["supported_products"] = 0
+            stats["cache_stats"] = {}
+        
+        try:
+            stats["region_processor_stats"] = self.region_processor.get_statistics()
+        except Exception as e:
+            print(f"⚠ 获取区域处理器统计失败: {e}")
+            stats["region_processor_stats"] = {}
+            
+        return stats
     
     def _extract_meta_description(self, soup: BeautifulSoup) -> str:
         """提取Meta描述"""
-        
         meta_desc = soup.find('meta', attrs={'name': 'description'})
         if meta_desc:
             return meta_desc.get('content', '')
@@ -324,7 +525,6 @@ class EnhancedCMSExtractor:
     
     def _extract_meta_keywords(self, soup: BeautifulSoup) -> str:
         """提取Meta关键词"""
-        
         meta_keywords = soup.find('meta', attrs={'name': 'keywords'})
         if meta_keywords:
             return meta_keywords.get('content', '')
@@ -332,7 +532,6 @@ class EnhancedCMSExtractor:
     
     def _extract_ms_service_name(self, soup: BeautifulSoup) -> str:
         """提取MSServiceName字段，从pure-content div内的tags元素中的ms.service属性"""
-        
         print("🏷️ 提取MSServiceName...")
         
         # 查找pure-content div
@@ -357,11 +556,11 @@ class EnhancedCMSExtractor:
     
     def _extract_slug(self, url: str) -> str:
         """从URL提取slug"""
-        
         if not url:
             return ""
         
         try:
+            from urllib.parse import urlparse
             parsed = urlparse(url)
             path = parsed.path
             
@@ -387,39 +586,8 @@ class EnhancedCMSExtractor:
         
         return ""
     
-    def _extract_description_content(self, soup: BeautifulSoup) -> str:
-        """提取Banner下第一个section作为描述内容"""
-        
-        print("📝 提取描述内容...")
-        
-        # 查找banner后的第一个内容section
-        banner = soup.find('div', class_='common-banner')
-        if banner:
-            # 查找banner后的第一个pricing-page-section或section
-            next_section = banner.find_next_sibling('div', class_='pricing-page-section')
-            if next_section:
-                return str(next_section)
-            
-            # 如果没有找到pricing-page-section，查找普通section
-            next_section = banner.find_next_sibling('section')
-            if next_section:
-                return str(next_section)
-        
-        # 如果没有找到banner，尝试查找第一个pricing-page-section
-        first_pricing_section = soup.find('div', class_='pricing-page-section')
-        if first_pricing_section:
-            return str(first_pricing_section)
-        
-        # 最后尝试查找第一个section
-        first_section = soup.find('section')
-        if first_section:
-            return str(first_section)
-        
-        return ""
-    
     def _detect_language(self, soup: BeautifulSoup) -> str:
         """检测页面语言"""
-        
         # 检查html标签的lang属性
         html_tag = soup.find('html')
         if html_tag:
@@ -432,7 +600,6 @@ class EnhancedCMSExtractor:
     
     def _extract_navigation_title(self, soup: BeautifulSoup) -> str:
         """提取导航标题"""
-        
         # 查找common-banner-title > h2
         banner_title = soup.find('div', class_='common-banner-title')
         if banner_title:
@@ -447,224 +614,8 @@ class EnhancedCMSExtractor:
         
         return ""
     
-    def _extract_banner_content(self, soup: BeautifulSoup) -> str:
-        """提取Banner内容"""
-        
-        print("🎨 提取Banner内容...")
-        
-        banner = soup.find('div', class_='common-banner')
-        if banner:
-            # 标准化图片格式
-            standardized_banner = self._standardize_banner_images(banner)
-            return str(standardized_banner)
-        
-        return ""
-    
-    def _standardize_banner_images(self, banner: Tag) -> str:
-        """标准化Banner中的图片格式，保留文本内容"""
-        
-        # 提取背景图片
-        background_image = self._extract_background_image(banner)
-        
-        # 提取图标
-        icon_image = self._extract_icon_image(banner)
-        
-        # 提取文本内容
-        text_content = self._extract_banner_text_content(banner)
-        
-        # 生成标准化HTML
-        if background_image or icon_image or text_content:
-            standardized_html = ""
-            
-            # 添加背景图片div
-            if background_image:
-                standardized_html += f'<div class="common-banner-image" style="background-image: url(&quot;{background_image}&quot;);">'
-            else:
-                standardized_html += '<div class="common-banner-image">'
-            
-            # 添加图标
-            if icon_image:
-                standardized_html += f'<img src="{icon_image}" alt="imgAlt">'
-            
-            # 添加文本内容
-            if text_content:
-                standardized_html += text_content
-            
-            standardized_html += '</div>'
-            
-            return standardized_html
-        
-        # 如果没有找到任何内容，返回原始banner
-        return str(banner)
-    
-    def _extract_background_image(self, banner: Tag) -> str:
-        """从banner中提取背景图片URL"""
-        
-        # 查找data-config属性
-        data_config = banner.get('data-config', '')
-        if data_config:
-            # 使用正则表达式提取backgroundImage
-            import re
-            pattern = r'["\']backgroundImage["\']:\s*["\']([^"\']*)["\']'
-            match = re.search(pattern, data_config)
-            if match:
-                return match.group(1)
-        
-        # 查找style属性中的background-image
-        style = banner.get('style', '')
-        if 'background-image' in style:
-            pattern = r'background-image:\s*url\(["\']?([^"\']*)["\']?\)'
-            match = re.search(pattern, style)
-            if match:
-                return match.group(1)
-        
-        return ""
-    
-    def _extract_icon_image(self, banner: Tag) -> str:
-        """从banner中提取图标图片URL"""
-        
-        # 首先查找img标签
-        img_tag = banner.find('img')
-        if img_tag:
-            src = img_tag.get('src', '')
-            if src:
-                return src
-        
-        # 如果没有找到img标签，查找svg标签
-        svg_tag = banner.find('svg')
-        if svg_tag:
-            # 检查svg标签是否有id属性，通常包含产品信息
-            svg_id = svg_tag.get('id', '')
-            if svg_id:
-                # 为svg生成一个占位符路径，基于id
-                # 例如：svg-storage/files -> storage-files的图标
-                if 'svg-' in svg_id:
-                    product_name = svg_id.replace('svg-', '').replace('\\', '-')
-                    return f"{{img_hostname}}/Images/marketing-resource/css/{product_name}_icon.svg"
-            
-            # 检查svg内部的symbol元素
-            symbol_tag = svg_tag.find('symbol')
-            if symbol_tag:
-                symbol_id = symbol_tag.get('id', '')
-                if symbol_id and 'svg-' in symbol_id:
-                    product_name = symbol_id.replace('svg-', '').replace('\\', '-')
-                    return f"{{img_hostname}}/Images/marketing-resource/css/{product_name}_icon.svg"
-        
-        return ""
-    
-    def _extract_banner_text_content(self, banner: Tag) -> str:
-        """从banner中提取文本内容（标题、描述等）"""
-        
-        # 查找common-banner-title容器
-        title_container = banner.find('div', class_='common-banner-title')
-        if not title_container:
-            return ""
-        
-        text_content = ""
-        
-        # 提取主标题 (h2)
-        h2_tag = title_container.find('h2')
-        if h2_tag:
-            # 创建h2标签的副本，移除img标签
-            h2_copy = h2_tag.__copy__()
-            for img in h2_copy.find_all('img'):
-                img.decompose()
-            text_content += str(h2_copy)
-        
-        # 提取副标题 (h4)
-        h4_tag = title_container.find('h4')
-        if h4_tag:
-            text_content += str(h4_tag)
-        
-        # 提取其他标题级别 (h3, h5, h6)
-        for tag_name in ['h3', 'h5', 'h6']:
-            tag = title_container.find(tag_name)
-            if tag:
-                text_content += str(tag)
-        
-        return text_content
-    
-    def _clean_html_content(self, content: str) -> str:
-        """清理HTML内容中的多余标签和符号"""
-        
-        if not content:
-            return content
-        
-        # 移除多余的换行符和空白符
-        content = re.sub(r'\n+', ' ', content)  # 将多个换行符替换为单个空格
-        content = re.sub(r'\s+', ' ', content)  # 将多个空白符替换为单个空格
-        
-        # 移除多余的div标签包装（保留有用的class和id）
-        # 只移除纯粹的包装div，保留有意义的div
-        content = re.sub(r'<div>\s*</div>', '', content)  # 移除空的div标签
-        
-        # 清理标签间的多余空白
-        content = re.sub(r'>\s+<', '><', content)  # 移除标签间的空白
-        
-        # 移除开头和结尾的空白
-        content = content.strip()
-        
-        return content
-    
-    def _extract_qa_content(self, soup: BeautifulSoup) -> str:
-        """提取Q&A内容以及支持和服务级别协议内容"""
-        
-        print("❓ 提取Q&A内容...")
-        
-        qa_content = ""
-        
-        # 现有的FAQ提取逻辑
-        faq_containers = [
-            soup.find('div', class_='faq'),
-            soup.find('div', class_='qa'),
-            soup.find('section', class_='faq'),
-            soup.find('section', class_='qa')
-        ]
-        
-        for container in faq_containers:
-            if container:
-                qa_content += str(container)
-        
-        # 查找包含FAQ结构的列表
-        faq_lists = soup.find_all('ul', class_='faq-list')
-        if faq_lists:
-            # 如果有多个FAQ列表，合并它们
-            for faq_list in faq_lists:
-                qa_content += str(faq_list)
-        
-        # 查找包含icon-plus的列表（FAQ展开图标）
-        for ul in soup.find_all('ul'):
-            if ul.find('i', class_='icon-plus'):
-                qa_content += str(ul)
-        
-        # 新增：提取支持和服务级别协议内容
-        print("🛠️ 提取支持和服务级别协议内容...")
-        
-        # 查找支持和服务级别协议部分
-        support_sections = soup.find_all('div', class_='pricing-page-section')
-        for section in support_sections:
-            h2_tag = section.find('h2')
-            if h2_tag and '支持和服务级别协议' in h2_tag.get_text(strip=True):
-                qa_content += str(section)
-                print("  ✓ 找到支持和服务级别协议部分")
-                break
-        
-        # 查找注释中的支持信息（可选）
-        html_content = str(soup)
-        support_comment_pattern = r'<!--BEGIN: Support and service code chunk-->(.*?)<!--END: Support and service code chunk-->'
-        support_matches = re.findall(support_comment_pattern, html_content, re.DOTALL)
-        if support_matches:
-            for match in support_matches:
-                # 解析注释中的HTML内容
-                if match.strip() and not match.strip().startswith('<!--'):
-                    qa_content += f"<!-- 支持信息 -->{match}<!-- /支持信息 -->"
-                    print("  ✓ 找到注释中的支持信息")
-        
-        return qa_content
-    
     def _check_has_region(self, soup: BeautifulSoup) -> bool:
         """检查页面是否有区域选择"""
-        
         print("🌍 检查区域选择...")
         
         # 查找区域选择相关的元素
@@ -688,81 +639,8 @@ class EnhancedCMSExtractor:
         
         return False
     
-    def _detect_available_regions(self, soup: BeautifulSoup) -> Dict[str, str]:
-        """动态检测HTML中实际存在的区域"""
-        available_regions = {}
-        
-        # 检查区域选择器中的选项
-        region_selectors = soup.find_all('a', {'data-href': True}) + soup.find_all('option', {'data-href': True})
-        
-        for selector in region_selectors:
-            data_href = selector.get('data-href', '').replace('#', '')
-            if data_href and data_href.startswith(('north-china', 'east-china')):
-                region_text = selector.get_text(strip=True)
-                available_regions[data_href] = region_text
-        
-        return available_regions
-    
-    def _extract_region_contents(self, soup: BeautifulSoup, html_file_path: str = "") -> Dict[str, str]:
-        """提取各区域的内容"""
-        
-        print("🌏 提取各区域内容...")
-        
-        region_contents = {}
-        
-        # 动态检测HTML中实际存在的区域
-        available_regions = self._detect_available_regions(soup)
-        print(f"  🔍 检测到的区域: {list(available_regions.keys())}")
-        
-        # 只处理实际存在的区域
-        for region_id, region_name in available_regions.items():
-            if region_id in self.region_mapping:
-                content_key = self.region_mapping[region_id]
-                content = self._extract_single_region_content(soup, region_id, html_file_path)
-                if content:
-                    region_contents[content_key] = content
-                    print(f"  ✓ 提取 {region_name} 内容: {len(content)} 字符")
-        
-        return region_contents
-    
-    def _extract_single_region_content(self, soup: BeautifulSoup, region_id: str, html_file_path: str = "") -> str:
-        """提取单个区域的内容，基于现有的区域筛选逻辑"""
-        
-        try:
-            # 创建一个副本用于区域筛选
-            region_soup = BeautifulSoup(str(soup), 'html.parser')
-            
-            # 导入现有的区域筛选逻辑
-            from ..core.config_manager import ConfigManager
-            
-            # 创建配置管理器
-            config_manager = ConfigManager(self.config_file)
-            
-            # 检测产品名称
-            product_name = self.detect_product_name(html_file_path)
-            if not product_name:
-                product_name = "API Management"  # 默认值
-            
-            # 设置活跃区域并应用筛选
-            config_manager.region_filter.set_active_region(region_id, product_name)
-            
-            # 应用区域筛选 - 隐藏不属于当前区域的表格
-            filtered_count, retained_count, retained_table_ids = self._apply_region_filtering_to_soup(
-                region_soup, region_id, config_manager
-            )
-            
-            # 提取主要内容区域
-            main_content = self._extract_main_content_for_region(region_soup)
-            
-            return str(main_content) if main_content else ""
-            
-        except Exception as e:
-            print(f"    ⚠ 区域 {region_id} 内容提取失败: {e}")
-            return ""
-    
     def _extract_no_region_content(self, soup: BeautifulSoup) -> str:
         """提取无区域页面的主体内容"""
-        
         print("📄 提取无区域主体内容...")
         
         # 查找主要内容区域
@@ -792,98 +670,3 @@ class EnhancedCMSExtractor:
             return str(content_soup)
         
         return ""
-    
-    def save_cms_content(self, content: Dict[str, Any], filename: str = "") -> str:
-        """保存CMS内容到JSON文件"""
-        
-        if not filename:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"enhanced_cms_content_{timestamp}.json"
-        
-        if not filename.endswith('.json'):
-            filename += '.json'
-        
-        file_path = self.output_dir / filename
-        
-        with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(content, f, ensure_ascii=False, indent=2)
-        
-        print(f"\n💾 CMS内容已保存: {file_path}")
-        print(f"📊 内容大小: {len(json.dumps(content, ensure_ascii=False)):,} 字符")
-        
-        return str(file_path)
-    
-    def _apply_region_filtering_to_soup(self, soup: BeautifulSoup, region_id: str, config_manager) -> tuple:
-        """应用区域筛选到soup对象"""
-        
-        # 查找所有表格
-        tables = soup.find_all('table')
-        filtered_count = 0
-        retained_count = 0
-        retained_table_ids = []
-        
-        for table in tables:
-            table_id = table.get('id', '')
-            if table_id:
-                # 检查是否应该过滤此表格（区域信息已经在set_active_region中设置）
-                should_filter = config_manager.region_filter.should_filter_table(table_id)
-                
-                if should_filter:
-                    # 隐藏表格
-                    table.decompose()
-                    filtered_count += 1
-                else:
-                    # 保留表格
-                    retained_count += 1
-                    retained_table_ids.append(table_id)
-        
-        return filtered_count, retained_count, retained_table_ids
-    
-    def _extract_main_content_for_region(self, soup: BeautifulSoup) -> BeautifulSoup:
-        """提取区域的主要内容"""
-        
-        # 创建新的内容容器
-        content_soup = BeautifulSoup("", 'html.parser')
-        
-        # 查找主要内容区域
-        main_content_selectors = [
-            '.tab-content',
-            '.pricing-page-section',
-            '.content',
-            'main'
-        ]
-        
-        for selector in main_content_selectors:
-            elements = soup.select(selector)
-            if elements:
-                # 只取第一个匹配的元素，避免重复
-                element = elements[0]
-                # 直接返回该元素的副本
-                return BeautifulSoup(str(element), 'html.parser')
-                break
-        
-        return content_soup
-    
-    def process_html_file(self, html_file_path: str, url: str = "", 
-                         output_filename: str = "") -> Dict[str, Any]:
-        """
-        处理HTML文件，提取并保存CMS内容
-        
-        Args:
-            html_file_path: HTML文件路径
-            url: 页面URL
-            output_filename: 输出文件名（可选）
-            
-        Returns:
-            提取的内容字典
-        """
-        
-        # 提取内容
-        content = self.extract_cms_content(html_file_path, url)
-        
-        if "error" not in content:
-            # 保存内容
-            output_path = self.save_cms_content(content, output_filename)
-            content["output_file"] = output_path
-        
-        return content

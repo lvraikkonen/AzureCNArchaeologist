@@ -52,21 +52,48 @@ def extract_command(args):
     print(f"   输出目录: {args.output_dir}")
     
     try:
-        # 使用产品管理器获取支持的产品列表
-        from src.core.product_manager import ProductManager
-        product_manager = ProductManager()
+        # 支持的产品映射
+        product_mapping = {
+            'mysql': 'mysql-index.html',
+            'api-management': 'api-management-index.html',
+            'storage-files': 'storage-files-index.html',
+            'postgresql': 'postgresql-index.html',
+            'cosmos-db': 'cosmos-db-index.html',
+            'search': 'search-index.html',
+            'power-bi-embedded': 'power-bi-embedded-index.html',
+            'ssis': 'ssis-index.html',
+            'anomaly-detector': 'anomaly-detector-index.html',
+            'microsoft-entra-external-id': 'microsoft-entra-external-id-index.html',
+        }
         
-        # 检查产品是否支持
-        supported_products = product_manager.get_supported_products()
-        
-        if args.product in supported_products:
+        if args.product in product_mapping:
             from src.extractors.enhanced_cms_extractor import EnhancedCMSExtractor
             
             # 使用增强提取器
             extractor = EnhancedCMSExtractor(args.output_dir, args.config)
             
-            # 使用产品管理器获取URL
-            url = product_manager.get_product_url(args.product)
+            # 从文件名生成对应的URL (用于提取Slug)
+            filename = Path(args.html_file).name
+            
+            # URL映射表
+            url_mapping = {
+                'mysql-index.html': 'https://www.azure.cn/pricing/details/mysql/',
+                'api-management-index.html': 'https://www.azure.cn/pricing/details/api-management/',
+                'storage-files-index.html': 'https://www.azure.cn/pricing/details/storage/files/',
+                'postgresql-index.html': 'https://www.azure.cn/pricing/details/postgresql/',
+                'cosmos-db-index.html': 'https://www.azure.cn/pricing/details/cosmos-db/',
+                'search-index.html': 'https://www.azure.cn/pricing/details/search/',
+                'power-bi-embedded-index.html': 'https://www.azure.cn/pricing/details/power-bi-embedded/',
+                'ssis-index.html': 'https://www.azure.cn/pricing/details/data-factory/ssis/',
+                'anomaly-detector-index.html': 'https://www.azure.cn/pricing/details/cognitive-services/anomaly-detector/',
+                'microsoft-entra-external-id-index.html': 'https://www.azure.cn/pricing/details/entra-external-id/',
+            }
+            
+            # 获取URL，如果没有映射则从文件名推导
+            url = url_mapping.get(filename)
+            if not url:
+                product_slug = filename.replace('-index.html', '')
+                url = f"https://www.azure.cn/pricing/details/{product_slug}/"
             
             print(f"🔗 使用URL: {url}")
             
@@ -90,7 +117,8 @@ def extract_command(args):
             
         else:
             print(f"❌ 暂不支持产品: {args.product}")
-            print(f"支持的产品: {', '.join(supported_products)}")
+            supported_products = ', '.join(product_mapping.keys())
+            print(f"支持的产品: {supported_products}")
             
     except Exception as e:
         print(f"❌ 提取过程出错: {str(e)}")
@@ -129,46 +157,21 @@ def batch_command(args):
 
 def list_products_command(args):
     """列出支持的产品"""
-    try:
-        from src.core.product_manager import ProductManager
-        product_manager = ProductManager()
-        
-        # 获取支持的产品列表
-        products = product_manager.get_supported_products()
-        
-        # 按分类获取产品
-        products_by_category = product_manager.get_products_by_category()
-        
-        print("📋 支持的产品列表（按分类）:")
-        total_count = 0
-        
-        for category, product_list in products_by_category.items():
-            if product_list:
-                print(f"\n🔧 {category}:")
-                for i, product in enumerate(product_list, 1):
-                    display_name = product_manager.get_product_display_name(product)
-                    print(f"   {total_count + i:2d}. {product} ({display_name})")
-                total_count += len(product_list)
-        
-        print(f"\n📊 总计: {total_count} 个产品")
-        print("\n💡 使用方法:")
-        print("   python cli.py extract <product> --html-file <path> --format <format> --output-dir <dir>")
-        print("   例如: python cli.py extract mysql --html-file data/prod-html/mysql-index.html --format json --output-dir output")
-        
-    except Exception as e:
-        print(f"❌ 获取产品列表失败: {e}")
-        # 备用产品列表
-        products = [
-            "mysql", "api-management", "storage-files", "postgresql",
-            "cosmos-db", "search", "power-bi-embedded", "ssis",
-            "anomaly-detector", "microsoft-entra-external-id"
-        ]
-        
-        print("📋 支持的产品列表:")
-        for i, product in enumerate(products, 1):
-            print(f"   {i:2d}. {product}")
-        
-        print(f"\n总计: {len(products)} 个产品")
+    # 从CLI中的实际支持列表获取
+    products = [
+        "mysql", "api-management", "storage-files", "postgresql",
+        "cosmos-db", "search", "power-bi-embedded", "ssis",
+        "anomaly-detector", "microsoft-entra-external-id"
+    ]
+    
+    print("📋 支持的产品列表:")
+    for i, product in enumerate(products, 1):
+        print(f"   {i:2d}. {product}")
+    
+    print(f"\n总计: {len(products)} 个产品")
+    print("\n💡 使用方法:")
+    print("   python cli.py extract <product> --html-file <path> --format <format> --output-dir <dir>")
+    print("   例如: python cli.py extract api-management --html-file data/prod-html/api-management-index.html --format json --output-dir output/api-management")
 
 
 def status_command(args):

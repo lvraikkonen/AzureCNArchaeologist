@@ -1,0 +1,49 @@
+{
+  "version": "2.0",
+  "last_updated": "2025-07-22",
+  "total_products": 10,
+  "future_capacity": 120,
+
+  "categories": {
+    "database": {
+      "count": 3,
+      "config_path": "products/database/",
+      "products": ["mysql", "postgresql", "cosmos-db"]
+    },
+    "ai-ml": {
+      "count": 1,
+      "config_path": "products/ai-ml/",
+      "products": ["anomaly-detector"]
+    },
+    "integration": {
+      "count": 2,
+      "config_path": "products/integration/",
+      "products": ["api-management", "ssis"]
+    },
+    "storage": {
+      "count": 1,
+      "config_path": "products/storage/",
+      "products": ["storage-files"]
+    },
+    "compute": {
+      "count": 3,
+      "config_path": "products/compute/",
+      "products": ["power-bi-embedded", "search", "microsoft-entra-external-id"],
+      "large_html_products": []
+    }
+  },
+
+  "load_strategy": {
+    "lazy_load": true,
+    "cache_configs": true,
+    "parallel_load": false,
+    "cache_ttl_minutes": 30
+  },
+
+  "processing_defaults": {
+    "memory_limit_mb": 512,
+    "timeout_seconds": 120,
+    "chunk_size_kb": 1024,
+    "large_file_threshold_mb": 2.0
+  }
+}

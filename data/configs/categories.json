@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "categories": {
+    "database": {
+      "display_name": "数据库服务",
+      "description": "Azure数据库相关服务",
+      "icon": "database"
+    },
+    "ai-ml": {
+      "display_name": "人工智能与机器学习",
+      "description": "AI和ML相关服务",
+      "icon": "brain"
+    },
+    "integration": {
+      "display_name": "集成服务",
+      "description": "API管理和数据集成服务",
+      "icon": "link"
+    },
+    "storage": {
+      "display_name": "存储服务",
+      "description": "数据存储相关服务",
+      "icon": "archive"
+    },
+    "compute": {
+      "display_name": "计算服务",
+      "description": "虚拟机和计算相关服务",
+      "icon": "server"
+    }
+  }
+}
