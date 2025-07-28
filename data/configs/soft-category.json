@@ -1160,5 +1160,103 @@
       "#databricks-Compute-job-F",
       "#databricks-Compute-job-NCsv3"
     ]
+  },
+  {
+    "os": "Page Blobs",
+    "region": "east-china3",
+    "tableIDs": [
+      "#page-blobs-gv2-premium-addition-n3",
+      "#page-blobs-gv1-premium",
+      "#page-blobs-gv1-premium-addition",
+      "#page-blobs-gv1-standard-data-storage-east3",
+      "#page-blobs-gv1-standard-data-storage",
+      "#page-blobs-gv1-unmanaged-disks-east3",
+      "#page-blobs-gv1-unmanaged-disks",
+      "#page-blobs-gv1-standard-non-disk-east3",
+      "#page-blobs-gv1-standard-non-disk",
+      "#page-blobs-gv2-premium",
+      "#page-blobs-gv2-standard-data-storage-N3"
+    ]
+  },
+  {
+    "os": "Page Blobs",
+    "region": "north-china3",
+    "tableIDs": [
+      "#page-blobs-gv2-premium-addition",
+      "#page-blobs-gv1-premium-east3",
+      "#page-blobs-gv1-premium-addition",
+      "#page-blobs-gv1-standard-data-storage-east3",
+      "#page-blobs-gv1-standard-data-storage",
+      "#page-blobs-gv1-unmanaged-disks-east3",
+      "#page-blobs-gv1-unmanaged-disks",
+      "#page-blobs-gv1-standard-non-disk-east3",
+      "#page-blobs-gv1-standard-non-disk",
+      "#page-blobs-gv2-premium",
+      "#page-blobs-gv2-standard-data-storage"
+    ]
+  },
+  {
+    "os": "Page Blobs",
+    "region": "east-china2",
+    "tableIDs": [
+      "#page-blobs-gv2-premium-addition-n3",
+      "#page-blobs-gv1-premium-east3",
+      "#page-blobs-gv1-standard-data-storage-north3",
+      "#page-blobs-gv1-standard-data-storage-east3",
+      "#page-blobs-gv1-unmanaged-disks-east3",
+      "#page-blobs-gv1-unmanaged-disks-north3",
+      "#page-blobs-gv1-standard-non-disk-north3",
+      "#page-blobs-gv1-standard-non-disk-east3",
+      "#page-blobs-gv2-premium",
+      "#page-blobs-gv2-standard-data-storage-N3"
+    ]
+  },
+  {
+    "os": "Page Blobs",
+    "region": "north-china2",
+    "tableIDs": [
+      "#page-blobs-gv2-premium-addition-n3",
+      "#page-blobs-gv1-premium-east3",
+      "#page-blobs-gv1-standard-data-storage-north3",
+      "#page-blobs-gv1-standard-data-storage-east3",
+      "#page-blobs-gv1-unmanaged-disks-east3",
+      "#page-blobs-gv1-unmanaged-disks-north3",
+      "#page-blobs-gv1-standard-non-disk-north3",
+      "#page-blobs-gv1-standard-non-disk-east3",
+      "#page-blobs-gv2-premium",
+      "#page-blobs-gv2-standard-data-storage-N3"
+    ]
+  },
+  {
+    "os": "Page Blobs",
+    "region": "east-china",
+    "tableIDs": [
+      "#page-blobs-gv2-premium-addition-n3",
+      "#page-blobs-gv1-premium-east3",
+      "#page-blobs-gv1-standard-data-storage-north3",
+      "#page-blobs-gv1-standard-data-storage-east3",
+      "#page-blobs-gv1-unmanaged-disks-east3",
+      "#page-blobs-gv1-unmanaged-disks-north3",
+      "#page-blobs-gv1-standard-non-disk-north3",
+      "#page-blobs-gv1-standard-non-disk-east3",
+      "#page-blobs-gv2-premium",
+      "#page-blobs-gv2-standard-data-storage-N3"
+    ]
+  },
+  {
+    "os": "Page Blobs",
+    "region": "north-china",
+    "tableIDs": [
+      "#page-blobs-gv2-premium-addition-n3",
+      "#page-blobs-gv1-premium-east3",
+      "#page-blobs-gv1-standard-data-storage-north3",
+      "#page-blobs-gv1-standard-data-storage-east3",
+      "#page-blobs-gv1-unmanaged-disks-east3",
+      "#page-blobs-gv1-unmanaged-disks-north3",
+      "#page-blobs-gv1-standard-non-disk-north3",
+      "#page-blobs-gv1-standard-non-disk-east3",
+      "#page-blobs-gv2-premium",
+      "#page-blobs-gv2-standard-data-storage-N3"
+    ]
   }
 ]

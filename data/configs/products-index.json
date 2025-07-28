@@ -1,7 +1,7 @@
 {
   "version": "2.0",
   "last_updated": "2025-07-22",
-  "total_products": 10,
+  "total_products": 11,
   "future_capacity": 120,
 
   "categories": {
@@ -21,9 +21,9 @@
       "products": ["api-management", "ssis"]
     },
     "storage": {
-      "count": 1,
+      "count": 2,
       "config_path": "products/storage/",
-      "products": ["storage-files"]
+      "products": ["storage-files", "data-lake-storage"]
     },
     "compute": {
       "count": 3,

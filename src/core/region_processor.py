@@ -26,8 +26,16 @@ class RegionProcessor:
         if os.path.exists(self.config_file):
             try:
                 with open(self.config_file, 'r', encoding='utf-8') as f:
-                    config = json.load(f)
-                print(f"📋 加载区域配置: {len(config)} 个区域")
+                    raw_config = json.load(f)
+
+                # 如果配置是数组格式，转换为字典格式
+                if isinstance(raw_config, list):
+                    config = self._convert_array_config_to_dict(raw_config)
+                    print(f"📋 加载区域配置: {len(raw_config)} 个配置项，转换为 {len(config)} 个产品")
+                else:
+                    config = raw_config
+                    print(f"📋 加载区域配置: {len(config)} 个产品")
+
                 return config
             except Exception as e:
                 print(f"⚠ 加载区域配置失败: {e}")
@@ -35,6 +43,50 @@ class RegionProcessor:
         else:
             print(f"⚠ 区域配置文件不存在: {self.config_file}")
             return {}
+
+    def _convert_array_config_to_dict(self, array_config: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """将数组格式的配置转换为字典格式"""
+        dict_config = {}
+
+        for item in array_config:
+            if not isinstance(item, dict):
+                continue
+
+            os_name = item.get('os', '')
+            region = item.get('region', '')
+            table_ids = item.get('tableIDs', [])
+
+            if not os_name or not region:
+                continue
+
+            # 标准化产品名称（转换为文件名格式）
+            product_key = self._normalize_product_name(os_name)
+
+            if product_key not in dict_config:
+                dict_config[product_key] = {}
+
+            dict_config[product_key][region] = table_ids
+
+        return dict_config
+
+    def _normalize_product_name(self, os_name: str) -> str:
+        """标准化产品名称为文件名格式"""
+        # 产品名称映射表
+        name_mapping = {
+            'API Management': 'api-management-index',
+            'Azure Database for MySQL': 'mysql-index',
+            'Azure Cosmos DB': 'cosmos-db-index',
+            'Storage Files': 'storage-files-index',
+            'Data Factory SSIS': 'ssis-index',
+            'Power BI Embedded': 'power-bi-embedded-index',
+            'Cognitive Services': 'cognitive-services-index',
+            'Anomaly Detector': 'anomaly-detector-index',
+            'Machine Learning Server': 'machine-learning-server-index',
+            'Azure_Data_Lake_Storage_Gen': 'storage_data-lake_index',
+            'databricks': 'databricks-index'
+        }
+
+        return name_mapping.get(os_name, os_name.lower().replace(' ', '-'))
 
     def detect_available_regions(self, soup: BeautifulSoup) -> List[str]:
         """动态检测HTML中实际存在的区域"""
@@ -58,9 +110,9 @@ class RegionProcessor:
         
         # 方法3: 检查常见的区域ID模式
         common_region_patterns = [
-            'china-north', 'china-east', 'china-south',
-            'beijing', 'shanghai', 'guangzhou', 'shenzhen',
-            'cn-north', 'cn-east', 'cn-south'
+            'china-north', 'china-east',
+            'china-north2', 'china-east2',
+            'china-north3', 'china-east3',
         ]
         
         for pattern in common_region_patterns:
@@ -149,16 +201,80 @@ class RegionProcessor:
         
         # 移除指定的表格
         tables_removed = 0
+        removed_table_ids = []
+
         for table_id in region_tables:
-            elements = filtered_soup.find_all(id=table_id)
+            # 处理带#号和不带#号的table_id
+            clean_table_id = table_id.replace('#', '') if table_id.startswith('#') else table_id
+
+            # 查找元素（先尝试带#的ID，再尝试不带#的）
+            elements = filtered_soup.find_all(id=clean_table_id)
+            if not elements and not table_id.startswith('#'):
+                # 如果没找到，尝试查找带#前缀的
+                elements = filtered_soup.find_all(id=f"#{table_id}")
+
             for element in elements:
-                element.decompose()
+                # 移除表格及其相关的前置内容
+                self._remove_table_with_related_content(element, clean_table_id)
                 tables_removed += 1
-        
+                removed_table_ids.append(table_id)
+
         if tables_removed > 0:
-            print(f"  ✓ 移除了 {tables_removed} 个区域特定表格")
-        
+            print(f"  ✓ 移除了 {tables_removed} 个区域特定表格: {removed_table_ids}")
+
+        # 在filtered_soup中添加一个隐藏的元数据标签，记录被移除的table IDs
+        if removed_table_ids:
+            metadata_comment = filtered_soup.new_string(f"<!-- Removed table IDs for region {region_id}: {', '.join(removed_table_ids)} -->")
+            if filtered_soup.body:
+                filtered_soup.body.insert(0, metadata_comment)
+
         return filtered_soup
+
+    def _remove_table_with_related_content(self, table_element, table_id: str):
+        """移除表格及其相关的前置内容（标题、说明等）"""
+
+        print(f"    🗑️ 移除表格及相关内容: {table_id}")
+
+        # 收集要移除的元素
+        elements_to_remove = [table_element]
+
+        # 向前查找相关的前置内容
+        current = table_element.previous_sibling
+
+        while current:
+            if hasattr(current, 'name'):
+                # 如果是标签元素
+                if current.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
+                    # 找到标题，添加到移除列表并停止
+                    elements_to_remove.append(current)
+                    print(f"      📋 移除相关标题: {current.name} - {current.get_text(strip=True)[:50]}")
+                    break
+                elif current.name == 'p':
+                    # 说明文字，添加到移除列表
+                    elements_to_remove.append(current)
+                    print(f"      📝 移除相关说明: {current.get_text(strip=True)[:50]}")
+                elif current.name == 'div' and 'tags-date' in current.get('class', []):
+                    # 价格说明div，添加到移除列表
+                    elements_to_remove.append(current)
+                    print(f"      💰 移除价格说明: {current.get_text(strip=True)[:50]}")
+                elif current.name == 'br':
+                    # 换行符，添加到移除列表
+                    elements_to_remove.append(current)
+                elif current.name in ['table', 'div'] and current.get('id'):
+                    # 遇到其他有ID的重要元素，停止
+                    break
+            elif hasattr(current, 'string') and current.string and current.string.strip():
+                # 如果是有内容的文本节点，停止
+                break
+
+            current = current.previous_sibling
+
+        # 移除所有收集到的元素
+        for element in elements_to_remove:
+            try:
+                element.decompose()
+            except Exception as e:
+                print(f"      ⚠ 移除元素失败: {e}")
 
     def _extract_global_content(self, soup: BeautifulSoup) -> Dict[str, Any]:
         """提取全局内容（无区域区分）"""

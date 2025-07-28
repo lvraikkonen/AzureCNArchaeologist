@@ -84,11 +84,15 @@ class ProductManager:
         product_path = self._find_product_config_path(product_key, index)
 
         if product_path:
-            config = self._load_single_product_config(product_path)
-            # 缓存配置
-            self.cached_configs[product_key] = config
-            self.cache_timestamps[product_key] = datetime.now()
-            return config
+            try:
+                config = self._load_single_product_config(product_path)
+                # 缓存配置
+                self.cached_configs[product_key] = config
+                self.cache_timestamps[product_key] = datetime.now()
+                return config
+            except FileNotFoundError:
+                # 配置文件不存在，抛出 ValueError 而不是 FileNotFoundError
+                raise ValueError(f"产品配置文件不存在: {product_key}")
 
         raise ValueError(f"产品配置不存在: {product_key}")
 
@@ -129,9 +133,11 @@ class ProductManager:
             try:
                 config = self.get_product_config(product_key)
                 if config.get("filename") == basename:
+                    print(f"🔍 检测到产品: {basename} -> {product_key}")
                     return product_key
-            except ValueError:
-                continue  # 跳过配置不存在的产品
+            except (ValueError, FileNotFoundError):
+                # 静默跳过配置不存在的产品
+                continue
 
         return None
 
