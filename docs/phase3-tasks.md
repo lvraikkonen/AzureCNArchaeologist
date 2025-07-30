@@ -378,6 +378,7 @@
   from .strategy_factory import StrategyFactory
   from .simple_static_strategy import SimpleStaticStrategy
   from .region_filter_strategy import RegionFilterStrategy
+  from .tab_strategy import SimpleTabStrategy
   from .region_tab_strategy import RegionTabStrategy
   from .multi_filter_strategy import MultiFilterStrategy
   from .large_file_strategy import LargeFileStrategy
@@ -385,6 +386,7 @@
   # 注册所有策略
   StrategyFactory.register_strategy("simple_static", SimpleStaticStrategy)
   StrategyFactory.register_strategy("region_filter", RegionFilterStrategy)
+  StrategyFactory.register_strategy("tab", SimpleTabStrategy)
   StrategyFactory.register_strategy("region_tab", RegionTabStrategy)
   StrategyFactory.register_strategy("multi_filter", MultiFilterStrategy)
   StrategyFactory.register_strategy("large_file", LargeFileStrategy)
@@ -397,6 +399,7 @@
 #### 3.7.1 单个策略测试
 - [ ] 测试SimpleStaticStrategy处理简单页面
 - [ ] 测试RegionFilterStrategy处理API Management
+- [ ] 测试SimpleTabStrategy处理Tab页面
 - [ ] 测试RegionTabStrategy处理区域+Tab页面
 - [ ] 测试MultiFilterStrategy处理复杂筛选器
 - [ ] 测试LargeFileStrategy处理大文件

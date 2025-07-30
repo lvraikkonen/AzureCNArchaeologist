@@ -85,7 +85,7 @@
   ```
 
 **验证标准**: 
-- FilterDetector正确识别api-management的区域筛选器
+- FilterDetector正确识别api-management的区域筛选器，或者sql-database产品正确识别`OS/软件`的筛选器
 - TabDetector正确识别无Tab结构
 - RegionDetector检测到5个区域
 
@@ -117,6 +117,7 @@
   STRATEGY_REGISTRY = {
       "simple_static": "SimpleStaticStrategy",
       "region_filter": "RegionFilterStrategy", 
+      "tab": "SimpleTabStrategy",
       "region_tab": "RegionTabStrategy",
       "multi_filter": "MultiFilterStrategy",
       "large_file": "LargeFileStrategy"

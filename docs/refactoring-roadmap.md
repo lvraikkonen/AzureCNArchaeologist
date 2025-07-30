@@ -109,11 +109,12 @@ class RegionDetector:
 ```
 
 ### 支持的页面类型
-- **Type A**: 简单静态页面（几个模块纯HTML）
-- **Type B**: 单层区域筛选页面（如api-management）
-- **Type C**: 区域+Tab组合页面
-- **Type D**: 多筛选器+Tab页面（如虚拟机）
-- **Type E**: 大型HTML文件（>5MB，需内存优化）
+- **Type A**: 简单静态页面（几个模块纯HTML）(如service-bus，event-grid，multi-factor-authentication 等产品)
+- **Type B**: 单区域筛选页面（只有一个地区筛选控件，如api-management，vpn-gateway 等产品）
+- **Type C**: Tab控制页面 （只有一个tab控制内容，如databox，batch产品）
+- **Type D**: 区域+Tab组合页面 （一个地区筛选控件和tab控制内容，如data-lake，mariadb 等产品）
+- **Type E**: 多筛选器+Tab页面（如virtual-machines，machine-learning等产品）
+- **Type F**: 大型HTML文件（>5MB，需内存优化）
 
 ### Phase 2 任务清单
 
@@ -162,17 +163,21 @@ class SimpleStaticStrategy(BaseStrategy):
 class RegionFilterStrategy(BaseStrategy):
     """Type B: 区域筛选页面处理"""
 
+# src/strategies/tab_strategy.py
+class SimpleTabStrategy(BaseStrategy):
+    """Type C: Tab控制页面处理"""
+
 # src/strategies/region_tab_strategy.py
 class RegionTabStrategy(BaseStrategy):
-    """Type C: 区域+Tab组合页面处理"""
+    """Type D: 区域+Tab组合页面处理"""
 
 # src/strategies/multi_filter_strategy.py
 class MultiFilterStrategy(BaseStrategy):
-    """Type D: 多筛选器+Tab页面处理"""
+    """Type E: 多筛选器+Tab页面处理"""
 
 # src/strategies/large_file_strategy.py
 class LargeFileStrategy(BaseStrategy):
-    """Type E: 大文件优化处理"""
+    """Type F: 大文件优化处理"""
 ```
 
 #### 2. **提取协调器**
@@ -194,6 +199,7 @@ class ExtractionCoordinator:
 
 #### 3.2 实现核心策略
 - [ ] 实现`RegionFilterStrategy`（现有api-management逻辑）
+- [ ] 实现`SimpleTabStrategy`（Tab控制内容）
 - [ ] 实现`RegionTabStrategy`（区域+Tab组合）
 - [ ] 实现`MultiFilterStrategy`（多筛选器处理）
 - [ ] 实现`LargeFileStrategy`（大文件优化）

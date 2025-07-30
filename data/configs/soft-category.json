@@ -1258,5 +1258,51 @@
       "#page-blobs-gv2-premium",
       "#page-blobs-gv2-standard-data-storage-N3"
     ]
+  },
+  {
+    "os":"VPN Gateway",
+     "region":"east-china",
+     "tableIDs":[
+      "#VPN_Gateway_table_Availability_Zones"
+    ]
+  },
+  {
+    "os":"VPN Gateway",
+     "region":"east-china2",
+     "tableIDs":[
+      "#VPN_Gateway_table_Availability_Zones"
+    ]
+  },
+  {
+    "os":"VPN Gateway",
+     "region":"north-china2",
+     "tableIDs":[
+      "#VPN_Gateway_table_Availability_Zones"
+    ]
+  },
+  {
+    "os":"VPN Gateway",
+     "region":"north-china",
+     "tableIDs":[
+      "#VPN_Gateway_table_Availability_Zones"
+    ]
+  },
+  {
+    "os": "MariaDB",
+    "region": "north-china",
+    "tableIDs": [
+      "#mariadb-basic-compute-gen5",
+      "#mariadb-general-purpose-compute-gen5",
+      "#mariadb-memory-optimized-compute-gen5"
+    ]
+  },
+  {
+    "os": "MariaDB",
+    "region": "east-china",
+    "tableIDs": [
+      "#mariadb-basic-compute-gen5",
+      "#mariadb-general-purpose-compute-gen5",
+      "#mariadb-memory-optimized-compute-gen5"
+    ]
   }
 ]
