@@ -15,7 +15,7 @@ from typing import Dict, List, Any, Optional
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
-from src.utils.large_html_utils import LargeHTMLProcessor
+from src.utils.common.large_html_utils import LargeHTMLProcessor
 
 
 class ProductManager:

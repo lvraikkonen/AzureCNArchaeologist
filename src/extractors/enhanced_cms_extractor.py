@@ -19,16 +19,15 @@ sys.path.append(str(project_root))
 from src.core.product_manager import ProductManager
 from src.core.region_processor import RegionProcessor
 from src.core.config_manager import ConfigManager
-from src.utils.html_utils import (
-    create_simple_element, preprocess_image_paths, clean_html_content
-)
-from src.utils.faq_utils import extract_qa_content
-from src.utils.content_utils import (
-    find_main_content_area, extract_banner_text_content, 
+from src.utils.html.element_creator import create_simple_element
+from src.utils.html.cleaner import clean_html_content
+from src.utils.media.image_processor import preprocess_image_paths
+from src.utils.content.content_utils import (
+    extract_qa_content, find_main_content_area, extract_banner_text_content, 
     extract_structured_content
 )
-from src.utils.validation_utils import validate_extracted_data
-from src.utils.large_html_utils import LargeHTMLProcessor
+from src.utils.data.validation_utils import validate_extracted_data
+from src.utils.common.large_html_utils import LargeHTMLProcessor
 
 
 class EnhancedCMSExtractor:
@@ -606,7 +605,7 @@ class EnhancedCMSExtractor:
                 table_elem['class'] = ['pricing-table']
                 
                 # 复制表格结构
-                from src.utils.html_utils import copy_table_structure
+                from src.utils.html.element_creator import copy_table_structure
                 copy_table_structure(table, table_elem, simplified_table)
                 
                 pricing_tables.append(str(simplified_table))
