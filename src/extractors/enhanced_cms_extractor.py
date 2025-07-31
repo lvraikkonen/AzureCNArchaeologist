@@ -19,6 +19,7 @@ sys.path.append(str(project_root))
 from src.core.product_manager import ProductManager
 from src.core.region_processor import RegionProcessor
 from src.core.config_manager import ConfigManager
+from src.core.strategy_manager import StrategyManager
 from src.utils.html.element_creator import create_simple_element
 from src.utils.html.cleaner import clean_html_content
 from src.utils.media.image_processor import preprocess_image_paths
@@ -63,6 +64,7 @@ class EnhancedCMSExtractor:
         self.region_processor = RegionProcessor(config_file)
         self.config_manager = ConfigManager()
         self.large_html_processor = LargeHTMLProcessor()
+        self.strategy_manager = StrategyManager(self.product_manager)
 
         print(f"🚀 增强型CMS提取器初始化完成")
         print(f"📁 输出目录: {self.output_dir}")
@@ -80,13 +82,21 @@ class EnhancedCMSExtractor:
             print("⚠ 无法检测产品类型，使用通用提取逻辑")
             product_key = "unknown"
 
-        # 获取处理策略
+        # 使用StrategyManager获取智能策略决策
         try:
-            strategy = self.product_manager.get_processing_strategy(html_file_path, product_key)
-            print(f"📊 文件大小: {strategy['size_mb']:.2f} MB")
-            print(f"🚀 处理策略: {strategy['strategy']}")
+            extraction_strategy = self.strategy_manager.determine_extraction_strategy(html_file_path, product_key)
+            
+            # 为了保持向后兼容性，转换策略格式
+            if extraction_strategy.strategy_type.value == 'large_file':
+                strategy = {"strategy": "streaming", "size_mb": extraction_strategy.config_overrides.get('file_size_mb', 0)}
+            else:
+                strategy = {"strategy": "normal", "size_mb": 0}
+                
+            print(f"🎯 提取策略: {extraction_strategy.strategy_type.value}")
+            print(f"🔧 处理器: {extraction_strategy.processor}")
+            
         except Exception as e:
-            print(f"⚠ 无法获取处理策略: {e}")
+            print(f"⚠ 策略管理器决策失败，使用默认策略: {e}")
             strategy = {"strategy": "normal", "size_mb": 0}
 
         if strategy['strategy'] == 'streaming':

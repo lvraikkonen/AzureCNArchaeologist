@@ -440,6 +440,71 @@ diff test_output_phase1/api-management_*.json test_output_phase3/api-management_
 
 **验证标准**: 错误处理优雅，有详细的错误信息
 
+### **3.8 代码清理和优化** (0.5天)
+
+#### 3.8.1 清理冗余代码
+- [ ] 检查并移除Phase 3重构后的无用代码:
+  - 未使用的导入语句
+  - 孤立的辅助方法和工具函数
+  - 重复的数据模型定义
+  - 过时的配置项和常量
+
+#### 3.8.2 优化代码结构
+- [ ] 整理文件组织结构:
+  - 确保策略类文件命名一致
+  - 清理`__init__.py`文件中的无用导入
+  - 统一代码风格和注释格式
+  - 移除调试用的print语句
+
+#### 3.8.3 依赖关系优化
+- [ ] 检查模块间依赖:
+  - 识别循环依赖问题
+  - 优化导入路径
+  - 清理不必要的依赖关系
+  - 确保模块职责清晰
+
+#### 3.8.4 性能优化
+- [ ] 代码性能优化:
+  - 缓存重复计算结果
+  - 优化大对象的内存使用
+  - 移除性能瓶颈代码
+  - 检查内存泄漏问题
+
+#### 3.8.5 清理后验证测试
+- [ ] 全面功能验证:
+  ```bash
+  # 验证所有策略功能正常
+  python cli.py extract api-management --html-file data/prod-html/api-management-index.html --format json --output-dir test_cleanup
+  python cli.py extract cosmos-db --html-file data/prod-html/cosmos-db-index.html --format json --output-dir test_cleanup
+  python cli.py extract sql-database --html-file data/prod-html/sql-database-index.html --format json --output-dir test_cleanup
+  
+  # 验证导入无错误
+  python -c "from src.strategies import *; from src.core.extraction_coordinator import ExtractionCoordinator; print('✅ 所有模块导入正常')"
+  
+  # 性能基准测试
+  time python cli.py extract api-management --html-file data/prod-html/api-management-index.html --format json --output-dir benchmark
+  ```
+
+#### 3.8.6 文档更新
+- [ ] 更新相关文档:
+  - 更新CLAUDE.md中的架构说明
+  - 更新CLI使用文档
+  - 添加策略使用示例
+  - 更新开发者文档
+
+**验证标准**: 
+- ✅ 代码库整洁，无冗余代码
+- ✅ 所有功能测试通过
+- ✅ 性能无回退，内存使用合理
+- ✅ 模块导入无错误
+- ✅ 文档与实际代码一致
+
+**成功指标**:
+- 代码行数减少10-20%（通过清理冗余）
+- 模块导入速度提升
+- 单元测试运行时间不增加
+- 无静态代码分析警告
+
 ---
 
 ## 🎯 **成功标准**
@@ -456,6 +521,9 @@ diff test_output_phase1/api-management_*.json test_output_phase3/api-management_
 - ✅ 策略模式实现正确
 - ✅ 单元测试覆盖率>85%
 - ✅ 代码结构清晰，易于扩展
+- ✅ 无冗余代码，依赖关系清晰
+- ✅ 代码清理后功能100%正常
+- ✅ 文档与代码实现完全一致
 
 ### 性能标准
 - ✅ 提取速度保持或提升
@@ -504,9 +572,16 @@ diff test_output_phase1/api-management_*.json test_output_phase3/api-management_
 - [ ] 集成测试通过
 
 ### Day 4 结束 (如需要)
-- [ ] 所有策略完善
-- [ ] 性能优化完成
+- [ ] 所有策略完善和测试
+- [ ] 代码清理和优化完成
+- [ ] 性能验证通过
 - [ ] 文档更新完成
+
+**重要**: 每个阶段结束时都要进行代码清理检查，确保：
+- 移除调试代码和临时文件
+- 清理未使用的导入和方法
+- 验证所有功能正常
+- 更新相关文档
 
 ---
 

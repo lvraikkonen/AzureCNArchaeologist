@@ -15,8 +15,6 @@ from typing import Dict, List, Any, Optional
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
-from src.utils.common.large_html_utils import LargeHTMLProcessor
-
 
 class ProductManager:
     """产品配置管理器 - 支持大规模产品和懒加载"""
@@ -28,7 +26,6 @@ class ProductManager:
         self.cached_configs = {}        # 配置缓存
         self.cache_timestamps = {}      # 缓存时间戳
         self.cache_ttl_minutes = 30     # 缓存TTL
-        self.large_html_processor = LargeHTMLProcessor()
 
         print(f"✓ 产品管理器初始化完成")
         print(f"📁 配置目录: {self.config_dir}")
@@ -148,24 +145,6 @@ class ProductManager:
             return config.get("html_processing", {}).get("type") == "large_file"
         except ValueError:
             return False
-
-    def get_processing_strategy(self, html_file_path: str, product_key: str) -> Dict[str, Any]:
-        """获取文件处理策略"""
-        # 结合产品配置和文件实际大小确定处理策略
-        file_strategy = self.large_html_processor.check_file_size(html_file_path)
-
-        try:
-            product_config = self.get_product_config(product_key)
-
-            if self.is_large_html_product(product_key):
-                # 使用产品配置中的大型文件处理设置
-                html_config = product_config.get("html_processing", {})
-                file_strategy.update(html_config)
-        except ValueError:
-            # 产品配置不存在，使用默认策略
-            pass
-
-        return file_strategy
 
     def get_product_display_name(self, product_key: str) -> str:
         """获取产品显示名称"""
