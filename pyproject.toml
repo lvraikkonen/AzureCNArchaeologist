@@ -1,0 +1,6 @@
+[project]
+name = "AzureCN-Archeologist"
+version = "0.1.0"
+description = "ACN rebuild"
+readme = "README.md"
+dependencies = []

@@ -10,7 +10,7 @@
 
 ---
 
-## 🏗️ **目录结构**
+## 🏗️ **Phase1结束时目录结构**
 
 ```
 AzureCNArchaeologist/
@@ -64,6 +64,55 @@ AzureCNArchaeologist/
 │   ├── refactoring-roadmap.md         # 重构路线图
 │   └── current-architecture.md        # 当前架构文档
 └── README.md                          # 项目说明
+```
+
+## **重构后目标的目录结构**
+
+```
+ src/
+  ├── core/                          # 核心业务逻辑
+  │   ├── product_manager.py         # 产品配置管理（精简职责）
+  │   ├── strategy_manager.py        # 🆕 页面复杂度分析和策略决策
+  │   ├── extraction_coordinator.py  # 🆕 提取流程协调器
+  │   ├── data_models.py             # 🆕 策略相关数据模型
+  │   └── config_manager.py          # 配置管理（保留）
+  ├── strategies/                    # 🆕 按页面类型的提取策略
+  │   ├── base_strategy.py           # 基础策略接口
+  │   ├── simple_static_strategy.py  # Type A: 简单静态页面
+  │   ├── region_filter_strategy.py  # Type B: 区域筛选页面
+  │   ├── simply_tab_strategy.py     # Type C: 纯Tab控制页面
+  │   ├── region_tab_strategy.py     # Type D: 区域+Tab页面
+  │   ├── multi_filter_strategy.py   # Type E: 多筛选器+Tab页面
+  │   └── large_file_strategy.py     # Type F: 大文件优化处理
+  ├── detectors/                     # 🆕 页面结构检测器
+  │   ├── page_analyzer.py           # 页面复杂度分析
+  │   ├── filter_detector.py         # 筛选器检测（支持多类型）
+  │   ├── tab_detector.py            # Tab结构检测（支持嵌套）
+  │   └── region_detector.py         # 区域结构检测
+  ├── extractors/                    # 重构的内容提取器
+  │   ├── enhanced_cms_extractor.py  # 主协调器（简化为200行）
+  │   ├── content/                   # 基础内容提取器
+  │   │   ├── title_extractor.py
+  │   │   ├── banner_extractor.py    # 保留{img_hostname}处理
+  │   │   ├── description_extractor.py
+  │   │   ├── pricing_extractor.py
+  │   │   └── faq_extractor.py
+  │   └── specialized/               # 特殊结构提取器
+  │       ├── filter_content_extractor.py
+  │       ├── tab_content_extractor.py
+  │       └── interactive_element_extractor.py
+  ├── utils/                         # 🔄 重新设计的工具层
+  │   ├── html/                      # HTML处理工具包
+  │   ├── text/                      # 文本处理工具包
+  │   ├── content/                   # 内容处理工具包
+  │   ├── media/                     # 媒体资源处理包（保留CMS兼容）
+  │   ├── rag/                       # 🆕 RAG知识库专用工具包
+  │   ├── data/                      # 数据处理工具包
+  │   └── common/                    # 通用工具包
+  └── exporters/                     # 导出器层
+      ├── json_exporter.py           # JSON导出器（保留）
+      ├── html_exporter.py           # HTML导出器（保留）
+      └── rag_exporter.py            # 🆕 RAG导出器（重点开发）
 ```
 
 ---
