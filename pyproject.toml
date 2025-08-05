@@ -3,4 +3,7 @@ name = "AzureCN-Archeologist"
 version = "0.1.0"
 description = "ACN rebuild"
 readme = "README.md"
-dependencies = []
+dependencies = [
+    "beautifulsoup4>=4.13.4",
+    "psutil>=7.0.0",
+]

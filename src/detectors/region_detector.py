@@ -31,17 +31,19 @@ class RegionDetector:
         # 区域关键词映射
         self.region_keywords = {
             # 中文区域名称
-            '中国北部': 'china-north',
-            '中国东部': 'china-east', 
-            '中国北部2': 'china-north2',
-            '中国东部2': 'china-east2',
-            '中国北部3': 'china-north3',
-            '中国东部3': 'china-east3',
+            '中国北部': 'north-china',
+            '中国东部': 'east-china', 
+            '中国北部 2': 'north-china2',
+            '中国东部 2': 'east-china2',
+            '中国北部 3': 'north-china3',
+            '中国东部 3': 'east-china3', 
             # 英文区域名称
-            'china north': 'china-north',
-            'china east': 'china-east',
-            'north china': 'china-north',
-            'east china': 'china-east',
+            'China North': 'north-china',
+            'China East': 'east-china',
+            'China North 2': 'north-china2',
+            'China East 2': 'east-china2',
+            'China North 3': 'north-china3',
+            'China East 3': 'east-china3',
             # 简化名称
             '华北': 'china-north',
             '华东': 'china-east',

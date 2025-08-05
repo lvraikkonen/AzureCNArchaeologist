@@ -206,7 +206,7 @@ class FilterDetector:
                     
                     if self._is_functional_filter(element):
                         filter_obj = self._create_generic_filter(
-                            element, FilterType.OS_SOFTWARE, soup
+                            element, FilterType.OS, soup
                         )
                         if filter_obj:
                             os_filters.append(filter_obj)

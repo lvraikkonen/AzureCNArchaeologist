@@ -387,15 +387,12 @@ class RegionProcessor:
         """获取区域映射关系"""
         # 标准的Azure China区域映射
         return {
-            'china-north': '中国北部',
-            'china-east': '中国东部', 
-            'china-south': '中国南部',
-            'china-north-2': '中国北部2',
-            'china-east-2': '中国东部2',
-            'beijing': '北京',
-            'shanghai': '上海',
-            'guangzhou': '广州',
-            'shenzhen': '深圳'
+            'north-china': '中国北部',
+            'esat-china': '中国东部', 
+            'north-china2': '中国北部 2',
+            'esat-china2': '中国东部 2',
+            'north-china3': '中国北部 3',
+            'esat-china3': '中国东部 3', 
         }
 
     def normalize_region_id(self, region_id: str) -> str:
