@@ -137,7 +137,7 @@ class RegionProcessor:
         return detected_list
 
     def extract_region_contents(self, soup: BeautifulSoup, html_file_path: str) -> Dict[str, Any]:
-        """提取各区域的内容"""
+        """提取各区域的内容 - 保持完整HTML格式"""
         print("🌏 提取区域内容...")
         
         region_contents = {}
@@ -161,15 +161,10 @@ class RegionProcessor:
                 # 应用区域筛选
                 region_soup = self.apply_region_filtering(soup, region_id, filename)
                 
-                # 提取区域特定内容
-                region_content = {
-                    'region_id': region_id,
-                    'pricing_tables': self._extract_region_pricing_tables(region_soup, region_id),
-                    'feature_availability': self._extract_region_features(region_soup, region_id),
-                    'region_notes': self._extract_region_notes(region_soup, region_id)
-                }
+                # 提取完整的HTML内容而不是分解的结构
+                region_html = self._extract_region_html_content(region_soup, region_id)
                 
-                region_contents[region_id] = region_content
+                region_contents[region_id] = region_html
                 
             except Exception as e:
                 print(f"  ⚠ 区域 {region_id} 内容提取失败: {e}")
@@ -283,6 +278,82 @@ class RegionProcessor:
             'pricing_tables': self._extract_pricing_tables_simple(soup),
             'content_summary': self._get_content_summary(soup)
         }
+
+    def _extract_region_html_content(self, soup: BeautifulSoup, region_id: str) -> str:
+        """提取区域的完整HTML内容 - 从tab-content层级中获取pricing-page-section"""
+        print(f"    📄 提取区域 {region_id} 的完整HTML内容")
+        
+        # 构建HTML结构，匹配PowerBI-Embedded的格式
+        html_parts = []
+        html_parts.append('<div class="tab-content">')
+        html_parts.append('<div class="tab-panel" id="tabContent1">')
+        
+        # 1. 查找tab-content容器中的pricing-page-section
+        tab_content_containers = soup.find_all(class_='tab-content')
+        pricing_section_found = False
+        
+        for tab_content in tab_content_containers:
+            # 在tab-content中查找pricing-page-section
+            pricing_sections = tab_content.find_all(class_='pricing-page-section')
+            for section in pricing_sections:
+                # 跳过包含more-detail的section（FAQ内容）
+                if section.find(class_='more-detail'):
+                    continue
+                # 只要第一个pricing section
+                html_parts.append(self._clean_html_content(str(section)))
+                pricing_section_found = True
+                break
+            if pricing_section_found:
+                break
+        
+        # 如果在tab-content中没找到，回退到查找所有pricing-page-section
+        if not pricing_section_found:
+            pricing_sections = soup.find_all(class_='pricing-page-section')
+            for section in pricing_sections:
+                # 跳过包含more-detail的section（FAQ内容）
+                if section.find(class_='more-detail'):
+                    continue
+                # 只要第一个pricing section
+                html_parts.append(self._clean_html_content(str(section)))
+                break
+        
+        # 2. 添加tab控制结构
+        html_parts.append('<div class="technical-azure-selector tab-control-selector" style="min-height: 400px;">')
+        html_parts.append('<div class="tab-control-container tab-active" id="tabContent1">')
+        
+        # 3. 由于pricing-page-section已经包含了所有需要的内容，这里不再重复添加
+        # 只添加一个注释说明内容来源
+        html_parts.append('<!-- Content extracted from tab-content pricing-page-section -->')
+        
+        # 结束标签
+        html_parts.append('</div>')  # tab-control-container
+        html_parts.append('</div>')  # technical-azure-selector
+        html_parts.append('</div>')  # tab-panel
+        html_parts.append('</div>')  # tab-content
+        
+        # 组合并清理HTML
+        result_html = ''.join(html_parts)
+        result_html = self._clean_html_content(result_html)
+        
+        print(f"    ✓ 构建区域HTML内容，长度: {len(result_html)} 字符")
+        return result_html
+
+    def _clean_html_content(self, content: str) -> str:
+        """清理HTML内容，移除多余的换行和空格"""
+        if not content:
+            return ""
+        
+        import re
+        # 移除多余的换行符
+        content = re.sub(r'\n+', ' ', content)
+        # 移除多余的空格（保留单个空格）
+        content = re.sub(r'\s+', ' ', content)
+        # 移除标签之间的多余空格
+        content = re.sub(r'>\s+<', '><', content)
+        # 清理首尾空格
+        content = content.strip()
+        
+        return content
 
     def _extract_region_pricing_tables(self, soup: BeautifulSoup, region_id: str) -> List[Dict[str, Any]]:
         """提取区域特定的定价表格"""

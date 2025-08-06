@@ -1,20 +1,47 @@
 """
 Strategies module for extraction strategy implementations.
 
-This module will contain different extraction strategies for various page types:
+This module contains different extraction strategies for various page types:
 - BaseStrategy: Abstract base strategy
-- SimpleStaticStrategy: For simple static pages
-- RegionFilterStrategy: For pages with region filtering
-- TabStrategy: For tab-controlled pages
-- RegionTabStrategy: For combined region+tab pages
-- MultiFilterStrategy: For multi-filter pages
-- LargeFileStrategy: For large file optimization
+- RegionFilterStrategy: For pages with region filtering (implemented)
+- SimpleStaticStrategy: For simple static pages (planned)
+- TabStrategy: For tab-controlled pages (planned)
+- RegionTabStrategy: For combined region+tab pages (planned)
+- MultiFilterStrategy: For multi-filter pages (planned)
+- LargeFileStrategy: For large file optimization (planned)
 """
 
-# Strategy registry will be populated in Phase 3
+# Import base classes
+from .base_strategy import BaseStrategy
+from .strategy_factory import StrategyFactory
+
+# Import data models for proper typing
+from src.core.data_models import StrategyType
+
+# Import implemented strategies
+from .region_filter_strategy import RegionFilterStrategy
+
+# Register implemented strategies
+print("📋 注册策略到StrategyFactory...")
+
+try:
+    StrategyFactory.register_strategy(StrategyType.REGION_FILTER, RegionFilterStrategy)
+    print("✅ RegionFilterStrategy 已注册")
+except Exception as e:
+    print(f"⚠️ RegionFilterStrategy 注册失败: {e}")
+
+# Strategy registry for tracking (using enum as key for consistency)
 STRATEGY_REGISTRY = {
-    # Will be populated as strategies are implemented
+    StrategyType.REGION_FILTER: RegionFilterStrategy,
+    # More strategies will be added as they are implemented
 }
 
-# Imports will be added as strategies are implemented
-# from .base_strategy import BaseStrategy
+print(f"📊 已注册策略数量: {len(STRATEGY_REGISTRY)}")
+
+# Export main classes and factory
+__all__ = [
+    'BaseStrategy',
+    'StrategyFactory', 
+    'RegionFilterStrategy',
+    'STRATEGY_REGISTRY'
+]
