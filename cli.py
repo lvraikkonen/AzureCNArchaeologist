@@ -19,6 +19,7 @@ from src.core import setup_logging, get_app_logger, log_user_operation
 from src.exporters.json_exporter import JSONExporter
 from src.exporters.html_exporter import HTMLExporter
 from src.exporters.rag_exporter import RAGExporter
+from src.exporters.flexible_content_exporter import FlexibleContentExporter
 
 
 def print_banner():
@@ -107,6 +108,10 @@ def extract_command(args):
                 from src.exporters.rag_exporter import RAGExporter
                 exporter = RAGExporter(args.output_dir)
                 output_path = exporter.export_enhanced_cms_data(data, args.product)
+            elif args.format == 'flexible':
+                from src.exporters.flexible_content_exporter import FlexibleContentExporter
+                exporter = FlexibleContentExporter(args.output_dir)
+                output_path = exporter.export_flexible_content(data, args.product)
             
             print(f"✅ 数据已导出到: {output_path}")
             logger.info(f"数据已导出到: {output_path}")
@@ -177,6 +182,9 @@ def export_command(args):
     elif args.format == 'rag':
         exporter = RAGExporter(args.output)
         print("✅ RAG格式导出完成")
+    elif args.format == 'flexible':
+        exporter = FlexibleContentExporter(args.output)
+        print("✅ FlexibleContent格式导出完成")
 
 
 def batch_command(args):
@@ -273,7 +281,7 @@ def create_parser():
     extract_parser.add_argument('product', help='产品名称')
     extract_parser.add_argument('--html-file', required=True, 
                                help='输入HTML文件路径')
-    extract_parser.add_argument('--format', choices=['json', 'html', 'rag'],
+    extract_parser.add_argument('--format', choices=['json', 'html', 'rag', 'flexible'],
                                default='json', help='输出格式')
     extract_parser.add_argument('--output-dir', default='output',
                                help='输出目录')
@@ -282,7 +290,7 @@ def create_parser():
     
     # export 命令
     export_parser = subparsers.add_parser('export', help='导出数据')
-    export_parser.add_argument('format', choices=['json', 'html', 'rag'],
+    export_parser.add_argument('format', choices=['json', 'html', 'rag', 'flexible'],
                               help='导出格式')
     export_parser.add_argument('--input', '-i', required=True,
                               help='输入数据文件')

@@ -20,6 +20,7 @@ from src.core.data_models import StrategyType
 
 # Import implemented strategies
 from .region_filter_strategy import RegionFilterStrategy
+from .simple_static_strategy import SimpleStaticStrategy
 
 # Register implemented strategies
 print("📋 注册策略到StrategyFactory...")
@@ -30,9 +31,16 @@ try:
 except Exception as e:
     print(f"⚠️ RegionFilterStrategy 注册失败: {e}")
 
+try:
+    StrategyFactory.register_strategy(StrategyType.SIMPLE_STATIC, SimpleStaticStrategy)
+    print("✅ SimpleStaticStrategy 已注册")
+except Exception as e:
+    print(f"⚠️ SimpleStaticStrategy 注册失败: {e}")
+
 # Strategy registry for tracking (using enum as key for consistency)
 STRATEGY_REGISTRY = {
     StrategyType.REGION_FILTER: RegionFilterStrategy,
+    StrategyType.SIMPLE_STATIC: SimpleStaticStrategy,
     # More strategies will be added as they are implemented
 }
 
@@ -43,5 +51,6 @@ __all__ = [
     'BaseStrategy',
     'StrategyFactory', 
     'RegionFilterStrategy',
+    'SimpleStaticStrategy',
     'STRATEGY_REGISTRY'
 ]

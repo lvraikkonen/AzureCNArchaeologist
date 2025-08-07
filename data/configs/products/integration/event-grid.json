@@ -1,0 +1,30 @@
+{
+  "display_name": "Event Grid",
+  "filename": "event-grid.html",
+  "url": "https://www.azure.cn/pricing/details/event-grid/",
+  "slug": "event-grid",
+  "category": "integration",
+  "created_at": "2025-08-07",
+
+  "important_section_titles": [
+    "定价详细信息", "定价详情", "pricing details",
+    "常见问题", "faq", "frequently asked questions",
+    "event grid", "事件网格"
+  ],
+
+  "html_processing": {
+    "type": "simple",
+    "estimated_size_mb": 0.2,
+    "processing_strategy": "standard"
+  },
+
+  "extraction_config": {
+    "priority_sections": ["banner", "description", "pricing-tables"],
+    "enable_region_processing": false
+  },
+
+  "validation_rules": {
+    "required_fields": ["Title", "BannerContent"],
+    "min_content_length": 50
+  }
+}

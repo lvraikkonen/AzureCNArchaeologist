@@ -1,7 +1,7 @@
 {
   "version": "2.0",
   "last_updated": "2025-07-22",
-  "total_products": 11,
+  "total_products": 12,
   "future_capacity": 120,
 
   "categories": {
@@ -16,9 +16,9 @@
       "products": ["anomaly-detector"]
     },
     "integration": {
-      "count": 2,
+      "count": 3,
       "config_path": "products/integration/",
-      "products": ["api-management", "ssis"]
+      "products": ["api-management", "ssis", "event-grid"]
     },
     "storage": {
       "count": 2,
