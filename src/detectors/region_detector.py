@@ -64,7 +64,10 @@ class RegionDetector:
             '#region-select',
             '[data-region]',
             
-            # Azure China特定模式
+            # Azure China特定模式 - pricing-detail-tab结构
+            '.technical-azure-selector.pricing-detail-tab .region-container',
+            '.pricing-detail-tab .region-container select',
+            '.pricing-detail-tab .region-container .tab-items',
             '.pricing-dropdown',
             '.region-pricing-dropdown',
             '.software-kind select',  # Azure特有的区域容器
@@ -72,6 +75,7 @@ class RegionDetector:
             # 区域容器内的选择器
             '.region-container select',
             '.region-container input[type="radio"]',
+            '.region-container .tab-items a[data-href]',  # 新增：支持data-href链接
             
             # 通用模式
             'button[data-toggle*="region"]',
@@ -330,6 +334,48 @@ class RegionDetector:
                                 options.append(value)
                                 if radio.get('checked'):
                                     default_option = value
+            
+            elif element.name == 'ol' and 'tab-items' in element.get('class', []):
+                # pricing-detail-tab结构中的tab-items处理
+                tab_links = element.find_all('a', {'data-href': True})
+                for link in tab_links:
+                    data_href = link.get('data-href', '').strip()
+                    text = link.get_text().strip()
+                    
+                    # 从data-href提取区域ID (如 #north-china -> north-china)
+                    if data_href.startswith('#'):
+                        region_id = data_href[1:]  # 去掉#号
+                        options.append(region_id)
+                        
+                        # 检查是否是当前激活的选项
+                        if 'active' in link.get('class', []) or 'active' in link.find_parent('li').get('class', []):
+                            default_option = region_id
+                            
+            elif element.name == 'div' and 'region-container' in element.get('class', []):
+                # 如果选中的是region-container本身，查找其中的区域选项
+                # 先查找select选项
+                select_elem = element.find('select')
+                if select_elem:
+                    for option in select_elem.find_all('option'):
+                        value = option.get('value', '').strip()
+                        if value and value not in ['', '请选择', '加载中...']:
+                            options.append(value)
+                            if option.get('selected'):
+                                default_option = value
+                
+                # 再查找tab-items中的链接
+                tab_items = element.find('ol', class_='tab-items')
+                if tab_items:
+                    for link in tab_items.find_all('a', {'data-href': True}):
+                        data_href = link.get('data-href', '').strip()
+                        if data_href.startswith('#'):
+                            region_id = data_href[1:]
+                            if region_id not in options:  # 避免重复
+                                options.append(region_id)
+                                
+                            # 检查激活状态
+                            if 'active' in link.get('class', []) or 'active' in link.find_parent('li').get('class', []):
+                                default_option = region_id
             
             # 如果没有提取到选项，使用默认区域
             if not options:

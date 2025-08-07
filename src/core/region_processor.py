@@ -225,51 +225,205 @@ class RegionProcessor:
 
         return filtered_soup
 
+    def _analyze_pricing_section_structure(self, pricing_section):
+        """分析pricing-page-section的结构，识别内容块"""
+        content_blocks = []
+        current_block = None
+        
+        for element in pricing_section.children:
+            if hasattr(element, 'name'):
+                if element.name == 'h2':
+                    # 新的标题开始新的内容块
+                    if current_block:
+                        content_blocks.append(current_block)
+                    current_block = {
+                        'type': 'section',
+                        'title': element,
+                        'title_text': element.get_text(strip=True),
+                        'elements': [element]
+                    }
+                elif current_block:
+                    # 将元素归属到当前内容块
+                    current_block['elements'].append(element)
+                    
+                    # 识别元素类型
+                    if element.name == 'table':
+                        current_block['has_table'] = True
+                        current_block['table_id'] = element.get('id')
+                    elif element.name == 'div' and 'tags-date' in element.get('class', []):
+                        current_block['has_tags_date'] = True
+        
+        # 添加最后一个块
+        if current_block:
+            content_blocks.append(current_block)
+            
+        return content_blocks
+    
+    def _classify_content_relation(self, element, table_id: str):
+        """分类内容与表格的关系"""
+        if not hasattr(element, 'name'):
+            return 'unrelated'
+            
+        # 如果是表格本身
+        if element.name == 'table' and element.get('id') == table_id.replace('#', ''):
+            return 'table'
+            
+        # 检查是否是重要的产品标题（全局保护）
+        if element.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
+            title_text = element.get_text(strip=True)
+            # 使用更智能的标题识别，而非硬编码列表
+            if self._is_global_product_title(title_text):
+                return 'global_title'
+            elif self._is_section_title(title_text):
+                return 'section_title'
+                
+        # 检查tags-date的类型
+        if element.name == 'div' and 'tags-date' in element.get('class', []):
+            return self._classify_tags_date(element)
+            
+        # 其他元素
+        return 'content'
+    
+    def _is_global_product_title(self, title_text: str) -> bool:
+        """判断是否是全局产品标题（应保护）"""
+        # 检查是否是主要产品/服务名称
+        global_patterns = [
+            r'^API\s*管理$',
+            r'^API\s*Management$', 
+            r'^Azure\s+Database',
+            r'^Cosmos\s*DB$',
+            r'^MySQL$',
+            r'^PostgreSQL$'
+        ]
+        
+        import re
+        for pattern in global_patterns:
+            if re.match(pattern, title_text, re.IGNORECASE):
+                return True
+        return False
+    
+    def _is_section_title(self, title_text: str) -> bool:
+        """判断是否是功能区段标题"""
+        section_keywords = ['Gateway', '网关', '定价', 'Pricing', '功能', 'Features']
+        return any(keyword in title_text for keyword in section_keywords)
+    
+    def _classify_tags_date(self, tags_date_element) -> str:
+        """分类tags-date元素的类型"""
+        text = tags_date_element.get_text(strip=True)
+        
+        # 全局价格说明（应保护）
+        global_pricing_patterns = [
+            '*以下价格均为含税价格',
+            '*每月价格估算基于',
+            'prices are tax-inclusive',
+            'monthly price estimates'
+        ]
+        
+        for pattern in global_pricing_patterns:
+            if pattern in text:
+                return 'global_pricing_note'
+        
+        # 表格注释说明（应保留）- 包含脚注编号的说明
+        if self._contains_footnote_references(text):
+            return 'table_footnote_note'
+                
+        # 其他表格特定的说明（可能需要移除）
+        return 'table_specific_note'
+    
+    def _contains_footnote_references(self, text: str) -> bool:
+        """检查文本是否包含脚注引用（sup标签内容）"""
+        import re
+        # 检查是否包含类似 "1 要求在两个或更多区域" 或 "2 吞吐量数据仅供参考" 的模式
+        footnote_patterns = [
+            r'^\s*\d+\s*[\u4e00-\u9fff]',  # 数字开头后跟中文
+            r'sup>\s*\d+\s*</sup',  # sup标签包含数字
+            r'要求在.*区域.*部署',  # 区域部署要求
+            r'吞吐量数据.*参考',  # 吞吐量说明
+            r'开发者层.*付费',  # 开发者层说明
+            r'高级层.*付费',  # 高级层说明
+            r'仅适用于.*网关',  # 网关相关说明
+            r'请使用.*缓存',  # 缓存说明
+        ]
+        
+        for pattern in footnote_patterns:
+            if re.search(pattern, text, re.IGNORECASE):
+                return True
+        return False
+    
     def _remove_table_with_related_content(self, table_element, table_id: str):
-        """移除表格及其相关的前置内容（标题、说明等）"""
-
-        print(f"    🗑️ 移除表格及相关内容: {table_id}")
-
-        # 收集要移除的元素
-        elements_to_remove = [table_element]
-
-        # 向前查找相关的前置内容
-        current = table_element.previous_sibling
-
-        while current:
-            if hasattr(current, 'name'):
-                # 如果是标签元素
-                if current.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
-                    # 找到标题，添加到移除列表并停止
-                    elements_to_remove.append(current)
-                    print(f"      📋 移除相关标题: {current.name} - {current.get_text(strip=True)[:50]}")
-                    break
-                elif current.name == 'p':
-                    # 说明文字，添加到移除列表
-                    elements_to_remove.append(current)
-                    print(f"      📝 移除相关说明: {current.get_text(strip=True)[:50]}")
-                elif current.name == 'div' and 'tags-date' in current.get('class', []):
-                    # 价格说明div，添加到移除列表
-                    elements_to_remove.append(current)
-                    print(f"      💰 移除价格说明: {current.get_text(strip=True)[:50]}")
-                elif current.name == 'br':
-                    # 换行符，添加到移除列表
-                    elements_to_remove.append(current)
-                elif current.name in ['table', 'div'] and current.get('id'):
-                    # 遇到其他有ID的重要元素，停止
-                    break
-            elif hasattr(current, 'string') and current.string and current.string.strip():
-                # 如果是有内容的文本节点，停止
+        """精确移除表格及其直接关联的内容，保护全局内容"""
+        print(f"    🗑️ 精确移除表格: {table_id}")
+        
+        # 分析所在的pricing-page-section结构
+        pricing_section = self._find_parent_pricing_section(table_element)
+        if not pricing_section:
+            # 回退到原有逻辑
+            print(f"      ⚠ 未找到pricing-page-section，使用回退逻辑")
+            self._remove_table_fallback(table_element, table_id)
+            return
+            
+        # 分析结构并精确移除
+        content_blocks = self._analyze_pricing_section_structure(pricing_section)
+        
+        elements_to_remove = []
+        
+        # 找到包含此表格的内容块
+        target_block = None
+        for block in content_blocks:
+            if block.get('table_id') == table_id.replace('#', ''):
+                target_block = block
                 break
-
-            current = current.previous_sibling
-
-        # 移除所有收集到的元素
+        
+        if target_block:
+            print(f"      📍 找到表格所在内容块: {target_block['title_text']}")
+            
+            for element in target_block['elements']:
+                relation = self._classify_content_relation(element, table_id)
+                
+                if relation == 'table':
+                    elements_to_remove.append(element)
+                    print(f"      🗑️ 移除表格: {table_id}")
+                elif relation == 'table_specific_note':
+                    elements_to_remove.append(element)
+                    print(f"      🗑️ 移除表格专属说明: {element.get_text(strip=True)[:50]}")
+                elif relation == 'table_footnote_note':
+                    print(f"      🛡️ 保护表格脚注说明: {element.get_text(strip=True)[:50]}")
+                elif relation == 'global_title':
+                    print(f"      🛡️ 保护全局标题: {element.get_text(strip=True)[:50]}")
+                elif relation == 'global_pricing_note':
+                    print(f"      🛡️ 保护全局价格说明: {element.get_text(strip=True)[:50]}")
+                elif relation == 'section_title':
+                    print(f"      🛡️ 保护区段标题: {element.get_text(strip=True)[:50]}")
+        else:
+            # 如果没有找到结构化的块，直接移除表格
+            elements_to_remove.append(table_element)
+            print(f"      ⚠ 未找到结构化块，仅移除表格本身")
+        
+        # 移除收集到的元素
         for element in elements_to_remove:
             try:
                 element.decompose()
             except Exception as e:
                 print(f"      ⚠ 移除元素失败: {e}")
+    
+    def _find_parent_pricing_section(self, element):
+        """查找元素所在的pricing-page-section父节点"""
+        current = element.parent
+        while current:
+            if (hasattr(current, 'get') and current.get('class') and 
+                'pricing-page-section' in current.get('class')):
+                return current
+            current = current.parent
+        return None
+    
+    def _remove_table_fallback(self, table_element, table_id: str):
+        """回退的表格移除逻辑（简化版原逻辑）"""
+        print(f"    🔄 使用回退移除逻辑: {table_id}")
+        # 只移除表格本身，不移除其他内容
+        try:
+            table_element.decompose()
+        except Exception as e:
+            print(f"      ⚠ 表格移除失败: {e}")
 
     def _extract_global_content(self, soup: BeautifulSoup) -> Dict[str, Any]:
         """提取全局内容（无区域区分）"""
@@ -280,52 +434,80 @@ class RegionProcessor:
         }
 
     def _extract_region_html_content(self, soup: BeautifulSoup, region_id: str) -> str:
-        """提取区域的完整HTML内容 - 从tab-content层级中获取pricing-page-section"""
+        """提取区域的完整HTML内容 - 针对pricing-detail-tab结构优化"""
         print(f"    📄 提取区域 {region_id} 的完整HTML内容")
         
-        # 构建HTML结构，匹配PowerBI-Embedded的格式
+        # 构建HTML结构，匹配原始tab-content格式
         html_parts = []
         html_parts.append('<div class="tab-content">')
         html_parts.append('<div class="tab-panel" id="tabContent1">')
         
-        # 1. 查找tab-content容器中的pricing-page-section
-        tab_content_containers = soup.find_all(class_='tab-content')
-        pricing_section_found = False
+        # 查找pricing-detail-tab结构中的主要内容
+        pricing_detail_tab = soup.find(class_='technical-azure-selector pricing-detail-tab')
+        content_extracted = False
         
-        for tab_content in tab_content_containers:
-            # 在tab-content中查找pricing-page-section
-            pricing_sections = tab_content.find_all(class_='pricing-page-section')
-            for section in pricing_sections:
-                # 跳过包含more-detail的section（FAQ内容）
-                if section.find(class_='more-detail'):
-                    continue
-                # 只要第一个pricing section
-                html_parts.append(self._clean_html_content(str(section)))
-                pricing_section_found = True
-                break
-            if pricing_section_found:
-                break
+        if pricing_detail_tab:
+            print(f"    🎯 发现pricing-detail-tab结构，提取完整内容")
+            # 在pricing-detail-tab中查找tab-content
+            tab_content = pricing_detail_tab.find(class_='tab-content')
+            if tab_content:
+                # 查找第一个tab-panel中的pricing-page-section
+                tab_panel = tab_content.find('div', {'id': 'tabContent1'}) or tab_content.find(class_='tab-panel')
+                if tab_panel:
+                    pricing_section = tab_panel.find(class_='pricing-page-section')
+                    if pricing_section:
+                        # 验证是否包含关键元素
+                        has_h2 = pricing_section.find('h2') is not None
+                        has_tags_date = pricing_section.find(class_='tags-date') is not None
+                        
+                        print(f"    📋 内容验证: H2={has_h2}, tags-date={has_tags_date}")
+                        
+                        # 提取完整的pricing-page-section内容
+                        section_html = self._preserve_important_content(str(pricing_section))
+                        html_parts.append(section_html)
+                        content_extracted = True
         
-        # 如果在tab-content中没找到，回退到查找所有pricing-page-section
-        if not pricing_section_found:
+        # 如果没有找到pricing-detail-tab结构，使用回退方案
+        if not content_extracted:
+            print(f"    🔄 使用回退方案：查找全局tab-content")
+            tab_content_containers = soup.find_all(class_='tab-content')
+            
+            for tab_content in tab_content_containers:
+                pricing_sections = tab_content.find_all(class_='pricing-page-section')
+                for section in pricing_sections:
+                    # 跳过包含more-detail的section（FAQ内容）
+                    if section.find(class_='more-detail'):
+                        continue
+                    
+                    # 验证并提取内容
+                    has_h2 = section.find('h2') is not None
+                    has_tags_date = section.find(class_='tags-date') is not None
+                    print(f"    📋 回退内容验证: H2={has_h2}, tags-date={has_tags_date}")
+                    
+                    section_html = self._preserve_important_content(str(section))
+                    html_parts.append(section_html)
+                    content_extracted = True
+                    break
+                
+                if content_extracted:
+                    break
+        
+        # 如果仍然没有内容，使用最后的回退方案
+        if not content_extracted:
+            print(f"    🚨 使用最终回退方案：查找任意pricing-page-section")
             pricing_sections = soup.find_all(class_='pricing-page-section')
             for section in pricing_sections:
-                # 跳过包含more-detail的section（FAQ内容）
                 if section.find(class_='more-detail'):
                     continue
-                # 只要第一个pricing section
-                html_parts.append(self._clean_html_content(str(section)))
+                section_html = self._preserve_important_content(str(section))
+                html_parts.append(section_html)
+                content_extracted = True
                 break
         
-        # 2. 添加tab控制结构
+        # 添加tab控制结构
         html_parts.append('<div class="technical-azure-selector tab-control-selector" style="min-height: 400px;">')
         html_parts.append('<div class="tab-control-container tab-active" id="tabContent1">')
-        
-        # 3. 由于pricing-page-section已经包含了所有需要的内容，这里不再重复添加
-        # 只添加一个注释说明内容来源
         html_parts.append('<!-- Content extracted from tab-content pricing-page-section -->')
-        
-        # 结束标签
         html_parts.append('</div>')  # tab-control-container
         html_parts.append('</div>')  # technical-azure-selector
         html_parts.append('</div>')  # tab-panel
@@ -337,6 +519,23 @@ class RegionProcessor:
         
         print(f"    ✓ 构建区域HTML内容，长度: {len(result_html)} 字符")
         return result_html
+
+    def _preserve_important_content(self, content: str) -> str:
+        """保留重要内容的HTML处理 - 确保H2和tags-date不被误删"""
+        if not content:
+            return ""
+        
+        # 轻度清理，但保留重要结构
+        import re
+        # 只移除多余的换行符和制表符
+        content = re.sub(r'\n+', ' ', content)
+        content = re.sub(r'\t+', ' ', content)
+        # 移除过多的连续空格，但保留基本空格
+        content = re.sub(r'  +', ' ', content)
+        # 清理首尾空格
+        content = content.strip()
+        
+        return content
 
     def _clean_html_content(self, content: str) -> str:
         """清理HTML内容，移除多余的换行和空格"""
