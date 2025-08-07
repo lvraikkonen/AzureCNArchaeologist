@@ -1,0 +1,68 @@
+{
+  "title": "复杂筛选页面",
+  "slug": "complex-filter-page",
+  "metaTitle": "复杂页面筛选-region+tab",
+  "metaDescription": "复杂页面筛选示例",
+  "metaKeywords": "Azure,云计算,定价,筛选器,地区筛选,服务类型,计算服务,存储服务",
+  "pageConfig": {
+    "pageType": "ComplexFilter",
+    "displayTitle": "复杂筛选页面(regin+tab)",
+    "pageIcon": "{base_url}/Static/Favicon/favicon.ico",
+    "enableFilters": true,
+    "filtersJsonConfig": "{\"filterDefinitions\":[{\"filterKey\":\"region\",\"filterName\":\"地区\",\"filterType\":\"Dropdown\",\"isRequired\":true,\"defaultValue\":\"north-china\",\"order\":1,\"options\":[{\"value\":\"east-china\",\"label\":\"中国东部\",\"isDefault\":false,\"order\":1,\"isActive\":true},{\"value\":\"north-china\",\"label\":\"中国北部\",\"isDefault\":true,\"order\":2,\"isActive\":true}]},{\"filterKey\":\"service-type\",\"filterName\":\"服务类型\",\"filterType\":\"Tab\",\"isRequired\":true,\"defaultValue\":\"compute\",\"order\":2,\"options\":[{\"value\":\"compute\",\"label\":\"计算服务\",\"isDefault\":true,\"order\":1,\"isActive\":true},{\"value\":\"storage\",\"label\":\"存储服务\",\"isDefault\":false,\"order\":2,\"isActive\":true}]}]}"
+  },
+  "commonSections": [
+     {
+      "sectionType": "Banner",
+      "sectionTitle": "产品横幅",
+      "content": "<div class=\"common-banner col-top-banner\" style=\"background-color: rgb(227, 244, 255);\"><div class=\"common-banner-image\" style=\"background-image: url('{base_url}/Images/marketing-resource/css/event-grid_banner.png');\"><div class=\"common-banner-title\"><img src=\"{base_url}/Images/marketing-resource/css/event-grid_icon@2x.svg\" alt=\"imgAlt\"><h2>简单页面<span>Event Grid</span></h2><h4>没有筛选的简单页面</h4></div></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "sectionType": "ProductDescription",
+      "sectionTitle": "产品描述",
+      "content": "<div class=\"pricing-page-section\"> <p> 这个产品没有筛选，这是个简单页面的示例</p> </div>",
+      "sortOrder": 2,
+      "isActive": true
+    },
+    {
+      "sectionType": "Qa",
+      "sectionTitle": "常见问题",
+      "content": "<div class=\"pricing-page-section\"><div class=\"more-detail\"><h2>常见问题</h2><em>全部展开</em><h3>综合</h3><ul><li><i class=\"icon icon-plus\"></i><div><a aria-label=\"这是常见问题\" id=\"home_event-grid_faq_what-are-operations-and-how-are-they-billed\">这就是常见问题吗？</a><section><p>你说呢？</p></section></div></li></ul></div></div>",
+      "sortOrder": 3,
+      "isActive": true
+    }
+  ],
+  "baseContent": "<p>请选择地区和服务类型查看详细定价信息</p>",
+  "contentGroups": [
+    {
+      "groupName": "中国北部-计算服务定价",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china\"},{\"filterKey\":\"service-type\",\"matchValues\":\"compute\"}]",
+      "content": "<div class='pricing-page-section'><h3>计算服务 - 中国北部</h3><table class='scroll-table'><thead><tr><th>实例类型</th><th>CPU核数</th><th>内存(GB)</th><th>价格/小时</th><th>价格/月</th></tr></thead><tbody><tr><td>B1s</td><td>1</td><td>1</td><td>¥0.08</td><td>¥58</td></tr><tr><td>B2s</td><td>2</td><td>4</td><td>¥0.32</td><td>¥230</td></tr><tr><td>D2s_v3</td><td>2</td><td>8</td><td>¥0.75</td><td>¥540</td></tr><tr><td>D4s_v3</td><td>4</td><td>16</td><td>¥1.50</td><td>¥1080</td></tr></tbody></table><div class='pricing-note'><p><strong>备注：</strong></p><ul><li>价格按标准费率计算</li><li>可选择预付费获得更多折扣</li><li>企业客户请联系销售获取批量折扣</li></ul></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "groupName": "中国北部-存储服务定价",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china\"},{\"filterKey\":\"service-type\",\"matchValues\":\"storage\"}]",
+      "content": "<div class='pricing-page-section'><h3>存储服务 - 中国北部</h3><table class='scroll-table'><thead><tr><th>存储类型</th><th>价格/GB/月</th><th>访问次数定价</th><th>适用场景</th></tr></thead><tbody><tr><td>标准存储</td><td>¥0.15</td><td>¥0.02/万次</td><td>频繁访问</td></tr><tr><td>冷存储</td><td>¥0.08</td><td>¥0.10/万次</td><td>不频繁访问</td></tr><tr><td>归档存储</td><td>¥0.03</td><td>¥1.00/万次</td><td>长期备份</td></tr></tbody></table><div class='pricing-note'><p><strong>数据传输费用：</strong></p><ul><li>入站流量：免费</li><li>出站流量：¥0.80/GB</li><li>同区域传输：免费</li></ul></div></div>",
+      "sortOrder": 2,
+      "isActive": true
+    },
+    {
+      "groupName": "中国东部-计算服务定价",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"east-china\"},{\"filterKey\":\"service-type\",\"matchValues\":\"compute\"}]",
+      "content": "<div class='pricing-page-section'><h3>计算服务 - 中国东部</h3><table class='scroll-table'><thead><tr><th>实例类型</th><th>CPU核数</th><th>内存(GB)</th><th>价格/小时</th><th>价格/月</th></tr></thead><tbody><tr><td>B1s</td><td>1</td><td>1</td><td>¥0.08</td><td>¥58</td></tr><tr><td>B2s</td><td>2</td><td>4</td><td>¥0.32</td><td>¥230</td></tr><tr><td>D2s_v3</td><td>2</td><td>8</td><td>¥0.75</td><td>¥540</td></tr><tr><td>D4s_v3</td><td>4</td><td>16</td><td>¥1.50</td><td>¥1080</td></tr></tbody></table><div class='pricing-note'><p><strong>备注：</strong></p><ul><li>与北部地区价格保持一致</li><li>享受相同的预付费折扣</li><li>提供更靠近江浙沪地区的服务</li></ul></div></div>",
+      "sortOrder": 4,
+      "isActive": true
+    },
+    {
+      "groupName": "中国东部-存储服务定价",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"east-china\"},{\"filterKey\":\"service-type\",\"matchValues\":\"storage\"}]",
+      "content": "<div class='pricing-page-section'><h3>存储服务 - 中国东部</h3><table class='scroll-table'><thead><tr><th>存储类型</th><th>价格/GB/月</th><th>访问次数定价</th><th>适用场景</th></tr></thead><tbody><tr><td>标准存储</td><td>¥0.15</td><td>¥0.02/万次</td><td>频繁访问</td></tr><tr><td>冷存储</td><td>¥0.08</td><td>¥0.10/万次</td><td>不频繁访问</td></tr><tr><td>归档存储</td><td>¥0.03</td><td>¥1.00/万次</td><td>长期备份</td></tr></tbody></table><div class='pricing-note'><p><strong>数据传输费用：</strong></p><ul><li>入站流量：免费</li><li>出站流量：¥0.80/GB</li><li>与北部地区间传输：¥0.40/GB</li></ul></div></div>",
+      "sortOrder": 5,
+      "isActive": true
+    }
+  ]
+}

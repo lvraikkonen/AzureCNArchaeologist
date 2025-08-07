@@ -1,0 +1,37 @@
+{
+  "title": "简单页面",
+  "slug": "simple-page",
+  "metaTitle": "定价-简单页面-Azure 云计算",
+  "metaDescription": "详细了解Azure产品功能和特性",
+  "metaKeywords": "Azure,云计算,定价,Event Grid,简单页面",
+  "pageConfig": {
+    "pageType": "Simple",
+    "displayTitle": "Azure 简单页面",
+    "pageIcon": "{base_url}/Static/Favicon/favicon.ico"
+  },
+  "commonSections": [
+    {
+      "sectionType": "Banner",
+      "sectionTitle": "产品横幅",
+      "content": "<div class=\"common-banner col-top-banner\" style=\"background-color: rgb(227, 244, 255);\"><div class=\"common-banner-image\" style=\"background-image: url('{base_url}/Images/marketing-resource/css/event-grid_banner.png');\"><div class=\"common-banner-title\"><img src=\"{base_url}/Images/marketing-resource/css/event-grid_icon@2x.svg\" alt=\"imgAlt\"><h2>简单页面<span>Event Grid</span></h2><h4>没有筛选的简单页面</h4></div></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "sectionType": "ProductDescription",
+      "sectionTitle": "产品描述",
+      "content": "<div class=\"pricing-page-section\"> <p> 这个产品没有筛选，这是个简单页面的示例</p> </div>",
+      "sortOrder": 2,
+      "isActive": true
+    },
+    {
+      "sectionType": "Qa",
+      "sectionTitle": "常见问题",
+      "content": "<div class=\"pricing-page-section\"><div class=\"more-detail\"><h2>常见问题</h2><em>全部展开</em><h3>综合</h3><ul><li><i class=\"icon icon-plus\"></i><div><a aria-label=\"这是常见问题\" id=\"home_event-grid_faq_what-are-operations-and-how-are-they-billed\">这就是常见问题吗？</a><section><p>你说呢？</p></section></div></li></ul></div></div>",
+      "sortOrder": 3,
+      "isActive": true
+    }
+  ],
+  "baseContent": "<div class=\"pricing-page-section\"><h2>这是简单页面的内容</h2><p>简单页面，没有筛选</p></div>",
+  "contentGroups": []
+}

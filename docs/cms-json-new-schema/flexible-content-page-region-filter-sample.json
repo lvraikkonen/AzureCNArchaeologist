@@ -1,0 +1,61 @@
+{
+  "title": "地区筛选页面",
+  "slug": "region-filter-page",
+  "metaTitle": "Azure 地区筛选页面示例",
+  "metaDescription": "这个页面包含地区筛选页面",
+  "metaKeywords": "Azure,云计算,地区筛选,中国东部,中国北部,Hadoop,Spark",
+  "pageConfig": {
+    "pageType": "RegionFilter",
+    "displayTitle": "地区筛选页面示例",
+    "pageIcon": "{base_url}/Static/Favicon/favicon.ico",
+    "enableFilters": true,
+    "filtersJsonConfig": "{\"filterDefinitions\":[{\"filterKey\":\"region\",\"filterName\":\"地区\",\"filterType\":\"Dropdown\",\"isRequired\":false,\"defaultValue\":\"north-china3\",\"order\":1,\"options\":[{\"value\":\"east-china\",\"label\":\"中国东部\",\"isDefault\":false,\"order\":1,\"isActive\":true},{\"value\":\"north-china\",\"label\":\"中国北部\",\"isDefault\":false,\"order\":2,\"isActive\":true},{\"value\":\"north-china3\",\"label\":\"中国北部 3\",\"isDefault\":true,\"order\":3,\"isActive\":true}]}]}"
+  },
+  "commonSections": [
+    {
+      "sectionType": "Banner",
+      "sectionTitle": "产品横幅",
+      "content": "<div class=\"common-banner col-top-banner\" style=\"background-color: rgb(227, 244, 255);\"><div class=\"common-banner-image\" style=\"background-image: url('{base_url}/Images/marketing-resource/css/event-grid_banner.png');\"><div class=\"common-banner-title\"><img src=\"{base_url}/Images/marketing-resource/css/event-grid_icon@2x.svg\" alt=\"imgAlt\"><h2>简单页面<span>Event Grid</span></h2><h4>没有筛选的简单页面</h4></div></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "sectionType": "ProductDescription",
+      "sectionTitle": "产品描述",
+      "content": "<div class=\"pricing-page-section\"> <p> 这个产品没有筛选，这是个简单页面的示例</p> </div>",
+      "sortOrder": 2,
+      "isActive": true
+    },
+    {
+      "sectionType": "Qa",
+      "sectionTitle": "常见问题",
+      "content": "<div class=\"pricing-page-section\"><div class=\"more-detail\"><h2>常见问题</h2><em>全部展开</em><h3>综合</h3><ul><li><i class=\"icon icon-plus\"></i><div><a aria-label=\"这是常见问题\" id=\"home_event-grid_faq_what-are-operations-and-how-are-they-billed\">这就是常见问题吗？</a><section><p>你说呢？</p></section></div></li></ul></div></div>",
+      "sortOrder": 3,
+      "isActive": true
+    }
+  ],
+  "baseContent": "",
+  "contentGroups": [
+    {
+      "groupName": "中国东部",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"east-china\"}]",
+      "content": "<div class=\"pricing-page-section\"><h3>定价方式-中国东部</h3><div class=\"scroll-table\"><div><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tbody><tr><th align=\"left\" width=\"30%\"><strong>组件</strong></th><th align=\"left\"><strong>定价<sup></sup></strong></th></tr><tr><td>Hadoop、Spark</td><td>基本价格/节点-小时 + ￥0/核心-小时</td></tr><tr><td>企业安全性套餐</td><td>基本价格/节点-小时 + ￥0.06/核心-小时</td></tr></tbody></table></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "groupName": "中国北部",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china\"}]",
+      "content": "<div class=\"pricing-page-section\"><h3>定价方式-中国北部</h3><div class=\"scroll-table\"><div><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tbody><tr><th align=\"left\" width=\"30%\"><strong>组件</strong></th><th align=\"left\"><strong>定价<sup></sup></strong></th></tr><tr><td>Hadoop、Spark</td><td>基本价格/节点-小时 + ￥0/核心-小时</td></tr><tr><td>企业安全性套餐</td><td>基本价格/节点-小时 + ￥0.06/核心-小时</td></tr></tbody></table></div></div>",
+      "sortOrder": 2,
+      "isActive": true
+    },
+    {
+      "groupName": "亚太地区数据中心",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china3\"}]",
+      "content": "<div class=\"pricing-page-section\"><h3>定价方式-中国北部 3</h3><div class=\"scroll-table\"><div><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tbody><tr><th align=\"left\" width=\"30%\"><strong>组件</strong></th><th align=\"left\"><strong>定价<sup></sup></strong></th></tr><tr><td>Hadoop、Spark</td><td>基本价格/节点-小时 + ￥0/核心-小时</td></tr><tr><td>企业安全性套餐</td><td>基本价格/节点-小时 + ￥0.06/核心-小时</td></tr></tbody></table></div></div>",
+      "sortOrder": 3,
+      "isActive": true
+    }
+  ]
+}
