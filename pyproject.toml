@@ -5,5 +5,6 @@ description = "ACN rebuild"
 readme = "README.md"
 dependencies = [
     "beautifulsoup4>=4.13.4",
+    "loguru>=0.7.3",
     "psutil>=7.0.0",
 ]

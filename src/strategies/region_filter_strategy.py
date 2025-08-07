@@ -73,22 +73,18 @@ class RegionFilterStrategy(BaseStrategy):
         # 3. 转换区域内容为CMS格式
         cms_fields = self._convert_region_content_to_cms_format(region_content)
         
-        # 4. 提取区域相关的结构化内容
-        regional_structured_content = self._extract_regional_structured_content(soup, region_content)
-        
-        # 5. 组合最终结果
+        # 4. 组合最终结果
         final_data = {
             **base_content,
             **cms_fields,
             "HasRegion": True,
             "RegionalContent": region_content,
-            "RegionalStructuredContent": regional_structured_content,
             "extraction_strategy": "region_filter",
             "region_count": len(region_content),
             "supported_regions": list(region_content.keys()) if region_content else []
         }
         
-        # 6. 验证提取结果
+        # 5. 验证提取结果
         final_data = self._validate_extraction_result(final_data)
         
         print(f"✅ 区域筛选策略提取完成")
@@ -243,151 +239,6 @@ class RegionFilterStrategy(BaseStrategy):
         content = re.sub(r'\s+', ' ', content.strip())
         
         return content
-
-    def _extract_regional_structured_content(self, soup: BeautifulSoup, 
-                                           region_content: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        提取区域相关的结构化内容
-        
-        Args:
-            soup: BeautifulSoup对象
-            region_content: 区域内容
-            
-        Returns:
-            区域结构化内容
-        """
-        regional_structured = {}
-        
-        try:
-            # 对每个区域提取结构化内容
-            for region_id, content in region_content.items():
-                region_structured = {
-                    "region_id": region_id,
-                    "pricing_info": self._extract_region_pricing_info(soup, region_id),
-                    "service_tiers": self._extract_region_service_tiers(soup, region_id),
-                    "features": self._extract_region_features(soup, region_id)
-                }
-                
-                regional_structured[region_id] = region_structured
-                
-        except Exception as e:
-            print(f"⚠ 区域结构化内容提取失败: {e}")
-            regional_structured = {}
-        
-        return regional_structured
-
-    def _extract_region_pricing_info(self, soup: BeautifulSoup, region_id: str) -> List[Dict[str, Any]]:
-        """
-        提取特定区域的定价信息
-        
-        Args:
-            soup: BeautifulSoup对象
-            region_id: 区域ID
-            
-        Returns:
-            定价信息列表
-        """
-        pricing_info = []
-        
-        try:
-            # 查找与区域相关的定价元素
-            pricing_selectors = [
-                f'[data-region="{region_id}"] .pricing',
-                f'[data-region="{region_id}"] .price',
-                f'[data-region="{region_id}"] table',
-                f'.region-{region_id} .pricing',
-                f'.region-{region_id} .price'
-            ]
-            
-            for selector in pricing_selectors:
-                elements = soup.select(selector)
-                for element in elements:
-                    if element.get_text(strip=True):
-                        pricing_info.append({
-                            "content": self._clean_html_content(str(element)),
-                            "text": element.get_text(strip=True),
-                            "selector": selector
-                        })
-                        
-        except Exception as e:
-            print(f"⚠ 区域定价信息提取失败 ({region_id}): {e}")
-        
-        return pricing_info
-
-    def _extract_region_service_tiers(self, soup: BeautifulSoup, region_id: str) -> List[Dict[str, Any]]:
-        """
-        提取特定区域的服务层级信息
-        
-        Args:
-            soup: BeautifulSoup对象
-            region_id: 区域ID
-            
-        Returns:
-            服务层级信息列表
-        """
-        service_tiers = []
-        
-        try:
-            # 查找与区域相关的服务层级元素
-            tier_selectors = [
-                f'[data-region="{region_id}"] .tier',
-                f'[data-region="{region_id}"] .service-tier',
-                f'.region-{region_id} .tier',
-                f'.region-{region_id} .service-tier'
-            ]
-            
-            for selector in tier_selectors:
-                elements = soup.select(selector)
-                for element in elements:
-                    tier_name = element.get('data-tier', '') or element.get_text(strip=True)
-                    if tier_name:
-                        service_tiers.append({
-                            "name": tier_name,
-                            "content": self._clean_html_content(str(element)),
-                            "selector": selector
-                        })
-                        
-        except Exception as e:
-            print(f"⚠ 区域服务层级提取失败 ({region_id}): {e}")
-        
-        return service_tiers
-
-    def _extract_region_features(self, soup: BeautifulSoup, region_id: str) -> List[str]:
-        """
-        提取特定区域的功能特性
-        
-        Args:
-            soup: BeautifulSoup对象
-            region_id: 区域ID
-            
-        Returns:
-            功能特性列表
-        """
-        features = []
-        
-        try:
-            # 查找与区域相关的功能特性
-            feature_selectors = [
-                f'[data-region="{region_id}"] .feature',
-                f'[data-region="{region_id}"] .capability',
-                f'.region-{region_id} .feature',
-                f'.region-{region_id} .capability',
-                f'[data-region="{region_id}"] li',
-                f'.region-{region_id} li'
-            ]
-            
-            for selector in feature_selectors:
-                elements = soup.select(selector)
-                for element in elements:
-                    feature_text = element.get_text(strip=True)
-                    if feature_text and len(feature_text) > 3:  # 过滤过短的文本
-                        features.append(feature_text)
-                        
-        except Exception as e:
-            print(f"⚠ 区域功能特性提取失败 ({region_id}): {e}")
-        
-        # 去重并返回
-        return list(set(features))
 
     def _extract_base_content(self, soup: BeautifulSoup, url: str = "") -> Dict[str, Any]:
         """

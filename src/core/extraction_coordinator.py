@@ -19,9 +19,12 @@ sys.path.append(str(project_root))
 from src.core.product_manager import ProductManager
 from src.core.strategy_manager import StrategyManager
 from src.core.data_models import StrategyType, ExtractionStrategy
+from src.core.logging import get_logger
 from src.strategies.strategy_factory import StrategyFactory
 from src.utils.media.image_processor import preprocess_image_paths
 from src.utils.data.validation_utils import validate_extracted_data
+
+logger = get_logger(__name__)
 
 
 class ExtractionCoordinator:
@@ -40,10 +43,10 @@ class ExtractionCoordinator:
         # 初始化核心组件
         self.product_manager = ProductManager()
         self.strategy_manager = StrategyManager(self.product_manager)
-        
-        print(f"🎯 提取协调器初始化完成")
-        print(f"📁 输出目录: {self.output_dir}")
-        
+
+        logger.info("提取协调器初始化完成")
+        logger.info(f"输出目录: {self.output_dir}")
+
         # 验证策略注册状态
         self._validate_strategy_setup()
 
@@ -61,22 +64,22 @@ class ExtractionCoordinator:
         Raises:
             Exception: 提取过程中的各种异常
         """
-        print(f"\n🚀 开始协调提取流程")
-        print(f"📄 源文件: {html_file_path}")
-        print(f"🔗 源URL: {url}")
-        
+        logger.info("开始协调提取流程")
+        logger.info(f"源文件: {html_file_path}")
+        logger.info(f"源URL: {url}")
+
         try:
             # 阶段1: 检测产品类型
             product_key = self._detect_product_key(html_file_path)
-            print(f"📦 检测到产品: {product_key}")
-            
+            logger.info(f"检测到产品: {product_key}")
+
             # 阶段2: 获取产品配置
             product_config = self._get_product_config(product_key)
-            
+
             # 阶段3: 策略决策
             extraction_strategy = self._determine_extraction_strategy(html_file_path, product_key)
-            print(f"🎯 选择策略: {extraction_strategy.strategy_type.value}")
-            print(f"🔧 处理器: {extraction_strategy.processor}")
+            logger.info(f"选择策略: {extraction_strategy.strategy_type.value}")
+            logger.info(f"处理器: {extraction_strategy.processor}")
             
             # 阶段4: 创建策略实例
             strategy_instance = self._create_strategy_instance(
@@ -94,11 +97,11 @@ class ExtractionCoordinator:
                 extracted_data, product_config, extraction_strategy
             )
             
-            print(f"✅ 提取流程完成")
+            logger.info("提取流程完成")
             return final_data
-            
+
         except Exception as e:
-            print(f"❌ 提取流程失败: {e}")
+            logger.error(f"提取流程失败: {e}", exc_info=True)
             return self._create_error_result(str(e), html_file_path, url)
 
     def _detect_product_key(self, html_file_path: str) -> str:
@@ -116,14 +119,14 @@ class ExtractionCoordinator:
             if product_key:
                 return product_key
         except Exception as e:
-            print(f"⚠ 产品类型检测失败: {e}")
-        
+            logger.warning(f"产品类型检测失败: {e}")
+
         # 如果检测失败，尝试从文件名推断
         file_name = Path(html_file_path).stem
         if file_name.endswith('-index'):
             return file_name[:-6]  # 移除'-index'后缀
-        
-        print("⚠ 无法检测产品类型，使用unknown")
+
+        logger.warning("无法检测产品类型，使用unknown")
         return "unknown"
 
     def _get_product_config(self, product_key: str) -> Dict[str, Any]:
@@ -138,10 +141,10 @@ class ExtractionCoordinator:
         """
         try:
             config = self.product_manager.get_product_config(product_key)
-            print(f"📋 获取产品配置: {len(config)} 个配置项")
+            logger.info(f"获取产品配置: {len(config)} 个配置项")
             return config
         except Exception as e:
-            print(f"⚠ 无法获取产品配置 ({product_key}): {e}")
+            logger.warning(f"无法获取产品配置 ({product_key}): {e}")
             # 返回默认配置
             return {
                 "product_key": product_key,
@@ -162,10 +165,10 @@ class ExtractionCoordinator:
         """
         try:
             strategy = self.strategy_manager.determine_extraction_strategy(html_file_path, product_key)
-            print(f"💡 策略决策成功: {strategy.strategy_type.value}")
+            logger.info(f"策略决策成功: {strategy.strategy_type.value}")
             return strategy
         except Exception as e:
-            print(f"⚠ 策略决策失败，使用回退策略: {e}")
+            logger.warning(f"策略决策失败，使用回退策略: {e}")
             # 返回回退策略
             from src.core.data_models import ExtractionStrategy
             return ExtractionStrategy(
@@ -195,10 +198,10 @@ class ExtractionCoordinator:
             strategy = StrategyFactory.create_strategy(
                 extraction_strategy, product_config, html_file_path
             )
-            print(f"🏭 策略实例创建成功: {strategy.__class__.__name__}")
+            logger.info(f"策略实例创建成功: {strategy.__class__.__name__}")
             return strategy
         except Exception as e:
-            print(f"⚠ 策略实例创建失败，使用回退策略: {e}")
+            logger.warning(f"策略实例创建失败，使用回退策略: {e}")
             # 使用回退策略
             return StrategyFactory.create_fallback_strategy(product_config, html_file_path)
 
@@ -215,8 +218,8 @@ class ExtractionCoordinator:
         Raises:
             Exception: 文件读取或解析失败
         """
-        print("📖 读取和解析HTML文件...")
-        
+        logger.info("读取和解析HTML文件...")
+
         # 检查文件是否存在
         if not os.path.exists(html_file_path):
             raise FileNotFoundError(f"HTML文件不存在: {html_file_path}")
@@ -239,8 +242,8 @@ class ExtractionCoordinator:
         
         # 预处理图片路径
         soup = preprocess_image_paths(soup)
-        
-        print(f"📊 HTML解析完成: {len(html_content)} 字符")
+
+        logger.info(f"HTML解析完成: {len(html_content)} 字符")
         return soup
 
     def _execute_extraction(self, strategy, soup: BeautifulSoup, url: str) -> Dict[str, Any]:
@@ -255,14 +258,14 @@ class ExtractionCoordinator:
         Returns:
             提取的数据
         """
-        print(f"⚙️ 执行提取策略: {strategy.__class__.__name__}")
-        
+        logger.info(f"执行提取策略: {strategy.__class__.__name__}")
+
         try:
             extracted_data = strategy.extract(soup, url)
-            print(f"✅ 策略提取完成")
+            logger.info("策略提取完成")
             return extracted_data
         except Exception as e:
-            print(f"❌ 策略提取失败: {e}")
+            logger.error(f"策略提取失败: {e}", exc_info=True)
             raise
 
     def _post_process_and_validate(self, data: Dict[str, Any], 
@@ -279,7 +282,7 @@ class ExtractionCoordinator:
         Returns:
             处理后的数据
         """
-        print("🔍 后处理和验证...")
+        logger.info("后处理和验证...")
         
         # 添加提取元数据
         data["extraction_metadata"] = {
@@ -297,9 +300,9 @@ class ExtractionCoordinator:
         try:
             validation_result = validate_extracted_data(data, product_config)
             data["validation"] = validation_result
-            print(f"✅ 数据验证完成: {'有效' if validation_result.get('is_valid') else '无效'}")
+            logger.info(f"数据验证完成: {'有效' if validation_result.get('is_valid') else '无效'}")
         except Exception as e:
-            print(f"⚠ 数据验证失败: {e}")
+            logger.warning(f"数据验证失败: {e}")
             data["validation"] = {
                 "is_valid": False,
                 "errors": [str(e)],
@@ -339,22 +342,22 @@ class ExtractionCoordinator:
 
     def _validate_strategy_setup(self) -> None:
         """验证策略设置"""
-        print("🔧 验证策略设置...")
-        
+        logger.info("验证策略设置...")
+
         # 检查策略注册状态
         status = StrategyFactory.get_registration_status()
         registered_count = status["registered_strategies"]
         total_count = status["total_strategies"]
-        
-        print(f"📊 策略注册状态: {registered_count}/{total_count} "
+
+        logger.info(f"策略注册状态: {registered_count}/{total_count} "
               f"({status['completion_rate']:.1f}%)")
-        
+
         if status["missing"]:
-            print(f"⚠ 缺少策略: {[s['strategy_type'] for s in status['missing']]}")
-        
+            logger.warning(f"缺少策略: {[s['strategy_type'] for s in status['missing']]}")
+
         # 如果没有注册任何策略，给出警告
         if registered_count == 0:
-            print("⚠ 警告: 没有注册任何策略，将只能使用回退策略")
+            logger.warning("警告: 没有注册任何策略，将只能使用回退策略")
 
     def get_coordinator_status(self) -> Dict[str, Any]:
         """

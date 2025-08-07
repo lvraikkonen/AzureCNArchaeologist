@@ -11,6 +11,10 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional, Set
 from bs4 import BeautifulSoup, Tag
 
+from .logging import get_logger
+
+logger = get_logger(__name__)
+
 
 class RegionProcessor:
     """区域处理逻辑，从BaseCMSExtractor中提取"""
@@ -18,8 +22,8 @@ class RegionProcessor:
     def __init__(self, config_file: str = "data/configs/soft-category.json"):
         self.config_file = config_file
         self.region_config = self._load_region_config()
-        print(f"✓ 区域处理器初始化完成")
-        print(f"📁 区域配置文件: {config_file}")
+        logger.info(f"✓ 区域处理器初始化完成")
+        logger.info(f"📁 区域配置文件: {config_file}")
 
     def _load_region_config(self) -> Dict[str, Any]:
         """加载区域配置文件"""
@@ -31,17 +35,17 @@ class RegionProcessor:
                 # 如果配置是数组格式，转换为字典格式
                 if isinstance(raw_config, list):
                     config = self._convert_array_config_to_dict(raw_config)
-                    print(f"📋 加载区域配置: {len(raw_config)} 个配置项，转换为 {len(config)} 个产品")
+                    logger.info(f"加载区域配置: {len(raw_config)} 个配置项，转换为 {len(config)} 个产品")
                 else:
                     config = raw_config
-                    print(f"📋 加载区域配置: {len(config)} 个产品")
+                    logger.info(f"📋 加载区域配置: {len(config)} 个产品")
 
                 return config
             except Exception as e:
-                print(f"⚠ 加载区域配置失败: {e}")
+                logger.error(f"⚠ 加载区域配置失败: {e}")
                 return {}
         else:
-            print(f"⚠ 区域配置文件不存在: {self.config_file}")
+            logger.error(f"⚠ 区域配置文件不存在: {self.config_file}")
             return {}
 
     def _convert_array_config_to_dict(self, array_config: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -73,25 +77,25 @@ class RegionProcessor:
         """标准化产品名称为文件名格式"""
         # 产品名称映射表
         name_mapping = {
-            'API Management': 'api-management-index',
-            'Azure Database for MySQL': 'mysql-index',
-            'Azure Cosmos DB': 'cosmos-db-index',
-            'Storage Files': 'storage-files-index',
-            'Data Factory SSIS': 'ssis-index',
-            'Power BI Embedded': 'power-bi-embedded-index',
-            'Cognitive Services': 'cognitive-services-index',
-            'Anomaly Detector': 'anomaly-detector-index',
-            'Machine Learning Server': 'machine-learning-server-index',
-            'Azure_Data_Lake_Storage_Gen': 'storage_data-lake_index',
-            'databricks': 'databricks-index'
+            'API Management': 'api-management',
+            'Azure Database for MySQL': 'mysql',
+            'Azure Cosmos DB': 'cosmos-db',
+            'Storage Files': 'storage-files',
+            'Data Factory SSIS': 'ssis',
+            'Power BI Embedded': 'power-bi-embedded',
+            'Cognitive Services': 'cognitive-services',
+            'Anomaly Detector': 'anomaly-detector',
+            'Machine Learning Server': 'machine-learning-server',
+            'Azure_Data_Lake_Storage_Gen': 'storage_data-lake',
+            'databricks': 'databricks'
         }
 
         return name_mapping.get(os_name, os_name.lower().replace(' ', '-'))
 
     def detect_available_regions(self, soup: BeautifulSoup) -> List[str]:
         """动态检测HTML中实际存在的区域"""
-        print("🔍 检测可用区域...")
-        
+        logger.info("检测可用区域...")
+
         detected_regions = set()
         
         # 方法1: 检查region-container类
@@ -132,8 +136,8 @@ class RegionProcessor:
                         detected_regions.add(value)
         
         detected_list = sorted(list(detected_regions))
-        print(f"  ✓ 检测到 {len(detected_list)} 个区域: {detected_list}")
-        
+        logger.info(f"检测到 {len(detected_list)} 个区域: {detected_list}")
+
         return detected_list
 
     def extract_region_contents(self, soup: BeautifulSoup, html_file_path: str) -> Dict[str, Any]:
@@ -155,43 +159,43 @@ class RegionProcessor:
         
         # 为每个区域提取内容
         for region_id in available_regions:
-            print(f"  📍 处理区域: {region_id}")
-            
+            logger.info(f"处理区域: {region_id}")
+
             try:
                 # 应用区域筛选
                 region_soup = self.apply_region_filtering(soup, region_id, filename)
-                
+
                 # 提取完整的HTML内容而不是分解的结构
                 region_html = self._extract_region_html_content(region_soup, region_id)
-                
+
                 region_contents[region_id] = region_html
-                
+
             except Exception as e:
-                print(f"  ⚠ 区域 {region_id} 内容提取失败: {e}")
+                logger.warning(f"区域 {region_id} 内容提取失败: {e}")
                 continue
-        
-        print(f"  ✓ 成功提取 {len(region_contents)} 个区域的内容")
+
+        logger.info(f"成功提取 {len(region_contents)} 个区域的内容")
         return region_contents
 
-    def apply_region_filtering(self, soup: BeautifulSoup, region_id: str, 
+    def apply_region_filtering(self, soup: BeautifulSoup, region_id: str,
                              filename: str = "") -> BeautifulSoup:
         """应用区域筛选到soup对象"""
-        print(f"🔧 应用区域筛选: {region_id}")
-        
+        logger.info(f"应用区域筛选: {region_id}")
+
         # 创建soup的副本
         filtered_soup = BeautifulSoup(str(soup), 'html.parser')
-        
+
         # 检查是否有该产品的区域配置
         product_config = self.region_config.get(filename, {})
-        
+
         if not product_config:
-            print(f"  ℹ 产品 {filename} 无区域配置，保留所有内容")
+            logger.info(f"产品 {filename} 无区域配置，保留所有内容")
             return filtered_soup
-        
+
         region_tables = product_config.get(region_id, [])
-        
+
         if not region_tables:
-            print(f"  ℹ 区域 {region_id} 无特定表格配置，保留所有表格")
+            logger.info(f"区域 {region_id} 无特定表格配置，保留所有表格")
             return filtered_soup
         
         # 移除指定的表格
@@ -435,7 +439,7 @@ class RegionProcessor:
 
     def _extract_region_html_content(self, soup: BeautifulSoup, region_id: str) -> str:
         """提取区域的完整HTML内容 - 针对pricing-detail-tab结构优化"""
-        print(f"    📄 提取区域 {region_id} 的完整HTML内容")
+        logger.debug(f"提取区域 {region_id} 的完整HTML内容")
         
         # 构建HTML结构，匹配原始tab-content格式
         html_parts = []
@@ -553,68 +557,6 @@ class RegionProcessor:
         content = content.strip()
         
         return content
-
-    def _extract_region_pricing_tables(self, soup: BeautifulSoup, region_id: str) -> List[Dict[str, Any]]:
-        """提取区域特定的定价表格"""
-        pricing_tables = []
-        
-        # 查找定价相关的表格
-        tables = soup.find_all('table')
-        
-        for i, table in enumerate(tables):
-            table_text = table.get_text(strip=True)
-            
-            # 检查是否为定价表格
-            if self._is_pricing_table(table_text):
-                table_info = {
-                    'table_id': f"table_{region_id}_{i}",
-                    'region': region_id,
-                    'content': table_text[:1000],  # 限制内容长度
-                    'row_count': len(table.find_all('tr')),
-                    'has_pricing': any(keyword in table_text.lower() 
-                                     for keyword in ['￥', '$', '价格', 'price', '费用'])
-                }
-                
-                pricing_tables.append(table_info)
-        
-        return pricing_tables
-
-    def _extract_region_features(self, soup: BeautifulSoup, region_id: str) -> List[str]:
-        """提取区域特定的功能可用性"""
-        features = []
-        
-        # 查找功能列表
-        feature_lists = soup.find_all(['ul', 'ol'])
-        
-        for ul in feature_lists:
-            # 检查是否为功能列表
-            ul_text = ul.get_text(strip=True).lower()
-            if any(keyword in ul_text for keyword in ['功能', 'feature', '特性', '支持']):
-                items = ul.find_all('li')
-                for item in items[:10]:  # 限制数量
-                    item_text = item.get_text(strip=True)
-                    if len(item_text) > 5:  # 过滤过短的内容
-                        features.append(item_text)
-        
-        return features
-
-    def _extract_region_notes(self, soup: BeautifulSoup, region_id: str) -> List[str]:
-        """提取区域特定的说明信息"""
-        notes = []
-        
-        # 查找包含区域信息的段落
-        paragraphs = soup.find_all('p')
-        
-        for p in paragraphs:
-            p_text = p.get_text(strip=True)
-            
-            # 检查是否包含区域相关信息
-            if any(keyword in p_text.lower() for keyword in 
-                  ['区域', 'region', '地区', '可用性', 'availability']):
-                if len(p_text) > 20:  # 过滤过短的内容
-                    notes.append(p_text[:200])  # 限制长度
-        
-        return notes
 
     def _is_pricing_table(self, table_text: str) -> bool:
         """判断是否为定价表格"""

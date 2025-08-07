@@ -9,6 +9,10 @@ import re
 from typing import Optional, List, Dict, Any
 from bs4 import BeautifulSoup, Tag
 
+from src.core.logging import get_logger
+
+logger = get_logger(__name__)
+
 
 def find_main_content_area(soup: BeautifulSoup) -> Optional[Tag]:
     """查找主要内容区域"""
@@ -301,8 +305,8 @@ def process_faq_item(li: Tag, new_li: Tag, soup: BeautifulSoup):
 
 def extract_qa_content(soup: BeautifulSoup) -> str:
     """提取Q&A内容以及支持和服务级别协议内容"""
-    print("🔍 提取Q&A内容...")
-    
+    logger.info("提取Q&A内容...")
+
     qa_sections = []
     
     # 查找常见问题部分
@@ -343,10 +347,10 @@ def extract_qa_content(soup: BeautifulSoup) -> str:
     
     # 合并所有Q&A内容
     if qa_sections:
-        combined_qa = '\n\n'.join([f"## {section['section']}\n{section['content']}" 
+        combined_qa = '\n\n'.join([f"## {section['section']}\n{section['content']}"
                                   for section in qa_sections[:5]])  # 限制为前5个
-        print(f"  ✓ 提取了 {len(qa_sections)} 个Q&A部分")
+        logger.info(f"提取了 {len(qa_sections)} 个Q&A部分")
         return combined_qa
     else:
-        print("  ⚠ 未找到Q&A内容")
+        logger.warning("未找到Q&A内容")
         return ""

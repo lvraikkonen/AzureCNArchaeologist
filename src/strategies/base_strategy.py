@@ -5,12 +5,11 @@
 定义所有提取策略的通用接口和共用方法
 """
 
-import os
 import sys
 from abc import ABC, abstractmethod
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any
 from bs4 import BeautifulSoup
 
 # 添加项目根目录到Python路径
@@ -119,11 +118,7 @@ class BaseStrategy(ABC):
         qa_content = self._extract_qa_content(soup)
         base_data["QaContent"] = self._clean_html_content(qa_content)
 
-        # 6. 提取定价表格
-        print("💰 提取定价表格...")
-        base_data["PricingTables"] = self._extract_pricing_tables(main_content or soup)
-
-        # 7. 提取其他元数据
+        # 6. 提取其他元数据
         base_data["LastModified"] = self._extract_last_modified(soup)
 
         return base_data
@@ -191,19 +186,26 @@ class BaseStrategy(ABC):
 
     def _extract_navigation_title(self, soup: BeautifulSoup) -> str:
         """提取导航标题"""
-        # 查找导航相关的标题元素
+        # 首先尝试从<title>标签提取
+        title_tag = soup.find('title')
+        if title_tag:
+            title_text = title_tag.get_text(strip=True)
+            if title_text:
+                return title_text
+
+        # 如果没有找到title标签，查找其他导航相关的标题元素
         nav_selectors = [
             'nav .title',
             '.navigation-title',
             '.breadcrumb .current',
             '.page-header .title'
         ]
-        
+
         for selector in nav_selectors:
             element = soup.select_one(selector)
             if element:
                 return element.get_text(strip=True)
-        
+
         return ""
 
     def _extract_description_content(self, soup: BeautifulSoup) -> str:
@@ -229,24 +231,6 @@ class BaseStrategy(ABC):
             return self._clean_html_content(str(first_paragraph))
         
         return ""
-
-    def _extract_pricing_tables(self, soup: BeautifulSoup) -> List[str]:
-        """提取定价表格"""
-        tables = []
-        
-        # 查找定价相关的表格
-        pricing_tables = soup.find_all(['table', 'div'], 
-                                     class_=lambda x: x and any(
-                                         keyword in x.lower() 
-                                         for keyword in ['pricing', 'price', 'cost', 'tier']
-                                     ))
-        
-        for table in pricing_tables:
-            clean_table = self._clean_html_content(str(table))
-            if clean_table:
-                tables.append(clean_table)
-        
-        return tables
 
     def _extract_last_modified(self, soup: BeautifulSoup) -> str:
         """提取最后修改时间"""
@@ -441,7 +425,7 @@ class BaseStrategy(ABC):
                 if container:
                     qa_content += str(container)
                     
-            # 2. 查找more-detail容器（API Management特有）
+            # 2. 查找more-detail容器
             more_detail_containers = soup.find_all('div', class_='more-detail')
             for container in more_detail_containers:
                 if container:

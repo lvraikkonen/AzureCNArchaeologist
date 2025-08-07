@@ -2,6 +2,7 @@
 # *.json
 
 .claude
+.idea
 __pycache__
 .venv
 
@@ -12,3 +13,7 @@ cms_output
 uv.lock
 
 *.zip
+
+.env
+
+logs/

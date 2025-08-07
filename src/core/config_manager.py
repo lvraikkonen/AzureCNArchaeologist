@@ -10,6 +10,10 @@ import os
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 
+from .logging import get_logger
+
+logger = get_logger(__name__)
+
 
 class ConfigManager:
     """简化的配置管理器，保持向后兼容"""
@@ -18,9 +22,9 @@ class ConfigManager:
         self.config_dir = Path(config_dir)
         self.soft_category_file = self.config_dir / "soft-category.json"
         self.soft_category_config = None
-        
-        print(f"✓ 配置管理器初始化完成")
-        print(f"📁 配置目录: {self.config_dir}")
+
+        logger.info("配置管理器初始化完成")
+        logger.info(f"配置目录: {self.config_dir}")
 
     def load_soft_category_config(self) -> Dict[str, Any]:
         """加载软件分类配置（保持兼容性）"""
@@ -29,12 +33,12 @@ class ConfigManager:
                 try:
                     with open(self.soft_category_file, 'r', encoding='utf-8') as f:
                         self.soft_category_config = json.load(f)
-                    print(f"📋 加载软件分类配置: {len(self.soft_category_config)} 项")
+                    logger.info(f"加载软件分类配置: {len(self.soft_category_config)} 项")
                 except Exception as e:
-                    print(f"⚠ 加载软件分类配置失败: {e}")
+                    logger.warning(f"加载软件分类配置失败: {e}")
                     self.soft_category_config = {}
             else:
-                print(f"⚠ 软件分类配置文件不存在: {self.soft_category_file}")
+                logger.warning(f"软件分类配置文件不存在: {self.soft_category_file}")
                 self.soft_category_config = {}
         
         return self.soft_category_config

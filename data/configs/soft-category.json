@@ -515,6 +515,54 @@
     ]
   },
   {
+    "os": "Azure IoT",
+    "region": "north-china",
+    "tableIDs": [
+      "#azure-iot-standard-north3",
+      "#azure-iot-basic-north3"
+    ]
+  },
+  {
+    "os": "Azure IoT",
+    "region": "east-china",
+    "tableIDs": [
+      "#azure-iot-standard-north3",
+      "#azure-iot-basic-north3"
+    ]
+  },
+  {
+    "os": "Azure IoT",
+    "region": "north-china2",
+    "tableIDs": [
+      "#azure-iot-standard-north3",
+      "#azure-iot-basic-north3"
+    ]
+  },
+  {
+    "os": "Azure IoT",
+    "region": "east-china2",
+    "tableIDs": [
+      "#azure-iot-standard-north3",
+      "#azure-iot-basic-north3"
+    ]
+  },
+  {
+    "os": "Azure IoT",
+    "region": "north-china3",
+    "tableIDs": [
+      "#azure-iot-standard-elsearea",
+      "#azure-iot-basic-elsearea"
+    ]
+  },
+  {
+    "os": "Azure IoT",
+    "region": "east-china3",
+    "tableIDs": [
+      "#azure-iot-standard-elsearea",
+      "#azure-iot-basic-elsearea"
+    ]
+  },
+  {
     "os": "Azure Cosmos DB",
     "region": "east-china3",
     "tableIDs": [
@@ -857,6 +905,86 @@
       "#vm-table5-1-1",
       "#vm-table5-1-2",
       "#vm-table-suse-linux-enterprise-server-basic-generalpurpose-b1s-b8ms"
+    ]
+  },
+  {
+    "os": "Azure Functions",
+    "region": "north-china2",
+    "tableIDs": [
+      "#azure-functions-table-execute-times",
+      "#azure-functions-table-total-resource-consumption",
+      "#azure-functions-table-total-plan-functions-north3"
+    ]
+  },
+  {
+    "os": "Azure Functions",
+    "region": "north-china3",
+    "tableIDs": [
+      "#azure-functions-table-execute-times",
+      "#azure-functions-table-total-resource-consumption",
+      "#azure-functions-table-execute-times",
+      "#azure-functions-table-total-plan-functions",
+      "#azure-functions-table-resource-consumption"
+    ]
+  },
+  {
+    "os": "Azure Functions",
+    "region": "east-china3",
+    "tableIDs": [
+      "#azure-functions-table-execute-times",
+      "#azure-functions-table-total-resource-consumption",
+      "#azure-functions-table-execute-times",
+      "#azure-functions-table-total-plan-functions",
+      "#azure-functions-table-resource-consumption"
+    ]
+  },
+  {
+    "os": "Azure Functions",
+    "region": "east-china",
+    "tableIDs": [
+      "#azure-functions-table-rate-per-second",
+      "#azure-functions-table-execute-times",
+      "#azure-functions-table-total-resource-consumption",
+      "#azure-functions-table-total-plan-functions",
+      "#azure-functions-table-total-plan-functions-north3"
+    ]
+  },
+  {
+    "os": "Azure Functions",
+    "region": "north-china",
+    "tableIDs": [
+      "#azure-functions-table-total-plan-functions",
+      "#azure-functions-table-total-plan-functions-north3"
+    ]
+  },
+  {
+    "os": "Azure Functions",
+    "region": "east-china2",
+    "tableIDs": [
+      "#azure-functions-table-execute-times",
+      "#azure-functions-table-total-resource-consumption",
+      "#azure-functions-table-total-plan-functions-north3"
+    ]
+  },
+  {
+    "os": "Active Directory",
+    "region": "east-china",
+    "tableIDs": [
+      "#active-directory-standard-tier-region"
+    ]
+  },
+  {
+    "os": "Active Directory",
+    "region": "north-china",
+    "tableIDs": [
+      "#active-directory-standard-tier-region"
+    ]
+  },
+  {
+    "os": "data-explorer",
+    "region": "north-china3",
+    "tableIDs": [
+      "#data-explorer-esv111"
     ]
   },
   {
@@ -1288,6 +1416,50 @@
     ]
   },
   {
+    "os": "Application Gateway",
+    "region": "east-china",
+    "tableIDs": [
+      "#application-gateway-table-standard-v2",
+      "#application-gateway-2"
+    ]
+  },
+  {
+    "os": "Application Gateway",
+    "region": "east-china2",
+    "tableIDs": [
+      "#application-gateway-2"
+    ]
+  },
+  {
+    "os": "Application Gateway",
+    "region": "north-china",
+    "tableIDs": [
+      "#application-gateway-table-standard-v2",
+      "#application-gateway-2"
+    ]
+  },
+  {
+    "os": "Application Gateway",
+    "region": "north-china2",
+    "tableIDs": [
+      "#application-gateway-2"
+    ]
+  },
+  {
+    "os": "Application Gateway",
+    "region": "north-china3",
+    "tableIDs": [
+      "#application-gateway-1"
+    ]
+  },
+  {
+    "os": "Application Gateway",
+    "region": "east-china3",
+    "tableIDs": [
+      "#application-gateway-1"
+    ]
+  },
+  {
     "os": "MariaDB",
     "region": "north-china",
     "tableIDs": [
@@ -1303,6 +1475,88 @@
       "#mariadb-basic-compute-gen5",
       "#mariadb-general-purpose-compute-gen5",
       "#mariadb-memory-optimized-compute-gen5"
+    ]
+  },
+  {
+    "os": "HD Insight",
+    "region": "east-china2",
+    "tableIDs": [
+      "#hdinsight-computed-optimized-nodes-for-hdinsight-table"
+    ]
+  },
+  {
+    "os": "HD Insight",
+    "region": "north-china3",
+    "tableIDs": [
+      "#hdinsight-computed-optimized-nodes-for-hdinsight-table-1",
+      "#hdinsight-computed-optimized-nodes-for-hdinsight-table-2",
+      "#hdinsight-computed-optimized-nodes-for-hdinsight-table-3"
+    ]
+  },
+  {
+    "os": "HD Insight",
+    "region": "north-china",
+    "tableIDs": [
+      "#hdinsight-computed-optimized-nodes-for-hdinsight-table",
+      "#hdinsight-computed-optimized-nodes-for-hdinsight-table-1"
+    ]
+  },
+  {
+    "os": "HD Insight",
+    "region": "north-china2",
+    "tableIDs": [
+      "#hdinsight-computed-optimized-nodes-for-hdinsight-table-1"
+    ]
+  },
+  {
+    "os": "HD Insight",
+    "region": "east-china",
+    "tableIDs": [
+      "#hdinsight-computed-optimized-nodes-for-hdinsight-table",
+      "#hdinsight-computed-optimized-nodes-for-hdinsight-table-1"
+    ]
+  },
+  {
+    "os": "Analysis Services",
+    "region": "east-china2",
+    "tableIDs": [
+      "#analysis-services-standard-tier-region",
+      "#analysis-services-standard-tier-s0",
+      "#analysis-services-standard-tier-s1",
+      "#analysis-services-standard-tier-new-s1",
+      "#analysis-services-standard-tier-new-s2"
+    ]
+  },
+  {
+    "os": "Analysis Services",
+    "region": "east-china",
+    "tableIDs": [
+      "#analysis-services-standard-tier-region2",
+      "#analysis-services-standard-tier-region3",
+      "#analysis-services-standard-tier-new-s1",
+      "#analysis-services-standard-tier-new-s2"
+    ]
+  },
+  {
+    "os": "Analysis Services",
+    "region": "north-china2",
+    "tableIDs": [
+      "#analysis-services-standard-tier-region2",
+      "#analysis-services-standard-tier-region3",
+      "#analysis-services-standard-tier-s0",
+      "#analysis-services-standard-tier-s1",
+      "#analysis-services-standard-tier-new-s1",
+      "#analysis-services-standard-tier-new-s2"
+    ]
+  },
+  {
+    "os": "Analysis Services",
+    "region": "north-china",
+    "tableIDs": [
+      "#analysis-services-standard-tier-s0",
+      "#analysis-services-standard-tier-s1",
+      "#analysis-services-standard-tier-region3",
+      "#analysis-services-standard-tier-region2"
     ]
   }
 ]

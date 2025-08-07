@@ -15,6 +15,10 @@ from typing import Dict, List, Any, Optional
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
+from .logging import get_logger
+
+logger = get_logger(__name__)
+
 
 class ProductManager:
     """产品配置管理器 - 支持大规模产品和懒加载"""
@@ -27,8 +31,8 @@ class ProductManager:
         self.cache_timestamps = {}      # 缓存时间戳
         self.cache_ttl_minutes = 30     # 缓存TTL
 
-        print(f"✓ 产品管理器初始化完成")
-        print(f"📁 配置目录: {self.config_dir}")
+        logger.info("产品管理器初始化完成")
+        logger.info(f"配置目录: {self.config_dir}")
 
     def load_products_index(self) -> Dict[str, Any]:
         """加载产品主索引，支持120+产品"""
@@ -44,7 +48,7 @@ class ProductManager:
             load_strategy = self.products_index.get("load_strategy", {})
             self.cache_ttl_minutes = load_strategy.get("cache_ttl_minutes", 30)
 
-            print(f"📋 加载产品索引: {self.products_index['total_products']} 个产品")
+            logger.info(f"加载产品索引: {self.products_index['total_products']} 个产品")
 
         return self.products_index
 
@@ -130,7 +134,7 @@ class ProductManager:
             try:
                 config = self.get_product_config(product_key)
                 if config.get("filename") == basename:
-                    print(f"🔍 检测到产品: {basename} -> {product_key}")
+                    logger.info(f"检测到产品: {basename} -> {product_key}")
                     return product_key
             except (ValueError, FileNotFoundError):
                 # 静默跳过配置不存在的产品
@@ -191,7 +195,7 @@ class ProductManager:
         """清理缓存"""
         self.cached_configs.clear()
         self.cache_timestamps.clear()
-        print("🗑️ 产品配置缓存已清理")
+        logger.info("产品配置缓存已清理")
 
     def get_cache_stats(self) -> Dict[str, Any]:
         """获取缓存统计信息"""

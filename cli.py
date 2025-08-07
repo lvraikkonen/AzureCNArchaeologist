@@ -13,6 +13,9 @@ from typing import Dict, List, Optional
 # 添加src目录到Python路径
 sys.path.insert(0, str(Path(__file__).parent / 'src'))
 
+# 初始化日志系统
+from src.core import setup_logging, get_app_logger, log_user_operation
+
 from src.exporters.json_exporter import JSONExporter
 from src.exporters.html_exporter import HTMLExporter
 from src.exporters.rag_exporter import RAGExporter
@@ -46,11 +49,30 @@ def print_banner():
 
 def extract_command(args):
     """执行数据提取命令"""
+    logger = get_app_logger("cli.extract")
+
+    logger.info(f"开始提取产品数据: {args.product}")
+    logger.info(f"HTML文件: {args.html_file}")
+    logger.info(f"输出格式: {args.format}")
+    logger.info(f"输出目录: {args.output_dir}")
+
     print(f"📡 开始提取产品数据: {args.product}")
     print(f"   HTML文件: {args.html_file}")
     print(f"   输出格式: {args.format}")
     print(f"   输出目录: {args.output_dir}")
-    
+
+    # 记录用户操作
+    log_user_operation(
+        user="cli_user",
+        action="数据提取",
+        details={
+            "product": args.product,
+            "html_file": args.html_file,
+            "format": args.format,
+            "output_dir": args.output_dir
+        }
+    )
+
     try:
         # 使用产品管理器获取支持的产品列表
         from src.core.product_manager import ProductManager
@@ -87,16 +109,57 @@ def extract_command(args):
                 output_path = exporter.export_enhanced_cms_data(data, args.product)
             
             print(f"✅ 数据已导出到: {output_path}")
-            
+            logger.info(f"数据已导出到: {output_path}")
+
+            # 记录成功操作
+            log_user_operation(
+                user="cli_user",
+                action="数据提取完成",
+                details={
+                    "product": args.product,
+                    "output_path": str(output_path),
+                    "format": args.format
+                },
+                status="成功"
+            )
+
         else:
-            print(f"❌ 暂不支持产品: {args.product}")
+            error_msg = f"暂不支持产品: {args.product}"
+            print(f"❌ {error_msg}")
             print(f"支持的产品: {', '.join(supported_products)}")
-            
+            logger.error(error_msg)
+
+            # 记录失败操作
+            log_user_operation(
+                user="cli_user",
+                action="数据提取",
+                details={
+                    "product": args.product,
+                    "error": error_msg,
+                    "supported_products": supported_products
+                },
+                status="失败"
+            )
+
     except Exception as e:
-        print(f"❌ 提取过程出错: {str(e)}")
+        error_msg = f"提取过程出错: {str(e)}"
+        print(f"❌ {error_msg}")
+        logger.error(error_msg, exc_info=True)
+
+        # 记录异常操作
+        log_user_operation(
+            user="cli_user",
+            action="数据提取",
+            details={
+                "product": args.product,
+                "error": str(e)
+            },
+            status="异常"
+        )
         return 1
-    
+
     print("✅ 数据提取完成")
+    logger.info("数据提取完成")
 
 
 def export_command(args):
@@ -254,25 +317,49 @@ def create_parser():
 
 def main():
     """主入口函数"""
+    # 初始化日志系统
+    try:
+        setup_logging()
+        logger = get_app_logger("cli.main")
+        logger.info("AzureCN Archaeologist CLI 启动")
+    except Exception as e:
+        print(f"⚠ 日志系统初始化失败: {e}")
+        # 继续执行，但没有日志功能
+        logger = None
+
     parser = create_parser()
     args = parser.parse_args()
-    
+
     # 如果没有提供命令，显示帮助信息
     if not args.command:
         print_banner()
         parser.print_help()
         return
-    
+
     # 显示横幅(除非是简单的状态命令)
     if args.command not in ['status', 'list-products']:
         print_banner()
-    
+
+    if logger:
+        logger.info(f"执行命令: {args.command}")
+
     # 执行对应的命令函数
-    if hasattr(args, 'func'):
-        args.func(args)
-    else:
-        print(f"❌ 未知命令: {args.command}")
-        parser.print_help()
+    try:
+        if hasattr(args, 'func'):
+            result = args.func(args)
+            if logger:
+                logger.info(f"命令 {args.command} 执行完成")
+            return result
+        else:
+            print(f"❌ 未知命令: {args.command}")
+            parser.print_help()
+            if logger:
+                logger.error(f"未知命令: {args.command}")
+            return 1
+    except Exception as e:
+        print(f"❌ 命令执行失败: {e}")
+        if logger:
+            logger.error(f"命令 {args.command} 执行失败: {e}", exc_info=True)
         return 1
 
 

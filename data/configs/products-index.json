@@ -26,9 +26,9 @@
       "products": ["storage-files", "data-lake-storage"]
     },
     "compute": {
-      "count": 3,
+      "count": 2,
       "config_path": "products/compute/",
-      "products": ["power-bi-embedded", "search", "microsoft-entra-external-id"],
+      "products": ["power-bi-embedded", "search"],
       "large_html_products": []
     }
   },

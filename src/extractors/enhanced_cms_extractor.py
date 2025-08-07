@@ -16,6 +16,9 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.append(str(project_root))
 
 from src.core.extraction_coordinator import ExtractionCoordinator
+from src.core.logging import get_logger
+
+logger = get_logger(__name__)
 
 
 class EnhancedCMSExtractor:
@@ -35,9 +38,9 @@ class EnhancedCMSExtractor:
         
         # 初始化提取协调器
         self.extraction_coordinator = ExtractionCoordinator(str(self.output_dir))
-        
-        print(f"🔧 增强型CMS提取器初始化完成")
-        print(f"📁 输出目录: {output_dir}")
+
+        logger.info("增强型CMS提取器初始化完成")
+        logger.info(f"输出目录: {output_dir}")
 
     def extract_cms_content(self, html_file_path: str, url: str = "") -> Dict[str, Any]:
         """
@@ -50,25 +53,25 @@ class EnhancedCMSExtractor:
         Returns:
             提取的CMS内容数据
         """
-        print(f"\n🔧 开始提取增强型CMS内容")
-        print(f"📁 源文件: {html_file_path}")
-        
+        logger.info("开始提取增强型CMS内容")
+        logger.info(f"源文件: {html_file_path}")
+
         # 验证文件存在
         if not os.path.exists(html_file_path):
             error_msg = f"HTML文件不存在: {html_file_path}"
-            print(f"❌ {error_msg}")
+            logger.error(error_msg)
             return self._create_error_result(error_msg)
-        
+
         # 如果URL为空，尝试生成默认URL
         if not url:
             product_key = self._detect_product_key_from_path(html_file_path)
             if product_key:
                 url = self._get_default_url(product_key)
-                print(f"🔗 使用默认URL: {url}")
-        
+                logger.info(f"使用默认URL: {url}")
+
         # 委托给协调器处理
         try:
-            print("🎯 委托给提取协调器处理...")
+            logger.info("委托给提取协调器处理...")
             result = self.extraction_coordinator.coordinate_extraction(html_file_path, url)
             
             # 添加提取器级别的元数据
@@ -82,12 +85,12 @@ class EnhancedCMSExtractor:
                     "output_dir": str(self.output_dir)
                 })
             
-            print("✅ 提取完成")
+            logger.info("提取完成")
             return result
-            
+
         except Exception as e:
             error_msg = f"提取过程失败: {str(e)}"
-            print(f"❌ {error_msg}")
+            logger.error(error_msg, exc_info=True)
             return self._create_error_result(error_msg, html_file_path, url)
 
     def _detect_product_key_from_path(self, html_file_path: str) -> Optional[str]:
@@ -155,46 +158,3 @@ class EnhancedCMSExtractor:
                 "quality_score": 0.0
             }
         }
-
-    def get_statistics(self) -> Dict[str, Any]:
-        """
-        获取提取器统计信息
-        
-        Returns:
-            统计信息字典
-        """
-        return {
-            "extractor_version": "enhanced_v3.0_simplified",
-            "mode": "coordinator_delegated",
-            "output_directory": str(self.output_dir),
-            "coordinator_initialized": hasattr(self, 'extraction_coordinator'),
-            "supported_features": [
-                "产品自动检测",
-                "智能策略选择",
-                "多区域内容提取",
-                "CMS格式输出",
-                "错误处理和回退",
-                "完整数据验证"
-            ]
-        }
-
-    # 为兼容性保留一些可能被CLI或测试使用的方法
-    def _clean_html_content(self, content: str) -> str:
-        """
-        HTML内容清理 - 兼容性方法
-        
-        Args:
-            content: HTML内容
-            
-        Returns:
-            清理后的内容
-        """
-        # 简单的HTML清理
-        if not content:
-            return ""
-        
-        # 移除多余的空白
-        import re
-        content = re.sub(r'\s+', ' ', content.strip())
-        
-        return content
