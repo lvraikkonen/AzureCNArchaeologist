@@ -1,20 +1,20 @@
 {
-  "display_name": "Storage Files",
-  "filename": "storage-files.html",
-  "url": "https://www.azure.cn/pricing/details/storage/files/",
-  "slug": "storage-files",
-  "category": "storage",
+  "display_name": "Azure Search", 
+  "filename": "search.html",
+  "url": "https://www.azure.cn/pricing/details/search/",
+  "slug": "search",
+  "category": "compute",
   "created_at": "2025-07-22",
 
   "important_section_titles": [
     "定价详细信息", "定价详情", "pricing details",
-    "常见问题", "faq", "frequently asked questions",
-    "file storage", "azure files"
+    "常见问题", "faq", "frequently asked questions", 
+    "search service", "cognitive search"
   ],
 
   "html_processing": {
     "type": "normal",
-    "estimated_size_mb": 0.8,
+    "estimated_size_mb": 0.7,
     "processing_strategy": "standard"
   },
 

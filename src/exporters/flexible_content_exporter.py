@@ -331,6 +331,9 @@ class FlexibleContentExporter:
                     base_content = content
                     break
         
+        # 对于简单页面，需要过滤掉QA内容，因为QA内容已经在commonSections中
+        base_content = self._filter_qa_from_content(base_content)
+        
         return self._process_placeholders(base_content)
     
     def _build_region_content_groups(self, data: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -362,6 +365,56 @@ class FlexibleContentExporter:
                 sort_order += 1
         
         return content_groups
+    
+    def _filter_qa_from_content(self, content: str) -> str:
+        """
+        从内容中过滤掉QA部分，避免与commonSections重复
+        
+        Args:
+            content: 原始内容
+            
+        Returns:
+            str: 过滤后的内容
+        """
+        if not content:
+            return ""
+        
+        import re
+        from bs4 import BeautifulSoup
+        
+        try:
+            soup = BeautifulSoup(content, 'html.parser')
+            
+            # 查找并移除more-detail容器（FAQ内容）
+            qa_containers = soup.find_all('div', class_='more-detail')
+            for container in qa_containers:
+                container.extract()
+            
+            # 查找并移除包含"常见问题"的pricing-page-section
+            sections = soup.find_all('div', class_='pricing-page-section')
+            for section in sections:
+                h2_tag = section.find('h2')
+                if h2_tag and '常见问题' in h2_tag.get_text():
+                    section.extract()
+                elif section.find('div', class_='more-detail'):
+                    # 如果section内包含more-detail，也移除
+                    section.extract()
+            
+            # 移除支持和SLA部分，因为这通常也在QA中
+            for section in soup.find_all('div', class_='pricing-page-section'):
+                h2_tag = section.find('h2')
+                if h2_tag and ('支持和服务级别协议' in h2_tag.get_text() or '支持' in h2_tag.get_text()):
+                    section.extract()
+            
+            return str(soup)
+            
+        except Exception:
+            # 如果解析失败，使用简单的正则表达式过滤
+            # 移除more-detail div块
+            content = re.sub(r'<div class="more-detail">.*?</div>', '', content, flags=re.DOTALL)
+            # 移除包含"常见问题"的section
+            content = re.sub(r'<div class="pricing-page-section">.*?<h2>\s*常见问题.*?</div>', '', content, flags=re.DOTALL)
+            return content
     
     def _process_placeholders(self, content: str) -> str:
         """

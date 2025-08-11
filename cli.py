@@ -96,11 +96,11 @@ def extract_command(args):
             data = extractor.extract_cms_content(args.html_file, url)
             
             # 根据格式选择合适的导出器
-            if args.format == 'json':
-                from src.exporters.json_exporter import JSONExporter
-                exporter = JSONExporter(args.output_dir)
-                output_path = exporter.export_enhanced_cms_data(data, args.product)
-            elif args.format == 'html':
+            # if args.format == 'json':
+            #     from src.exporters.json_exporter import JSONExporter
+            #     exporter = JSONExporter(args.output_dir)
+            #     output_path = exporter.export_enhanced_cms_data(data, args.product)
+            if args.format == 'html':
                 from src.exporters.html_exporter import HTMLExporter
                 exporter = HTMLExporter(args.output_dir)
                 output_path = exporter.export_enhanced_cms_data(data, args.product)
@@ -108,7 +108,7 @@ def extract_command(args):
                 from src.exporters.rag_exporter import RAGExporter
                 exporter = RAGExporter(args.output_dir)
                 output_path = exporter.export_enhanced_cms_data(data, args.product)
-            elif args.format == 'flexible':
+            elif args.format == 'json':
                 from src.exporters.flexible_content_exporter import FlexibleContentExporter
                 exporter = FlexibleContentExporter(args.output_dir)
                 output_path = exporter.export_flexible_content(data, args.product)
@@ -173,18 +173,18 @@ def export_command(args):
     print(f"   输入文件: {args.input}")
     print(f"   输出目录: {args.output}")
     
-    if args.format == 'json':
-        exporter = JSONExporter(args.output)
-        print("✅ JSON导出完成")
-    elif args.format == 'html':
+    # if args.format == 'json':
+    #     exporter = JSONExporter(args.output)
+    #     print("✅ JSON导出完成")
+    if args.format == 'html':
         exporter = HTMLExporter(args.output)
         print("✅ HTML导出完成")
     elif args.format == 'rag':
         exporter = RAGExporter(args.output)
         print("✅ RAG格式导出完成")
-    elif args.format == 'flexible':
+    elif args.format == 'json':
         exporter = FlexibleContentExporter(args.output)
-        print("✅ FlexibleContent格式导出完成")
+        print("✅ JsonFlexibleContent格式导出完成")
 
 
 def batch_command(args):
@@ -281,7 +281,7 @@ def create_parser():
     extract_parser.add_argument('product', help='产品名称')
     extract_parser.add_argument('--html-file', required=True, 
                                help='输入HTML文件路径')
-    extract_parser.add_argument('--format', choices=['json', 'html', 'rag', 'flexible'],
+    extract_parser.add_argument('--format', choices=['json', 'html', 'rag'],
                                default='json', help='输出格式')
     extract_parser.add_argument('--output-dir', default='output',
                                help='输出目录')
@@ -290,7 +290,7 @@ def create_parser():
     
     # export 命令
     export_parser = subparsers.add_parser('export', help='导出数据')
-    export_parser.add_argument('format', choices=['json', 'html', 'rag', 'flexible'],
+    export_parser.add_argument('format', choices=['json', 'html', 'rag'],
                               help='导出格式')
     export_parser.add_argument('--input', '-i', required=True,
                               help='输入数据文件')

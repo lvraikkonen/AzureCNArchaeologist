@@ -1,7 +1,7 @@
 {
   "version": "2.0",
-  "last_updated": "2025-07-22",
-  "total_products": 12,
+  "last_updated": "2025-08-11",
+  "total_products": 13,
   "future_capacity": 120,
 
   "categories": {
@@ -11,14 +11,14 @@
       "products": ["mysql", "postgresql", "cosmos-db"]
     },
     "ai-ml": {
-      "count": 1,
+      "count": 2,
       "config_path": "products/ai-ml/",
-      "products": ["anomaly-detector"]
+      "products": ["anomaly-detector", "search"]
     },
     "integration": {
-      "count": 3,
+      "count": 4,
       "config_path": "products/integration/",
-      "products": ["api-management", "ssis", "event-grid"]
+      "products": ["api-management", "ssis", "event-grid", "service-bus"]
     },
     "storage": {
       "count": 2,
@@ -26,9 +26,15 @@
       "products": ["storage-files", "data-lake-storage"]
     },
     "compute": {
-      "count": 2,
+      "count": 0,
       "config_path": "products/compute/",
-      "products": ["power-bi-embedded", "search"],
+      "products": [],
+      "large_html_products": []
+    },
+    "analysis": {
+      "count": 2,
+      "config_path": "products/analysis/",
+      "products": ["power-bi-embedded", "analysis-services"],
       "large_html_products": []
     }
   },

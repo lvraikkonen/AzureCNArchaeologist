@@ -455,21 +455,33 @@ class RegionProcessor:
             # 在pricing-detail-tab中查找tab-content
             tab_content = pricing_detail_tab.find(class_='tab-content')
             if tab_content:
-                # 查找第一个tab-panel中的pricing-page-section
+                # 查找第一个tab-panel
                 tab_panel = tab_content.find('div', {'id': 'tabContent1'}) or tab_content.find(class_='tab-panel')
                 if tab_panel:
-                    pricing_section = tab_panel.find(class_='pricing-page-section')
-                    if pricing_section:
-                        # 验证是否包含关键元素
-                        has_h2 = pricing_section.find('h2') is not None
-                        has_tags_date = pricing_section.find(class_='tags-date') is not None
-                        
-                        print(f"    📋 内容验证: H2={has_h2}, tags-date={has_tags_date}")
-                        
-                        # 提取完整的pricing-page-section内容
-                        section_html = self._preserve_important_content(str(pricing_section))
-                        html_parts.append(section_html)
+                    # 提取tab-panel中所有内容，但不包括FAQ部分
+                    content_elements = []
+                    
+                    # 遍历tab-panel的所有直接子元素
+                    for element in tab_panel.children:
+                        if hasattr(element, 'name'):
+                            # 如果遇到包含FAQ的pricing-page-section，停止提取
+                            if (element.name == 'div' and 
+                                element.has_attr('class') and 
+                                'pricing-page-section' in element.get('class', []) and
+                                element.find(class_='more-detail')):
+                                print(f"    ⏹️ 遇到FAQ部分，停止提取")
+                                break
+                            # 否则添加到内容元素中
+                            content_elements.append(element)
+                    
+                    # 如果有内容元素，将它们组合起来
+                    if content_elements:
+                        for element in content_elements:
+                            element_html = self._preserve_important_content(str(element))
+                            if element_html.strip():
+                                html_parts.append(element_html)
                         content_extracted = True
+                        print(f"    ✓ 提取了 {len(content_elements)} 个内容元素")
         
         # 如果没有找到pricing-detail-tab结构，使用回退方案
         if not content_extracted:
@@ -477,28 +489,40 @@ class RegionProcessor:
             tab_content_containers = soup.find_all(class_='tab-content')
             
             for tab_content in tab_content_containers:
-                pricing_sections = tab_content.find_all(class_='pricing-page-section')
-                for section in pricing_sections:
-                    # 跳过包含more-detail的section（FAQ内容）
-                    if section.find(class_='more-detail'):
-                        continue
+                # 查找tab-panel
+                tab_panels = tab_content.find_all('div', class_='tab-panel')
+                if not tab_panels:
+                    tab_panels = [tab_content]  # 如果没有明确的tab-panel，使用tab-content本身
                     
-                    # 验证并提取内容
-                    has_h2 = section.find('h2') is not None
-                    has_tags_date = section.find(class_='tags-date') is not None
-                    print(f"    📋 回退内容验证: H2={has_h2}, tags-date={has_tags_date}")
+                for tab_panel in tab_panels:
+                    content_elements = []
                     
-                    section_html = self._preserve_important_content(str(section))
-                    html_parts.append(section_html)
-                    content_extracted = True
-                    break
+                    # 遍历所有子元素，但不包括FAQ部分
+                    for element in tab_panel.children:
+                        if hasattr(element, 'name'):
+                            # 如果遇到包含FAQ的section，停止提取
+                            if (element.name == 'div' and 
+                                element.has_attr('class') and 
+                                'pricing-page-section' in element.get('class', []) and
+                                element.find(class_='more-detail')):
+                                break
+                            content_elements.append(element)
+                    
+                    if content_elements:
+                        for element in content_elements:
+                            element_html = self._preserve_important_content(str(element))
+                            if element_html.strip():
+                                html_parts.append(element_html)
+                        content_extracted = True
+                        print(f"    ✓ 回退方案提取了 {len(content_elements)} 个内容元素")
+                        break
                 
                 if content_extracted:
                     break
         
         # 如果仍然没有内容，使用最后的回退方案
         if not content_extracted:
-            print(f"    🚨 使用最终回退方案：查找任意pricing-page-section")
+            print(f"    🚨 使用最终回退方案：查找任意非FAQ的pricing-page-section")
             pricing_sections = soup.find_all(class_='pricing-page-section')
             for section in pricing_sections:
                 if section.find(class_='more-detail'):

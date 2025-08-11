@@ -97,6 +97,45 @@
     ]
   },
   {
+    "os": "Azure Cognitive Search",
+    "region": "east-china",
+    "tableIDs": [
+      "#Azure-Cognitive-Search1",
+      "#Azure-Cognitive-Search2",
+      "#Azure-Cognitive-Search3"
+    ]
+  },
+  {
+    "os": "Azure Cognitive Search",
+    "region": "north-china",
+    "tableIDs": [
+      "#Azure-Cognitive-Search1",
+      "#Azure-Cognitive-Search2",
+      "#Azure-Cognitive-Search3"
+    ]
+  },
+  {
+    "os": "Azure Cognitive Search",
+    "region": "north-china2",
+    "tableIDs": [
+      "#Azure-Cognitive-Search1"
+    ]
+  },
+  {
+    "os": "Azure Cognitive Search",
+    "region": "east-china2",
+    "tableIDs": [
+      "#Azure-Cognitive-Search1"
+    ]
+  },
+  {
+    "os": "Azure Cognitive Search",
+    "region": "north-china3",
+    "tableIDs": [
+      "#Azure-Cognitive-Search3"
+    ]
+  },
+  {
     "os": "Data Factory SSIS",
     "region": "north-china",
     "tableIDs": [

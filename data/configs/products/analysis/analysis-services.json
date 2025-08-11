@@ -1,20 +1,20 @@
 {
-  "display_name": "Storage Files",
-  "filename": "storage-files.html",
-  "url": "https://www.azure.cn/pricing/details/storage/files/",
-  "slug": "storage-files",
-  "category": "storage",
-  "created_at": "2025-07-22",
+  "display_name": "Azure Analysis Services",
+  "filename": "analysis-servies.html",
+  "url": "https://www.azure.cn/pricing/details/analysis-services/index.html",
+  "slug": "analysis-services",
+  "category": "analysis",
+  "created_at": "2025-08-11",
 
   "important_section_titles": [
     "定价详细信息", "定价详情", "pricing details",
     "常见问题", "faq", "frequently asked questions",
-    "file storage", "azure files"
+    "power bi", "embedded analytics"
   ],
 
   "html_processing": {
     "type": "normal",
-    "estimated_size_mb": 0.8,
+    "estimated_size_mb": 0.6,
     "processing_strategy": "standard"
   },
 

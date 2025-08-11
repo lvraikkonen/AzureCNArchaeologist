@@ -209,26 +209,39 @@ class BaseStrategy(ABC):
         return ""
 
     def _extract_description_content(self, soup: BeautifulSoup) -> str:
-        """提取描述内容"""
-        # 查找描述内容的候选元素
+        """提取描述内容 - Banner后第一个pricing-page-section的内容，但排除FAQ"""
+        
+        # 首先查找Banner元素
+        banner = soup.find('div', {'class': ['common-banner', 'col-top-banner']})
+        if banner:
+            # 从Banner后面查找第一个pricing-page-section
+            current = banner
+            while current:
+                current = current.find_next_sibling()
+                if current and current.name == 'div' and 'pricing-page-section' in current.get('class', []):
+                    # 检查是否是FAQ内容(包含more-detail或支持和服务级别协议)
+                    content_text = current.get_text().strip()
+                    if ('more-detail' in str(current) or 
+                        '支持和服务级别协议' in content_text or
+                        '常见问题' in content_text):
+                        continue  # 跳过FAQ内容，查找下一个section
+                    
+                    # 找到合适的描述section，返回清理后的内容
+                    return self._clean_html_content(str(current))
+        
+        # 备用方案：尝试传统选择器
         desc_selectors = [
             '.description',
-            '.product-description',
+            '.product-description', 
             '.intro',
             '.summary',
-            'section.overview',
-            '.content-section:first-of-type'
+            'section.overview'
         ]
         
         for selector in desc_selectors:
             element = soup.select_one(selector)
             if element:
                 return self._clean_html_content(str(element))
-        
-        # 如果没有找到特定的描述区域，尝试提取第一个段落
-        first_paragraph = soup.find('p')
-        if first_paragraph:
-            return self._clean_html_content(str(first_paragraph))
         
         return ""
 
