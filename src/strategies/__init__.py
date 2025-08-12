@@ -22,20 +22,24 @@ from src.core.data_models import StrategyType
 from .region_filter_strategy import RegionFilterStrategy
 from .simple_static_strategy import SimpleStaticStrategy
 
+from src.core.logging import get_logger
+
+logger = get_logger(__name__)
+
 # Register implemented strategies
-print("📋 注册策略到StrategyFactory...")
+logger.info("📋 注册策略到StrategyFactory...")
 
 try:
     StrategyFactory.register_strategy(StrategyType.REGION_FILTER, RegionFilterStrategy)
-    print("✅ RegionFilterStrategy 已注册")
+    logger.info("✅ RegionFilterStrategy 已注册")
 except Exception as e:
-    print(f"⚠️ RegionFilterStrategy 注册失败: {e}")
+    logger.error(f"⚠️ RegionFilterStrategy 注册失败: {e}")
 
 try:
     StrategyFactory.register_strategy(StrategyType.SIMPLE_STATIC, SimpleStaticStrategy)
-    print("✅ SimpleStaticStrategy 已注册")
+    logger.info("✅ SimpleStaticStrategy 已注册")
 except Exception as e:
-    print(f"⚠️ SimpleStaticStrategy 注册失败: {e}")
+    logger.error(f"⚠️ SimpleStaticStrategy 注册失败: {e}")
 
 # Strategy registry for tracking (using enum as key for consistency)
 STRATEGY_REGISTRY = {
@@ -44,7 +48,7 @@ STRATEGY_REGISTRY = {
     # More strategies will be added as they are implemented
 }
 
-print(f"📊 已注册策略数量: {len(STRATEGY_REGISTRY)}")
+logger.info(f"📊 已注册策略数量: {len(STRATEGY_REGISTRY)}")
 
 # Export main classes and factory
 __all__ = [

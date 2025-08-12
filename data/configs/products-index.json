@@ -1,14 +1,20 @@
 {
   "version": "2.0",
   "last_updated": "2025-08-11",
-  "total_products": 13,
+  "total_products": 19,
   "future_capacity": 120,
 
   "categories": {
     "database": {
-      "count": 3,
+      "count": 4,
       "config_path": "products/database/",
-      "products": ["mysql", "postgresql", "cosmos-db"]
+      "products": ["mysql", "postgresql", "cosmos-db", "data-explorer"]
+    },
+    "analysis": {
+      "count": 5,
+      "config_path": "products/analysis/",
+      "products": ["power-bi-embedded", "analysis-services", "hdinsight", "ssis", "stream-analytics"],
+      "large_html_products": []
     },
     "ai-ml": {
       "count": 2,
@@ -16,9 +22,14 @@
       "products": ["anomaly-detector", "search"]
     },
     "integration": {
-      "count": 4,
+      "count": 3,
       "config_path": "products/integration/",
-      "products": ["api-management", "ssis", "event-grid", "service-bus"]
+      "products": ["api-management", "event-grid", "service-bus"]
+    },
+    "identity": {
+      "count": 3,
+      "config_path": "products/identity/",
+      "products": ["active-directory-b2c", "active-directory-ds", "multi-factor-authentication"]
     },
     "storage": {
       "count": 2,
@@ -29,12 +40,6 @@
       "count": 0,
       "config_path": "products/compute/",
       "products": [],
-      "large_html_products": []
-    },
-    "analysis": {
-      "count": 2,
-      "config_path": "products/analysis/",
-      "products": ["power-bi-embedded", "analysis-services"],
       "large_html_products": []
     }
   },

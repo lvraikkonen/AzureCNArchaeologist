@@ -18,6 +18,10 @@ sys.path.append(str(project_root))
 from src.strategies.base_strategy import BaseStrategy
 from src.core.region_processor import RegionProcessor
 
+from src.core.logging import get_logger
+
+logger = get_logger(__name__)
+
 
 class RegionFilterStrategy(BaseStrategy):
     """
@@ -41,7 +45,7 @@ class RegionFilterStrategy(BaseStrategy):
         """
         super().__init__(product_config, html_file_path)
         self.region_processor = RegionProcessor()
-        print(f"🌍 初始化区域筛选策略: {self._get_product_key()}")
+        logger.info(f"🌍 初始化区域筛选策略: {self._get_product_key()}")
 
     def extract(self, soup: BeautifulSoup, url: str = "") -> Dict[str, Any]:
         """
@@ -54,20 +58,20 @@ class RegionFilterStrategy(BaseStrategy):
         Returns:
             提取的CMS内容数据，包含区域特定内容
         """
-        print(f"🌍 执行区域筛选策略提取...")
+        logger.info(f"🌍 执行区域筛选策略提取...")
         
         # 1. 提取基础内容
         base_content = self._extract_base_content(soup, url)
-        print(f"✅ 基础内容提取完成")
+        logger.info(f"✅ 基础内容提取完成")
         
         # 2. 使用RegionProcessor进行区域处理
         try:
             region_content = self.region_processor.extract_region_contents(
                 soup, self.html_file_path
             )
-            print(f"🌍 区域内容提取完成: {len(region_content)} 个区域")
+            logger.info(f"🌍 区域内容提取完成: {len(region_content)} 个区域")
         except Exception as e:
-            print(f"⚠ 区域内容提取失败: {e}")
+            logger.info(f"⚠ 区域内容提取失败: {e}")
             region_content = {}
         
         # 3. 转换区域内容为CMS格式
@@ -87,7 +91,7 @@ class RegionFilterStrategy(BaseStrategy):
         # 5. 验证提取结果
         final_data = self._validate_extraction_result(final_data)
         
-        print(f"✅ 区域筛选策略提取完成")
+        logger.info(f"✅ 区域筛选策略提取完成")
         return final_data
 
     def _convert_region_content_to_cms_format(self, region_content: Dict[str, Any]) -> Dict[str, str]:
@@ -119,7 +123,7 @@ class RegionFilterStrategy(BaseStrategy):
             html_content = self._format_region_content_as_html(content, region_id)
             cms_fields[field_name] = html_content
         
-        print(f"🔄 区域内容转换完成: {len(cms_fields)} 个CMS字段")
+        logger.info(f"🔄 区域内容转换完成: {len(cms_fields)} 个CMS字段")
         return cms_fields
     
     def _format_region_content_as_html(self, content, region_id: str) -> str:
@@ -135,16 +139,16 @@ class RegionFilterStrategy(BaseStrategy):
         """
         # 新格式：如果content已经是HTML字符串，直接返回
         if isinstance(content, str):
-            print(f"    📄 使用HTML字符串格式，长度: {len(content)}")
+            logger.info(f"    📄 使用HTML字符串格式，长度: {len(content)}")
             return content
         
         # 旧格式：如果是字典格式，按原来的逻辑处理
         if isinstance(content, dict):
-            print(f"    📊 使用字典格式，包含: {list(content.keys())}")
+            logger.info(f"    📊 使用字典格式，包含: {list(content.keys())}")
             return self._format_region_dict_as_html(content, region_id)
         
         # 回退情况
-        print(f"    ⚠ 未知内容格式: {type(content)}")
+        logger.info(f"    ⚠ 未知内容格式: {type(content)}")
         return str(content)
 
     def _format_region_dict_as_html(self, content: Dict[str, Any], region_id: str) -> str:
@@ -202,7 +206,7 @@ class RegionFilterStrategy(BaseStrategy):
             return "".join(html_parts)
             
         except Exception as e:
-            print(f"⚠ 区域内容HTML格式化失败 ({region_id}): {e}")
+            logger.info(f"⚠ 区域内容HTML格式化失败 ({region_id}): {e}")
             # 回退到简单字符串处理
             if isinstance(content, dict):
                 return self._clean_content(str(content))

@@ -16,6 +16,9 @@ sys.path.append(str(project_root))
 
 from src.core.data_models import StrategyType, ExtractionStrategy
 from src.strategies.base_strategy import BaseStrategy
+from src.core.logging import get_logger
+
+logger = get_logger(__name__)
 
 
 class StrategyFactory:
@@ -47,7 +50,7 @@ class StrategyFactory:
             raise ValueError(f"策略类 {strategy_class.__name__} 必须继承自 BaseStrategy")
         
         cls._strategies[strategy_type] = strategy_class
-        print(f"✓ 注册策略: {strategy_type.value} -> {strategy_class.__name__}")
+        logger.info(f"✓ 注册策略: {strategy_type.value} -> {strategy_class.__name__}")
 
     @classmethod
     def create_strategy(cls, extraction_strategy: ExtractionStrategy, 
@@ -89,7 +92,7 @@ class StrategyFactory:
             strategy_instance.strategy_name = strategy_type.value
             strategy_instance.extraction_strategy = extraction_strategy
             
-            print(f"✓ 创建策略实例: {strategy_type.value} -> {strategy_class.__name__}")
+            logger.info(f"✓ 创建策略实例: {strategy_type.value} -> {strategy_class.__name__}")
             return strategy_instance
             
         except Exception as e:
@@ -108,7 +111,7 @@ class StrategyFactory:
         Returns:
             简单静态策略实例作为回退
         """
-        print("⚠ 使用回退策略: SimpleStaticStrategy")
+        logger.info("⚠ 使用回退策略: SimpleStaticStrategy")
         
         # 创建默认的提取策略配置
         from src.core.data_models import ExtractionStrategy
@@ -212,17 +215,17 @@ class StrategyFactory:
         missing_strategies = all_strategy_types - registered_strategy_types
         
         if missing_strategies:
-            print(f"⚠ 缺少策略注册: {[s.value for s in missing_strategies]}")
+            logger.warning(f"⚠ 缺少策略注册: {[s.value for s in missing_strategies]}")
             return False
         
-        print("✓ 所有策略已完整注册")
+        logger.info("✓ 所有策略已完整注册")
         return True
 
     @classmethod
     def clear_registrations(cls) -> None:
         """清除所有注册的策略（主要用于测试）"""
         cls._strategies.clear()
-        print("🧹 清除所有策略注册")
+        logger.info("🧹 清除所有策略注册")
 
 
 # 便捷函数，用于在其他模块中快速访问工厂功能

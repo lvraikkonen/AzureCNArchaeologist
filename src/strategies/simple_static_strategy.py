@@ -16,6 +16,9 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.append(str(project_root))
 
 from src.strategies.base_strategy import BaseStrategy
+from src.core.logging import get_logger
+
+logger = get_logger(__name__)
 
 
 class SimpleStaticStrategy(BaseStrategy):
@@ -40,7 +43,7 @@ class SimpleStaticStrategy(BaseStrategy):
         """
         super().__init__(product_config, html_file_path)
         self.strategy_name = "simple_static"
-        print(f"📄 初始化简单静态策略: {self._get_product_key()}")
+        logger.info(f"📄 初始化简单静态策略: {self._get_product_key()}")
 
     def extract(self, soup: BeautifulSoup, url: str = "") -> Dict[str, Any]:
         """
@@ -53,7 +56,7 @@ class SimpleStaticStrategy(BaseStrategy):
         Returns:
             提取的CMS内容数据
         """
-        print("🚀 开始简单静态策略提取...")
+        logger.info("🚀 开始简单静态策略提取...")
         
         # 1. 提取基础内容（Title, Banner, Description, QA等）
         data = self._extract_base_content(soup, url)
@@ -73,7 +76,7 @@ class SimpleStaticStrategy(BaseStrategy):
         # 4. 验证提取结果
         data = self._validate_extraction_result(data)
         
-        print("✅ 简单静态策略提取完成")
+        logger.info("✅ 简单静态策略提取完成")
         return data
 
     def _extract_main_content(self, soup: BeautifulSoup) -> str:
@@ -90,11 +93,11 @@ class SimpleStaticStrategy(BaseStrategy):
         Returns:
             主要内容HTML字符串
         """
-        print("📝 提取主要内容...")
+        logger.info("📝 提取主要内容...")
         
         try:
             # 方案1: 查找 tab-control-container 
-            print("🔍 方案1: 查找 tab-control-container...")
+            logger.info("🔍 方案1: 查找 tab-control-container...")
             tab_containers = soup.find_all(class_='tab-control-container')
             if tab_containers:
                 main_content = ""
@@ -104,7 +107,7 @@ class SimpleStaticStrategy(BaseStrategy):
                 return main_content
             
             # 方案2: 查找 DescriptionContent 后面的 pricing-page-section
-            print("🔍 方案2: 查找 pricing-page-section...")
+            logger.info("🔍 方案2: 查找 pricing-page-section...")
             pricing_sections = soup.find_all(class_='pricing-page-section')
             
             if pricing_sections:
@@ -125,7 +128,7 @@ class SimpleStaticStrategy(BaseStrategy):
                     return main_content
             
             # 方案3: 备用方案 - 查找其他可能的内容容器
-            print("🔍 方案3: 使用备用内容提取...")
+            logger.info("🔍 方案3: 使用备用内容提取...")
             fallback_selectors = [
                 '.main-content',
                 '.content-area', 
@@ -142,9 +145,9 @@ class SimpleStaticStrategy(BaseStrategy):
                         print(f"✓ 使用备用内容，选择器: {selector}")
                         return main_content
             
-            print("⚠ 未找到合适的主要内容")
+            logger.info("⚠ 未找到合适的主要内容")
             return ""
             
         except Exception as e:
-            print(f"⚠ 主要内容提取失败: {e}")
+            logger.info(f"⚠ 主要内容提取失败: {e}")
             return ""

@@ -1,9 +1,9 @@
 {
   "display_name": "SQL Server Integration Services",
-  "filename": "ssis-index.html",
-  "url": "https://www.azure.cn/pricing/details/ssis/", 
+  "filename": "ssis.html",
+  "url": "https://www.azure.cn/pricing/details/data-factory/ssis.html",
   "slug": "ssis",
-  "category": "integration",
+  "category": "analysis",
   "created_at": "2025-07-22",
 
   "important_section_titles": [

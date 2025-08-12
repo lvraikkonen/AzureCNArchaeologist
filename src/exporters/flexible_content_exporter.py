@@ -115,7 +115,7 @@ class FlexibleContentExporter:
         flexible_data = {
             "title": self._clean_title(data.get("Title", "")),
             "slug": data.get("Slug", product_name),
-            "metaTitle": self._generate_meta_title(data, product_name),
+            "metaTitle": data.get("MetaTitle", ""),
             "metaDescription": data.get("MetaDescription", ""),
             "metaKeywords": data.get("MetaKeywords", ""),
             "pageConfig": self._build_page_config(data, page_type, product_name),
@@ -170,20 +170,6 @@ class FlexibleContentExporter:
         # 移除常见的重复英文模式，如 "API 管理API Management"
         title = re.sub(r'([A-Za-z\s]+)([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)\s*$', r'\1', title.strip())
         return title.strip()
-    
-    def _generate_meta_title(self, data: Dict[str, Any], product_name: str) -> str:
-        """
-        生成SEO标题
-        
-        Args:
-            data: 提取数据
-            product_name: 产品名称
-            
-        Returns:
-            str: SEO标题
-        """
-        base_title = self._clean_title(data.get("Title", product_name))
-        return f"定价-{base_title}-Azure 云计算"
     
     def _build_page_config(self, data: Dict[str, Any], page_type: PageType, product_name: str) -> Dict[str, Any]:
         """

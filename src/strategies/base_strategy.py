@@ -4,7 +4,6 @@
 基础策略抽象类
 定义所有提取策略的通用接口和共用方法
 """
-
 import sys
 from abc import ABC, abstractmethod
 from datetime import datetime
@@ -24,6 +23,9 @@ from src.utils.content.content_utils import (
     extract_structured_content
 )
 from src.utils.data.validation_utils import validate_extracted_data
+from src.core.logging import get_logger
+
+logger = get_logger(__name__)
 
 
 class BaseStrategy(ABC):
@@ -82,7 +84,6 @@ class BaseStrategy(ABC):
             "MSServiceName": "",
             "Slug": "",
             "BannerContent": "",
-            "NavigationTitle": "",
             "DescriptionContent": "",
             "Language": "zh-cn",
             "QaContent": "",
@@ -93,28 +94,28 @@ class BaseStrategy(ABC):
         }
 
         # 1. 提取标题
-        print("🏷️ 提取标题...")
-        base_data["Title"] = self._extract_page_title(main_content or soup)
+        logger.info("🏷️ 提取标题...")
+        base_data["Title"] = self._extract_page_title(soup)
         
         # 2. 提取Meta信息
-        print("📋 提取Meta信息...")
+        logger.info("📋 提取Meta信息...")
+        base_data["MetaTitle"] = self._extract_meta_title(soup)
         base_data["MetaDescription"] = self._extract_meta_description(soup)
         base_data["MetaKeywords"] = self._extract_meta_keywords(soup)
         base_data["MSServiceName"] = self._extract_ms_service_name(soup)
         base_data["Slug"] = self._extract_slug(url)
 
         # 3. 提取Banner内容
-        print("🎨 提取Banner内容...")
+        logger.info("🎨 提取Banner内容...")
         banner_content = self._extract_banner_content(soup)
         base_data["BannerContent"] = self._clean_html_content(banner_content)
-        base_data["NavigationTitle"] = self._extract_navigation_title(soup)
 
         # 4. 提取描述内容
-        print("📝 提取描述内容...")
+        logger.info("📝 提取描述内容...")
         base_data["DescriptionContent"] = self._extract_description_content(main_content or soup)
 
         # 5. 提取FAQ内容
-        print("❓ 提取FAQ内容...")
+        logger.info("❓ 提取FAQ内容...")
         qa_content = self._extract_qa_content(soup)
         base_data["QaContent"] = self._clean_html_content(qa_content)
 
@@ -129,14 +130,22 @@ class BaseStrategy(ABC):
         title_tag = soup.find('title')
         if title_tag:
             title = title_tag.get_text(strip=True)
+            logger.info(f"Get page title: {title}")
             if title and len(title) > 0:
                 return title
+        #
+        # # 查找主要标题元素
+        # main_heading = soup.find(['h1', 'h2'])
+        # if main_heading:
+        #     return main_heading.get_text(strip=True)
         
-        # 查找主要标题元素
-        main_heading = soup.find(['h1', 'h2'])
-        if main_heading:
-            return main_heading.get_text(strip=True)
-        
+        return ""
+
+    def _extract_meta_title(self, soup: BeautifulSoup) -> str:
+        """提取Meta描述"""
+        meta_title = soup.find('meta', attrs={'name': 'title'})
+        if meta_title:
+            return meta_title.get('content', '')
         return ""
 
     def _extract_meta_description(self, soup: BeautifulSoup) -> str:
@@ -155,56 +164,59 @@ class BaseStrategy(ABC):
 
     def _extract_ms_service_name(self, soup: BeautifulSoup) -> str:
         """提取微软服务名称"""
-        # 从URL或页面内容推断服务名称
-        if hasattr(self, 'product_config') and 'service_name' in self.product_config:
-            return self.product_config['service_name']
-        
-        # 从文件路径推断
-        if self.html_file_path:
-            file_name = Path(self.html_file_path).stem
-            if file_name.endswith('-index'):
-                return file_name[:-6]  # 移除'-index'后缀
-        
+        """提取MSServiceName字段，从pure-content div内的tags元素中的ms.service属性"""
+        # 查找pure-content div
+        pure_content_div = soup.find('div', class_='pure-content')
+        if pure_content_div:
+            # 在pure-content div内查找tags元素
+            tags_element = pure_content_div.find('tags')
+            if tags_element:
+                # 提取ms.service属性值
+                ms_service = tags_element.get('ms.service', '')
+                if ms_service:
+                    logger.info(f"  ✓ 找到MSServiceName: {ms_service}")
+                    return ms_service
+                else:
+                    logger.info("  ⚠ tags元素中没有ms.service属性")
+            else:
+                logger.info("  ⚠ pure-content div中没有找到tags元素")
+        else:
+            logger.info("  ⚠ 没有找到pure-content div")
+
         return ""
 
     def _extract_slug(self, url: str) -> str:
         """从URL提取slug"""
+        """从URL提取slug"""
         if not url:
             return ""
-        
-        # 从URL提取最后一个路径段作为slug
+
         try:
             from urllib.parse import urlparse
             parsed = urlparse(url)
-            path_parts = [p for p in parsed.path.split('/') if p]
-            if path_parts:
-                return path_parts[-1]
+            path = parsed.path
+
+            logger.info(f"Extracting slug from url: {url}")
+
+            # 提取/details/之后到/index.html之前的内容，用-连接
+            # 例如 /pricing/details/storage/files/index.html -> storage-files
+            # 例如 /pricing/details/api-management/index.html -> api-management
+            if '/details/' in path:
+                # 找到/details/之后的部分
+                after_details = path.split('/details/')[1]
+
+                # 移除/index.html后缀
+                if after_details.endswith('/index.html'):
+                    after_details = after_details[:-11]  # 移除'/index.html'
+                elif after_details.endswith('/'):
+                    after_details = after_details[:-1]  # 移除末尾的'/'
+
+                # 分割路径并用_连接
+                path_parts = [p for p in after_details.split('/') if p]
+                if path_parts:
+                    return '_'.join(path_parts)
         except:
             pass
-        
-        return ""
-
-    def _extract_navigation_title(self, soup: BeautifulSoup) -> str:
-        """提取导航标题"""
-        # 首先尝试从<title>标签提取
-        title_tag = soup.find('title')
-        if title_tag:
-            title_text = title_tag.get_text(strip=True)
-            if title_text:
-                return title_text
-
-        # 如果没有找到title标签，查找其他导航相关的标题元素
-        nav_selectors = [
-            'nav .title',
-            '.navigation-title',
-            '.breadcrumb .current',
-            '.page-header .title'
-        ]
-
-        for selector in nav_selectors:
-            element = soup.select_one(selector)
-            if element:
-                return element.get_text(strip=True)
 
         return ""
 

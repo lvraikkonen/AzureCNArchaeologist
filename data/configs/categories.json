@@ -16,6 +16,11 @@
       "description": "API管理和数据集成服务",
       "icon": "link"
     },
+    "networking": {
+      "display_name": "联网服务",
+      "description": "联网服务",
+      "icon": "network"
+    },
     "storage": {
       "display_name": "存储服务",
       "description": "数据存储相关服务",
@@ -25,6 +30,21 @@
       "display_name": "计算服务",
       "description": "虚拟机和计算相关服务",
       "icon": "server"
+    },
+    "analysis": {
+      "display_name": "分析服务",
+      "description": "数据分析与相关服务",
+      "icon": "data"
+    },
+    "identity": {
+      "display_name": "标识服务",
+      "description": "标识和访问管理",
+      "icon": "user"
+    },
+    "iot": {
+      "display_name": "物联网",
+      "description": "物联网相关服务",
+      "icon": "iot"
     }
   }
 }
