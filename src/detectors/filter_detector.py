@@ -3,8 +3,10 @@
 """
 筛选器检测器
 
-专门负责检测页面中的各种筛选器类型和配置，包括区域筛选器、
-操作系统筛选器、服务层级筛选器等。
+基于实际HTML结构检测Azure中国区页面的筛选器，专门检测：
+- 软件类别筛选器：.dropdown-container.software-kind-container
+- 地区筛选器：.dropdown-container.region-container
+- 隐藏状态和选项映射的精确提取
 """
 
 from typing import List, Dict, Any, Optional, Set
@@ -13,171 +15,185 @@ from bs4 import BeautifulSoup, Tag
 from ..core.data_models import (
     FilterAnalysis, FilterType, Filter, RegionFilter
 )
+from ..core.logging import get_logger
+
+logger = get_logger(__name__)
 
 
 class FilterDetector:
     """
-    筛选器检测器。
+    Azure中国区页面筛选器检测器。
     
-    负责识别和分析页面中的各种筛选器元素，包括：
-    - 区域筛选器
-    - 操作系统/软件筛选器  
-    - 服务层级筛选器
-    - 存储类型筛选器
+    基于实际HTML结构精确检测：
+    - 软件类别筛选器：.dropdown-container.software-kind-container + #software-box
+    - 地区筛选器：.dropdown-container.region-container + #region-box
+    - 检测隐藏状态：style="display:none;"
+    - 提取选项映射：data-href和value属性
     """
     
     def __init__(self):
         """初始化筛选器检测器。"""
-        self.region_keywords = [
-            '选择区域', '区域选择', '中国北部', '中国东部', 'china north', 'china east',
-            'region selector', '华北', '华东', '北部', '东部'
-        ]
-        
-        self.os_keywords = [
-            'windows', 'linux', 'ubuntu', 'centos', 'redhat', 'suse',
-            '操作系统', '软件', 'os', 'software'
-        ]
-        
-        self.tier_keywords = [
-            'basic', 'standard', 'premium', 'enterprise', 
-            '基本', '标准', '高级', '企业', '层级', 'tier'
-        ]
+        logger.info("初始化FilterDetector - 基于实际HTML结构")
     
-    def detect_filters(self, soup: BeautifulSoup) -> FilterAnalysis:
+    def detect_filters(self, soup: BeautifulSoup) -> Dict[str, Any]:
         """
-        检测页面中的所有筛选器。
+        检测页面中的筛选器（基于实际HTML结构）。
         
         Args:
             soup: BeautifulSoup对象
             
         Returns:
-            FilterAnalysis对象，包含所有检测到的筛选器信息
+            筛选器分析结果字典
         """
-        filters = []
-        primary_filter_type = None
+        logger.info("🔍 开始检测筛选器...")
         
-        # 检测区域筛选器
-        region_filters = self.detect_region_filters(soup)
-        if region_filters:
-            filters.extend(region_filters)
-            primary_filter_type = FilterType.REGION
+        # 检测软件类别筛选器
+        software_result = self._detect_software_kind_filter(soup)
         
-        # 检测其他筛选器
-        other_filters = self.detect_other_filters(soup)
-        if other_filters:
-            filters.extend(other_filters)
-            # 如果没有区域筛选器，以第一个其他筛选器为主
-            if not primary_filter_type and other_filters:
-                primary_filter_type = other_filters[0].filter_type
+        # 检测地区筛选器
+        region_result = self._detect_region_filter(soup)
         
-        # 创建分析结果
-        return FilterAnalysis(
-            has_filters=len(filters) > 0,
-            filters=filters,
-            primary_filter_type=primary_filter_type or FilterType.NONE,
-            filter_count=len(filters)
-        )
+        result = {
+            "has_region": region_result["exists"],
+            "has_software": software_result["exists"],
+            "region_visible": region_result["visible"],
+            "software_visible": software_result["visible"],
+            "region_options": region_result["options"],
+            "software_options": software_result["options"]
+        }
+        
+        logger.info(f"✅ 筛选器检测完成: region={result['has_region']}({result['region_visible']}), software={result['has_software']}({result['software_visible']})")
+        return result
     
+    def _detect_software_kind_filter(self, soup: BeautifulSoup) -> Dict[str, Any]:
+        """
+        检测软件类别筛选器：.dropdown-container.software-kind-container
+        
+        Args:
+            soup: BeautifulSoup对象
+            
+        Returns:
+            {
+                "exists": bool,
+                "visible": bool,
+                "options": [{"value": str, "href": str, "label": str}]
+            }
+        """
+        logger.info("🔍 检测软件类别筛选器...")
+        
+        # 查找 software-kind-container
+        software_container = soup.find('div', class_='dropdown-container software-kind-container')
+        
+        if not software_container:
+            logger.info("⚠ 未找到 software-kind-container")
+            return {"exists": False, "visible": False, "options": []}
+        
+        logger.info("✅ 找到 software-kind-container")
+        
+        # 检查是否隐藏
+        style = software_container.get('style', '')
+        is_visible = 'display:none' not in style and 'display: none' not in style
+        
+        # 查找 #software-box select
+        software_select = soup.find('select', id='software-box')
+        options = []
+        
+        if software_select:
+            logger.info("✅ 找到 #software-box")
+            option_elements = software_select.find_all('option')
+            
+            for option in option_elements:
+                value = option.get('value', '').strip()
+                href = option.get('data-href', '').strip()
+                label = option.get_text().strip()
+                
+                if value and label and '加载中' not in label and '请选择' not in label:
+                    options.append({
+                        "value": value,
+                        "href": href,
+                        "label": label
+                    })
+        
+        logger.info(f"✅ 软件类别筛选器: visible={is_visible}, options={len(options)}")
+        
+        return {
+            "exists": True,
+            "visible": is_visible,
+            "options": options
+        }
+    
+    def _detect_region_filter(self, soup: BeautifulSoup) -> Dict[str, Any]:
+        """
+        检测地区筛选器：.dropdown-container.region-container
+        
+        Args:
+            soup: BeautifulSoup对象
+            
+        Returns:
+            {
+                "exists": bool,
+                "visible": bool,
+                "options": [{"value": str, "href": str, "label": str}]
+            }
+        """
+        logger.info("🔍 检测地区筛选器...")
+        
+        # 查找 region-container
+        region_container = soup.find('div', class_='dropdown-container region-container')
+        
+        if not region_container:
+            logger.info("⚠ 未找到 region-container")
+            return {"exists": False, "visible": False, "options": []}
+        
+        logger.info("✅ 找到 region-container")
+        
+        # 检查是否隐藏
+        style = region_container.get('style', '')
+        is_visible = 'display:none' not in style and 'display: none' not in style
+        
+        # 查找 #region-box select
+        region_select = soup.find('select', id='region-box')
+        options = []
+        
+        if region_select:
+            logger.info("✅ 找到 #region-box")
+            option_elements = region_select.find_all('option')
+            
+            for option in option_elements:
+                value = option.get('value', '').strip()
+                href = option.get('data-href', '').strip()
+                label = option.get_text().strip()
+                
+                if value and label and '加载中' not in label and '请选择' not in label:
+                    options.append({
+                        "value": value,
+                        "href": href,
+                        "label": label
+                    })
+        
+        logger.info(f"✅ 地区筛选器: visible={is_visible}, options={len(options)}")
+        
+        return {
+            "exists": True,
+            "visible": is_visible,
+            "options": options
+        }
+    
+    # 保留兼容性方法（不再使用）
     def detect_region_filters(self, soup: BeautifulSoup) -> List[RegionFilter]:
         """
-        检测区域筛选器。
-        
-        Args:
-            soup: BeautifulSoup对象
-            
-        Returns:
-            检测到的区域筛选器列表
+        兼容性方法 - 不再使用，请使用 detect_filters()
         """
-        region_filters = []
-        
-        # 常见的区域筛选器选择器
-        region_selectors = [
-            # Dropdown选择器
-            'select[name*="region"]',
-            'select[id*="region"]',
-            'select[class*="region"]',
-            
-            # 自定义区域选择器
-            '.region-selector',
-            '.region-dropdown',
-            '#region-select',
-            '[data-region]',
-            
-            # Azure特定模式
-            '.pricing-dropdown',
-            '.region-pricing-dropdown',
-            'button[data-toggle*="region"]',
-            
-            # 包含区域容器的select
-            '.region-container select',
-            '.software-kind select'  # Azure China特有
-        ]
-        
-        found_selectors = set()  # 去重
-        
-        for selector in region_selectors:
-            try:
-                elements = soup.select(selector)
-                for element in elements:
-                    # 避免重复检测同一个元素
-                    element_key = self._get_element_key(element)
-                    if element_key in found_selectors:
-                        continue
-                    found_selectors.add(element_key)
-                    
-                    # 验证是否是功能性的区域筛选器
-                    if self._is_functional_region_filter(element, soup):
-                        region_filter = self._create_region_filter(element, soup)
-                        if region_filter:
-                            region_filters.append(region_filter)
-                            
-            except Exception:
-                # 无效选择器，继续下一个
-                continue
-        
-        # 如果没有找到具体的筛选器元素，但页面包含区域关键词，创建一个基础区域筛选器
-        if not region_filters and self._has_region_keywords(soup):
-            region_filters.append(RegionFilter(
-                filter_type=FilterType.REGION,
-                element_id="text-based-region",
-                element_type="text",
-                selector="text-based",
-                options=['china-north', 'china-east'],  # 默认区域
-                is_active=True,
-                default_value=None
-            ))
-        
-        return region_filters
+        logger.warning("⚠ detect_region_filters() 已废弃，请使用 detect_filters()")
+        return []
     
+    # 兼容性方法（不再使用）
     def detect_other_filters(self, soup: BeautifulSoup) -> List[Filter]:
         """
-        检测非区域的其他筛选器。
-        
-        Args:
-            soup: BeautifulSoup对象
-            
-        Returns:
-            检测到的其他筛选器列表
+        兼容性方法 - 不再使用，请使用 detect_filters()
         """
-        other_filters = []
-        
-        # 操作系统/软件筛选器
-        os_filters = self._detect_os_filters(soup)
-        other_filters.extend(os_filters)
-        
-        # 服务层级筛选器
-        tier_filters = self._detect_tier_filters(soup)
-        other_filters.extend(tier_filters)
-        
-        # 存储类型筛选器
-        storage_filters = self._detect_storage_filters(soup)
-        other_filters.extend(storage_filters)
-        
-        # 通用筛选器（作为补充）
-        generic_filters = self._detect_generic_filters(soup)
-        other_filters.extend(generic_filters)
-        
-        return other_filters
+        logger.warning("⚠ detect_other_filters() 已废弃，请使用 detect_filters()")
+        return []
     
     def _detect_os_filters(self, soup: BeautifulSoup) -> List[Filter]:
         """检测操作系统/软件类型筛选器。"""
