@@ -70,17 +70,28 @@ class StrategyManager:
             print(f"🔥 大文件策略: 文件大小超过 {self.large_file_threshold_mb} MB")
             return self._create_large_file_strategy(file_size_mb, product_key)
         
-        # 3. 页面复杂度分析
+        # 3. 页面分析和策略决策 (基于3+1架构)
         try:
             from bs4 import BeautifulSoup
             with open(html_file_path, 'r', encoding='utf-8') as f:
                 html_content = f.read()
             soup = BeautifulSoup(html_content, 'html.parser')
             
-            complexity = self.page_analyzer.analyze_page_complexity(soup, html_file_path)
-            recommended_page_type = self.page_analyzer.get_recommended_page_type(complexity)
+            # 使用新的3策略决策逻辑
+            strategy_name = self.page_analyzer.determine_page_type_v3(soup)
             
-            print(f"📊 页面类型: {recommended_page_type}")
+            # 将字符串结果映射到PageType
+            strategy_to_page_type = {
+                "SimpleStatic": PageType.SIMPLE_STATIC,
+                "RegionFilter": PageType.REGION_FILTER,
+                "Complex": PageType.COMPLEX
+            }
+            recommended_page_type = strategy_to_page_type.get(strategy_name, PageType.SIMPLE_STATIC)
+            
+            # 为了兼容性，仍然生成PageComplexity对象（用于日志和验证）
+            complexity = self.page_analyzer.analyze_page_complexity(soup, html_file_path)
+            
+            print(f"📊 策略决策: {strategy_name} → {recommended_page_type}")
             print(f"🌏 区域筛选: {complexity.has_region_filter}")
             print(f"📂 Tab结构: {complexity.has_tabs}")
             print(f"🔧 多重筛选: {complexity.has_multiple_filters}")
@@ -90,6 +101,7 @@ class StrategyManager:
             # 降级到简单策略
             recommended_page_type = PageType.SIMPLE_STATIC
             complexity = None
+            strategy_name = "SimpleStatic"
         
         # 4. 根据页面类型选择策略
         strategy = self._select_strategy_by_page_type(
@@ -100,37 +112,25 @@ class StrategyManager:
         return strategy
     
     def _initialize_strategy_registry(self) -> Dict[StrategyType, Dict[str, Any]]:
-        """初始化策略注册表。"""
+        """初始化3+1策略注册表。"""
         return {
             StrategyType.SIMPLE_STATIC: {
                 "processor": "SimpleStaticProcessor",
                 "description": "简单静态页面处理",
-                "features": ["基础内容提取", "FAQ提取"],
+                "features": ["基础内容提取", "FAQ提取", "Banner提取"],
                 "complexity_threshold": 0.3
             },
             StrategyType.REGION_FILTER: {
                 "processor": "RegionFilterProcessor", 
                 "description": "区域筛选页面处理",
-                "features": ["区域检测", "区域内容提取", "区域筛选"],
+                "features": ["区域检测", "区域内容提取", "区域筛选器配置", "地区内容组生成"],
                 "complexity_threshold": 0.5
             },
-            StrategyType.TAB: {
-                "processor": "TabProcessor",
-                "description": "Tab结构页面处理", 
-                "features": ["Tab导航检测", "Tab内容提取"],
-                "complexity_threshold": 0.6
-            },
-            StrategyType.REGION_TAB: {
-                "processor": "RegionTabProcessor",
-                "description": "区域+Tab组合页面处理",
-                "features": ["区域检测", "Tab检测", "组合内容提取"],
+            StrategyType.COMPLEX: {
+                "processor": "ComplexContentProcessor",
+                "description": "复杂内容页面处理",
+                "features": ["多筛选器检测", "Tab结构处理", "复合内容提取", "动态筛选器配置"],
                 "complexity_threshold": 0.8
-            },
-            StrategyType.MULTI_FILTER: {
-                "processor": "MultiFilterProcessor",
-                "description": "多重筛选器页面处理",
-                "features": ["多筛选器检测", "动态内容提取", "状态管理"],
-                "complexity_threshold": 0.9
             },
             StrategyType.LARGE_FILE: {
                 "processor": "LargeFileProcessor",
@@ -145,13 +145,11 @@ class StrategyManager:
                                     complexity: Optional[PageComplexity]) -> ExtractionStrategy:
         """根据页面类型选择策略。"""
         
-        # 页面类型到策略类型的映射
+        # 页面类型到策略类型的映射 (3+1架构)
         page_to_strategy_mapping = {
             PageType.SIMPLE_STATIC: StrategyType.SIMPLE_STATIC,
             PageType.REGION_FILTER: StrategyType.REGION_FILTER,
-            PageType.TAB: StrategyType.TAB,
-            PageType.REGION_TAB: StrategyType.REGION_TAB,
-            PageType.MULTI_FILTER: StrategyType.MULTI_FILTER,
+            PageType.COMPLEX: StrategyType.COMPLEX,
             PageType.LARGE_FILE: StrategyType.LARGE_FILE
         }
         
@@ -231,12 +229,11 @@ class StrategyManager:
         if complexity.interactive_elements > 10:
             priority_features.append("交互元素处理")
         
-        # 根据策略类型添加特定优先级
+        # 根据策略类型添加特定优先级 (3+1架构)
         strategy_priority_map = {
-            StrategyType.REGION_FILTER: ["区域检测", "区域内容提取"],
-            StrategyType.TAB: ["Tab导航解析", "Tab内容提取"],
-            StrategyType.REGION_TAB: ["区域Tab联合解析", "复合内容提取"],
-            StrategyType.MULTI_FILTER: ["筛选器状态管理", "动态内容更新"],
+            StrategyType.SIMPLE_STATIC: ["基础内容提取", "FAQ处理"],
+            StrategyType.REGION_FILTER: ["区域检测", "区域内容提取", "地区内容组生成"],
+            StrategyType.COMPLEX: ["多筛选器处理", "Tab结构解析", "复合内容提取", "动态筛选器配置"],
             StrategyType.LARGE_FILE: ["内存优化", "流式处理"]
         }
         
@@ -266,18 +263,26 @@ class StrategyManager:
         except Exception as e:
             print(f"⚠ 获取产品配置失败: {e}")
         
-        # 产品特定的硬编码覆盖（临时）
+        # 产品特定的硬编码覆盖（临时）- 3+1架构
         product_specific_overrides = {
             'api-management': {
                 StrategyType.REGION_FILTER: {
                     'region_detection_mode': 'aggressive',
-                    'fallback_regions': ['china-north', 'china-east']
+                    'fallback_regions': ['china-north', 'china-east'],
+                    'enable_flexible_json': True
                 }
             },
-            'sql-database': {
-                StrategyType.MULTI_FILTER: {
+            'cloud-services': {
+                StrategyType.COMPLEX: {
                     'filter_detection_threshold': 2,
-                    'enable_dynamic_content': True
+                    'enable_dynamic_content': True,
+                    'tab_processing_mode': 'category_tabs'
+                }
+            },
+            'event-grid': {
+                StrategyType.SIMPLE_STATIC: {
+                    'content_extraction_mode': 'pricing_page_section',
+                    'qa_deduplication': True
                 }
             }
         }
