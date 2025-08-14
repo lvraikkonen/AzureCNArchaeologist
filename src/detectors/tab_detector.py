@@ -13,9 +13,6 @@ Tab结构检测器
 from typing import List, Dict, Any, Optional, Tuple
 from bs4 import BeautifulSoup, Tag
 
-from ..core.data_models import (
-    TabAnalysis, Tab
-)
 from ..core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -238,11 +235,3 @@ class TabDetector:
                         })
         
         return category_tabs
-    
-    # 保留兼容性方法（不再使用）
-    def detect_tab_structures(self, soup: BeautifulSoup) -> TabAnalysis:
-        """
-        兼容性方法 - 不再使用，请使用 detect_tabs()
-        """
-        logger.warning("⚠ detect_tab_structures() 已废弃，请使用 detect_tabs()")
-        return TabAnalysis(has_tabs=False)

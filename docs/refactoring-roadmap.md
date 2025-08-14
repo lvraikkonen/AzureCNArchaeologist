@@ -102,10 +102,6 @@ class FilterDetector:
 # src/detectors/tab_detector.py  
 class TabDetector:
     def detect_tab_structures(self, soup: BeautifulSoup) -> TabAnalysis
-    
-# src/detectors/region_detector.py
-class RegionDetector:
-    def detect_regions(self, soup: BeautifulSoup) -> RegionAnalysis
 ```
 
 ### 支持的页面类型
