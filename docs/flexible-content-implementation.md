@@ -57,7 +57,9 @@ else:
 **验证方法**:
 - 测试cloud-services.html: 应检测到可见software + 可见region
 - 测试api-management.html: 应检测到隐藏software + 可见region
+- 测试hdinsight.html: 应检测到隐藏software + 可见region
 - 测试event-grid.html: 应检测到无筛选器
+- 测试service-bus.html: 应检测到无筛选器
 
 **预期返回结构**:
 ```python
@@ -138,7 +140,9 @@ def determine_page_type(filter_analysis, tab_analysis):
 
 **验证方法**:
 - event-grid.html → SimpleStaticStrategy
+- service-bus.html → SimpleStaticStrategy
 - api-management.html → RegionFilterStrategy
+- hdinsight.html → RegionFilterStrategy
 - cloud-services.html → ComplexContentStrategy
 
 ### Phase 2: 策略层实现
@@ -148,12 +152,15 @@ def determine_page_type(filter_analysis, tab_analysis):
 **目标**: 优化简单页面的内容提取
 
 **提取逻辑**:
-1. 提取`pricing-page-section`作为baseContent
+1. 主容器内`<div class="technical-azure-selector tab-control-selector">`:
+   - 1.1 提取`pricing-page-section`作为baseContent
+   - 1.2 如果没有`pricing-page-section` 则提取主容器中所有内容作为baseContent
 2. 过滤QA内容避免与commonSections重复
 3. 生成flexible JSON格式
 
 **验证方法**:
 - event-grid.html → 生成包含baseContent的flexible JSON
+- service-bus.html → 生成包含baseContent的flexible JSON
 - 确认QA内容不重复
 
 **预期输出**:
@@ -174,12 +181,13 @@ def determine_page_type(filter_analysis, tab_analysis):
 **目标**: 实现地区内容组的准确提取
 
 **提取逻辑**:
-1. 根据region选项提取对应内容区域
-2. 使用soft-category.json进行表格筛选
+1. 根据region选项提取对应内容区域, 根据software选项提取value对应`os`
+2. 使用soft-category.json进行表格筛选(步骤1提供的os, region)
 3. 生成地区筛选器配置
 
 **验证方法**:
 - api-management.html → 生成包含地区contentGroups的JSON
+- hdinsight.html → 生成包含地区contentGroups的JSON
 - 确认筛选器配置正确
 
 **预期输出**:
@@ -254,13 +262,13 @@ def determine_page_type(filter_analysis, tab_analysis):
 **测试计划**:
 ```bash
 # SimpleStatic测试
-python cli.py extract event-grid --html-file data/prod-html/integration/event-grid.html --format flexible
+uv run cli.py extract event-grid --html-file data/prod-html/integration/event-grid.html --format flexible
 
 # RegionFilter测试  
-python cli.py extract api-management --html-file data/prod-html/integration/api-management.html --format flexible
+uv run cli.py extract api-management --html-file data/prod-html/integration/api-management.html --format flexible
 
 # Complex测试
-python cli.py extract cloud-services --html-file data/prod-html/compute/cloud-services.html --format flexible
+uv run cli.py extract cloud-services --html-file data/prod-html/compute/cloud-services.html --format flexible
 ```
 
 #### 4.2 架构兼容性测试 ✅需人工验证
@@ -302,7 +310,7 @@ python cli.py extract cloud-services --html-file data/prod-html/compute/cloud-se
 - [ ] FlexibleContentExporter输出符合CMS格式
 
 ### Phase 4验证 (0/2完成)
-- [ ] 三个示例文件生成期望的flexible JSON输出
+- [ ] 示例文件生成期望的flexible JSON输出
 - [ ] 整体架构兼容性正常
 - [ ] 现有功能不受影响
 
