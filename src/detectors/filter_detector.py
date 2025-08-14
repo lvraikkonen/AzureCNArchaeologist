@@ -13,7 +13,7 @@ from typing import List, Dict, Any, Optional, Set
 from bs4 import BeautifulSoup, Tag
 
 from ..core.data_models import (
-    FilterAnalysis, FilterType, Filter, RegionFilter
+    FilterAnalysis, FilterType, Filter
 )
 from ..core.logging import get_logger
 
@@ -180,7 +180,7 @@ class FilterDetector:
         }
     
     # 保留兼容性方法（不再使用）
-    def detect_region_filters(self, soup: BeautifulSoup) -> List[RegionFilter]:
+    def detect_region_filters(self, soup: BeautifulSoup) -> List[Filter]:
         """
         兼容性方法 - 不再使用，请使用 detect_filters()
         """
@@ -381,7 +381,7 @@ class FilterDetector:
         
         return False
     
-    def _create_region_filter(self, element: Tag, soup: BeautifulSoup) -> Optional[RegionFilter]:
+    def _create_region_filter(self, element: Tag, soup: BeautifulSoup) -> Optional[Filter]:
         """创建区域筛选器对象。"""
         try:
             element_id = element.get('id', '')
@@ -404,7 +404,7 @@ class FilterDetector:
             if not options:
                 options = ['china-north', 'china-east']
             
-            return RegionFilter(
+            return Filter(
                 filter_type=FilterType.REGION,
                 element_id=element_id or f"region-filter-{hash(str(element))}"[:8],
                 element_type=element_type,

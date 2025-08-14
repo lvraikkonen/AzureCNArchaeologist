@@ -73,21 +73,27 @@ else:
 }
 ```
 
-#### 1.2 TabDetector重构 ✅需人工验证
+#### 1.2 TabDetector重构 ✅已完成 (2025-08-14)
 
-**目标**: 准确检测tab结构和内容映射
+**目标**: 准确区分分组容器vs真实tab结构
+
+**核心修正**: 重新定义tab检测逻辑
+- **分组容器**: `tabContentN` 是软件筛选器的内容分组，非真实tab
+- **真实Tab结构**: `<ul class="os-tab-nav category-tabs">` 才是用户实际看到的tab标签
+- **层级检测**: 在每个tabContentN分组内查找真实的category-tabs
 
 **关键检测点**:
 - 主容器: `<div class="technical-azure-selector pricing-detail-tab tab-dropdown">`
-- Tab内容区: `<div class="tab-content">` → `<div class="tab-panel" id="tabContentX">`
-- Category tabs: `<ul class="os-tab-nav category-tabs hidden-xs hidden-sm">`
+- 分组容器: `<div class="tab-content">` → `<div class="tab-panel" id="tabContentX">` (软件筛选器分组)
+- 真实Tab: `<ul class="os-tab-nav category-tabs hidden-xs hidden-sm">` (用户实际看到的tab)
 
-**示例HTML结构**:
+**示例HTML结构理解**:
 ```html
 <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
     <div class="tab-content">
-        <div class="tab-panel" id="tabContent1">
-            <!-- 主要内容 -->
+        <!-- tabContent1: 软件筛选器分组容器 -->
+        <div class="tab-panel" id="tabContent1">  
+            <!-- 真实tab结构: 用户实际看到的tab标签 -->
             <ul class="os-tab-nav category-tabs hidden-xs hidden-sm">
                 <li><a data-href="#tabContent1-0" id="cloudservice-all">全部</a></li>
                 <li><a data-href="#tabContent1-1" id="cloudservice-general">常规用途</a></li>
@@ -99,22 +105,35 @@ else:
 </div>
 ```
 
-**验证方法**:
-- 检查tab-panel ID和data-href的正确对应关系
-- 验证category tabs的选项提取
-
-**预期返回结构**:
+**修正成果**:
 ```python
 {
-    "has_main_container": bool,
-    "has_tabs": bool,
-    "tab_panels": ["tabContent1", "tabContent2"],
-    "category_tabs": [
-        {"href": "#tabContent1-0", "id": "cloudservice-all", "label": "全部"},
-        {"href": "#tabContent1-1", "id": "cloudservice-general", "label": "常规用途"}
-    ]
+    "has_main_container": bool,          # technical-azure-selector容器存在
+    "has_tabs": bool,                    # 有真实的category-tabs交互
+    "content_groups": [                  # 软件筛选器的分组容器
+        {
+            "id": "tabContent1", 
+            "has_category_tabs": bool,
+            "category_tabs_count": int
+        }
+    ],
+    "category_tabs": [                   # 所有真实tab的聚合
+        {
+            "href": "#tabContent1-0", 
+            "id": "cloudservice-all", 
+            "label": "全部",
+            "group_id": "tabContent1"        # 所属分组
+        }
+    ],
+    "total_category_tabs": int,          # 真实tab总数
+    "has_complex_tabs": bool             # 基于实际category-tabs的复杂度
 }
 ```
+
+**验证结果** (2025-08-14):
+- **app-service.html**: has_tabs=False, total_category_tabs=0 ✅ (无真实tab交互)
+- **virtual-machine-scale-sets.html**: has_tabs=True, total_category_tabs=33 ✅ (7组×4-5个tab)
+- **检测结果与页面实际观察完全一致** ✅
 
 #### 1.3 PageAnalyzer重构 ✅需人工验证
 
@@ -288,16 +307,22 @@ uv run cli.py extract cloud-services --html-file data/prod-html/compute/cloud-se
 
 ## 验证检查清单
 
-### Phase 1验证 (2/3完成)
+### Phase 1验证 (3/3完成) ✅
 - [x] **FilterDetector能正确检测软件类别和地区筛选器的可见性** ✅
   - cloud-services.html: 检测到隐藏software + 可见region
   - api-management.html: 检测到隐藏software + 可见region  
   - event-grid.html: 检测到无筛选器
-- [x] **TabDetector能正确提取tab内容映射关系** ✅
-  - 正确检测main container、tab panels和category tabs
-  - 支持不同class组合的元素识别
-  - 准确映射data-href与内容ID关系
-- [ ] **PageAnalyzer能准确分类三种页面类型** 🚧进行中
+- [x] **TabDetector能正确区分分组容器vs真实tab结构** ✅
+  - 修正核心逻辑: tabContentN = 分组容器, category-tabs = 真实tab
+  - 准确检测用户实际看到的tab交互结构
+  - app-service: 无真实tab (has_tabs=False), virtual-machine-scale-sets: 33个真实tab
+  - 检测结果与页面观察100%一致
+- [x] **PageAnalyzer能准确分类三种页面类型** ✅
+  - event-grid.html → SimpleStatic ✅
+  - service-bus.html → SimpleStatic ✅
+  - api-management.html → RegionFilter ✅
+  - cloud-services.html → Complex ✅
+  - 策略分布: SimpleStatic(3) + RegionFilter(2) + Complex(3) = 8个文件全部正确分类
 
 ### Phase 2验证 (0/3完成)
 - [ ] SimpleStaticStrategy生成正确的baseContent
@@ -342,7 +367,7 @@ uv run cli.py extract cloud-services --html-file data/prod-html/compute/cloud-se
 
 ## 实施进度追踪
 
-### 当前状态 (2025-08-13)
+### 历史状态 (2025-08-13)
 
 #### ✅ 已完成任务
 - [x] **Phase 1.1: FilterDetector重构** - 检测软件类别和地区筛选器
@@ -355,20 +380,31 @@ uv run cli.py extract cloud-services --html-file data/prod-html/compute/cloud-se
     - api-management.html: software隐藏但存在，region可见 ✅  
     - event-grid.html: 两者都不存在 ✅
 
-- [x] **Phase 1.2: TabDetector重构** - 检测tab结构和内容映射
-  - 重写主容器检测: `.technical-azure-selector.pricing-detail-tab`（支持class变体）
-  - 实现tab面板映射: `.tab-content > .tab-panel`
-  - 修复category tabs检测: `.os-tab-nav.category-tabs`（支持额外class）
+- [x] **Phase 1.2: TabDetector重构** - 区分分组容器vs真实tab结构 ✅ (2025-08-14)
+  - **核心修正**: 重新定义tab检测逻辑，区分tabContentN分组与category-tabs真实tab
+  - **层级检测**: 在每个tabContentN分组内独立检测category-tabs
+  - **准确映射**: 建立分组到真实tab的完整映射关系
+  - **修正成果**:
+    - app-service.html: 2个分组，0个真实tab → has_tabs=False ✅
+    - virtual-machine-scale-sets.html: 7个分组，33个真实tab → has_tabs=True ✅
+    - 检测结果与页面实际观察完全一致 ✅
+
+- [x] **Phase 1.3: PageAnalyzer重构** - 实现3策略决策逻辑 ✅
+  - 集成新的FilterDetector和TabDetector结果
+  - 实现3策略决策算法：determine_page_type_v3()
+  - 验证策略分类准确性：8个测试文件100%分类正确
   - **测试结果**:
-    - cloud-services.html: container=True, panels=4, categories=4 ✅
-    - api-management.html: container=True, panels=1, categories=0 ✅
-    - event-grid.html: container=False, panels=0, categories=0 ✅
+    - event-grid.html, service-bus.html, batch.html → SimpleStatic ✅
+    - api-management.html, azure-functions.html → RegionFilter ✅  
+    - cloud-services.html, virtual-machine-scale-sets.html, app-service.html → Complex ✅
 
 #### 🚧 进行中任务
-- [ ] **Phase 1.3: PageAnalyzer重构** - 实现3策略决策逻辑
-  - 集成新的FilterDetector和TabDetector结果
-  - 实现3策略决策算法
-  - 验证策略分类准确性
+- [ ] **data_models.py架构更新** - 3+1策略架构重构 ✅
+  - 更新PageType和StrategyType枚举为3+1策略
+  - 删除未使用的数据类：FilterInfo, TabInfo, RegionInfo, RegionFilter等
+  - 简化分析类：FilterAnalysis, TabAnalysis, RegionAnalysis  
+  - 新增FlexibleJSON数据模型：FlexibleContentGroup, FlexiblePageConfig等
+  - 修复导入错误，所有检测器正常工作
 
 #### 📋 待完成任务队列
 - [ ] **Phase 2.1: SimpleStaticStrategy微调** - 优化baseContent提取
@@ -378,20 +414,34 @@ uv run cli.py extract cloud-services --html-file data/prod-html/compute/cloud-se
 - [ ] **Phase 4: 端到端测试** - 三个示例文件完整测试
 
 ### 阶段性总结
-- [x] Phase 1: 核心检测器重构 - **66%完成** (2/3)
-- [ ] Phase 2: 策略层实现 - **0%完成** (0/3)
+- [x] Phase 1: 核心检测器重构 - **100%完成** ✅ (3/3)
+- [x] 架构重构: data_models.py 3+1策略更新 - **100%完成** ✅
+- [ ] Phase 2: 策略层实现 - **0%完成** (0/3) 🚧下一阶段
 - [ ] Phase 3: 核心组件更新 - **0%完成** (0/3)
 - [ ] Phase 4: 端到端测试 - **0%完成** (0/2)
 - [ ] Phase 5: 文档和清理 - **0%完成** (0/2)
 
-### 明天继续任务
-1. 完成 Phase 1.3: PageAnalyzer重构
-2. 开始 Phase 2.1: SimpleStaticStrategy微调
-3. 目标：完成Phase 1和开始Phase 2的策略层实现
+### 当前状态 (2025-08-14)
+
+#### ✅ 今日完成任务 (2025-08-14)
+1. **Phase 1.2: TabDetector关键修正** - 区分分组容器vs真实tab结构 ✅
+   - 修正检测逻辑：tabContentN=分组容器，category-tabs=真实tab
+   - 验证成果：app-service无真实tab，virtual-machine-scale-sets有33个真实tab
+   - 检测结果与页面实际观察100%一致
+2. **Phase 1.3: PageAnalyzer重构** - 3策略决策逻辑 ✅
+3. **data_models.py架构重构** - 完整的3+1策略架构 ✅  
+4. **导入错误修复** - 所有检测器正常工作 ✅
+
+#### 🎯 下一步任务 (Phase 2)
+1. **Phase 2.1: SimpleStaticStrategy微调** - 优化baseContent提取
+2. **Phase 2.2: RegionFilterStrategy重写** - 实现地区内容组
+3. **Phase 2.3: ComplexContentStrategy新建** - 处理复杂情况
 
 ### 技术验证成果
 ✅ **FilterDetector**: 准确检测三种页面类型的筛选器状态  
-✅ **TabDetector**: 正确识别tab结构和category选项映射  
-🔄 **3策略架构**: 基础检测完成，决策逻辑待实现
+✅ **TabDetector**: 准确区分分组容器vs真实tab结构，检测结果与页面观察一致  
+✅ **PageAnalyzer**: 100%准确的3策略决策逻辑（8个文件测试通过）
+✅ **data_models**: 完整的3+1策略架构，支持FlexibleJSON格式
+✅ **架构完整性**: 所有检测器和分析器完美协作
 
 每个阶段完成后需要人工验证和确认才能进入下一阶段。
