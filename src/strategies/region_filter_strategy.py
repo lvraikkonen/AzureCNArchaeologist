@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-区域筛选策略
+区域筛选策略 - 适配新架构
 处理Type B页面：具有区域筛选功能的页面，如API Management
+集成新工具类与现有RegionProcessor
 """
 
 import os
@@ -17,6 +18,11 @@ sys.path.append(str(project_root))
 
 from src.strategies.base_strategy import BaseStrategy
 from src.core.region_processor import RegionProcessor
+from src.utils.content.content_extractor import ContentExtractor
+from src.utils.content.section_extractor import SectionExtractor
+from src.utils.content.flexible_builder import FlexibleBuilder
+from src.utils.data.extraction_validator import ExtractionValidator
+from src.detectors.filter_detector import FilterDetector
 
 from src.core.logging import get_logger
 
@@ -25,14 +31,14 @@ logger = get_logger(__name__)
 
 class RegionFilterStrategy(BaseStrategy):
     """
-    区域筛选策略
+    区域筛选策略 - 新架构适配
     Type B: 区域筛选页面处理 - API Management类型
     
     特点：
     - 具有区域筛选控件 (如中国北部、中国东部等)
     - 筛选器变化会改变内容显示
     - 需要提取每个区域的专门内容
-    - API Management是此策略的典型代表
+    - 使用新工具类架构：ContentExtractor + SectionExtractor + FlexibleBuilder + RegionProcessor
     """
 
     def __init__(self, product_config: Dict[str, Any], html_file_path: str = ""):
@@ -44,27 +50,52 @@ class RegionFilterStrategy(BaseStrategy):
             html_file_path: HTML文件路径
         """
         super().__init__(product_config, html_file_path)
+        self.strategy_name = "region_filter"
+        
+        # 初始化工具类
+        self.content_extractor = ContentExtractor()
+        self.section_extractor = SectionExtractor()
+        self.flexible_builder = FlexibleBuilder()
+        self.extraction_validator = ExtractionValidator()
+        
+        # 保持现有区域处理逻辑
         self.region_processor = RegionProcessor()
+        self.filter_detector = FilterDetector()
+        
         logger.info(f"🌍 初始化区域筛选策略: {self._get_product_key()}")
 
     def extract(self, soup: BeautifulSoup, url: str = "") -> Dict[str, Any]:
         """
-        执行区域筛选策略的提取逻辑
+        执行传统CMS格式提取逻辑（向后兼容）
         
         Args:
             soup: BeautifulSoup解析的HTML对象
             url: 源URL
             
         Returns:
-            提取的CMS内容数据，包含区域特定内容
+            传统CMS格式的提取数据，包含区域特定内容
         """
-        logger.info(f"🌍 执行区域筛选策略提取...")
+        logger.info("🌍 执行区域筛选策略提取（传统CMS格式）...")
         
-        # 1. 提取基础内容
-        base_content = self._extract_base_content(soup, url)
-        logger.info(f"✅ 基础内容提取完成")
+        # 1. 使用ContentExtractor提取基础元数据
+        base_content = self.content_extractor.extract_base_metadata(soup, url, self.html_file_path)
         
-        # 2. 使用RegionProcessor进行区域处理
+        # 2. 使用SectionExtractor提取sections内容
+        sections = self.section_extractor.extract_all_sections(soup)
+        
+        # 转换sections为传统CMS格式
+        for section in sections:
+            section_type = section.get("sectionType", "")
+            content = section.get("content", "")
+            
+            if section_type == "Banner":
+                base_content["BannerContent"] = content
+            elif section_type == "Description":
+                base_content["DescriptionContent"] = content
+            elif section_type == "Qa":
+                base_content["QaContent"] = content
+        
+        # 3. 使用RegionProcessor进行区域处理
         try:
             region_content = self.region_processor.extract_region_contents(
                 soup, self.html_file_path
@@ -74,10 +105,10 @@ class RegionFilterStrategy(BaseStrategy):
             logger.info(f"⚠ 区域内容提取失败: {e}")
             region_content = {}
         
-        # 3. 转换区域内容为CMS格式
+        # 4. 转换区域内容为CMS格式
         cms_fields = self._convert_region_content_to_cms_format(region_content)
         
-        # 4. 组合最终结果
+        # 5. 组合最终结果
         final_data = {
             **base_content,
             **cms_fields,
@@ -85,14 +116,84 @@ class RegionFilterStrategy(BaseStrategy):
             "RegionalContent": region_content,
             "extraction_strategy": "region_filter",
             "region_count": len(region_content),
-            "supported_regions": list(region_content.keys()) if region_content else []
+            "supported_regions": list(region_content.keys()) if region_content else [],
+            "PricingTables": [],
+            "ServiceTiers": []
         }
         
-        # 5. 验证提取结果
-        final_data = self._validate_extraction_result(final_data)
+        # 6. 验证提取结果
+        final_data = self.extraction_validator.validate_cms_extraction(final_data, self.product_config)
         
-        logger.info(f"✅ 区域筛选策略提取完成")
+        logger.info("✅ 区域筛选策略提取完成（传统CMS格式）")
         return final_data
+
+    def extract_flexible_content(self, soup: BeautifulSoup, url: str = "") -> Dict[str, Any]:
+        """
+        执行flexible JSON格式提取逻辑
+        
+        Args:
+            soup: BeautifulSoup解析的HTML对象
+            url: 源URL
+            
+        Returns:
+            flexible JSON格式的提取数据
+        """
+        logger.info("🌍 执行区域筛选策略提取（flexible JSON格式）...")
+        
+        # 1. 使用ContentExtractor提取基础元数据
+        base_metadata = self.content_extractor.extract_base_metadata(soup, url, self.html_file_path)
+        
+        # 2. 使用SectionExtractor提取commonSections
+        common_sections = self.section_extractor.extract_all_sections(soup)
+        
+        # 3. 使用FilterDetector获取筛选器信息
+        filter_analysis = self.filter_detector.detect_filters(soup)
+        
+        # 4. 使用RegionProcessor提取区域内容
+        try:
+            region_content = self.region_processor.extract_region_contents(
+                soup, self.html_file_path
+            )
+        except Exception as e:
+            logger.info(f"⚠ 区域内容提取失败: {e}")
+            region_content = {}
+        
+        # 5. 使用FlexibleBuilder构建地区内容组
+        content_groups = self.flexible_builder.build_region_content_groups(region_content)
+        
+        # 6. 构建页面配置
+        page_config = self.flexible_builder.build_page_config(filter_analysis)
+        
+        # 7. 构建策略特定内容
+        strategy_content = {
+            "baseContent": "",  # 区域筛选页面主要内容在contentGroups中
+            "contentGroups": content_groups,
+            "pageConfig": page_config,
+            "strategy_type": "region_filter"
+        }
+        
+        # 8. 使用FlexibleBuilder构建完整的flexible JSON
+        flexible_data = self.flexible_builder.build_flexible_page(
+            base_metadata, common_sections, strategy_content
+        )
+        
+        # 9. 验证flexible JSON结果
+        flexible_data = self.extraction_validator.validate_flexible_json(flexible_data)
+        
+        logger.info("✅ 区域筛选策略提取完成（flexible JSON格式）")
+        return flexible_data
+
+    def extract_common_sections(self, soup: BeautifulSoup) -> List[Dict[str, str]]:
+        """
+        提取通用sections（Banner、Description、QA等）
+        
+        Args:
+            soup: BeautifulSoup解析的HTML对象
+            
+        Returns:
+            commonSections列表
+        """
+        return self.section_extractor.extract_all_sections(soup)
 
     def _convert_region_content_to_cms_format(self, region_content: Dict[str, Any]) -> Dict[str, str]:
         """
@@ -275,3 +376,16 @@ class RegionFilterStrategy(BaseStrategy):
         base_content["region_filter_detected"] = region_filter_found
         
         return base_content
+
+    def _get_product_key(self) -> str:
+        """获取产品键"""
+        if hasattr(self, 'product_config') and 'product_key' in self.product_config:
+            return self.product_config['product_key']
+        
+        # 从文件路径推断
+        if self.html_file_path:
+            file_name = Path(self.html_file_path).stem
+            if file_name.endswith('-index'):
+                return file_name[:-6]
+        
+        return "unknown"

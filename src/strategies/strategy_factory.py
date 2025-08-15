@@ -27,13 +27,11 @@ class StrategyFactory:
     # 策略注册表：策略类型 -> 策略类
     _strategies: Dict[StrategyType, Type[BaseStrategy]] = {}
     
-    # 策略描述信息
+    # 策略描述信息 - 3+1架构
     _strategy_descriptions: Dict[StrategyType, str] = {
         StrategyType.SIMPLE_STATIC: "简单静态页面处理策略",
         StrategyType.REGION_FILTER: "区域筛选页面处理策略",
-        StrategyType.TAB: "Tab控制页面处理策略",
-        StrategyType.REGION_TAB: "区域+Tab组合页面处理策略",
-        StrategyType.MULTI_FILTER: "多筛选器页面处理策略",
+        StrategyType.COMPLEX: "复杂多筛选器页面处理策略",
         StrategyType.LARGE_FILE: "大文件优化处理策略"
     }
 

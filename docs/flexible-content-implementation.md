@@ -175,21 +175,99 @@ def determine_page_type_v3(self, soup: BeautifulSoup) -> str:
 
 ### Phase 2: 策略层实现
 
-#### 2.1 SimpleStaticStrategy微调 ✅需人工验证
+#### 2.0 BaseStrategy架构重构 ✅需人工验证 (2025-08-15)
 
-**目标**: 优化简单页面的内容提取
+**目标**: 重构BaseStrategy为纯抽象基类，创建工具类库支持flexible JSON
 
-**提取逻辑**:
-1. 主容器内`<div class="technical-azure-selector tab-control-selector">`:
-   - 1.1 提取`pricing-page-section`作为baseContent
-   - 1.2 如果没有`pricing-page-section` 则提取主容器中所有内容作为baseContent
-2. 过滤QA内容避免与commonSections重复
-3. 生成flexible JSON格式
+**当前问题分析**:
+- BaseStrategy过于庞大(517行)，承担了太多具体实现
+- 具体策略子类与基类边界不清晰，违背单一职责原则
+- 缺少flexible JSON Schema 1.1支持的抽象接口
+- 工具函数与基类耦合过于紧密，影响可测试性
+
+**工具类组织架构** (基于现有`src/utils`结构):
+```
+src/utils/
+├── content/                    # 内容提取专用
+│   ├── content_extractor.py   # 通用HTML内容提取工具类  
+│   ├── section_extractor.py   # Banner/Description/QA专用提取器
+│   └── flexible_builder.py    # flexible JSON构建器
+├── data/                       # 数据处理工具
+│   ├── validation_utils.py    # 现有验证工具 (保持不变)
+│   └── extraction_validator.py # 新增：专门的提取结果验证器
+└── html/                       # HTML处理工具
+    ├── cleaner.py             # 现有清理工具 (保持不变)
+    └── element_creator.py     # 现有元素创建工具 (保持不变)
+```
+
+**实施子任务**:
+
+- **2.0.1**: 创建`src/utils/content/content_extractor.py` - 通用内容提取器
+  - 抽离BaseStrategy中的Title、Meta、主内容提取逻辑
+  - 提供`extract_title()`, `extract_meta()`, `extract_main_content()`方法
+  - 支持传统CMS和flexible JSON双格式需求
+  
+- **2.0.2**: 创建`src/utils/content/section_extractor.py` - 专门section提取器
+  - 抽离Banner、Description、QA的具体提取逻辑
+  - 支持flexible JSON的commonSections格式
+  - 提供`extract_banner()`, `extract_description()`, `extract_qa()`方法
+  
+- **2.0.3**: 创建`src/utils/content/flexible_builder.py` - flexible JSON构建器
+  - 构建符合CMS FlexibleContentPage Schema 1.1的数据结构
+  - 提供`build_content_groups()`, `build_page_config()`, `build_common_sections()`方法
+  - 处理筛选器配置和内容组织逻辑
+  
+- **2.0.4**: 创建`src/utils/data/extraction_validator.py` - 专门验证器
+  - 将BaseStrategy中的验证逻辑移至此处
+  - 支持flexible JSON格式验证
+  - 提供统一的数据质量评估接口
+  
+- **2.0.5**: 重构BaseStrategy为纯抽象基类
+  - 精简为<50行，仅定义核心抽象方法
+  - 定义`extract_flexible_content()`、`extract_common_sections()`抽象方法
+  - 保留现有`extract()`方法用于传统CMS格式兼容
+  - 添加工具类注入机制，移除所有具体实现
+
+**技术收益**:
+- **可维护性**: 基类精简到<50行，职责清晰
+- **可扩展性**: 新策略只需实现核心接口，无需重写大量方法
+- **可测试性**: 组件解耦，单独测试各个工具类
+- **代码复用**: 工具类可被多个策略复用
+- **架构一致性**: 遵循项目现有的`src/utils`功能域划分
+
+**验证标准**:
+- BaseStrategy类代码量<50行，职责清晰
+- 每个具体策略类代码量<200行
+- 每个工具类单独可测试，功能内聚
+- flexible JSON输出格式100%符合Schema 1.1
+- 现有传统CMS格式输出保持不变
+
+#### 2.1 SimpleStaticStrategy适配新架构 ✅需人工验证
+
+**目标**: 适配新的BaseStrategy架构，使用工具类实现简单页面提取
+
+**架构适配任务**:
+1. **移除BaseStrategy继承的具体实现逻辑**
+2. **使用新工具类**:
+   - `ContentExtractor`: 处理基础内容提取
+   - `SectionExtractor`: 处理Banner/Description/QA
+   - `FlexibleBuilder`: 构建flexible JSON格式
+3. **实现新抽象方法**:
+   - `extract_flexible_content()`: 生成flexible JSON格式
+   - `extract_common_sections()`: 生成commonSections
+   - 保留`extract()`: 传统CMS格式兼容
+
+**具体实现逻辑**:
+1. 调用`ContentExtractor.extract_main_content()`提取baseContent
+   - 优先提取`technical-azure-selector`内的`pricing-page-section`
+   - 过滤QA内容避免与commonSections重复
+2. 调用`SectionExtractor`提取Banner/Description/QA
+3. 调用`FlexibleBuilder.build_flexible_content()`生成最终JSON
 
 **验证方法**:
 - event-grid.html → 生成包含baseContent的flexible JSON
 - service-bus.html → 生成包含baseContent的flexible JSON
-- 确认QA内容不重复
+- 确认工具类正确调用，QA内容不重复
 
 **预期输出**:
 ```json
@@ -204,19 +282,31 @@ def determine_page_type_v3(self, soup: BeautifulSoup) -> str:
 }
 ```
 
-#### 2.2 RegionFilterStrategy重写 ✅需人工验证
+#### 2.2 RegionFilterStrategy适配新架构 ✅需人工验证
 
-**目标**: 实现地区内容组的准确提取
+**目标**: 适配新架构，实现地区内容组的准确提取
 
-**提取逻辑**:
-1. 根据region选项提取对应内容区域, 根据software选项提取value对应`os`
-2. 使用soft-category.json进行表格筛选(步骤1提供的os, region)
-3. 生成地区筛选器配置
+**架构适配任务**:
+1. **移除BaseStrategy继承的具体实现逻辑**
+2. **使用新工具类**:
+   - `ContentExtractor`: 提取基础元数据
+   - `SectionExtractor`: 提取commonSections
+   - `FlexibleBuilder`: 构建地区内容组和筛选器配置
+3. **集成现有RegionProcessor**:
+   - 保持region内容提取逻辑不变
+   - 使用`FlexibleBuilder`转换为contentGroups格式
+
+**具体实现逻辑**:
+1. 调用`FilterDetector`获取region选项映射
+2. 调用`RegionProcessor.extract_region_contents()`提取地区内容
+3. 调用`FlexibleBuilder.build_content_groups()`转换为contentGroups
+4. 调用`FlexibleBuilder.build_page_config()`生成筛选器配置
+5. 使用soft-category.json进行表格筛选
 
 **验证方法**:
-- api-management.html → 生成包含地区contentGroups的JSON
-- hdinsight.html → 生成包含地区contentGroups的JSON
-- 确认筛选器配置正确
+- api-management.html → 生成包含地区contentGroups的flexible JSON
+- hdinsight.html → 生成包含地区contentGroups的flexible JSON
+- 确认筛选器配置正确，工具类协作正常
 
 **预期输出**:
 ```json
@@ -237,18 +327,30 @@ def determine_page_type_v3(self, soup: BeautifulSoup) -> str:
 }
 ```
 
-#### 2.3 ComplexContentStrategy新建 ✅需人工验证
+#### 2.3 ComplexContentStrategy基于新架构创建 ✅需人工验证
 
-**目标**: 处理复杂的多筛选器和tab组合
+**目标**: 基于新架构处理复杂的多筛选器和tab组合
 
-**提取逻辑**:
-1. 处理多个筛选器的组合（region + software）
-2. 处理复杂tab结构和category选项
-3. 动态生成多维度筛选器配置
+**架构设计**:
+1. **继承重构后的BaseStrategy抽象基类**
+2. **使用新工具类协作**:
+   - `ContentExtractor`: 处理基础内容提取
+   - `SectionExtractor`: 处理commonSections
+   - `FlexibleBuilder`: 构建复杂的多维度内容组
+3. **集成现有检测器**:
+   - `FilterDetector`: 获取software和region选项
+   - `TabDetector`: 获取category-tabs结构
+   
+**具体实现逻辑**:
+1. 调用`FilterDetector`和`TabDetector`获取完整的筛选器+tab映射
+2. 解析多维度组合：region × software × category
+3. 为每个组合调用相应的内容提取逻辑
+4. 调用`FlexibleBuilder.build_complex_content_groups()`构建contentGroups
+5. 生成多维度筛选器配置JSON
 
 **验证方法**:
 - cloud-services.html → 生成完整的多筛选器contentGroups
-- 确认tab内容正确映射
+- 确认tab内容正确映射，工具类协作流畅
 
 **预期输出**:
 ```json
@@ -269,26 +371,234 @@ def determine_page_type_v3(self, soup: BeautifulSoup) -> str:
 }
 ```
 
-### Phase 3: 核心组件更新
+### Phase 3: 分层架构集成和工具类协作
 
-#### 3.1 StrategyManager更新 ✅已完成 (2025-08-14)
-- ✅ 更新策略决策逻辑直接使用PageAnalyzer的`determine_page_type_v3()`结果
-- ✅ 简化策略注册表为3+1策略架构 (SIMPLE_STATIC, REGION_FILTER, COMPLEX, LARGE_FILE)
-- ✅ 更新页面类型到策略类型的映射
-- ✅ 修复策略优先特性和产品特定配置覆盖
+**目标**: 完成5层架构的完整集成，实现工具类在各层的协作，确保分层架构的稳定性和性能。
 
-**验证结果**:
-- event-grid.html → SimpleStaticProcessor ✅
-- api-management.html → RegionFilterProcessor ✅  
-- cloud-services.html → ComplexContentProcessor ✅
+#### 3.1 协调层集成 ✅需人工验证
 
-#### 3.2 StrategyFactory更新 ✅需人工验证  
-- 注册ComplexContentStrategy
-- 移除多余的策略类（TabStrategy, RegionTabStrategy, MultiFilterStrategy）
+**目标**: 集成新工具类到ExtractionCoordinator，实现统一的流程协调
 
-#### 3.3 FlexibleContentExporter增强 ✅需人工验证
-- 完善多筛选器配置生成
-- 优化contentGroups的组织逻辑
+**分层架构位置**: 🎛️ 协调层 - 统一流程管理的核心
+
+**集成任务**:
+1. **工具类依赖注入**:
+   - 在协调器中注入ContentExtractor、SectionExtractor、FlexibleBuilder实例
+   - 建立工具类的生命周期管理（单例vs按需创建）
+   - 实现工具类间的依赖关系管理
+
+2. **流程协调增强**:
+   - 更新`coordinate_extraction()`方法调用新工具类
+   - 建立标准化的工具类调用链：检测→提取→构建→验证
+   - 增强错误处理，支持工具类级别的异常恢复
+
+3. **格式支持统一**:
+   - 支持flexible JSON和传统CMS双格式输出路径
+   - 实现格式特定的工具类调用策略
+   - 建立输出质量的统一评估机制
+
+**实现逻辑**:
+```python
+# 协调器中的工具类集成示例
+class ExtractionCoordinator:
+    def __init__(self):
+        self.content_extractor = ContentExtractor()
+        self.section_extractor = SectionExtractor()
+        self.flexible_builder = FlexibleBuilder()
+        self.extraction_validator = ExtractionValidator()
+    
+    def coordinate_flexible_extraction(self, strategy, soup, url):
+        # 标准化工具类调用链
+        base_content = self.content_extractor.extract_base_metadata(soup, url)
+        common_sections = self.section_extractor.extract_all_sections(soup)
+        strategy_content = strategy.extract_flexible_content(soup)
+        flexible_json = self.flexible_builder.build_flexible_page(
+            base_content, common_sections, strategy_content
+        )
+        return self.extraction_validator.validate_flexible_json(flexible_json)
+```
+
+**验证标准**:
+- 工具类注入成功率100%
+- 端到端流程追踪无阻塞点
+- 双格式输出质量一致性>95%
+
+#### 3.2 工厂层升级 ✅需人工验证
+
+**目标**: 完善StrategyFactory以支持新工具类架构，实现策略和工具类的协作
+
+**分层架构位置**: 🏭 创建层 - 策略实例和依赖管理
+
+**升级任务**:
+1. **策略注册更新**:
+   - 注册ComplexContentStrategy到工厂
+   - 移除废弃策略类（TabStrategy, RegionTabStrategy, MultiFilterStrategy）
+   - 建立策略类型到工具类需求的映射关系
+
+2. **依赖注入机制**:
+   - 为策略实例注入所需的工具类实例
+   - 实现工具类的共享和隔离策略
+   - 建立策略间工具类复用机制
+
+3. **创建流程优化**:
+   - 优化策略实例创建性能，支持工具类预加载
+   - 实现策略实例的缓存和复用策略
+   - 增强创建失败时的回退机制
+
+**实现逻辑**:
+```python
+# 工厂中的工具类注入示例
+class StrategyFactory:
+    @classmethod
+    def create_strategy(cls, extraction_strategy, product_config, html_file_path):
+        # 创建策略实例
+        strategy_instance = cls._strategies[strategy_type](product_config, html_file_path)
+        
+        # 注入工具类依赖
+        strategy_instance.content_extractor = ContentExtractor()
+        strategy_instance.section_extractor = SectionExtractor()
+        strategy_instance.flexible_builder = FlexibleBuilder()
+        
+        # 策略特定的工具类配置
+        if strategy_type == StrategyType.COMPLEX:
+            strategy_instance.flexible_builder.enable_complex_mode()
+        
+        return strategy_instance
+```
+
+**验证标准**:
+- ComplexContentStrategy注册成功
+- 策略实例工具类注入率100%
+- 策略间工具类复用率>80%
+
+#### 3.3 导出层增强 ✅需人工验证
+
+**目标**: 增强FlexibleContentExporter充分利用新工具类，优化输出质量
+
+**分层架构位置**: 📤 导出层 - 多格式输出生成
+
+**增强任务**:
+1. **FlexibleBuilder集成**:
+   - 将FlexibleBuilder的构建逻辑集成到导出器中
+   - 实现导出器和构建器的职责分离：构建器负责数据组织，导出器负责格式化
+   - 建立构建器结果的缓存和复用机制
+
+2. **多筛选器配置完善**:
+   - 基于FilterDetector和TabDetector结果生成完整筛选器配置
+   - 支持复杂的多维度筛选器组合（region × software × category）
+   - 实现筛选器配置的验证和优化
+
+3. **ContentGroups组织优化**:
+   - 基于策略类型自动选择最优的内容组织方式
+   - 实现contentGroups的智能合并和分割逻辑
+   - 建立内容组质量评估和自动调优机制
+
+**实现逻辑**:
+```python
+# 导出器与工具类协作示例
+class FlexibleContentExporter:
+    def export_flexible_content(self, data, product_name):
+        # 使用FlexibleBuilder进行数据组织
+        builder = FlexibleBuilder()
+        
+        # 根据策略类型选择构建方式
+        if self._is_complex_strategy(data):
+            flexible_data = builder.build_complex_flexible_content(data)
+        elif self._is_region_strategy(data):
+            flexible_data = builder.build_region_flexible_content(data)
+        else:
+            flexible_data = builder.build_simple_flexible_content(data)
+        
+        # 导出器专注于格式化和文件生成
+        return self._write_flexible_json(flexible_data, product_name)
+```
+
+**验证标准**:
+- FlexibleBuilder集成深度>90%
+- 多筛选器配置准确率100%
+- ContentGroups组织质量评分>95%
+
+#### 3.4 客户端层简化 ✅需人工验证
+
+**目标**: 进一步简化EnhancedCMSExtractor为纯协调器客户端
+
+**分层架构位置**: 📱 客户端层 - 简化的接口层
+
+**简化任务**:
+1. **业务逻辑移除**:
+   - 将剩余的业务逻辑移至工具类或协调器
+   - 客户端仅保留接口适配和参数验证功能
+   - 实现真正的"瘦客户端"架构模式
+
+2. **错误处理委托**:
+   - 简化错误处理，将复杂逻辑委托给协调器
+   - 保留基础的输入验证和格式化错误处理
+   - 建立统一的错误响应格式
+
+3. **API兼容性保持**:
+   - 确保100%向后兼容现有CLI和API调用
+   - 保持方法签名和返回格式的完全一致
+   - 实现透明的架构升级（用户无感知）
+
+**实现逻辑**:
+```python
+# 简化后的客户端示例
+class EnhancedCMSExtractor:
+    def __init__(self, output_dir: str, config_file: str = ""):
+        # 仅保留协调器实例
+        self.extraction_coordinator = ExtractionCoordinator(output_dir)
+    
+    def extract_cms_content(self, html_file_path: str, url: str = "") -> Dict[str, Any]:
+        # 纯委托模式，无业务逻辑
+        try:
+            return self.extraction_coordinator.coordinate_extraction(html_file_path, url)
+        except Exception as e:
+            # 简化的错误处理
+            return self._format_error_response(e)
+```
+
+**验证标准**:
+- 客户端代码量<100行
+- 现有CLI命令兼容性100%
+- 错误处理委托率>95%
+
+#### 3.5 架构完整性验证 ✅需人工验证
+
+**目标**: 验证5层架构的完整协作，确保生产环境就绪
+
+**验证维度**:
+1. **端到端流程测试**:
+   - 完整的数据流追踪：客户端→协调→决策→创建→执行→工具
+   - 各层接口调用的性能基准测试
+   - 异常场景下的层间协作稳定性测试
+
+2. **工具类协作评估**:
+   - 工具类间数据传递的完整性验证
+   - 工具类复用效率和内存使用评估
+   - 工具类接口的标准化程度评测
+
+3. **质量保证验证**:
+   - 3种策略的flexible JSON输出质量对比
+   - 传统CMS格式的向后兼容性验证
+   - 错误处理覆盖率和恢复能力测试
+
+**验证方法**:
+```bash
+# 架构完整性测试命令
+uv run cli.py extract event-grid --html-file data/prod-html/integration/event-grid.html --format flexible
+uv run cli.py extract api-management --html-file data/prod-html/integration/api-management.html --format flexible
+uv run cli.py extract cloud-services --html-file data/prod-html/compute/cloud-services.html --format flexible
+
+# 性能基准测试
+python -m pytest tests/integration/test_architecture_performance.py
+python -m pytest tests/integration/test_tool_collaboration.py
+```
+
+**验证标准**:
+- 端到端流程成功率100%
+- 层间调用性能相比Phase 2提升>20%
+- 工具类协作效率>85%
+- 错误场景覆盖率>95%
 
 ### Phase 4: 端到端测试
 
@@ -340,24 +650,72 @@ uv run cli.py extract cloud-services --html-file data/prod-html/compute/cloud-se
   - cloud-services.html → Complex ✅
   - 策略分布: SimpleStatic(3) + RegionFilter(2) + Complex(3) = 8个文件全部正确分类
 
-### Phase 2验证 (0/3完成)
-- [ ] SimpleStaticStrategy生成正确的baseContent
-- [ ] RegionFilterStrategy生成正确的地区contentGroups
-- [ ] ComplexContentStrategy生成正确的多筛选器contentGroups
+### Phase 2验证 (3/4完成) ✅🟡
+- [x] **BaseStrategy架构重构完成** - 工具类创建，基类精简到77行 ✅
+- [x] **HTML清理功能修复** - 在所有策略和提取器中添加clean_html_content ✅
+- [x] **SimpleStaticStrategy验证通过** - event-grid.html生成正确flexible JSON + HTML清理生效 ✅
+- [🟡] **RegionFilterStrategy部分验证** - api-management.html生成flexible JSON，但**区域内容筛选存在问题** 🚨
+- [ ] ComplexContentStrategy基于新架构创建，生成正确的多筛选器contentGroups
 
-### Phase 3验证 (1/3完成) 🚧
-- [x] **StrategyManager正确选择策略** ✅
+### Phase 3验证 (1/5完成) 🚧
+- [x] **StrategyManager正确选择策略** ✅ (已在Phase 1完成)
   - event-grid.html → simple_static → SimpleStaticProcessor ✅
   - api-management.html → region_filter → RegionFilterProcessor ✅
   - cloud-services.html → complex → ComplexContentProcessor ✅  
   - 策略决策准确率100%，与页面结构完全匹配
-- [ ] StrategyFactory成功创建策略实例
-- [ ] FlexibleContentExporter输出符合CMS格式
+- [ ] **协调层集成完成** - ExtractionCoordinator工具类集成，流程协调增强
+- [ ] **工厂层升级完成** - StrategyFactory支持ComplexContentStrategy，工具类依赖注入
+- [ ] **导出层增强完成** - FlexibleContentExporter与FlexibleBuilder深度集成
+- [ ] **客户端层简化完成** - EnhancedCMSExtractor精简为<100行纯客户端
+- [ ] **架构完整性验证通过** - 5层架构协作稳定，性能提升>20%
 
 ### Phase 4验证 (0/2完成)
 - [ ] 示例文件生成期望的flexible JSON输出
 - [ ] 整体架构兼容性正常
 - [ ] 现有功能不受影响
+
+## 🚨 重要问题记录
+
+### RegionFilterStrategy区域内容筛选逻辑缺陷 (2025-08-15发现)
+
+**问题描述**：
+RegionFilterStrategy在处理api-management等页面时，所有区域生成相同的内容，没有进行实际的内容差异化筛选。
+
+**根本原因**：
+1. **API Management页面实际包含隐藏的软件筛选器**（`style="display:none"`）：
+   ```html
+   <div class="dropdown-container software-kind-container" style="display:none;">
+       <select class="dropdown-select software-box" id="software-box">
+           <option data-href="#tabContent1" value="API Management">API Management</option>
+       </select>
+   </div>
+   ```
+
+2. **隐藏筛选器的value字段应作为soft-category.json的`os`参数**：
+   - FilterDetector正确检测到`software_options[0].value = "API Management"`
+   - 但RegionProcessor**未使用这个信息**进行筛选
+   - 导致所有区域返回："产品 api-management 无区域配置，保留所有内容"
+
+3. **筛选逻辑缺失**：
+   - RegionProcessor需要将"API Management"作为`os`参数
+   - 结合区域信息在soft-category.json中查找对应的`tableIDs`配置
+   - 对不同区域应用不同的表格/内容筛选规则
+
+**影响范围**：
+- 所有使用RegionFilterStrategy的产品（api-management, hdinsight等）
+- Flexible JSON的contentGroups虽然结构正确，但内容完全相同
+- 违背了区域筛选的核心功能需求
+
+**预期修复方案**：
+1. RegionProcessor集成FilterDetector检测结果
+2. 使用隐藏软件筛选器的value作为os参数
+3. 确保不同区域基于soft-category.json配置生成真正不同的内容
+4. 重新验证RegionFilterStrategy的完整功能
+
+**技术债务**：
+- RegionProcessor与FilterDetector信息集成不完整
+- 需要建立隐藏筛选器信息的传递机制
+- soft-category.json配置可能需要为更多产品添加规则
 
 ## 关键技术点
 
@@ -436,33 +794,52 @@ uv run cli.py extract cloud-services --html-file data/prod-html/compute/cloud-se
 ### 阶段性总结
 - [x] **Phase 1: 核心检测器重构** - **100%完成** ✅ (3/3)
 - [x] **架构重构: data_models.py 3+1策略更新** - **100%完成** ✅
-- [x] **Phase 3.1: StrategyManager更新** - **100%完成** ✅ (1/3)
-- [ ] Phase 2: 策略层实现 - **0%完成** (0/3) 🚧下一阶段
-- [ ] Phase 3: 核心组件更新 - **33%完成** (1/3) 
+- [ ] Phase 2: 策略层实现 - **0%完成** (0/4) 🚧当前阶段
+  - [ ] Phase 2.0: BaseStrategy架构重构 (0/5子任务)
+  - [ ] Phase 2.1-2.3: 策略适配和创建 (0/3子任务)
+- [ ] Phase 3: 分层架构集成 - **20%完成** (1/5) 
+  - [x] **3.1前置: StrategyManager更新** - **100%完成** ✅ 
+  - [ ] 3.1-3.5: 5层架构完整集成 (0/5子任务)
 - [ ] Phase 4: 端到端测试 - **0%完成** (0/2)
 - [ ] Phase 5: 文档和清理 - **0%完成** (0/2)
 
-### 当前状态 (2025-08-14)
+### 当前状态 (2025-08-15)
 
-#### ✅ 今日完成任务 (2025-08-14)
-1. **Phase 1.2: TabDetector关键修正** - 区分分组容器vs真实tab结构 ✅
-   - 修正检测逻辑：tabContentN=分组容器，category-tabs=真实tab
-   - 验证成果：app-service无真实tab，virtual-machine-scale-sets有33个真实tab
-   - 检测结果与页面实际观察100%一致
-2. **Phase 1.3: PageAnalyzer重构** - 3策略决策逻辑 ✅
-   - 实现`analyze_page_complexity()`和`get_recommended_page_type()`方法
-   - 策略决策准确率100%，与页面实际结构完全匹配
-3. **data_models.py架构重构** - 完整的3+1策略架构 ✅  
-4. **导入错误修复** - 所有检测器正常工作 ✅
-5. **Phase 3.1: StrategyManager更新** - 3+1策略架构完整实现 ✅
-   - 简化策略注册表为4种策略 (SIMPLE_STATIC, REGION_FILTER, COMPLEX, LARGE_FILE)
-   - 更新决策流程直接使用`determine_page_type_v3()`结果
-   - 验证策略选择准确性：3个示例文件100%正确映射
+#### ✅ 今日完成任务 (2025-08-15下午)
+1. **Phase 2.0: BaseStrategy架构重构** - 完整工具类重构 ✅
+   - 2.0.1: 创建ContentExtractor通用内容提取器 ✅
+   - 2.0.2: 创建SectionExtractor专门section提取器 ✅ 
+   - 2.0.3: 创建FlexibleBuilder flexible JSON构建器 ✅
+   - 2.0.4: 创建ExtractionValidator专门验证器 ✅
+   - 2.0.5: 重构BaseStrategy为纯抽象基类(77行) ✅
 
-#### 🎯 下一步任务 (Phase 2) - 具体策略实现
-1. **Phase 2.1: SimpleStaticStrategy微调** - 优化baseContent提取
-2. **Phase 2.2: RegionFilterStrategy重写** - 实现地区内容组
-3. **Phase 2.3: ComplexContentStrategy新建** - 处理复杂情况
+2. **HTML清理功能修复** - 全面应用clean_html_content ✅
+   - 在SectionExtractor的Banner提取中添加HTML清理
+   - 在SimpleStaticStrategy的主内容提取中添加HTML清理
+   - 验证：生成的flexible JSON内容格式紧凑，无多余空白
+
+3. **Phase 2.1: SimpleStaticStrategy验证** - 完全成功 ✅
+   - event-grid.html测试通过，生成正确flexible JSON
+   - HTML清理功能生效，输出内容格式优化
+   - 工具类协作正常，架构重构成功
+
+4. **Phase 2.2: RegionFilterStrategy验证** - 部分成功 🟡
+   - api-management.html策略决策正确，生成flexible JSON结构正确
+   - **发现关键问题**: 区域内容筛选逻辑缺陷 🚨
+   - 所有区域内容相同，未使用隐藏软件筛选器信息
+
+#### 🚨 重要发现 (2025-08-15)
+**RegionFilterStrategy区域筛选逻辑缺陷**：
+- API Management等页面包含隐藏的软件筛选器(`style="display:none"`)
+- 隐藏筛选器的`value="API Management"`应作为soft-category.json的`os`参数
+- 当前RegionProcessor未集成FilterDetector信息，导致筛选失效
+- 需要修复RegionProcessor与FilterDetector的信息传递机制
+
+#### 🎯 下一步优先任务 (紧急修复)
+1. **修复RegionFilterStrategy区域筛选逻辑** - 集成隐藏软件筛选器信息
+2. **重新验证RegionFilter策略** - 确保不同区域生成真正不同的内容  
+3. **Phase 2.3: ComplexContentStrategy验证** - 在修复后继续
+4. **Complete Phase 2验证** - 完成策略层实现验证
 
 ### 技术验证成果
 ✅ **FilterDetector**: 准确检测三种页面类型的筛选器状态  
