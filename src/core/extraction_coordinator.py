@@ -59,7 +59,7 @@ class ExtractionCoordinator:
             url: 源URL
             
         Returns:
-            提取的CMS内容数据
+            提取的内容数据
             
         Raises:
             Exception: 提取过程中的各种异常
@@ -261,7 +261,8 @@ class ExtractionCoordinator:
         logger.info(f"执行提取策略: {strategy.__class__.__name__}")
 
         try:
-            extracted_data = strategy.extract(soup, url)
+            extracted_data = strategy.extract_flexible_content(soup, url)
+
             logger.info("策略提取完成")
             return extracted_data
         except Exception as e:

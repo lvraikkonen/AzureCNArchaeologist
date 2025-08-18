@@ -92,6 +92,47 @@ class EnhancedCMSExtractor:
             error_msg = f"提取过程失败: {str(e)}"
             logger.error(error_msg, exc_info=True)
             return self._create_error_result(error_msg, html_file_path, url)
+    
+    def extract_flexible_content(self, html_file_path: str, url: str = "") -> Dict[str, Any]:
+        """
+        提取flexible JSON格式的内容
+        
+        Args:
+            html_file_path: HTML文件路径
+            url: 源URL
+            
+        Returns:
+            flexible JSON格式的提取结果
+        """
+        logger.info("开始提取flexible JSON内容")
+        logger.info(f"源文件: {html_file_path}")
+
+        # 验证文件存在
+        if not os.path.exists(html_file_path):
+            error_msg = f"HTML文件不存在: {html_file_path}"
+            logger.error(error_msg)
+            return self._create_error_result(error_msg, html_file_path, url)
+
+        # 如果URL为空，尝试生成默认URL
+        if not url:
+            product_key = self._detect_product_key_from_path(html_file_path)
+            if product_key:
+                url = self._get_default_url(product_key)
+                logger.info(f"使用默认URL: {url}")
+
+        # 委托给协调器处理，指定flexible格式
+        try:
+            logger.info("委托给提取协调器处理（flexible格式）...")
+            result = self.extraction_coordinator.coordinate_extraction(html_file_path, url)
+            
+            # flexible格式不需要添加传统的extraction_metadata
+            logger.info("flexible内容提取完成")
+            return result
+            
+        except Exception as e:
+            error_msg = f"flexible提取过程失败: {str(e)}"
+            logger.error(error_msg, exc_info=True)
+            return self._create_error_result(error_msg, html_file_path, url)
 
     def _detect_product_key_from_path(self, html_file_path: str) -> Optional[str]:
         """

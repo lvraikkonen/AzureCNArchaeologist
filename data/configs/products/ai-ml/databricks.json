@@ -1,0 +1,69 @@
+{
+  "product_key": "databricks",
+  "product_name": "Azure Databricks",
+  "product_name_en": "Azure Databricks",
+  "category": "ai-ml",
+  "azure_url": "https://www.azure.cn/pricing/details/databricks/index.html",
+  
+  "file_mapping": {
+    "html_file": "data/prod-html/ai/databricks.html",
+    "current_html_file": "data/current_prod_html/ai/databricks.html"
+  },
+  
+  "extraction_config": {
+    "complexity": "complex",
+    "page_type": "complex_multi_filter",
+    "has_filters": false,
+    "has_tabs": true,
+    "has_regions": true,
+    "filter_types": ["region", "category"],
+    "expected_content_groups": 21,
+    "priority_features": [
+      "Title",
+      "BannerContent", 
+      "DescriptionContent",
+      "PricingTables",
+      "QaContent"
+    ],
+    "content_selectors": {
+      "main_container": ".technical-azure-selector",
+      "pricing_sections": ".pricing-page-section",
+      "filter_containers": [".dropdown-container.software-kind-container", ".dropdown-container.region-container"],
+      "tab_container": ".os-tab-nav.category-tabs",
+      "content_groups": ".tab-panel[id^='tabContent']"
+    }
+  },
+  
+  "region_filter_config": {
+    "enabled": true,
+    "filter_type": "complex_multi_region",
+    "regions": [
+      {"key": "china-north-2", "display": "中国北部 2"}, 
+      {"key": "china-north-3", "display": "中国北部 3"},
+      {"key": "china-east-2", "display": "中国东部 2"}
+    ],
+    "default_region": "china-north-3"
+  },
+  
+  "output_config": {
+    "formats": ["json", "flexible", "html", "rag"],
+    "default_format": "flexible",
+    "quality_threshold": 0.85,
+    "include_validation": true,
+    "enable_metadata": true
+  },
+  
+  "validation_rules": {
+    "required_sections": ["Title", "BannerContent", "DescriptionContent"],
+    "min_content_length": 100,
+    "max_processing_time": 60,
+    "content_quality_checks": ["html_structure", "text_content", "filter_mapping"]
+  },
+  
+  "strategy_overrides": {
+    "force_strategy": "complex",
+    "enable_debug": false,
+    "custom_processors": [],
+    "fallback_strategy": "simple_static"
+  }
+}

@@ -58,60 +58,6 @@ class SimpleStaticStrategy(BaseStrategy):
         
         logger.info(f"📄 初始化简单静态策略: {self._get_product_key()}")
 
-    def extract(self, soup: BeautifulSoup, url: str = "") -> Dict[str, Any]:
-        """
-        执行传统CMS格式提取逻辑（向后兼容）
-        
-        Args:
-            soup: BeautifulSoup解析的HTML对象
-            url: 源URL
-            
-        Returns:
-            传统CMS格式的提取数据
-        """
-        logger.info("🚀 开始简单静态策略提取（传统CMS格式）...")
-        
-        # 1. 使用ContentExtractor提取基础元数据
-        data = self.content_extractor.extract_base_metadata(soup, url, self.html_file_path)
-        
-        # 2. 使用SectionExtractor提取sections内容
-        sections = self.section_extractor.extract_all_sections(soup)
-        
-        # 转换sections为传统CMS格式
-        for section in sections:
-            section_type = section.get("sectionType", "")
-            content = section.get("content", "")
-            
-            if section_type == "Banner":
-                data["BannerContent"] = content
-            elif section_type == "Description":
-                data["DescriptionContent"] = content
-            elif section_type == "Qa":
-                data["QaContent"] = content
-        
-        # 3. 提取主要内容作为NoRegionContent
-        data["HasRegion"] = False
-        data["NoRegionContent"] = self._extract_main_content(soup)
-        
-        # 4. 设置传统CMS字段
-        data["PricingTables"] = []
-        data["ServiceTiers"] = []
-        data["RegionalContent"] = {}
-        
-        # 清空区域内容字段（简单页面不需要）
-        region_fields = [
-            "NorthChinaContent", "NorthChina2Content", "NorthChina3Content",
-            "EastChinaContent", "EastChina2Content", "EastChina3Content"
-        ]
-        for field in region_fields:
-            data[field] = ""
-        
-        # 5. 验证提取结果
-        data = self.extraction_validator.validate_cms_extraction(data, self.product_config)
-        
-        logger.info("✅ 简单静态策略提取完成（传统CMS格式）")
-        return data
-
     def extract_flexible_content(self, soup: BeautifulSoup, url: str = "") -> Dict[str, Any]:
         """
         执行flexible JSON格式提取逻辑

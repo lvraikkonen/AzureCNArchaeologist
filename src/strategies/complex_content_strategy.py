@@ -17,6 +17,7 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.append(str(project_root))
 
 from src.strategies.base_strategy import BaseStrategy
+from src.core.region_processor import RegionProcessor
 from src.utils.content.content_extractor import ContentExtractor
 from src.utils.content.section_extractor import SectionExtractor
 from src.utils.content.flexible_builder import FlexibleBuilder
@@ -61,73 +62,10 @@ class ComplexContentStrategy(BaseStrategy):
         self.filter_detector = FilterDetector()
         self.tab_detector = TabDetector()
         
+        # 初始化区域处理器（用于表格筛选）
+        self.region_processor = RegionProcessor()
+        
         logger.info(f"🔧 初始化复杂内容策略: {self._get_product_key()}")
-
-    def extract(self, soup: BeautifulSoup, url: str = "") -> Dict[str, Any]:
-        """
-        执行传统CMS格式提取逻辑（向后兼容）
-        
-        Args:
-            soup: BeautifulSoup解析的HTML对象
-            url: 源URL
-            
-        Returns:
-            传统CMS格式的提取数据
-        """
-        logger.info("🔧 开始复杂内容策略提取（传统CMS格式）...")
-        
-        # 1. 使用ContentExtractor提取基础元数据
-        data = self.content_extractor.extract_base_metadata(soup, url, self.html_file_path)
-        
-        # 2. 使用SectionExtractor提取sections内容
-        sections = self.section_extractor.extract_all_sections(soup)
-        
-        # 转换sections为传统CMS格式
-        for section in sections:
-            section_type = section.get("sectionType", "")
-            content = section.get("content", "")
-            
-            if section_type == "Banner":
-                data["BannerContent"] = content
-            elif section_type == "Description":
-                data["DescriptionContent"] = content
-            elif section_type == "Qa":
-                data["QaContent"] = content
-        
-        # 3. 分析筛选器和tab结构
-        filter_analysis = self.filter_detector.detect_filters(soup)
-        tab_analysis = self.tab_detector.detect_tabs(soup)
-        
-        # 4. 提取复杂内容（简化处理，主要内容放在NoRegionContent中）
-        data["HasRegion"] = False  # 传统CMS格式简化处理
-        data["NoRegionContent"] = self._extract_complex_main_content(soup, filter_analysis, tab_analysis)
-        
-        # 5. 设置传统CMS字段
-        data["PricingTables"] = []
-        data["ServiceTiers"] = []
-        data["RegionalContent"] = {}
-        
-        # 清空区域内容字段
-        region_fields = [
-            "NorthChinaContent", "NorthChina2Content", "NorthChina3Content",
-            "EastChinaContent", "EastChina2Content", "EastChina3Content"
-        ]
-        for field in region_fields:
-            data[field] = ""
-        
-        # 6. 添加复杂性分析元数据
-        data["complexity_analysis"] = {
-            "has_filters": filter_analysis.get("has_region", False) or filter_analysis.get("has_software", False),
-            "has_tabs": tab_analysis.get("has_tabs", False),
-            "filter_count": len(filter_analysis.get("region_options", [])) + len(filter_analysis.get("software_options", [])),
-            "tab_count": tab_analysis.get("total_category_tabs", 0)
-        }
-        
-        # 7. 验证提取结果
-        data = self.extraction_validator.validate_cms_extraction(data, self.product_config)
-        
-        logger.info("✅ 复杂内容策略提取完成（传统CMS格式）")
-        return data
 
     def extract_flexible_content(self, soup: BeautifulSoup, url: str = "") -> Dict[str, Any]:
         """
@@ -272,7 +210,7 @@ class ComplexContentStrategy(BaseStrategy):
                                        filter_analysis: Dict[str, Any],
                                        tab_analysis: Dict[str, Any]) -> Dict[str, str]:
         """
-        提取复杂页面的内容映射关系
+        提取复杂页面的内容映射关系（带区域筛选）
         
         Args:
             soup: BeautifulSoup对象
@@ -282,11 +220,23 @@ class ComplexContentStrategy(BaseStrategy):
         Returns:
             内容映射字典
         """
-        logger.info("🗺️ 提取复杂页面内容映射...")
+        logger.info("🗺️ 提取复杂页面内容映射（支持区域筛选）...")
         
         content_mapping = {}
         
         try:
+            # 获取用于区域筛选的OS名称
+            os_name = self.region_processor.get_os_name_for_region_filtering(
+                product_config=self.product_config,
+                filter_analysis=filter_analysis,
+                html_file_path=self.html_file_path
+            )
+            
+            if not os_name:
+                logger.warning("⚠ 无法获取有效的OS名称，将跳过区域表格筛选")
+            else:
+                logger.info(f"🎯 使用OS名称 '{os_name}' 进行区域表格筛选")
+            
             # 获取region选项
             region_options = filter_analysis.get("region_options", [])
             software_options = filter_analysis.get("software_options", [])
@@ -311,14 +261,14 @@ class ComplexContentStrategy(BaseStrategy):
                                 tab_id = tab.get("href", "").replace("#", "")
                                 content_key = f"{region_id}_{software_id}_{tab_id}"
                                 
-                                # 尝试找到对应的内容
-                                content = self._find_content_by_mapping(soup, region_id, software_id, tab_id)
+                                # 尝试找到对应的内容并应用区域筛选
+                                content = self._find_content_by_mapping(soup, region_id, software_id, tab_id, os_name)
                                 if content:
                                     content_mapping[content_key] = content
                         else:
                             # 只有region + software - 二维映射
                             content_key = f"{region_id}_{software_id}"
-                            content = self._find_content_by_mapping(soup, region_id, software_id)
+                            content = self._find_content_by_mapping(soup, region_id, software_id, None, os_name)
                             if content:
                                 content_mapping[content_key] = content
                 elif category_tabs:
@@ -326,13 +276,13 @@ class ComplexContentStrategy(BaseStrategy):
                     for tab in category_tabs:
                         tab_id = tab.get("href", "").replace("#", "")
                         content_key = f"{region_id}_{tab_id}"
-                        content = self._find_content_by_mapping(soup, region_id, None, tab_id)
+                        content = self._find_content_by_mapping(soup, region_id, None, tab_id, os_name)
                         if content:
                             content_mapping[content_key] = content
                 else:
                     # 只有region - 一维映射
                     content_key = region_id
-                    content = self._find_content_by_mapping(soup, region_id)
+                    content = self._find_content_by_mapping(soup, region_id, None, None, os_name)
                     if content:
                         content_mapping[content_key] = content
             
@@ -346,42 +296,66 @@ class ComplexContentStrategy(BaseStrategy):
     def _find_content_by_mapping(self, soup: BeautifulSoup, 
                                region_id: str = None,
                                software_id: str = None, 
-                               tab_id: str = None) -> str:
+                               tab_id: str = None,
+                               os_name: str = None) -> str:
         """
-        根据映射关系查找对应内容
+        根据映射关系查找对应内容（支持区域表格筛选）
         
         Args:
             soup: BeautifulSoup对象
             region_id: 区域ID
             software_id: 软件ID
             tab_id: Tab ID
+            os_name: OS名称，用于区域筛选
             
         Returns:
-            找到的内容HTML字符串
+            找到的内容HTML字符串（经过区域筛选）
         """
         try:
+            # 首先从原始soup中找到基础内容
+            base_content = None
+            
             # 1. 如果有tab_id，优先查找tab对应内容
             if tab_id:
-                tab_content = soup.find('div', id=tab_id)
-                if tab_content:
-                    return str(tab_content)
+                base_content = soup.find('div', id=tab_id)
+                if base_content:
+                    logger.info(f"✓ 找到tab内容: {tab_id}")
             
             # 2. 如果有software_id，查找对应的tabContent分组
-            if software_id:
-                # 软件筛选器通常对应tabContent分组
+            if not base_content and software_id:
                 content_groups = soup.find_all('div', class_='tab-panel')
                 for group in content_groups:
                     group_id = group.get('id', '')
                     if 'tabContent' in group_id:
-                        # 这是一个内容分组，返回其内容
-                        return str(group)
+                        base_content = group
+                        logger.info(f"✓ 找到软件内容组: {group_id}")
+                        break
             
             # 3. 默认返回主要内容区域
-            main_container = soup.find('div', class_='technical-azure-selector')
-            if main_container:
-                return str(main_container)
+            if not base_content:
+                base_content = soup.find('div', class_='technical-azure-selector')
+                if base_content:
+                    logger.info("✓ 使用主要内容区域")
             
-            return ""
+            if not base_content:
+                logger.warning("⚠ 未找到任何基础内容")
+                return ""
+            
+            # 应用区域筛选（如果有region_id和os_name）
+            if region_id and os_name:
+                logger.info(f"🔍 对内容应用区域筛选: region={region_id}, os={os_name}")
+                # 创建包含找到内容的临时soup
+                temp_soup = BeautifulSoup(str(base_content), 'html.parser')
+                # 应用区域筛选
+                filtered_soup = self.region_processor.apply_region_filtering(temp_soup, region_id, os_name)
+                return str(filtered_soup)
+            else:
+                # 没有区域信息，直接返回原始内容
+                if not region_id:
+                    logger.info("ℹ 无区域ID，跳过区域筛选")
+                if not os_name:
+                    logger.info("ℹ 无OS名称，跳过区域筛选")
+                return str(base_content)
             
         except Exception as e:
             logger.info(f"⚠ 内容查找失败: {e}")

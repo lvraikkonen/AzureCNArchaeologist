@@ -21,6 +21,7 @@ from src.core.data_models import StrategyType
 # Import implemented strategies
 from .region_filter_strategy import RegionFilterStrategy
 from .simple_static_strategy import SimpleStaticStrategy
+from .complex_content_strategy import ComplexContentStrategy
 
 from src.core.logging import get_logger
 
@@ -41,10 +42,17 @@ try:
 except Exception as e:
     logger.error(f"⚠️ SimpleStaticStrategy 注册失败: {e}")
 
+try:
+    StrategyFactory.register_strategy(StrategyType.COMPLEX, ComplexContentStrategy)
+    logger.info("✅ ComplexContentStrategy 已注册")
+except Exception as e:
+    logger.error(f"⚠️ ComplexContentStrategy 注册失败: {e}")
+
 # Strategy registry for tracking (using enum as key for consistency)
 STRATEGY_REGISTRY = {
     StrategyType.REGION_FILTER: RegionFilterStrategy,
     StrategyType.SIMPLE_STATIC: SimpleStaticStrategy,
+    StrategyType.COMPLEX: ComplexContentStrategy,
     # More strategies will be added as they are implemented
 }
 
@@ -56,5 +64,6 @@ __all__ = [
     'StrategyFactory', 
     'RegionFilterStrategy',
     'SimpleStaticStrategy',
+    'ComplexContentStrategy',
     'STRATEGY_REGISTRY'
 ]

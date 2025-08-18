@@ -55,7 +55,7 @@ class SectionExtractor:
         description_content = self.extract_description(soup)
         if description_content:
             sections.append({
-                "sectionType": "Description",
+                "sectionType": "ProductDescription",
                 "content": description_content
             })
         

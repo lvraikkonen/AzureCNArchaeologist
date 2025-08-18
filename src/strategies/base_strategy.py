@@ -36,19 +36,19 @@ class BaseStrategy(ABC):
         self.flexible_builder = None
         self.extraction_validator = None
 
-    @abstractmethod
-    def extract(self, soup: BeautifulSoup, url: str = "") -> Dict[str, Any]:
-        """
-        执行传统CMS格式提取逻辑（向后兼容）
-        
-        Args:
-            soup: BeautifulSoup解析的HTML对象
-            url: 源URL
-            
-        Returns:
-            传统CMS格式的提取数据
-        """
-        pass
+    # @abstractmethod
+    # def extract(self, soup: BeautifulSoup, url: str = "") -> Dict[str, Any]:
+    #     """
+    #     执行传统CMS格式提取逻辑（向后兼容）
+    #
+    #     Args:
+    #         soup: BeautifulSoup解析的HTML对象
+    #         url: 源URL
+    #
+    #     Returns:
+    #         传统CMS格式的提取数据
+    #     """
+    #     pass
 
     @abstractmethod
     def extract_flexible_content(self, soup: BeautifulSoup, url: str = "") -> Dict[str, Any]:

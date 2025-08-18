@@ -97,9 +97,9 @@ def extract_command(args):
             
             # 根据格式选择合适的导出器
             if args.format == 'json':
-                from src.exporters.json_exporter import JSONExporter
-                exporter = JSONExporter(args.output_dir)
-                output_path = exporter.export_enhanced_cms_data(data, args.product)
+                from src.exporters.flexible_content_exporter import FlexibleContentExporter
+                exporter = FlexibleContentExporter(args.output_dir)
+                output_path = exporter.export_flexible_content(data, args.product)
             if args.format == 'html':
                 from src.exporters.html_exporter import HTMLExporter
                 exporter = HTMLExporter(args.output_dir)

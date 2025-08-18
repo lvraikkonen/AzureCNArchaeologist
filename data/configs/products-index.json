@@ -1,7 +1,7 @@
 {
   "version": "2.0",
   "last_updated": "2025-08-11",
-  "total_products": 19,
+  "total_products": 21,
   "future_capacity": 120,
 
   "categories": {
@@ -17,9 +17,9 @@
       "large_html_products": []
     },
     "ai-ml": {
-      "count": 2,
+      "count": 3,
       "config_path": "products/ai-ml/",
-      "products": ["anomaly-detector", "search"]
+      "products": ["anomaly-detector", "search", "databricks"]
     },
     "integration": {
       "count": 3,
@@ -37,9 +37,9 @@
       "products": ["storage-files", "data-lake-storage"]
     },
     "compute": {
-      "count": 0,
+      "count": 1,
       "config_path": "products/compute/",
-      "products": [],
+      "products": ["cloud-services"],
       "large_html_products": []
     }
   },

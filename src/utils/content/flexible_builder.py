@@ -16,6 +16,7 @@ project_root = Path(__file__).parent.parent.parent.parent
 sys.path.append(str(project_root))
 
 from src.core.logging import get_logger
+from src.utils.html.cleaner import clean_html_content
 
 logger = get_logger(__name__)
 
@@ -185,7 +186,7 @@ class FlexibleBuilder:
                                         {"filterKey": "software", "matchValues": [software_id]},
                                         {"filterKey": "category", "matchValues": [tab_id]}
                                     ]),
-                                    "content": content_mapping[content_key]
+                                    "content": clean_html_content(content_mapping[content_key])
                                 }
                                 content_groups.append(content_group)
                     else:
@@ -200,7 +201,7 @@ class FlexibleBuilder:
                                     {"filterKey": "region", "matchValues": [region_id]},
                                     {"filterKey": "software", "matchValues": [software_id]}
                                 ]),
-                                "content": content_mapping[content_key]
+                                "content": clean_html_content(content_mapping[content_key])
                             }
                             content_groups.append(content_group)
             elif category_tabs:
@@ -219,7 +220,7 @@ class FlexibleBuilder:
                                 {"filterKey": "region", "matchValues": [region_id]},
                                 {"filterKey": "category", "matchValues": [tab_id]}
                             ]),
-                            "content": content_mapping[content_key]
+                            "content": clean_html_content(content_mapping[content_key])
                         }
                         content_groups.append(content_group)
         
