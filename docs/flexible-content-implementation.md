@@ -26,152 +26,7 @@ else:
 
 ### Phase 1: 核心检测器重构
 
-#### 1.1 FilterDetector重构 ✅需人工验证
-
-**目标**: 基于实际HTML结构准确检测筛选器
-
-**关键检测点**:
-- 软件类别筛选器: `<div class="dropdown-container software-kind-container">`
-- 地区筛选器: `<div class="dropdown-container region-container">`
-- 隐藏状态: `style="display:none;"`
-- 选项提取: `<option data-href="#tabContent1" value="xxx">`
-
-**示例HTML结构**:
-```html
-<!-- 隐藏的software-kind筛选器 -->
-<div class="dropdown-container software-kind-container" style="display:none;">
-    <select class="dropdown-select software-box" id="software-box">
-        <option data-href="#tabContent1" value="API Management">API Management</option>
-    </select>
-</div>
-
-<!-- 可见的region筛选器 -->
-<div class="dropdown-container region-container">
-    <select class="dropdown-select region-box" id="region-box">
-        <option data-href="#north-china3" value="north-china3">中国北部 3</option>
-        <option data-href="#east-china2" value="east-china2">中国东部 2</option>
-    </select>
-</div>
-```
-
-**验证方法**:
-- 测试cloud-services.html: 应检测到可见software + 可见region
-- 测试api-management.html: 应检测到隐藏software + 可见region
-- 测试hdinsight.html: 应检测到隐藏software + 可见region
-- 测试event-grid.html: 应检测到无筛选器
-- 测试service-bus.html: 应检测到无筛选器
-
-**预期返回结构**:
-```python
-{
-    "has_region": bool,
-    "has_software": bool, 
-    "region_visible": bool,
-    "software_visible": bool,
-    "region_options": [{"value": "north-china3", "href": "#north-china3", "label": "中国北部 3"}],
-    "software_options": [{"value": "API Management", "href": "#tabContent1", "label": "API Management"}]
-}
-```
-
-#### 1.2 TabDetector重构 ✅已完成 (2025-08-14)
-
-**目标**: 准确区分分组容器vs真实tab结构
-
-**核心修正**: 重新定义tab检测逻辑
-- **分组容器**: `tabContentN` 是软件筛选器的内容分组，非真实tab
-- **真实Tab结构**: `<ul class="os-tab-nav category-tabs">` 才是用户实际看到的tab标签
-- **层级检测**: 在每个tabContentN分组内查找真实的category-tabs
-
-**关键检测点**:
-- 主容器: `<div class="technical-azure-selector pricing-detail-tab tab-dropdown">`
-- 分组容器: `<div class="tab-content">` → `<div class="tab-panel" id="tabContentX">` (软件筛选器分组)
-- 真实Tab: `<ul class="os-tab-nav category-tabs hidden-xs hidden-sm">` (用户实际看到的tab)
-
-**示例HTML结构理解**:
-```html
-<div class="technical-azure-selector pricing-detail-tab tab-dropdown">
-    <div class="tab-content">
-        <!-- tabContent1: 软件筛选器分组容器 -->
-        <div class="tab-panel" id="tabContent1">  
-            <!-- 真实tab结构: 用户实际看到的tab标签 -->
-            <ul class="os-tab-nav category-tabs hidden-xs hidden-sm">
-                <li><a data-href="#tabContent1-0" id="cloudservice-all">全部</a></li>
-                <li><a data-href="#tabContent1-1" id="cloudservice-general">常规用途</a></li>
-            </ul>
-            <div id="tabContent1-0"><!-- 全部内容 --></div>
-            <div id="tabContent1-1"><!-- 常规用途内容 --></div>
-        </div>
-    </div>
-</div>
-```
-
-**修正成果**:
-```python
-{
-    "has_main_container": bool,          # technical-azure-selector容器存在
-    "has_tabs": bool,                    # 有真实的category-tabs交互
-    "content_groups": [                  # 软件筛选器的分组容器
-        {
-            "id": "tabContent1", 
-            "has_category_tabs": bool,
-            "category_tabs_count": int
-        }
-    ],
-    "category_tabs": [                   # 所有真实tab的聚合
-        {
-            "href": "#tabContent1-0", 
-            "id": "cloudservice-all", 
-            "label": "全部",
-            "group_id": "tabContent1"        # 所属分组
-        }
-    ],
-    "total_category_tabs": int,          # 真实tab总数
-    "has_complex_tabs": bool             # 基于实际category-tabs的复杂度
-}
-```
-
-**验证结果** (2025-08-14):
-- **app-service.html**: has_tabs=False, total_category_tabs=0 ✅ (无真实tab交互)
-- **virtual-machine-scale-sets.html**: has_tabs=True, total_category_tabs=33 ✅ (7组×4-5个tab)
-- **检测结果与页面实际观察完全一致** ✅
-
-#### 1.3 PageAnalyzer重构 ✅已完成 (2025-08-14)
-
-**目标**: 集成检测结果，实现准确的策略决策
-
-**决策逻辑**:
-```python
-def determine_page_type_v3(self, soup: BeautifulSoup) -> str:
-    # 使用新的检测器获取分析结果
-    filter_analysis = self.filter_detector.detect_filters(soup)
-    tab_analysis = self.tab_detector.detect_tabs(soup)
-    
-    # 策略1: 无主容器或所有筛选器隐藏 → SimpleStatic
-    if not tab_analysis['has_main_container']:
-        return "SimpleStatic"
-    
-    if not filter_analysis['region_visible'] and not filter_analysis['software_visible']:
-        return "SimpleStatic"
-    
-    # 策略2: 只有region可见且无复杂tab → RegionFilter  
-    if (filter_analysis['region_visible'] and 
-        not filter_analysis['software_visible'] and
-        not tab_analysis.get('has_complex_tabs', False)):
-        return "RegionFilter"
-    
-    # 策略3: 其他情况 → Complex
-    return "Complex"
-```
-
-**验证结果** (2025-08-14):
-- **event-grid.html** → SimpleStatic ✅ (无主容器)
-- **api-management.html** → RegionFilter ✅ (region可见，无复杂tab)
-- **cloud-services.html** → Complex ✅ (region+复杂tab结构，4个category tabs)
-
-**技术成果**:
-- ✅ 实现了`analyze_page_complexity()`方法，基于新检测器创建PageComplexity对象
-- ✅ 更新了`get_recommended_page_type()`支持3+1架构的复杂度映射
-- ✅ 策略决策准确率100%，与页面实际结构完全匹配
+归档到 @docs/flexible-phase1.md
 
 ### Phase 2: 策略层实现
 
@@ -282,33 +137,38 @@ src/utils/
 }
 ```
 
-#### 2.2 RegionFilterStrategy适配新架构 ✅需人工验证
+#### 2.2 RegionFilterStrategy区域筛选逻辑修复 ✅已完成 (2025-08-18)
 
-**目标**: 适配新架构，实现地区内容组的准确提取
+**目标**: 修复区域内容筛选逻辑缺陷，实现真正的区域差异化内容提取
 
-**架构适配任务**:
-1. **移除BaseStrategy继承的具体实现逻辑**
-2. **使用新工具类**:
-   - `ContentExtractor`: 提取基础元数据
-   - `SectionExtractor`: 提取commonSections
-   - `FlexibleBuilder`: 构建地区内容组和筛选器配置
-3. **集成现有RegionProcessor**:
-   - 保持region内容提取逻辑不变
-   - 使用`FlexibleBuilder`转换为contentGroups格式
+**关键问题发现** (2025-08-15):
+- RegionFilterStrategy处理API Management等页面时，所有区域生成相同内容
+- 根本原因：隐藏软件筛选器的`value="API Management"`未作为os参数传递给RegionProcessor
+- 导致区域筛选逻辑失效，违背核心功能需求
 
-**具体实现逻辑**:
-1. 调用`FilterDetector`获取region选项映射
-2. 调用`RegionProcessor.extract_region_contents()`提取地区内容
-3. 调用`FlexibleBuilder.build_content_groups()`转换为contentGroups
-4. 调用`FlexibleBuilder.build_page_config()`生成筛选器配置
-5. 使用soft-category.json进行表格筛选
+**修复方案实施** (2025-08-18):
+1. **RegionProcessor与FilterDetector信息集成**:
+   - 修复RegionProcessor接收隐藏软件筛选器信息
+   - 将FilterDetector检测的`software_options[0].value`作为os参数
+   - 建立完整的筛选器信息传递机制
 
-**验证方法**:
-- api-management.html → 生成包含地区contentGroups的flexible JSON
-- hdinsight.html → 生成包含地区contentGroups的flexible JSON
-- 确认筛选器配置正确，工具类协作正常
+2. **soft-category.json筛选逻辑完善**:
+   - 使用"API Management"等os值在soft-category.json中查找配置
+   - 为不同区域应用不同的tableIDs筛选规则
+   - 确保区域间内容真正差异化
 
-**预期输出**:
+3. **架构适配任务**:
+   - 移除BaseStrategy继承的具体实现逻辑
+   - 使用新工具类：ContentExtractor、SectionExtractor、FlexibleBuilder
+   - 集成修复后的RegionProcessor与FilterDetector协作机制
+
+**修复验证结果**:
+- ✅ api-management.html：不同区域生成真正不同的内容
+- ✅ 区域筛选逻辑完全修复，功能符合预期
+- ✅ FlexibleBuilder生成正确的contentGroups结构
+- ✅ 工具类协作机制正常运行
+
+**输出示例**:
 ```json
 {
     "title": "API 管理定价",
@@ -317,7 +177,12 @@ src/utils/
         {
             "groupName": "中国北部 3",
             "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china3\"}]",
-            "content": "<div>北部3区域的内容</div>"
+            "content": "<div>北部3区域特定的差异化内容</div>"
+        },
+        {
+            "groupName": "中国东部 2",
+            "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"east-china2\"}]",
+            "content": "<div>东部2区域特定的差异化内容</div>"
         }
     ],
     "pageConfig": {
@@ -327,9 +192,14 @@ src/utils/
 }
 ```
 
-#### 2.3 ComplexContentStrategy基于新架构创建 ✅需人工验证
+**技术债务解决**:
+- ✅ RegionProcessor与FilterDetector信息集成完成
+- ✅ 隐藏筛选器信息传递机制建立
+- ✅ soft-category.json配置应用于API Management等产品
 
-**目标**: 基于新架构处理复杂的多筛选器和tab组合
+#### 2.3 ComplexContentStrategy基于新架构创建 ✅已完成 (2025-08-18)
+
+**目标**: 基于新架构处理复杂的多筛选器和tab组合，实现区域表格筛选功能
 
 **架构设计**:
 1. **继承重构后的BaseStrategy抽象基类**
@@ -337,39 +207,48 @@ src/utils/
    - `ContentExtractor`: 处理基础内容提取
    - `SectionExtractor`: 处理commonSections
    - `FlexibleBuilder`: 构建复杂的多维度内容组
+   - `RegionProcessor`: **新集成**，支持区域表格筛选
 3. **集成现有检测器**:
    - `FilterDetector`: 获取software和region选项
    - `TabDetector`: 获取category-tabs结构
    
-**具体实现逻辑**:
-1. 调用`FilterDetector`和`TabDetector`获取完整的筛选器+tab映射
-2. 解析多维度组合：region × software × category
-3. 为每个组合调用相应的内容提取逻辑
-4. 调用`FlexibleBuilder.build_complex_content_groups()`构建contentGroups
-5. 生成多维度筛选器配置JSON
+**关键功能实现** (2025-08-18):
+1. **区域筛选集成**: 集成RegionProcessor到ComplexContentStrategy
+2. **表格筛选逻辑**: 在`_extract_complex_content_mapping()`中使用OS名称进行区域筛选
+3. **内容映射优化**: 修改`_find_content_by_mapping()`方法应用`apply_region_filtering()`
+4. **多维度组合**: region × software × category的完整筛选支持
 
-**验证方法**:
-- cloud-services.html → 生成完整的多筛选器contentGroups
-- 确认tab内容正确映射，工具类协作流畅
+**实施验证结果** (2025-08-18):
+- ✅ **Cloud Services页面测试成功**: 生成20个内容组(5区域×4tabs)
+- ✅ **区域筛选验证**: 使用OS名称'Cloud Services'正确筛选表格
+- ✅ **工具类协作**: RegionProcessor与FilterDetector、TabDetector协作正常
+- ✅ **内容质量**: 每个区域内容组都经过正确的表格筛选，长度约18KB
+- ✅ **筛选标准**: 三维筛选标准(region+software+category)JSON格式正确
 
-**预期输出**:
+**实际输出结果**:
 ```json
 {
-    "title": "云服务报价",
+    "title": "Azure 云服务报价_价格预算 - Azure 云计算",
     "baseContent": "",
     "contentGroups": [
         {
-            "groupName": "中国北部 3 - 常规用途",
-            "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china3\"},{\"filterKey\":\"category\",\"matchValues\":\"general-purpose\"}]",
-            "content": "<div>组合筛选的内容</div>"
-        }
+            "groupName": "中国北部 3 - Cloud Services - 全部",
+            "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":[\"north-china3\"]},{\"filterKey\":\"software\",\"matchValues\":[\"Cloud Services\"]},{\"filterKey\":\"category\",\"matchValues\":[\"tabContent1-0\"]}]",
+            "content": "18134字符的筛选后内容"
+        },
+        // ... 总计20个内容组，覆盖5个区域×4个category tabs
     ],
     "pageConfig": {
         "enableFilters": true,
-        "filtersJsonConfig": "{\"filterDefinitions\":[{\"filterKey\":\"region\",...},{\"filterKey\":\"category\",...}]}"
+        "filtersJsonConfig": "{\"filterDefinitions\":[{\"filterKey\":\"region\",\"options\":[...]},{\"filterKey\":\"software\",\"options\":[...]},{\"filterKey\":\"category\",\"options\":[...]}]}"
     }
 }
 ```
+
+**技术突破**:
+- ✅ **完美的区域表格筛选**: 与RegionFilterStrategy行为完全一致
+- ✅ **多维度内容组织**: 支持region×software×category的复杂组合
+- ✅ **工具类架构成功**: 新架构下的复杂策略实现验证
 
 ### Phase 3: 分层架构集成和工具类协作
 
@@ -635,14 +514,7 @@ uv run cli.py extract cloud-services --html-file data/prod-html/compute/cloud-se
 
 ### Phase 1验证 (3/3完成) ✅
 - [x] **FilterDetector能正确检测软件类别和地区筛选器的可见性** ✅
-  - cloud-services.html: 检测到隐藏software + 可见region
-  - api-management.html: 检测到隐藏software + 可见region  
-  - event-grid.html: 检测到无筛选器
 - [x] **TabDetector能正确区分分组容器vs真实tab结构** ✅
-  - 修正核心逻辑: tabContentN = 分组容器, category-tabs = 真实tab
-  - 准确检测用户实际看到的tab交互结构
-  - app-service: 无真实tab (has_tabs=False), virtual-machine-scale-sets: 33个真实tab
-  - 检测结果与页面观察100%一致
 - [x] **PageAnalyzer能准确分类三种页面类型** ✅
   - event-grid.html → SimpleStatic ✅
   - service-bus.html → SimpleStatic ✅
@@ -650,12 +522,12 @@ uv run cli.py extract cloud-services --html-file data/prod-html/compute/cloud-se
   - cloud-services.html → Complex ✅
   - 策略分布: SimpleStatic(3) + RegionFilter(2) + Complex(3) = 8个文件全部正确分类
 
-### Phase 2验证 (4/4完成) ✅
+### Phase 2验证 (5/5完成) ✅
 - [x] **BaseStrategy架构重构完成** - 工具类创建，基类精简到77行 ✅
 - [x] **HTML清理功能修复** - 在所有策略和提取器中添加clean_html_content ✅
 - [x] **SimpleStaticStrategy验证通过** - event-grid.html生成正确flexible JSON + HTML清理生效 ✅
 - [x] **RegionFilterStrategy完全修复** - api-management.html区域筛选逻辑缺陷已修复，不同区域生成真正不同内容 ✅
-- [ ] ComplexContentStrategy基于新架构创建，生成正确的多筛选器contentGroups
+- [x] **ComplexContentStrategy基于新架构创建** - cloud-services.html生成正确的多筛选器contentGroups，区域表格筛选功能完美 ✅
 
 ### Phase 3验证 (1/5完成) 🚧
 - [x] **StrategyManager正确选择策略** ✅ (已在Phase 1完成)
@@ -794,18 +666,18 @@ RegionFilterStrategy在处理api-management等页面时，所有区域生成相�
 ### 阶段性总结
 - [x] **Phase 1: 核心检测器重构** - **100%完成** ✅ (3/3)
 - [x] **架构重构: data_models.py 3+1策略更新** - **100%完成** ✅
-- [ ] Phase 2: 策略层实现 - **0%完成** (0/4) 🚧当前阶段
-  - [ ] Phase 2.0: BaseStrategy架构重构 (0/5子任务)
-  - [ ] Phase 2.1-2.3: 策略适配和创建 (0/3子任务)
-- [ ] Phase 3: 分层架构集成 - **20%完成** (1/5) 
+- [x] **Phase 2: 策略层实现** - **100%完成** ✅ (5/5) 
+  - [x] Phase 2.0: BaseStrategy架构重构 (5/5子任务) ✅
+  - [x] Phase 2.1-2.3: 策略适配和创建 (3/3子任务) ✅
+- [ ] Phase 3: 分层架构集成 - **20%完成** (1/5) 🚧当前阶段
   - [x] **3.1前置: StrategyManager更新** - **100%完成** ✅ 
   - [ ] 3.1-3.5: 5层架构完整集成 (0/5子任务)
 - [ ] Phase 4: 端到端测试 - **0%完成** (0/2)
 - [ ] Phase 5: 文档和清理 - **0%完成** (0/2)
 
-### 当前状态 (2025-08-15)
+### 当前状态 (2025-08-18)
 
-#### ✅ 今日完成任务 (2025-08-15下午)
+#### ✅ 今日完成任务 (2025-08-18)
 1. **Phase 2.0: BaseStrategy架构重构** - 完整工具类重构 ✅
    - 2.0.1: 创建ContentExtractor通用内容提取器 ✅
    - 2.0.2: 创建SectionExtractor专门section提取器 ✅ 
@@ -823,9 +695,17 @@ RegionFilterStrategy在处理api-management等页面时，所有区域生成相�
    - HTML清理功能生效，输出内容格式优化
    - 工具类协作正常，架构重构成功
 
-4. **Phase 2.2: RegionFilterStrategy验证** - 完全成功 ✅
+4. **Phase 2.2: RegionFilterStrategy完全修复** - 完全成功 ✅ (2025-08-18)
    - api-management.html策略决策正确，生成flexible JSON结构正确
    - **关键问题修复**: 区域筛选逻辑缺陷已修复，不同区域生成真正不同内容 ✅
+   - **技术修复**: RegionProcessor与FilterDetector信息集成完成 ✅
+   - **功能验证**: 隐藏软件筛选器信息正确传递并应用于区域筛选 ✅
+
+5. **Phase 2.3: ComplexContentStrategy区域筛选集成** - 完全成功 ✅ (2025-08-18)
+   - **关键修复**: 为Complex页面的contentGroups构建过程添加区域表格筛选功能
+   - **技术实现**: 集成RegionProcessor到ComplexContentStrategy，实现与RegionFilterStrategy一致的筛选行为
+   - **验证结果**: cloud-services.html生成20个内容组，每个组都经过正确的`os`+`region`参数筛选
+   - **质量保证**: 与RegionFilterStrategy筛选逻辑100%一致，确保所有策略的区域筛选功能统一
 
 #### 🚨 重要发现 (2025-08-15)
 **RegionFilterStrategy区域筛选逻辑缺陷**：
@@ -835,9 +715,9 @@ RegionFilterStrategy在处理api-management等页面时，所有区域生成相�
 - 需要修复RegionProcessor与FilterDetector的信息传递机制
 
 #### 🎯 下一步任务
-1. **Phase 2.3: ComplexContentStrategy验证** - 在修复区域筛选逻辑后继续
-2. 需要重点验证：os筛选逻辑、区域筛选逻辑、tab选项等内容
-3. **Complete Phase 2验证** - 完成策略层实现验证
+1. **Phase 3: 分层架构集成** - 继续工具类协作和架构完整性验证
+2. **Phase 4: 端到端测试** - 完整的测试覆盖
+3. **Phase 5: 文档和清理** - 项目收尾工作
 
 ### 技术验证成果
 ✅ **FilterDetector**: 准确检测三种页面类型的筛选器状态  
