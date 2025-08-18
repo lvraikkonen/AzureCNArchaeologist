@@ -24,12 +24,89 @@ class RegionProcessor:
         self.region_config = self._load_region_config()
         logger.info(f"✓ 区域处理器初始化完成")
         logger.info(f"📁 区域配置文件: {config_file}")
+    
+    def get_os_name_for_region_filtering(self, product_config: Dict[str, Any] = None, 
+                                       filter_analysis: Dict[str, Any] = None,
+                                       html_file_path: str = "") -> str:
+        """
+        获取用于区域筛选的产品OS名称，支持多优先级回退策略
+        
+        Args:
+            product_config: 产品配置字典
+            filter_analysis: FilterDetector分析结果
+            html_file_path: HTML文件路径（回退使用）
+            
+        Returns:
+            用于soft-category.json查找的OS名称
+        """
+        logger.info("🔍 获取区域筛选OS名称...")
+        
+        # 优先级1: 隐藏软件筛选器的value（最准确）
+        if (filter_analysis and 
+            filter_analysis.get('software_options') and 
+            len(filter_analysis['software_options']) > 0):
+            os_name = filter_analysis['software_options'][0].get('value', '').strip()
+            if os_name:
+                logger.info(f"✅ 使用软件筛选器OS名称: '{os_name}'")
+                return os_name
+        
+        # 优先级2: 产品配置的display_name（配置驱动）
+        if product_config and 'display_name' in product_config:
+            display_name = product_config['display_name'].strip()
+            if display_name:
+                logger.info(f"✅ 使用产品配置display_name: '{display_name}'")
+                return display_name
+        
+        # 优先级3: 从文件路径推断（最后回退）
+        if html_file_path:
+            filename = Path(html_file_path).stem
+            if filename.endswith('-index'):
+                product_key = filename[:-6]
+            else:
+                product_key = filename
+            
+            # 尝试通过推断获取OS名称
+            fallback_name = self._fallback_name_inference(product_key)
+            logger.warning(f"⚠ 使用回退推断OS名称: '{product_key}' → '{fallback_name}'")
+            return fallback_name
+        
+        logger.error("❌ 无法获取有效的OS名称，所有方法都失败")
+        return ""
+    
+    def _fallback_name_inference(self, product_key: str) -> str:
+        """
+        从产品键推断OS名称的回退逻辑
+        
+        Args:
+            product_key: 产品键（如"api-management"）
+            
+        Returns:
+            推断的OS名称（如"API Management"）
+        """
+        if not product_key:
+            return ""
+        
+        # 简单的反向推断逻辑
+        words = product_key.replace('-', ' ').replace('_', ' ').split()
+        
+        # 特殊大写规则
+        capitalized_words = []
+        for word in words:
+            if word.upper() in ['API', 'ML', 'AI', 'DB', 'BI', 'SSIS']:
+                capitalized_words.append(word.upper())
+            else:
+                capitalized_words.append(word.capitalize())
+        
+        inferred_name = ' '.join(capitalized_words)
+        logger.debug(f"名称推断: '{product_key}' → '{inferred_name}'")
+        return inferred_name
 
     def _load_region_config(self) -> Dict[str, Any]:
         """加载区域配置文件"""
         if os.path.exists(self.config_file):
             try:
-                with open(self.config_file, 'r', encoding='utf-8') as f:
+                # 处理UTF-8 BOM编码问题
+                with open(self.config_file, 'r', encoding='utf-8-sig') as f:
                     raw_config = json.load(f)
 
                 # 如果配置是数组格式，转换为字典格式
@@ -74,23 +151,39 @@ class RegionProcessor:
         return dict_config
 
     def _normalize_product_name(self, os_name: str) -> str:
-        """标准化产品名称为文件名格式"""
-        # 产品名称映射表
-        name_mapping = {
-            'API Management': 'api-management',
-            'Azure Database for MySQL': 'mysql',
-            'Azure Cosmos DB': 'cosmos-db',
-            'Storage Files': 'storage-files',
-            'Data Factory SSIS': 'ssis',
-            'Power BI Embedded': 'power-bi-embedded',
-            'Cognitive Services': 'cognitive-services',
-            'Anomaly Detector': 'anomaly-detector',
-            'Machine Learning Server': 'machine-learning-server',
-            'Azure_Data_Lake_Storage_Gen': 'storage_data-lake',
-            'databricks': 'databricks'
-        }
-
-        return name_mapping.get(os_name, os_name.lower().replace(' ', '-'))
+        """
+        标准化产品名称为文件名格式（动态推断，避免硬编码映射）
+        
+        Args:
+            os_name: 产品的完整名称（如"API Management"）
+            
+        Returns:
+            标准化的产品键（如"api-management"）
+        """
+        if not os_name:
+            return ""
+        
+        # 动态转换逻辑，避免硬编码映射
+        normalized = os_name.lower()
+        
+        # 移除常见前缀
+        prefixes_to_remove = ['azure ', 'microsoft ', 'azure database for ']
+        for prefix in prefixes_to_remove:
+            if normalized.startswith(prefix):
+                normalized = normalized[len(prefix):]
+                break
+        
+        # 处理特殊字符和空格
+        normalized = normalized.replace(' ', '-').replace('_', '-')
+        
+        # 移除多余的连字符
+        while '--' in normalized:
+            normalized = normalized.replace('--', '-')
+        
+        normalized = normalized.strip('-')
+        
+        logger.debug(f"产品名称标准化: '{os_name}' → '{normalized}'")
+        return normalized
 
     def detect_available_regions(self, soup: BeautifulSoup) -> List[str]:
         """动态检测HTML中实际存在的区域"""
@@ -140,30 +233,54 @@ class RegionProcessor:
 
         return detected_list
 
-    def extract_region_contents(self, soup: BeautifulSoup, html_file_path: str) -> Dict[str, Any]:
-        """提取各区域的内容 - 保持完整HTML格式"""
-        print("🌏 提取区域内容...")
+    def extract_region_contents(self, soup: BeautifulSoup, html_file_path: str, 
+                              filter_analysis: Dict[str, Any] = None,
+                              product_config: Dict[str, Any] = None) -> Dict[str, Any]:
+        """
+        提取各区域的内容 - 保持完整HTML格式，支持动态OS名称解析
+        
+        Args:
+            soup: BeautifulSoup对象
+            html_file_path: HTML文件路径
+            filter_analysis: FilterDetector分析结果（包含隐藏软件筛选器信息）
+            product_config: 产品配置字典
+            
+        Returns:
+            区域内容映射字典
+        """
+        logger.info("🌏 提取区域内容（增强版，支持动态OS解析）...")
         
         region_contents = {}
         
-        # 获取文件名用于区域配置查询
-        filename = Path(html_file_path).stem
+        # 获取用于区域筛选的OS名称（支持多优先级回退）
+        os_name = self.get_os_name_for_region_filtering(
+            product_config=product_config,
+            filter_analysis=filter_analysis,
+            html_file_path=html_file_path
+        )
+        
+        if not os_name:
+            logger.warning("⚠ 无法获取有效的OS名称，跳过区域筛选")
+            region_contents['global'] = self._extract_global_content(soup)
+            return region_contents
         
         # 检测可用区域
         available_regions = self.detect_available_regions(soup)
         
         if not available_regions:
-            print("  ℹ 未检测到具体区域，使用全局内容")
+            logger.info("ℹ 未检测到具体区域，使用全局内容")
             region_contents['global'] = self._extract_global_content(soup)
             return region_contents
+        
+        logger.info(f"🎯 使用OS名称 '{os_name}' 进行区域筛选，检测到 {len(available_regions)} 个区域")
         
         # 为每个区域提取内容
         for region_id in available_regions:
             logger.info(f"处理区域: {region_id}")
 
             try:
-                # 应用区域筛选
-                region_soup = self.apply_region_filtering(soup, region_id, filename)
+                # 应用区域筛选（使用动态OS名称）
+                region_soup = self.apply_region_filtering(soup, region_id, os_name)
 
                 # 提取完整的HTML内容而不是分解的结构
                 region_html = self._extract_region_html_content(region_soup, region_id)
@@ -174,29 +291,83 @@ class RegionProcessor:
                 logger.warning(f"区域 {region_id} 内容提取失败: {e}")
                 continue
 
-        logger.info(f"成功提取 {len(region_contents)} 个区域的内容")
+        logger.info(f"✅ 成功提取 {len(region_contents)} 个区域的内容")
         return region_contents
 
     def apply_region_filtering(self, soup: BeautifulSoup, region_id: str,
-                             filename: str = "") -> BeautifulSoup:
-        """应用区域筛选到soup对象"""
-        logger.info(f"应用区域筛选: {region_id}")
+                             os_name: str = "") -> BeautifulSoup:
+        """
+        应用区域筛选到soup对象（使用动态OS名称）
+        
+        Args:
+            soup: BeautifulSoup对象
+            region_id: 区域ID
+            os_name: 产品OS名称（如"API Management"）
+            
+        Returns:
+            筛选后的BeautifulSoup对象
+        """
+        logger.info(f"🔍 应用区域筛选: {region_id}，使用OS名称: '{os_name}'")
 
         # 创建soup的副本
         filtered_soup = BeautifulSoup(str(soup), 'html.parser')
 
-        # 检查是否有该产品的区域配置
-        product_config = self.region_config.get(filename, {})
+        if not os_name:
+            logger.warning("⚠ OS名称为空，无法进行区域筛选")
+            return filtered_soup
+
+        # 查找该OS在配置中的产品配置
+        product_config = None
+        
+        # 如果region_config是字典格式（已转换），直接查找
+        if isinstance(self.region_config, dict):
+            # 检查是否直接有该OS名称的配置
+            if os_name in self.region_config:
+                product_config = self.region_config[os_name]
+                logger.info(f"✅ 在字典格式配置中找到OS '{os_name}' 的配置: {list(product_config.keys()) if isinstance(product_config, dict) else 'N/A'}")
+            else:
+                # 尝试标准化名称查找
+                normalized_os_name = self._normalize_product_name(os_name)
+                if normalized_os_name in self.region_config:
+                    product_config = self.region_config[normalized_os_name]
+                    logger.info(f"✅ 通过标准化名称找到配置: '{os_name}' → '{normalized_os_name}': {list(product_config.keys()) if isinstance(product_config, dict) else 'N/A'}")
+                else:
+                    logger.warning(f"⚠ 在字典格式配置中未找到: '{os_name}' 或 '{normalized_os_name}', 可用键: {list(self.region_config.keys())[:10]}...")
+        
+        # 如果region_config是列表格式（原始），遍历查找
+        elif isinstance(self.region_config, list):
+            for config_item in self.region_config:
+                if isinstance(config_item, dict) and config_item.get('os') == os_name:
+                    if not product_config:
+                        product_config = {}
+                    region = config_item.get('region')
+                    table_ids = config_item.get('tableIDs', [])
+                    if region:
+                        product_config[region] = table_ids
+            
+            if product_config:
+                logger.info(f"✅ 在列表格式配置中找到OS '{os_name}' 的配置: {list(product_config.keys())}")
+            else:
+                logger.warning(f"⚠ 在列表格式配置中未找到OS '{os_name}'")
+        else:
+            logger.error(f"❌ 无效的配置格式: {type(self.region_config)}")
 
         if not product_config:
-            logger.info(f"产品 {filename} 无区域配置，保留所有内容")
+            logger.info(f"📋 OS '{os_name}' 在soft-category.json中无区域配置，保留所有内容")
             return filtered_soup
 
         region_tables = product_config.get(region_id, [])
 
         if not region_tables:
-            logger.info(f"区域 {region_id} 无特定表格配置，保留所有表格")
+            logger.info(f"📋 区域 '{region_id}' 对于OS '{os_name}' 无特定表格配置，保留所有表格")
             return filtered_soup
+        
+        # 记录筛选前的内容统计
+        original_tables = len(filtered_soup.find_all('table'))
+        original_content_length = len(str(filtered_soup))
+        
+        logger.info(f"🔍 筛选前统计: {original_tables} 个表格, 内容长度 {original_content_length} 字符")
+        logger.info(f"📋 需要移除的表格IDs: {region_tables}")
         
         # 移除指定的表格
         tables_removed = 0
@@ -212,20 +383,42 @@ class RegionProcessor:
                 # 如果没找到，尝试查找带#前缀的
                 elements = filtered_soup.find_all(id=f"#{table_id}")
 
-            for element in elements:
-                # 移除表格及其相关的前置内容
-                self._remove_table_with_related_content(element, clean_table_id)
-                tables_removed += 1
-                removed_table_ids.append(table_id)
+            if elements:
+                for element in elements:
+                    # 移除表格及其相关的前置内容
+                    self._remove_table_with_related_content(element, clean_table_id)
+                    tables_removed += 1
+                    removed_table_ids.append(table_id)
+            else:
+                logger.warning(f"⚠ 未找到要移除的表格: {table_id}")
 
+        # 记录筛选后的内容统计
+        filtered_tables = len(filtered_soup.find_all('table'))
+        filtered_content_length = len(str(filtered_soup))
+        
+        logger.info(f"🔍 筛选后统计: {filtered_tables} 个表格, 内容长度 {filtered_content_length} 字符")
+        logger.info(f"📊 筛选效果: 移除了 {tables_removed} 个表格, 内容减少 {original_content_length - filtered_content_length} 字符")
+        
         if tables_removed > 0:
-            print(f"  ✓ 移除了 {tables_removed} 个区域特定表格: {removed_table_ids}")
+            logger.info(f"✅ 成功移除表格: {removed_table_ids}")
+        else:
+            logger.warning(f"⚠ 未移除任何表格（可能表格ID不匹配）")
 
-        # 在filtered_soup中添加一个隐藏的元数据标签，记录被移除的table IDs
-        if removed_table_ids:
-            metadata_comment = filtered_soup.new_string(f"<!-- Removed table IDs for region {region_id}: {', '.join(removed_table_ids)} -->")
-            if filtered_soup.body:
-                filtered_soup.body.insert(0, metadata_comment)
+        # 在filtered_soup中添加一个隐藏的元数据标签，记录筛选过程
+        metadata_info = {
+            'region': region_id,
+            'os_name': os_name,
+            'removed_table_ids': removed_table_ids,
+            'tables_before': original_tables,
+            'tables_after': filtered_tables,
+            'content_reduction': original_content_length - filtered_content_length
+        }
+        
+        metadata_comment = filtered_soup.new_string(
+            f"<!-- Region filtering applied: {metadata_info} -->"
+        )
+        if filtered_soup.body:
+            filtered_soup.body.insert(0, metadata_comment)
 
         return filtered_soup
 

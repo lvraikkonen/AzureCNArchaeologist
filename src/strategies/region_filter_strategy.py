@@ -95,20 +95,26 @@ class RegionFilterStrategy(BaseStrategy):
             elif section_type == "Qa":
                 base_content["QaContent"] = content
         
-        # 3. 使用RegionProcessor进行区域处理
+        # 3. 获取筛选器信息用于区域处理
+        filter_analysis = self.filter_detector.detect_filters(soup)
+        
+        # 4. 使用RegionProcessor进行区域处理（传递筛选器信息和产品配置）
         try:
             region_content = self.region_processor.extract_region_contents(
-                soup, self.html_file_path
+                soup, 
+                self.html_file_path,
+                filter_analysis=filter_analysis,
+                product_config=self.product_config
             )
             logger.info(f"🌍 区域内容提取完成: {len(region_content)} 个区域")
         except Exception as e:
-            logger.info(f"⚠ 区域内容提取失败: {e}")
+            logger.warning(f"⚠ 区域内容提取失败: {e}")
             region_content = {}
         
-        # 4. 转换区域内容为CMS格式
+        # 5. 转换区域内容为CMS格式
         cms_fields = self._convert_region_content_to_cms_format(region_content)
         
-        # 5. 组合最终结果
+        # 6. 组合最终结果
         final_data = {
             **base_content,
             **cms_fields,
@@ -121,7 +127,7 @@ class RegionFilterStrategy(BaseStrategy):
             "ServiceTiers": []
         }
         
-        # 6. 验证提取结果
+        # 7. 验证提取结果
         final_data = self.extraction_validator.validate_cms_extraction(final_data, self.product_config)
         
         logger.info("✅ 区域筛选策略提取完成（传统CMS格式）")
@@ -149,13 +155,17 @@ class RegionFilterStrategy(BaseStrategy):
         # 3. 使用FilterDetector获取筛选器信息
         filter_analysis = self.filter_detector.detect_filters(soup)
         
-        # 4. 使用RegionProcessor提取区域内容
+        # 4. 使用RegionProcessor提取区域内容（传递筛选器信息和产品配置）
         try:
             region_content = self.region_processor.extract_region_contents(
-                soup, self.html_file_path
+                soup, 
+                self.html_file_path,
+                filter_analysis=filter_analysis,
+                product_config=self.product_config
             )
+            logger.info(f"✅ 区域内容提取完成: {len(region_content)} 个区域")
         except Exception as e:
-            logger.info(f"⚠ 区域内容提取失败: {e}")
+            logger.warning(f"⚠ 区域内容提取失败: {e}")
             region_content = {}
         
         # 5. 使用FlexibleBuilder构建地区内容组
