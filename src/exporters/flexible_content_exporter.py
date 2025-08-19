@@ -201,7 +201,7 @@ class FlexibleContentExporter:
         """
         config = {
             "pageType": page_type.value,
-            "displayTitle": self._clean_title(data.get("Title", "")),
+            "displayTitle": self._clean_title(data.get("title", "")),
             "pageIcon": "{base_url}/Static/Favicon/favicon.ico",
             "leftNavigationIdentifier": data.get("MSServiceName", product_name)
         }

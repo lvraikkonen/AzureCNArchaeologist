@@ -124,7 +124,7 @@ class FlexibleBuilder:
                     "filterCriteriaJson": json.dumps([{
                         "filterKey": "region",
                         "matchValues": [region_id]
-                    }]),
+                    }], ensure_ascii=False),
                     "content": content if isinstance(content, str) else str(content)
                 }
                 
@@ -184,8 +184,8 @@ class FlexibleBuilder:
                                     "filterCriteriaJson": json.dumps([
                                         {"filterKey": "region", "matchValues": [region_id]},
                                         {"filterKey": "software", "matchValues": [software_id]},
-                                        {"filterKey": "category", "matchValues": [tab_id]}
-                                    ]),
+                                        {"filterKey": "category", "matchValues": [tab_name]}
+                                    ], ensure_ascii=False),
                                     "content": clean_html_content(content_mapping[content_key])
                                 }
                                 content_groups.append(content_group)
@@ -200,7 +200,7 @@ class FlexibleBuilder:
                                 "filterCriteriaJson": json.dumps([
                                     {"filterKey": "region", "matchValues": [region_id]},
                                     {"filterKey": "software", "matchValues": [software_id]}
-                                ]),
+                                ], ensure_ascii=False),
                                 "content": clean_html_content(content_mapping[content_key])
                             }
                             content_groups.append(content_group)
@@ -218,8 +218,8 @@ class FlexibleBuilder:
                             "groupName": group_name,
                             "filterCriteriaJson": json.dumps([
                                 {"filterKey": "region", "matchValues": [region_id]},
-                                {"filterKey": "category", "matchValues": [tab_id]}
-                            ]),
+                                {"filterKey": "category", "matchValues": [tab_name]}
+                            ], ensure_ascii=False),
                             "content": clean_html_content(content_mapping[content_key])
                         }
                         content_groups.append(content_group)
@@ -315,7 +315,7 @@ class FlexibleBuilder:
         
         page_config = {
             "enableFilters": True,
-            "filtersJsonConfig": json.dumps(filters_config)
+            "filtersJsonConfig": json.dumps(filters_config, ensure_ascii=False)
         }
         
         logger.info(f"✓ 构建页面配置，包含 {len(filter_definitions)} 个筛选器")
@@ -330,7 +330,5 @@ class FlexibleBuilder:
         """
         return {
             "enableFilters": False,
-            "filtersJsonConfig": json.dumps({
-                "filterDefinitions": []
-            })
+            "filtersJsonConfig": json.dumps({"filterDefinitions": []}, ensure_ascii=False)
         }

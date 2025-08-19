@@ -96,10 +96,9 @@ class SectionExtractor:
             for selector in banner_selectors:
                 banner = soup.select_one(selector)
                 if banner:
-                    # 标准化图片格式
-                    standardized_banner = self._standardize_banner_images(banner)
+                    # 图片路径已由ExtractionCoordinator中的preprocess_image_paths全局处理
                     logger.info(f"✓ 找到Banner内容，选择器: {selector}")
-                    return standardized_banner
+                    return clean_html_content(str(banner))
             
             logger.info("⚠ 未找到Banner内容")
             return ""

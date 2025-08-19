@@ -25,7 +25,7 @@ def preprocess_image_paths(soup: BeautifulSoup) -> BeautifulSoup:
     img_count = 0
     for img in soup.find_all('img'):
         src = img.get('src')
-        if src and src.startswith('/'):
+        if src and src.startswith('/') and not src.startswith('{img_hostname}'):
             img['src'] = f"{{img_hostname}}{src}"
             img_count += 1
 
@@ -38,7 +38,7 @@ def preprocess_image_paths(soup: BeautifulSoup) -> BeautifulSoup:
             pattern = r'url\(["\']?(/[^"\']*?)["\']?\)'
             def replace_url(match):
                 path = match.group(1)
-                return f'url("{{{img_hostname}}}{path}")'
+                return f'url("{{img_hostname}}{path}")'
 
             new_style = re.sub(pattern, replace_url, style)
             if new_style != style:
