@@ -48,184 +48,553 @@ else:
 - ✅ **工具类架构成功**: ContentExtractor、SectionExtractor、FlexibleBuilder、ExtractionValidator协作正常
 - ✅ **3种策略验证通过**: SimpleStatic、RegionFilter、Complex策略全部运行正常
 
-### Phase 3: 分层架构深度集成与性能优化
+### Phase 3: BatchProcess批处理能力与架构稳定性 🚧进行中 (2025-08-20)
 
-**目标**: 基于已完成的5层架构基础，实现工具类深度集成，优化系统性能和稳定性，补全缺失组件。
+**目标**: 建立批量处理系统，可以对产品组级别进行高性能的批处理，确保架构稳定性，为企业级部署奠定数据基础。
 
-**当前状态**: 架构基础完成，3种核心策略正常运行，工具类协作基本就绪，需要深度优化集成效率。
+**设计原则**: 遵循软件工程最佳实践，构建真正的批量处理能力，不仅仅是验证工具。
 
-#### 3.1 工具类深度集成优化 🚧高优先级 (2025-08-20开始)
+**核心创新**: 引入轻量级数据库记录系统，支持以ProductGroup为单位的批量处理，效率提升5-10倍。
 
-**目标**: 深度优化现有工具类协作，消除重复逻辑，提升处理效率
+#### 3.1 生产级批量处理记录系统 🚧最高优先级
 
-**当前问题分析**:
-- ExtractionCoordinator已集成工具类，但利用深度不足
-- FlexibleContentExporter与FlexibleBuilder存在功能重叠
-- 策略实例每次都重新创建工具类，缺少复用机制
-- 部分组件仍有冗余代码，影响性能
-
-**优化任务**:
-1. **FlexibleContentExporter重构**:
-   - 移除导出器中重复的构建逻辑，完全依赖FlexibleBuilder
-   - 实现导出器专注格式化和文件生成，构建器专注数据组织
-   - 建立构建结果缓存机制，避免重复计算
-
-2. **协调器工具类生命周期管理**:
-   - 实现工具类单例模式，跨请求复用实例
-   - 添加工具类配置热更新机制
-   - 优化工具类初始化顺序和依赖关系
-
-3. **策略工厂依赖注入优化**:
-   - 在StrategyFactory中实现工具类预加载和注入
-   - 建立策略特定的工具类配置方案
-   - 实现工具类在策略间的智能复用
-
-**实现策略**:
-```python
-# 优化后的协调器工具类管理
-class ExtractionCoordinator:
-    _tool_instances = {}  # 单例工具类缓存
-    
-    def __init__(self):
-        # 懒加载单例工具类
-        self.content_extractor = self._get_tool_instance('ContentExtractor')
-        self.section_extractor = self._get_tool_instance('SectionExtractor') 
-        self.flexible_builder = self._get_tool_instance('FlexibleBuilder')
-    
-    def _get_tool_instance(self, tool_name):
-        if tool_name not in self._tool_instances:
-            self._tool_instances[tool_name] = self._create_tool(tool_name)
-        return self._tool_instances[tool_name]
-
-# 优化后的导出器
-class FlexibleContentExporter:
-    def export_flexible_content(self, data, product_name):
-        # 完全依赖FlexibleBuilder，移除重复逻辑
-        if hasattr(data, '_flexible_built'):
-            flexible_data = data  # 已构建，直接使用
-        else:
-            builder = self._get_flexible_builder() 
-            flexible_data = builder.build_from_extraction_data(data)
-        
-        return self._write_to_file(flexible_data, product_name)
-```
-
-**优化收益**:
-- 工具类实例复用率>80%
-- 内存使用降低30%+
-- 处理性能提升15%+
-
-#### 3.2 LargeFileStrategy补全实现 🚧中等优先级 (2025-08-20)
-
-**目标**: 完成第4种策略实现，达到100%策略覆盖，处理大文件优化场景
-
-**当前状态**: 策略注册75% (3/4)，缺少LargeFileStrategy实现
-
-**实施任务**:
-1. **LargeFileStrategy设计**:
-   - 针对>5MB的大HTML文件进行内存优化处理
-   - 实现分段解析和流式处理机制
-   - 集成现有工具类架构，保持接口一致性
-
-2. **内存优化策略**:
-   - BeautifulSoup解析优化，使用lxml解析器
-   - 分段提取内容，避免全文件加载到内存
-   - 实现内容缓存和释放机制
-
-3. **与现有架构集成**:
-   - 在StrategyFactory中注册LargeFileStrategy
-   - 在StrategyManager中添加大文件检测逻辑
-   - 确保与其他3种策略的无缝切换
-
-**技术实现**:
-```python
-# LargeFileStrategy实现示例
-class LargeFileStrategy(BaseStrategy):
-    def __init__(self, product_config, html_file_path):
-        super().__init__(product_config, html_file_path)
-        self.chunk_size = 1024 * 1024  # 1MB chunk size
-        
-    def extract_flexible_content(self, soup, url=""):
-        # 大文件分段处理
-        with self._memory_monitor():
-            return self._extract_large_content_streaming(soup, url)
-    
-    def _extract_large_content_streaming(self, soup, url):
-        # 流式处理逻辑，分段提取内容
-        content_chunks = []
-        for chunk in self._process_in_chunks(soup):
-            processed_chunk = self._process_chunk(chunk)
-            content_chunks.append(processed_chunk)
-            
-        return self.flexible_builder.build_from_chunks(content_chunks)
-
-# StrategyManager中的大文件检测
-class StrategyManager:
-    def _is_large_file(self, file_path):
-        file_size = os.path.getsize(file_path)
-        return file_size > 5 * 1024 * 1024  # 5MB threshold
-```
-
-**验证标准**:
-- LargeFileStrategy注册成功，达到100%策略覆盖
-- 大文件处理内存使用<原文件大小的50%
-- 处理时间与文件大小呈线性关系
-
-#### 3.3 性能监控与质量保证 🚧中等优先级 (2025-08-20)
-
-**目标**: 建立系统性能监控和质量评估机制，确保架构优化效果
-
-**监控维度**:
-1. **性能基准建立**:
-   - 建立3种策略的性能基准测试
-   - 监控工具类实例复用率和内存使用
-   - 记录端到端处理时间和资源消耗
-
-2. **质量评估机制**:
-   - 实现flexible JSON输出质量自动评估
-   - 建立内容提取完整性验证
-   - 添加回归测试，确保架构变更不影响功能
-
-3. **异常处理完善**:
-   - 增强各层异常处理和恢复机制
-   - 实现优雅降级策略
-   - 建立详细的错误报告和诊断机制
-
-**测试方法**:
-```bash
-# 性能基准测试命令
-uv run cli.py extract event-grid --html-file data/prod-html/integration/event-grid.html --format flexible --time
-uv run cli.py extract api-management --html-file data/prod-html/integration/api-management.html --format flexible --time
-uv run cli.py extract cloud-services --html-file data/prod-html/compute/cloud-services.html --format flexible --time
-
-# 质量评估测试
-python -m pytest tests/performance/test_strategy_performance.py -v
-python -m pytest tests/quality/test_flexible_json_quality.py -v
-```
-
-**验证标准**:
-- 3种策略性能基准建立
-- flexible JSON质量评分>95%
-- 异常处理覆盖率>90%
-
-### Phase 4: 企业级数据管理与集成 🚧规划阶段 (2025-08-20)
-
-**目标**: 建立数据库记录系统和增量处理机制，集成Azure Blob存储，为企业级运维和CMS团队协作提供基础设施。
-
-**企业需求分析**:
-- 每次抽取需要完整的状态记录和可追溯性
-- 增量处理机制避免重复劳动，提升运维效率40%+
-- CMS团队需要稳定的数据访问接口和版本管理
-- 支持批量处理和定时任务的企业级部署
-
-#### 4.1 数据库记录系统 🚧高优先级
-
-**目标**: 为每次flexible JSON抽取建立完整的数据库记录，支持状态跟踪和历史审计
+**目标**: 建立轻量级SQLite记录系统，支持批量处理和进度跟踪
 
 **数据模式设计**:
 ```sql
--- 抽取记录主表
-CREATE TABLE extraction_records (
+-- 批量处理记录主表
+CREATE TABLE batch_process_records (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_key VARCHAR(100) NOT NULL,
+    product_group VARCHAR(50),
+    strategy_used VARCHAR(20),
+    processing_status VARCHAR(20), -- success/failed/pending/processing
+    error_message TEXT,
+    processing_time_ms INTEGER,
+    output_file_path TEXT,
+    html_file_path TEXT,
+    extraction_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 索引设计
+CREATE INDEX idx_batch_product_key ON batch_process_records(product_key);
+CREATE INDEX idx_batch_product_group ON batch_process_records(product_group);
+CREATE INDEX idx_batch_processing_status ON batch_process_records(processing_status);
+CREATE INDEX idx_batch_extraction_timestamp ON batch_process_records(extraction_timestamp);
+```
+
+**核心功能**:
+- 完整处理生命周期跟踪：pending → processing → success/failed
+- 支持重试机制和错误恢复
+- 产品分组管理，支持按业务域批量处理
+- 为后续增量处理和企业级扩展奠定数据基础
+
+**CLI命令设计**:
+```bash
+# 生产级批量处理命令
+uv run cli.py batch-process --group database --format flexible
+uv run cli.py batch-process --group integration --format flexible  
+uv run cli.py batch-process --group compute --format flexible
+uv run cli.py batch-process --all --format flexible
+
+# 批量处理状态查询
+uv run cli.py batch-status --group database
+uv run cli.py batch-report --strategy SimpleStatic
+uv run cli.py batch-retry --failed-only
+uv run cli.py batch-history --product mysql --limit 10
+```
+
+#### 3.2 ProductGroup批量处理引擎 🚧高优先级
+
+**目标**: 实现高效的批量处理引擎，支持生产级负载和并行处理
+
+**核心实现**:
+```python
+# 批量处理引擎
+class BatchProcessEngine:
+    def __init__(self, record_manager: BatchProcessRecordManager):
+        self.record_manager = record_manager
+        self.product_manager = ProductManager()
+        self.extraction_coordinator = ExtractionCoordinator("batch_output")
+    
+    def process_product_group(self, group_name: str, 
+                            parallel_workers: int = 4,
+                            retry_failed: bool = True) -> ProcessReport:
+        """生产级ProductGroup批量处理"""
+        products = self.product_manager.get_products_by_group(group_name)
+        logger.info(f"🔄 开始批量处理{group_name}组，共{len(products)}个产品")
+        
+        with ThreadPoolExecutor(max_workers=parallel_workers) as executor:
+            futures = []
+            for product in products:
+                # 创建处理记录
+                record_id = self.record_manager.create_process_record(
+                    product.key, product.source_url
+                )
+                
+                future = executor.submit(
+                    self.process_single_product, 
+                    product, 
+                    record_id
+                )
+                futures.append((future, record_id, product))
+            
+            # 实时处理状态更新
+            results = []
+            for future, record_id, product in tqdm(futures, desc=f"处理{group_name}组"):
+                try:
+                    result = future.result()
+                    self.record_manager.update_process_status(
+                        record_id, 'success', result
+                    )
+                    results.append(result)
+                except Exception as e:
+                    self.record_manager.update_process_status(
+                        record_id, 'failed', error=str(e)
+                    )
+                    if retry_failed:
+                        # 智能重试逻辑
+                        retry_result = self.retry_failed_product(product, record_id)
+                        if retry_result:
+                            results.append(retry_result)
+        
+        return self.generate_process_report(results, group_name)
+    
+    def process_single_product(self, product, record_id: int):
+        """单个产品处理逻辑"""
+        # 更新为processing状态
+        self.record_manager.update_process_status(record_id, 'processing')
+        
+        # 执行提取
+        html_file_path = product.get_html_file_path()
+        result = self.extraction_coordinator.coordinate_extraction(
+            html_file_path, product.source_url
+        )
+        
+        # 记录处理时间和输出路径
+        processing_time = result.get('processing_time_ms', 0)
+        output_path = result.get('output_file_path', '')
+        
+        return {
+            'product_key': product.key,
+            'processing_time_ms': processing_time,
+            'output_file_path': output_path,
+            'strategy_used': result.get('strategy_used', ''),
+            'success': True
+        }
+```
+
+**生产级特性**:
+1. **并行处理**: 支持多线程并行处理，可配置worker数量
+2. **错误恢复**: 智能重试机制，失败产品自动重试
+3. **实时监控**: 处理进度实时显示，状态数据库记录
+4. **性能优化**: 连接池复用，内存管理优化
+
+#### 3.3 批量处理报告和监控系统 🚧高优先级
+
+**目标**: 提供处理报告和实时监控能力，基于大规模批量处理数据分析系统性能
+
+**报告维度**:
+1. **批量处理性能分析**: 各ProductGroup和策略的处理效率和吞吐量
+2. **质量评估报告**: flexible JSON输出质量和完整性评估
+3. **失败分析和诊断**: 失败模式识别和自动化解决建议
+4. **生产就绪度评估**: 基于大规模处理评估系统生产就绪度
+
+**技术实现**:
+```python
+# 批量处理报告生成器
+class BatchProcessReporter:
+    def __init__(self, record_manager: BatchProcessRecordManager):
+        self.record_manager = record_manager
+    
+    def generate_process_report(self, group_name: str = None, 
+                              since: datetime = None) -> ProcessReport:
+        """生成批量处理报告"""
+        records = self.record_manager.get_process_records(
+            group_name=group_name, since=since
+        )
+        
+        report = {
+            'summary': self._generate_summary(records),
+            'performance_analysis': self._analyze_performance(records),
+            'quality_assessment': self._assess_quality(records),
+            'failure_analysis': self._analyze_failures(records),
+            'readiness_evaluation': self._evaluate_readiness(records)
+        }
+        
+        return ProcessReport(report)
+    
+    def _generate_summary(self, records):
+        """生成处理摘要"""
+        total = len(records)
+        success = len([r for r in records if r.processing_status == 'success'])
+        failed = len([r for r in records if r.processing_status == 'failed'])
+        
+        return {
+            'total_products': total,
+            'processed_success': success,
+            'processed_failed': failed,
+            'success_rate': success / total if total > 0 else 0,
+            'avg_processing_time': self._calculate_avg_time(records)
+        }
+```
+
+**输出报告格式**:
+```
+=== 批量处理报告 ===
+处理时间: 2025-08-20 14:30:00 - 14:45:32 (15分32秒)
+总产品数: 21
+处理完成: 19 (90%)
+处理成功: 17 (89%)
+重试成功: 1 (5%)  
+最终失败: 1 (5%)
+
+按ProductGroup分析:
+- Database: 5/5 成功 (100%) - 平均耗时: 2.1s
+- Integration: 7/8 成功 (88%) - 平均耗时: 2.8s  
+- Compute: 5/8 成功 (63%) - 平均耗时: 4.2s
+
+按策略性能分析:
+- SimpleStatic: 6/6 成功 (100%) - 平均耗时: 1.2s - 吞吐量: 8.5/min
+- RegionFilter: 8/9 成功 (89%) - 平均耗时: 2.1s - 吞吐量: 4.2/min
+- Complex: 3/6 成功 (50%) - 平均耗时: 5.4s - 吞吐量: 2.1/min
+
+失败产品详情:
+- cloud-services: ComplexStrategy解析失败 - Tab检测异常 [已重试1次]
+
+生产就绪度评估: 🟡 基本就绪 (总体成功率89%, 建议优化Complex策略)
+```
+
+**监控CLI命令**:
+```bash
+# 监控命令
+uv run cli.py batch-monitor --realtime
+uv run cli.py batch-diagnose --failed-only
+uv run cli.py batch-performance --group-by strategy
+uv run cli.py batch-report --last-24h --export-csv
+```
+
+#### 3.4 FlexibleContentExporter职责优化 🚧中等优先级
+
+**目标**: 在批量处理中发现和解决导出器职责重叠问题，优化组件协作
+
+**优化策略**: 
+1. **明确职责边界**:
+   - FlexibleBuilder: 专注数据结构构建和逻辑组织
+   - FlexibleContentExporter: 专注文件格式化和IO操作
+
+2. **消除重复逻辑**:
+   - 移除导出器中的重复构建逻辑
+   - 确保单一数据流：Strategy → Builder → Exporter
+
+3. **批量处理优化**:
+   - 在大规模批量处理中测试和优化Builder→Exporter数据流
+   - 确保高并发处理时的性能表现和稳定性
+   - 为Phase 4的企业级导出做准备
+
+**实现重点**:
+```python
+# 优化后的导出器职责分离
+class FlexibleContentExporter:
+    def __init__(self, output_dir: str):
+        self.output_dir = Path(output_dir)
+        # 移除自建FlexibleBuilder，完全依赖外部传入
+    
+    def export_flexible_content(self, flexible_data: Dict[str, Any], 
+                              product_name: str) -> str:
+        """专注于文件格式化和IO操作"""
+        # 直接使用已构建的flexible_data，不再重复构建
+        return self._write_flexible_json(flexible_data, product_name)
+    
+    def _write_flexible_json(self, data: Dict[str, Any], product_name: str) -> str:
+        """纯IO操作，负责文件写入和路径管理"""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"{product_name}_flexible_content_{timestamp}.json"
+        filepath = self.output_dir / product_name / filename
+        
+        # 确保目录存在
+        filepath.parent.mkdir(parents=True, exist_ok=True)
+        
+        # 写入文件
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        
+        return str(filepath)
+```
+
+**验证标准**:
+- 组件职责边界清晰，无功能重叠
+- 批量处理时导出器性能稳定
+- 为Phase 4企业级导出奠定基础
+
+## Phase 3 整体收益
+
+- **批量处理能力**: 支持21个产品的并行批量处理，效率提升5-10倍
+- **架构稳定性**: 通过大规模处理确保3种策略在生产环境的稳定性
+- **数据驱动决策**: 基于真实批量处理数据分析策略表现和系统瓶颈
+- **生产级基础**: 轻量级数据库系统为Phase 4完整企业级功能奠定基础
+- **运维友好**: 丰富的CLI命令和实时监控，支持生产环境运维需求
+
+### Phase 4: 企业级增量处理与完整数据管理 🚧规划阶段 (2025-08-20)
+
+**目标**: 基于Phase 3的轻量级批量处理系统，建立企业级增量处理机制和完整数据管理，集成Azure Blob存储，为CMS团队提供生产级服务。
+
+**企业需求分析**:
+- 基于Phase 3批量处理数据的智能增量处理，避免重复劳动，提升运维效率40%+
+- CMS团队需要稳定的数据访问接口和版本管理
+- 支持定时任务和自动化的企业级部署
+- 完整的数据库记录系统，支持历史追溯和审计
+
+**Phase 3基础**: 利用轻量级批量处理记录系统(`batch_process_records`)的数据和经验
+
+#### 4.1 智能增量处理机制 🚧最高优先级
+
+**目标**: 基于Phase 3批量处理数据，实现智能增量处理，避免重复劳动，提升运维效率40%+
+
+**核心机制设计**:
+1. **基于批量处理历史的变更检测**:
+   - 利用Phase 3的`batch_process_records`表作为基础数据
+   - 计算HTML文件SHA256哈希值进行内容变更检测
+   - 对比上次成功处理的content_hash，仅在变化时重新处理
+
+2. **智能跳过和重试策略**:
+   - 基于历史成功率的产品优先级排序
+   - 失败产品的指数退避重试机制
+   - 强制刷新选项覆盖智能判断
+
+3. **生产级增量批量处理**:
+   - 支持按ProductGroup、时间范围的增量批量处理
+   - 并行处理优化，利用Phase 3的并行处理经验
+   - 进度跟踪和中断恢复机制
+
+**技术实现**:
+```python
+# 增量处理管理器
+class IncrementalProcessManager:
+    def __init__(self, record_manager: BatchProcessRecordManager):
+        self.record_manager = record_manager
+    
+    def should_process(self, product_key: str, file_path: str, 
+                      force: bool = False) -> bool:
+        """基于Phase 3数据判断是否需要重新处理"""
+        if force:
+            return True
+            
+        # 计算当前文件哈希
+        current_hash = self._calculate_file_hash(file_path)
+        
+        # 查询Phase 3批量处理的最近成功记录
+        last_record = self.record_manager.get_latest_success_record(product_key)
+        
+        if not last_record:
+            return True  # 首次处理
+        
+        # 比较内容哈希
+        if last_record.content_hash != current_hash:
+            return True  # 内容已变更
+        
+        # 检查时间阈值（如定期强制刷新）
+        if self._should_force_refresh(last_record.extraction_timestamp):
+            return True
+            
+        return False  # 跳过处理
+    
+    def incremental_batch_process(self, 
+                                category: str = None,
+                                since: str = "7 days ago", 
+                                failed_only: bool = False,
+                                force_refresh: bool = False,
+                                parallel_jobs: int = 4) -> IncrementalReport:
+        """增量批量处理"""
+        
+        # 基于Phase 3数据获取需要处理的产品列表
+        products_to_process = self._get_products_for_incremental(
+            category, since, failed_only
+        )
+        
+        logger.info(f"🔄 发现 {len(products_to_process)} 个产品需要增量处理")
+        
+        # 并行增量处理
+        with ThreadPoolExecutor(max_workers=parallel_jobs) as executor:
+            futures = []
+            for product_info in products_to_process:
+                future = executor.submit(
+                    self._process_single_product_incremental, 
+                    product_info, 
+                    force_refresh
+                )
+                futures.append(future)
+            
+            # 等待完成并收集结果
+            results = []
+            for future in tqdm(futures, desc="增量处理进度"):
+                results.append(future.result())
+        
+        # 生成增量处理报告
+        return self._generate_incremental_report(results)
+```
+
+**增量处理CLI命令**:
+```bash
+# 基于Phase 3数据的增量处理命令
+uv run cli.py batch-incremental --since "3 days ago" --parallel 6
+uv run cli.py batch-incremental --group database --failed-only
+uv run cli.py batch-incremental --force-refresh --products mysql,api-management
+
+# 增量处理状态查询
+uv run cli.py incremental-status --summary
+uv run cli.py incremental-report --last-week
+```
+
+**验证标准**:
+- 内容哈希计算准确率100%
+- 智能跳过逻辑正确率>95%
+- 增量批量处理效率提升40%+
+- 基于Phase 3数据的失败重试机制完整性
+
+#### 4.2 Azure Blob存储集成 🚧高优先级
+
+**目标**: 集成Azure Blob Storage，为CMS团队提供稳定的数据访问接口和版本管理，利用Phase 3批量处理管道进行高效上传
+
+**CMS团队需求分析**:
+- 需要稳定、可预测的URL访问抽取结果
+- 支持版本化管理，方便内容回滚和对比
+- 提供SAS token机制，确保访问安全性
+- 支持批量上传和API集成
+
+**存储架构设计**:
+```
+Azure Blob容器结构:
+flexible-content/
+├── products/
+│   ├── mysql/
+│   │   ├── 2025/08/20/mysql_flexible_content_20250820_143022.json
+│   │   ├── 2025/08/19/mysql_flexible_content_20250819_092156.json
+│   │   └── latest/mysql_flexible_content_latest.json
+│   ├── api-management/
+│   │   ├── 2025/08/20/api-management_flexible_content_20250820_143155.json
+│   │   └── latest/api-management_flexible_content_latest.json
+│   └── ...
+├── metadata/
+│   ├── batch_process_manifest_2025-08-20.json  # 基于Phase 3的批量处理清单
+│   └── product_index.json                      # 产品索引文件
+└── archives/
+    ├── 2025-08/                                # 月度归档
+    └── 2025-07/
+```
+
+**技术实现**:
+```python
+# Azure Blob存储管理器
+class BlobStorageManager:
+    def __init__(self, account_name: str, account_key: str, 
+                 container_name: str = "flexible-content"):
+        from azure.storage.blob import BlobServiceClient
+        self.blob_service = BlobServiceClient(
+            account_url=f"https://{account_name}.blob.core.windows.net",
+            credential=account_key
+        )
+        self.container_name = container_name
+        self._ensure_container_exists()
+    
+    def upload_batch_results(self, batch_results: List[Dict], 
+                           batch_id: str) -> BatchUploadReport:
+        """批量上传Phase 3的处理结果"""
+        upload_results = []
+        
+        for result in batch_results:
+            if result.get('success') and result.get('output_file_path'):
+                try:
+                    blob_url = self.upload_single_result(
+                        result['product_key'],
+                        result['output_file_path'],
+                        datetime.utcnow()
+                    )
+                    upload_results.append({
+                        'product_key': result['product_key'],
+                        'status': 'uploaded',
+                        'blob_url': blob_url
+                    })
+                except Exception as e:
+                    upload_results.append({
+                        'product_key': result['product_key'],
+                        'status': 'failed',
+                        'error': str(e)
+                    })
+        
+        # 更新批量处理清单
+        self.update_batch_manifest(batch_id, upload_results)
+        
+        return BatchUploadReport(upload_results)
+```
+
+**集成到批量处理流程**:
+```python
+# 在BatchProcessEngine中集成Blob上传
+class BatchProcessEngine:
+    def __init__(self, record_manager, enable_blob_upload=False):
+        self.record_manager = record_manager
+        self.blob_manager = BlobStorageManager() if enable_blob_upload else None
+    
+    def process_product_group(self, group_name: str) -> ProcessReport:
+        # 执行批量处理
+        results = self._execute_batch_processing(group_name)
+        
+        # 如果启用Blob上传，批量上传结果
+        if self.blob_manager:
+            upload_report = self.blob_manager.upload_batch_results(
+                results, f"{group_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            )
+            results['blob_upload_report'] = upload_report
+        
+        return ProcessReport(results)
+```
+
+**CLI命令集成**:
+```bash
+# 批量处理 + Blob上传
+uv run cli.py batch-process --all --format flexible --upload-blob
+uv run cli.py batch-process --group database --upload-blob --parallel 6
+
+# CMS团队访问命令
+uv run cli.py cms-urls --product mysql --sas-expiry 168h  # 7天有效期
+uv run cli.py cms-index --update  # 更新产品索引
+uv run cli.py blob-status --group integration
+```
+
+**验证标准**:
+- Blob上传成功率>99%
+- 批量上传性能：支持21个产品并发上传
+- SAS URL生成和访问正常
+- 版本化存储结构正确
+- CMS团队API响应时间<500ms
+
+#### 4.3 完整数据库记录系统 🚧中等优先级
+
+**目标**: 基于Phase 3轻量级系统(`batch_process_records`)扩展，建立完整的企业级数据库记录系统，支持历史审计和复杂查询
+
+**从轻量级到企业级的升级路径**:
+1. **扩展Phase 3数据模型**:
+   - 在`batch_process_records`基础上添加企业级字段
+   - 支持更复杂的元数据存储和查询需求
+   - 添加审计日志和变更跟踪
+
+2. **PostgreSQL企业级部署**:
+   - 从SQLite平滑迁移到PostgreSQL
+   - 支持高并发和大数据量
+   - 集成事务管理和连接池
+
+3. **高级查询和分析能力**:
+   - 支持复杂的历史趋势分析
+   - 产品组合和策略性能深度分析
+   - 自动化报告生成和告警机制
+
+**企业级数据模式设计**:
+```sql
+-- 基于Phase 3扩展的企业级数据模型
+CREATE TABLE enterprise_extraction_records (
     extraction_id UUID PRIMARY KEY,
     product_key VARCHAR(100) NOT NULL,
     product_category VARCHAR(50),
@@ -240,124 +609,18 @@ CREATE TABLE extraction_records (
     content_hash VARCHAR(64),
     processing_time_ms INTEGER,
     metadata_json JSONB,
+    
+    -- 企业级扩展字段
+    batch_id VARCHAR(100),              -- 关联到批量处理批次
+    retry_count INTEGER DEFAULT 0,      -- 重试次数
+    quality_score DECIMAL(3,2),         -- 输出质量评分
+    cms_integration_status VARCHAR(20),  -- CMS集成状态
+    audit_info JSONB,                   -- 审计信息
+    
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
--- 索引设计
-CREATE INDEX idx_extraction_product_key ON extraction_records(product_key);
-CREATE INDEX idx_extraction_timestamp ON extraction_records(extraction_timestamp);
-CREATE INDEX idx_extraction_status ON extraction_records(extraction_status);
-CREATE INDEX idx_extraction_content_hash ON extraction_records(content_hash);
 ```
-
-**架构集成点**:
-1. **ExtractionCoordinator增强**:
-   - 在`coordinate_extraction()`开始时创建数据库记录
-   - 提取完成后更新状态、文件路径和性能指标
-   - 异常情况下标记为失败状态并记录错误信息
-
-2. **CLI数据库操作扩展**:
-   - 添加`--track`参数启用数据库记录
-   - 新增数据库管理子命令：`history`, `status`, `cleanup`
-   - 支持基于数据库的查询和报告功能
-
-**技术实现**:
-```python
-# 数据库记录管理器
-class ExtractionRecordManager:
-    def __init__(self, db_url: str = "sqlite:///extractions.db"):
-        self.engine = create_engine(db_url)
-        self.Session = sessionmaker(bind=self.engine)
-    
-    def create_record(self, product_key: str, source_url: str) -> str:
-        """创建新的抽取记录，返回extraction_id"""
-        extraction_id = str(uuid.uuid4())
-        record = ExtractionRecord(
-            extraction_id=extraction_id,
-            product_key=product_key,
-            source_url=source_url,
-            extraction_status='running'
-        )
-        with self.Session() as session:
-            session.add(record)
-            session.commit()
-        return extraction_id
-    
-    def update_record(self, extraction_id: str, **kwargs):
-        """更新记录状态和元数据"""
-        with self.Session() as session:
-            record = session.query(ExtractionRecord).filter_by(
-                extraction_id=extraction_id
-            ).first()
-            if record:
-                for key, value in kwargs.items():
-                    setattr(record, key, value)
-                record.updated_at = datetime.utcnow()
-                session.commit()
-
-# 集成到协调器
-class ExtractionCoordinator:
-    def __init__(self, output_dir: str, enable_tracking: bool = True):
-        self.record_manager = ExtractionRecordManager() if enable_tracking else None
-    
-    def coordinate_extraction(self, html_file_path: str, url: str = "") -> Dict[str, Any]:
-        extraction_id = None
-        if self.record_manager:
-            product_key = self._detect_product_key(html_file_path)
-            extraction_id = self.record_manager.create_record(product_key, url)
-        
-        try:
-            # 现有提取逻辑...
-            result = self._execute_extraction_pipeline(html_file_path, url)
-            
-            # 更新成功记录
-            if self.record_manager and extraction_id:
-                self.record_manager.update_record(
-                    extraction_id,
-                    extraction_status='success',
-                    processing_time_ms=result.get('processing_time'),
-                    metadata_json=result.get('extraction_metadata')
-                )
-            
-            return result
-            
-        except Exception as e:
-            # 更新失败记录
-            if self.record_manager and extraction_id:
-                self.record_manager.update_record(
-                    extraction_id,
-                    extraction_status='failed',
-                    metadata_json={'error': str(e)}
-                )
-            raise
-```
-
-**验证标准**:
-- 数据库记录创建成功率100%
-- 状态跟踪准确率100%
-- CLI数据库命令功能完整性
-- 支持SQLite和PostgreSQL双模式
-
-#### 4.2 增量处理机制 🚧中等优先级
-
-**目标**: 基于内容哈希和时间戳实现智能增量处理，避免重复抽取，提升运维效率
-
-**核心机制设计**:
-1. **内容变更检测**:
-   - 计算HTML文件SHA256哈希值
-   - 对比数据库中上次成功抽取的content_hash
-   - 仅在内容发生变化时进行重新抽取
-
-2. **智能跳过策略**:
-   - 基于时间阈值的自动跳过逻辑
-   - 失败记录的重试机制
-   - 强制刷新选项覆盖智能判断
-
-3. **批量增量处理**:
-   - 支持按产品分类、时间范围的批量处理
-   - 并行处理优化，提升大规模处理效率
-   - 进度跟踪和中断恢复机制
 
 **技术实现**:
 ```python
@@ -691,7 +954,7 @@ uv run cli.py extract mysql --html-file data/prod-html/database/mysql.html --for
 - Azure Blob集成成功率>99%
 - CMS团队API响应<500ms
 
-### Phase 5: 架构完整性测试与验证 (原Phase 4)
+### Phase 5: 架构完整性测试与验证
 
 #### 5.1 单策略测试 ✅需人工验证
 
@@ -712,7 +975,7 @@ uv run cli.py extract cloud-services --html-file data/prod-html/compute/cloud-se
 - 确认现有Banner、ProductDescription、Qa提取不受影响
 - 验证数据库记录功能不影响现有工作流
 
-### Phase 6: 文档更新与项目清理 (原Phase 5)
+### Phase 6: 文档更新与项目清理
 
 #### 6.1 文档更新 ✅需人工验证
 - 更新CLAUDE.md中的架构说明，包含数据库和Azure集成
@@ -744,51 +1007,48 @@ uv run cli.py extract cloud-services --html-file data/prod-html/compute/cloud-se
 - [x] **RegionFilterStrategy完全修复** - api-management.html区域筛选逻辑缺陷已修复，不同区域生成真正不同内容 ✅
 - [x] **ComplexContentStrategy基于新架构创建** - cloud-services.html生成正确的多筛选器contentGroups，区域表格筛选功能完美 ✅
 
-### Phase 3验证 (3/4完成) ✅主要完成 🚧优化进行中 (2025-08-20)
-- [x] **5层架构基础集成完成** ✅ (2025-08-20验证)
-  - ExtractionCoordinator: 7阶段流程协调器正常运行 ✅
-  - StrategyFactory: 3/4策略注册完成，工厂模式运行正常 ✅
-  - FlexibleContentExporter: CMS Schema 1.1格式输出正确 ✅
-  - EnhancedCMSExtractor: 已简化为协调器客户端(<200行) ✅
-- [x] **端到端流程验证通过** ✅ (2025-08-20测试)
-  - event-grid.html → SimpleStaticStrategy → flexible JSON输出正确 ✅
-  - api-management.html → RegionFilterStrategy → 区域筛选正常 ✅
-  - cloud-services.html → ComplexContentStrategy → 多维度内容组正确 ✅
-  - CLI命令100%兼容，架构升级对用户透明 ✅
-- [x] **工具类协作验证** ✅ (2025-08-20验证)
-  - ContentExtractor、SectionExtractor、FlexibleBuilder、ExtractionValidator协作正常 ✅
-  - 策略实例正确注入工具类，无接口冲突 ✅
-  - 工具类间数据传递完整，输出质量稳定 ✅
-- [ ] **深度集成优化** 🚧 (当前任务)
-  - 工具类复用机制实现，性能提升>20%
-  - FlexibleContentExporter与FlexibleBuilder深度集成优化
-  - LargeFileStrategy实现，达到100%策略覆盖
-  - 性能监控和质量保证机制建立
+### Phase 3验证 (0/4完成) 🚧进行中 (2025-08-20)
+- [ ] **生产级批量处理记录系统** - SQLite轻量级记录表建立
+  - `batch_process_records`表设计和实现 
+  - 处理状态管理：pending → processing → success/failed
+  - 支持重试机制和错误恢复
+- [ ] **ProductGroup批量处理引擎** - 21个产品100%批量处理覆盖
+  - 并行批量处理引擎实现，支持4-8个并发worker
+  - 智能重试逻辑和实时状态更新
+  - 高效的ProductGroup分组处理机制
+- [ ] **批量处理报告和监控系统** - 数据驱动分析系统性能
+  - 策略表现分析：SimpleStatic/RegionFilter/Complex成功率和性能
+  - 失败模式识别和自动化诊断建议
+  - 生产就绪度评估和详细报告生成
+- [ ] **FlexibleContentExporter职责优化** - 组件职责分离优化
+  - 明确Builder专注数据构建，Exporter专注IO操作
+  - 消除重复逻辑，确保单一数据流
+  - 在批量处理中验证高并发性能表现
 
 ### Phase 4验证 (0/4完成) 🚧规划阶段 (2025-08-20)
-- [ ] **数据库记录系统** - ExtractionRecord模式设计和实现
-  - 数据库记录创建成功率100%
-  - CLI数据库操作命令完整性
-  - SQLite/PostgreSQL双模式支持
-- [ ] **增量处理机制** - 内容哈希和智能跳过逻辑
-  - 内容变更检测准确率100%
-  - 智能跳过逻辑正确率>95%
-  - 批量增量处理效率提升40%+
-- [ ] **Azure Blob存储集成** - CMS团队访问接口
-  - Blob上传成功率>99%
-  - SAS URL生成和访问正常
-  - CMS团队API响应时间<500ms
-- [ ] **企业级增强功能** - 监控告警和高可用部署
-  - 监控告警系统集成
-  - REST API接口实现
-  - 定时任务调度机制
+- [ ] **智能增量处理机制** - 基于Phase 3数据的增量处理 (最高优先级)
+  - 基于`batch_process_records`的内容变更检测准确率100%
+  - 智能跳过逻辑正确率>95%，避免重复处理
+  - 增量批量处理效率提升40%+，支持定时自动化处理
+- [ ] **Azure Blob存储集成** - CMS团队生产级服务 (高优先级)
+  - 批量上传成功率>99%，支持21个产品并发上传
+  - SAS URL生成和访问正常，7天有效期管理
+  - CMS团队API响应时间<500ms，版本化存储结构
+- [ ] **完整数据库记录系统** - 企业级数据管理 (中等优先级)
+  - 从SQLite平滑迁移到PostgreSQL企业级部署
+  - 支持复杂历史趋势分析和审计追踪
+  - 质量评分和CMS集成状态管理
+- [ ] **企业级增强功能** - 高可用生产部署 (低优先级)
+  - 监控告警系统集成，失败率阈值告警
+  - REST API接口实现，支持外部系统集成
+  - 定时任务调度机制，支持Cron表达式
 
-### Phase 5验证 (0/2完成) (原Phase 4)
+### Phase 5验证 (0/2完成)
 - [ ] 示例文件生成期望的flexible JSON输出
 - [ ] 整体架构兼容性正常，数据库记录不影响现有工作流
 - [ ] 现有功能不受影响
 
-### Phase 6验证 (0/2完成) (原Phase 5)
+### Phase 6验证 (0/2完成)
 - [ ] 企业级文档更新完成
 - [ ] 代码清理和配置模板创建
 
@@ -838,5 +1098,5 @@ else:
 - **CLI兼容性**: 架构升级对用户完全透明，100%向后兼容
 
 ### 🎯 下一步重点任务
-- **Phase 3深度优化**: 工具类复用机制、LargeFileStrategy补全
-- **Phase 4企业增强**: 数据库记录系统、增量处理机制、Azure Blob集成
+- **Phase 3生产级批量处理**: 轻量级数据库记录系统、ProductGroup批量处理引擎、数据驱动分析报告
+- **Phase 4企业级增强**: 基于Phase 3数据的智能增量处理、Azure Blob存储集成、完整数据库记录系统
