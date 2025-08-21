@@ -1,60 +1,112 @@
 {
-  "version": "2.0",
-  "last_updated": "2025-08-11",
-  "total_products": 21,
+  "version": "2.1",
+  "last_updated": "2025-08-21",
+  "total_products": 30,
   "future_capacity": 120,
-
   "categories": {
     "database": {
-      "count": 4,
+      "count": 5,
       "config_path": "products/database/",
-      "products": ["mysql", "postgresql", "cosmos-db", "data-explorer"]
+      "products": [
+        "mysql",
+        "postgresql",
+        "cosmos-db",
+        "data-explorer",
+        "database-migration"
+      ]
     },
     "analysis": {
       "count": 5,
       "config_path": "products/analysis/",
-      "products": ["power-bi-embedded", "analysis-services", "hdinsight", "ssis", "stream-analytics"],
+      "products": [
+        "power-bi-embedded",
+        "analysis-services",
+        "hdinsight",
+        "ssis",
+        "stream-analytics"
+      ],
       "large_html_products": []
     },
     "ai-ml": {
-      "count": 3,
+      "count": 5,
       "config_path": "products/ai-ml/",
-      "products": ["anomaly-detector", "search", "databricks"]
+      "products": [
+        "anomaly-detector",
+        "search",
+        "databricks",
+        "form-recognizer",
+        "metrics-advisor"
+      ]
     },
     "integration": {
       "count": 3,
       "config_path": "products/integration/",
-      "products": ["api-management", "event-grid", "service-bus"]
+      "products": [
+        "api-management",
+        "event-grid",
+        "service-bus"
+      ]
     },
     "identity": {
       "count": 3,
       "config_path": "products/identity/",
-      "products": ["active-directory-b2c", "active-directory-ds", "multi-factor-authentication"]
+      "products": [
+        "active-directory-b2c",
+        "active-directory-ds",
+        "multi-factor-authentication"
+      ]
     },
     "storage": {
       "count": 2,
       "config_path": "products/storage/",
-      "products": ["storage-files", "data-lake-storage"]
+      "products": [
+        "storage-files",
+        "data-lake-storage"
+      ]
     },
     "compute": {
       "count": 1,
       "config_path": "products/compute/",
-      "products": ["cloud-services"],
+      "products": [
+        "cloud-services"
+      ],
       "large_html_products": []
+    },
+    "container": {
+      "count": 2,
+      "config_path": "products/container/",
+      "products": [
+        "container-instances",
+        "kubernetes-service"
+      ]
+    },
+    "management": {
+      "count": 2,
+      "config_path": "products/management/",
+      "products": [
+        "azure-firewall",
+        "backup"
+      ]
+    },
+    "migration": {
+      "count": 2,
+      "config_path": "products/migration/",
+      "products": [
+        "azure-migrate",
+        "site-recovery"
+      ]
     }
   },
-
   "load_strategy": {
     "lazy_load": true,
     "cache_configs": true,
     "parallel_load": false,
     "cache_ttl_minutes": 30
   },
-
   "processing_defaults": {
     "memory_limit_mb": 512,
     "timeout_seconds": 120,
     "chunk_size_kb": 1024,
-    "large_file_threshold_mb": 2.0
+    "large_file_threshold_mb": 2
   }
 }

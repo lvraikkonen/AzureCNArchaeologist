@@ -4,5 +4,38 @@
   "url": "https://www.azure.cn/pricing/details/active-directory-b2c/index.html",
   "slug": "active-directory-b2c",
   "category": "identity",
+  "important_section_titles": [
+    "定价详细信息",
+    "定价详情",
+    "pricing details",
+    "常见问题",
+    "faq",
+    "frequently asked questions",
+    "支持和服务级别协议",
+    "Azure Active Directory B2C",
+    "active-directory-b2c"
+  ],
+  "html_processing": {
+    "type": "simple",
+    "estimated_size_mb": 1.0,
+    "processing_strategy": "simple"
+  },
+  "extraction_config": {
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": false
+  },
+  "validation_rules": {
+    "required_fields": [
+      "Title",
+      "BannerContent",
+      "DescriptionContent"
+    ],
+    "min_content_length": 100
+  },
   "created_at": "2025-08-11"
 }

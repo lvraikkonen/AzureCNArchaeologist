@@ -4,34 +4,37 @@
   "url": "https://www.azure.cn/pricing/details/storage/data-lake/index.html",
   "slug": "storage/data-lake",
   "category": "storage",
-  "created_at": "2025-07-25",
-
   "important_section_titles": [
-    "定价详细信息", "定价详情", "pricing details",
-    "常见问题", "faq", "frequently asked questions",
-    "data lake storage", "azure data lake", "平面命名空间", "分层命名空间"
+    "定价详细信息",
+    "定价详情",
+    "pricing details",
+    "常见问题",
+    "faq",
+    "frequently asked questions",
+    "Data Lake Storage",
+    "storage/data-lake"
   ],
-
   "html_processing": {
     "type": "normal",
     "estimated_size_mb": 0.22,
-    "processing_strategy": "standard",
-    "supports_tabs": true
+    "processing_strategy": "standard"
   },
-
   "extraction_config": {
-    "priority_sections": ["pricing-tables", "banner", "description"],
-    "enable_region_processing": true,
-    "enable_tab_processing": true,
-    "tab_structure": {
-      "tab_nav_selector": "ul.os-tab-nav",
-      "tab_content_selector": "div.tab-panel"
-    }
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": true
   },
-
   "validation_rules": {
-    "required_fields": ["Title", "BannerContent", "DescriptionContent"],
-    "min_content_length": 100,
-    "supports_tab_content": true
-  }
+    "required_fields": [
+      "Title",
+      "BannerContent",
+      "DescriptionContent"
+    ],
+    "min_content_length": 100
+  },
+  "created_at": "2025-07-25"
 }

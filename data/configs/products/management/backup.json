@@ -1,9 +1,9 @@
 {
-  "display_name": "Power BI Embedded",
-  "filename": "power-bi-embedded.html",
-  "url": "https://www.azure.cn/pricing/details/power-bi-embedded/index.html",
-  "slug": "power-bi-embedded",
-  "category": "analysis",
+  "display_name": "Azure Backup",
+  "filename": "backup.html",
+  "url": "https://www.azure.cn/pricing/details/backup/",
+  "slug": "backup",
+  "category": "management",
   "important_section_titles": [
     "定价详细信息",
     "定价详情",
@@ -12,12 +12,12 @@
     "faq",
     "frequently asked questions",
     "支持和服务级别协议",
-    "Power BI Embedded",
-    "power-bi-embedded"
+    "Azure Backup",
+    "backup"
   ],
   "html_processing": {
     "type": "region",
-    "estimated_size_mb": 0.6,
+    "estimated_size_mb": 1.0,
     "processing_strategy": "region"
   },
   "extraction_config": {
@@ -37,5 +37,5 @@
     ],
     "min_content_length": 100
   },
-  "created_at": "2025-07-22"
+  "created_at": "2025-08-21"
 }

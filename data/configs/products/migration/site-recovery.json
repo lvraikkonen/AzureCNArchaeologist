@@ -1,9 +1,9 @@
 {
-  "display_name": "Power BI Embedded",
-  "filename": "power-bi-embedded.html",
-  "url": "https://www.azure.cn/pricing/details/power-bi-embedded/index.html",
-  "slug": "power-bi-embedded",
-  "category": "analysis",
+  "display_name": "Site Recovery",
+  "filename": "site-recovery.html",
+  "url": "https://www.azure.cn/pricing/details/site-recovery/",
+  "slug": "site-recovery",
+  "category": "migration",
   "important_section_titles": [
     "定价详细信息",
     "定价详情",
@@ -12,13 +12,13 @@
     "faq",
     "frequently asked questions",
     "支持和服务级别协议",
-    "Power BI Embedded",
-    "power-bi-embedded"
+    "Site Recovery",
+    "site-recovery"
   ],
   "html_processing": {
-    "type": "region",
-    "estimated_size_mb": 0.6,
-    "processing_strategy": "region"
+    "type": "simple",
+    "estimated_size_mb": 1.0,
+    "processing_strategy": "simple"
   },
   "extraction_config": {
     "priority_sections": [
@@ -27,7 +27,7 @@
       "description",
       "faq"
     ],
-    "enable_region_processing": true
+    "enable_region_processing": false
   },
   "validation_rules": {
     "required_fields": [
@@ -37,5 +37,5 @@
     ],
     "min_content_length": 100
   },
-  "created_at": "2025-07-22"
+  "created_at": "2025-08-21"
 }

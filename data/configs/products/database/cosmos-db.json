@@ -2,29 +2,40 @@
   "display_name": "Azure Cosmos DB",
   "filename": "cosmos-db.html",
   "url": "https://www.azure.cn/pricing/details/cosmos-db/",
-  "slug": "cosmos-db", 
+  "slug": "cosmos-db",
   "category": "database",
-  "created_at": "2025-07-22",
-
   "important_section_titles": [
-    "定价详细信息", "定价详情", "pricing details",
-    "常见问题", "faq", "frequently asked questions",
-    "cosmos db", "nosql", "document database"
+    "定价详细信息",
+    "定价详情",
+    "pricing details",
+    "常见问题",
+    "faq",
+    "frequently asked questions",
+    "支持和服务级别协议",
+    "Azure Cosmos DB",
+    "cosmos-db"
   ],
-
   "html_processing": {
-    "type": "normal",
+    "type": "complex",
     "estimated_size_mb": 1.2,
-    "processing_strategy": "standard"
+    "processing_strategy": "complex"
   },
-
   "extraction_config": {
-    "priority_sections": ["pricing-tables", "banner", "description"],
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
     "enable_region_processing": true
   },
-
   "validation_rules": {
-    "required_fields": ["Title", "BannerContent", "DescriptionContent"],
+    "required_fields": [
+      "Title",
+      "BannerContent",
+      "DescriptionContent"
+    ],
     "min_content_length": 100
-  }
+  },
+  "created_at": "2025-07-22"
 }
