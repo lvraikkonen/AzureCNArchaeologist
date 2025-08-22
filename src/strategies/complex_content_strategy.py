@@ -97,24 +97,22 @@ class ComplexContentStrategy(BaseStrategy):
         content_groups = self.flexible_builder.build_complex_content_groups(
             filter_analysis, tab_analysis, content_mapping
         )
-        
-        # 6. 构建页面配置
-        page_config = self.flexible_builder.build_page_config(filter_analysis, tab_analysis)
-        
-        # 7. 构建策略特定内容
+
+        # 6. 构建策略特定内容
         strategy_content = {
             "baseContent": "",  # 复杂页面主要内容在contentGroups中
             "contentGroups": content_groups,
-            "pageConfig": page_config,
-            "strategy_type": "complex_content"
+            "strategy_type": "complex",
+            "filter_analysis": filter_analysis,  # 传递筛选器分析结果
+            "tab_analysis": tab_analysis  # 传递tab分析结果
         }
         
-        # 8. 使用FlexibleBuilder构建完整的flexible JSON
+        # 7. 使用FlexibleBuilder构建完整的flexible JSON
         flexible_data = self.flexible_builder.build_flexible_page(
             base_metadata, common_sections, strategy_content
         )
         
-        # 9. 验证flexible JSON结果
+        # 8. 验证flexible JSON结果
         flexible_data = self.extraction_validator.validate_flexible_json(flexible_data)
         
         logger.info("✅ 复杂内容策略提取完成（flexible JSON格式）")

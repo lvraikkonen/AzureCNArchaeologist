@@ -67,6 +67,7 @@ class ContentExtractor:
         metadata["MetaKeywords"] = self.extract_meta_keywords(soup)
         metadata["MSServiceName"] = self.extract_ms_service_name(soup)
         metadata["Slug"] = self.extract_slug(url)
+        metadata["Language"] = self.extract_language(soup)
         
         # 3. 提取其他元数据
         metadata["LastModified"] = self.extract_last_modified(soup)
@@ -218,6 +219,21 @@ class ContentExtractor:
             logger.info(f"⚠ slug提取失败: {e}")
 
         return ""
+    
+    def extract_language(self, soup: BeautifulSoup) -> str:
+        """
+        提取页面语言
+        
+        Args:
+            soup: BeautifulSoup对象
+            
+        Returns:
+            页面语言字符串
+        """
+        body = soup.find("body")
+        if body and body.has_attr("class"):
+            return body["class"][0]
+        return "zh-cn"
 
     def extract_last_modified(self, soup: BeautifulSoup) -> str:
         """

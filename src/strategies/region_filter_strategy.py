@@ -102,23 +102,21 @@ class RegionFilterStrategy(BaseStrategy):
         # 5. 使用FlexibleBuilder构建地区内容组
         content_groups = self.flexible_builder.build_region_content_groups(region_content)
         
-        # 6. 构建页面配置
-        page_config = self.flexible_builder.build_page_config(filter_analysis)
-        
-        # 7. 构建策略特定内容
+        # 6. 构建策略特定内容，包含所有必要的分析数据
         strategy_content = {
             "baseContent": "",  # 区域筛选页面主要内容在contentGroups中
             "contentGroups": content_groups,
-            "pageConfig": page_config,
-            "strategy_type": "region_filter"
+            "strategy_type": "region_filter",
+            "filter_analysis": filter_analysis,  # 传递筛选器分析结果
+            "tab_analysis": {}  # 区域筛选策略通常不涉及复杂tab
         }
         
-        # 8. 使用FlexibleBuilder构建完整的flexible JSON
+        # 7. 使用FlexibleBuilder构建完整的flexible JSON
         flexible_data = self.flexible_builder.build_flexible_page(
             base_metadata, common_sections, strategy_content
         )
         
-        # 9. 验证flexible JSON结果
+        # 8. 验证flexible JSON结果
         flexible_data = self.extraction_validator.validate_flexible_json(flexible_data)
         
         logger.info("✅ 区域筛选策略提取完成（flexible JSON格式）")

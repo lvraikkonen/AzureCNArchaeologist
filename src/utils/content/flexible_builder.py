@@ -46,7 +46,7 @@ class FlexibleBuilder:
         logger.info("🏗️ 构建完整的flexible JSON页面...")
         
         flexible_data = {
-            # 基础元数据
+            # 基础元数据 (适配ContentExtractor的键名)
             "title": base_metadata.get("Title", ""),
             "metaTitle": base_metadata.get("MetaTitle", ""),
             "metaDescription": base_metadata.get("MetaDescription", ""),
@@ -62,18 +62,10 @@ class FlexibleBuilder:
             "commonSections": common_sections,
             
             # 页面配置
-            "pageConfig": strategy_content.get("pageConfig", self._get_default_page_config()),
-            
-            # 元数据
-            "extractionMetadata": {
-                "extractorVersion": "flexible_v1.0",
-                "extractionTimestamp": datetime.now().isoformat(),
-                "strategyUsed": strategy_content.get("strategy_type", "unknown"),
-                "schemaVersion": "1.1"
-            }
+            "pageConfig": self._build_page_config(strategy_content, base_metadata),
         }
         
-        logger.info(f"✓ 构建完成，包含 {len(common_sections)} 个commonSections，{len(strategy_content.get('contentGroups', []))} 个contentGroups")
+        logger.info(f"✓ 构建完成，包含 {len(common_sections)} 个commonSections，{len(strategy_content.get("baseContent", ""))} 个baseContent,{len(strategy_content.get('contentGroups', []))} 个contentGroups")
         return flexible_data
 
     def build_simple_content_groups(self, base_content: str) -> List[Dict[str, Any]]:
@@ -125,7 +117,9 @@ class FlexibleBuilder:
                         "filterKey": "region",
                         "matchValues": [region_id]
                     }], ensure_ascii=False),
-                    "content": content if isinstance(content, str) else str(content)
+                    "content": content if isinstance(content, str) else str(content),
+                    "sortOrder": len(content_groups) + 1,
+                    "isActive": True
                 }
                 
                 content_groups.append(content_group)
@@ -186,7 +180,9 @@ class FlexibleBuilder:
                                         {"filterKey": "software", "matchValues": [software_id]},
                                         {"filterKey": "category", "matchValues": [tab_name]}
                                     ], ensure_ascii=False),
-                                    "content": clean_html_content(content_mapping[content_key])
+                                    "content": clean_html_content(content_mapping[content_key]),
+                                    "sortOrder": len(content_groups) + 1,
+                                    "isActive": True
                                 }
                                 content_groups.append(content_group)
                     else:
@@ -201,7 +197,9 @@ class FlexibleBuilder:
                                     {"filterKey": "region", "matchValues": [region_id]},
                                     {"filterKey": "software", "matchValues": [software_id]}
                                 ], ensure_ascii=False),
-                                "content": clean_html_content(content_mapping[content_key])
+                                "content": clean_html_content(content_mapping[content_key]),
+                                "sortOrder": len(content_groups) + 1,
+                                "isActive": True
                             }
                             content_groups.append(content_group)
             elif category_tabs:
@@ -220,115 +218,218 @@ class FlexibleBuilder:
                                 {"filterKey": "region", "matchValues": [region_id]},
                                 {"filterKey": "category", "matchValues": [tab_name]}
                             ], ensure_ascii=False),
-                            "content": clean_html_content(content_mapping[content_key])
+                            "content": clean_html_content(content_mapping[content_key]),
+                            "sortOrder": len(content_groups) + 1,
+                            "isActive": True
                         }
                         content_groups.append(content_group)
         
         logger.info(f"✓ 构建了 {len(content_groups)} 个复杂内容组")
         return content_groups
 
-    def build_page_config(self, 
-                         filter_analysis: Dict[str, Any],
-                         tab_analysis: Dict[str, Any] = None) -> Dict[str, Any]:
+    # def _determine_page_type(self, strategy_type: str, filter_analysis: Dict[str, Any] = None, tab_analysis: Dict[str, Any] = None) -> str:
+    #     """
+    #     根据策略类型和分析结果确定页面类型
+    #
+    #     Args:
+    #         strategy_type: 策略类型
+    #         filter_analysis: 筛选器分析结果
+    #         tab_analysis: Tab分析结果
+    #
+    #     Returns:
+    #         页面类型字符串
+    #     """
+    #     # 策略类型到页面类型的映射
+    #     strategy_to_page_type = {
+    #         "simple_static": "Simple",
+    #         "region_filter": "RegionFilter",
+    #         "complex": "ComplexFilter",
+    #         "tab_content": "TabFilter",
+    #         "region_tab": "RegionTabFilter",
+    #         "multi_filter": "MultiFilter"
+    #     }
+    #
+    #     return strategy_to_page_type.get(strategy_type, "Simple")
+    
+    # def _extract_display_title(self, base_metadata: Dict[str, Any] = None) -> str:
+    #     """
+    #     提取显示标题
+    #
+    #     Args:
+    #         base_metadata: 基础元数据
+    #
+    #     Returns:
+    #         显示标题字符串
+    #     """
+    #     if not base_metadata:
+    #         return ""
+    #
+    #     title = base_metadata.get("Title", "")
+    #     if title:
+    #         # 清理标题，移除常见的重复模式
+    #         import re
+    #         title = re.sub(r'\s*[-–]\s*Azure[\w\s]*$', '', title.strip())
+    #         title = re.sub(r'\s*定价\s*$', '', title.strip())
+    #         return title.strip()
+    #
+    #     return ""
+    
+    # def _extract_left_nav_identifier(self, base_metadata: Dict[str, Any] = None) -> str:
+    #     """
+    #     提取左侧导航标识符
+    #
+    #     Args:
+    #         base_metadata: 基础元数据
+    #
+    #     Returns:
+    #         导航标识符字符串
+    #     """
+    #     if not base_metadata:
+    #         return ""
+    #
+    #     # 优先使用MSServiceName
+    #     ms_service_name = base_metadata.get("MSServiceName", "")
+    #     if ms_service_name:
+    #         return ms_service_name
+    #
+    #     # 从Slug推导
+    #     slug = base_metadata.get("Slug", "")
+    #     if slug:
+    #         return slug
+    #
+    #     # 从source_file路径推导产品名称
+    #     source_file = base_metadata.get("source_file", "")
+    #     if source_file:
+    #         from pathlib import Path
+    #         filename = Path(source_file).stem
+    #         if filename.endswith('-index'):
+    #             return filename[:-6]
+    #         return filename
+    #
+    #     return ""
+    
+    def _build_page_config(self, strategy_content: Dict[str, Any], base_metadata: Dict[str, Any]) -> Dict[str, Any]:
         """
-        构建页面配置
+        基于策略类型构建正确的页面配置
         
         Args:
-            filter_analysis: 筛选器分析结果
-            tab_analysis: Tab分析结果（可选）
+            strategy_content: 策略特定内容，包含strategy_type和filter_analysis
+            base_metadata: 基础元数据，用于填充displayTitle和leftNavigationIdentifier
             
         Returns:
-            pageConfig字典
+            正确的pageConfig字典
         """
-        logger.info("⚙️ 构建页面配置...")
+        strategy_type = strategy_content.get("strategy_type", "unknown")
+        filter_analysis = strategy_content.get("filter_analysis", {})
+        tab_analysis = strategy_content.get("tab_analysis", {})
         
-        # 检查是否有可见的筛选器
-        has_visible_filters = (
-            filter_analysis.get("region_visible", False) or 
-            filter_analysis.get("software_visible", False)
-        )
-        
-        if not has_visible_filters:
-            return self._get_default_page_config()
-        
-        # 构建筛选器定义
-        filter_definitions = []
-        
-        # 地区筛选器
-        if filter_analysis.get("region_visible", False):
-            region_options = filter_analysis.get("region_options", [])
-            if region_options:
-                filter_definitions.append({
-                    "filterKey": "region",
-                    "displayName": "地区",
-                    "filterType": "dropdown",
-                    "options": [
-                        {
-                            "value": option.get("value", ""),
-                            "label": option.get("label", ""),
-                            "href": option.get("href", "")
-                        }
-                        for option in region_options
-                    ]
-                })
-        
-        # 软件筛选器
-        if filter_analysis.get("software_visible", False):
-            software_options = filter_analysis.get("software_options", [])
-            if software_options:
-                filter_definitions.append({
-                    "filterKey": "software",
-                    "displayName": "软件类别",
-                    "filterType": "dropdown",
-                    "options": [
-                        {
-                            "value": option.get("value", ""),
-                            "label": option.get("label", ""),
-                            "href": option.get("href", "")
-                        }
-                        for option in software_options
-                    ]
-                })
-        
-        # Category tabs（如果有）
-        if tab_analysis and tab_analysis.get("category_tabs"):
-            category_options = [
-                {
-                    "value": tab.get("href", "").replace("#", ""),
-                    "label": tab.get("label", ""),
-                    "href": tab.get("href", "")
-                }
-                for tab in tab_analysis.get("category_tabs", [])
-            ]
-            
-            if category_options:
-                filter_definitions.append({
-                    "filterKey": "category",
-                    "displayName": "类别",
-                    "filterType": "tabs",
-                    "options": category_options
-                })
-        
-        filters_config = {
-            "filterDefinitions": filter_definitions
-        }
-        
+        # 基础配置 (从base_metadata中提取正确的值)
         page_config = {
-            "enableFilters": True,
-            "filtersJsonConfig": json.dumps(filters_config, ensure_ascii=False)
+            "displayTitle": base_metadata.get("Title", ""),
+            "pageIcon": "{base_url}/Static/Favicon/favicon.ico",
+            "leftNavigationIdentifier": base_metadata.get("MSServiceName", ""),
         }
         
-        logger.info(f"✓ 构建页面配置，包含 {len(filter_definitions)} 个筛选器")
+        # 根据策略类型设置pageType和筛选器配置
+        if strategy_type == "simple_static":
+            page_config.update({
+                "pageType": "Simple",
+                "enableFilters": False,
+                "filtersJsonConfig": json.dumps({"filterDefinitions": []}, ensure_ascii=False)
+            })
+        elif strategy_type == "region_filter":
+            page_config.update({
+                "pageType": "RegionFilter",
+                "enableFilters": True,
+                "filtersJsonConfig": self._build_filters_json_config(filter_analysis)
+            })
+        elif strategy_type == "complex":
+            page_config.update({
+                "pageType": "ComplexFilter",
+                "enableFilters": True,
+                "filtersJsonConfig": self._build_filters_json_config(filter_analysis)
+            })
+        else:
+            # 默认配置
+            page_config.update({
+                "pageType": "Simple",
+                "enableFilters": False,
+                "filtersJsonConfig": json.dumps({"filterDefinitions": []}, ensure_ascii=False)
+            })
+        
         return page_config
+
+    def _build_filters_json_config(self, filter_analysis: Dict[str, Any]) -> str:
+        """
+        基于筛选器分析构建filtersJsonConfig
+        
+        Args:
+            filter_analysis: FilterDetector的分析结果
+            
+        Returns:
+            JSON格式的筛选器配置字符串
+        """
+        try:
+            filter_definitions = []
+            
+            # 处理区域筛选器 (适配FilterDetector的平铺结构)
+            if filter_analysis.get("region_visible", False):
+                region_options_data = filter_analysis.get("region_options", [])
+                region_options = []
+                
+                for option in region_options_data:
+                    region_options.append({
+                        "value": option.get("value", ""),
+                        "label": option.get("label", ""),
+                        "href": option.get("href", "")
+                    })
+                
+                filter_definitions.append({
+                    "type": "region",
+                    "displayName": "区域",
+                    "options": region_options
+                })
+            
+            # 处理软件类别筛选器 (适配FilterDetector的平铺结构)
+            if filter_analysis.get("software_visible", False):
+                software_options_data = filter_analysis.get("software_options", [])
+                software_options = []
+                
+                for option in software_options_data:
+                    software_options.append({
+                        "value": option.get("value", ""),
+                        "label": option.get("label", ""),
+                        "href": option.get("href", "")
+                    })
+                
+                filter_definitions.append({
+                    "type": "software",
+                    "displayName": "软件类别", 
+                    "options": software_options
+                })
+            
+            filters_config = {
+                "filterDefinitions": filter_definitions
+            }
+            
+            return json.dumps(filters_config, ensure_ascii=False)
+            
+        except Exception as e:
+            logger.warning(f"⚠️ 构建筛选器配置失败: {e}")
+            return json.dumps({"filterDefinitions": []}, ensure_ascii=False)
 
     def _get_default_page_config(self) -> Dict[str, Any]:
         """
-        获取默认页面配置（无筛选器）
+        获取默认页面配置（无筛选器）- 保留向后兼容性
         
         Returns:
             默认pageConfig字典
         """
         return {
+            "pageType": "Simple",
+            "displayTitle": "",
+            "pageIcon": "{base_url}/Static/Favicon/favicon.ico",
+            "leftNavigationIdentifier": "",
             "enableFilters": False,
             "filtersJsonConfig": json.dumps({"filterDefinitions": []}, ensure_ascii=False)
         }

@@ -48,7 +48,10 @@ class SectionExtractor:
         if banner_content:
             sections.append({
                 "sectionType": "Banner",
-                "content": banner_content
+                "sectionTitle": "",  # Banner通常无标题
+                "content": banner_content,
+                "sortOrder": 1,
+                "isActive": True
             })
         
         # 2. 提取Description
@@ -56,7 +59,10 @@ class SectionExtractor:
         if description_content:
             sections.append({
                 "sectionType": "ProductDescription",
-                "content": description_content
+                "sectionTitle": "",  # Description通常无标题
+                "content": description_content,
+                "sortOrder": 1,
+                "isActive": True
             })
         
         # 3. 提取QA
@@ -64,10 +70,13 @@ class SectionExtractor:
         if qa_content:
             sections.append({
                 "sectionType": "Qa",
-                "content": qa_content
+                "sectionTitle": "",  # QA通常内嵌标题
+                "content": qa_content,
+                "sortOrder": 1,
+                "isActive": True
             })
         
-        logger.info(f"✓ 提取了 {len(sections)} 个commonSections")
+        logger.info(f"✓ 提取了 {len(sections)} 个完整commonSections")
         return sections
 
     def extract_banner(self, soup: BeautifulSoup) -> str:
@@ -261,42 +270,3 @@ class SectionExtractor:
             
         except Exception as e:
             logger.info(f"⚠ Q&A内容提取失败: {e}")
-            return ""
-
-    def _standardize_banner_images(self, banner) -> str:
-        """
-        标准化Banner中的图片格式，保留文本内容
-        
-        Args:
-            banner: Banner元素
-            
-        Returns:
-            标准化的HTML字符串
-        """
-        try:
-            # 创建banner的副本避免修改原始DOM
-            banner_copy = copy.copy(banner)
-            
-            # 处理img标签
-            for img in banner_copy.find_all('img'):
-                src = img.get('src', '')
-                if src:
-                    # 标准化图片路径
-                    if not src.startswith('http'):
-                        img['src'] = f"{{img_hostname}}{src}"
-            
-            # 处理style中的background-image
-            if banner_copy.get('style'):
-                style = banner_copy['style']
-                if 'background-image' in style:
-                    # 标准化背景图片路径
-                    style = re.sub(r'url\(["\']?([^"\']*)["\']?\)', 
-                                 lambda m: f'url("{{{img_hostname}}}{m.group(1)}")' if not m.group(1).startswith('http') else m.group(0), 
-                                 style)
-                    banner_copy['style'] = style
-            
-            return clean_html_content(str(banner_copy))
-            
-        except Exception as e:
-            logger.info(f"⚠ Banner图片标准化失败: {e}")
-            return clean_html_content(str(banner))

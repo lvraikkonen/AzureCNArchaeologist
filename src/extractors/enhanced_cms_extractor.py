@@ -74,17 +74,6 @@ class EnhancedCMSExtractor:
             logger.info("委托给提取协调器处理...")
             result = self.extraction_coordinator.coordinate_extraction(html_file_path, url)
             
-            # 添加提取器级别的元数据
-            if isinstance(result, dict):
-                if "extraction_metadata" not in result:
-                    result["extraction_metadata"] = {}
-                
-                result["extraction_metadata"].update({
-                    "extractor_version": "enhanced_v3.0_simplified",
-                    "extractor_mode": "coordinator_delegated",
-                    "output_dir": str(self.output_dir)
-                })
-            
             logger.info("提取完成")
             return result
 
