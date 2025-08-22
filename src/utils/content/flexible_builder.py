@@ -65,7 +65,7 @@ class FlexibleBuilder:
             "pageConfig": self._build_page_config(strategy_content, base_metadata),
         }
         
-        logger.info(f"✓ 构建完成，包含 {len(common_sections)} 个commonSections，{len(strategy_content.get("baseContent", ""))} 个baseContent,{len(strategy_content.get('contentGroups', []))} 个contentGroups")
+        logger.info(f"✓ 构建完成，包含 {len(common_sections)} 个commonSections, {len(strategy_content.get('contentGroups', []))} 个contentGroups")
         return flexible_data
 
     def build_simple_content_groups(self, base_content: str) -> List[Dict[str, Any]]:
@@ -347,7 +347,7 @@ class FlexibleBuilder:
             page_config.update({
                 "pageType": "ComplexFilter",
                 "enableFilters": True,
-                "filtersJsonConfig": self._build_filters_json_config(filter_analysis)
+                "filtersJsonConfig": self._build_filters_json_config(filter_analysis, tab_analysis)
             })
         else:
             # 默认配置
@@ -359,12 +359,13 @@ class FlexibleBuilder:
         
         return page_config
 
-    def _build_filters_json_config(self, filter_analysis: Dict[str, Any]) -> str:
+    def _build_filters_json_config(self, filter_analysis: Dict[str, Any] = None, tab_analysis: Dict[str, Any] = None) -> str:
         """
         基于筛选器分析构建filtersJsonConfig
         
         Args:
             filter_analysis: FilterDetector的分析结果
+            tab_analysis: TabDetector的分析结果
             
         Returns:
             JSON格式的筛选器配置字符串
@@ -385,7 +386,7 @@ class FlexibleBuilder:
                     })
                 
                 filter_definitions.append({
-                    "type": "region",
+                    "filterType": "region",
                     "displayName": "区域",
                     "options": region_options
                 })
@@ -403,10 +404,27 @@ class FlexibleBuilder:
                     })
                 
                 filter_definitions.append({
-                    "type": "software",
+                    "filterType": "software",
                     "displayName": "软件类别", 
                     "options": software_options
                 })
+
+            # 处理Tab选项卡 Category Tabs (如果有)
+            if tab_analysis and tab_analysis.get("category_tabs"):
+                category_options = [
+                    {
+                        "value": tab.get("href", "").replace("#", ""),
+                        "label": tab.get("label", "")
+                    }
+                    for tab in tab_analysis.get("category_tabs", [])
+                ]
+
+                if category_options:
+                    filter_definitions.append({
+                        "filterType": "tab",
+                        "displayName": "类别",
+                        "options": category_options
+                    })
             
             filters_config = {
                 "filterDefinitions": filter_definitions
@@ -417,19 +435,3 @@ class FlexibleBuilder:
         except Exception as e:
             logger.warning(f"⚠️ 构建筛选器配置失败: {e}")
             return json.dumps({"filterDefinitions": []}, ensure_ascii=False)
-
-    def _get_default_page_config(self) -> Dict[str, Any]:
-        """
-        获取默认页面配置（无筛选器）- 保留向后兼容性
-        
-        Returns:
-            默认pageConfig字典
-        """
-        return {
-            "pageType": "Simple",
-            "displayTitle": "",
-            "pageIcon": "{base_url}/Static/Favicon/favicon.ico",
-            "leftNavigationIdentifier": "",
-            "enableFilters": False,
-            "filtersJsonConfig": json.dumps({"filterDefinitions": []}, ensure_ascii=False)
-        }

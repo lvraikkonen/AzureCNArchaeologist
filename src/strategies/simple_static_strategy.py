@@ -81,7 +81,6 @@ class SimpleStaticStrategy(BaseStrategy):
         strategy_content = {
             "baseContent": self._extract_main_content(soup),
             "contentGroups": self.flexible_builder.build_simple_content_groups(""),  # 简单页面无contentGroups
-            "pageConfig": self.flexible_builder._get_default_page_config(),  # 无筛选器
             "strategy_type": "simple_static"
         }
         
