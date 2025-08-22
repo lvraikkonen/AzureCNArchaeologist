@@ -27,7 +27,21 @@
       "description",
       "faq"
     ],
-    "enable_region_processing": true
+    "enable_region_processing": true,
+    "extra_sections": [
+      {
+        "title": "公共 IP 地址",
+        "type": "content",
+        "include_in": "contentGroups",
+        "position": "after_main"
+      },
+      {
+        "title": "定价示例",
+        "type": "content", 
+        "include_in": "contentGroups",
+        "position": "after_main"
+      }
+    ]
   },
   "validation_rules": {
     "required_fields": [

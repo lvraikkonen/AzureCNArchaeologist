@@ -50,56 +50,8 @@ class RegionProcessor:
                 logger.info(f"✅ 使用软件筛选器OS名称: '{os_name}'")
                 return os_name
         
-        # 优先级2: 产品配置的display_name（配置驱动）
-        if product_config and 'display_name' in product_config:
-            display_name = product_config['display_name'].strip()
-            if display_name:
-                logger.info(f"✅ 使用产品配置display_name: '{display_name}'")
-                return display_name
-        
-        # 优先级3: 从文件路径推断（最后回退）
-        if html_file_path:
-            filename = Path(html_file_path).stem
-            if filename.endswith('-index'):
-                product_key = filename[:-6]
-            else:
-                product_key = filename
-            
-            # 尝试通过推断获取OS名称
-            fallback_name = self._fallback_name_inference(product_key)
-            logger.warning(f"⚠ 使用回退推断OS名称: '{product_key}' → '{fallback_name}'")
-            return fallback_name
-        
         logger.error("❌ 无法获取有效的OS名称，所有方法都失败")
         return ""
-    
-    def _fallback_name_inference(self, product_key: str) -> str:
-        """
-        从产品键推断OS名称的回退逻辑
-        
-        Args:
-            product_key: 产品键（如"api-management"）
-            
-        Returns:
-            推断的OS名称（如"API Management"）
-        """
-        if not product_key:
-            return ""
-        
-        # 简单的反向推断逻辑
-        words = product_key.replace('-', ' ').replace('_', ' ').split()
-        
-        # 特殊大写规则
-        capitalized_words = []
-        for word in words:
-            if word.upper() in ['API', 'ML', 'AI', 'DB', 'BI', 'SSIS']:
-                capitalized_words.append(word.upper())
-            else:
-                capitalized_words.append(word.capitalize())
-        
-        inferred_name = ' '.join(capitalized_words)
-        logger.debug(f"名称推断: '{product_key}' → '{inferred_name}'")
-        return inferred_name
 
     def _load_region_config(self) -> Dict[str, Any]:
         """加载区域配置文件"""
@@ -252,25 +204,15 @@ class RegionProcessor:
         
         region_contents = {}
         
-        # 获取用于区域筛选的OS名称（支持多优先级回退）
+        # 获取用于区域筛选的OS名称
         os_name = self.get_os_name_for_region_filtering(
             product_config=product_config,
             filter_analysis=filter_analysis,
             html_file_path=html_file_path
         )
         
-        if not os_name:
-            logger.warning("⚠ 无法获取有效的OS名称，跳过区域筛选")
-            region_contents['global'] = self._extract_global_content(soup)
-            return region_contents
-        
         # 检测可用区域
         available_regions = self.detect_available_regions(soup)
-        
-        if not available_regions:
-            logger.info("ℹ 未检测到具体区域，使用全局内容")
-            region_contents['global'] = self._extract_global_content(soup)
-            return region_contents
         
         logger.info(f"🎯 使用OS名称 '{os_name}' 进行区域筛选，检测到 {len(available_regions)} 个区域")
         
@@ -283,7 +225,7 @@ class RegionProcessor:
                 region_soup = self.apply_region_filtering(soup, region_id, os_name)
 
                 # 提取完整的HTML内容而不是分解的结构
-                region_html = self._extract_region_html_content(region_soup, region_id)
+                region_html = self._extract_region_html_content(region_soup, region_id, product_config)
 
                 region_contents[region_id] = region_html
 
@@ -325,15 +267,7 @@ class RegionProcessor:
             if os_name in self.region_config:
                 product_config = self.region_config[os_name]
                 logger.info(f"✅ 在字典格式配置中找到OS '{os_name}' 的配置: {list(product_config.keys()) if isinstance(product_config, dict) else 'N/A'}")
-            else:
-                # 尝试标准化名称查找
-                normalized_os_name = self._normalize_product_name(os_name)
-                if normalized_os_name in self.region_config:
-                    product_config = self.region_config[normalized_os_name]
-                    logger.info(f"✅ 通过标准化名称找到配置: '{os_name}' → '{normalized_os_name}': {list(product_config.keys()) if isinstance(product_config, dict) else 'N/A'}")
-                else:
-                    logger.warning(f"⚠ 在字典格式配置中未找到: '{os_name}' 或 '{normalized_os_name}', 可用键: {list(self.region_config.keys())[:10]}...")
-        
+
         # 如果region_config是列表格式（原始），遍历查找
         elif isinstance(self.region_config, list):
             for config_item in self.region_config:
@@ -455,59 +389,27 @@ class RegionProcessor:
             content_blocks.append(current_block)
             
         return content_blocks
-    
+
     def _classify_content_relation(self, element, table_id: str):
         """分类内容与表格的关系"""
         if not hasattr(element, 'name'):
             return 'unrelated'
-            
+
         # 如果是表格本身
         if element.name == 'table' and element.get('id') == table_id.replace('#', ''):
             return 'table'
-            
-        # 检查是否是重要的产品标题（全局保护）
-        if element.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
-            title_text = element.get_text(strip=True)
-            # 使用更智能的标题识别，而非硬编码列表
-            if self._is_global_product_title(title_text):
-                return 'global_title'
-            elif self._is_section_title(title_text):
-                return 'section_title'
-                
+
         # 检查tags-date的类型
         if element.name == 'div' and 'tags-date' in element.get('class', []):
             return self._classify_tags_date(element)
-            
+
         # 其他元素
         return 'content'
-    
-    def _is_global_product_title(self, title_text: str) -> bool:
-        """判断是否是全局产品标题（应保护）"""
-        # 检查是否是主要产品/服务名称
-        global_patterns = [
-            r'^API\s*管理$',
-            r'^API\s*Management$', 
-            r'^Azure\s+Database',
-            r'^Cosmos\s*DB$',
-            r'^MySQL$',
-            r'^PostgreSQL$'
-        ]
-        
-        import re
-        for pattern in global_patterns:
-            if re.match(pattern, title_text, re.IGNORECASE):
-                return True
-        return False
-    
-    def _is_section_title(self, title_text: str) -> bool:
-        """判断是否是功能区段标题"""
-        section_keywords = ['Gateway', '网关', '定价', 'Pricing', '功能', 'Features']
-        return any(keyword in title_text for keyword in section_keywords)
-    
+
     def _classify_tags_date(self, tags_date_element) -> str:
         """分类tags-date元素的类型"""
         text = tags_date_element.get_text(strip=True)
-        
+
         # 全局价格说明（应保护）
         global_pricing_patterns = [
             '*以下价格均为含税价格',
@@ -515,15 +417,15 @@ class RegionProcessor:
             'prices are tax-inclusive',
             'monthly price estimates'
         ]
-        
+
         for pattern in global_pricing_patterns:
             if pattern in text:
                 return 'global_pricing_note'
-        
+
         # 表格注释说明（应保留）- 包含脚注编号的说明
         if self._contains_footnote_references(text):
             return 'table_footnote_note'
-                
+
         # 其他表格特定的说明（可能需要移除）
         return 'table_specific_note'
     
@@ -622,22 +524,12 @@ class RegionProcessor:
         except Exception as e:
             print(f"      ⚠ 表格移除失败: {e}")
 
-    def _extract_global_content(self, soup: BeautifulSoup) -> Dict[str, Any]:
-        """提取全局内容（无区域区分）"""
-        return {
-            'type': 'global',
-            'pricing_tables': self._extract_pricing_tables_simple(soup),
-            'content_summary': self._get_content_summary(soup)
-        }
-
-    def _extract_region_html_content(self, soup: BeautifulSoup, region_id: str) -> str:
-        """提取区域的完整HTML内容 - 针对pricing-detail-tab结构优化"""
+    def _extract_region_html_content(self, soup: BeautifulSoup, region_id: str, product_config: Dict[str, Any] = None) -> str:
+        """提取区域的完整HTML内容 - 针对pricing-detail-tab结构优化，支持额外sections"""
         logger.debug(f"提取区域 {region_id} 的完整HTML内容")
         
         # 构建HTML结构，匹配原始tab-content格式
         html_parts = []
-        html_parts.append('<div class="tab-content">')
-        html_parts.append('<div class="tab-panel" id="tabContent1">')
         
         # 查找pricing-detail-tab结构中的主要内容
         pricing_detail_tab = soup.find(class_='technical-azure-selector pricing-detail-tab')
@@ -725,12 +617,15 @@ class RegionProcessor:
                 content_extracted = True
                 break
         
-        # 添加tab控制结构
-        html_parts.append('<div class="technical-azure-selector tab-control-selector" style="min-height: 400px;">')
-        html_parts.append('<div class="tab-control-container tab-active" id="tabContent1">')
-        html_parts.append('<!-- Content extracted from tab-content pricing-page-section -->')
-        html_parts.append('</div>')  # tab-control-container
-        html_parts.append('</div>')  # technical-azure-selector
+        # 提取并添加额外的sections（如果配置了的话）
+        if product_config:
+            extra_sections_html = self._extract_extra_sections(soup, product_config)
+            if extra_sections_html:
+                html_parts.append('<!-- Extra sections configured in product config -->')
+                for extra_section in extra_sections_html:
+                    html_parts.append(extra_section)
+                logger.info(f"✅ 添加了 {len(extra_sections_html)} 个额外section到区域 {region_id}")
+        
         html_parts.append('</div>')  # tab-panel
         html_parts.append('</div>')  # tab-content
         
@@ -775,133 +670,70 @@ class RegionProcessor:
         
         return content
 
-    def _is_pricing_table(self, table_text: str) -> bool:
-        """判断是否为定价表格"""
-        pricing_keywords = [
-            '价格', 'price', '定价', 'pricing', '费用', 'cost', 
-            '￥', '$', '元', '美元', 'usd', 'rmb', 'cny'
-        ]
+    def _extract_extra_sections(self, soup: BeautifulSoup, product_config: Dict[str, Any] = None) -> List[str]:
+        """
+        根据产品配置提取额外的pricing-page-section
         
-        text_lower = table_text.lower()
-        return any(keyword in text_lower for keyword in pricing_keywords)
-
-    def _extract_pricing_tables_simple(self, soup: BeautifulSoup) -> List[Dict[str, Any]]:
-        """简单的定价表格提取"""
-        pricing_tables = []
-        tables = soup.find_all('table')
-        
-        for i, table in enumerate(tables):
-            table_text = table.get_text(strip=True)
+        Args:
+            soup: BeautifulSoup对象
+            product_config: 产品配置字典
             
-            if self._is_pricing_table(table_text):
-                pricing_tables.append({
-                    'table_id': f"global_table_{i}",
-                    'content': table_text[:500],  # 限制内容长度
-                    'row_count': len(table.find_all('tr'))
-                })
+        Returns:
+            额外sections的HTML列表
+        """
+        extra_sections_html = []
         
-        return pricing_tables
-
-    def _get_content_summary(self, soup: BeautifulSoup) -> Dict[str, Any]:
-        """获取内容摘要"""
-        return {
-            'total_tables': len(soup.find_all('table')),
-            'total_lists': len(soup.find_all(['ul', 'ol'])),
-            'total_headings': len(soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])),
-            'has_forms': len(soup.find_all('form')) > 0,
-            'has_scripts': len(soup.find_all('script')) > 0
-        }
-
-    def get_region_mapping(self) -> Dict[str, str]:
-        """获取区域映射关系"""
-        # 标准的Azure China区域映射
-        return {
-            'north-china': '中国北部',
-            'esat-china': '中国东部', 
-            'north-china2': '中国北部 2',
-            'esat-china2': '中国东部 2',
-            'north-china3': '中国北部 3',
-            'esat-china3': '中国东部 3', 
-        }
-
-    def normalize_region_id(self, region_id: str) -> str:
-        """标准化区域ID"""
-        # 转换为小写并替换常见变体
-        normalized = region_id.lower().strip()
+        if not product_config:
+            return extra_sections_html
+            
+        # 获取额外sections配置
+        extra_sections_config = product_config.get('extraction_config', {}).get('extra_sections', [])
         
-        # 处理常见的区域名称变体
-        region_variants = {
-            'cn-north': 'china-north',
-            'cn-east': 'china-east', 
-            'cn-south': 'china-south',
-            '北京': 'beijing',
-            '上海': 'shanghai',
-            '广州': 'guangzhou',
-            '深圳': 'shenzhen'
-        }
+        if not extra_sections_config:
+            return extra_sections_html
+            
+        logger.info(f"🔍 检测到 {len(extra_sections_config)} 个额外section配置")
         
-        return region_variants.get(normalized, normalized)
-
-    def validate_region_config(self) -> Dict[str, Any]:
-        """验证区域配置的完整性"""
-        validation_result = {
-            'is_valid': True,
-            'total_products': len(self.region_config),
-            'total_regions': set(),
-            'issues': []
-        }
+        # 查找所有pricing-page-section
+        all_sections = soup.find_all('div', class_='pricing-page-section')
         
-        for product, regions in self.region_config.items():
-            if not isinstance(regions, dict):
-                validation_result['issues'].append(f"产品 {product} 的配置不是字典格式")
-                validation_result['is_valid'] = False
+        for config in extra_sections_config:
+            title = config.get('title', '')
+            section_type = config.get('type', 'content')
+            include_in = config.get('include_in', '')
+            
+            if include_in != 'contentGroups':
                 continue
                 
-            for region_id, table_ids in regions.items():
-                validation_result['total_regions'].add(region_id)
-                
-                if not isinstance(table_ids, list):
-                    validation_result['issues'].append(
-                        f"产品 {product} 区域 {region_id} 的表格ID不是列表格式"
-                    )
-                    validation_result['is_valid'] = False
-        
-        validation_result['total_regions'] = len(validation_result['total_regions'])
-        
-        return validation_result
-
-    def get_statistics(self) -> Dict[str, Any]:
-        """获取区域处理统计信息"""
-        stats = {
-            'total_products_configured': len(self.region_config),
-            'regions_by_product': {},
-            'most_common_regions': {},
-            'total_table_exclusions': 0
-        }
-        
-        all_regions = []
-        
-        # 检查region_config是否为字典格式
-        if not isinstance(self.region_config, dict):
-            return stats
+            logger.debug(f"查找额外section: '{title}'")
             
-        for product, regions in self.region_config.items():
-            if isinstance(regions, dict):
-                product_regions = list(regions.keys())
-                stats['regions_by_product'][product] = len(product_regions)
-                all_regions.extend(product_regions)
+            # 查找匹配标题的section
+            matching_section = None
+            for section in all_sections:
+                section_text = section.get_text().strip()
+                # 检查section的h2标题是否匹配
+                h2_tag = section.find('h2')
+                if h2_tag and title in h2_tag.get_text().strip():
+                    matching_section = section
+                    break
+                # 或者检查整个section文本是否包含标题
+                elif title in section_text:
+                    matching_section = section
+                    break
+            
+            if matching_section:
+                # 使用 classify_pricing_section 验证类型
+                from src.utils.content.content_utils import classify_pricing_section
+                detected_type = classify_pricing_section(matching_section)
                 
-                # 统计表格排除数量
-                for table_list in regions.values():
-                    if isinstance(table_list, list):
-                        stats['total_table_exclusions'] += len(table_list)
+                if detected_type == section_type or section_type == 'any':
+                    section_html = self._preserve_important_content(str(matching_section))
+                    if section_html.strip():
+                        extra_sections_html.append(section_html)
+                        logger.info(f"✅ 成功提取额外section: '{title}' (类型: {detected_type})")
+                else:
+                    logger.warning(f"⚠ Section '{title}' 类型不匹配: 期望 {section_type}, 检测到 {detected_type}")
             else:
-                # 如果regions不是字典，跳过
-                stats['regions_by_product'][product] = 0
+                logger.warning(f"⚠ 未找到标题为 '{title}' 的section")
         
-        # 统计最常见的区域
-        from collections import Counter
-        region_counts = Counter(all_regions)
-        stats['most_common_regions'] = dict(region_counts.most_common(10))
-        
-        return stats
+        return extra_sections_html
