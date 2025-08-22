@@ -23,6 +23,8 @@ from src.utils.content.section_extractor import SectionExtractor
 from src.utils.content.flexible_builder import FlexibleBuilder
 from src.utils.data.extraction_validator import ExtractionValidator
 from src.detectors.filter_detector import FilterDetector
+from src.utils.content.content_utils import classify_pricing_section, filter_sections_by_type
+from src.utils.html.cleaner import clean_html_content
 
 from src.core.logging import get_logger
 
@@ -103,8 +105,14 @@ class RegionFilterStrategy(BaseStrategy):
         content_groups = self.flexible_builder.build_region_content_groups(region_content)
         
         # 6. 构建策略特定内容，包含所有必要的分析数据
+        # 对于区域筛选策略，如果没有有效的区域内容，可以提取baseContent作为fallback
+        base_content = ""
+        if not region_content or len(region_content) == 0:
+            logger.info("⚠ 未找到区域内容，尝试提取通用baseContent...")
+            base_content = self._extract_main_content(soup)
+        
         strategy_content = {
-            "baseContent": "",  # 区域筛选页面主要内容在contentGroups中
+            "baseContent": base_content,  # 如果有区域内容则为空，否则作为fallback
             "contentGroups": content_groups,
             "strategy_type": "region_filter",
             "filter_analysis": filter_analysis,  # 传递筛选器分析结果
@@ -133,6 +141,79 @@ class RegionFilterStrategy(BaseStrategy):
             commonSections列表
         """
         return self.section_extractor.extract_all_sections(soup)
+
+    def _extract_main_content(self, soup: BeautifulSoup) -> str:
+        """
+        提取主要内容 - 智能分类版本（用于区域筛选策略的fallback）
+        
+        Args:
+            soup: BeautifulSoup对象
+            
+        Returns:
+            主要内容HTML字符串
+        """
+        logger.info("📝 提取区域筛选fallback内容（智能分类模式）...")
+        
+        try:
+            # 方案1: 查找technical-azure-selector内的pricing-page-section，使用智能分类
+            logger.info("🔍 查找technical-azure-selector内容（智能分类）...")
+            technical_selector = soup.find('div', class_='technical-azure-selector')
+            if technical_selector:
+                pricing_sections = technical_selector.find_all('div', class_='pricing-page-section')
+                if pricing_sections:
+                    # 使用智能分类过滤，只保留content类型的section
+                    content_sections = filter_sections_by_type(
+                        pricing_sections, 
+                        include_types=['content']
+                    )
+                    
+                    if content_sections:
+                        main_content = ""
+                        for section in content_sections:
+                            main_content += str(section)
+                            section_type = classify_pricing_section(section)
+                            logger.info(f"✓ 添加区域筛选fallback section (类型: {section_type})")
+                        
+                        logger.info(f"✓ 找到区域筛选fallback内容，共{len(content_sections)}个content sections")
+                        return clean_html_content(main_content)
+            
+            # 方案2: 查找所有pricing-page-section，智能分类后处理
+            logger.info("🔍 查找所有pricing-page-section（智能分类）...")
+            all_pricing_sections = soup.find_all('div', class_='pricing-page-section')
+            
+            if all_pricing_sections:
+                main_content = ""
+                processed_sections = 0
+                
+                # 跳过第一个section（通常是Description），从第二个开始智能分类
+                for section in all_pricing_sections[1:]:
+                    section_type = classify_pricing_section(section)
+                    
+                    if section_type == 'content':
+                        main_content += str(section)
+                        processed_sections += 1
+                        logger.info(f"✓ 添加区域筛选fallback content section #{processed_sections}")
+                    elif section_type in ['faq', 'sla']:
+                        logger.info(f"⏩ 跳过{section_type} section（将由SectionExtractor处理）")
+                    else:
+                        logger.info(f"⏩ 跳过{section_type} section")
+                
+                if main_content:
+                    logger.info(f"✓ 区域筛选fallback智能分类完成，处理了{processed_sections}个content sections")
+                    return clean_html_content(main_content)
+            
+            # 方案3: 使用ContentExtractor的主要内容提取
+            logger.info("🔍 使用ContentExtractor主要内容提取...")
+            main_content = self.content_extractor.extract_main_content(soup)
+            if main_content:
+                return clean_html_content(main_content)
+            
+            logger.info("⚠ 未找到合适的fallback主要内容")
+            return ""
+            
+        except Exception as e:
+            logger.info(f"⚠ 区域筛选fallback内容提取失败: {e}")
+            return ""
 
     def _get_product_key(self) -> str:
         """获取产品键"""

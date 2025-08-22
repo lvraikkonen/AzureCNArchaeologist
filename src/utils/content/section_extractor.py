@@ -119,7 +119,7 @@ class SectionExtractor:
     def extract_description(self, soup: BeautifulSoup) -> str:
         """
         提取描述内容
-        Banner后第一个pricing-page-section的内容，但排除FAQ
+        Banner后第一个有效描述元素的内容（支持pricing-page-section、ul等元素），但排除FAQ
         
         Args:
             soup: BeautifulSoup对象
@@ -133,22 +133,54 @@ class SectionExtractor:
             # 首先查找Banner元素
             banner = soup.find('div', {'class': ['common-banner', 'col-top-banner']})
             if banner:
-                # 从Banner后面查找第一个pricing-page-section
+                # 从Banner后面查找第一个有效的描述元素
                 current = banner
                 while current:
                     current = current.find_next_sibling()
-                    if current and current.name == 'div' and 'pricing-page-section' in current.get('class', []):
-                        # 检查是否是FAQ内容(包含more-detail或支持和服务级别协议)
-                        content_text = current.get_text().strip()
-                        if ('more-detail' in str(current) or 
-                            '支持和服务级别协议' in content_text or
-                            '常见问题' in content_text):
-                            continue  # 跳过FAQ内容，查找下一个section
+                    if current and current.name in ['div', 'ul', 'ol', 'section']:
+                        # 检查是否是pricing-page-section
+                        if current.name == 'div' and 'pricing-page-section' in current.get('class', []):
+                            content_text = current.get_text().strip()
+                            # 检查是否是FAQ内容(包含more-detail或支持和服务级别协议)
+                            if ('more-detail' in str(current) or 
+                                '支持和服务级别协议' in content_text or
+                                '常见问题' in content_text):
+                                continue  # 跳过FAQ内容，查找下一个section
+                            
+                            # 找到合适的描述section
+                            clean_content = clean_html_content(str(current))
+                            logger.info(f"✓ 找到pricing-page-section描述内容，长度: {len(clean_content)}")
+                            return clean_content
+                            
+                        # 检查是否是ul/ol等描述元素
+                        elif current.name in ['ul', 'ol']:
+                            # 检查是否包含描述性内容（避免导航菜单）
+                            content_text = current.get_text().strip()
+                            if (len(content_text) > 50 and  # 内容足够长
+                                not any(nav_indicator in content_text.lower() for nav_indicator in [
+                                    '导航', 'menu', 'nav', '首页', 'home'
+                                ]) and
+                                not any(faq_indicator in content_text for faq_indicator in [
+                                    '常见问题', 'faq', '支持和服务级别协议'
+                                ])):
+                                clean_content = clean_html_content(str(current))
+                                logger.info(f"✓ 找到{current.name}描述内容，长度: {len(clean_content)}")
+                                return clean_content
                         
-                        # 找到合适的描述section，返回清理后的内容
-                        clean_content = clean_html_content(str(current))
-                        logger.info(f"✓ 找到描述内容，长度: {len(clean_content)}")
-                        return clean_content
+                        # 检查是否是其他描述容器
+                        elif (current.name == 'div' and 
+                              current.get('class') and 
+                              any(desc_class in current.get('class', []) for desc_class in [
+                                  'description', 'intro', 'summary', 'overview'
+                              ])):
+                            content_text = current.get_text().strip()
+                            if (len(content_text) > 30 and
+                                not any(faq_indicator in content_text for faq_indicator in [
+                                    '常见问题', 'faq', '支持和服务级别协议'  
+                                ])):
+                                clean_content = clean_html_content(str(current))
+                                logger.info(f"✓ 找到描述容器内容，长度: {len(clean_content)}")
+                                return clean_content
             
             # 备用方案：尝试传统选择器
             desc_selectors = [
@@ -156,15 +188,23 @@ class SectionExtractor:
                 '.product-description', 
                 '.intro',
                 '.summary',
-                'section.overview'
+                'section.overview',
+                'ul.product-features',  # 添加对产品特性列表的支持
+                'ol.product-features'
             ]
             
             for selector in desc_selectors:
                 element = soup.select_one(selector)
                 if element:
-                    clean_content = clean_html_content(str(element))
-                    logger.info(f"✓ 使用备用描述选择器: {selector}")
-                    return clean_content
+                    content_text = element.get_text().strip()
+                    # 确保内容足够长且不是FAQ
+                    if (len(content_text) > 30 and
+                        not any(faq_indicator in content_text for faq_indicator in [
+                            '常见问题', 'faq', '支持和服务级别协议'
+                        ])):
+                        clean_content = clean_html_content(str(element))
+                        logger.info(f"✓ 使用备用描述选择器: {selector}")
+                        return clean_content
             
             logger.info("⚠ 未找到描述内容")
             return ""
@@ -213,12 +253,12 @@ class SectionExtractor:
                 if faq_list:
                     qa_content += str(faq_list)
             
-            # 4. 查找pricing-page-section中的支持和SLA内容（排除定价内容）
+            # 4. 查找pricing-page-section中的支持和SLA内容
             pricing_sections = soup.find_all('div', class_='pricing-page-section')
             for section in pricing_sections:
                 section_text = section.get_text().lower()
-                # 只提取明确的支持和SLA部分，排除包含定价表格的部分
-                if ('支持和服务级别协议' in section_text or 'sla' in section_text) and not any(price_indicator in section_text for price_indicator in ['￥', '价格', '每单位', '小时', '开发人员基本标准']):
+                # 直接提取明确的支持和SLA部分，无需价格指示符过滤
+                if '支持和服务级别协议' in section_text or 'sla' in section_text:
                     qa_content += str(section)
                     logger.info(f"✓ 找到pricing-page-section支持/SLA内容")
             

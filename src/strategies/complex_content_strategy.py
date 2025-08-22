@@ -24,6 +24,8 @@ from src.utils.content.flexible_builder import FlexibleBuilder
 from src.utils.data.extraction_validator import ExtractionValidator
 from src.detectors.filter_detector import FilterDetector
 from src.detectors.tab_detector import TabDetector
+from src.utils.content.content_utils import classify_pricing_section, filter_sections_by_type
+from src.utils.html.cleaner import clean_html_content
 from src.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -98,9 +100,15 @@ class ComplexContentStrategy(BaseStrategy):
             filter_analysis, tab_analysis, content_mapping
         )
 
-        # 6. 构建策略特定内容
+        # 6. 构建策略特定内容，包含智能分类的baseContent
+        # 对于复杂策略，如果没有有效的内容组，可以提取baseContent作为fallback
+        base_content = ""
+        if not content_groups or len(content_groups) == 0:
+            logger.info("⚠ 未找到复杂内容组，尝试提取通用baseContent...")
+            base_content = self._extract_main_content(soup)
+        
         strategy_content = {
-            "baseContent": "",  # 复杂页面主要内容在contentGroups中
+            "baseContent": base_content,  # 如果有内容组则为空，否则作为fallback
             "contentGroups": content_groups,
             "strategy_type": "complex",
             "filter_analysis": filter_analysis,  # 传递筛选器分析结果
@@ -130,72 +138,88 @@ class ComplexContentStrategy(BaseStrategy):
         """
         return self.section_extractor.extract_all_sections(soup)
 
-    def _extract_complex_main_content(self, soup: BeautifulSoup, 
-                                    filter_analysis: Dict[str, Any], 
-                                    tab_analysis: Dict[str, Any]) -> str:
+    def _extract_main_content(self, soup: BeautifulSoup) -> str:
         """
-        提取复杂页面的主要内容（简化版，用于传统CMS格式）
+        提取复杂页面的主要内容 - 使用智能分类逻辑
         
         Args:
             soup: BeautifulSoup对象
-            filter_analysis: 筛选器分析结果
-            tab_analysis: Tab分析结果
             
         Returns:
             主要内容HTML字符串
         """
-        logger.info("📝 提取复杂页面主要内容...")
+        logger.info("📝 提取复杂页面主要内容（智能分类模式）...")
         
         try:
-            main_content = ""
-            
-            # 1. 优先查找technical-azure-selector主容器
-            main_container = soup.find('div', class_='technical-azure-selector')
-            if main_container:
-                # 获取所有内容组（tabContent分组）
-                content_groups = tab_analysis.get("content_groups", [])
-                
-                if content_groups:
-                    # 提取第一个内容组的内容作为示例
-                    first_group = content_groups[0]
-                    group_id = first_group.get("id", "")
+            # 方案1: 查找technical-azure-selector内的pricing-page-section，使用智能分类
+            logger.info("🔍 查找technical-azure-selector内容（智能分类）...")
+            technical_selector = soup.find('div', class_='technical-azure-selector')
+            if technical_selector:
+                pricing_sections = technical_selector.find_all('div', class_='pricing-page-section')
+                if pricing_sections:
+                    # 使用智能分类过滤，只保留content类型的section
+                    content_sections = filter_sections_by_type(
+                        pricing_sections, 
+                        include_types=['content']
+                    )
                     
-                    group_element = soup.find('div', id=group_id)
-                    if group_element:
-                        # 过滤QA等重复内容
-                        content_text = group_element.get_text().lower()
-                        if not any(skip_text in content_text for skip_text in [
-                            '常见问题', 'faq', '支持和服务级别协议'
-                        ]):
-                            main_content = str(group_element)
-                            logger.info(f"✓ 找到复杂页面主容器内容（{group_id}）")
-                            return main_content
-                
-                # 如果没有找到分组，返回整个主容器
-                main_content = str(main_container)
-                logger.info("✓ 找到复杂页面主容器内容（完整）")
-                return main_content
-            
-            # 2. 备用方案：查找pricing-page-section
-            pricing_sections = soup.find_all('div', class_='pricing-page-section')
-            if pricing_sections:
-                for i, section in enumerate(pricing_sections):
-                    if i > 0:  # 跳过第一个（通常是描述）
-                        section_text = section.get_text().lower()
-                        if not any(skip_text in section_text for skip_text in [
-                            'banner', 'navigation', 'nav', '常见问题', 'faq'
-                        ]):
+                    if content_sections:
+                        main_content = ""
+                        for section in content_sections:
                             main_content += str(section)
+                            section_type = classify_pricing_section(section)
+                            logger.info(f"✓ 添加复杂策略technical-azure-selector section (类型: {section_type})")
+                        
+                        logger.info(f"✓ 找到复杂策略technical-azure-selector内容，共{len(content_sections)}个content sections")
+                        return clean_html_content(main_content)
+                
+                # 如果没有分类为content的section，返回整个主容器但过滤FAQ/SLA
+                logger.info("🔍 返回整个technical-azure-selector容器...")
+                all_sections = technical_selector.find_all('div', class_='pricing-page-section')
+                
+                filtered_main_content = ""
+                for section in all_sections:
+                    section_type = classify_pricing_section(section)
+                    if section_type in ['content', 'other']:  # 包含other类型以确保不遗漏内容
+                        filtered_main_content += str(section)
+                        logger.info(f"✓ 添加{section_type}类型section到复杂策略内容")
+                
+                if filtered_main_content:
+                    return clean_html_content(filtered_main_content)
+                else:
+                    # 最后fallback：返回完整主容器
+                    return clean_html_content(str(technical_selector))
+            
+            # 方案2: 查找所有pricing-page-section，智能分类后处理
+            logger.info("🔍 查找所有pricing-page-section（智能分类）...")
+            all_pricing_sections = soup.find_all('div', class_='pricing-page-section')
+            
+            if all_pricing_sections:
+                main_content = ""
+                processed_sections = 0
+                
+                # 跳过第一个section（通常是Description），从第二个开始智能分类
+                for section in all_pricing_sections[1:]:
+                    section_type = classify_pricing_section(section)
+                    
+                    if section_type == 'content':
+                        main_content += str(section)
+                        processed_sections += 1
+                        logger.info(f"✓ 添加复杂策略content section #{processed_sections}")
+                    elif section_type in ['faq', 'sla']:
+                        logger.info(f"⏩ 跳过{section_type} section（将由SectionExtractor处理）")
+                    else:
+                        logger.info(f"⏩ 跳过{section_type} section")
                 
                 if main_content:
-                    logger.info("✓ 使用pricing-page-section备用方案")
-                    return main_content
+                    logger.info(f"✓ 复杂策略智能分类完成，处理了{processed_sections}个content sections")
+                    return clean_html_content(main_content)
             
-            # 3. 最后备用方案：使用ContentExtractor
+            # 方案3: 使用ContentExtractor的主要内容提取
+            logger.info("🔍 使用ContentExtractor主要内容提取...")
             main_content = self.content_extractor.extract_main_content(soup)
             if main_content:
-                logger.info("✓ 使用ContentExtractor备用方案")
-                return main_content
+                return clean_html_content(main_content)
             
             logger.info("⚠ 未找到合适的复杂页面主要内容")
             return ""

@@ -22,6 +22,7 @@ from src.utils.content.section_extractor import SectionExtractor
 from src.utils.content.flexible_builder import FlexibleBuilder
 from src.utils.data.extraction_validator import ExtractionValidator
 from src.utils.html.cleaner import clean_html_content
+from src.utils.content.content_utils import classify_pricing_section, filter_sections_by_type
 from src.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -109,7 +110,7 @@ class SimpleStaticStrategy(BaseStrategy):
 
     def _extract_main_content(self, soup: BeautifulSoup) -> str:
         """
-        提取主要内容（简单页面的baseContent）
+        提取主要内容（简单页面的baseContent）- 使用智能分类逻辑
         
         Args:
             soup: BeautifulSoup对象
@@ -117,30 +118,66 @@ class SimpleStaticStrategy(BaseStrategy):
         Returns:
             主要内容HTML字符串
         """
-        logger.info("📝 提取主要内容...")
+        logger.info("📝 提取主要内容（智能分类模式）...")
         
         try:
-            # 方案1: 查找technical-azure-selector内的pricing-page-section
-            logger.info("🔍 方案1: 查找technical-azure-selector内容...")
+            # 方案1: 查找technical-azure-selector内的pricing-page-section，使用智能分类
+            logger.info("🔍 方案1: 查找technical-azure-selector内容（智能分类）...")
             technical_selector = soup.find('div', class_='technical-azure-selector')
             if technical_selector:
                 pricing_sections = technical_selector.find_all('div', class_='pricing-page-section')
                 if pricing_sections:
-                    main_content = ""
-                    for section in pricing_sections:
-                        # 过滤QA内容避免与commonSections重复
-                        section_text = section.get_text().lower()
-                        if not any(qa_indicator in section_text for qa_indicator in [
-                            '常见问题', 'faq', '支持和服务级别协议', 'more-detail'
-                        ]):
-                            main_content += str(section)
+                    # 使用智能分类过滤，只保留content类型的section
+                    content_sections = filter_sections_by_type(
+                        pricing_sections, 
+                        include_types=['content']
+                    )
                     
-                    if main_content:
-                        logger.info("✓ 找到technical-azure-selector内容")
+                    if content_sections:
+                        main_content = ""
+                        for section in content_sections:
+                            main_content += str(section)
+                            section_type = classify_pricing_section(section)
+                            logger.info(f"✓ 添加technical-azure-selector section (类型: {section_type})")
+                        
+                        logger.info(f"✓ 找到technical-azure-selector内容，共{len(content_sections)}个content sections")
                         return clean_html_content(main_content)
             
-            # 方案2: 查找tab-control-container
-            logger.info("🔍 方案2: 查找tab-control-container...")
+            # 方案2: 查找所有pricing-page-section，智能分类后处理
+            logger.info("🔍 方案2: 查找所有pricing-page-section（智能分类）...")
+            all_pricing_sections = soup.find_all('div', class_='pricing-page-section')
+            
+            if all_pricing_sections:
+                # 使用智能分类，找到technical-azure-selector后面的content sections
+                technical_found = False
+                main_content = ""
+                processed_sections = 0
+                
+                for section in all_pricing_sections:
+                    # 检查是否在technical-azure-selector内或其后
+                    parent_technical = section.find_parent('div', class_='technical-azure-selector')
+                    if parent_technical:
+                        technical_found = True
+                    
+                    # 如果找到了technical-azure-selector，开始处理后续sections
+                    if technical_found or parent_technical:
+                        section_type = classify_pricing_section(section)
+                        
+                        if section_type == 'content':
+                            main_content += str(section)
+                            processed_sections += 1
+                            logger.info(f"✓ 添加content section #{processed_sections}")
+                        elif section_type in ['faq', 'sla']:
+                            logger.info(f"⏩ 跳过{section_type} section（将由SectionExtractor处理）")
+                        else:
+                            logger.info(f"⏩ 跳过{section_type} section")
+                
+                if main_content:
+                    logger.info(f"✓ 智能分类完成，处理了{processed_sections}个content sections")
+                    return clean_html_content(main_content)
+            
+            # 方案3: 查找tab-control-container
+            logger.info("🔍 方案3: 查找tab-control-container...")
             tab_containers = soup.find_all(class_='tab-control-container')
             if tab_containers:
                 main_content = ""
@@ -149,28 +186,25 @@ class SimpleStaticStrategy(BaseStrategy):
                     logger.info("✓ 找到tab-control-container内容")
                 return clean_html_content(main_content)
             
-            # 方案3: 查找pricing-page-section（排除第一个描述内容）
-            logger.info("🔍 方案3: 查找pricing-page-section...")
+            # 方案4: 传统方式，跳过第一个pricing-page-section（描述内容）
+            logger.info("🔍 方案4: 传统pricing-page-section处理...")
             pricing_sections = soup.find_all(class_='pricing-page-section')
             
-            if pricing_sections:
+            if pricing_sections and len(pricing_sections) > 1:
                 main_content = ""
                 # 跳过第一个pricing-page-section（通常是DescriptionContent）
-                for i, section in enumerate(pricing_sections):
-                    if i > 0:  # 跳过第一个
-                        section_text = section.get_text().lower()
-                        # 过滤特殊内容
-                        if not any(skip_text in section_text for skip_text in [
-                            'banner', 'navigation', 'nav', '常见问题', 'faq'
-                        ]):
-                            main_content += str(section)
-                            logger.info(f"✓ 找到第{i+1}个pricing-page-section内容")
+                for i, section in enumerate(pricing_sections[1:], 1):  # 从第2个开始
+                    section_type = classify_pricing_section(section)
+                    
+                    if section_type == 'content':
+                        main_content += str(section)
+                        logger.info(f"✓ 添加传统方式第{i+1}个pricing-page-section (类型: {section_type})")
                 
                 if main_content:
                     return clean_html_content(main_content)
             
-            # 方案4: 使用ContentExtractor的主要内容提取
-            logger.info("🔍 方案4: 使用ContentExtractor主要内容提取...")
+            # 方案5: 使用ContentExtractor的主要内容提取
+            logger.info("🔍 方案5: 使用ContentExtractor主要内容提取...")
             main_content = self.content_extractor.extract_main_content(soup)
             if main_content:
                 return clean_html_content(main_content)

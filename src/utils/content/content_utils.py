@@ -354,3 +354,108 @@ def extract_qa_content(soup: BeautifulSoup) -> str:
     else:
         logger.warning("未找到Q&A内容")
         return ""
+
+
+# ========== Section分类功能 ==========
+
+def classify_pricing_section(section: Tag) -> str:
+    """
+    智能分类pricing-page-section，判断section类型
+    
+    Args:
+        section: BeautifulSoup的Tag对象，代表一个pricing-page-section
+        
+    Returns:
+        section类型：'faq', 'sla', 'content', 'other'
+    """
+    if not section:
+        return 'other'
+    
+    # 获取section的文本内容
+    section_text = section.get_text().strip()
+    section_html = str(section).lower()
+    
+    # FAQ相关的正则模式
+    faq_patterns = [
+        r'常见问题',
+        r'FAQs',
+        r'frequently\s+asked\s+questions',
+        r'q\s*&\s*a',
+        r'more-detail',  # 特殊class标识
+    ]
+    
+    # SLA/支持相关的正则模式
+    sla_patterns = [
+        r'支持和服务级别协议',
+        r'Support\s*&\s*sla',
+        r'service\s+level\s+agreement',
+    ]
+    
+    # 检查是否为FAQ类型
+    for pattern in faq_patterns:
+        if re.search(pattern, section_text, re.IGNORECASE):
+            logger.debug(f"检测到FAQ section: {pattern}")
+            return 'faq'
+        if re.search(pattern, section_html):
+            logger.debug(f"检测到FAQ section (HTML): {pattern}")
+            return 'faq'
+    
+    # 检查是否为SLA/支持类型
+    for pattern in sla_patterns:
+        if re.search(pattern, section_text, re.IGNORECASE):
+            logger.debug(f"检测到SLA section: {pattern}")
+            return 'sla'
+        if re.search(pattern, section_html):
+            logger.debug(f"检测到SLA section (HTML): {pattern}")
+            return 'sla'
+    
+    
+    # 检查section长度，短内容可能是导航或其他
+    if len(section_text.strip()) < 50:
+        logger.debug("section内容过短，归类为other")
+        return 'other'
+    
+    # 检查是否包含表格或结构化内容（通常是产品功能说明）
+    if section.find('table') or section.find('ul') or section.find('ol'):
+        # 如果有结构化内容但没有FAQ/SLA标识，很可能是产品内容
+        logger.debug("检测到结构化内容，归类为content")
+        return 'content'
+    
+    # 默认归类为content（产品相关内容）
+    logger.debug("默认归类为content")
+    return 'content'
+
+
+def filter_sections_by_type(sections: List[Tag], 
+                          include_types: List[str] = None, 
+                          exclude_types: List[str] = None) -> List[Tag]:
+    """
+    根据类型过滤sections
+    
+    Args:
+        sections: section列表
+        include_types: 包含的类型列表
+        exclude_types: 排除的类型列表
+        
+    Returns:
+        过滤后的section列表
+    """
+    if not sections:
+        return []
+    
+    filtered_sections = []
+    
+    for section in sections:
+        section_type = classify_pricing_section(section)
+        
+        # 检查包含条件
+        if include_types and section_type not in include_types:
+            continue
+            
+        # 检查排除条件  
+        if exclude_types and section_type in exclude_types:
+            continue
+            
+        filtered_sections.append(section)
+    
+    return filtered_sections
