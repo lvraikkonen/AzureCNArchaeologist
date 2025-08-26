@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 
 
 class RegionProcessor:
-    """区域处理逻辑，从BaseCMSExtractor中提取"""
+    """区域处理逻辑"""
 
     def __init__(self, config_file: str = "data/configs/soft-category.json"):
         self.config_file = config_file
@@ -25,82 +25,162 @@ class RegionProcessor:
         logger.info(f"✓ 区域处理器初始化完成")
         logger.info(f"📁 区域配置文件: {config_file}")
     
+    def get_os_names_for_region_filtering(self, filter_analysis: Dict[str, Any] = None) -> List[str]:
+        """
+        从FilterDetector的软件筛选器获取所有OS名称（支持Complex策略的多软件选项）
+        
+        Args:
+            filter_analysis: FilterDetector分析结果
+            
+        Returns:
+            用于soft-category.json查找的OS名称列表
+        """
+        logger.info("🔍 从软件筛选器获取所有OS名称...")
+        
+        # 验证filter_analysis参数
+        if not filter_analysis:
+            logger.error("❌ filter_analysis参数为空")
+            return []
+            
+        software_options = filter_analysis.get('software_options', [])
+        if not software_options:
+            logger.error("❌ filter_analysis中无software_options")
+            return []
+            
+        # 提取所有软件选项的value
+        os_names = []
+        for i, option in enumerate(software_options):
+            if not isinstance(option, dict):
+                logger.warning(f"⚠ 软件选项[{i}]格式错误: {type(option)}")
+                continue
+                
+            os_name = option.get('value', '').strip()
+            if os_name:
+                os_names.append(os_name)
+            else:
+                logger.warning(f"⚠ 软件选项[{i}]的value为空")
+                
+        if os_names:
+            logger.info(f"✅ 成功获取 {len(os_names)} 个OS名称: {os_names}")
+        else:
+            logger.error("❌ 未获取到任何有效的OS名称")
+            
+        return os_names
+    
     def get_os_name_for_region_filtering(self, product_config: Dict[str, Any] = None, 
                                        filter_analysis: Dict[str, Any] = None,
                                        html_file_path: str = "") -> str:
         """
-        获取用于区域筛选的产品OS名称，支持多优先级回退策略
+        获取单个OS名称（兼容RegionFilter策略，返回第一个OS名称）
         
         Args:
-            product_config: 产品配置字典
+            product_config: 产品配置字典（保留兼容性）
             filter_analysis: FilterDetector分析结果
-            html_file_path: HTML文件路径（回退使用）
+            html_file_path: HTML文件路径（保留兼容性）
             
         Returns:
             用于soft-category.json查找的OS名称
         """
-        logger.info("🔍 获取区域筛选OS名称...")
-        
-        # 隐藏软件筛选器的value
-        if (filter_analysis and 
-            filter_analysis.get('software_options') and 
-            len(filter_analysis['software_options']) > 0):
-            os_name = filter_analysis['software_options'][0].get('value', '').strip()
-            if os_name:
-                logger.info(f"✅ 使用软件筛选器OS名称: '{os_name}'")
-                return os_name
-        
-        logger.error("❌ 无法获取有效的OS名称，所有方法都失败")
-        return ""
+        os_names = self.get_os_names_for_region_filtering(filter_analysis)
+        if os_names:
+            os_name = os_names[0]
+            logger.info(f"✅ 返回第一个OS名称: '{os_name}'")
+            return os_name
+        else:
+            logger.error("❌ 无法获取有效的OS名称")
+            return ""
 
     def _load_region_config(self) -> Dict[str, Any]:
-        """加载区域配置文件"""
-        if os.path.exists(self.config_file):
-            try:
-                # 处理UTF-8 BOM编码问题
-                with open(self.config_file, 'r', encoding='utf-8-sig') as f:
-                    raw_config = json.load(f)
-
-                # 如果配置是数组格式，转换为字典格式
-                if isinstance(raw_config, list):
-                    config = self._convert_array_config_to_dict(raw_config)
-                    logger.info(f"加载区域配置: {len(raw_config)} 个配置项，转换为 {len(config)} 个产品")
-                else:
-                    config = raw_config
-                    logger.info(f"📋 加载区域配置: {len(config)} 个产品")
-
-                return config
-            except Exception as e:
-                logger.error(f"⚠ 加载区域配置失败: {e}")
-                return {}
-        else:
+        """加载并优化区域配置文件，预处理为高效查找格式"""
+        if not os.path.exists(self.config_file):
             logger.error(f"⚠ 区域配置文件不存在: {self.config_file}")
+            return {}
+            
+        try:
+            # 处理UTF-8 BOM编码问题
+            with open(self.config_file, 'r', encoding='utf-8-sig') as f:
+                raw_config = json.load(f)
+                
+            # 验证配置格式
+            if not isinstance(raw_config, list):
+                logger.error(f"⚠ 配置文件格式错误，期望数组格式，得到: {type(raw_config)}")
+                return {}
+                
+            # 转换为高效查找格式
+            config = self._convert_array_config_to_dict(raw_config)
+            logger.info(f"✅ 加载区域配置: {len(raw_config)} 个配置项，转换为 {len(config)} 个产品")
+            
+            # 验证转换结果
+            self._validate_converted_config(config)
+            
+            return config
+            
+        except json.JSONDecodeError as e:
+            logger.error(f"⚠ JSON解析失败: {e}")
+            return {}
+        except Exception as e:
+            logger.error(f"⚠ 加载区域配置失败: {e}")
             return {}
 
     def _convert_array_config_to_dict(self, array_config: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """将数组格式的配置转换为字典格式"""
+        """将数组格式的配置转换为高效查找的字典格式"""
         dict_config = {}
-
+        invalid_items = 0
+        total_table_ids = 0
+        
         for item in array_config:
             if not isinstance(item, dict):
+                invalid_items += 1
                 continue
-
-            os_name = item.get('os', '')
-            region = item.get('region', '')
+                
+            os_name = item.get('os', '').strip()
+            region = item.get('region', '').strip()
             table_ids = item.get('tableIDs', [])
-
+            
+            # 验证必需字段
             if not os_name or not region:
+                invalid_items += 1
+                logger.debug(f"⚠ 跳过无效配置项: os='{os_name}', region='{region}'")
                 continue
-
-            # 标准化产品名称（转换为文件名格式）
-            product_key = os_name
-
-            if product_key not in dict_config:
-                dict_config[product_key] = {}
-
-            dict_config[product_key][region] = table_ids
-
+                
+            # 验证tableIDs格式
+            if not isinstance(table_ids, list):
+                invalid_items += 1
+                logger.debug(f"⚠ 跳过无效tableIDs格式: {type(table_ids)}")
+                continue
+                
+            # 初始化产品配置
+            if os_name not in dict_config:
+                dict_config[os_name] = {}
+                
+            # 存储区域配置
+            dict_config[os_name][region] = table_ids
+            total_table_ids += len(table_ids)
+            
+        # 记录转换统计
+        if invalid_items > 0:
+            logger.warning(f"⚠ 跳过了 {invalid_items} 个无效配置项")
+            
+        logger.info(f"📊 转换统计: {len(dict_config)} 个产品, 总计 {total_table_ids} 个表格规则")
         return dict_config
+
+    def _validate_converted_config(self, config: Dict[str, Any]) -> None:
+        """验证转换后的配置数据结构"""
+        if not config:
+            logger.warning("⚠ 转换后的配置为空")
+            return
+            
+        # 验证配置结构
+        for product, regions in config.items():
+            if not isinstance(regions, dict):
+                logger.error(f"❌ 产品 '{product}' 的区域配置格式错误")
+                continue
+                
+            for region, table_ids in regions.items():
+                if not isinstance(table_ids, list):
+                    logger.error(f"❌ 产品 '{product}' 区域 '{region}' 的表格ID格式错误")
+                    
+        logger.debug(f"✅ 配置验证完成: {len(config)} 个产品配置有效")
 
     def detect_available_regions(self, soup: BeautifulSoup) -> List[str]:
         """动态检测HTML中实际存在的区域"""
@@ -146,7 +226,7 @@ class RegionProcessor:
         Returns:
             区域内容映射字典
         """
-        logger.info("🌏 提取区域内容（增强版，支持动态OS解析）...")
+        logger.info("🌏 提取区域内容...")
         
         region_contents = {}
         
@@ -249,28 +329,30 @@ class RegionProcessor:
         logger.info(f"🔍 筛选前统计: {original_tables} 个表格, 内容长度 {original_content_length} 字符")
         logger.info(f"📋 需要移除的表格IDs: {region_tables}")
         
-        # 移除指定的表格
+        # 优化的表格移除逻辑
         tables_removed = 0
         removed_table_ids = []
+        failed_table_ids = []
 
         for table_id in region_tables:
-            # 处理带#号和不带#号的table_id
-            clean_table_id = table_id.replace('#', '') if table_id.startswith('#') else table_id
-
-            # 查找元素（先尝试带#的ID，再尝试不带#的）
-            elements = filtered_soup.find_all(id=clean_table_id)
-            if not elements and not table_id.startswith('#'):
-                # 如果没找到，尝试查找带#前缀的
-                elements = filtered_soup.find_all(id=f"#{table_id}")
-
-            if elements:
-                for element in elements:
+            logger.debug(f"🔍 尝试移除表格: {table_id}")
+            
+            # 改进的表格查找策略
+            element = self._find_table_element(filtered_soup, table_id)
+            
+            if element:
+                try:
                     # 移除表格及其相关的前置内容
-                    self._remove_table_with_related_content(element, clean_table_id)
+                    self._remove_table_with_related_content(element, table_id)
                     tables_removed += 1
                     removed_table_ids.append(table_id)
+                    logger.debug(f"✅ 成功移除表格: {table_id}")
+                except Exception as e:
+                    logger.error(f"❌ 移除表格失败 {table_id}: {e}")
+                    failed_table_ids.append(table_id)
             else:
                 logger.warning(f"⚠ 未找到要移除的表格: {table_id}")
+                failed_table_ids.append(table_id)
 
         # 记录筛选后的内容统计
         filtered_tables = len(filtered_soup.find_all('table'))
@@ -279,10 +361,19 @@ class RegionProcessor:
         logger.info(f"🔍 筛选后统计: {filtered_tables} 个表格, 内容长度 {filtered_content_length} 字符")
         logger.info(f"📊 筛选效果: 移除了 {tables_removed} 个表格, 内容减少 {original_content_length - filtered_content_length} 字符")
         
-        if tables_removed > 0:
-            logger.info(f"✅ 成功移除表格: {removed_table_ids}")
-        else:
-            logger.warning(f"⚠ 未移除任何表格（可能表格ID不匹配）")
+        # 详细的筛选结果报告
+        if removed_table_ids:
+            logger.info(f"✅ 成功移除表格 ({len(removed_table_ids)}个): {removed_table_ids}")
+        
+        if failed_table_ids:
+            logger.warning(f"⚠ 移除失败的表格 ({len(failed_table_ids)}个): {failed_table_ids}")
+            
+        # 筛选效果验证
+        success_rate = (tables_removed / len(region_tables) * 100) if region_tables else 0
+        logger.info(f"📈 表格筛选成功率: {success_rate:.1f}% ({tables_removed}/{len(region_tables)})")
+        
+        if success_rate < 50:
+            logger.warning("⚠ 表格筛选成功率较低，可能存在ID匹配问题")
 
         # 在filtered_soup中添加一个隐藏的元数据标签，记录筛选过程
         metadata_info = {
@@ -302,284 +393,103 @@ class RegionProcessor:
 
         return filtered_soup
 
-    def _analyze_pricing_section_structure(self, pricing_section):
-        """分析pricing-page-section的结构，识别内容块"""
-        content_blocks = []
-        current_block = None
+    def _find_table_element(self, soup: BeautifulSoup, table_id: str):
+        """
+        改进的表格元素查找方法，支持多种ID格式匹配
         
-        for element in pricing_section.children:
-            if hasattr(element, 'name'):
-                if element.name == 'h2':
-                    # 新的标题开始新的内容块
-                    if current_block:
-                        content_blocks.append(current_block)
-                    current_block = {
-                        'type': 'section',
-                        'title': element,
-                        'title_text': element.get_text(strip=True),
-                        'elements': [element]
-                    }
-                elif current_block:
-                    # 将元素归属到当前内容块
-                    current_block['elements'].append(element)
-                    
-                    # 识别元素类型
-                    if element.name == 'table':
-                        current_block['has_table'] = True
-                        current_block['table_id'] = element.get('id')
-                    elif element.name == 'div' and 'tags-date' in element.get('class', []):
-                        current_block['has_tags_date'] = True
-        
-        # 添加最后一个块
-        if current_block:
-            content_blocks.append(current_block)
+        Args:
+            soup: BeautifulSoup对象
+            table_id: 表格ID（可能带#号或不带#号）
             
-        return content_blocks
-
-    def _classify_content_relation(self, element, table_id: str):
-        """分类内容与表格的关系"""
-        if not hasattr(element, 'name'):
-            return 'unrelated'
-
-        # 如果是表格本身
-        if element.name == 'table' and element.get('id') == table_id.replace('#', ''):
-            return 'table'
-
-        # 检查tags-date的类型
-        if element.name == 'div' and 'tags-date' in element.get('class', []):
-            return self._classify_tags_date(element)
-
-        # 其他元素
-        return 'content'
-
-    def _classify_tags_date(self, tags_date_element) -> str:
-        """分类tags-date元素的类型"""
-        text = tags_date_element.get_text(strip=True)
-
-        # 全局价格说明（应保护）
-        global_pricing_patterns = [
-            '*以下价格均为含税价格',
-            '*每月价格估算基于',
-            'prices are tax-inclusive',
-            'monthly price estimates'
-        ]
-
-        for pattern in global_pricing_patterns:
-            if pattern in text:
-                return 'global_pricing_note'
-
-        # 表格注释说明（应保留）- 包含脚注编号的说明
-        if self._contains_footnote_references(text):
-            return 'table_footnote_note'
-
-        # 其他表格特定的说明（可能需要移除）
-        return 'table_specific_note'
-    
-    def _contains_footnote_references(self, text: str) -> bool:
-        """检查文本是否包含脚注引用（sup标签内容）"""
-        import re
-        # 检查是否包含类似 "1 要求在两个或更多区域" 或 "2 吞吐量数据仅供参考" 的模式
-        footnote_patterns = [
-            r'^\s*\d+\s*[\u4e00-\u9fff]',  # 数字开头后跟中文
-            r'sup>\s*\d+\s*</sup',  # sup标签包含数字
-            r'要求在.*区域.*部署',  # 区域部署要求
-            r'吞吐量数据.*参考',  # 吞吐量说明
-            r'开发者层.*付费',  # 开发者层说明
-            r'高级层.*付费',  # 高级层说明
-            r'仅适用于.*网关',  # 网关相关说明
-            r'请使用.*缓存',  # 缓存说明
-        ]
+        Returns:
+            找到的表格元素，未找到则返回None
+        """
+        # 标准化table_id（移除#号）
+        clean_id = table_id.replace('#', '') if table_id.startswith('#') else table_id
         
-        for pattern in footnote_patterns:
-            if re.search(pattern, text, re.IGNORECASE):
-                return True
-        return False
+        # 策略1: 直接按clean_id查找
+        element = soup.find(id=clean_id)
+        if element:
+            logger.debug(f"  策略1成功: 找到ID为 '{clean_id}' 的元素")
+            return element
+            
+        # 策略2: 按原始table_id查找（处理特殊格式）
+        if table_id != clean_id:
+            element = soup.find(id=table_id)
+            if element:
+                logger.debug(f"  策略2成功: 找到ID为 '{table_id}' 的元素")
+                return element
+                
+        # 策略3: 查找所有表格，然后匹配ID
+        all_tables = soup.find_all('table')
+        for table in all_tables:
+            table_element_id = table.get('id', '')
+            if table_element_id == clean_id or table_element_id == table_id:
+                logger.debug(f"  策略3成功: 在表格中找到ID '{table_element_id}'")
+                return table
+                
+        # 策略4: 模糊匹配（处理ID中可能的变体）
+        for table in all_tables:
+            table_element_id = table.get('id', '')
+            # 移除可能的#号进行比较
+            normalized_element_id = table_element_id.replace('#', '')
+            if normalized_element_id == clean_id:
+                logger.debug(f"  策略4成功: 模糊匹配找到ID '{table_element_id}'")
+                return table
+                
+        # 策略5: 查找任何包含该ID的元素（不限于表格）
+        element = soup.find(attrs={'id': clean_id})
+        if element:
+            logger.debug(f"  策略5成功: 找到非表格元素ID '{clean_id}'，类型: {element.name}")
+            return element
+            
+        logger.debug(f"  所有策略失败: 未找到ID为 '{table_id}' 的元素")
+        return None
+
     
     def _remove_table_with_related_content(self, table_element, table_id: str):
-        """精确移除表格及其直接关联的内容，保护全局内容"""
-        print(f"    🗑️ 精确移除表格: {table_id}")
+        """简化的表格移除方法，专注于核心功能"""
+        logger.debug(f"🗑️ 移除表格: {table_id}")
         
-        # 分析所在的pricing-page-section结构
-        pricing_section = self._find_parent_pricing_section(table_element)
-        if not pricing_section:
-            # 回退到原有逻辑
-            print(f"      ⚠ 未找到pricing-page-section，使用回退逻辑")
-            self._remove_table_fallback(table_element, table_id)
-            return
-            
-        # 分析结构并精确移除
-        content_blocks = self._analyze_pricing_section_structure(pricing_section)
-        
-        elements_to_remove = []
-        
-        # 找到包含此表格的内容块
-        target_block = None
-        for block in content_blocks:
-            if block.get('table_id') == table_id.replace('#', ''):
-                target_block = block
-                break
-        
-        if target_block:
-            print(f"      📍 找到表格所在内容块: {target_block['title_text']}")
-            
-            for element in target_block['elements']:
-                relation = self._classify_content_relation(element, table_id)
-                
-                if relation == 'table':
-                    elements_to_remove.append(element)
-                    print(f"      🗑️ 移除表格: {table_id}")
-                elif relation == 'table_specific_note':
-                    elements_to_remove.append(element)
-                    print(f"      🗑️ 移除表格专属说明: {element.get_text(strip=True)[:50]}")
-                elif relation == 'table_footnote_note':
-                    print(f"      🛡️ 保护表格脚注说明: {element.get_text(strip=True)[:50]}")
-                elif relation == 'global_title':
-                    print(f"      🛡️ 保护全局标题: {element.get_text(strip=True)[:50]}")
-                elif relation == 'global_pricing_note':
-                    print(f"      🛡️ 保护全局价格说明: {element.get_text(strip=True)[:50]}")
-                elif relation == 'section_title':
-                    print(f"      🛡️ 保护区段标题: {element.get_text(strip=True)[:50]}")
-        else:
-            # 如果没有找到结构化的块，直接移除表格
-            elements_to_remove.append(table_element)
-            print(f"      ⚠ 未找到结构化块，仅移除表格本身")
-        
-        # 移除收集到的元素
-        for element in elements_to_remove:
-            try:
-                element.decompose()
-            except Exception as e:
-                print(f"      ⚠ 移除元素失败: {e}")
-    
-    def _find_parent_pricing_section(self, element):
-        """查找元素所在的pricing-page-section父节点"""
-        current = element.parent
-        while current:
-            if (hasattr(current, 'get') and current.get('class') and 
-                'pricing-page-section' in current.get('class')):
-                return current
-            current = current.parent
-        return None
-    
-    def _remove_table_fallback(self, table_element, table_id: str):
-        """回退的表格移除逻辑（简化版原逻辑）"""
-        print(f"    🔄 使用回退移除逻辑: {table_id}")
-        # 只移除表格本身，不移除其他内容
         try:
+            # 简化逻辑：直接移除表格元素
             table_element.decompose()
+            logger.debug(f"✅ 表格移除成功: {table_id}")
         except Exception as e:
-            print(f"      ⚠ 表格移除失败: {e}")
+            logger.error(f"❌ 表格移除失败 {table_id}: {e}")
+            raise
+    
 
     def _extract_region_html_content(self, soup: BeautifulSoup, region_id: str, product_config: Dict[str, Any] = None) -> str:
-        """提取区域的完整HTML内容 - 针对pricing-detail-tab结构优化，支持额外sections"""
-        logger.debug(f"提取区域 {region_id} 的完整HTML内容")
+        """简化的区域HTML内容提取方法"""
+        logger.debug(f"提取区域 {region_id} 的HTML内容")
         
-        # 构建HTML结构，匹配原始tab-content格式
-        html_parts = []
+        # 查找主要内容区域
+        content_html = ""
         
-        # 查找pricing-detail-tab结构中的主要内容
-        pricing_detail_tab = soup.find(class_='technical-azure-selector pricing-detail-tab')
-        content_extracted = False
-        
-        if pricing_detail_tab:
-            print(f"    🎯 发现pricing-detail-tab结构，提取完整内容")
-            # 在pricing-detail-tab中查找tab-content
-            tab_content = pricing_detail_tab.find(class_='tab-content')
-            if tab_content:
-                # 查找第一个tab-panel
-                tab_panel = tab_content.find('div', {'id': 'tabContent1'}) or tab_content.find(class_='tab-panel')
-                if tab_panel:
-                    # 提取tab-panel中所有内容，但不包括FAQ部分
-                    content_elements = []
-                    
-                    # 遍历tab-panel的所有直接子元素
-                    for element in tab_panel.children:
-                        if hasattr(element, 'name'):
-                            # 如果遇到包含FAQ的pricing-page-section，停止提取
-                            if (element.name == 'div' and 
-                                element.has_attr('class') and 
-                                'pricing-page-section' in element.get('class', []) and
-                                element.find(class_='more-detail')):
-                                print(f"    ⏹️ 遇到FAQ部分，停止提取")
-                                break
-                            # 否则添加到内容元素中
-                            content_elements.append(element)
-                    
-                    # 如果有内容元素，将它们组合起来
-                    if content_elements:
-                        for element in content_elements:
-                            element_html = self._preserve_important_content(str(element))
-                            if element_html.strip():
-                                html_parts.append(element_html)
-                        content_extracted = True
-                        print(f"    ✓ 提取了 {len(content_elements)} 个内容元素")
-        
-        # 如果没有找到pricing-detail-tab结构，使用回退方案
-        if not content_extracted:
-            print(f"    🔄 使用回退方案：查找全局tab-content")
-            tab_content_containers = soup.find_all(class_='tab-content')
-            
-            for tab_content in tab_content_containers:
-                # 查找tab-panel
-                tab_panels = tab_content.find_all('div', class_='tab-panel')
-                if not tab_panels:
-                    tab_panels = [tab_content]  # 如果没有明确的tab-panel，使用tab-content本身
-                    
-                for tab_panel in tab_panels:
-                    content_elements = []
-                    
-                    # 遍历所有子元素，但不包括FAQ部分
-                    for element in tab_panel.children:
-                        if hasattr(element, 'name'):
-                            # 如果遇到包含FAQ的section，停止提取
-                            if (element.name == 'div' and 
-                                element.has_attr('class') and 
-                                'pricing-page-section' in element.get('class', []) and
-                                element.find(class_='more-detail')):
-                                break
-                            content_elements.append(element)
-                    
-                    if content_elements:
-                        for element in content_elements:
-                            element_html = self._preserve_important_content(str(element))
-                            if element_html.strip():
-                                html_parts.append(element_html)
-                        content_extracted = True
-                        print(f"    ✓ 回退方案提取了 {len(content_elements)} 个内容元素")
-                        break
-                
-                if content_extracted:
-                    break
-        
-        # 如果仍然没有内容，使用最后的回退方案
-        if not content_extracted:
-            print(f"    🚨 使用最终回退方案：查找任意非FAQ的pricing-page-section")
+        # 方案1: 查找tab-content结构
+        tab_content = soup.find(class_='tab-content')
+        if tab_content:
+            content_html = str(tab_content)
+            logger.debug("✓ 使用tab-content结构")
+        else:
+            # 方案2: 查找pricing-page-section
             pricing_sections = soup.find_all(class_='pricing-page-section')
-            for section in pricing_sections:
-                if section.find(class_='more-detail'):
-                    continue
-                section_html = self._preserve_important_content(str(section))
-                html_parts.append(section_html)
-                content_extracted = True
-                break
+            if pricing_sections:
+                # 排除FAQ部分
+                non_faq_sections = [s for s in pricing_sections if not s.find(class_='more-detail')]
+                if non_faq_sections:
+                    content_html = ''.join(str(section) for section in non_faq_sections)
+                    logger.debug(f"✓ 使用 {len(non_faq_sections)} 个pricing-page-section")
+            else:
+                # 方案3: 返回整个body内容（最后的回退）
+                if soup.body:
+                    content_html = str(soup.body)
+                    logger.debug("✓ 使用完整body内容作为回退")
         
-        # 提取并添加额外的sections（如果配置了的话）
-        if product_config:
-            extra_sections_html = self._extract_extra_sections(soup, product_config)
-            if extra_sections_html:
-                html_parts.append('<!-- Extra sections configured in product config -->')
-                for extra_section in extra_sections_html:
-                    html_parts.append(extra_section)
-                logger.info(f"✅ 添加了 {len(extra_sections_html)} 个额外section到区域 {region_id}")
-        
-        html_parts.append('</div>')  # tab-panel
-        html_parts.append('</div>')  # tab-content
-        
-        # 组合并清理HTML
-        result_html = ''.join(html_parts)
-        result_html = self._clean_html_content(result_html)
-        
-        print(f"    ✓ 构建区域HTML内容，长度: {len(result_html)} 字符")
+        # 清理并返回
+        result_html = self._clean_html_content(content_html)
+        logger.debug(f"✓ 区域HTML内容长度: {len(result_html)} 字符")
         return result_html
 
     def _preserve_important_content(self, content: str) -> str:
@@ -616,70 +526,3 @@ class RegionProcessor:
         
         return content
 
-    def _extract_extra_sections(self, soup: BeautifulSoup, product_config: Dict[str, Any] = None) -> List[str]:
-        """
-        根据产品配置提取额外的pricing-page-section
-        
-        Args:
-            soup: BeautifulSoup对象
-            product_config: 产品配置字典
-            
-        Returns:
-            额外sections的HTML列表
-        """
-        extra_sections_html = []
-        
-        if not product_config:
-            return extra_sections_html
-            
-        # 获取额外sections配置
-        extra_sections_config = product_config.get('extraction_config', {}).get('extra_sections', [])
-        
-        if not extra_sections_config:
-            return extra_sections_html
-            
-        logger.info(f"🔍 检测到 {len(extra_sections_config)} 个额外section配置")
-        
-        # 查找所有pricing-page-section
-        all_sections = soup.find_all('div', class_='pricing-page-section')
-        
-        for config in extra_sections_config:
-            title = config.get('title', '')
-            section_type = config.get('type', 'content')
-            include_in = config.get('include_in', '')
-            
-            if include_in != 'contentGroups':
-                continue
-                
-            logger.debug(f"查找额外section: '{title}'")
-            
-            # 查找匹配标题的section
-            matching_section = None
-            for section in all_sections:
-                section_text = section.get_text().strip()
-                # 检查section的h2标题是否匹配
-                h2_tag = section.find('h2')
-                if h2_tag and title in h2_tag.get_text().strip():
-                    matching_section = section
-                    break
-                # 或者检查整个section文本是否包含标题
-                elif title in section_text:
-                    matching_section = section
-                    break
-            
-            if matching_section:
-                # 使用 classify_pricing_section 验证类型
-                from src.utils.content.content_utils import classify_pricing_section
-                detected_type = classify_pricing_section(matching_section)
-                
-                if detected_type == section_type or section_type == 'any':
-                    section_html = self._preserve_important_content(str(matching_section))
-                    if section_html.strip():
-                        extra_sections_html.append(section_html)
-                        logger.info(f"✅ 成功提取额外section: '{title}' (类型: {detected_type})")
-                else:
-                    logger.warning(f"⚠ Section '{title}' 类型不匹配: 期望 {section_type}, 检测到 {detected_type}")
-            else:
-                logger.warning(f"⚠ 未找到标题为 '{title}' 的section")
-        
-        return extra_sections_html
