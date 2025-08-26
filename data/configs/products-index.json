@@ -1,7 +1,7 @@
 {
   "version": "2.1",
-  "last_updated": "2025-08-21",
-  "total_products": 30,
+  "last_updated": "2025-08-26",
+  "total_products": 52,
   "future_capacity": 120,
   "categories": {
     "database": {
@@ -47,6 +47,13 @@
         "service-bus"
       ]
     },
+    "iot":{
+      "count": 1,
+      "config_path": "products/iot/",
+      "products": [
+        "iot-edge"
+      ]
+    },
     "identity": {
       "count": 3,
       "config_path": "products/identity/",
@@ -65,19 +72,23 @@
       ]
     },
     "compute": {
-      "count": 1,
+      "count": 2,
       "config_path": "products/compute/",
       "products": [
+        "app-service",
         "cloud-services"
       ],
       "large_html_products": []
     },
     "container": {
-      "count": 2,
+      "count": 5,
       "config_path": "products/container/",
       "products": [
+        "container-apps",
         "container-instances",
-        "kubernetes-service"
+        "container-registry",
+        "kubernetes-service",
+        "service-fabric"
       ]
     },
     "management": {
@@ -94,6 +105,41 @@
       "products": [
         "azure-migrate",
         "site-recovery"
+      ]
+    },
+    "websites": {
+      "count": 3,
+      "config_path": "products/websites/",
+      "products": [
+        "cdn",
+        "notification-hubs",
+        "signalr-service"
+      ]
+    },
+    "dev-tool": {
+      "count": 1,
+      "config_path": "products/dev-tool/",
+      "products": [
+        "app-configuration"
+      ]
+    },
+    "networking": {
+      "count": 13,
+      "config_path": "products/networking/",
+      "products": [
+        "application-gateway",
+        "azure-nat-gateway",
+        "core-control-plane",
+        "dns",
+        "ip-address",
+        "load-balancer",
+        "network-watcher",
+        "route-server",
+        "traffic-manager",
+        "virtual-network",
+        "virtual-network-manager",
+        "virtual-wan",
+        "vpn-gateway"
       ]
     }
   },

@@ -41,7 +41,7 @@ class RegionProcessor:
         """
         logger.info("🔍 获取区域筛选OS名称...")
         
-        # 优先级1: 隐藏软件筛选器的value（最准确）
+        # 隐藏软件筛选器的value
         if (filter_analysis and 
             filter_analysis.get('software_options') and 
             len(filter_analysis['software_options']) > 0):
@@ -93,7 +93,7 @@ class RegionProcessor:
                 continue
 
             # 标准化产品名称（转换为文件名格式）
-            product_key = self._normalize_product_name(os_name)
+            product_key = os_name
 
             if product_key not in dict_config:
                 dict_config[product_key] = {}
@@ -101,41 +101,6 @@ class RegionProcessor:
             dict_config[product_key][region] = table_ids
 
         return dict_config
-
-    def _normalize_product_name(self, os_name: str) -> str:
-        """
-        标准化产品名称为文件名格式（动态推断，避免硬编码映射）
-        
-        Args:
-            os_name: 产品的完整名称（如"API Management"）
-            
-        Returns:
-            标准化的产品键（如"api-management"）
-        """
-        if not os_name:
-            return ""
-        
-        # 动态转换逻辑，避免硬编码映射
-        normalized = os_name.lower()
-        
-        # 移除常见前缀
-        prefixes_to_remove = ['azure ', 'microsoft ', 'azure database for ']
-        for prefix in prefixes_to_remove:
-            if normalized.startswith(prefix):
-                normalized = normalized[len(prefix):]
-                break
-        
-        # 处理特殊字符和空格
-        normalized = normalized.replace(' ', '-').replace('_', '-')
-        
-        # 移除多余的连字符
-        while '--' in normalized:
-            normalized = normalized.replace('--', '-')
-        
-        normalized = normalized.strip('-')
-        
-        logger.debug(f"产品名称标准化: '{os_name}' → '{normalized}'")
-        return normalized
 
     def detect_available_regions(self, soup: BeautifulSoup) -> List[str]:
         """动态检测HTML中实际存在的区域"""
@@ -150,26 +115,7 @@ class RegionProcessor:
             if region_id:
                 detected_regions.add(region_id)
         
-        # 方法2: 检查data-region属性
-        region_elements = soup.find_all(attrs={'data-region': True})
-        for element in region_elements:
-            region_id = element.get('data-region')
-            if region_id:
-                detected_regions.add(region_id)
-        
-        # 方法3: 检查常见的区域ID模式
-        common_region_patterns = [
-            'china-north', 'china-east',
-            'china-north2', 'china-east2',
-            'china-north3', 'china-east3',
-        ]
-        
-        for pattern in common_region_patterns:
-            elements = soup.find_all(id=lambda x: x and pattern in x.lower())
-            if elements:
-                detected_regions.add(pattern)
-        
-        # 方法4: 检查select选项中的区域
+        # 方法2: 检查select选项中的区域
         region_selects = soup.find_all('select')
         for select in region_selects:
             select_id = select.get('id', '').lower()

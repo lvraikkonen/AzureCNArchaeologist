@@ -7,7 +7,6 @@ Core模块 - 核心业务组件
 
 from .product_manager import ProductManager
 from .region_processor import RegionProcessor
-from .config_manager import ConfigManager
 from .logging import (
     setup_logging,
     get_logger,
@@ -26,7 +25,6 @@ from .settings import settings
 __all__ = [
     'ProductManager',
     'RegionProcessor',
-    'ConfigManager',
     'setup_logging',
     'get_logger',
     'get_app_logger',

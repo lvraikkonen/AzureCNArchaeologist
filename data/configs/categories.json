@@ -45,6 +45,16 @@
       "display_name": "物联网",
       "description": "物联网相关服务",
       "icon": "iot"
+    },
+    "dev-tools": {
+      "display_name": "开发人员工具",
+      "description": "开发人员工具",
+      "icon": "code"
+    },
+    "websites": {
+      "display_name": "网站",
+      "description": "网站相关服务",
+      "icon": "globe"
     }
   }
 }
