@@ -20,14 +20,15 @@ from src.strategies.strategy_factory import StrategyFactory
 from src.extractors.enhanced_cms_extractor import EnhancedCMSExtractor
 
 
+# Configuration
+product_key = "app-service"
+html_file = "data/prod-html/compute/app-service.html"
+output_dir = "debug_output"
+
+
 def debug_extraction_pipeline():
     """Debug the full extraction pipeline"""
     print("=== Debug: Full Extraction Pipeline ===")
-    
-    # Configuration
-    product_key = "api-management"
-    html_file = "data/prod-html/api-management-index.html"
-    output_dir = "debug_output"
     
     print(f"Product: {product_key}")
     print(f"HTML File: {html_file}")
@@ -35,15 +36,23 @@ def debug_extraction_pipeline():
     
     # Step 1: Initialize coordinator
     print("\n--- Step 1: Initialize ExtractionCoordinator ---")
-    coordinator = ExtractionCoordinator(product_key)
+    coordinator = ExtractionCoordinator(output_dir)
     print("✅ ExtractionCoordinator initialized")
-    
+
     # Step 2: Run extraction
     print("\n--- Step 2: Execute Extraction ---")
     try:
-        result = coordinator.extract(html_file, output_dir, format="json")
+        result = coordinator.coordinate_extraction(html_file, url="")
         print("✅ Extraction completed successfully")
-        print(f"Result: {result}")
+        print(f"Result keys: {list(result.keys()) if isinstance(result, dict) else type(result)}")
+
+        # Save result to output directory
+        import json
+        output_file = os.path.join(output_dir, f"{product_key}_extraction_result.json")
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+        print(f"✅ Result saved to: {output_file}")
+
     except Exception as e:
         print(f"❌ Extraction failed: {e}")
         import traceback
@@ -63,12 +72,15 @@ def debug_strategy_system():
     
     # Step 2: Test page analysis
     print("\n--- Step 2: Page Analysis ---")
-    html_file = "data/prod-html/api-management-index.html"
     if os.path.exists(html_file):
         with open(html_file, 'r', encoding='utf-8') as f:
             html_content = f.read()
-        
-        analysis_result = page_analyzer.analyze_page_complexity(html_content, "api-management")
+
+        # Convert HTML string to BeautifulSoup object
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+
+        analysis_result = page_analyzer.analyze_page_complexity(soup, html_file)
         print(f"Page complexity: {analysis_result}")
     else:
         print(f"❌ HTML file not found: {html_file}")
@@ -130,8 +142,6 @@ def debug_enhanced_extractor():
     
     # Step 2: Test extraction
     print("\n--- Step 2: Test Extraction ---")
-    html_file = "data/prod-html/api-management-index.html"
-    output_dir = "debug_output"
     
     if os.path.exists(html_file):
         try:

@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Set
 from bs4 import BeautifulSoup, Tag
+from src.utils.html import cleaner
 
 from .logging import get_logger
 
@@ -89,6 +90,48 @@ class RegionProcessor:
         else:
             logger.error("❌ 无法获取有效的OS名称")
             return ""
+
+    def get_regions_from_filter_analysis(self, filter_analysis: Optional[Dict[str, Any]] = None) -> List[str]:
+        """
+        从filter_analysis参数中获取可用区域列表
+
+        Args:
+            filter_analysis: FilterDetector分析结果，包含region_options
+
+        Returns:
+            区域ID列表，从region_options中的value字段提取
+        """
+        logger.info("🌏 从filter_analysis获取可用区域...")
+
+        # 验证filter_analysis参数
+        if not filter_analysis:
+            logger.error("❌ filter_analysis参数为空，回退到HTML检测")
+            return []
+
+        region_options = filter_analysis.get('region_options', [])
+        if not region_options:
+            logger.error("❌ filter_analysis中无region_options，回退到HTML检测")
+            return []
+
+        # 提取所有区域选项的value
+        available_regions = []
+        for i, option in enumerate(region_options):
+            if not isinstance(option, dict):
+                logger.warning(f"⚠ 区域选项[{i}]格式错误: {type(option)}")
+                continue
+
+            region_value = option.get('value', '').strip()
+            if region_value:
+                available_regions.append(region_value)
+            else:
+                logger.warning(f"⚠ 区域选项[{i}]的value为空")
+
+        if available_regions:
+            logger.info(f"✅ 成功从filter_analysis获取 {len(available_regions)} 个区域: {available_regions}")
+        else:
+            logger.error("❌ 未从filter_analysis获取到任何有效的区域")
+
+        return available_regions
 
     def _load_region_config(self) -> Dict[str, Any]:
         """加载并优化区域配置文件，预处理为高效查找格式"""
@@ -182,45 +225,16 @@ class RegionProcessor:
                     
         logger.debug(f"✅ 配置验证完成: {len(config)} 个产品配置有效")
 
-    def detect_available_regions(self, soup: BeautifulSoup) -> List[str]:
-        """动态检测HTML中实际存在的区域"""
-        logger.info("检测可用区域...")
-
-        detected_regions = set()
-        
-        # 方法1: 检查region-container类
-        region_containers = soup.find_all(class_='region-container')
-        for container in region_containers:
-            region_id = container.get('id')
-            if region_id:
-                detected_regions.add(region_id)
-        
-        # 方法2: 检查select选项中的区域
-        region_selects = soup.find_all('select')
-        for select in region_selects:
-            select_id = select.get('id', '').lower()
-            if 'region' in select_id or 'location' in select_id:
-                options = select.find_all('option')
-                for option in options:
-                    value = option.get('value')
-                    if value and len(value) > 2:  # 过滤空值和过短的值
-                        detected_regions.add(value)
-        
-        detected_list = sorted(list(detected_regions))
-        logger.info(f"检测到 {len(detected_list)} 个区域: {detected_list}")
-
-        return detected_list
-
     def extract_region_contents(self, soup: BeautifulSoup, html_file_path: str, 
                               filter_analysis: Dict[str, Any] = None,
                               product_config: Dict[str, Any] = None) -> Dict[str, Any]:
         """
-        提取各区域的内容 - 保持完整HTML格式，支持动态OS名称解析
+        提取各区域的内容 - 保持完整HTML格式
         
         Args:
             soup: BeautifulSoup对象
             html_file_path: HTML文件路径
-            filter_analysis: FilterDetector分析结果（包含隐藏软件筛选器信息）
+            filter_analysis: FilterDetector分析结果（包含软件筛选信息和地区筛选信息）
             product_config: 产品配置字典
             
         Returns:
@@ -237,8 +251,8 @@ class RegionProcessor:
             html_file_path=html_file_path
         )
         
-        # 检测可用区域
-        available_regions = self.detect_available_regions(soup)
+        # 从filter_analysis参数中获取可用区域
+        available_regions = self.get_regions_from_filter_analysis(filter_analysis)
         
         logger.info(f"🎯 使用OS名称 '{os_name}' 进行区域筛选，检测到 {len(available_regions)} 个区域")
         
@@ -247,10 +261,10 @@ class RegionProcessor:
             logger.info(f"处理区域: {region_id}")
 
             try:
-                # 应用区域筛选（使用动态OS名称）
+                # 应用区域筛选
                 region_soup = self.apply_region_filtering(soup, region_id, os_name)
 
-                # 提取完整的HTML内容而不是分解的结构
+                # 提取region的HTML内容
                 region_html = self._extract_region_html_content(region_soup, region_id, product_config)
 
                 region_contents[region_id] = region_html
@@ -265,12 +279,12 @@ class RegionProcessor:
     def apply_region_filtering(self, soup: BeautifulSoup, region_id: str,
                              os_name: str = "") -> BeautifulSoup:
         """
-        应用区域筛选到soup对象（使用动态OS名称）
+        应用区域筛选到soup对象
         
         Args:
             soup: BeautifulSoup对象
             region_id: 区域ID
-            os_name: 产品OS名称（如"API Management"）
+            os_name: 产品OS名称
             
         Returns:
             筛选后的BeautifulSoup对象
@@ -448,19 +462,72 @@ class RegionProcessor:
 
     
     def _remove_table_with_related_content(self, table_element, table_id: str):
-        """简化的表格移除方法，专注于核心功能"""
-        logger.debug(f"🗑️ 移除表格: {table_id}")
-        
+        """移除表格及其所在的scroll-table容器"""
+        logger.debug(f"🗑️ 移除表格及相关内容: {table_id}")
+
         try:
-            # 简化逻辑：直接移除表格元素
-            table_element.decompose()
-            logger.debug(f"✅ 表格移除成功: {table_id}")
+            # 查找包含该表格的scroll-table容器
+            scroll_table_container = self._find_scroll_table_container(table_element)
+
+            if scroll_table_container:
+                # 移除整个scroll-table容器
+                container_info = self._get_container_info(scroll_table_container)
+                scroll_table_container.decompose()
+                logger.debug(f"✅ 移除scroll-table容器成功: {table_id} - {container_info}")
+            else:
+                # 如果找不到scroll-table容器，只移除表格本身
+                table_element.decompose()
+                logger.debug(f"✅ 移除表格成功（未找到容器）: {table_id}")
+
         except Exception as e:
             logger.error(f"❌ 表格移除失败 {table_id}: {e}")
             raise
-    
 
-    def _extract_region_html_content(self, soup: BeautifulSoup, region_id: str, product_config: Dict[str, Any] = None) -> str:
+    def _find_scroll_table_container(self, table_element):
+        """查找包含表格的scroll-table容器"""
+        try:
+            # 从表格元素开始向上查找父元素
+            current = table_element.parent
+
+            while current:
+                # 检查当前元素是否是scroll-table容器
+                if (hasattr(current, 'attrs') and
+                    current.attrs and
+                    current.attrs.get('class') and
+                    'scroll-table' in current.attrs.get('class', [])):
+                    return current
+
+                # 继续向上查找
+                current = current.parent
+
+            return None
+
+        except Exception as e:
+            logger.debug(f"查找scroll-table容器时出错: {e}")
+            return None
+
+    def _get_container_info(self, container):
+        """获取容器的简要信息用于日志"""
+        try:
+            if not container:
+                return "无容器"
+
+            # 尝试获取容器中的标题
+            h3_element = None
+            if hasattr(container, 'find'):
+                h3_element = container.find('h3')
+
+            if h3_element and hasattr(h3_element, 'get_text'):
+                title = h3_element.get_text().strip()[:50]  # 限制长度
+                return f"标题: {title}"
+            else:
+                return "无标题"
+
+        except Exception as e:
+            logger.debug(f"获取容器信息时出错: {e}")
+            return "信息获取失败"
+
+    def _extract_region_html_content(self, soup: BeautifulSoup, region_id: str, product_config: Optional[Dict[str, Any]] = None) -> str:
         """简化的区域HTML内容提取方法"""
         logger.debug(f"提取区域 {region_id} 的HTML内容")
         
@@ -477,7 +544,7 @@ class RegionProcessor:
             pricing_sections = soup.find_all(class_='pricing-page-section')
             if pricing_sections:
                 # 排除FAQ部分
-                non_faq_sections = [s for s in pricing_sections if not s.find(class_='more-detail')]
+                non_faq_sections = [s for s in pricing_sections if hasattr(s, 'find') and not s.find(class_='more-detail')]
                 if non_faq_sections:
                     content_html = ''.join(str(section) for section in non_faq_sections)
                     logger.debug(f"✓ 使用 {len(non_faq_sections)} 个pricing-page-section")
@@ -488,41 +555,6 @@ class RegionProcessor:
                     logger.debug("✓ 使用完整body内容作为回退")
         
         # 清理并返回
-        result_html = self._clean_html_content(content_html)
+        result_html = cleaner.clean_html_content(content_html)
         logger.debug(f"✓ 区域HTML内容长度: {len(result_html)} 字符")
         return result_html
-
-    def _preserve_important_content(self, content: str) -> str:
-        """保留重要内容的HTML处理 - 确保H2和tags-date不被误删"""
-        if not content:
-            return ""
-        
-        # 轻度清理，但保留重要结构
-        import re
-        # 只移除多余的换行符和制表符
-        content = re.sub(r'\n+', ' ', content)
-        content = re.sub(r'\t+', ' ', content)
-        # 移除过多的连续空格，但保留基本空格
-        content = re.sub(r'  +', ' ', content)
-        # 清理首尾空格
-        content = content.strip()
-        
-        return content
-
-    def _clean_html_content(self, content: str) -> str:
-        """清理HTML内容，移除多余的换行和空格"""
-        if not content:
-            return ""
-        
-        import re
-        # 移除多余的换行符
-        content = re.sub(r'\n+', ' ', content)
-        # 移除多余的空格（保留单个空格）
-        content = re.sub(r'\s+', ' ', content)
-        # 移除标签之间的多余空格
-        content = re.sub(r'>\s+<', '><', content)
-        # 清理首尾空格
-        content = content.strip()
-        
-        return content
-

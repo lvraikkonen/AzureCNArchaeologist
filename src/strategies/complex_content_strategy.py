@@ -247,64 +247,76 @@ class ComplexContentStrategy(BaseStrategy):
         content_mapping = {}
         
         try:
-            # 获取用于区域筛选的OS名称
-            os_name = self.region_processor.get_os_name_for_region_filtering(
-                product_config=self.product_config,
-                filter_analysis=filter_analysis,
-                html_file_path=self.html_file_path
-            )
-            
-            if not os_name:
+            # 获取用于区域筛选的所有OS名称（支持多软件选项）
+            all_os_names = self.region_processor.get_os_names_for_region_filtering(filter_analysis)
+
+            if not all_os_names:
                 logger.warning("⚠ 无法获取有效的OS名称，将跳过区域表格筛选")
             else:
-                logger.info(f"🎯 使用OS名称 '{os_name}' 进行区域表格筛选")
-            
+                logger.info(f"🎯 获取到 {len(all_os_names)} 个OS名称用于区域筛选: {all_os_names}")
+
             # 获取region选项
             region_options = filter_analysis.get("region_options", [])
             software_options = filter_analysis.get("software_options", [])
             category_tabs = tab_analysis.get("category_tabs", [])
-            
+
             # 如果没有区域选项，使用默认
             if not region_options:
                 region_options = [{"value": "default", "label": "默认"}]
-            
+
+            # 构建软件ID到OS名称的映射
+            software_to_os_mapping = {}
+            if software_options and all_os_names:
+                for i, software in enumerate(software_options):
+                    software_id = software.get("value", "")
+                    # 使用对应索引的OS名称，如果索引超出范围则使用第一个
+                    os_name = all_os_names[i] if i < len(all_os_names) else all_os_names[0]
+                    software_to_os_mapping[software_id] = os_name
+                    logger.info(f"🔗 软件映射: '{software_id}' -> OS名称 '{os_name}'")
+
             # 构建多维度映射
             for region in region_options:
                 region_id = region.get("value", "")
-                
+
                 if software_options:
                     # 有软件筛选器的情况
                     for software in software_options:
                         software_id = software.get("value", "")
-                        
+                        # 获取当前软件对应的OS名称
+                        current_os_name = software_to_os_mapping.get(software_id, all_os_names[0] if all_os_names else "")
+
                         if category_tabs:
                             # 有category tabs的情况 - 三维映射
                             for tab in category_tabs:
                                 tab_id = tab.get("href", "").replace("#", "")
                                 content_key = f"{region_id}_{software_id}_{tab_id}"
-                                
-                                # 尝试找到对应的内容并应用区域筛选
-                                content = self._find_content_by_mapping(soup, region_id, software_id, tab_id, os_name)
+
+                                # 使用当前软件对应的OS名称进行区域筛选
+                                content = self._find_content_by_mapping(soup, region_id, software_id, tab_id, current_os_name)
                                 if content:
                                     content_mapping[content_key] = content
                         else:
                             # 只有region + software - 二维映射
                             content_key = f"{region_id}_{software_id}"
-                            content = self._find_content_by_mapping(soup, region_id, software_id, None, os_name)
+                            content = self._find_content_by_mapping(soup, region_id, software_id, None, current_os_name)
                             if content:
                                 content_mapping[content_key] = content
                 elif category_tabs:
                     # 只有region + category tabs - 二维映射
+                    # 使用第一个OS名称（如果有的话）
+                    fallback_os_name = all_os_names[0] if all_os_names else ""
                     for tab in category_tabs:
                         tab_id = tab.get("href", "").replace("#", "")
                         content_key = f"{region_id}_{tab_id}"
-                        content = self._find_content_by_mapping(soup, region_id, None, tab_id, os_name)
+                        content = self._find_content_by_mapping(soup, region_id, None, tab_id, fallback_os_name)
                         if content:
                             content_mapping[content_key] = content
                 else:
                     # 只有region - 一维映射
+                    # 使用第一个OS名称（如果有的话）
+                    fallback_os_name = all_os_names[0] if all_os_names else ""
                     content_key = region_id
-                    content = self._find_content_by_mapping(soup, region_id, None, None, os_name)
+                    content = self._find_content_by_mapping(soup, region_id, None, None, fallback_os_name)
                     if content:
                         content_mapping[content_key] = content
             
@@ -315,43 +327,93 @@ class ComplexContentStrategy(BaseStrategy):
             logger.info(f"⚠ 内容映射提取失败: {e}")
             return {}
 
-    def _find_content_by_mapping(self, soup: BeautifulSoup, 
-                               region_id: str = None,
-                               software_id: str = None, 
-                               tab_id: str = None,
-                               os_name: str = None) -> str:
+    def _get_software_tab_content_id(self, software_id: str) -> Optional[str]:
+        """
+        根据软件ID获取对应的tabContent ID
+
+        Args:
+            software_id: 软件ID（如'App Windows', 'App Linux'）
+
+        Returns:
+            对应的tabContent ID（如'tabContent1', 'tabContent2'），如果未找到则返回None
+        """
+        try:
+            # 重新检测筛选器以获取最新的软件选项信息
+            with open(self.html_file_path, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+            soup = BeautifulSoup(html_content, 'html.parser')
+            filter_analysis = self.filter_detector.detect_filters(soup)
+
+            software_options = filter_analysis.get('software_options', [])
+            for option in software_options:
+                if option.get('value') == software_id:
+                    data_href = option.get('href', '')
+                    if data_href.startswith('#'):
+                        target_id = data_href[1:]  # 移除#号
+                        logger.info(f"🔗 软件'{software_id}'对应的tabContent ID: {target_id}")
+                        return target_id
+                    else:
+                        logger.warning(f"⚠ 软件'{software_id}'的data-href格式异常: {data_href}")
+
+            logger.warning(f"⚠ 未找到软件'{software_id}'对应的tabContent ID")
+            return None
+
+        except Exception as e:
+            logger.error(f"❌ 获取软件tabContent ID失败: {e}")
+            return None
+
+    def _find_content_by_mapping(self, soup: BeautifulSoup,
+                               region_id: Optional[str] = None,
+                               software_id: Optional[str] = None,
+                               tab_id: Optional[str] = None,
+                               os_name: Optional[str] = None) -> str:
         """
         根据映射关系查找对应内容（支持区域表格筛选）
-        
+
         Args:
             soup: BeautifulSoup对象
             region_id: 区域ID
             software_id: 软件ID
             tab_id: Tab ID
             os_name: OS名称，用于区域筛选
-            
+
         Returns:
             找到的内容HTML字符串（经过区域筛选）
         """
         try:
             # 首先从原始soup中找到基础内容
             base_content = None
-            
+
             # 1. 如果有tab_id，优先查找tab对应内容
             if tab_id:
                 base_content = soup.find('div', id=tab_id)
                 if base_content:
                     logger.info(f"✓ 找到tab内容: {tab_id}")
-            
-            # 2. 如果有software_id，查找对应的tabContent分组
+
+            # 2. 如果有software_id，根据软件选项的data-href查找对应的tabContent分组
             if not base_content and software_id:
-                content_groups = soup.find_all('div', class_='tab-panel')
-                for group in content_groups:
-                    group_id = group.get('id', '')
-                    if 'tabContent' in group_id:
-                        base_content = group
-                        logger.info(f"✓ 找到软件内容组: {group_id}")
-                        break
+                # 从filter_analysis中获取软件选项的data-href信息
+                target_tab_content_id = self._get_software_tab_content_id(software_id)
+
+                if target_tab_content_id:
+                    # 根据data-href查找对应的tabContent
+                    base_content = soup.find('div', id=target_tab_content_id)
+                    if base_content:
+                        logger.info(f"✓ 根据软件选项'{software_id}'的data-href找到内容组: {target_tab_content_id}")
+                    else:
+                        logger.warning(f"⚠ 未找到软件选项'{software_id}'对应的内容组: {target_tab_content_id}")
+
+                # 如果还是没找到，回退到原来的逻辑
+                if not base_content:
+                    logger.info(f"🔄 回退到通用查找逻辑，软件ID: {software_id}")
+                    content_groups = soup.find_all('div', class_='tab-panel')
+                    for group in content_groups:
+                        if hasattr(group, 'attrs') and group.attrs:
+                            group_id = group.attrs.get('id', '')
+                            if group_id and 'tabContent' in group_id:
+                                base_content = group
+                                logger.info(f"✓ 找到软件内容组（回退）: {group_id}")
+                                break
             
             # 3. 默认返回主要内容区域
             if not base_content:

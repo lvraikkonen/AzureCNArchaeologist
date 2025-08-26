@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 图片处理工具
-保留CMS兼容的{img_hostname}占位符
+保留CMS兼容的{base_url}占位符
 """
 
 import re
@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 
 def preprocess_image_paths(soup: BeautifulSoup) -> BeautifulSoup:
     """
-    预处理图片路径，添加{img_hostname}占位符
+    预处理图片路径，添加{base_url}占位符
     
     Args:
         soup: BeautifulSoup对象
@@ -25,8 +25,8 @@ def preprocess_image_paths(soup: BeautifulSoup) -> BeautifulSoup:
     img_count = 0
     for img in soup.find_all('img'):
         src = img.get('src')
-        if src and src.startswith('/') and not src.startswith('{img_hostname}'):
-            img['src'] = f"{{img_hostname}}{src}"
+        if src and src.startswith('/') and not src.startswith('{base_url}'):
+            img['src'] = f"{{base_url}}{src}"
             img_count += 1
 
     # 处理style属性中的background-image
@@ -38,7 +38,7 @@ def preprocess_image_paths(soup: BeautifulSoup) -> BeautifulSoup:
             pattern = r'url\(["\']?(/[^"\']*?)["\']?\)'
             def replace_url(match):
                 path = match.group(1)
-                return f'url("{{img_hostname}}{path}")'
+                return f'url("{{base_url}}{path}")'
 
             new_style = re.sub(pattern, replace_url, style)
             if new_style != style:
@@ -56,7 +56,7 @@ def preprocess_image_paths(soup: BeautifulSoup) -> BeautifulSoup:
                 prefix = match.group(1)
                 path = match.group(3)
                 suffix = match.group(4)
-                return f'{prefix}{{img_hostname}}{path}{suffix}'
+                return f'{prefix}{{base_url}}{path}{suffix}'
 
             new_data_config = re.sub(pattern, replace_bg_image, data_config)
             if new_data_config != data_config:

@@ -8,6 +8,7 @@
       "count": 5,
       "config_path": "products/database/",
       "products": [
+        "sql-database",
         "mysql",
         "postgresql",
         "cosmos-db",

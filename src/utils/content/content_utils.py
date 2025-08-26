@@ -151,11 +151,11 @@ def standardize_banner_images(soup: BeautifulSoup) -> BeautifulSoup:
                 src = img.get('src')
                 if src:
                     if src.startswith('/'):
-                        img['src'] = f"{{img_hostname}}{src}"
+                        img['src'] = f"{{base_url}}{src}"
                         processed_count += 1
                     elif not src.startswith(('http', 'https', 'data:')):
                         # 相对路径
-                        img['src'] = f"{{img_hostname}}/{src}"
+                        img['src'] = f"{{base_url}}/{src}"
                         processed_count += 1
             
             # 处理background-image样式
@@ -165,7 +165,7 @@ def standardize_banner_images(soup: BeautifulSoup) -> BeautifulSoup:
                     # 替换相对路径
                     new_style = re.sub(
                         r'background-image:\s*url\(["\']?(/[^"\']*?)["\']?\)',
-                        r'background-image: url("{img_hostname}\1")',
+                        r'background-image: url("{base_url}\1")',
                         style
                     )
                     if new_style != style:

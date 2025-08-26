@@ -75,6 +75,7 @@ class ExtractionCoordinator:
 
             # 阶段2: 获取产品配置
             product_config = self._get_product_config(product_key)
+            product_url = product_config.get('url', '')
 
             # 阶段3: 策略决策
             extraction_strategy = self._determine_extraction_strategy(html_file_path, product_key)
@@ -90,7 +91,7 @@ class ExtractionCoordinator:
             soup = self._prepare_html_content(html_file_path)
             
             # 阶段6: 执行提取
-            extracted_data = self._execute_extraction(strategy_instance, soup, url)
+            extracted_data = self._execute_extraction(strategy_instance, soup, url=product_url)
             
             # 阶段7: 后处理和验证
             final_data = self._post_process_and_validate(
