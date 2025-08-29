@@ -230,9 +230,9 @@ class ComplexContentStrategy(BaseStrategy):
 
     def _extract_complex_content_mapping(self, soup: BeautifulSoup,
                                        filter_analysis: Dict[str, Any],
-                                       tab_analysis: Dict[str, Any]) -> Dict[str, str]:
+                                       tab_analysis: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
         """
-        提取复杂页面的内容映射关系（带区域筛选）
+        提取复杂页面的内容映射关系（带区域筛选和共享内容）
         
         Args:
             soup: BeautifulSoup对象
@@ -240,7 +240,8 @@ class ComplexContentStrategy(BaseStrategy):
             tab_analysis: Tab分析结果
             
         Returns:
-            内容映射字典
+            增强的内容映射字典，包含具体内容和共享内容
+            格式: {content_key: {"content": "...", "shared_content": "..."}}
         """
         logger.info("🗺️ 提取复杂页面内容映射（支持区域筛选）...")
         
@@ -292,15 +293,15 @@ class ComplexContentStrategy(BaseStrategy):
                                 content_key = f"{region_id}_{software_id}_{tab_id}"
 
                                 # 使用当前软件对应的OS名称进行区域筛选
-                                content = self._find_content_by_mapping(soup, region_id, software_id, tab_id, current_os_name)
-                                if content:
-                                    content_mapping[content_key] = content
+                                content_result = self._find_content_by_mapping(soup, region_id, software_id, tab_id, current_os_name)
+                                if content_result and (content_result.get("content") or content_result.get("shared_content")):
+                                    content_mapping[content_key] = content_result
                         else:
                             # 只有region + software - 二维映射
                             content_key = f"{region_id}_{software_id}"
-                            content = self._find_content_by_mapping(soup, region_id, software_id, None, current_os_name)
-                            if content:
-                                content_mapping[content_key] = content
+                            content_result = self._find_content_by_mapping(soup, region_id, software_id, None, current_os_name)
+                            if content_result and (content_result.get("content") or content_result.get("shared_content")):
+                                content_mapping[content_key] = content_result
                 elif category_tabs:
                     # 只有region + category tabs - 二维映射
                     # 使用第一个OS名称（如果有的话）
@@ -308,17 +309,17 @@ class ComplexContentStrategy(BaseStrategy):
                     for tab in category_tabs:
                         tab_id = tab.get("href", "").replace("#", "")
                         content_key = f"{region_id}_{tab_id}"
-                        content = self._find_content_by_mapping(soup, region_id, None, tab_id, fallback_os_name)
-                        if content:
-                            content_mapping[content_key] = content
+                        content_result = self._find_content_by_mapping(soup, region_id, None, tab_id, fallback_os_name)
+                        if content_result and (content_result.get("content") or content_result.get("shared_content")):
+                            content_mapping[content_key] = content_result
                 else:
                     # 只有region - 一维映射
                     # 使用第一个OS名称（如果有的话）
                     fallback_os_name = all_os_names[0] if all_os_names else ""
                     content_key = region_id
-                    content = self._find_content_by_mapping(soup, region_id, None, None, fallback_os_name)
-                    if content:
-                        content_mapping[content_key] = content
+                    content_result = self._find_content_by_mapping(soup, region_id, None, None, fallback_os_name)
+                    if content_result and (content_result.get("content") or content_result.get("shared_content")):
+                        content_mapping[content_key] = content_result
             
             logger.info(f"✓ 构建了 {len(content_mapping)} 个内容映射")
             return content_mapping
@@ -326,6 +327,95 @@ class ComplexContentStrategy(BaseStrategy):
         except Exception as e:
             logger.info(f"⚠ 内容映射提取失败: {e}")
             return {}
+
+    def _extract_shared_content_for_tab_container(self, soup: BeautifulSoup, container_id: str) -> str:
+        """
+        提取指定Tab容器中的共享内容区域
+        
+        共享内容区域位于Tab导航之后、具体Tab内容之前，通常包含：
+        - 定价说明标题 
+        - 计费模式说明
+        - 价格总览表
+        - 重要注释和说明
+        
+        Args:
+            soup: BeautifulSoup对象
+            container_id: Tab容器ID（如'tabContent1', 'tabContent2'等）
+            
+        Returns:
+            共享内容区域的HTML字符串
+        """
+        logger.info(f"🔍 提取Tab容器 '{container_id}' 的共享内容区域...")
+        
+        try:
+            # 查找指定的Tab容器
+            tab_container = soup.find('div', id=container_id)
+            if not tab_container:
+                logger.warning(f"⚠ 未找到Tab容器: {container_id}")
+                return ""
+            
+            shared_content = ""
+            
+            # 方法1: 查找Tab导航后、第一个tab-panel前的内容
+            # 这是最常见的共享内容位置
+            tab_content_div = tab_container.find('div', class_='tab-content')
+            if tab_content_div:
+                # 遍历tab-content下的直接子元素
+                for child in tab_content_div.children:
+                    if hasattr(child, 'name') and child.name:
+                        # 如果遇到第一个tab-panel，停止收集
+                        if child.name == 'div' and child.get('class') and 'tab-panel' in child.get('class'):
+                            break
+                        # 否则收集这个元素作为共享内容
+                        shared_content += str(child)
+                        
+                        # 特别处理：查找重要的定价表格和说明
+                        if child.name in ['h2', 'h3', 'table', 'div']:
+                            element_text = child.get_text(strip=True).lower()
+                            if any(keyword in element_text for keyword in ['定价详细信息', 'dbu价格', '现用现付', '价格总览']):
+                                logger.info(f"✓ 找到重要共享内容元素: {child.name} - {element_text[:50]}...")
+            
+            # 方法2: 如果没找到tab-content结构，查找容器内非tab-panel的直接内容
+            if not shared_content:
+                logger.info(f"🔄 使用备选方法提取 '{container_id}' 的共享内容...")
+                
+                # 查找容器内的直接子元素，但跳过导航和tab-panel
+                for child in tab_container.children:
+                    if hasattr(child, 'name') and child.name:
+                        # 跳过导航相关元素
+                        if child.get('class'):
+                            classes = ' '.join(child.get('class', []))
+                            if any(nav_class in classes for nav_class in ['category-container', 'tab-nav', 'category-tabs']):
+                                continue
+                        
+                        # 如果是tab-panel，停止收集（开始进入具体tab内容）
+                        if child.name == 'div' and child.get('class') and 'tab-panel' in child.get('class'):
+                            break
+                            
+                        # 收集非导航、非tab-panel的内容作为共享内容
+                        if child.name in ['h1', 'h2', 'h3', 'p', 'div', 'table', 'ul', 'ol']:
+                            shared_content += str(child)
+                            logger.info(f"✓ 备选方法收集共享内容: {child.name}")
+            
+            # 内容质量验证
+            if shared_content:
+                # 简单清理
+                shared_content = clean_html_content(shared_content)
+                content_text = BeautifulSoup(shared_content, 'html.parser').get_text(strip=True)
+                
+                if len(content_text) > 20:  # 确保不是空内容
+                    logger.info(f"✅ 成功提取 '{container_id}' 共享内容，长度: {len(content_text)} 字符")
+                    return shared_content
+                else:
+                    logger.warning(f"⚠ '{container_id}' 共享内容过短，可能提取不完整")
+            else:
+                logger.warning(f"⚠ 未在 '{container_id}' 中找到共享内容区域")
+            
+            return shared_content
+            
+        except Exception as e:
+            logger.error(f"❌ 提取 '{container_id}' 共享内容失败: {e}")
+            return ""
 
     def _get_software_tab_content_id(self, software_id: str) -> Optional[str]:
         """
@@ -366,9 +456,9 @@ class ComplexContentStrategy(BaseStrategy):
                                region_id: Optional[str] = None,
                                software_id: Optional[str] = None,
                                tab_id: Optional[str] = None,
-                               os_name: Optional[str] = None) -> str:
+                               os_name: Optional[str] = None) -> Dict[str, str]:
         """
-        根据映射关系查找对应内容（支持区域表格筛选）
+        根据映射关系查找对应内容（支持区域表格筛选和共享内容提取）
 
         Args:
             soup: BeautifulSoup对象
@@ -378,22 +468,27 @@ class ComplexContentStrategy(BaseStrategy):
             os_name: OS名称，用于区域筛选
 
         Returns:
-            找到的内容HTML字符串（经过区域筛选）
+            包含具体内容和共享内容的字典: {"content": "...", "shared_content": "..."}
         """
         try:
             # 首先从原始soup中找到基础内容
             base_content = None
+            main_container_id = None  # 跟踪主容器ID以便提取共享内容
 
             # 1. 如果有tab_id，优先查找tab对应内容
             if tab_id:
                 base_content = soup.find('div', id=tab_id)
                 if base_content:
                     logger.info(f"✓ 找到tab内容: {tab_id}")
+                    # 推断主容器ID (如tabContent1-1的主容器是tabContent1)
+                    if '-' in tab_id:
+                        main_container_id = tab_id.split('-')[0]
 
             # 2. 如果有software_id，根据软件选项的data-href查找对应的tabContent分组
             if not base_content and software_id:
                 # 从filter_analysis中获取软件选项的data-href信息
                 target_tab_content_id = self._get_software_tab_content_id(software_id)
+                main_container_id = target_tab_content_id  # 保存主容器ID
 
                 if target_tab_content_id:
                     # 根据data-href查找对应的tabContent
@@ -412,6 +507,7 @@ class ComplexContentStrategy(BaseStrategy):
                             group_id = group.attrs.get('id', '')
                             if group_id and 'tabContent' in group_id:
                                 base_content = group
+                                main_container_id = group_id
                                 logger.info(f"✓ 找到软件内容组（回退）: {group_id}")
                                 break
             
@@ -420,10 +516,19 @@ class ComplexContentStrategy(BaseStrategy):
                 base_content = soup.find('div', class_='technical-azure-selector')
                 if base_content:
                     logger.info("✓ 使用主要内容区域")
+                    main_container_id = "technical-azure-selector"  # 标记为技术选择器
             
             if not base_content:
                 logger.warning("⚠ 未找到任何基础内容")
-                return ""
+                return {"content": "", "shared_content": ""}
+            
+            # 提取共享内容（如果有主容器ID）
+            shared_content = ""
+            if main_container_id and main_container_id != "technical-azure-selector":
+                shared_content = self._extract_shared_content_for_tab_container(soup, main_container_id)
+            
+            # 准备返回的具体内容
+            final_content = ""
             
             # 应用区域筛选（如果有region_id和os_name）
             if region_id and os_name:
@@ -432,18 +537,23 @@ class ComplexContentStrategy(BaseStrategy):
                 temp_soup = BeautifulSoup(str(base_content), 'html.parser')
                 # 应用区域筛选
                 filtered_soup = self.region_processor.apply_region_filtering(temp_soup, region_id, os_name)
-                return str(filtered_soup)
+                final_content = str(filtered_soup)
             else:
                 # 没有区域信息，直接返回原始内容
                 if not region_id:
                     logger.info("ℹ 无区域ID，跳过区域筛选")
                 if not os_name:
                     logger.info("ℹ 无OS名称，跳过区域筛选")
-                return str(base_content)
+                final_content = str(base_content)
+            
+            return {
+                "content": final_content,
+                "shared_content": shared_content
+            }
             
         except Exception as e:
             logger.info(f"⚠ 内容查找失败: {e}")
-            return ""
+            return {"content": "", "shared_content": ""}
 
     def _get_product_key(self) -> str:
         """获取产品键"""

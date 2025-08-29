@@ -173,6 +173,8 @@ class FlexibleBuilder:
                             content_key = f"{region_id}_{software_id}_{tab_id}"
                             
                             if content_key in content_mapping:
+                                content_result = content_mapping[content_key]
+                                
                                 content_group = {
                                     "groupName": group_name,
                                     "filterCriteriaJson": json.dumps([
@@ -180,10 +182,16 @@ class FlexibleBuilder:
                                         {"filterKey": "software", "matchValues": [software_id]},
                                         {"filterKey": "category", "matchValues": [tab_name]}
                                     ], ensure_ascii=False),
-                                    "content": clean_html_content(content_mapping[content_key]),
+                                    "content": clean_html_content(content_result.get("content", "")),
                                     "sortOrder": len(content_groups) + 1,
                                     "isActive": True
                                 }
+                                
+                                # 添加共享内容字段（如果存在）
+                                shared_content = content_result.get("shared_content", "")
+                                if shared_content:
+                                    content_group["sharedContent"] = clean_html_content(shared_content)
+                                    logger.info(f"✓ 为内容组 '{group_name}' 添加了共享内容")
                                 content_groups.append(content_group)
                     else:
                         # 只有软件筛选器，无category tabs
@@ -191,16 +199,24 @@ class FlexibleBuilder:
                         content_key = f"{region_id}_{software_id}"
                         
                         if content_key in content_mapping:
+                            content_result = content_mapping[content_key]
+                            
                             content_group = {
                                 "groupName": group_name,
                                 "filterCriteriaJson": json.dumps([
                                     {"filterKey": "region", "matchValues": [region_id]},
                                     {"filterKey": "software", "matchValues": [software_id]}
                                 ], ensure_ascii=False),
-                                "content": clean_html_content(content_mapping[content_key]),
+                                "content": clean_html_content(content_result.get("content", "")),
                                 "sortOrder": len(content_groups) + 1,
                                 "isActive": True
                             }
+                            
+                            # 添加共享内容字段（如果存在）
+                            shared_content = content_result.get("shared_content", "")
+                            if shared_content:
+                                content_group["sharedContent"] = clean_html_content(shared_content)
+                                logger.info(f"✓ 为内容组 '{group_name}' 添加了共享内容")
                             content_groups.append(content_group)
             elif category_tabs:
                 # 只有region和category tabs，无软件筛选器
@@ -212,16 +228,24 @@ class FlexibleBuilder:
                     content_key = f"{region_id}_{tab_id}"
                     
                     if content_key in content_mapping:
+                        content_result = content_mapping[content_key]
+                        
                         content_group = {
                             "groupName": group_name,
                             "filterCriteriaJson": json.dumps([
                                 {"filterKey": "region", "matchValues": [region_id]},
                                 {"filterKey": "category", "matchValues": [tab_name]}
                             ], ensure_ascii=False),
-                            "content": clean_html_content(content_mapping[content_key]),
+                            "content": clean_html_content(content_result.get("content", "")),
                             "sortOrder": len(content_groups) + 1,
                             "isActive": True
                         }
+                        
+                        # 添加共享内容字段（如果存在）
+                        shared_content = content_result.get("shared_content", "")
+                        if shared_content:
+                            content_group["sharedContent"] = clean_html_content(shared_content)
+                            logger.info(f"✓ 为内容组 '{group_name}' 添加了共享内容")
                         content_groups.append(content_group)
         
         logger.info(f"✓ 构建了 {len(content_groups)} 个复杂内容组")
