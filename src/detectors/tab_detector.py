@@ -235,3 +235,54 @@ class TabDetector:
                         })
         
         return category_tabs
+    
+    def detect_grouped_tabs(self, soup: BeautifulSoup) -> Dict[str, List[Dict[str, Any]]]:
+        """
+        按软件组检测独立的category tabs结构
+        
+        专门为Complex策略设计，解决软件组内独立tab结构的识别问题。
+        避免将不同软件组的tabs进行错误的交叉组合。
+        
+        Args:
+            soup: BeautifulSoup对象
+            
+        Returns:
+            按软件组分类的tabs字典：
+            {
+                "tabContent1": [{"href": "#tabContent1-1", "id": "xxx", "label": "本地冗余"}, ...],
+                "tabContent2": [{"href": "#tabContent2-1", "id": "xxx", "label": "本地冗余数据库"}, ...]
+            }
+        """
+        logger.info("🔍 按软件组检测独立的category tabs结构...")
+        
+        grouped_tabs = {}
+        
+        # 查找 .tab-content 容器
+        tab_content = soup.find('div', class_='tab-content')
+        if not tab_content:
+            logger.info("⚠ 未找到 .tab-content 容器")
+            return grouped_tabs
+        
+        # 查找所有tabContentN分组
+        import re
+        tab_panels = tab_content.find_all('div', {
+            'class': 'tab-panel',
+            'id': re.compile(r'^tabContent\d+$')
+        })
+        
+        for panel in tab_panels:
+            panel_id = panel.get('id', '')
+            if panel_id:
+                # 检测该分组内的category-tabs
+                group_category_tabs = self._detect_category_tabs_in_group(panel)
+                
+                if group_category_tabs:
+                    grouped_tabs[panel_id] = group_category_tabs
+                    logger.info(f"✅ 软件组 {panel_id} 有 {len(group_category_tabs)} 个独立tabs")
+                    for tab in group_category_tabs:
+                        logger.info(f"   - {tab['label']} -> {tab['href']}")
+                else:
+                    logger.info(f"ℹ 软件组 {panel_id} 没有category-tabs")
+        
+        logger.info(f"✅ 按组检测完成，找到 {len(grouped_tabs)} 个软件组，总计 {sum(len(tabs) for tabs in grouped_tabs.values())} 个独立tabs")
+        return grouped_tabs

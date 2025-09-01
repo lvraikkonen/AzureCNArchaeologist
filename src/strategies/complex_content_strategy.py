@@ -92,8 +92,11 @@ class ComplexContentStrategy(BaseStrategy):
         filter_analysis = self.filter_detector.detect_filters(soup)
         tab_analysis = self.tab_detector.detect_tabs(soup)
         
-        # 4. 提取复杂内容映射
-        content_mapping = self._extract_complex_content_mapping(soup, filter_analysis, tab_analysis)
+        # 3.1 获取按软件组分类的tabs（用于修复映射构建）
+        grouped_tabs = self.tab_detector.detect_grouped_tabs(soup)
+        
+        # 4. 提取复杂内容映射（传入按组分类的tabs）
+        content_mapping = self._extract_complex_content_mapping(soup, filter_analysis, tab_analysis, grouped_tabs)
         
         # 5. 使用FlexibleBuilder构建复杂内容组
         content_groups = self.flexible_builder.build_complex_content_groups(
@@ -230,7 +233,8 @@ class ComplexContentStrategy(BaseStrategy):
 
     def _extract_complex_content_mapping(self, soup: BeautifulSoup,
                                        filter_analysis: Dict[str, Any],
-                                       tab_analysis: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
+                                       tab_analysis: Dict[str, Any],
+                                       grouped_tabs: Dict[str, List[Dict[str, Any]]] = None) -> Dict[str, Dict[str, str]]:
         """
         提取复杂页面的内容映射关系（带区域筛选和共享内容）
         
@@ -275,51 +279,95 @@ class ComplexContentStrategy(BaseStrategy):
                     software_to_os_mapping[software_id] = os_name
                     logger.info(f"🔗 软件映射: '{software_id}' -> OS名称 '{os_name}'")
 
-            # 构建多维度映射
-            for region in region_options:
-                region_id = region.get("value", "")
-
-                if software_options:
-                    # 有软件筛选器的情况
-                    for software in software_options:
-                        software_id = software.get("value", "")
-                        # 获取当前软件对应的OS名称
-                        current_os_name = software_to_os_mapping.get(software_id, all_os_names[0] if all_os_names else "")
-
-                        if category_tabs:
-                            # 有category tabs的情况 - 三维映射
-                            for tab in category_tabs:
+            # 🔧 修复关键逻辑：使用按组分类的tabs而非全局tabs
+            if software_options and grouped_tabs:
+                logger.info("🎯 使用软件组内独立tabs进行映射（修复后逻辑）")
+                
+                # 按软件进行分组映射
+                for software in software_options:
+                    software_id = software.get("value", "")
+                    current_os_name = software_to_os_mapping.get(software_id, all_os_names[0] if all_os_names else "")
+                    
+                    # 获取当前软件对应的tabContent ID
+                    target_tab_content_id = self._get_software_tab_content_id(software_id)
+                    if not target_tab_content_id:
+                        logger.warning(f"⚠ 无法获取软件'{software_id}'对应的tabContent ID")
+                        continue
+                    
+                    # 获取当前软件组内的独立tabs
+                    software_tabs = grouped_tabs.get(target_tab_content_id, [])
+                    logger.info(f"🔍 软件'{software_id}'({target_tab_content_id})有 {len(software_tabs)} 个独立tabs")
+                    
+                    for region in region_options:
+                        region_id = region.get("value", "")
+                        
+                        if software_tabs:
+                            # 只与当前软件组内的tabs组合
+                            for tab in software_tabs:
                                 tab_id = tab.get("href", "").replace("#", "")
                                 content_key = f"{region_id}_{software_id}_{tab_id}"
-
-                                # 使用当前软件对应的OS名称进行区域筛选
+                                
                                 content_result = self._find_content_by_mapping(soup, region_id, software_id, tab_id, current_os_name)
                                 if content_result and (content_result.get("content") or content_result.get("shared_content")):
                                     content_mapping[content_key] = content_result
+                                    logger.info(f"✓ 创建映射: {content_key} (软件组内独立tab)")
                         else:
-                            # 只有region + software - 二维映射
+                            # 软件组内没有tabs，只做region + software二维映射
                             content_key = f"{region_id}_{software_id}"
                             content_result = self._find_content_by_mapping(soup, region_id, software_id, None, current_os_name)
                             if content_result and (content_result.get("content") or content_result.get("shared_content")):
                                 content_mapping[content_key] = content_result
-                elif category_tabs:
-                    # 只有region + category tabs - 二维映射
-                    # 使用第一个OS名称（如果有的话）
-                    fallback_os_name = all_os_names[0] if all_os_names else ""
-                    for tab in category_tabs:
-                        tab_id = tab.get("href", "").replace("#", "")
-                        content_key = f"{region_id}_{tab_id}"
-                        content_result = self._find_content_by_mapping(soup, region_id, None, tab_id, fallback_os_name)
+                                logger.info(f"✓ 创建映射: {content_key} (无tabs的软件组)")
+                                
+            else:
+                # 🔄 回退逻辑：使用原来的映射方式（保持兼容性）
+                logger.info("🔄 使用回退映射逻辑（原有逻辑）")
+                
+                # 构建多维度映射
+                for region in region_options:
+                    region_id = region.get("value", "")
+
+                    if software_options:
+                        # 有软件筛选器的情况
+                        for software in software_options:
+                            software_id = software.get("value", "")
+                            # 获取当前软件对应的OS名称
+                            current_os_name = software_to_os_mapping.get(software_id, all_os_names[0] if all_os_names else "")
+
+                            if category_tabs:
+                                # 有category tabs的情况 - 三维映射
+                                for tab in category_tabs:
+                                    tab_id = tab.get("href", "").replace("#", "")
+                                    content_key = f"{region_id}_{software_id}_{tab_id}"
+
+                                    # 使用当前软件对应的OS名称进行区域筛选
+                                    content_result = self._find_content_by_mapping(soup, region_id, software_id, tab_id, current_os_name)
+                                    if content_result and (content_result.get("content") or content_result.get("shared_content")):
+                                        content_mapping[content_key] = content_result
+                            else:
+                                # 只有region + software - 二维映射
+                                content_key = f"{region_id}_{software_id}"
+                                content_result = self._find_content_by_mapping(soup, region_id, software_id, None, current_os_name)
+                                if content_result and (content_result.get("content") or content_result.get("shared_content")):
+                                    content_mapping[content_key] = content_result
+                    elif category_tabs:
+                        # 只有region + category tabs - 二维映射
+                        # 使用第一个OS名称（如果有的话）
+                        fallback_os_name = all_os_names[0] if all_os_names else ""
+                        for tab in category_tabs:
+                            tab_id = tab.get("href", "").replace("#", "")
+                            content_key = f"{region_id}_{tab_id}"
+                            content_result = self._find_content_by_mapping(soup, region_id, None, tab_id, fallback_os_name)
+                            if content_result and (content_result.get("content") or content_result.get("shared_content")):
+                                content_mapping[content_key] = content_result
+                    else:
+                        # 只有region - 一维映射
+                        # 使用第一个OS名称（如果有的话）
+                        fallback_os_name = all_os_names[0] if all_os_names else ""
+                        content_key = region_id
+                        content_result = self._find_content_by_mapping(soup, region_id, None, None, fallback_os_name)
                         if content_result and (content_result.get("content") or content_result.get("shared_content")):
                             content_mapping[content_key] = content_result
-                else:
-                    # 只有region - 一维映射
-                    # 使用第一个OS名称（如果有的话）
-                    fallback_os_name = all_os_names[0] if all_os_names else ""
-                    content_key = region_id
-                    content_result = self._find_content_by_mapping(soup, region_id, None, None, fallback_os_name)
-                    if content_result and (content_result.get("content") or content_result.get("shared_content")):
-                        content_mapping[content_key] = content_result
             
             logger.info(f"✓ 构建了 {len(content_mapping)} 个内容映射")
             return content_mapping
