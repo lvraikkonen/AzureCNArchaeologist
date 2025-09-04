@@ -61,7 +61,7 @@ graph TB
 
 ### 核心技术栈
 - **编程语言**: Python 3.11+
-- **包管理**: uv / poetry
+- **包管理**: uv
 - **HTML解析**: BeautifulSoup + lxml + selectolax
 - **数据处理**: pandas + numpy + jieba
 - **机器学习**: scikit-learn + transformers
@@ -84,7 +84,7 @@ graph TB
 
 ### 安装步骤
 
-#### 方式一：使用 uv (推荐)
+#### 使用 uv
 
 ```bash
 # 1. 安装uv包管理器
@@ -101,23 +101,6 @@ uv pip install -r requirements.txt
 
 # 4. 安装项目本身
 uv pip install -e .
-```
-
-#### 方式二：使用 Poetry
-
-```bash
-# 1. 安装Poetry
-curl -sSL https://install.python-poetry.org | python3 -
-
-# 2. 克隆项目
-git clone https://github.com/your-org/AzureCNArchaeologist.git
-cd AzureCNArchaeologist
-
-# 3. 使用Poetry安装依赖
-poetry install
-
-# 4. 激活虚拟环境
-poetry shell
 ```
 
 #### 配置环境
@@ -178,6 +161,28 @@ python scripts/verify_installation.py
 ```
 
 ### 基本使用
+
+#### 统一CLI界面
+
+```bash
+# 查看所有可用命令
+uv run cli.py --help
+
+# 从生产环境自动复制HTML文件
+uv run cli.py copy-from-prod --language both
+uv run cli.py copy-from-prod --language zh-cn --categories database storage
+
+# 提取产品数据
+uv run cli.py extract mysql --html-file data/prod-html/mysql.html --format json
+
+# 列出支持的产品
+uv run cli.py list-products
+
+# 查看项目状态
+uv run cli.py status
+```
+
+#### 传统方式（NOT IMPLEMENMTED）
 
 ```bash
 # 运行完整的数据处理流水线
@@ -756,21 +761,3 @@ monthly_costs = {
 ## 📄 许可证
 
 本项目采用MIT许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
-
-## 🙏 致谢
-
-- Azure中国团队提供的HTML源文件
-- 开源社区提供的优秀工具和库
-- 所有贡献者的宝贵意见和代码贡献
-
-## 📞 联系我们
-
-- **项目负责人**: [Your Name](mailto:your.email@example.com)
-- **技术支持**: [tech-support@example.com](mailto:tech-support@example.com)
-- **GitHub Issues**: [Project Issues](https://github.com/your-org/AzureCNArchaeologist/issues)
-
----
-
-**⭐ 如果这个项目对您有帮助，请给我们一个Star！**
-
-*让Azure定价数据重获新生，让AI助手更加智能！* 🚀

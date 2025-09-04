@@ -242,6 +242,120 @@ def list_products_command(args):
         print(f"\n总计: {len(products)} 个产品")
 
 
+def copy_from_prod_command(args):
+    """执行HTML文件自动复制命令"""
+    logger = get_app_logger("cli.copy_from_prod")
+
+    logger.info(f"开始HTML文件自动复制: 语言={args.language}, 分组={args.categories}")
+
+    print(f"📁 开始HTML文件自动复制")
+    print(f"   语言版本: {args.language}")
+    if args.categories:
+        print(f"   指定分组: {', '.join(args.categories)}")
+    else:
+        print(f"   处理所有分组")
+
+    # 记录用户操作
+    log_user_operation(
+        user="cli_user",
+        action="HTML文件自动复制",
+        details={
+            "language": args.language,
+            "categories": args.categories,
+            "base_dir": args.base_dir
+        }
+    )
+
+    try:
+        # 导入HTML复制脚本
+        from scripts.auto_copy_html import HTMLFileCopier
+
+        # 创建复制器
+        copier = HTMLFileCopier(args.base_dir)
+
+        # 根据参数运行
+        if args.language == "both":
+            results = copier.run_both_languages(args.categories)
+
+            # 输出结果
+            print(f"\n✅ 处理完成!")
+            print(f"   中文版本: 成功 {results['zh-cn']['total_success']}, 失败 {results['zh-cn']['total_fail']}")
+            print(f"   英文版本: 成功 {results['en-us']['total_success']}, 失败 {results['en-us']['total_fail']}")
+
+            total_success = results['zh-cn']['total_success'] + results['en-us']['total_success']
+            total_fail = results['zh-cn']['total_fail'] + results['en-us']['total_fail']
+            print(f"   总计: 成功 {total_success}, 失败 {total_fail}")
+
+            # 显示失败的分组
+            if total_fail > 0:
+                print("\n⚠️  失败的分组:")
+                for lang, lang_results in results.items():
+                    for category, stats in lang_results['categories'].items():
+                        if stats['fail'] > 0:
+                            print(f"     {lang}/{category}: {stats['fail']} 个失败")
+
+            # 记录成功操作
+            log_user_operation(
+                user="cli_user",
+                action="HTML文件自动复制完成",
+                details={
+                    "language": args.language,
+                    "total_success": total_success,
+                    "total_fail": total_fail,
+                    "results": results
+                },
+                status="成功" if total_fail == 0 else "部分成功"
+            )
+
+        else:
+            result = copier.run(args.language, args.categories)
+
+            # 输出结果
+            print(f"\n✅ 处理完成!")
+            print(f"   语言: {args.language}")
+            print(f"   成功: {result['total_success']} 个文件")
+            print(f"   失败: {result['total_fail']} 个文件")
+
+            if result['total_fail'] > 0:
+                print("\n⚠️  失败的分组:")
+                for category, stats in result['categories'].items():
+                    if stats['fail'] > 0:
+                        print(f"     {category}: {stats['fail']} 个失败")
+
+            # 记录成功操作
+            log_user_operation(
+                user="cli_user",
+                action="HTML文件自动复制完成",
+                details={
+                    "language": args.language,
+                    "total_success": result['total_success'],
+                    "total_fail": result['total_fail'],
+                    "categories": result['categories']
+                },
+                status="成功" if result['total_fail'] == 0 else "部分成功"
+            )
+
+        logger.info("HTML文件自动复制完成")
+
+    except Exception as e:
+        error_msg = f"HTML文件复制过程出错: {str(e)}"
+        print(f"❌ {error_msg}")
+        logger.error(error_msg, exc_info=True)
+
+        # 记录异常操作
+        log_user_operation(
+            user="cli_user",
+            action="HTML文件自动复制",
+            details={
+                "language": args.language,
+                "categories": args.categories,
+                "error": str(e)
+            },
+            status="异常"
+        )
+        return 1
+
+
 def status_command(args):
     """显示项目状态"""
     print("📊 项目状态:")
@@ -249,6 +363,7 @@ def status_command(args):
     print("   ├── 核心模块: ✅ 已迁移到 src/core/")
     print("   ├── 导出器: ✅ 已创建 src/exporters/")
     print("   ├── 产品提取器: ✅ 已迁移到 src/product_extractors/")
+    print("   ├── HTML复制脚本: ✅ 已创建 scripts/auto_copy_html.py")
     print("   └── CLI界面: ✅ 统一入口已创建")
 
 
@@ -262,6 +377,8 @@ def create_parser():
   %(prog)s extract api-management --html-file data/prod-html/api-management-index.html --format json --output-dir output/api-management
   %(prog)s export json --input output/mysql_data.json
   %(prog)s batch --input-dir data/prod-html --output-dir output
+  %(prog)s copy-from-prod --language both
+  %(prog)s copy-from-prod --language zh-cn --categories database storage
   %(prog)s list-products
   %(prog)s status
         """
@@ -302,10 +419,20 @@ def create_parser():
     list_parser = subparsers.add_parser('list-products', help='列出支持的产品')
     list_parser.set_defaults(func=list_products_command)
     
+    # copy-from-prod 命令
+    copy_parser = subparsers.add_parser('copy-from-prod', help='从生产环境复制HTML文件')
+    copy_parser.add_argument('--language', '-l', choices=['zh-cn', 'en-us', 'both'],
+                            default='both', help='语言版本 (默认: both)')
+    copy_parser.add_argument('--categories', '-c', nargs='+',
+                            help='要处理的分组列表 (默认: 处理所有分组)')
+    copy_parser.add_argument('--base-dir', '-d', default='.',
+                            help='项目根目录 (默认: 当前目录)')
+    copy_parser.set_defaults(func=copy_from_prod_command)
+
     # status 命令
     status_parser = subparsers.add_parser('status', help='显示项目状态')
     status_parser.set_defaults(func=status_command)
-    
+
     return parser
 
 

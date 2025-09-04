@@ -117,9 +117,9 @@
         "signalr-service"
       ]
     },
-    "dev-tool": {
+    "dev-tools": {
       "count": 1,
-      "config_path": "products/dev-tool/",
+      "config_path": "products/dev-tools/",
       "products": [
         "app-configuration"
       ]
@@ -132,7 +132,7 @@
         "azure-nat-gateway",
         "core-control-plane",
         "dns",
-        "ip-address",
+        "ip-addresses",
         "load-balancer",
         "network-watcher",
         "route-server",
