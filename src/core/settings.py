@@ -7,6 +7,10 @@
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# 加载.env文件
+load_dotenv()
 
 
 class Settings:
@@ -43,6 +47,10 @@ class Settings:
     
     # 数据处理日志配置
     DATA_PROCESSING_LOG_FILE = LOG_DIR / "data_processing.log"
+
+    # Azure Storage配置
+    AZURE_STORAGE_CONNECTION_STRING = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+    AZURE_BLOB_CONTAINER_NAME = os.getenv("AZURE_BLOB_CONTAINER_NAME", "cms-output")
 
 
 # 创建全局设置实例

@@ -193,9 +193,71 @@ def batch_command(args):
     print(f"   输入目录: {args.input_dir}")
     print(f"   输出目录: {args.output_dir}")
     print(f"   产品过滤: {args.products}")
-    
+
     # TODO: 实现批处理逻辑
     print("✅ 批处理完成")
+
+
+def upload_command(args):
+    """执行上传命令"""
+    try:
+        from src.utils.storage import BlobStorageManager
+        from src.core import settings
+
+        if args.list:
+            # 列出Blob Storage中的文件
+            print("📋 列出Blob Storage中的文件...")
+
+            if not settings.AZURE_STORAGE_CONNECTION_STRING:
+                print("❌ Azure Storage连接字符串未配置")
+                print("请在.env文件中设置AZURE_STORAGE_CONNECTION_STRING")
+                return
+
+            blob_manager = BlobStorageManager()
+            blobs = blob_manager.list_blobs(name_starts_with=args.prefix)
+
+            if not blobs:
+                print("📭 容器中没有找到文件")
+                return
+
+            print(f"📋 找到 {len(blobs)} 个文件:")
+            for blob in blobs:
+                size_mb = blob['size'] / (1024 * 1024) if blob['size'] else 0
+                print(f"  📄 {blob['name']} ({size_mb:.2f} MB, {blob['last_modified']})")
+
+        else:
+            # 上传文件
+            print(f"📤 开始上传JSON文件到Azure Blob Storage")
+            print(f"   输出目录: {args.output_dir}")
+            print(f"   Blob前缀: {args.prefix or '(无)'}")
+            print(f"   试运行: {'是' if args.dry_run else '否'}")
+
+            # 调用上传脚本的功能
+            import subprocess
+            import sys
+
+            cmd = [sys.executable, "scripts/upload_to_blob.py", "upload"]
+            cmd.extend(["--output-dir", args.output_dir])
+
+            if args.prefix:
+                cmd.extend(["--prefix", args.prefix])
+
+            if args.dry_run:
+                cmd.append("--dry-run")
+
+            result = subprocess.run(cmd, capture_output=False)
+
+            if result.returncode == 0:
+                print("✅ 上传命令执行完成")
+            else:
+                print("❌ 上传命令执行失败")
+
+    except ImportError as e:
+        print(f"❌ 导入模块失败: {e}")
+        print("请确保已安装azure-storage-blob依赖")
+    except Exception as e:
+        print(f"❌ 上传失败: {e}")
+        logger.error(f"上传命令执行失败: {e}")
 
 
 def list_products_command(args):
@@ -377,6 +439,9 @@ def create_parser():
   %(prog)s extract api-management --html-file data/prod-html/api-management-index.html --format json --output-dir output/api-management
   %(prog)s export json --input output/mysql_data.json
   %(prog)s batch --input-dir data/prod-html --output-dir output
+  %(prog)s upload --output-dir output --prefix cms
+  %(prog)s upload --dry-run
+  %(prog)s upload --list
   %(prog)s copy-from-prod --language both
   %(prog)s copy-from-prod --language zh-cn --categories database storage
   %(prog)s list-products
@@ -428,6 +493,18 @@ def create_parser():
     copy_parser.add_argument('--base-dir', '-d', default='.',
                             help='项目根目录 (默认: 当前目录)')
     copy_parser.set_defaults(func=copy_from_prod_command)
+
+    # upload 命令
+    upload_parser = subparsers.add_parser('upload', help='上传JSON文件到Azure Blob Storage')
+    upload_parser.add_argument('--output-dir', '-o', default='output',
+                              help='Output目录路径 (默认: output)')
+    upload_parser.add_argument('--prefix', '-p',
+                              help='Blob名称前缀')
+    upload_parser.add_argument('--dry-run', '-d', action='store_true',
+                              help='试运行，不实际上传文件')
+    upload_parser.add_argument('--list', '-l', action='store_true',
+                              help='列出Blob Storage中的文件')
+    upload_parser.set_defaults(func=upload_command)
 
     # status 命令
     status_parser = subparsers.add_parser('status', help='显示项目状态')
