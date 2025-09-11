@@ -1,55 +1,90 @@
 {
   "version": "1.0",
   "categories": {
-    "database": {
-      "display_name": "数据库服务",
-      "description": "Azure数据库相关服务",
-      "icon": "database"
-    },
     "ai-ml": {
       "display_name": "人工智能与机器学习",
       "description": "AI和ML相关服务",
       "icon": "brain"
-    },
-    "integration": {
-      "display_name": "集成服务",
-      "description": "API管理和数据集成服务",
-      "icon": "link"
-    },
-    "networking": {
-      "display_name": "联网服务",
-      "description": "联网服务",
-      "icon": "network"
-    },
-    "storage": {
-      "display_name": "存储服务",
-      "description": "数据存储相关服务",
-      "icon": "archive"
-    },
-    "compute": {
-      "display_name": "计算服务",
-      "description": "虚拟机和计算相关服务",
-      "icon": "server"
     },
     "analysis": {
       "display_name": "分析服务",
       "description": "数据分析与相关服务",
       "icon": "data"
     },
+    "azure-virtual-desktop":{
+      "display_name": "Azure 虚拟桌面",
+      "description": "Azure 虚拟桌面",
+      "icon": "desktop"
+    },
+    "compute": {
+      "display_name": "计算服务",
+      "description": "虚拟机和计算相关服务",
+      "icon": "server"
+    },
+    "container": {
+      "display_name": "容器",
+      "description": "容器相关服务",
+      "icon": "container"
+    },
+    "database": {
+      "display_name": "数据库服务",
+      "description": "Azure数据库相关服务",
+      "icon": "database"
+    },
+    "dev-ops": {
+      "display_name": "DevOps",
+      "description": "DevOps相关服务",
+      "icon": "devops"
+    },
+    "dev-tools": {
+      "display_name": "开发人员工具",
+      "description": "开发人员工具",
+      "icon": "code"
+    },
+    "hybrid-multicloud": {
+      "display_name": "混合多云",
+      "description": "混合多云相关服务",
+      "icon": "cloud"
+    },
     "identity": {
       "display_name": "标识服务",
       "description": "标识和访问管理",
       "icon": "user"
+    },
+    "integration": {
+      "display_name": "集成服务",
+      "description": "API管理和数据集成服务",
+      "icon": "link"
     },
     "iot": {
       "display_name": "物联网",
       "description": "物联网相关服务",
       "icon": "iot"
     },
-    "dev-tools": {
-      "display_name": "开发人员工具",
-      "description": "开发人员工具",
-      "icon": "code"
+    "management": {
+      "display_name": "管理服务",
+      "description": "管理服务",
+      "icon": "settings"
+    },
+    "migration": {
+      "display_name": "迁移服务",
+      "description": "迁移相关服务",
+      "icon": "migrate"
+    },
+    "networking": {
+      "display_name": "联网服务",
+      "description": "联网服务",
+      "icon": "network"
+    },
+    "security": {
+      "display_name": "安全服务",
+      "description": "安全相关服务",
+      "icon": "shield"
+    },
+    "storage": {
+      "display_name": "存储服务",
+      "description": "数据存储相关服务",
+      "icon": "archive"
     },
     "websites": {
       "display_name": "网站",

@@ -1,9 +1,9 @@
 {
-  "display_name": "Anomaly Detector",
-  "filename": "anomaly-detector.html",
-  "url": "https://www.azure.cn/pricing/details/cognitive-services/anomaly-detector/index.html",
-  "slug": "anomaly-detector",
-  "category": "ai-ml",
+  "display_name": "SQL Server Stretch Database",
+  "filename": "sql-server-stretch-database.html",
+  "url": "https://www.azure.cn/pricing/details/sql-server-stretch-database/index.html",
+  "slug": "sql-server-stretch-database",
+  "category": "database",
   "important_section_titles": [
     "定价详细信息",
     "定价详情",
@@ -12,13 +12,13 @@
     "faq",
     "frequently asked questions",
     "支持和服务级别协议",
-    "Anomaly Detector",
-    "anomaly-detector"
+    "SQL Server Stretch Database",
+    "sql-server-stretch-database"
   ],
   "html_processing": {
-    "type": "region",
-    "estimated_size_mb": 0.5,
-    "processing_strategy": "SIMPLE_STATIC"
+    "type": "simple",
+    "estimated_size_mb": 1.2,
+    "processing_strategy": "simple"
   },
   "extraction_config": {
     "priority_sections": [
@@ -37,5 +37,5 @@
     ],
     "min_content_length": 100
   },
-  "created_at": "2025-07-22"
+  "created_at": "2025-09-08"
 }

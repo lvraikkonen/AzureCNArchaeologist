@@ -132,80 +132,112 @@ class SectionExtractor:
         try:
             # 首先查找Banner元素
             banner = soup.find('div', {'class': ['common-banner', 'col-top-banner']})
-            if banner:
-                # 从Banner后面查找第一个有效的描述元素
-                current = banner
-                while current:
-                    current = current.find_next_sibling()
-                    if current and current.name in ['div', 'ul', 'ol', 'section']:
-                        # 检查是否是pricing-page-section
-                        if current.name == 'div' and 'pricing-page-section' in current.get('class', []):
-                            content_text = current.get_text().strip()
-                            # 检查是否是FAQ内容(包含more-detail或支持和服务级别协议)
-                            if ('more-detail' in str(current) or 
-                                '支持和服务级别协议' in content_text or
-                                '常见问题' in content_text):
-                                continue  # 跳过FAQ内容，查找下一个section
-                            
-                            # 找到合适的描述section
-                            clean_content = clean_html_content(str(current))
-                            logger.info(f"✓ 找到pricing-page-section描述内容，长度: {len(clean_content)}")
-                            return clean_content
-                            
-                        # 检查是否是ul/ol等描述元素
-                        elif current.name in ['ul', 'ol']:
-                            # 检查是否包含描述性内容（避免导航菜单）
-                            content_text = current.get_text().strip()
-                            if (len(content_text) > 50 and  # 内容足够长
-                                not any(nav_indicator in content_text.lower() for nav_indicator in [
-                                    '导航', 'menu', 'nav', '首页', 'home'
-                                ]) and
-                                not any(faq_indicator in content_text for faq_indicator in [
-                                    '常见问题', 'faq', '支持和服务级别协议'
-                                ])):
-                                clean_content = clean_html_content(str(current))
-                                logger.info(f"✓ 找到{current.name}描述内容，长度: {len(clean_content)}")
-                                return clean_content
-                        
-                        # 检查是否是其他描述容器
-                        elif (current.name == 'div' and 
-                              current.get('class') and 
-                              any(desc_class in current.get('class', []) for desc_class in [
-                                  'description', 'intro', 'summary', 'overview'
-                              ])):
-                            content_text = current.get_text().strip()
-                            if (len(content_text) > 30 and
-                                not any(faq_indicator in content_text for faq_indicator in [
-                                    '常见问题', 'faq', '支持和服务级别协议'  
-                                ])):
-                                clean_content = clean_html_content(str(current))
-                                logger.info(f"✓ 找到描述容器内容，长度: {len(clean_content)}")
-                                return clean_content
-            
-            # 备用方案：尝试传统选择器
-            desc_selectors = [
-                '.description',
-                '.product-description', 
-                '.intro',
-                '.summary',
-                'section.overview',
-                'ul.product-features',  # 添加对产品特性列表的支持
-                'ol.product-features'
-            ]
-            
-            for selector in desc_selectors:
-                element = soup.select_one(selector)
-                if element:
-                    content_text = element.get_text().strip()
-                    # 确保内容足够长且不是FAQ
-                    if (len(content_text) > 30 and
-                        not any(faq_indicator in content_text for faq_indicator in [
-                            '常见问题', 'faq', '支持和服务级别协议'
-                        ])):
-                        clean_content = clean_html_content(str(element))
-                        logger.info(f"✓ 使用备用描述选择器: {selector}")
+            if not banner:
+                logger.info("⚠ 未找到Banner元素")
+                return ""
+
+            # 查找technical-azure-selector元素作为边界
+            main_content_selector = soup.find('div', class_='technical-azure-selector')
+
+            # 方法1: 尝试找到第一个有效的描述元素
+            current = banner
+            while current:
+                current = current.find_next_sibling()
+                if not current:
+                    break
+
+                # 如果遇到technical-azure-selector，停止查找
+                if (main_content_selector and current == main_content_selector):
+                    break
+
+                current_str = str(current)
+                if ('technical-azure-selector' in current_str and
+                    'pricing-detail-tab' in current_str):
+                    break
+
+                if current and hasattr(current, 'name'):
+                    # 检查是否是pricing-page-section
+                    if 'pricing-page-section' in current_str:
+                        content_text = current.get_text().strip()
+                        # 检查是否是FAQ内容(包含more-detail或支持和服务级别协议)
+                        if ('more-detail' in current_str or
+                            '支持和服务级别协议' in content_text or
+                            '常见问题' in content_text or
+                            'faq' in content_text.lower()):
+                            continue  # 跳过FAQ内容，查找下一个section
+
+                        # 找到合适的描述section
+                        clean_content = clean_html_content(str(current))
+                        logger.info(f"✓ 找到pricing-page-section描述内容，长度: {len(clean_content)}")
                         return clean_content
-            
+
+                    # 检查是否是ul/ol等描述元素
+                    elif current.name in ['ul', 'ol']:
+                        # 检查是否包含描述性内容（避免导航菜单）
+                        content_text = current.get_text().strip()
+                        if (len(content_text) > 50 and  # 内容足够长
+                            not any(nav_indicator in content_text.lower() for nav_indicator in [
+                                '导航', 'menu', 'nav', '首页', 'home'
+                            ]) and
+                            not any(faq_indicator in content_text for faq_indicator in [
+                                '常见问题', 'faq', '支持和服务级别协议'
+                            ])):
+                            clean_content = clean_html_content(str(current))
+                            logger.info(f"✓ 找到{current.name}描述内容，长度: {len(clean_content)}")
+                            return clean_content
+
+                    # 检查是否是其他描述容器
+                    elif (current.name == 'div' and
+                          any(desc_class in current_str for desc_class in [
+                              'description', 'intro', 'summary', 'overview'
+                          ])):
+                        content_text = current.get_text().strip()
+                        if (len(content_text) > 30 and
+                            not any(faq_indicator in content_text for faq_indicator in [
+                                '常见问题', 'faq', '支持和服务级别协议'
+                            ])):
+                            clean_content = clean_html_content(str(current))
+                            logger.info(f"✓ 找到描述容器内容，长度: {len(clean_content)}")
+                            return clean_content
+
+            # 方法2: 如果没有找到单个描述元素，收集Banner后到technical-azure-selector之间的所有内容
+            logger.info("📝 未找到单个描述元素，尝试收集区域内所有内容...")
+            description_content = ""
+            current = banner
+            found_sections = 0
+
+            while current:
+                current = current.find_next_sibling()
+                if not current:
+                    break
+
+                # 如果遇到technical-azure-selector，停止收集
+                if (main_content_selector and current == main_content_selector):
+                    break
+
+                current_str = str(current)
+                if ('technical-azure-selector' in current_str and
+                    'pricing-detail-tab' in current_str):
+                    break
+
+                # 收集pricing-page-section或其他有意义的内容
+                if ('pricing-page-section' in current_str or
+                    (hasattr(current, 'name') and current.name in ['div', 'ul', 'ol', 'section', 'p'] and
+                     len(current.get_text().strip()) > 30)):
+                    # 排除FAQ内容
+                    content_text = current.get_text().strip()
+                    if not any(faq_indicator in content_text for faq_indicator in [
+                        '常见问题', 'faq', '支持和服务级别协议', 'more-detail'
+                    ]):
+                        description_content += str(current)
+                        found_sections += 1
+                        logger.info(f"✓ 收集第{found_sections}个描述内容")
+
+            if description_content:
+                clean_content = clean_html_content(description_content)
+                logger.info(f"✓ 收集了{found_sections}个描述sections，总长度: {len(clean_content)}")
+                return clean_content
+
             logger.info("⚠ 未找到描述内容")
             return ""
             
@@ -216,97 +248,130 @@ class SectionExtractor:
     def extract_qa(self, soup: BeautifulSoup) -> str:
         """
         提取Q&A内容以及支持和服务级别协议内容
-        
+        technical-azure-selector容器之后的所有pricing-page-section或者没有pricing-page-section包围的内容，
+        包括额外信息、FAQ、SLA等，统一归类为QA内容
+
         Args:
             soup: BeautifulSoup对象
-            
+
         Returns:
             Q&A内容HTML字符串
         """
         logger.info("❓ 提取Q&A内容...")
-        
+
         try:
             qa_content = ""
-            
-            # 1. 查找标准FAQ容器
-            faq_containers = [
-                soup.find('div', class_='faq'),
-                soup.find('div', class_='qa'),
-                soup.find('section', class_='faq'),
-                soup.find('section', class_='qa')
-            ]
-            
-            for container in faq_containers:
+
+            # 1. 查找technical-azure-selector元素（主要内容区域）
+            main_content_selector = soup.find('div', class_='technical-azure-selector')
+
+            if not main_content_selector:
+                logger.info("⚠ 未找到technical-azure-selector元素，使用备用方法提取Q&A内容")
+                # 备用方法：直接查找FAQ和SLA相关内容
+                return self._extract_qa_fallback(soup)
+
+            # 2. 首先收集technical-azure-selector容器后，非FAQ、SLA的页面内容，作为"额外信息"
+            current = main_content_selector
+            additional_info_sections = 0
+
+            while current:
+                current = current.find_next_sibling()
+                if not current:
+                    break
+
+                current_str = str(current)
+                if 'pricing-page-section' in current_str:
+                    content_text = current.get_text().strip()
+                    # 检查是否是FAQ或SLA内容
+                    if not any(qa_indicator in content_text.lower() for qa_indicator in [
+                        'faq', '常见问题', '支持和服务级别协议', 'sla', 'more-detail'
+                    ]) and not 'more-detail' in current_str:
+                        qa_content += str(current)
+                        additional_info_sections += 1
+                        logger.info(f"✓ 收集第{additional_info_sections}个额外信息section")
+
+                # 收集其他有意义的非pricing-page-section内容
+                elif (hasattr(current, 'name') and hasattr(current, 'get_text') and
+                      len(current.get_text().strip()) > 5):
+                    content_text = current.get_text().strip()
+                    if not any(qa_indicator in content_text.lower() for qa_indicator in [
+                        'faq', '常见问题', '支持和服务级别协议', 'sla'
+                    ]):
+                        qa_content += str(current)
+                        additional_info_sections += 1
+                        logger.info(f"✓ 收集第{additional_info_sections}个额外信息内容")
+
+            # 3. 查找more-detail容器（FAQ内容）
+            more_detail_containers = soup.find_all('div', class_='more-detail')
+            faq_sections = 0
+            for container in more_detail_containers:
                 if container:
                     qa_content += str(container)
-                    
-            # 2. 查找more-detail容器
+                    faq_sections += 1
+                    logger.info(f"✓ 找到第{faq_sections}个more-detail容器（FAQ）")
+
+            # 4. 查找pricing-page-section中的SLA内容
+            pricing_sections = soup.find_all('div', class_='pricing-page-section')
+            sla_sections = 0
+            for section in pricing_sections:
+                section_text = section.get_text().lower()
+                # 直接提取明确的支持和SLA部分
+                if '支持和服务级别协议' in section_text or 'sla' in section_text:
+                    qa_content += str(section)
+                    sla_sections += 1
+                    logger.info(f"✓ 找到第{sla_sections}个pricing-page-section支持/SLA内容")
+
+            # 5. 清理QA内容
+            if qa_content:
+                clean_qa = clean_html_content(qa_content)
+                logger.info(f"✓ 提取了Q&A内容：{additional_info_sections}个额外信息，{faq_sections}个FAQ，{sla_sections}个SLA，总长度: {len(clean_qa)}")
+                return clean_qa
+            else:
+                logger.info("⚠ 未找到Q&A内容")
+                return ""
+
+        except Exception as e:
+            logger.info(f"⚠ Q&A内容提取失败: {e}")
+            return ""
+
+    def _extract_qa_fallback(self, soup: BeautifulSoup) -> str:
+        """
+        备用Q&A提取方法，当找不到technical-azure-selector时使用
+
+        Args:
+            soup: BeautifulSoup对象
+
+        Returns:
+            Q&A内容HTML字符串
+        """
+        logger.info("📝 使用备用方法提取Q&A内容...")
+
+        try:
+            qa_content = ""
+
+            # 查找more-detail容器
             more_detail_containers = soup.find_all('div', class_='more-detail')
             for container in more_detail_containers:
                 if container:
                     qa_content += str(container)
                     logger.info(f"✓ 找到more-detail容器")
-            
-            # 3. 查找包含FAQ结构的列表
-            faq_lists = soup.find_all('ul', class_='faq-list')
-            for faq_list in faq_lists:
-                if faq_list:
-                    qa_content += str(faq_list)
-            
-            # 4. 查找pricing-page-section中的支持和SLA内容
+
+            # 查找pricing-page-section中的支持和SLA内容
             pricing_sections = soup.find_all('div', class_='pricing-page-section')
             for section in pricing_sections:
                 section_text = section.get_text().lower()
-                # 直接提取明确的支持和SLA部分，无需价格指示符过滤
                 if '支持和服务级别协议' in section_text or 'sla' in section_text:
                     qa_content += str(section)
                     logger.info(f"✓ 找到pricing-page-section支持/SLA内容")
-            
-            # 5. 查找accordion-style的FAQ
-            accordion_items = soup.find_all(['div', 'section'], class_=['accordion-item', 'faq-item'])
-            for item in accordion_items:
-                if item:
-                    qa_content += str(item)
-            
-            # 6. 如果以上都没找到，查找包含特定FAQ问题的元素
-            if not qa_content:
-                faq_questions = [
-                    '开发人员层的用途是什么',
-                    '我是否可以在自己的数据中心',
-                    '什么是"单位"',
-                    '什么是"网关部署"'
-                ]
-                
-                for question in faq_questions:
-                    elements = soup.find_all(string=lambda text: text and question in text)
-                    for element in elements:
-                        # 找到包含问题的最近的容器
-                        parent = element.parent
-                        while parent and parent.name not in ['div', 'section', 'article']:
-                            parent = parent.parent
-                        
-                        if parent:
-                            # 查找父级的pricing-page-section或more-detail容器
-                            container = parent
-                            for _ in range(5):  # 最多向上查找5层
-                                if container.get('class') and any(cls in ['pricing-page-section', 'more-detail'] 
-                                                                 for cls in container.get('class', [])):
-                                    qa_content += str(container)
-                                    logger.info(f"✓ 找到FAQ问题容器: {question[:20]}...")
-                                    break
-                                if container.parent:
-                                    container = container.parent
-                                else:
-                                    break
-            
-            # 清理QA内容
+
             if qa_content:
                 clean_qa = clean_html_content(qa_content)
-                logger.info(f"✓ 提取了 {len(clean_qa)} 字符的Q&A内容")
+                logger.info(f"✓ 备用方法提取了 {len(clean_qa)} 字符的Q&A内容")
                 return clean_qa
             else:
-                logger.info("⚠ 未找到Q&A内容")
+                logger.info("⚠ 备用方法未找到Q&A内容")
                 return ""
-            
+
         except Exception as e:
-            logger.info(f"⚠ Q&A内容提取失败: {e}")
+            logger.info(f"⚠ 备用Q&A内容提取失败: {e}")
+            return ""

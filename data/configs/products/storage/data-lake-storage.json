@@ -2,7 +2,7 @@
   "display_name": "Data Lake Storage",
   "filename": "storage_data-lake.html",
   "url": "https://www.azure.cn/pricing/details/storage/data-lake/index.html",
-  "slug": "storage/data-lake",
+  "slug": "storage_data-lake",
   "category": "storage",
   "important_section_titles": [
     "定价详细信息",
@@ -15,9 +15,9 @@
     "storage/data-lake"
   ],
   "html_processing": {
-    "type": "normal",
+    "type": "complex",
     "estimated_size_mb": 0.22,
-    "processing_strategy": "standard"
+    "processing_strategy": "complex"
   },
   "extraction_config": {
     "priority_sections": [

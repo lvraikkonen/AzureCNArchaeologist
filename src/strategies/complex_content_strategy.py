@@ -279,7 +279,7 @@ class ComplexContentStrategy(BaseStrategy):
                     software_to_os_mapping[software_id] = os_name
                     logger.info(f"🔗 软件映射: '{software_id}' -> OS名称 '{os_name}'")
 
-            # 🔧 修复关键逻辑：使用按组分类的tabs而非全局tabs
+            # 使用按组分类的tabs而非全局tabs
             if software_options and grouped_tabs:
                 logger.info("🎯 使用软件组内独立tabs进行映射（修复后逻辑）")
                 
@@ -423,27 +423,27 @@ class ComplexContentStrategy(BaseStrategy):
                             if any(keyword in element_text for keyword in ['定价详细信息', 'dbu价格', '现用现付', '价格总览']):
                                 logger.info(f"✓ 找到重要共享内容元素: {child.name} - {element_text[:50]}...")
             
-            # 方法2: 如果没找到tab-content结构，查找容器内非tab-panel的直接内容
-            if not shared_content:
-                logger.info(f"🔄 使用备选方法提取 '{container_id}' 的共享内容...")
-                
-                # 查找容器内的直接子元素，但跳过导航和tab-panel
-                for child in tab_container.children:
-                    if hasattr(child, 'name') and child.name:
-                        # 跳过导航相关元素
-                        if child.get('class'):
-                            classes = ' '.join(child.get('class', []))
-                            if any(nav_class in classes for nav_class in ['category-container', 'tab-nav', 'category-tabs']):
-                                continue
-                        
-                        # 如果是tab-panel，停止收集（开始进入具体tab内容）
-                        if child.name == 'div' and child.get('class') and 'tab-panel' in child.get('class'):
-                            break
-                            
-                        # 收集非导航、非tab-panel的内容作为共享内容
-                        if child.name in ['h1', 'h2', 'h3', 'p', 'div', 'table', 'ul', 'ol']:
-                            shared_content += str(child)
-                            logger.info(f"✓ 备选方法收集共享内容: {child.name}")
+            # # 方法2: 如果没找到tab-content结构，查找容器内非tab-panel的直接内容
+            # if not shared_content:
+            #     logger.info(f"🔄 使用备选方法提取 '{container_id}' 的共享内容...")
+            #
+            #     # 查找容器内的直接子元素，但跳过导航和tab-panel
+            #     for child in tab_container.children:
+            #         if hasattr(child, 'name') and child.name:
+            #             # 跳过导航相关元素
+            #             if child.get('class'):
+            #                 classes = ' '.join(child.get('class', []))
+            #                 if any(nav_class in classes for nav_class in ['category-container', 'tab-nav', 'category-tabs']):
+            #                     continue
+            #
+            #             # 如果是tab-panel，停止收集（开始进入具体tab内容）
+            #             if child.name == 'div' and child.get('class') and 'tab-panel' in child.get('class'):
+            #                 break
+            #
+            #             # 收集非导航、非tab-panel的内容作为共享内容
+            #             if child.name in ['h1', 'h2', 'h3', 'p', 'div', 'table', 'ul', 'ol']:
+            #                 shared_content += str(child)
+            #                 logger.info(f"✓ 备选方法收集共享内容: {child.name}")
             
             # 内容质量验证
             if shared_content:
@@ -531,6 +531,13 @@ class ComplexContentStrategy(BaseStrategy):
                     # 推断主容器ID (如tabContent1-1的主容器是tabContent1)
                     if '-' in tab_id:
                         main_container_id = tab_id.split('-')[0]
+                else:
+                    # 当找不到对应的tab内容时，返回提示信息 (如：全部)
+                    logger.warning(f"⚠ 未找到tab内容: {tab_id}")
+                    return {
+                        "content": f"<div class='tab-content-missing'><p>未找到tab内容 (ID: {tab_id})</p></div>",
+                        "shared_content": ""
+                    }
 
             # 2. 如果有software_id，根据软件选项的data-href查找对应的tabContent分组
             if not base_content and software_id:

@@ -1,9 +1,9 @@
 {
-  "display_name": "Anomaly Detector",
-  "filename": "anomaly-detector.html",
-  "url": "https://www.azure.cn/pricing/details/cognitive-services/anomaly-detector/index.html",
-  "slug": "anomaly-detector",
-  "category": "ai-ml",
+  "display_name": "Azure Cache for Redis",
+  "filename": "cache.html",
+  "url": "https://www.azure.cn/pricing/details/cache/index.html",
+  "slug": "cache",
+  "category": "database",
   "important_section_titles": [
     "定价详细信息",
     "定价详情",
@@ -12,13 +12,13 @@
     "faq",
     "frequently asked questions",
     "支持和服务级别协议",
-    "Anomaly Detector",
-    "anomaly-detector"
+    "Azure Cache for Redis",
+    "cache"
   ],
   "html_processing": {
     "type": "region",
-    "estimated_size_mb": 0.5,
-    "processing_strategy": "SIMPLE_STATIC"
+    "estimated_size_mb": 1.2,
+    "processing_strategy": "region"
   },
   "extraction_config": {
     "priority_sections": [
@@ -37,5 +37,5 @@
     ],
     "min_content_length": 100
   },
-  "created_at": "2025-07-22"
+  "created_at": "2025-09-08"
 }

@@ -390,6 +390,17 @@ def classify_pricing_section(section: Tag) -> str:
         r'Support\s*&\s*sla',
         r'service\s+level\s+agreement',
     ]
+
+    # 其他信息相关的正则模式（应归类为FAQ）
+    additional_info_patterns = [
+        r'其他信息',
+        r'additional\s+information',
+        r'additional\s+info',
+        r'更多信息',
+        r'相关信息',
+        r'重要信息',
+        r'注意事项',
+    ]
     
     # 检查是否为FAQ类型
     for pattern in faq_patterns:
@@ -408,6 +419,15 @@ def classify_pricing_section(section: Tag) -> str:
         if re.search(pattern, section_html):
             logger.debug(f"检测到SLA section (HTML): {pattern}")
             return 'sla'
+
+    # 检查是否为其他信息类型（归类为FAQ）
+    for pattern in additional_info_patterns:
+        if re.search(pattern, section_text, re.IGNORECASE):
+            logger.debug(f"检测到其他信息section（归类为FAQ）: {pattern}")
+            return 'faq'
+        if re.search(pattern, section_html):
+            logger.debug(f"检测到其他信息section（归类为FAQ，HTML）: {pattern}")
+            return 'faq'
     
     
     # 检查section长度，短内容可能是导航或其他

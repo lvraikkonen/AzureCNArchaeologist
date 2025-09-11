@@ -3974,12 +3974,17 @@
       "#T2-B-PM",
       "#T3-B-P",
       "#T3-B-PM",
-      "#Managed_Instance_area-5",
       "#sqldb-managed-instance-general-purpose-gen5",
       "#sqldb-managed-instance-general-purpose-gen5-1",
       "#sqldb-managed-instance-business-critical-gen5",
       "#sqldb-managed-instance-business-premium-serries-2",
-      "#sqldb-managed-instance-business-premium-serries-2-yh"
+      "#sqldb-managed-instance-business-premium-serries-2-yh",
+      "#Managed_Instance_area-5_General_Purpose-1",
+      "#Managed_Instance_area-5_General_Purpose-2",
+      "#Managed_Instance_area-5_General_Purpose-3",
+      "#Managed_Instance_area-5_Business_Critical-1",
+      "#Managed_Instance_area-5_Business_Critical-2",
+      "#Managed_Instance_area-5"
     ]
   },
   {
@@ -3994,12 +3999,17 @@
       "#T2-B-PM",
       "#T3-B-P",
       "#T3-B-PM",
-      "#Managed_Instance_area-5",
       "#sqldb-managed-instance-general-purpose-gen5",
       "#sqldb-managed-instance-general-purpose-gen5-1",
       "#sqldb-managed-instance-business-critical-gen5",
       "#sqldb-managed-instance-business-premium-serries-2",
-      "#sqldb-managed-instance-business-premium-serries-2-yh"
+      "#sqldb-managed-instance-business-premium-serries-2-yh",
+      "#Managed_Instance_area-5_General_Purpose-1",
+      "#Managed_Instance_area-5_General_Purpose-2",
+      "#Managed_Instance_area-5_General_Purpose-3",
+      "#Managed_Instance_area-5_Business_Critical-1",
+      "#Managed_Instance_area-5_Business_Critical-2",
+      "#Managed_Instance_area-5"
     ]
   },
   {
@@ -4028,7 +4038,6 @@
       "#T2-B-PM",
       "#T3-B-P",
       "#T3-B-PM",
-      "#Managed_Instance_area-5",
       "#sqldb-managed-instance-general-purpose-gen5",
       "#sqldb-managed-instance-general-purpose-gen5-1",
       "#sqldb-managed-instance-business-critical-gen5",
@@ -4046,7 +4055,13 @@
       "#MI_Business_Critical_Storage_15_E3",
       "#MI_2-2_Point_N3",
       "#MI_2-2_Point_E3",
-      "#Managed_Instance_Premium-series-2"
+      "#Managed_Instance_Premium-series-2",
+      "#Managed_Instance_area-5_General_Purpose-1",
+      "#Managed_Instance_area-5_General_Purpose-2",
+      "#Managed_Instance_area-5_General_Purpose-3",
+      "#Managed_Instance_area-5_Business_Critical-1",
+      "#Managed_Instance_area-5_Business_Critical-2",
+      "#Managed_Instance_area-5"
     ]
   },
   {
@@ -4061,7 +4076,6 @@
       "#T2-B-PM",
       "#T3-B-P",
       "#T3-B-PM",
-      "#Managed_Instance_area-5",
       "#sqldb-managed-instance-general-purpose-gen5",
       "#sqldb-managed-instance-general-purpose-gen5-1",
       "#sqldb-managed-instance-business-critical-gen5",
@@ -4080,7 +4094,13 @@
       "#Elastic_Database_NE3_5-east3",
       "#MI_2-2_Point_N3",
       "#MI_2-2_Point_E3",
-      "#Managed_Instance_Premium-series-2"
+      "#Managed_Instance_Premium-series-2",
+      "#Managed_Instance_area-5_General_Purpose-1",
+      "#Managed_Instance_area-5_General_Purpose-2",
+      "#Managed_Instance_area-5_General_Purpose-3",
+      "#Managed_Instance_area-5_Business_Critical-1",
+      "#Managed_Instance_area-5_Business_Critical-2",
+      "#Managed_Instance_area-5"
     ]
   },
   {
@@ -4420,7 +4440,6 @@
       "#T3-G-PM",
       "#T3-B-P",
       "#T3-B-PM",
-      "#Managed_Instance_area-5",
       "#SQL_General_Gen5_11_N3",
       "#SQL_General_Gen5_11_E3",
       "#sqldb-managed-instance-general-purpose-gen5-1",
@@ -4434,7 +4453,13 @@
       "#MI_Business_Critical_Storage_15_N3",
       "#MI_Business_Critical_Storage_15_E3",
       "#MI_2-2_Point_N3",
-      "#MI_2-2_Point_E3"
+      "#MI_2-2_Point_E3",
+      "#Managed_Instance_area-5_General_Purpose-1",
+      "#Managed_Instance_area-5_General_Purpose-2",
+      "#Managed_Instance_area-5_General_Purpose-3",
+      "#Managed_Instance_area-5_Business_Critical-1",
+      "#Managed_Instance_area-5_Business_Critical-2",
+      "#Managed_Instance_area-5"
     ]
   },
   {
@@ -4445,7 +4470,6 @@
       "#T3-G-PM",
       "#T3-B-P",
       "#T3-B-PM",
-      "#Managed_Instance_area-5",
       "#SQL_General_Gen5_11_N3",
       "#sqldb-managed-instance-general-purpose-gen5-1",
       "#SQL_General_Gen5_11_E3",
@@ -4459,7 +4483,13 @@
       "#MI_Business_Critical_Storage_15_N3",
       "#MI_Business_Critical_Storage_15_E3",
       "#MI_2-2_Point_N3",
-      "#MI_2-2_Point_E3"
+      "#MI_2-2_Point_E3",
+      "#Managed_Instance_area-5_General_Purpose-1",
+      "#Managed_Instance_area-5_General_Purpose-2",
+      "#Managed_Instance_area-5_General_Purpose-3",
+      "#Managed_Instance_area-5_Business_Critical-1",
+      "#Managed_Instance_area-5_Business_Critical-2",
+      "#Managed_Instance_area-5"
     ]
   },
   {
@@ -4785,7 +4815,15 @@
       "#All_NE2",
       "#Managed_Instance_Premium-series-2",
       "#sqldb-managed-instance-business-premium-serries-2",
-      "#sqldb-managed-instance-business-premium-serries-2-yh"
+      "#sqldb-managed-instance-business-premium-serries-2-yh",
+      "#Managed_Instance_area-5-storage",
+      "#MI_2-2_Point_N3",
+      "#Managed_Instance_area-5_General_Purpose-1",
+      "#Managed_Instance_area-5_General_Purpose-2",
+      "#Managed_Instance_area-5_General_Purpose-3",
+      "#Managed_Instance_area-5_Business_Critical-1",
+      "#Managed_Instance_area-5_Business_Critical-2",
+      "#Managed_Instance_area-5"
     ]
   },
   {
@@ -5169,7 +5207,6 @@
     "os": "App Windows",
     "region": "north-china2",
     "tableIDs": [
-      "#app-service-v3-windows-north3",
       "#app-service-v3-linux-north3",
       "#app-service-only-linux-v1",
       "#app-service-only-linux-v2",
@@ -5206,7 +5243,6 @@
     "os": "App Windows",
     "region": "east-china2",
     "tableIDs": [
-      "#app-service-v3-windows-north3",
       "#app-service-v3-linux-north3",
       "#app-service-only-linux-v1",
       "#app-service-only-linux-v2",
@@ -5256,7 +5292,6 @@
     "region": "east-china2",
     "tableIDs": [
       "#app-service-v3-windows-north3",
-      "#app-service-v3-linux-north3",
       "#app-service-service-plan-premium-v2",
       "#app-service-service-plan-isolated",
       "#app-service-only-windows-v1",
@@ -5319,7 +5354,6 @@
     "region": "north-china2",
     "tableIDs": [
       "#app-service-v3-windows-north3",
-      "#app-service-v3-linux-north3",
       "#app-service-service-plan-premium-v2",
       "#app-service-service-plan-isolated",
       "#app-service-only-windows-v1",
@@ -6796,7 +6830,11 @@
       "#storage-files-date-storage-price-GZRS-table-china-north3",
       "#storage-files-date-storage-price-ZRS-table-china-north3",
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
-      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3"
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3",
+      "#storage-files-Provisioned-v1-LRS",
+      "#storage-files-Provisioned-v1-LRS-ZRS",
+      "#storage-files-Provisioned-v2-LRS",
+      "#storage-files-Provisioned-v2-LRS-ZRS"
     ]
   },
   {
@@ -6820,7 +6858,11 @@
       "#storage-files-date-storage-price-GZRS-table-china-north3",
       "#storage-files-date-storage-price-ZRS-table-china-north3",    
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
-      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3"
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3",
+      "#storage-files-Provisioned-v1-LRS",
+      "#storage-files-Provisioned-v1-LRS-ZRS",
+      "#storage-files-Provisioned-v2-LRS",
+      "#storage-files-Provisioned-v2-LRS-ZRS"
     ]
   },
   {
@@ -6840,7 +6882,9 @@
       "#storage-files-date-storage-price-GZRS-table-china-north3",
       "#storage-files-date-storage-price-ZRS-table-china-north3",    
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
-      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3"
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3",
+      "#storage-files-Provisioned-v1-LRS-ZRS",
+      "#storage-files-Provisioned-v2-LRS-ZRS"
     ]
   },
   {
@@ -6860,7 +6904,9 @@
       "#storage-files-date-storage-price-GZRS-table-china-north3",
       "#storage-files-date-storage-price-ZRS-table-china-north3",      
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
-      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3"
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3",
+      "#storage-files-Provisioned-v1-LRS-ZRS",
+      "#storage-files-Provisioned-v2-LRS-ZRS"
     ]
   },
   {
@@ -6882,7 +6928,9 @@
       "#storage-files-data-storage-transactions-transfer-east3",
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
       "#storage-files-date-storage-price-ZRS-table-china-north3",
-      "#storage-files-date-storage-price-GZRS-table-china-north3"
+      "#storage-files-date-storage-price-GZRS-table-china-north3",
+      "#storage-files-Provisioned-v1-LRS-ZRS",
+      "#storage-files-Provisioned-v2-LRS-ZRS"
     ]
   },
   {
@@ -6902,7 +6950,9 @@
       "#storage-files-date-storage-price-table-new4s",
       "#storage-files-data-storage-price-zrs-table",
       "#storage-files-data-storage-transactions-transfer-east3",
-      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3"
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3",
+      "#storage-files-Provisioned-v1-LRS",
+      "#storage-files-Provisioned-v2-LRS"
     ]
   },
   {
@@ -7572,7 +7622,11 @@
       "#databricks-Compute-job-NCsv3",
       "#general-computation-memory-eadsv5",
       "#job-computation-memory-eadsv5",
-      "#databricks-data-memory-eadsv5"
+      "#databricks-data-memory-eadsv5",
+      "#databricks-data-NCas_T4_v3",
+      "#databricks-General-all-NCas_T4_v3",
+      "#databricks-Compute-Photon-NCas_T4_v3",
+      "#databricks-Compute-Photon-Job-NCas_T4_v3"
     ]
   },
   {
@@ -7636,7 +7690,11 @@
       "#databricks-Compute-job-NCsv3",
       "#general-computation-memory-eadsv5",
       "#job-computation-memory-eadsv5",
-      "#databricks-data-memory-eadsv5"
+      "#databricks-data-memory-eadsv5",
+      "#databricks-data-NCas_T4_v3",
+      "#databricks-General-all-NCas_T4_v3",
+      "#databricks-Compute-Photon-NCas_T4_v3",
+      "#databricks-Compute-Photon-Job-NCas_T4_v3"
     ]
   },
   {
@@ -7645,7 +7703,12 @@
     "tableIDs": [
       "#general-computation-memory-eadsv5",
       "#job-computation-memory-eadsv5",
-      "#databricks-data-memory-eadsv5"
+      "#databricks-data-memory-eadsv5",
+      "#databricks-General-all-NCas_T4_v3",
+      "#databricks-data-NCas_T4_v3",
+      "#databricks-light-job-computation-NCas_T4_v3",
+      "#databricks-Compute-Photon-NCas_T4_v3",
+      "#databricks-Compute-Photon-Job-NCas_T4_v3"
     ]
   },
   {
@@ -7654,7 +7717,12 @@
     "tableIDs": [
       "#general-computation-memory-eadsv5",
       "#job-computation-memory-eadsv5",
-      "#databricks-data-memory-eadsv5"
+      "#databricks-data-memory-eadsv5",
+      "#databricks-General-all-NCas_T4_v3",
+      "#databricks-data-NCas_T4_v3",
+      "#databricks-light-job-computation-NCas_T4_v3",
+      "#databricks-Compute-Photon-NCas_T4_v3",
+      "#databricks-Compute-Photon-Job-NCas_T4_v3"
     ]
   },
   {

@@ -1,42 +1,68 @@
 {
   "version": "2.1",
-  "last_updated": "2025-08-26",
-  "total_products": 52,
+  "last_updated": "2025-09-08",
+  "total_products": 87,
   "future_capacity": 120,
   "categories": {
-    "database": {
-      "count": 5,
-      "config_path": "products/database/",
-      "products": [
-        "sql-database",
-        "mysql",
-        "postgresql",
-        "cosmos-db",
-        "data-explorer",
-        "database-migration"
-      ]
-    },
-    "analysis": {
-      "count": 5,
-      "config_path": "products/analysis/",
-      "products": [
-        "power-bi-embedded",
-        "analysis-services",
-        "hdinsight",
-        "ssis",
-        "stream-analytics"
-      ],
-      "large_html_products": []
-    },
     "ai-ml": {
-      "count": 5,
+      "count": 6,
       "config_path": "products/ai-ml/",
       "products": [
         "anomaly-detector",
         "search",
+        "machine-learning",
         "databricks",
         "form-recognizer",
         "metrics-advisor"
+      ]
+    },
+    "management": {
+      "count": 8,
+      "config_path": "products/management/",
+      "products": [
+        "automation",
+        "backup",
+        "scheduler",
+        "monitor",
+        "azure-policy",
+        "advisor",
+        "azure-firewall",
+        "azure-update-management-center"
+      ]
+    },
+    "migration": {
+      "count": 2,
+      "config_path": "products/migration/",
+      "products": [
+        "azure-migrate",
+        "site-recovery"
+      ]
+    },
+    "database": {
+      "count": 12,
+      "config_path": "products/database/",
+      "products": [
+        "managed-instance",
+        "sql-database",
+        "synapse-analytics",
+        "sql-server-stretch-database",
+        "cosmos-db",
+        "cache",
+        "mysql",
+        "postgresql",
+        "mariadb",
+        "data-explorer",
+        "database-migration",
+        "sql-edge"
+      ]
+    },
+    "security": {
+      "count": 3,
+      "config_path": "products/security/",
+      "products": [
+        "azure-defender",
+        "key-vault",
+        "microsoft-sentinel"
       ]
     },
     "integration": {
@@ -48,11 +74,30 @@
         "service-bus"
       ]
     },
+    "compute": {
+      "count": 8,
+      "config_path": "products/compute/",
+      "products": [
+        "virtual-machine-scale-sets",
+        "app-service",
+        "batch",
+        "cloud-services",
+        "azure-functions",
+        "dedicated-host",
+        "spring-cloud",
+        "hpc-cache"
+      ],
+      "large_html_products": []
+    },
     "iot":{
-      "count": 1,
+      "count": 5,
       "config_path": "products/iot/",
       "products": [
-        "iot-edge"
+        "iot-hub",
+        "iot-edge",
+        "event-hubs",
+        "logic-apps",
+        "time-series-insights"
       ]
     },
     "identity": {
@@ -64,65 +109,19 @@
         "multi-factor-authentication"
       ]
     },
-    "storage": {
-      "count": 2,
-      "config_path": "products/storage/",
+    "analysis": {
+      "count": 7,
+      "config_path": "products/analysis/",
       "products": [
-        "storage-files",
-        "data-lake-storage"
-      ]
-    },
-    "compute": {
-      "count": 2,
-      "config_path": "products/compute/",
-      "products": [
-        "app-service",
-        "cloud-services"
+        "purview",
+        "hdinsight",
+        "stream-analytics",
+        "power-bi-embedded",
+        "analysis-services",
+        "ssis",
+        "data-pipeline"
       ],
       "large_html_products": []
-    },
-    "container": {
-      "count": 5,
-      "config_path": "products/container/",
-      "products": [
-        "container-apps",
-        "container-instances",
-        "container-registry",
-        "kubernetes-service",
-        "service-fabric"
-      ]
-    },
-    "management": {
-      "count": 2,
-      "config_path": "products/management/",
-      "products": [
-        "azure-firewall",
-        "backup"
-      ]
-    },
-    "migration": {
-      "count": 2,
-      "config_path": "products/migration/",
-      "products": [
-        "azure-migrate",
-        "site-recovery"
-      ]
-    },
-    "websites": {
-      "count": 3,
-      "config_path": "products/websites/",
-      "products": [
-        "cdn",
-        "notification-hubs",
-        "signalr-service"
-      ]
-    },
-    "dev-tools": {
-      "count": 1,
-      "config_path": "products/dev-tools/",
-      "products": [
-        "app-configuration"
-      ]
     },
     "networking": {
       "count": 13,
@@ -141,6 +140,65 @@
         "virtual-network-manager",
         "virtual-wan",
         "vpn-gateway"
+      ]
+    },
+    "storage": {
+      "count": 2,
+      "config_path": "products/storage/",
+      "products": [
+        "storage-files",
+        "data-lake-storage"
+      ]
+    },
+    "container": {
+      "count": 5,
+      "config_path": "products/container/",
+      "products": [
+        "container-apps",
+        "container-instances",
+        "container-registry",
+        "kubernetes-service",
+        "service-fabric"
+      ]
+    },
+    "websites": {
+      "count": 5,
+      "config_path": "products/websites/",
+      "products": [
+        "notification-hubs",
+        "frontdoor",
+        "signalr-service",
+        "fluid-relay",
+        "web-pubsub"
+      ]
+    },
+    "dev-tools": {
+      "count": 1,
+      "config_path": "products/dev-tools/",
+      "products": [
+        "app-configuration"
+      ]
+    },
+    "hybrid-multicloud": {
+      "count": 2,
+      "config_path": "products/hybrid-multicloud/",
+      "products": [
+        "hci",
+        "hub"
+      ]
+    },
+    "azure-virtual-desptop": {
+      "count": 1,
+      "config_path": "products/azure-virtual-desktop/",
+      "products": [
+        "virtual-desktop"
+      ]
+    },
+    "dev-ops": {
+      "count": 1,
+      "config_path": "products/dev-ops/",
+      "products": [
+        "managed-grafana"
       ]
     }
   },

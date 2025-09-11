@@ -1,9 +1,9 @@
 {
-  "display_name": "CDN",
-  "filename": "cdn.html",
-  "url": "https://www.azure.cn/pricing/details/cdn/index.html",
-  "slug": "cdn",
-  "category": "websites",
+  "display_name": "Event Hubs",
+  "filename": "event-hubs.html",
+  "url": "https://www.azure.cn/pricing/details/event-hubs/index.html",
+  "slug": "event-hubs",
+  "category": "iot",
   "important_section_titles": [
     "定价详细信息",
     "定价信息",
@@ -15,9 +15,9 @@
     "Support & SLA"
   ],
   "html_processing": {
-    "type": "simple",
+    "type": "region",
     "estimated_size_mb": 0.7,
-    "processing_strategy": "simple"
+    "processing_strategy": "region"
   },
   "extraction_config": {
     "priority_sections": [
@@ -36,5 +36,5 @@
     ],
     "min_content_length": 100
   },
-  "created_at": "2025-08-25"
+  "created_at": "2025-09-08"
 }

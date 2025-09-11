@@ -1,8 +1,8 @@
 {
   "display_name": "Storage Files",
-  "filename": "storage-files.html",
-  "url": "https://www.azure.cn/pricing/details/storage/files/",
-  "slug": "storage-files",
+  "filename": "storage_files.html",
+  "url": "https://www.azure.cn/pricing/details/storage/files/index.html",
+  "slug": "storage_files",
   "category": "storage",
   "important_section_titles": [
     "定价详细信息",
@@ -15,9 +15,9 @@
     "storage-files"
   ],
   "html_processing": {
-    "type": "normal",
+    "type": "region",
     "estimated_size_mb": 0.8,
-    "processing_strategy": "standard"
+    "processing_strategy": "region"
   },
   "extraction_config": {
     "priority_sections": [
