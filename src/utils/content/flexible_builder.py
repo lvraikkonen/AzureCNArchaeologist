@@ -410,7 +410,8 @@ class FlexibleBuilder:
                     })
                 
                 filter_definitions.append({
-                    "filterType": "region",
+                    "filterKey": "region",
+                    "filterType": "dropdown",
                     "displayName": "区域",
                     "options": region_options
                 })
@@ -428,7 +429,8 @@ class FlexibleBuilder:
                     })
                 
                 filter_definitions.append({
-                    "filterType": "software",
+                    "filterKey": "software",
+                    "filterType": "dropdown",
                     "displayName": "软件类别", 
                     "options": software_options
                 })
@@ -445,6 +447,7 @@ class FlexibleBuilder:
 
                 if category_options:
                     filter_definitions.append({
+                        "filterKey": "category",
                         "filterType": "tab",
                         "displayName": "类别",
                         "options": category_options
