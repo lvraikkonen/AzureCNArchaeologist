@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=2.0" name="viewport"/>
+  <meta content="查看容器实例的定价。通过一个命令即可在 Azure 上运行容器，还可通过按秒计费降低基础结构成本。" name="description"/>
+  <meta content="azure 容器实例, 容器实例, 容器, azure 容器, docker on azure" name="keywords"/>
+  <title>
+   Azure 容器应用 - 定价 | Microsoft Azure
+  </title>
+  <link href="../../../Static/Favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+  <link href="../../../Static/Favicon/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+  <link href="../../../Static/Favicon/favicon.ico" rel="icon" type="image/x-icon"/>
+  <link href="../../../Static/Favicon/manifest.json" rel="manifest"/>
+  <link color="#0078D4" href="../../../Static/Favicon/safari-pinned-tab.svg" rel="mask-icon"/>
+  <meta content="/Static/Favicon/browserconfig.xml" name="msapplication-config"/>
+  <meta content="#ffffff" name="theme-color"/>
+  <link href="https://azure.microsoft.com/zh-cn/pricing/details/container-instances/" rel="canonical"/>
+  <!-- BEGIN: Azure UI Style -->
+  <link href="../../../Static/CSS/azureui.min.css" rel="stylesheet"/>
+  <link href="../../../Static/CSS/common.min.css" rel="stylesheet"/>
+  <!-- END: Azure UI Style -->
+  <!-- BEGIN: Page Style -->
+  <!-- END: Page Style -->
+  <!-- BEGIN: Minified Page Style -->
+  <link href="../../../Static/CSS/a05a0e4e99489d7b3cb548e24414e01adf779d77.css" rel="stylesheet"/>
+  <!-- END: Minified Page Style -->
+  <link href="../../../StaticService/css/service.min.css" rel="stylesheet"/>
+ </head>
+ <body class="zh-cn">
+  <script>
+   window.requireUrlArgs = "2019/6/24 6:51:27";
+        window.currentLocale = "zh-CN";
+        window.headerTimestamp = "2019/1/23 8:25:24";
+        window.footerTimestamp = "2019/1/8 8:07:06";
+        window.locFileTimestamp = "2018/11/29 7:49:17";
+
+        window.AcnHeaderFooter = {
+            IsEnableQrCode: true,
+            CurrentLang: window.currentLocale.toLowerCase(),
+        };
+  </script>
+  <style>
+   @media (min-width: 0) {
+            .acn-header-placeholder {
+                height: 48px;
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 980px) {
+            .acn-header-placeholder {
+                height: 89px;
+                width: 100%;
+            }
+        }
+
+        .acn-header-placeholder {
+            background-color: #1A1A1A;
+        }
+
+        .acn-header-service {
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+  </style>
+  <div class="acn-header-container">
+   <div class="acn-header-placeholder">
+   </div>
+   <div class="public_headerpage">
+   </div>
+  </div>
+  <!-- BEGIN: Documentation Content -->
+  <div class="content" id="containerapps">
+   <div class="container">
+    <div class="row">
+     <div class="col-md-12">
+      <div class="bread-crumb hidden-sm hidden-xs">
+       <ul>
+        <li>
+         <span>
+         </span>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+    <div class="single-page">
+     <div class="row">
+      <div class="col-md-2">
+       <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+        <div class="loader">
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+        </div>
+       </div>
+      </div>
+      <div class="col-md-10 pure-content">
+       <div class="select left-navigation-select hidden-md hidden-lg">
+        <select>
+         <option selected="selected">
+          加载中...
+         </option>
+        </select>
+        <span class="icon icon-arrow-top">
+        </span>
+       </div>
+       <tags ms.date="09/30/2015" ms.service="container-instances" wacn.date="11/27/2015">
+       </tags>
+       <style type="text/css">
+        .pricing-detail-tab .tab-nav {
+                                padding-left: 0 !important;
+                                margin-top: 5px;
+                                margin-bottom: 0;
+                                overflow: hidden;
+                            }
+
+                            .pricing-detail-tab .tab-nav li {
+                                list-style: none;
+                                float: left;
+                            }
+
+                            .pricing-detail-tab .tab-nav li.active a {
+                                border-bottom: 4px solid #00a3d9;
+                            }
+
+                            .pricing-detail-tab .tab-nav li.active a:hover {
+                                border-bottom: 4px solid #00a3d9;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel {
+                                display: none;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel.show-md {
+                                display: block;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel .tab-nav li a {
+                                padding-left: 5px;
+                                padding-right: 5px;
+                                color: #00a3d9;
+                                background-color: #FFF;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel .tab-nav li.active a {
+                                color: #FFF;
+                                background-color: #00a3d9;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel .tab-nav li a:hover {
+                                color: #FFF;
+                                background-color: #00a3d9;
+                            }
+
+                            .pure-content .technical-azure-selector .tags-date a,
+                            .pure-content .technical-azure-selector p a,
+                            .pure-content .technical-azure-selector table a {
+                                background: 0 0;
+                                padding: 0;
+                                margin: 0 6px;
+                                height: 21px;
+                                line-height: 22px;
+                                font-size: 14px;
+                                color: #00a3d9;
+                                float: none;
+                                display: inline;
+                            }
+
+                            #container-instances-linux-table tr {
+                                background-color: white;
+                            }
+       </style>
+       <div class="common-banner col-top-banner" data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'//wacnppe.blob.core.chinacloudapi.cn/marketing-resource/css/container-instances_banner.png','imageHeight':'auto'}">
+        <div class="common-banner-image">
+         <div class="common-banner-title">
+          <!--     <img
+                                       src="//wacnppe.blob.core.chinacloudapi.cn/marketing-resource/css/container-instances_icon@2x.svg" /> -->
+          <sapn style="float: left;
+                                   margin-right: 10px;
+                                   margin-top: 5px;
+                                   width: 48px;
+                                   height: 48px;
+                                   background: url('/Images/aca.svg') center no-repeat; background-size: contain;">
+          </sapn>
+          <h2>
+           Azure 容器应用
+           <span>
+            Azure Container Apps
+           </span>
+          </h2>
+          <h4>
+           使用无服务器容器生成和部署新式应用和微服务
+          </h4>
+         </div>
+        </div>
+       </div>
+       <div class="pricing-page-section" style="margin-top: 0;">
+        <h2>
+         浏览定价选项
+        </h2>
+       </div>
+       <!-- BEGIN: TAB-CONTROL -->
+       <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
+        <div class="tab-container-container">
+         <div class="tab-container-box">
+          <div class="tab-container">
+           <!-- 手动控制不显示 -->
+           <div class="dropdown-container software-kind-container" style="display: none;">
+            <label>
+             OS/软件:
+            </label>
+            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+             <span class="selected-item">
+              容器实例
+             </span>
+             <i class="icon">
+             </i>
+             <ol class="tab-items">
+              <li class="active">
+               <a data-href="#tabContent1" href="javascript:void(0)" id="home_container-instances-linux">
+                Linux
+               </a>
+              </li>
+              <!--<li><a href="javascript:void(0)" data-href="#tabContent2"
+                                                        id="home_container-instances-linux">Linux</a></li>-->
+             </ol>
+            </div>
+            <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
+             <option data-href="#tabContent1" selected="selected" value="Container Instances - Linux">
+              Linux
+             </option>
+             <!--<option data-href="#tabContent2" value="Container Instances - Linux">
+                                                Linux</option>-->
+            </select>
+           </div>
+           <div class="dropdown-container region-container">
+            <label>
+             地区:
+            </label>
+            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+             <span class="selected-item">
+              中国东部 3
+             </span>
+             <i class="icon">
+             </i>
+             <ol class="tab-items">
+                <li class="active">
+                    <a data-href="#east-china3" href="javascript:void(0)" id="east-china3">
+                     中国东部 3
+                    </a>
+                </li>
+              <li>
+               <a data-href="#north-china3" href="javascript:void(0)" id="north-china3">
+                中国北部 3
+               </a>
+              </li>
+              <li>
+              </li>
+             </ol>
+            </div>
+            <select class="dropdown-select region-box hidden-lg hidden-md" id="region-box">
+                <option data-href="#east-china3" value="east-china3">
+                    中国东部 3
+                </option>
+             <option data-href="#north-china3" value="north-china3">
+              中国北部 3
+             </option>
+            </select>
+           </div>
+           <br/>
+           <br/>
+           <br/>
+           <br/>
+           <div class="clearfix">
+           </div>
+          </div>
+         </div>
+        </div>
+        <!-- BEGIN: TAB-CONTAINER-1 -->
+       </div>
+       <!-- END: TAB-CONTAINER-2 -->
+       <!-- END: TAB-CONTROL -->
+       <div class="pricing-page-section marginno">
+        <h2>
+         消耗计划
+        </h2>
+        <p>
+         Azure 容器应用消耗计划按每秒资源分配量和请求数收费。每月前 180,000 vCPU-秒、360,000 GiB-秒和 2 百万次请求免费。超过之后，将根据分配给应用程序的
+                                vCPU-s 和 GiB-s 数量为所使用内容(按秒计)计费。
+        </p>
+        <p>
+         应用程序根据请求和事件按需缩放。容器应用副本在运行时按活动使用量计费。当没有要处理的请求或事件时，可以将应用程序配置为扩展到零个副本。当应用程序缩放为零时，不收取使用费。
+        </p>
+        <p>
+         可以选择将副本数量最少的容器应用配置为始终在空闲模式下运行。当应用程序缩减到其最小数量的副本时，如果副本处于非活动状态，则会按降低的空闲率收取使用费。副本进入活动模式，当其启动、处理请求或者其
+                                vCPU 或带宽使用率高于活动计费阈值1时，将按活动率收费。
+        </p>
+       </div>
+       <style>
+        #containerapps .marginno {
+                                margin-top: -80px;
+                            }
+
+                            #containerapps .margin0 {
+                                margin-top: 0px;
+                            }
+       </style>
+       <div class="pricing-page-section margin0">
+        <h2>
+         资源消耗
+        </h2>
+        <!-- <p>容器应用根据以 vCPU 秒(vCPU-s)和千兆字节秒(GiB-s)衡量的资源分配计费。每月前 180,000 个 vCPU-s 和 360,000 GiB-s 是免费的。
+                            </p>
+                            <p>应用程序根据请求和事件按需缩放。容器应用副本在运行时按活动使用量计费。当没有要处理的请求或事件时，可以将应用程序配置为扩展到零个副本。当应用程序缩放为零时，不收取使用费。</p>
+                            <p>可以选择将副本数量最少的容器应用配置为始终在空闲模式下运行。当应用程序缩减到其最小数量的副本时，如果副本处于非活动状态，则会按降低的空闲率收取使用费。副本进入活动模式，当其启动、处理请求或者其
+                                vCPU 或带宽使用率高于活动计费阈值1时，将按活动率收费。</p> -->
+       </div>
+       <div class="pricing-page-section">
+        <table cellpadding="0" cellspacing="0" class="data-table__table data-table__table--pricing" width="100%">
+         <thead>
+          <tr style="text-align: left;">
+           <th>
+            <b>
+             计量
+            </b>
+           </th>
+           <th>
+            <b>
+             活跃使用量价格
+            </b>
+           </th>
+           <th>
+            <b>
+             空闲使用量价格
+            </b>
+           </th>
+           <th>
+            <b>
+             免费授予（每月）
+            </b>
+           </th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr class="data-table__stripe">
+           <td>
+            vCPU（秒）
+           </td>
+           <td>
+            每秒 ￥0.00024
+           </td>
+           <td>
+            每秒 ￥0.00003
+           </td>
+           <td>
+            180,000 vCPU-秒
+           </td>
+          </tr>
+          <tr>
+           <td>
+            内存（GiB-秒）
+           </td>
+           <td>
+            每秒 ￥0.000031
+           </td>
+           <td>
+            每秒 ￥0.000031
+           </td>
+           <td>
+            360,000 GiB-秒
+           </td>
+          </tr>
+         </tbody>
+        </table>
+        <p style="font-size: 12px;">
+         1 当 vCPU 使用率高于 0.01 个内核或接收到的数据高于每秒 1000 字节时，副本处于活动状态。
+        </p>
+       </div>
+       <div class="pricing-page-section margin0">
+        <h2>
+         请求
+        </h2>
+        <p>
+         容器应用根据每月处理的请求总数进行计费。每月前 200 万个请求免费。
+        </p>
+       </div>
+       <div class="pricing-page-section">
+        <table cellpadding="0" cellspacing="0" class="data-table__table data-table__table--pricing" width="100%">
+         <thead>
+          <tr style="text-align: left;">
+           <th>
+            <b>
+             计量
+            </b>
+           </th>
+           <th>
+            <b>
+             价格
+            </b>
+           </th>
+           <th>
+            <b>
+             免费授予（每月）
+            </b>
+           </th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr class="data-table__stripe">
+           <td style="width: 33.3%;">
+            请求
+           </td>
+           <td style="width: 33.3%;">
+            ¥ 2.54/百万
+           </td>
+           <td>
+            2 百万
+           </td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+       <div class="pricing-page-section margin0">
+        <h2>
+         专用计划
+        </h2>
+        <p>
+         在专用计划中创建应用时，可以从多个工作负载配置文件中进行选择，每个配置文件具有不同数量的 vCPU 和 GiB 内存。将根据该工作负载配置文件中配置的 vCPU
+                                和内存的总数量，在每个实例运行的每一秒钟收取费用。可以在单个工作负荷配置文件中运行多个应用，具体取决于每个应用所需的资源数以及工作负载配置文件中可用的资源。这些工作负载配置文件可以根据需要自动横向扩展到多个实例。若要了解详细信息，请参阅
+                                Azure 容器应用专用计划定价详细信息
+        </p>
+       </div>
+       <div class="pricing-page-section">
+        <table cellpadding="0" cellspacing="0" class="data-table__table data-table__table--pricing" width="100%">
+         <thead>
+          <tr style="text-align: left;">
+           <th>
+            <b>
+             计量
+            </b>
+           </th>
+           <th>
+            <b>
+             价格
+            </b>
+           </th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr class="data-table__stripe">
+           <td>
+            专用计划(小时)
+           </td>
+           <td>
+            ¥ 0.636每小时
+           </td>
+          </tr>
+          <tr class="data-table__stripe">
+           <td>
+            vCPU (小时)
+           </td>
+           <td>
+            ¥ 0.575每小时
+           </td>
+          </tr>
+          <tr class="data-table__stripe">
+           <td>
+            内存(GiB-小时)
+           </td>
+           <td>
+            ¥ 0.053每小时
+           </td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+       <!--BEGIN: Support and service code chunk-->
+       <!--END: Support and service code chunk-->
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- END: Documentation Content -->
+  <!-- BEGIN: Footer -->
+  <div class="public_footerpage">
+  </div>
+  <!--END: Common sidebar-->
+  <link href="../../../Static/CSS/Localization/zh-cn.css" rel="stylesheet"/>
+  <script src="/Static/Scripts/lib/jquery-1.12.3.min.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   function getAntiForgeryToken() {
+            var token =
+                '<input name="__RequestVerificationToken" type="hidden" value="FtJS7EhZBT6rgbp0PkQRqZsvT4EkKorxier871BisK9SjwrzF-3NCsrqEl_VYuhENbkKwc9cRYh6MY_Z2AzDIMXeWXd32LE1Vl7rUDgXkV41" />';
+            token = $(token).val();
+            return token;
+        }
+
+        function setLocaleCookie(localeVal) {
+            var Days = 365 * 10; // Ten year expiration
+            var exp = new Date();
+
+            var hostName = window.location.hostname;
+            var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain +
+                "; path=/;expires=" + exp.toGMTString();
+        }
+
+        setLocaleCookie(window.currentLocale);
+  </script>
+  <script type="text/javascript">
+   var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+        var TECHNICAL_STORAGE = '/blob/tech-content/';
+        var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+        var EnablePricingSync = 'false';
+  </script>
+  <!-- BEGIN: Minified RequireJs -->
+  <script src="/Static/Scripts/global.config.js" type="text/javascript">
+  </script>
+  <script src="/Static/Scripts/require.js" type="text/javascript">
+  </script>
+  <script src="/Static/Scripts/pricing-page-detail.js" type="text/javascript">
+  </script>
+  <!--<script src='../../../Static/Scripts/4552a1505e111da8c71780b349b683700a6158fa.js' type='text/javascript'></script>-->
+  <!-- END: Minified RequireJs -->
+  <!-- begin JSLL -->
+  <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js">
+  </script>
+  <script type="text/javascript">
+   (function () {
+            var config = {
+                cookiesToCollect: ["_mkto_trk"],
+                syncMuid: true,
+                ix: {
+                    a: true,
+                    g: true
+                },
+                coreData: {
+                    appId: 'AzureCN',
+                    market: 'zh-cn',
+                }
+            };
+            awa.init(config);
+        })();
+  </script>
+  <!-- end JSLL -->
+  <script src="../../../Static/Scripts/plugins/cookie/jquery.cookie.js" type="text/javascript">
+  </script>
+  <script src="../../../Static/Scripts/wacndatatracker.js" type="text/javascript">
+  </script>
+  <script src="/common/useCommon.js" type="text/javascript">
+  </script>
+ </body>
+</html>

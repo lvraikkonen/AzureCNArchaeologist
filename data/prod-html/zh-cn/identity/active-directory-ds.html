@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Microsoft Entra 域服务 (Azure AD DS); 直接迁移; 云标识; 域控制器; 旧版应用程序"/>
+    <meta name="description"
+          content="Microsoft Entra 域服务 (Azure AD DS)提供可缩放的高性能托管域服务，如域加入、LDAP、Kerberos、Windows 集成身份验证和组策略。IT 管理员只需单击按钮即可为 Azure 基础结构服务中部署的虚拟机和目录感知应用程序启用托管域服务。通过保持与 Windows Server Active Directory 的兼容性，Microsoft Entra 域服务 (Azure AD DS)使管理员能够轻松地将旧的本地应用程序迁移到云，并集中管理 Azure Active Directory 中的所有应用程序和所有标识。"/>
+    <title>Azure Active Directory Domain - Azure云服务</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="../../../Static/Favicon/apple-touch-icon.png">
+    <link rel="shortcut icon" href="../../../Static/Favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../../../Static/Favicon/favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="../../../Static/Favicon/manifest.json">
+    <link rel="mask-icon" href="../../../Static/Favicon/safari-pinned-tab.svg" color="#0078D4">
+    <meta name="msapplication-config" content="/Static/Favicon/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- BEGIN: Azure UI Style -->
+    <link href="../../../Static/CSS/azureui.min.css" rel="stylesheet">
+    <link href="../../../Static/CSS/common.min.css" rel="stylesheet">
+    <!-- END: Azure UI Style -->
+    <!-- BEGIN: Page Style -->
+
+    <!-- END: Page Style -->
+
+    <!-- BEGIN: Minified Page Style -->
+    <link href='../../../Static/CSS/a05a0e4e99489d7b3cb548e24414e01adf779d77.css' rel='stylesheet'/>
+    <!-- END: Minified Page Style -->
+
+    <link rel="stylesheet" href="../../../StaticService/css/service.min.css"/>
+</head>
+<body class="zh-cn">
+<script>
+    window.requireUrlArgs = "2019/6/24 6:51:27";
+    window.currentLocale = "zh-CN";
+    window.headerTimestamp = "2019/1/23 8:25:24";
+    window.footerTimestamp = "2019/1/8 8:07:06";
+    window.locFileTimestamp = "2018/11/29 7:49:17";
+
+    window.AcnHeaderFooter = {
+        IsEnableQrCode: true,
+        CurrentLang: window.currentLocale.toLowerCase(),
+    };
+</script>
+
+<style>
+    @media (min-width: 0) {
+        .acn-header-placeholder {
+            height: 48px;
+            width: 100%;
+        }
+    }
+
+    @media (min-width: 980px) {
+        .acn-header-placeholder {
+            height: 89px;
+            width: 100%;
+        }
+    }
+
+    .acn-header-placeholder {
+        background-color: #1A1A1A;
+    }
+
+    .acn-header-service {
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+</style>
+<div class="acn-header-container">
+    <div class="acn-header-placeholder">
+    </div>
+    <div class="public_headerpage"></div>
+</div>
+
+<!-- BEGIN: Documentation Content -->
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="bread-crumb hidden-sm hidden-xs">
+                    <ul>
+                        <li><span></span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="single-page">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+                        <div class="loader">
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 pure-content">
+                    <div class="select left-navigation-select hidden-md hidden-lg">
+                        <select>
+                            <option selected="selected">加载中...</option>
+                        </select>
+                        <span class="icon icon-arrow-top"></span>
+                    </div>
+
+                    <tags ms.service="active-directory-domain" ms.date="09/30/2015" wacn.date="11/27/2015"></tags>
+                    <style type="text/css">
+                        .pricing-detail-tab .tab-nav {
+                            padding-left: 0 !important;
+                            margin-top: 5px;
+                            margin-bottom: 0;
+                            overflow: hidden;
+                        }
+
+                        .pricing-detail-tab .tab-nav li {
+                            list-style: none;
+                            float: left;
+                        }
+
+                        .pricing-detail-tab .tab-nav li.active a {
+                            border-bottom: 4px solid #00a3d9;
+                        }
+
+                        .pricing-detail-tab .tab-nav li.active a:hover {
+                            border-bottom: 4px solid #00a3d9;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel {
+                            display: none;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel.show-md {
+                            display: block;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel .tab-nav li a {
+                            padding-left: 5px;
+                            padding-right: 5px;
+                            color: #00a3d9;
+                            background-color: #FFF;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel .tab-nav li.active a {
+                            color: #FFF;
+                            background-color: #00a3d9;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel .tab-nav li a:hover {
+                            color: #FFF;
+                            background-color: #00a3d9;
+                        }
+
+                        .pure-content .technical-azure-selector .tags-date a, .pure-content .technical-azure-selector p a, .pure-content .technical-azure-selector table a {
+                            background: 0 0;
+                            padding: 0;
+                            margin: 0 6px;
+                            height: 21px;
+                            line-height: 22px;
+                            font-size: 14px;
+                            color: #00a3d9;
+                            float: none;
+                            display: inline;
+                        }
+
+                        .svg {
+                            width: 50px;
+                            float: left;
+                            margin-right: 10px;
+                        }
+                    </style>
+
+                    <div class="hide-info" style="display:none;">
+                        <div class="bg-box">
+                            <div class="cover-bg">&nbsp;</div>
+                        </div>
+                        <div class="msg-box">
+                            <div class="pricing-unavailable-message">所选区域不可用</div>
+                        </div>
+                    </div>
+                    <!-- BEGIN: Product-Detail-TopBanner -->
+                    <div class="common-banner col-top-banner"
+                         data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'/Images/marketing-resource/css/images/service/product_banner_analysis-services.png','imageHeight':'auto'}">
+                        <div class="common-banner-image">
+                            <div class="common-banner-title">
+                                <div class="svg">
+                                    <svg aria-hidden="true" role="presentation" data-slug-id="active-directory" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
+                                        <defs>
+                                            <linearGradient id="active-directory:ba2610c3-a45a-4e7e-a0c0-285cfd7e005d-113a67d0" x1="13.25" y1="13.02" x2="8.62" y2="4.25"
+                                                            gradientUnits="userSpaceOnUse">
+                                                <stop offset="0" stop-color="#1988d9"></stop>
+                                                <stop offset="0.9" stop-color="#54aef0"></stop>
+                                            </linearGradient>
+                                            <linearGradient id="active-directory:bd8f618b-4f2f-4cb7-aff0-2fd2d211326d-9e38e0da" x1="11.26" y1="10.47" x2="14.46"
+                                                            y2="15.99" gradientUnits="userSpaceOnUse">
+                                                <stop offset="0.1" stop-color="#54aef0"></stop>
+                                                <stop offset="0.29" stop-color="#4fabee"></stop>
+                                                <stop offset="0.51" stop-color="#41a2e9"></stop>
+                                                <stop offset="0.74" stop-color="#2a93e0"></stop>
+                                                <stop offset="0.88" stop-color="#1988d9"></stop>
+                                            </linearGradient>
+                                        </defs>
+
+                                        <polygon points="1.01 10.19 8.93 15.33 16.99 10.17 18 11.35 8.93 17.19 0 11.35 1.01 10.19" fill="#50e6ff"></polygon>
+                                        <polygon points="1.61 9.53 8.93 0.81 16.4 9.54 8.93 14.26 1.61 9.53" fill="#fff"></polygon>
+                                        <polygon points="8.93 0.81 8.93 14.26 1.61 9.53 8.93 0.81" fill="#50e6ff"></polygon>
+                                        <polygon points="8.93 0.81 8.93 14.26 16.4 9.54 8.93 0.81"
+                                                 fill="url(#active-directory:ba2610c3-a45a-4e7e-a0c0-285cfd7e005d-113a67d0)"></polygon>
+                                        <polygon points="8.93 7.76 16.4 9.54 8.93 14.26 8.93 7.76" fill="#53b1e0"></polygon>
+                                        <polygon points="8.93 14.26 1.61 9.53 8.93 7.76 8.93 14.26" fill="#9cebff"></polygon>
+                                        <polygon points="8.93 17.19 18 11.35 16.99 10.17 8.93 15.33 8.93 17.19"
+                                                 fill="url(#active-directory:bd8f618b-4f2f-4cb7-aff0-2fd2d211326d-9e38e0da)"></polygon>
+                                    </svg>
+                                </div>
+                                <h2>Microsoft Entra 域服务 (Azure AD DS)</h2>
+                                <h4>用于虚拟机和目录感知应用程序的域服务</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END: Product-Detail-TopBanner -->
+                    <div class="pricing-page-section">
+                        <p>Microsoft Entra 域服务 (Azure AD DS)提供可缩放的高性能托管域服务，如域加入、LDAP、Kerberos、Windows 集成身份验证和组策略。单击按钮后，管理员即可为 Azure
+                            基础结构服务中部署的虚拟机和目录感知应用程序启用托管域服务。通过保持与 Windows Server Active Directory 的兼容性，Azure Active Directory
+                            域服务使管理员能够轻松地将旧的本地应用程序迁移到云，并集中管理 Azure Active Directory 中的所有应用程序和所有标识。</p>
+                        <h2>定价详细信息</h2>
+                        <p>根据租户所有者选择的 SKU，Microsoft Entra 域服务 (Azure AD DS)的使用按小时收费。 Azure Active Directory
+                            可在用户林和资源林中使用。</p>
+                    </div>
+                    <!-- BEGIN: TAB-CONTROL -->
+                    <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
+                        <div class="tab-container-container">
+                            <div class="tab-container-box">
+                                <div class="tab-container">
+                                    <div class="dropdown-container software-kind-container" style="display:none;">
+                                        <label>OS/软件:</label>
+                                        <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                            <span class="selected-item">Active Directory</span>
+                                            <i class="icon"></i>
+                                            <ol class="tab-items">
+                                                <li class="active"><a href="javascript:void(0)" data-href="#tabContent1" id="home_Active Directory-services">Active
+                                                    Directory</a></li>
+                                            </ol>
+                                        </div>
+                                        <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
+                                            <option selected="selected" data-href="#tabContent1" value="Active Directory">Active Directory</option>
+                                        </select>
+                                    </div>
+                                    <div class="dropdown-container region-container">
+                                        <label>地区:</label>
+                                        <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                            <span class="selected-item">中国东部 2</span>
+                                            <i class="icon"></i>
+                                            <ol class="tab-items">
+                                                <li class="active"><a href="javascript:void(0)" data-href="#east-china2" id="east-china2">中国东部 2</a></li>
+                                                <li><a href="javascript:void(0)" data-href="#north-china2" id="north-china2">中国北部 2</a></li>
+<!--                                                <li><a href="javascript:void(0)" data-href="#east-china" id="east-china">中国东部</a></li>-->
+<!--                                                <li><a href="javascript:void(0)" data-href="#north-china" id="north-china">中国北部</a></li>-->
+                                            </ol>
+                                        </div>
+                                        <select class="dropdown-select region-box hidden-lg hidden-md" id="region-box">
+                                            <option selected="selected" data-href="#east-china2" value="east-china2">中国东部 2</option>
+                                            <option data-href="#north-china2" value="north-china2">中国北部 2</option>
+<!--                                            <option data-href="#east-china" value="east-china">中国东部</option>-->
+<!--                                            <option data-href="#north-china" value="north-china">中国北部</option>-->
+                                        </select>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BEGIN: TAB-CONTAINER-1 -->
+                        <div class="tab-content">
+                            <!-- BEGIN: TAB-CONTAINER-3 -->
+                            <div class="tab-panel" id="tabContent1">
+                                <!-- BEGIN: Tab level 2 navigator 2 -->
+                                <!-- BEGIN: Tab level 2 content 3 -->
+                                <div class="tab-content">
+                                    <!-- BEGIN: Table1-Content-->
+
+                                    <table cellpadding="0" cellspacing="0" width="100%" id="active-directory-standard-tier-region">
+                                        <thead>
+                                        <tr>
+                                            <th align="left"><strong></strong></th>
+                                            <th align="left"><strong>标准</strong></th>
+                                            <th align="left"><strong>企业</strong></th>
+                                            <th align="left"><strong>高级</strong></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td class="left_align"><strong>AAD DS 核心服务</strong></td>
+                                            <td class="left_align"></td>
+                                            <td class="left_align"></td>
+                                            <td class="left_align"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left_align">建议的身份验证负载（每小时峰值）<sup>1</sup></td>
+                                            <td class="left_align">0 到 3,000</td>
+                                            <td class="left_align">3,000 到 10,000</td>
+                                            <td class="left_align">10,000 到 70,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left_align">建议的对象数<sup>2</sup></td>
+                                            <td class="left_align">0 到 25,000</td>
+                                            <td class="left_align">25,000 到 100,000</td>
+                                            <td class="left_align">100,000 到 500,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left_align">备份频率</td>
+                                            <td class="left_align">每 5 天</td>
+                                            <td class="left_align">每 3 天</td>
+                                            <td class="left_align">每天<sup>3</sup></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left_align">资源林信任数</td>
+                                            <td class="left_align">不适用</td>
+                                            <td class="left_align">5</td>
+                                            <td class="left_align">10</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left_align"><strong>实例</strong></td>
+                                            <td class="left_align"></td>
+                                            <td class="left_align"></td>
+                                            <td class="left_align"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left_align">资源林</td>
+                                            <td class="left_align">不适用</td>
+                                            <td class="left_align">￥4.07/小时</td>
+                                            <td class="left_align">￥16.282/小时</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left_align">用户林<sup>4</sup></td>
+                                            <td class="left_align">￥1.526/小时</td>
+                                            <td class="left_align">￥4.07/小时</td>
+                                            <td class="left_align">￥16.282/小时</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <p><sup>1</sup>事务被指定为选择 SKU 的指南，其不是 SLA。 根据应用程序的需求和身份验证请求的数量，目录性能可能会有所不同。</p>
+                                    <p><sup>2</sup>对象数被指定为选择 SKU 的指南，其不受产品限制。</p>
+                                    <p><sup>3</sup>每日备份将保留 7 天，每三次备份保留 30 天。</p>
+                                    <p><sup>4</sup>每个实例包含 2 个用于实现高可用性的域控制器，这些域控制器分布在 2
+                                        个可用性区域（如果在区域中可用）。</p>
+                                </div>
+                            </div>
+                            <!-- END: TAB-CONTAINER-3 -->
+                        </div>
+                    </div>
+                    <!-- END: TAB-CONTROL -->
+                    <div class="pricing-page-section">
+                        <h2>支持和 SLA</h2>
+                        <p>Microsoft Entra 域服务 (Azure AD DS)的技术支持可通过<a href="https://support.azure.cn/zh-cn/support/contact" id="app-contact-page"> Azure 支持</a>获取，计费和订阅管理支持免费提供。
+                        </p>
+                        <p>SLA - 对于托管域中的用户帐户的域身份验证、到根 DSE 的 LDAP 绑定或记录的 DNS 查找，我们将保证至少成功完成 99.9% 的 Microsoft Entra 域服务 (Azure AD DS)请求。<a
+                                href="../../../support/sla/active-directory-ds/v1_0/index.html" id="pricing_app_sla">了解有关SLA的详细信息</a>。预览版期间，此 SLA
+                            不适用于资源林企业层。</p>
+                    </div>
+                    <!--BEGIN: Support and service code chunk-->
+                    <!-- END: Support and service code chunk-->
+
+                    <!--BEGIN: Support and service code chunk-->
+
+
+                    <!--END: Support and service code chunk-->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END: Documentation Content -->
+
+<!-- BEGIN: Footer -->
+<div class="public_footerpage"></div>
+<!--END: Common sidebar-->
+
+
+<link href="../../../Static/CSS/Localization/zh-cn.css" rel="stylesheet">
+<script src="/Static/Scripts/lib/jquery-1.12.3.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    function getAntiForgeryToken() {
+        var token = '<input name="__RequestVerificationToken" type="hidden" value="rO62GKiRoQZVwCXZcP5uzFHDzhB5TOwgTP-cUG5fOOY894KJpbP_TOQXfijNrylLG_IhjL5ieAQQiFVTchQwr-B9xCfajtLnWYViaK3JJBg1" />';
+        token = $(token).val();
+        return token;
+    }
+
+    function setLocaleCookie(localeVal) {
+        var Days = 365 * 10; // Ten year expiration
+        var exp = new Date();
+
+        var hostName = window.location.hostname;
+        var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+        exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+        document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain + "; path=/;expires=" + exp.toGMTString();
+    }
+
+    setLocaleCookie(window.currentLocale);
+</script>
+
+<script type="text/javascript">
+    var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+    var TECHNICAL_STORAGE = '/blob/tech-content/';
+    var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+    var EnablePricingSync = 'false';
+</script>
+
+<!-- BEGIN: Minified RequireJs -->
+<script src='/Static/Scripts/global.config.js' type='text/javascript'></script>
+<script src='/Static/Scripts/require.js' type='text/javascript'></script>
+<script src="/Static/Scripts/pricing-page-detail.js" type="text/javascript"></script>
+<!--<script src='../../../Static/Scripts/4552a1505e111da8c71780b349b683700a6158fa.js' type='text/javascript'></script>-->
+<!-- END: Minified RequireJs -->
+
+<!-- begin JSLL -->
+<script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js"></script>
+
+<script type="text/javascript">
+    (function () {
+        var config = {
+            cookiesToCollect: ["_mkto_trk"],
+            syncMuid: true,
+            ix: {
+                a: true,
+                g: true
+            },
+            coreData: {
+                appId: 'AzureCN',
+                market: 'zh-cn',
+            }
+        };
+        awa.init(config);
+    })();
+</script>
+<!-- end JSLL -->
+
+<script type="text/javascript" src="../../../Static/Scripts/plugins/cookie/jquery.cookie.js"></script>
+<script type="text/javascript" src="../../../Static/Scripts/wacndatatracker.js"></script>
+
+
+<script type="text/javascript" src="/common/useCommon.js"></script>
+
+</body>
+</html>

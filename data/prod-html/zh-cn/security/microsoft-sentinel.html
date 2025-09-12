@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=2.0" name="viewport" />
+    <meta content="Microsoft Sentinel" name="keywords" />
+    <meta content="Microsoft Sentinel" name="description" />
+    <title>
+        Microsoft Sentinel
+    </title>
+    <link href="/Static/Favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
+    <link href="/Static/Favicon/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="/Static/Favicon/favicon.ico" rel="icon" type="image/x-icon" />
+    <link href="/Static/Favicon/manifest.json" rel="manifest" />
+    <link color="#0078D4" href="/Static/Favicon/safari-pinned-tab.svg" rel="mask-icon" />
+    <meta content="/Static/Favicon/browserconfig.xml" name="msapplication-config" />
+    <meta content="#ffffff" name="theme-color" />
+    <link href="https://azure.microsoft.com/pricing/details/microsoft-sentinel/" rel="canonical" />
+    <!-- BEGIN: Azure UI Style -->
+    <link href="/Static/CSS/azureui.min.css" rel="stylesheet" />
+    <link href="/Static/CSS/common.min.css" rel="stylesheet" />
+    <!-- END: Azure UI Style -->
+    <!-- BEGIN: Page Style -->
+    <!-- END: Page Style -->
+    <!-- BEGIN: Minified Page Style -->
+    <link href="/Static/CSS/a05a0e4e99489d7b3cb548e24414e01adf779d77.css" rel="stylesheet" />
+    <!-- END: Minified Page Style -->
+    <link href="/StaticService/css/service.min.css" rel="stylesheet" />
+</head>
+
+<body class="zh-cn">
+    <script>
+        window.requireUrlArgs = "2019/12/9 7:37:32";
+        window.currentLocale = "zh-CN";
+        window.headerTimestamp = "2019/11/6 2:43:11";
+        window.footerTimestamp = "2019/11/6 2:43:11";
+        window.locFileTimestamp = "2019/11/6 2:43:05";
+
+        window.AcnHeaderFooter = {
+            IsEnableQrCode: true,
+            CurrentLang: window.currentLocale.toLowerCase(),
+        };
+    </script>
+    <style>
+        @media (min-width: 0) {
+            .acn-header-placeholder {
+                height: 48px;
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 980px) {
+            .acn-header-placeholder {
+                height: 89px;
+                width: 100%;
+            }
+        }
+
+        .acn-header-placeholder {
+            background-color: #1A1A1A;
+        }
+
+        .acn-header-service {
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+
+         .updatetime {
+            color: black;
+            text-align: right;
+            font-size: 12px;
+        }
+    </style>
+    <div class="acn-header-container">
+        <div class="acn-header-placeholder">
+        </div>
+        <div class="public_headerpage">
+        </div>
+    </div>
+    <!-- BEGIN: Documentation Content -->
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bread-crumb hidden-sm hidden-xs">
+                        <ul>
+                            <li>
+                                <span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="single-page">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+                            <div class="loader">
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-10 pure-content">
+                        <div class="select left-navigation-select hidden-md hidden-lg">
+                            <select>
+                                <option selected="selected">
+                                    加载中...
+                                </option>
+                            </select>
+                            <span class="icon icon-arrow-top">
+                            </span>
+                        </div>
+                        <tags ms.date="09/30/2015" ms.service="microsoft-sentinel" wacn.date="11/27/2015">
+                        </tags>
+                        <style type="text/css">
+                            .pricing-detail-tab .tab-nav {
+                                padding-left: 0 !important;
+                                margin-top: 5px;
+                                margin-bottom: 0;
+                                overflow: hidden;
+                            }
+
+                            .pricing-detail-tab .tab-nav li {
+                                list-style: none;
+                                float: left;
+                            }
+
+                            .pricing-detail-tab .tab-nav li.active a {
+                                border-bottom: 4px solid #00a3d9;
+                            }
+
+                            .pricing-detail-tab .tab-nav li.active a:hover {
+                                border-bottom: 4px solid #00a3d9;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel {
+                                display: none;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel.show-md {
+                                display: block;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel .tab-nav li a {
+                                padding-left: 5px;
+                                padding-right: 5px;
+                                color: #00a3d9;
+                                background-color: #FFF;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel .tab-nav li.active a {
+                                color: #FFF;
+                                background-color: #00a3d9;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel .tab-nav li a:hover {
+                                color: #FFF;
+                                background-color: #00a3d9;
+                            }
+
+                            .pure-content .technical-azure-selector .tags-date a,
+                            .pure-content .technical-azure-selector p a,
+                            .pure-content .technical-azure-selector table a {
+                                background: 0 0;
+                                padding: 0;
+                                margin: 0 6px;
+                                height: 21px;
+                                line-height: 22px;
+                                font-size: 14px;
+                                color: #00a3d9;
+                                float: none;
+                                display: inline;
+                            }
+                        </style>
+                        <div class="hide-info" style="display:none;">
+                            <div class="bg-box">
+                                <div class="cover-bg">
+                                </div>
+                            </div>
+                            <div class="msg-box">
+                                <div class="pricing-unavailable-message">
+                                    所选区域不可用
+                                </div>
+                            </div>
+                        </div>
+                        <div class="common-banner col-top-banner"
+                            data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'/Images/marketing-resource/css/signalr-service_banner.png','imageHeight':'auto'}">
+                            <div class="common-banner-image">
+                                <div class="common-banner-title">
+                                    <img src="/Images/marketing-resource/css/AzureSentinel.svg" />
+                                    <h2>
+                                        Microsoft Sentinel
+<!--                                         <span>
+                                            Microsoft Sentinel
+                                        </span> -->
+                                    </h2>
+                                    <h4>
+                                        所有Microsoft Sentinel 的功能将于<strong>2026年8月18日</strong> 在中国地区的Azure中正式停用。点击
+                                        <a href="https://docs.azure.cn/en-us/sentinel/overview">
+                                        这里</a>查看更多详情。
+                                    </h4>
+                                    <h4>
+                                        Microsoft Sentinel 将数据、分析、工作流汇集在一起，统一和加速整个企业的威胁检测和响应。
+                                    </h4>
+                                    <div class = "updatetime">更新时间：2025年09月03日</div> 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pricing-page-section">
+                            <p>
+                                Microsoft Sentinel 将数据、分析、工作流汇集在一起，统一和加速整个企业的威胁检测和响应。安全分析数据存储在 Azure Monitor Log
+                                Analytics 工作区中，Microsoft Sentinel 可在其中分析、交互并在数秒内从大量数据中获取见解。Microsoft Sentinel 针对 Log
+                                Analytics 工作区中存储的数据量计费，并在 Microsoft Sentinel 中进行分析。
+                            </p>
+                            <!-- <h2>定价详细信息</h2> -->
+                        </div>
+                        <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
+                            <div class="tab-container-container">
+                                <div class="tab-container-box">
+                                    <div class="tab-container">
+                                        <div class="dropdown-container software-kind-container" style="display:none;">
+                                            <label>
+                                                OS/软件:
+                                            </label>
+                                            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                                <span class="selected-item">
+                                                    Logic Apps
+                                                </span>
+                                                <i class="icon">
+                                                </i>
+                                                <ol class="tab-items">
+                                                    <li class="active">
+                                                        <a data-href="#tabContent1" href="javascript:void(0)"
+                                                            id="home_logic-apps">
+                                                            Logic Apps
+                                                        </a>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <select class="dropdown-select software-box hidden-lg hidden-md"
+                                                id="software-box">
+                                                <option data-href="#tabContent1" selected="selected" value="Logic Apps">
+                                                    Logic Apps
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="dropdown-container region-container">
+                                            <label>
+                                                地区:
+                                            </label>
+                                            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                                <span class="selected-item">
+                                                </span>
+                                                <i class="icon">
+                                                </i>
+                                                <ol class="tab-items">
+                                                    <li class="active" onclick="setregiontab('tab-1')">
+                                                        <a data-href="#east-china2" href="javascript:void(0)"
+                                                            id="east-china2">
+                                                            中国东部 3
+                                                        </a>
+                                                    </li>
+                                                    <li class="active" onclick="setregiontab('tab-2')">
+                                                        <a data-href="#east-china2" href="javascript:void(0)"
+                                                            id="east-china2">
+                                                            中国北部 3
+                                                        </a>
+                                                    </li>
+                                                    <li class="active" onclick="setregiontab('tab-3')">
+                                                        <a data-href="#east-china2" href="javascript:void(0)"
+                                                            id="east-china2">
+                                                            中国东部 2
+                                                        </a>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <style>
+                                                .hidden_tab {
+                                                    display: none;
+                                                }
+                                            </style>
+                                            <script>
+                                                function getSelectedValue(select) {
+                                                    const value = select.options[select.selectedIndex].value;
+                                                    setregiontab(value);
+                                                }
+                                                function setregiontab(id) {
+                                                    document.getElementById("tab-1").style.display = "none";
+                                                    document.getElementById("tab-2").style.display = "none";
+                                                    document.getElementById("tab-3").style.display = "none";
+                                                    document.getElementById(id).style.display = "block";
+                                                }
+                                            </script>
+                                            <select onchange="getSelectedValue(this)"
+                                                class="dropdown-select region-box hidden-lg hidden-md"
+                                                id="select-region-box">
+                                                <option selected value="tab-1">
+                                                    中国东部 3
+                                                </option>
+                                                <option value="tab-2">
+                                                    中国北部 3
+                                                </option>
+                                                <option value="tab-3">
+                                                    中国东部 2
+                                                </option>
+                                            </select>
+                                            <script>
+                                                setTimeout(() => {
+                                                    document.getElementById("select-region-box").selectedIndex = 0;
+                                                    document.getElementById("tab-1").style.display = "block";
+                                                }, 1000);
+                                            </script>
+                                        </div>
+                                        <div class="clearfix">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-content">
+                                <div class="tab-panel" id="tabContent1">
+                                    <div class="tab-content">
+                                        <div class="pricing-page-section hidden_tab" id="tab-1">
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    Microsoft Sentinel 定价
+                                                </h2>
+                                                <p>
+                                                    Microsoft Sentinel 的收费按在 Microsoft Sentinel 中分析的数据量和存储在 Azure
+                                                    Monitor
+                                                    log Analytics 工作区中的数据量进行计算。数据可以作为两种不同类型的日志引入: 分析日志和基本日志。
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    分析日志
+                                                </h2>
+                                                <p>
+                                                    Microsoft Sentinel 中的 Analytics
+                                                    日志支持所有数据类型，提供完整分析和警报，无查询限制。分析日志包括高价值安全数据，这些数据会反映环境的状态、使用情况、安全状况、性能。分析日志最适合主动监视，配备计划警报和分析功能，可实现安全检测。Microsoft
+                                                    Sentinel 服务有两种支付方式: 即用即付和承诺层级。
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    即用即付
+                                                </h2>
+                                                <p>
+                                                    使用即用即付定价，Microsoft Sentinel 中引入的用于安全分析的数据量和存储在 Azure Monitor Log
+                                                    Analytics 工作区中的数据将按 GB 计费。数据量为将要存储的数据量，以 GB (10^9 个字节)为单位。
+                                                </p>
+                                            </div>
+                                            <div class="technical-azure-selector tab-control-selector">
+                                                <h2>
+                                                    承诺层级
+                                                </h2>
+                                                <div class="tab-control-container tab-active" id="tabContent1">
+                                                    <p>
+                                                        使用承诺层级时，将根据所选层级向你收取固定费用，这可为 Microsoft Sentinel
+                                                        提供可预测的总成本。与即用即付定价相比，承诺层级根据所选层级提供成本折扣。在承诺的前 31
+                                                        天之后，你可随时灵活地选择退出承诺层级。
+                                                    </p>
+                                                    <p>
+                                                        下面显示的价格反映了 Microsoft Sentinel 分析的数据的总成本，包括特定层级下 Azure Monitor
+                                                        Log
+                                                        Analytics 的数据引入费用。请参阅 <a target="_blank"
+                                                            href="https://www.azure.cn/pricing/details/monitor/index.html"
+                                                            aria-label="aLabel">Azure
+                                                            Monitor 定价</a>，了解相关数据引入费用。若要了解详细信息，请查看<a target="_blank"
+                                                            href="https://techcommunity.microsoft.com/t5/microsoft-sentinel-blog/introducing-the-new-microsoft-sentinel-simplified-pricing/ba-p/3869145"
+                                                            aria-label="aLabel">博客</a>。
+                                                    </p>
+                                                    <div class="scroll-table" style="display: block;">
+                                                        <div>
+                                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                层
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                Microsoft Sentinel 价格
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                每 GB 价格生效
+                                                                                <sup>
+                                                                                    1
+                                                                                </sup>
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                通过即用即付节约成本
+                                                                            </strong>
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            即用即付
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 43.75/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 43.75/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            N/A
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 100 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥3,012
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 30.11/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            31%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 200 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥ 5,576
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 27.88/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            36%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 300 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥ 8,140
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 27.13/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            38%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 400 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 10,555
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 26.39/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            40%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 500 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥ 12,873
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 25.74/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            41%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 1,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥ 25，236
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 25.24/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            42%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 2,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 48,845 </td>
+                                                                        <td>
+                                                                            ￥ 23.5/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            44%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 5,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 117,532
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 23.5/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            46%
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 10,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 226,314
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 22.63/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            48%
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 25,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 543,907
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 21.76/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            50%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 50,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 1044,058
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 20.88/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            52%
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tags-date">
+                                                        <div class="ms-date">
+                                                            <sup>
+                                                                1
+                                                            </sup>
+                                                            超出选定每日承诺层级引入到 Microsoft Sentinel 的数据会按上面列出的有效层级价格收费。
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="technical-azure-selector tab-control-selector">
+                                                    <h2>
+                                                        基本日志
+                                                    </h2>
+                                                    <div class="tab-control-container tab-active" id="tabContent1">
+                                                        <p>
+                                                            基本日志通常是详细的，包含大量数据和低安全性值数据，而没有分析日志的完整功能。它们不常用于深入分析和警报，并按需进行即时查询、调查、搜索访问。为了帮助你在引入更多数据时降低成本，Microsoft
+                                                            Sentinel 现在为基本日志提供灵活的定价选项。
+                                                        </p>
+                                                        <div class="scroll-table" style="display: block;">
+                                                            <div>
+                                                                <table cellpadding="0" cellspacing="0" width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                </strong>
+                                                                            </th>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                    分析日志
+                                                                                </strong>
+                                                                            </th>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                    基本日志
+                                                                                </strong>
+                                                                            </th>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                数据类型
+                                                                            </td>
+                                                                            <td>
+                                                                                全部
+                                                                            </td>
+                                                                            <td>
+                                                                                自定义日志
+                                                                                <sup>
+                                                                                    2
+                                                                                </sup>
+                                                                                、容器日志和 AppTraces
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                KQL 查询功能
+                                                                            </td>
+                                                                            <td>
+                                                                                完全
+                                                                            </td>
+                                                                            <td>
+                                                                                减少
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                警报支持
+                                                                            </td>
+                                                                            <td>
+                                                                                是
+                                                                            </td>
+                                                                            <td>
+                                                                                否
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                查询并发限制
+                                                                            </td>
+                                                                            <td>
+                                                                                否
+                                                                            </td>
+                                                                            <td>
+                                                                                是
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tags-date">
+                                                            <div class="ms-date">
+                                                                <sup>
+                                                                    2
+                                                                </sup>
+                                                                这仅与使用基于数据收集规则(DCR)的自定义日志 API 创建，并
+                                                                <a href="https://docs.microsoft.com/zh-cn/azure/azure-monitor/logs/basic-logs-configure?msclkid=3c629183cfef11ecbd520ceb6ff77849&amp;tabs=api-1%2cportal-1"
+                                                                    style="font-size:12px;" aria-label="aLabel"
+                                                                    target="_blank">
+                                                                    配置为基本日志数据计划
+                                                                </a>
+                                                                的自定义日志表有关。
+                                                            </div>
+                                                        </div>
+                                                        <p>
+                                                            前 8
+                                                            天，交互式查询可以访问基本日志。之后，可以启用存档的日志来存储数据。在基本日志中搜索数据需支付额外费用。以下价格不包括
+                                                            Log
+                                                            Analytics 基本日志。请参阅 Azure Monitor定价，了解相关数据引入费用。
+                                                        </p>
+                                                        <div class="scroll-table" style="display: block;">
+                                                            <div>
+                                                                <table cellpadding="0" cellspacing="0" width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                    功能
+                                                                                </strong>
+                                                                            </th>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                    价格
+                                                                                </strong>
+                                                                            </th>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                基本日志分析
+                                                                            </td>
+                                                                            <td>
+                                                                                已引入数据每GB ￥10.176
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    日志数据保留
+                                                </h2>
+                                                <p>
+                                                    在 Azure Monitor Log Analytics 工作区上启用 Microsoft Sentinel 后，引入到工作区中的每
+                                                    GB
+                                                    数据(不包括基本日志)都可以在前 90 天内免费保留。超过 90 天且最多 2 年的保留将按标准
+                                                    <a href="/pricing/details/monitor/index.html" aria-label="aLabel">
+                                                        Azure Monitor 定价
+                                                    </a>
+                                                    保留价格收费。可以通过交互式查询访问数据。
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    日志数据存档
+                                                </h2>
+                                                <p>
+                                                    对于需要保留数年以实现合规，并且可以在调查事件时访问的日志，Microsoft Sentinel
+                                                    提供了完全托管且经济高效的数据存档解决方案。存档数据最多可以存储 7
+                                                    年。搜索存档的日志是使用异步搜索作业完成的，因此会产生扫描数据的成本。还可还原存档的日志，以启用完整的交互式分析查询功能。请参阅
+                                                    <a href="/pricing/details/monitor/index.html" aria-label="aLabel">
+                                                        Azure Monitor 定价
+                                                    </a>
+                                                    ，以了解相关保留和查询费用的定价。
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    适用于 SAP 的 Microsoft Sentinel 解决方案®应用程序
+                                                </h2>
+                                                <div class="tab-control-container tab-active" id="tabContent1">
+                                                    <p>
+                                                        适用于 SAP 的 Microsoft Sentinel 解决方案®应用程序可以监视、检测和响应托管在
+                                                        Azure、GCP、AWS
+                                                        或本地的 SAP 系统的整个业务逻辑和应用程序层中的复杂威胁。它从整个 SAP 系统收集应用程序日志，然后将这些日志发送到
+                                                        Microsoft Sentinel 中的 Azure Monitor Log Analytics 工作区以进行持续威胁监视。
+                                                    </p>
+                                                    <p>
+                                                        除了现有的 Microsoft Sentinel 消耗计费模型之外，适用于 SAP 的 Microsoft Sentinel
+                                                        解决方案®应用程序将从 2023 年 5 月 1 日起按每个系统 ID (仅生产 SID) 每小时¥
+                                                        21.57收取附加费用。当工作区处于 Microsoft Sentinel 免费试用阶段时，将免费提供解决方案。
+                                                    </p>
+                                                    <p>
+                                                        有关更多详细信息，请参阅
+                                                        <a href="https://azure.microsoft.com/zh-cn/pricing/offers/microsoft-sentinel-sap-promo/"
+                                                            aria-label="aLabel" target="_blank">
+                                                            套餐页面
+                                                        </a>
+                                                        。
+                                                    </p>
+                                                    <div class="scroll-table" style="display: block;">
+                                                        <div>
+                                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                功能
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                价格
+                                                                            </strong>
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            适用于SAP的应用程序
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 21.57/SID 小时
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    免费试用
+                                                </h2>
+                                                <p>
+                                                    前 31 天免费试用 Microsoft Sentinel。可以在 Azure Monitor Log Analytics 工作区上启用
+                                                    Microsoft Sentinel，无需额外费用，但需遵循以下限制。
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                        前 31 天内，新工作区可以免费引入最多 10GB/天的日志数据。在 31 天的试用期内，免除 Log Analytics
+                                                        数据引入和
+                                                        Microsoft Sentinel 费用。此免费试用版需遵循每个 Azure 租户 20 个工作区的限制。
+                                                    </li>
+                                                    <li>
+                                                        现有工作区可以启用 Microsoft Sentinel，无需额外费用。在 31 天的试用期内，仅免除 Microsoft
+                                                        Sentinel 费用。
+                                                    </li>
+                                                </ul>
+                                                <p>
+                                                    超出这些限制的使用量将按此页上列出的定价收费。在免费试用期间，与自动化和自带机器学习的其他功能相关的费用仍然适用。
+                                                </p>
+                                            </div>
+
+                                        </div>
+                                        <div class="pricing-page-section hidden_tab" id="tab-2">
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    Microsoft Sentinel 定价
+                                                </h2>
+                                                <p>
+                                                    Microsoft Sentinel 的收费按在 Microsoft Sentinel 中分析的数据量和存储在 Azure
+                                                    Monitor
+                                                    log Analytics 工作区中的数据量进行计算。数据可以作为两种不同类型的日志引入: 分析日志和基本日志。
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    分析日志
+                                                </h2>
+                                                <p>
+                                                    Microsoft Sentinel 中的 Analytics
+                                                    日志支持所有数据类型，提供完整分析和警报，无查询限制。分析日志包括高价值安全数据，这些数据会反映环境的状态、使用情况、安全状况、性能。分析日志最适合主动监视，配备计划警报和分析功能，可实现安全检测。Microsoft
+                                                    Sentinel 服务有两种支付方式: 即用即付和承诺层级。
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    即用即付
+                                                </h2>
+                                                <p>
+                                                    使用即用即付定价，Microsoft Sentinel 中引入的用于安全分析的数据量和存储在 Azure Monitor Log
+                                                    Analytics 工作区中的数据将按 GB 计费。数据量为将要存储的数据量，以 GB (10^9 个字节)为单位。
+                                                </p>
+                                            </div>
+                                            <div class="technical-azure-selector tab-control-selector">
+                                                <h2>
+                                                    承诺层级
+                                                </h2>
+                                                <div class="tab-control-container tab-active" id="tabContent1">
+                                                    <p>
+                                                        使用承诺层级时，将根据所选层级向你收取固定费用，这可为 Microsoft Sentinel
+                                                        提供可预测的总成本。与即用即付定价相比，承诺层级根据所选层级提供成本折扣。在承诺的前 31
+                                                        天之后，你可随时灵活地选择退出承诺层级。
+                                                    </p>
+                                                    <p>
+                                                        下面显示的价格反映了 Microsoft Sentinel 分析的数据的总成本，包括特定层级下 Azure Monitor
+                                                        Log
+                                                        Analytics 的数据引入费用。请参阅 <a target="_blank"
+                                                            href="https://www.azure.cn/pricing/details/monitor/index.html"
+                                                            aria-label="aLabel">Azure
+                                                            Monitor 定价</a>，了解相关数据引入费用。若要了解详细信息，请查看<a target="_blank"
+                                                            href="https://techcommunity.microsoft.com/t5/microsoft-sentinel-blog/introducing-the-new-microsoft-sentinel-simplified-pricing/ba-p/3869145"
+                                                            aria-label="aLabel">博客</a>。
+                                                    </p>
+                                                    <div class="scroll-table" style="display: block;">
+                                                        <div>
+                                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                层
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                Microsoft Sentinel 价格
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                每 GB 价格生效
+                                                                                <sup>
+                                                                                    1
+                                                                                </sup>
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                通过即用即付节约成本
+                                                                            </strong>
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            即用即付
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 43.75/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 43.75/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            N/A
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 100 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥3,012
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 30.11/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            31%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 200 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥ 5,576
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 27.88/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            36%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 300 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥ 8,140
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 27.13/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            38%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 400 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 10,555
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 26.39/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            40%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 500 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥ 12,873
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 25.74/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            41%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 1,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥ 25，236
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 25.24/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            42%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 2,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 48,845 </td>
+                                                                        <td>
+                                                                            ￥ 23.5/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            44%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 5,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 117,532
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 23.5/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            46%
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 10,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 226,314
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 22.63/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            48%
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 25,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 543,907
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 21.76/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            50%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 50,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 1044,058
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 20.88/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            52%
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tags-date">
+                                                        <div class="ms-date">
+                                                            <sup>
+                                                                1
+                                                            </sup>
+                                                            超出选定每日承诺层级引入到 Microsoft Sentinel 的数据会按上面列出的有效层级价格收费。
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="technical-azure-selector tab-control-selector">
+                                                    <h2>
+                                                        基本日志
+                                                    </h2>
+                                                    <div class="tab-control-container tab-active" id="tabContent1">
+                                                        <p>
+                                                            基本日志通常是详细的，包含大量数据和低安全性值数据，而没有分析日志的完整功能。它们不常用于深入分析和警报，并按需进行即时查询、调查、搜索访问。为了帮助你在引入更多数据时降低成本，Microsoft
+                                                            Sentinel 现在为基本日志提供灵活的定价选项。
+                                                        </p>
+                                                        <div class="scroll-table" style="display: block;">
+                                                            <div>
+                                                                <table cellpadding="0" cellspacing="0" width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                </strong>
+                                                                            </th>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                    分析日志
+                                                                                </strong>
+                                                                            </th>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                    基本日志
+                                                                                </strong>
+                                                                            </th>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                数据类型
+                                                                            </td>
+                                                                            <td>
+                                                                                全部
+                                                                            </td>
+                                                                            <td>
+                                                                                自定义日志
+                                                                                <sup>
+                                                                                    2
+                                                                                </sup>
+                                                                                、容器日志和 AppTraces
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                KQL 查询功能
+                                                                            </td>
+                                                                            <td>
+                                                                                完全
+                                                                            </td>
+                                                                            <td>
+                                                                                减少
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                警报支持
+                                                                            </td>
+                                                                            <td>
+                                                                                是
+                                                                            </td>
+                                                                            <td>
+                                                                                否
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                查询并发限制
+                                                                            </td>
+                                                                            <td>
+                                                                                否
+                                                                            </td>
+                                                                            <td>
+                                                                                是
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tags-date">
+                                                            <div class="ms-date">
+                                                                <sup>
+                                                                    2
+                                                                </sup>
+                                                                这仅与使用基于数据收集规则(DCR)的自定义日志 API 创建，并
+                                                                <a href="https://docs.microsoft.com/zh-cn/azure/azure-monitor/logs/basic-logs-configure?msclkid=3c629183cfef11ecbd520ceb6ff77849&amp;tabs=api-1%2cportal-1"
+                                                                    style="font-size:12px;" aria-label="aLabel"
+                                                                    target="_blank">
+                                                                    配置为基本日志数据计划
+                                                                </a>
+                                                                的自定义日志表有关。
+                                                            </div>
+                                                        </div>
+                                                        <p>
+                                                            前 8
+                                                            天，交互式查询可以访问基本日志。之后，可以启用存档的日志来存储数据。在基本日志中搜索数据需支付额外费用。以下价格不包括
+                                                            Log
+                                                            Analytics 基本日志。请参阅 Azure Monitor定价，了解相关数据引入费用。
+                                                        </p>
+                                                        <div class="scroll-table" style="display: block;">
+                                                            <div>
+                                                                <table cellpadding="0" cellspacing="0" width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                    功能
+                                                                                </strong>
+                                                                            </th>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                    价格
+                                                                                </strong>
+                                                                            </th>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                基本日志分析
+                                                                            </td>
+                                                                            <td>
+                                                                                已引入数据每GB ￥10.176
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    日志数据保留
+                                                </h2>
+                                                <p>
+                                                    在 Azure Monitor Log Analytics 工作区上启用 Microsoft Sentinel 后，引入到工作区中的每
+                                                    GB
+                                                    数据(不包括基本日志)都可以在前 90 天内免费保留。超过 90 天且最多 2 年的保留将按标准
+                                                    <a href="/pricing/details/monitor/index.html" aria-label="aLabel">
+                                                        Azure Monitor 定价
+                                                    </a>
+                                                    保留价格收费。可以通过交互式查询访问数据。
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    日志数据存档
+                                                </h2>
+                                                <p>
+                                                    对于需要保留数年以实现合规，并且可以在调查事件时访问的日志，Microsoft Sentinel
+                                                    提供了完全托管且经济高效的数据存档解决方案。存档数据最多可以存储 7
+                                                    年。搜索存档的日志是使用异步搜索作业完成的，因此会产生扫描数据的成本。还可还原存档的日志，以启用完整的交互式分析查询功能。请参阅
+                                                    <a href="/pricing/details/monitor/index.html" aria-label="aLabel">
+                                                        Azure Monitor 定价
+                                                    </a>
+                                                    ，以了解相关保留和查询费用的定价。
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    适用于 SAP 的 Microsoft Sentinel 解决方案®应用程序
+                                                </h2>
+                                                <div class="tab-control-container tab-active" id="tabContent1">
+                                                    <p>
+                                                        适用于 SAP 的 Microsoft Sentinel 解决方案®应用程序可以监视、检测和响应托管在
+                                                        Azure、GCP、AWS
+                                                        或本地的 SAP 系统的整个业务逻辑和应用程序层中的复杂威胁。它从整个 SAP 系统收集应用程序日志，然后将这些日志发送到
+                                                        Microsoft Sentinel 中的 Azure Monitor Log Analytics 工作区以进行持续威胁监视。
+                                                    </p>
+                                                    <p>
+                                                        除了现有的 Microsoft Sentinel 消耗计费模型之外，适用于 SAP 的 Microsoft Sentinel
+                                                        解决方案®应用程序将从 2023 年 5 月 1 日起按每个系统 ID (仅生产 SID) 每小时¥
+                                                        21.57收取附加费用。当工作区处于 Microsoft Sentinel 免费试用阶段时，将免费提供解决方案。
+                                                    </p>
+                                                    <p>
+                                                        有关更多详细信息，请参阅
+                                                        <a href="https://azure.microsoft.com/zh-cn/pricing/offers/microsoft-sentinel-sap-promo/"
+                                                            aria-label="aLabel" target="_blank">
+                                                            套餐页面
+                                                        </a>
+                                                        。
+                                                    </p>
+                                                    <div class="scroll-table" style="display: block;">
+                                                        <div>
+                                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                功能
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                价格
+                                                                            </strong>
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            适用于SAP的应用程序
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 21.57/SID 小时
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    免费试用
+                                                </h2>
+                                                <p>
+                                                    前 31 天免费试用 Microsoft Sentinel。可以在 Azure Monitor Log Analytics 工作区上启用
+                                                    Microsoft Sentinel，无需额外费用，但需遵循以下限制。
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                        前 31 天内，新工作区可以免费引入最多 10GB/天的日志数据。在 31 天的试用期内，免除 Log Analytics
+                                                        数据引入和
+                                                        Microsoft Sentinel 费用。此免费试用版需遵循每个 Azure 租户 20 个工作区的限制。
+                                                    </li>
+                                                    <li>
+                                                        现有工作区可以启用 Microsoft Sentinel，无需额外费用。在 31 天的试用期内，仅免除 Microsoft
+                                                        Sentinel 费用。
+                                                    </li>
+                                                </ul>
+                                                <p>
+                                                    超出这些限制的使用量将按此页上列出的定价收费。在免费试用期间，与自动化和自带机器学习的其他功能相关的费用仍然适用。
+                                                </p>
+                                            </div>
+
+                                        </div>
+                                        <div class="pricing-page-section hidden_tab" id="tab-3">
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    Microsoft Sentinel 定价
+                                                </h2>
+                                                <p>
+                                                    Microsoft Sentinel 的收费按在 Microsoft Sentinel 中分析的数据量和存储在 Azure
+                                                    Monitor
+                                                    log Analytics 工作区中的数据量进行计算。数据可以作为两种不同类型的日志引入: 分析日志和基本日志。
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    分析日志
+                                                </h2>
+                                                <p>
+                                                    Microsoft Sentinel 中的 Analytics
+                                                    日志支持所有数据类型，提供完整分析和警报，无查询限制。分析日志包括高价值安全数据，这些数据会反映环境的状态、使用情况、安全状况、性能。分析日志最适合主动监视，配备计划警报和分析功能，可实现安全检测。Microsoft
+                                                    Sentinel 服务有两种支付方式: 即用即付和承诺层级。
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    即用即付
+                                                </h2>
+                                                <p>
+                                                    使用即用即付定价，Microsoft Sentinel 中引入的用于安全分析的数据量和存储在 Azure Monitor Log
+                                                    Analytics 工作区中的数据将按 GB 计费。数据量为将要存储的数据量，以 GB (10^9 个字节)为单位。
+                                                </p>
+                                            </div>
+                                            <div class="technical-azure-selector tab-control-selector">
+                                                <h2>
+                                                    承诺层级
+                                                </h2>
+                                                <div class="tab-control-container tab-active" id="tabContent1">
+                                                    <p>
+                                                        使用承诺层级时，将根据所选层级向你收取固定费用，这可为 Microsoft Sentinel
+                                                        提供可预测的总成本。与即用即付定价相比，承诺层级根据所选层级提供成本折扣。在承诺的前 31
+                                                        天之后，你可随时灵活地选择退出承诺层级。
+                                                    </p>
+                                                    <p>
+                                                        下面显示的价格反映了 Microsoft Sentinel 分析的数据的总成本，包括特定层级下 Azure Monitor
+                                                        Log
+                                                        Analytics 的数据引入费用。请参阅 <a target="_blank"
+                                                            href="https://www.azure.cn/pricing/details/monitor/index.html"
+                                                            aria-label="aLabel">Azure
+                                                            Monitor 定价</a>，了解相关数据引入费用。若要了解详细信息，请查看<a target="_blank"
+                                                            href="https://techcommunity.microsoft.com/t5/microsoft-sentinel-blog/introducing-the-new-microsoft-sentinel-simplified-pricing/ba-p/3869145"
+                                                            aria-label="aLabel">博客</a>。
+                                                    </p>
+                                                    <div class="scroll-table" style="display: block;">
+                                                        <div>
+                                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                层
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                Microsoft Sentinel 价格
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                每 GB 价格生效
+                                                                                <sup>
+                                                                                    1
+                                                                                </sup>
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                通过即用即付节约成本
+                                                                            </strong>
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            即用即付
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 43.75/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 43.75/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            N/A
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 100 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥3,012
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 30.11/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            31%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 200 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥ 5,576
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 27.88/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            36%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 300 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥ 8,140
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 27.13/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            38%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 400 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 10,555
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 26.39/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            40%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 500 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥ 12,873
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 25.74/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            41%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 1,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天 ￥ 25，236
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 25.24/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            42%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 2,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 48,845 </td>
+                                                                        <td>
+                                                                            ￥ 23.5/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            44%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 5,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 117,532
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 23.5/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            46%
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 10,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 226,314
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 22.63/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            48%
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 25,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 543,907
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 21.76/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            50%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            每天 50,000 GB
+                                                                        </td>
+                                                                        <td>
+                                                                            每天￥ 1044,058
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 20.88/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            52%
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tags-date">
+                                                        <div class="ms-date">
+                                                            <sup>
+                                                                1
+                                                            </sup>
+                                                            超出选定每日承诺层级引入到 Microsoft Sentinel 的数据会按上面列出的有效层级价格收费。
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="technical-azure-selector tab-control-selector">
+                                                    <h2>
+                                                        基本日志
+                                                    </h2>
+                                                    <div class="tab-control-container tab-active" id="tabContent1">
+                                                        <p>
+                                                            基本日志通常是详细的，包含大量数据和低安全性值数据，而没有分析日志的完整功能。它们不常用于深入分析和警报，并按需进行即时查询、调查、搜索访问。为了帮助你在引入更多数据时降低成本，Microsoft
+                                                            Sentinel 现在为基本日志提供灵活的定价选项。
+                                                        </p>
+                                                        <div class="scroll-table" style="display: block;">
+                                                            <div>
+                                                                <table cellpadding="0" cellspacing="0" width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                </strong>
+                                                                            </th>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                    分析日志
+                                                                                </strong>
+                                                                            </th>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                    基本日志
+                                                                                </strong>
+                                                                            </th>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                数据类型
+                                                                            </td>
+                                                                            <td>
+                                                                                全部
+                                                                            </td>
+                                                                            <td>
+                                                                                自定义日志
+                                                                                <sup>
+                                                                                    2
+                                                                                </sup>
+                                                                                、容器日志和 AppTraces
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                KQL 查询功能
+                                                                            </td>
+                                                                            <td>
+                                                                                完全
+                                                                            </td>
+                                                                            <td>
+                                                                                减少
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                警报支持
+                                                                            </td>
+                                                                            <td>
+                                                                                是
+                                                                            </td>
+                                                                            <td>
+                                                                                否
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                查询并发限制
+                                                                            </td>
+                                                                            <td>
+                                                                                否
+                                                                            </td>
+                                                                            <td>
+                                                                                是
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tags-date">
+                                                            <div class="ms-date">
+                                                                <sup>
+                                                                    2
+                                                                </sup>
+                                                                这仅与使用基于数据收集规则(DCR)的自定义日志 API 创建，并
+                                                                <a href="https://docs.microsoft.com/zh-cn/azure/azure-monitor/logs/basic-logs-configure?msclkid=3c629183cfef11ecbd520ceb6ff77849&amp;tabs=api-1%2cportal-1"
+                                                                    style="font-size:12px;" aria-label="aLabel"
+                                                                    target="_blank">
+                                                                    配置为基本日志数据计划
+                                                                </a>
+                                                                的自定义日志表有关。
+                                                            </div>
+                                                        </div>
+                                                        <p>
+                                                            前 8
+                                                            天，交互式查询可以访问基本日志。之后，可以启用存档的日志来存储数据。在基本日志中搜索数据需支付额外费用。以下价格不包括
+                                                            Log
+                                                            Analytics 基本日志。请参阅 Azure Monitor定价，了解相关数据引入费用。
+                                                        </p>
+                                                        <div class="scroll-table" style="display: block;">
+                                                            <div>
+                                                                <table cellpadding="0" cellspacing="0" width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                    功能
+                                                                                </strong>
+                                                                            </th>
+                                                                            <th align="left">
+                                                                                <strong>
+                                                                                    价格
+                                                                                </strong>
+                                                                            </th>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                基本日志分析
+                                                                            </td>
+                                                                            <td>
+                                                                                已引入数据每GB ￥10.176
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    日志数据保留
+                                                </h2>
+                                                <p>
+                                                    在 Azure Monitor Log Analytics 工作区上启用 Microsoft Sentinel 后，引入到工作区中的每
+                                                    GB
+                                                    数据(不包括基本日志)都可以在前 90 天内免费保留。超过 90 天且最多 2 年的保留将按标准
+                                                    <a href="/pricing/details/monitor/index.html" aria-label="aLabel">
+                                                        Azure Monitor 定价
+                                                    </a>
+                                                    保留价格收费。可以通过交互式查询访问数据。
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    日志数据存档
+                                                </h2>
+                                                <p>
+                                                    对于需要保留数年以实现合规，并且可以在调查事件时访问的日志，Microsoft Sentinel
+                                                    提供了完全托管且经济高效的数据存档解决方案。存档数据最多可以存储 7
+                                                    年。搜索存档的日志是使用异步搜索作业完成的，因此会产生扫描数据的成本。还可还原存档的日志，以启用完整的交互式分析查询功能。请参阅
+                                                    <a href="/pricing/details/monitor/index.html" aria-label="aLabel">
+                                                        Azure Monitor 定价
+                                                    </a>
+                                                    ，以了解相关保留和查询费用的定价。
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    适用于 SAP 的 Microsoft Sentinel 解决方案®应用程序
+                                                </h2>
+                                                <div class="tab-control-container tab-active" id="tabContent1">
+                                                    <p>
+                                                        适用于 SAP 的 Microsoft Sentinel 解决方案®应用程序可以监视、检测和响应托管在
+                                                        Azure、GCP、AWS
+                                                        或本地的 SAP 系统的整个业务逻辑和应用程序层中的复杂威胁。它从整个 SAP 系统收集应用程序日志，然后将这些日志发送到
+                                                        Microsoft Sentinel 中的 Azure Monitor Log Analytics 工作区以进行持续威胁监视。
+                                                    </p>
+                                                    <p>
+                                                        除了现有的 Microsoft Sentinel 消耗计费模型之外，适用于 SAP 的 Microsoft Sentinel
+                                                        解决方案®应用程序将从 2023 年 5 月 1 日起按每个系统 ID (仅生产 SID) 每小时¥
+                                                        21.57收取附加费用。当工作区处于 Microsoft Sentinel 免费试用阶段时，将免费提供解决方案。
+                                                    </p>
+                                                    <p>
+                                                        有关更多详细信息，请参阅
+                                                        <a href="https://azure.microsoft.com/zh-cn/pricing/offers/microsoft-sentinel-sap-promo/"
+                                                            aria-label="aLabel" target="_blank">
+                                                            套餐页面
+                                                        </a>
+                                                        。
+                                                    </p>
+                                                    <div class="scroll-table" style="display: block;">
+                                                        <div>
+                                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                功能
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                价格
+                                                                            </strong>
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            适用于SAP的应用程序
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 21.57/SID 小时
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    免费试用
+                                                </h2>
+                                                <p>
+                                                    前 31 天免费试用 Microsoft Sentinel。可以在 Azure Monitor Log Analytics 工作区上启用
+                                                    Microsoft Sentinel，无需额外费用，但需遵循以下限制。
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                        前 31 天内，新工作区可以免费引入最多 10GB/天的日志数据。在 31 天的试用期内，免除 Log Analytics
+                                                        数据引入和
+                                                        Microsoft Sentinel 费用。此免费试用版需遵循每个 Azure 租户 20 个工作区的限制。
+                                                    </li>
+                                                    <li>
+                                                        现有工作区可以启用 Microsoft Sentinel，无需额外费用。在 31 天的试用期内，仅免除 Microsoft
+                                                        Sentinel 费用。
+                                                    </li>
+                                                </ul>
+                                                <p>
+                                                    超出这些限制的使用量将按此页上列出的定价收费。在免费试用期间，与自动化和自带机器学习的其他功能相关的费用仍然适用。
+                                                </p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Documentation Content -->
+    <!-- BEGIN: Footer -->
+    <div class="public_footerpage">
+    </div>
+    <!--END: Common sidebar-->
+    <script type="text/javascript">
+        (function () {
+            if (typeof window.CustomEvent === "function") return false; //If not IE
+
+            function CustomEvent(event, params) {
+                params = params ||
+                {
+                    bubbles: false,
+                    cancelable: false,
+                    detail: undefined
+                };
+                var evt = document.createEvent('CustomEvent');
+                evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+                return evt;
+            }
+
+            CustomEvent.prototype = window.Event.prototype;
+
+            window.CustomEvent = CustomEvent;
+        })();
+    </script>
+    <link href="/Static/CSS/Localization/zh-cn.css" rel="stylesheet" />
+    <script src="/Static/Scripts/lib/jquery-1.12.3.min.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+        function getAntiForgeryToken() {
+            var token = '<input name="__RequestVerificationToken" type="hidden" value="OGT8btVYJJqM22ITgpOgfMq6Kft6pkqvN0U3Wu_OgsWek4u6H2s-GomzkVOW_vmh8A3ppTxx_DFGFSWaXyJKmDVrkebnO7G9B5EHg1VA4uo1" />';
+            token = $(token).val();
+            return token;
+        }
+
+        function setLocaleCookie(localeVal) {
+            var Days = 365 * 10; // Ten year expiration
+            var exp = new Date();
+
+            var hostName = window.location.hostname;
+            var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain + "; path=/;expires=" + exp.toGMTString();
+        }
+
+        setLocaleCookie(window.currentLocale);
+    </script>
+    <script type="text/javascript">
+        var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+        var TECHNICAL_STORAGE = '/blob/tech-content/';
+        var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+        var EnablePricingSync = 'false';
+    </script>
+    <!-- BEGIN: Minified RequireJs -->
+    <script src="/Static/Scripts/global.config.js" type="text/javascript">
+    </script>
+    <script src="/Static/Scripts/require.js" type="text/javascript">
+    </script>
+    <script src="/Static/Scripts/pricing-page-detail.js" type="text/javascript">
+    </script>
+    <!--<script src='/Static/Scripts/ef3815ab64d6cfe32680fc9c60373db97e92ccc1.js' type='text/javascript'></script>-->
+    <!-- END: Minified RequireJs -->
+    <!-- begin JSLL -->
+    <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js">
+    </script>
+    <script type="text/javascript">
+        (function () {
+            var config = {
+                cookiesToCollect: ["_mkto_trk"],
+                syncMuid: true,
+                ix: {
+                    a: true,
+                    g: true
+                },
+                coreData: {
+                    appId: 'AzureCN',
+                    market: 'zh-cn',
+                }
+            };
+            awa.init(config);
+        })();
+    </script>
+    <!-- end JSLL -->
+    <script src="/Static/Scripts/plugins/cookie/jquery.cookie.js" type="text/javascript">
+    </script>
+    <script src="/Static/Scripts/wacndatatracker.js" type="text/javascript">
+    </script>
+    <script src="/common/useCommon.js" type="text/javascript">
+    </script>
+</body>
+
+</html>

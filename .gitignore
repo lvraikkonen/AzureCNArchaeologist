@@ -6,9 +6,9 @@
 __pycache__
 .venv
 
-data/current_prod_html/en-us/*
-data/current_prod_html/zh-cn/*
-data/prod-html/*
+# data/current_prod_html/en-us/*
+# data/current_prod_html/zh-cn/*
+# data/prod-html/*
 
 output
 cms_output
