@@ -304,6 +304,55 @@ def list_products_command(args):
         print(f"\n总计: {len(products)} 个产品")
 
 
+def list_categories_command(args):
+    """列出所有产品类别"""
+    try:
+        from src.core.product_manager import ProductManager
+        product_manager = ProductManager()
+        
+        # 获取产品索引信息
+        index = product_manager.load_products_index()
+        categories = index.get("categories", {})
+        
+        print("📋 支持的产品类别:")
+        print("="*60)
+        
+        total_products = 0
+        for i, (category_name, category_info) in enumerate(categories.items(), 1):
+            count = category_info.get("count", 0)
+            config_path = category_info.get("config_path", "")
+            
+            print(f"{i:2d}. {category_name}")
+            print(f"     产品数量: {count}")
+            print(f"     配置路径: {config_path}")
+            total_products += count
+            print()
+        
+        print("="*60)
+        print(f"📊 统计信息:")
+        print(f"   总类别数: {len(categories)}")
+        print(f"   总产品数: {total_products}")
+        print(f"   系统容量: {index.get('future_capacity', 'N/A')}")
+        print(f"   索引版本: {index.get('version', 'N/A')}")
+        print(f"   最后更新: {index.get('last_updated', 'N/A')}")
+        
+        print("\n💡 使用方法:")
+        print("   python cli.py batch-process --group <category>")
+        print("   例如: python cli.py batch-process --group integration")
+        
+    except Exception as e:
+        print(f"❌ 获取类别列表失败: {e}")
+        # 备用类别列表
+        categories = [
+            "ai-ml", "database", "compute", "integration", 
+            "storage", "networking", "security", "management"
+        ]
+        
+        print("📋 基本产品类别:")
+        for i, category in enumerate(categories, 1):
+            print(f"   {i:2d}. {category}")
+
+
 def copy_from_prod_command(args):
     """执行HTML文件自动复制命令"""
     logger = get_app_logger("cli.copy_from_prod")
@@ -444,6 +493,12 @@ def create_parser():
   %(prog)s upload --list
   %(prog)s copy-from-prod --language both
   %(prog)s copy-from-prod --language zh-cn --categories database storage
+  %(prog)s batch-process --all --parallel-jobs 6
+  %(prog)s batch-process --group database --force-refresh
+  %(prog)s batch-status --detailed --since "2 days ago"
+  %(prog)s batch-retry --since-hours 48
+  %(prog)s batch-history --product mysql --limit 10
+  %(prog)s list-categories
   %(prog)s list-products
   %(prog)s status
         """
@@ -484,6 +539,10 @@ def create_parser():
     list_parser = subparsers.add_parser('list-products', help='列出支持的产品')
     list_parser.set_defaults(func=list_products_command)
     
+    # list-categories 命令
+    list_categories_parser = subparsers.add_parser('list-categories', help='列出所有产品类别')
+    list_categories_parser.set_defaults(func=list_categories_command)
+    
     # copy-from-prod 命令
     copy_parser = subparsers.add_parser('copy-from-prod', help='从生产环境复制HTML文件')
     copy_parser.add_argument('--language', '-l', choices=['zh-cn', 'en-us', 'both'],
@@ -509,6 +568,10 @@ def create_parser():
     # status 命令
     status_parser = subparsers.add_parser('status', help='显示项目状态')
     status_parser.set_defaults(func=status_command)
+
+    # 添加批处理命令
+    from src.batch.cli_commands import add_batch_commands
+    add_batch_commands(subparsers)
 
     return parser
 

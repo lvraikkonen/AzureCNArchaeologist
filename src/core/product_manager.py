@@ -16,6 +16,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 from .logging import get_logger
+from .settings import settings
 
 logger = get_logger(__name__)
 
@@ -23,8 +24,8 @@ logger = get_logger(__name__)
 class ProductManager:
     """产品配置管理器 - 支持大规模产品和懒加载"""
 
-    def __init__(self, config_dir: str = "data/configs"):
-        self.config_dir = Path(config_dir)
+    def __init__(self, config_dir: str = None):
+        self.config_dir = Path(config_dir or settings.CONFIG_BASE_DIR)
         self.products_index = None
         self.categories_config = None
         self.cached_configs = {}        # 配置缓存
@@ -157,6 +158,143 @@ class ProductManager:
             return config.get("display_name", product_key.title())
         except ValueError:
             return product_key.title()
+    
+    def get_product_category(self, product_key: str) -> Optional[str]:
+        """获取产品所属的类别"""
+        index = self.load_products_index()
+        
+        for category_name, category_info in index.get("categories", {}).items():
+            if product_key in category_info.get("products", []):
+                return category_name
+                
+        return None
+    
+    def get_products_by_category(self, category: Optional[str] = None) -> Dict[str, List[str]]:
+        """获取按类别分组的产品列表"""
+        index = self.load_products_index()
+        categories = index.get("categories", {})
+        
+        if category:
+            # 返回特定类别的产品
+            if category in categories:
+                return {category: categories[category].get("products", [])}
+            else:
+                return {}
+        
+        # 返回所有类别的产品
+        result = {}
+        for category_name, category_info in categories.items():
+            result[category_name] = category_info.get("products", [])
+        
+        return result
+    
+    def get_html_file_path(self, product_key: str, language: str = "zh-cn", 
+                          html_base_dir: str = None) -> Optional[str]:
+        """
+        根据产品key和语言版本生成HTML文件路径
+        
+        Args:
+            product_key: 产品键名
+            language: 语言版本 ("zh-cn" 或 "en-us")
+            html_base_dir: HTML文件基础目录
+            
+        Returns:
+            HTML文件路径，如果不存在则返回None
+        """
+        category = self.get_product_category(product_key)
+        if not category:
+            return None
+            
+        # 使用配置的HTML基础目录作为默认值
+        base_dir = html_base_dir or settings.HTML_BASE_DIR
+        # 构建文件路径: {html_base_dir}/{language}/{category}/{product_key}.html
+        html_path = Path(base_dir) / language / category / f"{product_key}.html"
+        
+        # 检查文件是否存在
+        if html_path.exists():
+            return str(html_path)
+        
+        return None
+    
+    def get_output_directory(self, product_key: str, language: str = "zh-cn",
+                           output_base_dir: str = None) -> str:
+        """
+        根据产品key和语言版本生成输出目录路径
+        
+        Args:
+            product_key: 产品键名
+            language: 语言版本 ("zh-cn" 或 "en-us")
+            output_base_dir: 输出基础目录
+            
+        Returns:
+            输出目录路径
+        """
+        category = self.get_product_category(product_key)
+        # 使用配置的输出基础目录作为默认值
+        base_dir = output_base_dir or settings.OUTPUT_BASE_DIR
+        
+        if not category:
+            # 如果无法确定类别，使用默认路径
+            return str(Path(base_dir) / language / "unknown" / product_key)
+        
+        # 构建输出路径: {output_base_dir}/{language}/{category}
+        return str(Path(base_dir) / language / category)
+    
+    def find_products_for_category(self, category: str, language: str = "zh-cn",
+                                 html_base_dir: str = None) -> List[Dict[str, str]]:
+        """
+        查找指定类别下实际存在HTML文件的产品
+        
+        Args:
+            category: 产品类别名
+            language: 语言版本
+            html_base_dir: HTML文件基础目录
+            
+        Returns:
+            产品信息列表，包含product_key, html_path, output_dir等信息
+        """
+        products_by_category = self.get_products_by_category(category)
+        category_products = products_by_category.get(category, [])
+        
+        found_products = []
+        
+        for product_key in category_products:
+            html_path = self.get_html_file_path(product_key, language, html_base_dir)
+            if html_path:
+                output_dir = self.get_output_directory(product_key, language)
+                
+                found_products.append({
+                    'product_key': product_key,
+                    'category': category,
+                    'language': language,
+                    'html_path': html_path,
+                    'output_dir': output_dir
+                })
+        
+        return found_products
+    
+    def get_all_available_products(self, language: str = "zh-cn",
+                                 html_base_dir: str = None) -> List[Dict[str, str]]:
+        """
+        获取所有实际存在HTML文件的产品信息
+        
+        Args:
+            language: 语言版本
+            html_base_dir: HTML文件基础目录
+            
+        Returns:
+            所有可用产品的信息列表
+        """
+        all_products = []
+        
+        # 获取所有类别
+        categories = self.get_products_by_category()
+        
+        for category in categories.keys():
+            category_products = self.find_products_for_category(category, language, html_base_dir)
+            all_products.extend(category_products)
+        
+        return all_products
 
     def get_product_url(self, product_key: str) -> str:
         """获取产品URL"""

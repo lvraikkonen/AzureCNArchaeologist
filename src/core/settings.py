@@ -48,6 +48,21 @@ class Settings:
     # 数据处理日志配置
     DATA_PROCESSING_LOG_FILE = LOG_DIR / "data_processing.log"
 
+    # 文件路径配置
+    HTML_BASE_DIR = os.getenv("HTML_BASE_DIR", "data/prod-html")
+    OUTPUT_BASE_DIR = os.getenv("OUTPUT_BASE_DIR", "output")
+    CONFIG_BASE_DIR = os.getenv("CONFIG_BASE_DIR", "data/configs")
+    
+    # 批处理配置
+    DEFAULT_PARALLEL_JOBS = int(os.getenv("DEFAULT_PARALLEL_JOBS", "4"))
+    DEFAULT_LANGUAGE = os.getenv("DEFAULT_LANGUAGE", "zh-cn")
+    BATCH_DB_PATH = os.getenv("BATCH_DB_PATH", "data/batch_records.db")
+    DEFAULT_MAX_RETRIES = int(os.getenv("DEFAULT_MAX_RETRIES", "3"))
+    
+    # 输出格式配置
+    DEFAULT_OUTPUT_FORMAT = os.getenv("DEFAULT_OUTPUT_FORMAT", "flexible")
+    ENABLE_VALIDATION = os.getenv("ENABLE_VALIDATION", "true").lower() == "true"
+
     # Azure Storage配置
     AZURE_STORAGE_CONNECTION_STRING = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
     AZURE_BLOB_CONTAINER_NAME = os.getenv("AZURE_BLOB_CONTAINER_NAME", "cms-output")
