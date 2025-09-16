@@ -344,7 +344,7 @@ def list_categories_command(args):
         print(f"❌ 获取类别列表失败: {e}")
         # 备用类别列表
         categories = [
-            "ai-ml", "database", "compute", "integration", 
+            "ai-ml", "database", "compute", "integration",
             "storage", "networking", "security", "management"
         ]
         

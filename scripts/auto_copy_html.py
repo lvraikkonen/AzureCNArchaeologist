@@ -60,7 +60,7 @@ class HTMLFileCopier:
 
         # 分组映射（处理配置文件中的分组名称与目标文件夹名称不一致的情况）
         self.category_mappings = {
-            "ai-ml": "ai"
+            # "ai-ml": "ai"
             # "dev-tool": "dev-tools"
         }
 
