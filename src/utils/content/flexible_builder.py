@@ -180,7 +180,7 @@ class FlexibleBuilder:
                                     "filterCriteriaJson": json.dumps([
                                         {"filterKey": "region", "matchValues": [region_id]},
                                         {"filterKey": "software", "matchValues": [software_id]},
-                                        {"filterKey": "category", "matchValues": [tab_name]}
+                                        {"filterKey": "category", "matchValues": [tab_id]}
                                     ], ensure_ascii=False),
                                     "content": clean_html_content(content_result.get("content", "")),
                                     "sortOrder": len(content_groups) + 1,
@@ -234,7 +234,7 @@ class FlexibleBuilder:
                             "groupName": group_name,
                             "filterCriteriaJson": json.dumps([
                                 {"filterKey": "region", "matchValues": [region_id]},
-                                {"filterKey": "category", "matchValues": [tab_name]}
+                                {"filterKey": "category", "matchValues": [tab_id]}
                             ], ensure_ascii=False),
                             "content": clean_html_content(content_result.get("content", "")),
                             "sortOrder": len(content_groups) + 1,
