@@ -12,6 +12,8 @@ __pycache__
 
 output
 cms_output
+data/prod-html-bak
+data/current_prod_html
 
 .env
 uv.lock

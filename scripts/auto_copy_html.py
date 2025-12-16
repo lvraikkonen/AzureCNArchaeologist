@@ -50,7 +50,11 @@ class HTMLFileCopier:
             "anomaly-detector": ("cognitive-services/anomaly-detector", "index.html"),
             "metrics-advisor": ("cognitive-services/metrics-advisor", "index.html"),
             "ssis": ("data-factory", "ssis.html"),
+            "data-pipeline": ("data-factory", "data-pipeline.html"),
             "core-control-plane": ("azure-arc/core-control-plane", "index.html"),
+            "dedicated-host": ("virtual-machines/dedicated-host", "index.html"),
+            "hci": ("azure-stack/hci", "index.html"),
+            "hub": ("azure-stack/hub", "index.html"),
         }
 
         # 产品名称别名映射（处理配置中的名称与实际文件夹名称不同的情况）

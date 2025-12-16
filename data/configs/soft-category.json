@@ -324,7 +324,9 @@
       "#vm-table1-d2v51-l-n3",
       "#vm-table1-ev5-l-n3",
       "#vm-table1-ev5-ls-n3",
-      "#vm-table1-ddsv5-Win-E3"
+      "#vm-table1-ddsv5-Win-E3",
+      "#vm-table-Msv2-w-n2e2",
+      "#vm-table-mdsv2-w-n2e2"
     ]
   },
   {
@@ -643,7 +645,9 @@
       "#vm-table1-d2v51-s-n3",
       "#vm-table1-ev5-n3",
       "#vm-table1-ev5-s-n3",
-      "#vm-table1-ddsv5-Win-E3"
+      "#vm-table1-ddsv5-Win-E3",
+      "#vm-table-Msv2-w-n2e2",
+      "#vm-table-mdsv2-w-n2e2"
     ]
   },
   {
@@ -730,7 +734,9 @@
       "#vm-table1-ddsv5-Linux-E3",
       "#vm-table1-d2dv5-Linux-N3E3",
       "#vm-table1-r2-4-n2e2",
-      "#vm-table1-1-6-n2e2"
+      "#vm-table1-1-6-n2e2",
+      "#vm-table-Msv2-w-n2e2",
+      "#vm-table-mdsv2-w-n2e2"
     ]
   },
   {
@@ -839,8 +845,9 @@
       "#vm-table1-3-new-east3",
       "#vm-table1-ev5",
       "#vm-table1-ev5-s",
-      "#vm-table1-ev5-n3"
-      
+      "#vm-table1-ev5-n3",
+      "#vm-table-Msv2-w-n2e2",
+      "#vm-table-mdsv2-w-n2e2"
     ]
   },
   {
@@ -1259,7 +1266,10 @@
       "#vm-table1-ev5-l-n3",
       "#vm-table1-ev5-ls-n3",
       "#vm-table1-ev5-l",
-      "#vm-table1-ev5-ls"
+      "#vm-table1-ev5-ls",
+      "#vm-table-mdsv2-l-n3-1",
+      "#vm-table-Msv2-l-n2e2",
+      "#vm-table-mdsv2-l-n2e2-1"
     ]
   },
   {
@@ -1649,7 +1659,9 @@
       "#vm-table-Constrained-2-2",
       "#vm-table1-d2v51-l-n3",
       "#vm-table1-ev5-l-n3",
-      "#vm-table1-ev5-ls-n3"
+      "#vm-table1-ev5-ls-n3",
+      "#vm-table-Msv2-l-n2e2",
+      "#vm-table-mdsv2-l-n2e2-1"
     ]
   },
   {
@@ -1775,7 +1787,9 @@
       "#vm-table1-Dasv5-Linux-N2-E2-N3",
       "#vm-table1-ddsv5-Win-E3",
       "#vm-table1-ev5-l",
-      "#vm-table1-ev5-ls"
+      "#vm-table1-ev5-ls",
+      "#vm-table-Msv2-l-n2e2",
+      "#vm-table-mdsv2-l-n2e2-1"
     ]
   },
   {
@@ -1877,7 +1891,10 @@
       "#vm-table1-d2v51-l-n3",
       "#vm-table1-ev5-l",
       "#vm-table1-ev5-ls",
-      "#vm-table1-d2v51-ls"
+      "#vm-table1-d2v51-ls",
+      "#vm-table-Msv2-l-n2e2",
+      "#vm-table-mdsv2-l-n2e2-1"
+
     ]
   },
   {
@@ -3598,6 +3615,59 @@
     ]
   },
   {
+    "os": "Cloud Services",
+    "region": "north-china3",
+    "tableIDs": [
+      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-east3",
+      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-east3",
+      "#cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-east3",
+      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
+      "#cloudsiervice-table-computeintensive-optimizedcompute-memoryintensive-D11-D14",
+      "#cloudservice-table-generalpurpose-A0-A4",
+      "#cloudservice-table-computeoptimized-F2v2-F72v2-east3",
+      "#cloudservice-table-generalpurpose-A1v2-east3-east3",
+      "#cloudservice-table-generalpurpose-A1v2-A8mv2-region2",
+      "#cloudservice-table-generalpurpose-A1v2-A8mv2",
+      "#cloudservice-table-memoryintensive-A5-A7",
+      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1-D4",
+      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D11-D4",
+      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2",
+      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3",
+      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-region",
+      "#cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2",
+      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3",
+      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-re",
+      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-region",
+      "#cloudservice-table-computeoptimized-F2v2-F72v2"
+    ]
+  },
+  {
+    "os": "Cloud Services",
+    "region": "east-china3",
+    "tableIDs": [
+      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-north3",
+      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-north3",
+      "#cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-north3",
+      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-north3",
+      "#cloudservice-table-computeoptimized-F2v2-F72v2-north3",
+      "#cloudsiervice-table-computeintensive-optimizedcompute-memoryintensive-D11-D14",
+      "#cloudservice-table-generalpurpose-A0-A4",
+      "#cloudservice-table-generalpurpose-A1v2-north3",
+      "#cloudservice-table-generalpurpose-A1v2-A8mv2-region2",
+      "#cloudservice-table-generalpurpose-A1v2-A8mv2",
+      "#cloudservice-table-memoryintensive-A5-A7",
+      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1-D4",
+      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D11-D4",
+      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2",
+      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3",
+      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-region",
+      "#cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2",
+      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3",
+      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-region",
+      "#cloudservice-table-computeoptimized-F2v2-F72v2"
+    ]
+  },
+  {
     "os": "SUSE Linux Enterprise Server for SAP Priority",
     "region": "east-china3",
     "tableIDs": [
@@ -3825,8 +3895,6 @@
       "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-east3",
       "#cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-east3",
       "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
-      "#cloudsiervice-table-computeintensive-optimizedcompute-memoryintensive-D11-D14",
-      "#cloudservice-table-generalpurpose-A0-A4",
       "#cloudservice-table-computeoptimized-F2v2-F72v2-east3",
       "#cloudservice-table-generalpurpose-A1v2-east3-east3",
       "#cloudservice-table-generalpurpose-A1v2-A8mv2-region2",
@@ -3851,10 +3919,8 @@
       "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-north3",
       "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-north3",
       "#cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-north3",
-      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-north3",
+      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
       "#cloudservice-table-computeoptimized-F2v2-F72v2-north3",
-      "#cloudsiervice-table-computeintensive-optimizedcompute-memoryintensive-D11-D14",
-      "#cloudservice-table-generalpurpose-A0-A4",
       "#cloudservice-table-generalpurpose-A1v2-north3",
       "#cloudservice-table-generalpurpose-A1v2-A8mv2-region2",
       "#cloudservice-table-generalpurpose-A1v2-A8mv2",
@@ -6064,8 +6130,6 @@
     "os": "Azure Functions",
     "region": "north-china2",
     "tableIDs": [
-      "#azure-functions-table-execute-times",
-      "#azure-functions-table-total-resource-consumption",
       "#azure-functions-table-total-plan-functions-north3"
     ]
   },
@@ -6073,31 +6137,20 @@
     "os": "Azure Functions",
     "region": "north-china3",
     "tableIDs": [
-      "#azure-functions-table-execute-times",
-      "#azure-functions-table-total-resource-consumption",
-      "#azure-functions-table-execute-times",
-      "#azure-functions-table-total-plan-functions",
-      "#azure-functions-table-resource-consumption"
+      "#azure-functions-table-total-plan-functions"
     ]
   },
   {
     "os": "Azure Functions",
     "region": "east-china3",
     "tableIDs": [
-      "#azure-functions-table-execute-times",
-      "#azure-functions-table-total-resource-consumption",
-      "#azure-functions-table-execute-times",
-      "#azure-functions-table-total-plan-functions",
-      "#azure-functions-table-resource-consumption"
+      "#azure-functions-table-total-plan-functions"
     ]
   },
   {
     "os": "Azure Functions",
     "region": "east-china",
     "tableIDs": [
-      "#azure-functions-table-rate-per-second",
-      "#azure-functions-table-execute-times",
-      "#azure-functions-table-total-resource-consumption",
       "#azure-functions-table-total-plan-functions",
       "#azure-functions-table-total-plan-functions-north3"
     ]
@@ -6114,8 +6167,6 @@
     "os": "Azure Functions",
     "region": "east-china2",
     "tableIDs": [
-      "#azure-functions-table-execute-times",
-      "#azure-functions-table-total-resource-consumption",
       "#azure-functions-table-total-plan-functions-north3"
     ]
   },
@@ -6825,10 +6876,15 @@
       "#storage-files-date-storage-price-table-new1-east3",
       "#storage-files-date-storage-price-table-new2-north3",
       "#storage-files-date-storage-price-table-new2-east3",
-      "#storage-files-data-storage-transactions-transfer-north3",
-      "#storage-files-data-storage-transactions-transfer-east3",
+      "#storage-files-data-storage-transactions-transfer-north3-ZRS",
+      "#storage-files-data-storage-transactions-transfer-north3-GZRS",
+      "#storage-files-data-storage-transactions-transfer-east3-LRS",
+      "#storage-files-data-storage-transactions-transfer-east2north2-GRS",
+      "#storage-files-data-storage-transactions-transfer-east3-GRS",
       "#storage-files-date-storage-price-GZRS-table-china-north3",
       "#storage-files-date-storage-price-ZRS-table-china-north3",
+      "#storage-files-data-storage-price-zrs-table",
+      "#storage-files-data-storage-transactions-transfer",
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3",
       "#storage-files-Provisioned-v1-LRS",
@@ -6853,10 +6909,15 @@
       "#storage-files-date-storage-price-table-new1-east3",
       "#storage-files-date-storage-price-table-new2-north3",
       "#storage-files-date-storage-price-table-new2-east3",
-      "#storage-files-data-storage-transactions-transfer-north3",
-      "#storage-files-data-storage-transactions-transfer-east3",
+      "#storage-files-data-storage-transactions-transfer-north3-ZRS",
+      "#storage-files-data-storage-transactions-transfer-north3-GZRS",
+      "#storage-files-data-storage-transactions-transfer-east3-GRS",
+      "#storage-files-data-storage-transactions-transfer-east3-LRS",
+      "#storage-files-data-storage-transactions-transfer-east2north2-GRS",
       "#storage-files-date-storage-price-GZRS-table-china-north3",
-      "#storage-files-date-storage-price-ZRS-table-china-north3",    
+      "#storage-files-date-storage-price-ZRS-table-china-north3", 
+      "#storage-files-data-storage-price-zrs-table",  
+      "#storage-files-data-storage-transactions-transfer",
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3",
       "#storage-files-Provisioned-v1-LRS",
@@ -6877,12 +6938,17 @@
       "#storage-files-date-storage-price-table-new1-east3",
       "#storage-files-date-storage-price-table-new2-north3",
       "#storage-files-date-storage-price-table-new2-east3",
-      "#storage-files-data-storage-transactions-transfer-north3",
-      "#storage-files-data-storage-transactions-transfer-east3",
+      "#storage-files-data-storage-transactions-transfer-north3-ZRS",
+      "#storage-files-data-storage-transactions-transfer-east3-GRS",
+      "#storage-files-data-storage-transactions-transfer-eastnorth-GRS",
+      "#storage-files-data-storage-transactions-transfer-north3-GZRS",
       "#storage-files-date-storage-price-GZRS-table-china-north3",
-      "#storage-files-date-storage-price-ZRS-table-china-north3",    
+      "#storage-files-date-storage-price-ZRS-table-china-north3", 
+      "#storage-files-data-storage-price-zrs-table",
+      "#storage-files-data-storage-transactions-transfer",   
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3",
+      "#storage-files-data-storage-transactions-transfer-east3-LRS",
       "#storage-files-Provisioned-v1-LRS-ZRS",
       "#storage-files-Provisioned-v2-LRS-ZRS"
     ]
@@ -6899,12 +6965,17 @@
       "#storage-files-date-storage-price-table-new1-east3",
       "#storage-files-date-storage-price-table-new2-north3",
       "#storage-files-date-storage-price-table-new2-east3",
-      "#storage-files-data-storage-transactions-transfer-north3",
-      "#storage-files-data-storage-transactions-transfer-east3",
       "#storage-files-date-storage-price-GZRS-table-china-north3",
-      "#storage-files-date-storage-price-ZRS-table-china-north3",      
+      "#storage-files-date-storage-price-ZRS-table-china-north3",
+      "#storage-files-data-storage-transactions-transfer-north3-ZRS",
+      "#storage-files-data-storage-transactions-transfer-north3-GZRS",
+      "#storage-files-data-storage-transactions-transfer-east3-GRS",
+      "#storage-files-data-storage-transactions-transfer-eastnorth-GRS",
+      "#storage-files-data-storage-price-zrs-table",
+      "#storage-files-data-storage-transactions-transfer",
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3",
+      "#storage-files-data-storage-transactions-transfer-east3-LRS",
       "#storage-files-Provisioned-v1-LRS-ZRS",
       "#storage-files-Provisioned-v2-LRS-ZRS"
     ]
@@ -6925,10 +6996,15 @@
       "#storage-files-data-storage-transactions-transfer",
       "#storage-files-date-storage-price-table-new4s",
       "#storage-files-data-storage-price-zrs-table",
-      "#storage-files-data-storage-transactions-transfer-east3",
+      "#storage-files-data-storage-transactions-transfer-north3-ZRS",
+      "#storage-files-data-storage-transactions-transfer-north3-GZRS",
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-north3",
+      "#storage-files-data-storage-transactions-transfer-east2north2-GRS",
+      "#storage-files-data-storage-transactions-transfer-eastnorth-GRS",
       "#storage-files-date-storage-price-ZRS-table-china-north3",
       "#storage-files-date-storage-price-GZRS-table-china-north3",
+      "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3",
+      "#storage-files-data-storage-transactions-transfer-eastnorth-LRS",
       "#storage-files-Provisioned-v1-LRS-ZRS",
       "#storage-files-Provisioned-v2-LRS-ZRS"
     ]
@@ -6951,6 +7027,9 @@
       "#storage-files-data-storage-price-zrs-table",
       "#storage-files-data-storage-transactions-transfer-east3",
       "#storage-files-data-storage-transactions-transfer-ZRS_GZRS-east3",
+      "#storage-files-data-storage-transactions-transfer-east2north2-GRS",
+      "#storage-files-data-storage-transactions-transfer-eastnorth-GRS",
+      "#storage-files-data-storage-transactions-transfer-eastnorth-LRS",
       "#storage-files-Provisioned-v1-LRS",
       "#storage-files-Provisioned-v2-LRS"
     ]
@@ -7315,7 +7394,9 @@
       "#postgresql-flexible-memory-esv3",
       "#postgresql-flexible-memory-storage",
       "#postgresql-flexible-memory-backstorage",
-      "#postgresql-flexible-general-ddsv5-east3"
+      "#postgresql-flexible-general-ddsv5-east3",
+      "#Azure_PostgreSQL_Database_Extended_Support_East3",
+      "#Azure_PostgreSQL_Database_Extended_Support_E2N2N3"
     ]
   },
   {
@@ -7335,14 +7416,16 @@
       "#postgresql-flexible-memory-edsv5",
       "#postgresql-flexible-general-ddsv4",
       "#postgresql-flexible-memory-edsv4",
-      "#postgresql-flexible-general-ddsv5-east3"
+      "#postgresql-flexible-general-ddsv5-east3",
+      "#Azure_PostgreSQL_Database_Extended_Support_East3"
     ]
   },
   {
     "os": "Azure Database for PostgreSQL",
     "region": "north-china3",
     "tableIDs": [
-      "#postgresql-flexible-general-ddsv5-east3"
+      "#postgresql-flexible-general-ddsv5-east3",
+      "#Azure_PostgreSQL_Database_Extended_Support_East3"
     ]
   },
   
@@ -7363,7 +7446,8 @@
     "#postgresql-flexible-memory-edsv5",
     "#postgresql-flexible-general-ddsv4",
     "#postgresql-flexible-memory-edsv4",
-    "#postgresql-flexible-general-ddsv5-east3"
+    "#postgresql-flexible-general-ddsv5-east3",
+    "#Azure_PostgreSQL_Database_Extended_Support_East3"
     ]
   },
   {
@@ -7383,7 +7467,9 @@
     "#postgresql-flexible-memory-esv3",
     "#postgresql-flexible-memory-storage",
     "#postgresql-flexible-memory-backstorage",
-    "#postgresql-flexible-general-ddsv5-east3"
+    "#postgresql-flexible-general-ddsv5-east3",
+    "#Azure_PostgreSQL_Database_Extended_Support_East3",
+    "#Azure_PostgreSQL_Database_Extended_Support_E2N2N3"
   ]
   },
   {
@@ -7392,7 +7478,8 @@
     "tableIDs": [
       "#postgresql-flexible-memory-esv3",
       "#postgresql-flexible-general-dsv3",
-      "#postgresql-flexible-general-ddsv5"
+      "#postgresql-flexible-general-ddsv5",
+      "#Azure_PostgreSQL_Database_Extended_Support_E2N2N3"
     ]
   },
 
@@ -7408,6 +7495,7 @@
       "#Azure_Database_For_MySQL5",
       "#Azure_Database_For_MySQL6",
       "#Azure_Database_For_MySQL7",
+      "#Azure_Database_For_MySQL7-E3",
       "#Azure_Database_For_MySQL8",
       "#Azure_Database_For_MySQL20",
       "#Azure_Database_For_MySQL18",
@@ -7427,7 +7515,9 @@
       "#Azure_Database_For_MySQL34",
       "#Azure_Database_For_MySQL35",
       "#Azure_Database_For_MySQL_IOPS",
-      "#Azure_Database_For_MySQL_IOPS_East3"
+      "#Azure_Database_For_MySQL_IOPS_East3",
+      "#Azure_Database_Extended_Support_East3",
+      "#Azure_Database_Extended_Support_E2N2N3"
       
     ]
   },
@@ -7440,6 +7530,7 @@
       "#Azure_Database_For_MySQL12",
       "#Azure_Database_For_MySQL14",
       "#Azure_Database_For_MySQL7",
+      "#Azure_Database_For_MySQL7-E3",
       "#Azure_Database_For_MySQL18",
       "#Azure_Database_For_MySQL16",
       "#Azure_Database_For_MySQL15",
@@ -7448,7 +7539,8 @@
       "#Azure_Database_For_MySQL32",
       "#Azure_Database_For_MySQL34",
       "#Azure_Database_For_MySQL35",
-      "#Azure_Database_For_MySQL_IOPS"
+      "#Azure_Database_For_MySQL_IOPS",
+      "#Azure_Database_Extended_Support_East3"
     ]
   },
   {
@@ -7457,6 +7549,7 @@
     "tableIDs": [
       "#Azure_Database_For_MySQL6",
       "#Azure_Database_For_MySQL4",
+      "#Azure_Database_For_MySQL7-E3",
       "#Azure_Database_For_MySQL19",
       "#Azure_Database_For_MySQL17",
       "#Azure_Database_For_MySQL9",
@@ -7477,7 +7570,8 @@
       "#Azure_Database_For_MySQL34",
       "#Azure_Database_For_MySQL31",
       "#Azure_Database_For_MySQL35",
-      "#Azure_Database_For_MySQL_IOPS_East3"
+      "#Azure_Database_For_MySQL_IOPS_East3",
+      "#Azure_Database_Extended_Support_East3"
     ]
   },
   {
@@ -7488,6 +7582,7 @@
       "#Azure_Database_For_MySQL4",
       "#Azure_Database_For_MySQL19",
       "#Azure_Database_For_MySQL17",
+      "#Azure_Database_For_MySQL7",
       "#Azure_Database_For_MySQL9",
       "#Azure_Database_For_MySQL13",
       "#Azure_Database_For_MySQL30",
@@ -7506,7 +7601,8 @@
       "#Azure_Database_For_MySQL34",
       "#Azure_Database_For_MySQL31",
       "#Azure_Database_For_MySQL35",
-      "#Azure_Database_For_MySQL_IOPS"
+      "#Azure_Database_For_MySQL_IOPS",
+      "#Azure_Database_Extended_Support_E2N2N3"
     ]
   },
   {
@@ -7520,6 +7616,7 @@
       "#Azure_Database_For_MySQL5",
       "#Azure_Database_For_MySQL6",
       "#Azure_Database_For_MySQL7",
+      "#Azure_Database_For_MySQL7-E3",
       "#Azure_Database_For_MySQL8",
       "#Azure_Database_For_MySQL20",
       "#Azure_Database_For_MySQL18",
@@ -7538,7 +7635,9 @@
       "#Azure_Database_For_MySQL34",
       "#Azure_Database_For_MySQL35",
       "#Azure_Database_For_MySQL_IOPS",
-      "#Azure_Database_For_MySQL_IOPS_East3"
+      "#Azure_Database_For_MySQL_IOPS_East3",
+      "#Azure_Database_Extended_Support_East3",
+      "#Azure_Database_Extended_Support_E2N2N3"
     ]
   },
   {
@@ -7550,6 +7649,7 @@
       "#Azure_Database_For_MySQL12",
       "#Azure_Database_For_MySQL14",
       "#Azure_Database_For_MySQL7",
+      "#Azure_Database_For_MySQL7-E3",
       "#Azure_Database_For_MySQL18",
       "#Azure_Database_For_MySQL16",
       "#Azure_Database_For_MySQL15",
@@ -7558,7 +7658,8 @@
       "#Azure_Database_For_MySQL32",
       "#Azure_Database_For_MySQL34",
       "#Azure_Database_For_MySQL35",
-      "#Azure_Database_For_MySQL_IOPS"
+      "#Azure_Database_For_MySQL_IOPS",
+      "#Azure_Database_Extended_Support_East3"
     ]
   },
   {
@@ -8031,7 +8132,8 @@
       "#page-blobs-gv1-standard-non-disk-east3",
       "#page-blobs-gv1-standard-non-disk",
       "#page-blobs-gv2-premium",
-      "#page-blobs-gv2-standard-data-storage-N3"
+      "#page-blobs-gv2-standard-data-storage-N3",
+      "#page-blobs-gv2-standard-non-disk"
     ]
   },
   {
@@ -8048,7 +8150,8 @@
       "#page-blobs-gv1-standard-non-disk-east3",
       "#page-blobs-gv1-standard-non-disk",
       "#page-blobs-gv2-premium",
-      "#page-blobs-gv2-standard-data-storage"
+      "#page-blobs-gv2-standard-data-storage",
+      "#page-blobs-gv2-standard-non-disk-east3"
     ]
   },
   {
@@ -8064,7 +8167,8 @@
       "#page-blobs-gv1-standard-non-disk-north3",
       "#page-blobs-gv1-standard-non-disk-east3",
       "#page-blobs-gv2-premium",
-      "#page-blobs-gv2-standard-data-storage-N3"
+      "#page-blobs-gv2-standard-data-storage-N3",
+      "#page-blobs-gv2-standard-non-disk-east3"
     ]
   },
   {
@@ -8080,7 +8184,8 @@
       "#page-blobs-gv1-standard-non-disk-north3",
       "#page-blobs-gv1-standard-non-disk-east3",
       "#page-blobs-gv2-premium",
-      "#page-blobs-gv2-standard-data-storage-N3"
+      "#page-blobs-gv2-standard-data-storage-N3",
+      "#page-blobs-gv2-standard-non-disk-east3"
     ]
   },
   {
@@ -8096,7 +8201,8 @@
       "#page-blobs-gv1-standard-non-disk-north3",
       "#page-blobs-gv1-standard-non-disk-east3",
       "#page-blobs-gv2-premium",
-      "#page-blobs-gv2-standard-data-storage-N3"
+      "#page-blobs-gv2-standard-data-storage-N3",
+      "#page-blobs-gv2-standard-non-disk-east3"
     ]
   },
   {
@@ -8112,7 +8218,8 @@
       "#page-blobs-gv1-standard-non-disk-north3",
       "#page-blobs-gv1-standard-non-disk-east3",
       "#page-blobs-gv2-premium",
-      "#page-blobs-gv2-standard-data-storage-N3"
+      "#page-blobs-gv2-standard-data-storage-N3",
+      "#page-blobs-gv2-standard-non-disk-east3"
     ]
   },
   {

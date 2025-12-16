@@ -8,12 +8,14 @@
       "count": 6,
       "config_path": "products/ai-ml/",
       "products": [
+        "cognitive-services",
         "anomaly-detector",
         "search",
         "machine-learning",
         "databricks",
         "form-recognizer",
-        "metrics-advisor"
+        "metrics-advisor",
+        "bot-services"
       ]
     },
     "management": {
@@ -131,11 +133,14 @@
         "azure-nat-gateway",
         "core-control-plane",
         "dns",
+        "frontdoor",
         "ip-addresses",
         "load-balancer",
         "network-watcher",
         "route-server",
         "traffic-manager",
+        "private-link",
+        "firewall-manager",
         "virtual-network",
         "virtual-network-manager",
         "virtual-wan",

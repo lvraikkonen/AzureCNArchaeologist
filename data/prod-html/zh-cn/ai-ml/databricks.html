@@ -208,7 +208,7 @@
                                     <h4>
                                         基于 Apache Spark ™ 并针对 Azure 优化的快速、简单、协作分析平台
                                     </h4>
-                                    <div class = "updatetime">更新时间：2025年08月28日</div> 
+                                    <div class = "updatetime">更新时间：2025年11月28日</div> 
                                 </div>
                             </div>
                         </div>
@@ -848,6 +848,98 @@
                                     </tbody>
                                 </table>
                             </div>
+
+                            <div>
+                                        <h3>
+                                            现用现付
+                                        </h3>
+                                        <p>
+                                            Azure Databricks 根据所选 VM 实例，对群集中预配的虚拟机 (VM) 和 Databricks 单位 (DBU) 进行计费*。DBU
+                                            是处理能力的单位，按每秒使用量计费。DBU 使用量取决于运行 Azure Databricks 的实例的大小和类型。
+                                        </p>
+                                        <table cellpadding="0" cellspacing="0" id="databricks-data-analysis"
+                                            width="100%">
+                                            <tr>
+                                                <th align="left">
+                                                    <strong>
+                                                        工作负载
+                                                    </strong>
+                                                </th>
+                                                <th align="left">
+                                                    <strong>
+                                                        DBU 价格 - 标准层
+                                                    </strong>
+                                                </th>
+                                                <th align="left">
+                                                    <strong>
+                                                        DBU 价格 - 高级层
+                                                    </strong>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    通用计算 **
+                                                </td>
+                                                <td>
+                                                    ￥ 2.544 /DBU-小时
+                                                </td>
+                                                <td>
+                                                    ￥ 3.498 /DBU-小时
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    作业计算 **
+                                                </td>
+                                                <td>
+                                                    ￥ 0.954 /DBU-小时
+                                                </td>
+                                                <td>
+                                                    ￥ 1.908 /DBU-小时
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    作业轻量计算
+                                                </td>
+                                                <td>
+                                                    ￥ 0.4452 /DBU-小时
+                                                </td>
+                                                <td>
+                                                    ￥ 1.398 /DBU-小时
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    SQL 计算
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 1.3992 /DBU-小时
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    SQL Pro计算
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 3.88 /DBU-小时
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div class="tags-date">
+                                            <div class="ms-date">
+                                                * 除了虚拟机之外，Azure Databricks 还将为托管磁盘、blob 存储、公共 IP 地址收费。
+                                                <br>
+                                                ** 启用 Photon 将增加 DBU 计数。
+                                            </div>
+                                        </div>
+                            </div>
                         </div>
                         <!-- BEGIN: TAB-CONTROL -->
                         <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
@@ -983,6 +1075,12 @@
                                                             启动Photon的作业计算
                                                         </a>
                                                     </li>
+                                                    <li>
+                                                        <a data-href="#tabContent1-8" href="javascript:void(0)"
+                                                            id="databricks_DLT">
+                                                            增量实时表
+                                                        </a>
+                                                    </li>
                                                 </ul>
                                                 <select class="dropdown-select category-tabs hidden-lg hidden-md">
                                                     <option data-href="#tabContent1-1" id="databricks_Analytics"
@@ -1013,6 +1111,10 @@
                                                         value="databricks_Engineering_Light">
                                                         启动Photon的作业计算
                                                     </option>
+                                                    <option data-href="#tabContent1-8" id="databricks_DLT"
+                                                        value="databricks_DLT">
+                                                        增量实时表
+                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
@@ -1023,95 +1125,6 @@
                                         <h2 id="instances">
                                             定价详细信息
                                         </h2>
-                                        <h3>
-                                            现用现付
-                                        </h3>
-                                        <p>
-                                            Azure Databricks 根据所选 VM 实例，对群集中预配的虚拟机 (VM) 和 Databricks 单位 (DBU) 进行计费*。DBU
-                                            是处理能力的单位，按每秒使用量计费。DBU 使用量取决于运行 Azure Databricks 的实例的大小和类型。
-                                        </p>
-                                        <table cellpadding="0" cellspacing="0" id="databricks-data-analysis"
-                                            width="100%">
-                                            <tr>
-                                                <th align="left">
-                                                    <strong>
-                                                        工作负载
-                                                    </strong>
-                                                </th>
-                                                <th align="left">
-                                                    <strong>
-                                                        DBU 价格 - 标准层
-                                                    </strong>
-                                                </th>
-                                                <th align="left">
-                                                    <strong>
-                                                        DBU 价格 - 高级层
-                                                    </strong>
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    通用计算 **
-                                                </td>
-                                                <td>
-                                                    ￥ 2.544 /DBU-小时
-                                                </td>
-                                                <td>
-                                                    ￥ 3.498 /DBU-小时
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    作业计算 **
-                                                </td>
-                                                <td>
-                                                    ￥ 0.954 /DBU-小时
-                                                </td>
-                                                <td>
-                                                    ￥ 1.908 /DBU-小时
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    作业轻量计算
-                                                </td>
-                                                <td>
-                                                    ￥ 0.4452 /DBU-小时
-                                                </td>
-                                                <td>
-                                                    ￥ 1.398 /DBU-小时
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    SQL 计算
-                                                </td>
-                                                <td>
-                                                    -
-                                                </td>
-                                                <td>
-                                                    ￥ 1.3992 /DBU-小时
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    SQL Pro计算
-                                                </td>
-                                                <td>
-                                                    -
-                                                </td>
-                                                <td>
-                                                    ￥ 3.88 /DBU-小时
-                                                </td>
-                                            </tr>
-                                        </table>
-                                        <div class="tags-date">
-                                            <div class="ms-date">
-                                                * 除了虚拟机之外，Azure Databricks 还将为托管磁盘、blob 存储、公共 IP 地址收费。
-                                                <br>
-                                                ** 启用 Photon 将增加 DBU 计数。
-                                            </div>
-                                        </div>
                                         <!-- BEGIN: Tab level 2 content 1-1 -->
                                         <div class="tab-panel" id="tabContent1-1">
                                             <h3>
@@ -19986,6 +19999,138 @@
                                                     </tbody>
                                                 </table>
                                             </div>
+                                        </div>
+                                        <div class="tab-panel" id="tabContent1-8">
+                                        <h3>
+                                            现用现付
+                                        </h3>
+                                        <p>
+                                            Azure Databricks 根据所选 VM 实例，对群集中预配的虚拟机 (VM) 和 Databricks 单位 (DBU) 进行计费*。DBU
+                                            是处理能力的单位，按每秒使用量计费。DBU 使用量取决于运行 Azure Databricks 的实例的大小和类型。
+                                        </p>
+                                        <table cellpadding="0" cellspacing="0" id="databricks-data-analysis"
+                                            width="100%">
+                                            <tr>
+                                                <th align="left">
+                                                    <strong>
+                                                        工作负载
+                                                    </strong>
+                                                </th>
+                                                <th align="left">
+                                                    <strong>
+                                                        DBU 价格 - 标准层
+                                                    </strong>
+                                                </th>
+                                                <th align="left">
+                                                    <strong>
+                                                        DBU 价格 - 高级层
+                                                    </strong>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    通用计算 **
+                                                </td>
+                                                <td>
+                                                    ￥ 2.544 /DBU-小时
+                                                </td>
+                                                <td>
+                                                    ￥ 3.498 /DBU-小时
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    作业计算 **
+                                                </td>
+                                                <td>
+                                                    ￥ 0.954 /DBU-小时
+                                                </td>
+                                                <td>
+                                                    ￥ 1.908 /DBU-小时
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    作业轻量计算
+                                                </td>
+                                                <td>
+                                                    ￥ 0.4452 /DBU-小时
+                                                </td>
+                                                <td>
+                                                    ￥ 1.398 /DBU-小时
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    SQL 计算
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 1.3992 /DBU-小时
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    SQL Pro计算
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 3.88 /DBU-小时
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div class="tags-date">
+                                            <div class="ms-date">
+                                                * 除了虚拟机之外，Azure Databricks 还将为托管磁盘、blob 存储、公共 IP 地址收费。
+                                                <br>
+                                                ** 启用 Photon 将增加 DBU 计数。
+                                            </div>
+                                        </div>
+
+                                        <h3>增量实时表(DLT)</h3>
+                                        <div>
+                                            <table cellpadding="0" cellspacing="0" id="databricks-dlt"
+                                            width="100%">
+                                            <tr>
+                                                <th align="left">
+                                                    <strong>工作负载</strong>
+                                                </th>
+                                                <th align="left">
+                                                    <strong>DLT 核心</strong>
+                                                </th>
+                                                <th align="left">
+                                                    <strong>DLT 专业版</strong>
+                                                </th>
+                                                <th align="left">
+                                                    <strong>DLT 高级</strong>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    增量实时表(DLT)*
+                                                </td>
+                                                <td>
+                                                    ￥1.908/DBU-小时
+                                                </td>
+                                                <td>
+                                                    ￥2.418/DBU-小时
+                                                </td>
+                                                <td>
+                                                    ￥3.432/DBU-小时
+                                                </td>
+                                            </tr>
+                                            </table>
+                                        </div>
+
+                                        <div class="tags-date">
+                                            <div class="ms-date">
+                                                * 启用 Photon 会增加 DBU 计数。DLT 仅在高级层中可用。
+                                            </div>
+                                        </div>
                                         </div>
                                     </div>
                                 </div>

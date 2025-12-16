@@ -1,0 +1,27 @@
+{
+  "display_name": "ICP 原备案不在蓝云：新增接入",
+  "filename": "icp-newinsert.html",
+  "url": "https://www.azure.cn/support/icp/icp-newinsert/",
+  "slug": "icp-newinsert",
+  "category": "icp",
+  "important_section_titles": [
+  ],
+  "html_processing": {
+    "type": "simple",
+    "estimated_size_mb": 1.0,
+    "processing_strategy": "simple"
+  },
+  "extraction_config": {
+    "priority_sections": [
+
+    ],
+    "enable_region_processing": true
+  },
+  "validation_rules": {
+    "required_fields": [
+
+    ],
+    "min_content_length": 100
+  },
+  "created_at": "2025-09-17"
+}
