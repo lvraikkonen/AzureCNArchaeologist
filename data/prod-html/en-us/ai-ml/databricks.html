@@ -68,6 +68,12 @@
             top: 0;
             width: 100%;
         }
+
+         .updatetime {
+            color: black;
+            text-align: right;
+            font-size: 12px;
+        }
     </style>
     <div class="acn-header-container">
         <div class="acn-header-placeholder">
@@ -203,6 +209,7 @@
                                         A fast, easy, and collaborative Apache Spark ™ based analytics platform
                                         optimized for Azure
                                     </h4>
+                                    <div class = "updatetime">Updated on：2025/12/16</div>
                                 </div>
                             </div>
                         </div>
@@ -235,6 +242,10 @@
                             <h4>
                                 Standard tier features
                             </h4>
+                            <p>
+                                Notice: Azure Databricks standard tier will be retired on October 1, 2026. New standard tier workspaces will no longer be supported after April 1, 2026. 
+                                <a href="https://docs.azure.cn/en-us/databricks/admin/account-settings/standard-tier">Learn more</a> . 
+                            </p>
                             <div>
                                 <table cellpadding="0" cellspacing="0" id="storage-blobs-gpv2-data-storage-region2"
                                     width="100%">
@@ -277,18 +288,8 @@
                                         <tr>
                                             <td>
                                                 <span>
-                                                    <strong>
                                                         Apache Spark on Databricks platform
-                                                    </strong>
                                                 </span>
-                                                <ul>
-                                                    <li>
-                                                        Clusters for running production jobs
-                                                    </li>
-                                                    <li>
-                                                        Alerting and monitoring with retries
-                                                    </li>
-                                                </ul>
                                             </td>
                                             <td align="center">
                                                 <strong>
@@ -309,21 +310,8 @@
                                         <tr>
                                             <td>
                                                 <p>
-                                                    <strong>
                                                         Job scheduling with libraries
-                                                    </strong>
                                                 </p>
-                                                <p>
-                                                    Easy to run production jobs including streaming with monitoring
-                                                </p>
-                                                <ul>
-                                                    <li>
-                                                        Scheduler for running libraries
-                                                    </li>
-                                                    <li>
-                                                        Production streaming with monitoring
-                                                    </li>
-                                                </ul>
                                             </td>
                                             <td align="center">
                                                 <strong>
@@ -344,22 +332,8 @@
                                         <tr>
                                             <td>
                                                 <p>
-                                                    <strong>
                                                         Job scheduling with Notebooks
-                                                    </strong>
                                                 </p>
-                                                <p>
-                                                    Ability to use Scala, Python, R and SQL notebooks and notebook
-                                                    workflows
-                                                </p>
-                                                <ul>
-                                                    <li>
-                                                        Schedule Scala, Python, R, SQL notebooks
-                                                    </li>
-                                                    <li>
-                                                        Notebook workflows
-                                                    </li>
-                                                </ul>
                                             </td>
                                             <td align="center">
                                                 <strong>
@@ -377,24 +351,8 @@
                                         <tr>
                                             <td>
                                                 <p>
-                                                    <strong>
                                                         Autopilot clusters
-                                                    </strong>
                                                 </p>
-                                                <p>
-                                                    Easy to manage and cost-effective clusters
-                                                </p>
-                                                <ul>
-                                                    <li>
-                                                        Optimized autoscaling of compute
-                                                    </li>
-                                                    <li>
-                                                        Autoscaling of instance storage
-                                                    </li>
-                                                    <li>
-                                                        Automatic start and termination of clusters
-                                                    </li>
-                                                </ul>
                                             </td>
                                             <td align="center">
                                                 <strong>
@@ -412,24 +370,8 @@
                                         <tr>
                                             <td>
                                                 <p>
-                                                    <strong>
                                                         Databricks Runtime for ML
-                                                    </strong>
                                                 </p>
-                                                <p>
-                                                    Out-of-the-box ML frameworks
-                                                </p>
-                                                <ul>
-                                                    <li>
-                                                        Apache Spark / Horovod integration
-                                                    </li>
-                                                    <li>
-                                                        XGBoost support
-                                                    </li>
-                                                    <li>
-                                                        TensorFlow, PyTorch and Keras support
-                                                    </li>
-                                                </ul>
                                             </td>
                                             <td align="center">
                                                 <strong>
@@ -447,22 +389,8 @@
                                         <tr>
                                             <td>
                                                 <p>
-                                                    <strong>
                                                         MLflow on Databricks Preview
-                                                    </strong>
                                                 </p>
-                                                <p>
-                                                    Run MLflow on Databricks platform to simplify the end-to-end ML
-                                                    lifecycle
-                                                </p>
-                                                <ul>
-                                                    <li>
-                                                        MLflow remote execution on Databricks platform
-                                                    </li>
-                                                    <li>
-                                                        Databricks hosted tracking server
-                                                    </li>
-                                                </ul>
                                             </td>
                                             <td align="center">
                                                 <strong>
@@ -480,34 +408,8 @@
                                         <tr>
                                             <td>
                                                 <p>
-                                                    <strong>
                                                         Databricks Delta
-                                                    </strong>
                                                 </p>
-                                                <p>
-                                                    Robust pipelines serving clean, quality data supporting high
-                                                    performance batch and streaming analytics
-                                                </p>
-                                                <ul>
-                                                    <li>
-                                                        ACID transactions
-                                                    </li>
-                                                    <li>
-                                                        Schema managemen
-                                                    </li>
-                                                    <li>
-                                                        Batch/Stream read/write support
-                                                    </li>
-                                                    <li>
-                                                        SSD caching
-                                                    </li>
-                                                    <li>
-                                                        Indexing
-                                                    </li>
-                                                    <li>
-                                                        Table snapshotting
-                                                    </li>
-                                                </ul>
                                             </td>
                                             <td align="center">
                                                 <strong>
@@ -525,21 +427,8 @@
                                         <tr>
                                             <td>
                                                 <p>
-                                                    <strong>
                                                         Interactive clusters
-                                                    </strong>
                                                 </p>
-                                                <p>
-                                                    High-concurrency mode for multiple users
-                                                </p>
-                                                <ul>
-                                                    <li>
-                                                        Persistent clusters for analytics
-                                                    </li>
-                                                    <li>
-                                                        High concurrency clusters for multi-user sharing
-                                                    </li>
-                                                </ul>
                                             </td>
                                             <td align="center">
                                                 <strong>
@@ -554,33 +443,8 @@
                                         <tr>
                                             <td>
                                                 <p>
-                                                    <strong>
                                                         Notebooks and collaboration
-                                                    </strong>
                                                 </p>
-                                                <p>
-                                                    Highly productive work among analysts and with other colleagues
-                                                </p>
-                                                <ul>
-                                                    <li>
-                                                        Scala, Python, SQL and R notebooks
-                                                    </li>
-                                                    <li>
-                                                        One-click visualization
-                                                    </li>
-                                                    <li>
-                                                        Interactive dashboards
-                                                    </li>
-                                                    <li>
-                                                        Collaboration
-                                                    </li>
-                                                    <li>
-                                                        Revision history
-                                                    </li>
-                                                    <li>
-                                                        Version control systems integration (Github, Bitbucket)
-                                                    </li>
-                                                </ul>
                                             </td>
                                             <td align="center">
                                                 <strong>
@@ -595,21 +459,8 @@
                                         <tr>
                                             <td>
                                                 <p>
-                                                    <strong>
                                                         Ecosystem integrations
-                                                    </strong>
                                                 </p>
-                                                <p>
-                                                    Ability to work with RStudio® and a range of third party BI tools
-                                                </p>
-                                                <ul>
-                                                    <li>
-                                                        RStudio integration
-                                                    </li>
-                                                    <li>
-                                                        BI Integration through JDBC/ODBC
-                                                    </li>
-                                                </ul>
                                             </td>
                                             <td align="center">
                                                 <strong>
@@ -624,6 +475,8 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <br>
+
                             <h4>
                                 Premium tier features
                             </h4>
@@ -853,97 +706,89 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <br>
 
-                            <h3>
-                                Pay As You Go
-                            </h3>
-                                        <p>
-                                            Azure Databricks bills* you for virtual machines (VMs) provisioned in clusters and Databricks Units (DBUs) based on the VM instance selected. 
-                                            A DBU is a unit of processing capability, billed on a per-second usage. 
-                                            The DBU consumption depends on the size and type of instance running Azure Databricks. Feature availability may vary by region.
-                                        </p>
-                                        <table cellpadding="0" cellspacing="0" id="databricks-dlt"
-                                            width="100%">
-                                            <tr>
-                                                <th align="left">
-                                                    <strong>
-                                                        Workload
-                                                    </strong>
-                                                </th>
-                                                <th align="left">
-                                                    <strong>
-                                                        Standard Tier Prices
-                                                    </strong>
-                                                </th>
-                                                <th align="left">
-                                                    <strong>
-                                                        Premium Tier Prices
-                                                    </strong>
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    All-Purpose Compute**
-                                                </td>
-                                                <td>
-                                                    ￥ 2.544 /DBU-hour
-                                                </td>
-                                                <td>
-                                                    ￥ 3.498 /DBU-小时
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Jobs Compute**
-                                                </td>
-                                                <td>
-                                                    ￥ 0.954 /DBU-hour
-                                                </td>
-                                                <td>
-                                                    ￥ 1.908 /DBU-hour
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Jobs Light Compute
-                                                </td>
-                                                <td>
-                                                    ￥ 0.4452 /DBU-hour
-                                                </td>
-                                                <td>
-                                                    ￥ 1.398 /DBU-hour
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    SQL Compute
-                                                </td>
-                                                <td>
+                            <h4>
+                                Delta Live Tables (DLT) Features
+                            </h4>
+                            <div>
+                                <table cellpadding="0" cellspacing="0" id="storage-blobs-gpv2-data-dlt" width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <th align="center">
+                                                <strong>
+                                                    Feature
+                                                </strong>
+                                            </th>
+                                            <th align="center">
+                                                <strong>
+                                                    DLT Core
+                                                </strong>
+                                            </th>
+                                            <th align="center">
+                                                <strong>
+                                                    DLT Pro
+                                                </strong>
+                                            </th>
+                                            <th align="center">
+                                                <strong>
+                                                    DLT Advanced
+                                                </strong>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Basic Capabilities
+                                            </td>
+                                            <td align="center">
+                                                √
+                                            </td>
+                                            <td align="center">
+                                                √
+                                            </td>
+                                            <td align="center">
+                                                √
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Change Data Capture
+                                            </td>
+                                            <td align="center">
+                                                -
+                                            </td>
+                                            <td align="center">
+                                                √
+                                            </td>
+                                            <td align="center">
+                                                √
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Data Quality
+                                            </td>
+                                            <td align="center">
+                                                <strong>
                                                     -
-                                                </td>
-                                                <td>
-                                                    ￥ 1.3992 /DBU-hour
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    SQL Pro Compute
-                                                </td>
-                                                <td>
+                                                </strong>
+                                            </td>
+                                            <td align="center">
+                                                <strong>
                                                     -
-                                                </td>
-                                                <td>
-                                                    ￥ 3.88 /DBU-hour
-                                                </td>
-                                            </tr>
-                                        </table>
-                                        <div class="tags-date">
-                                            <div class="ms-date">
-                                                * In addition to virtual machines, Azure Databricks will also bill for managed, disk, blob storage, Public IP Address.
-                                                <br>
-                                                ** Enabling Photon will increase DBU count.
-                                            </div>
-                                        </div>
+                                                </strong>
+                                            </td>
+                                            <td align="center">
+                                                <strong>
+                                                    -
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br>
+
                         </div>
                         <!-- BEGIN: TAB-CONTROL -->
                         <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
@@ -1087,6 +932,12 @@
                                                             Delta Live Tables (DLT)
                                                         </a>
                                                     </li>
+                                                    <li>
+                                                        <a data-href="#tabContent1-9" href="javascript:void(0)"
+                                                            id="databricks_Serverless">
+                                                            SQL Serverless
+                                                        </a>
+                                                    </li>
                                                 </ul>
                                                 <select class="dropdown-select category-tabs hidden-lg hidden-md">
                                                     <option data-href="#tabContent1-1" id="databricks_Analytics"
@@ -1124,6 +975,10 @@
                                                         value="databricks_DLT">
                                                         Delta Live Tables (DLT)
                                                     </option>
+                                                    <option data-href="#tabContent1-9" id="databricks_Serverless"
+                                                        value="databricks_Serverless">
+                                                        SQL Serverless
+                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
@@ -1134,6 +989,252 @@
                                         <h2 id="instances">
                                             Pricing details
                                         </h2>
+                                        <h3>
+                                            Pay As You Go
+                                        </h3>
+                                        <p>
+                                            Azure Databricks bills* you for virtual machines (VMs) provisioned in clusters and Databricks Units (DBUs) based on the VM instance selected. 
+                                            A DBU is a unit of processing capability, billed on a per-second usage. 
+                                            The DBU consumption depends on the size and type of instance running Azure Databricks. Feature availability may vary by region.
+                                        </p>
+                                        <table cellpadding="0" cellspacing="0" id="databricks-data-analysis"
+                                            width="100%">
+                                            <tr>
+                                                <th align="left">
+                                                    <strong>
+                                                        Workload
+                                                    </strong>
+                                                </th>
+                                                <th align="left">
+                                                    <strong>
+                                                        Standard Tier Prices
+                                                    </strong>
+                                                </th>
+                                                <th align="left">
+                                                    <strong>
+                                                        Premium Tier Prices
+                                                    </strong>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    All-Purpose Compute**
+                                                </td>
+                                                <td>
+                                                    ￥ 2.544 /DBU-hour
+                                                </td>
+                                                <td>
+                                                    ￥ 3.498 /DBU-小时
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Jobs Compute**
+                                                </td>
+                                                <td>
+                                                    ￥ 0.954 /DBU-hour
+                                                </td>
+                                                <td>
+                                                    ￥ 1.908 /DBU-hour
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Jobs Light Compute
+                                                </td>
+                                                <td>
+                                                    ￥ 0.4452 /DBU-hour
+                                                </td>
+                                                <td>
+                                                    ￥ 1.398 /DBU-hour
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    SQL Compute
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 1.3992 /DBU-hour
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    SQL Pro Compute
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 3.88 /DBU-hour
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <table cellpadding="0" cellspacing="0" id="databricks-data-analysis-n3"
+                                            width="100%">
+                                            <tr>
+                                                <th align="left">
+                                                    <strong>
+                                                        Workload
+                                                    </strong>
+                                                </th>
+                                                <th align="left">
+                                                    <strong>
+                                                        Standard Tier Prices
+                                                    </strong>
+                                                </th>
+                                                <th align="left">
+                                                    <strong>
+                                                        Premium Tier Prices
+                                                    </strong>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Interactive Serverless Compute***
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 6.36/DBU-hour
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    All-Purpose Compute**
+                                                </td>
+                                                <td>
+                                                    ￥ 2.544 /DBU-hour
+                                                </td>
+                                                <td>
+                                                    ￥ 3.498 /DBU-小时
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Automated Serverless Compute***
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 2.989/DBU-hour
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Jobs Compute**
+                                                </td>
+                                                <td>
+                                                    ￥ 0.954 /DBU-hour
+                                                </td>
+                                                <td>
+                                                    ￥ 1.908 /DBU-hour
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Jobs Light Compute
+                                                </td>
+                                                <td>
+                                                    ￥ 0.4452 /DBU-hour
+                                                </td>
+                                                <td>
+                                                    ￥ 1.398 /DBU-hour
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    SQL Compute
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 1.3992 /DBU-hour
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    SQL Pro Compute
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 3.88 /DBU-hour
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Serverless SQL***
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 4.897/DBU-hour
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Serverless Real-Time Inference***
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 0.49/DBU-hour
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Model Training***
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 4.547/DBU-hour
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Databricks Storage Unit
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 0.235/DBU-hour
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Database Serverless Compute
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                                <td>
+                                                    ￥ 3.625/DBU-hour
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div class="tags-date">
+                                            <div class="ms-date">
+                                                * In addition to virtual machines, Azure Databricks will also bill for managed, disk, blob storage, Public IP Address.
+                                                <br>
+                                                ** Enabling Photon will increase DBU count.
+                                                <br>
+                                                *** In addition to DBU, data transfer, NAT gateway, and Private Endpoint per-hour usage will also be billed. Data processing charges to your resources over Private Link are waived indefinitely.
+                                            </div>
+                                        </div>
+
                                         <!-- BEGIN: Tab level 2 content 1-1 -->
                                         <div class="tab-panel" id="tabContent1-1">
                                             <!-- <h3>Instances</h3>
@@ -21119,98 +21220,6 @@
                                             </div>
                                         </div>
                                         <div class="tab-panel" id="tabContent1-8">
-                                        <h3>
-                                            Pay As You Go
-                                        </h3>
-                                        <p>
-                                            Azure Databricks bills* you for virtual machines (VMs) provisioned in clusters and Databricks Units (DBUs) based on the VM instance selected. 
-                                            A DBU is a unit of processing capability, billed on a per-second usage. 
-                                            The DBU consumption depends on the size and type of instance running Azure Databricks. Feature availability may vary by region.
-                                        </p>
-                                        <table cellpadding="0" cellspacing="0" id="databricks-dlt"
-                                            width="100%">
-                                            <tr>
-                                                <th align="left">
-                                                    <strong>
-                                                        Workload
-                                                    </strong>
-                                                </th>
-                                                <th align="left">
-                                                    <strong>
-                                                        Standard Tier Prices
-                                                    </strong>
-                                                </th>
-                                                <th align="left">
-                                                    <strong>
-                                                        Premium Tier Prices
-                                                    </strong>
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    All-Purpose Compute**
-                                                </td>
-                                                <td>
-                                                    ￥ 2.544 /DBU-hour
-                                                </td>
-                                                <td>
-                                                    ￥ 3.498 /DBU-小时
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Jobs Compute**
-                                                </td>
-                                                <td>
-                                                    ￥ 0.954 /DBU-hour
-                                                </td>
-                                                <td>
-                                                    ￥ 1.908 /DBU-hour
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Jobs Light Compute
-                                                </td>
-                                                <td>
-                                                    ￥ 0.4452 /DBU-hour
-                                                </td>
-                                                <td>
-                                                    ￥ 1.398 /DBU-hour
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    SQL Compute
-                                                </td>
-                                                <td>
-                                                    -
-                                                </td>
-                                                <td>
-                                                    ￥ 1.3992 /DBU-hour
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    SQL Pro Compute
-                                                </td>
-                                                <td>
-                                                    -
-                                                </td>
-                                                <td>
-                                                    ￥ 3.88 /DBU-hour
-                                                </td>
-                                            </tr>
-                                        </table>
-                                        <div class="tags-date">
-                                            <div class="ms-date">
-                                                * In addition to virtual machines, Azure Databricks will also bill for managed, disk, blob storage, Public IP Address.
-                                                <br>
-                                                ** Enabling Photon will increase DBU count.
-                                            </div>
-                                        </div>
-                                        <br />
-
                                         <h3>Delta Live Tables (DLT) Features</h3>
                                         <div>
                                             <table cellpadding="0" cellspacing="0" id="databricks-dlt"
@@ -21252,6 +21261,130 @@
                                             </div>
                                         </div>
                                         
+                                        </div>
+                                        <div class="tab-panel" id="tabContent1-9">
+                                        <h3>
+                                            SQL Compute Cluster
+                                        </h3>
+                                                <table cellpadding="0" cellspacing="0"
+                                                    id="databricks-data-serverless-SQL-n3" width="100%">
+                                                    <tr>
+                                                        <th align="left">
+                                                            <strong>
+                                                                Cluster Size
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                DBU Count
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                PAYG Total DBU Price
+                                                            </strong>
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            2X-Small
+                                                        </td>
+                                                        <td>
+                                                            4
+                                                        </td>
+                                                        <td>
+                                                            ￥19.588
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            X-Small
+                                                        </td>
+                                                        <td>
+                                                            6
+                                                        </td>
+                                                        <td>
+                                                            ￥29.382
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Small
+                                                        </td>
+                                                        <td>
+                                                            12
+                                                        </td>
+                                                        <td>
+                                                            ￥58.764
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Medium
+                                                        </td>
+                                                        <td>
+                                                            24
+                                                        </td>
+                                                        <td>
+                                                            ￥117.528
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Large
+                                                        </td>
+                                                        <td>
+                                                            40
+                                                        </td>
+                                                        <td>
+                                                            ￥195.88
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            X-Large
+                                                        </td>
+                                                        <td>
+                                                            80
+                                                        </td>
+                                                        <td>
+                                                            ￥391.76
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            2X-Large
+                                                        </td>
+                                                        <td>
+                                                            144
+                                                        </td>
+                                                        <td>
+                                                            ￥705.168
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            3X-Large
+                                                        </td>
+                                                        <td>
+                                                            272
+                                                        </td>
+                                                        <td>
+                                                            ￥1,331.984
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            4X-Large
+                                                        </td>
+                                                        <td>
+                                                            528
+                                                        </td>
+                                                        <td>
+                                                            ￥2,585.616
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                         </div>
                                     </div>
                                 </div>

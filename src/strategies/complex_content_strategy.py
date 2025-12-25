@@ -581,10 +581,11 @@ class ComplexContentStrategy(BaseStrategy):
             shared_content = ""
             if main_container_id and main_container_id != "technical-azure-selector":
                 shared_content = self._extract_shared_content_for_tab_container(soup, main_container_id)
-            
+
             # 准备返回的具体内容
             final_content = ""
-            
+            final_shared_content = ""
+
             # 应用区域筛选（如果有region_id和os_name）
             if region_id and os_name:
                 logger.info(f"🔍 对内容应用区域筛选: region={region_id}, os={os_name}")
@@ -593,6 +594,15 @@ class ComplexContentStrategy(BaseStrategy):
                 # 应用区域筛选
                 filtered_soup = self.region_processor.apply_region_filtering(temp_soup, region_id, os_name)
                 final_content = str(filtered_soup)
+
+                # 对共享内容也应用区域筛选
+                if shared_content:
+                    logger.info(f"🔍 对共享内容应用区域筛选: region={region_id}, os={os_name}")
+                    temp_shared_soup = BeautifulSoup(str(shared_content), 'html.parser')
+                    filtered_shared_soup = self.region_processor.apply_region_filtering(temp_shared_soup, region_id, os_name)
+                    final_shared_content = str(filtered_shared_soup)
+                else:
+                    final_shared_content = shared_content
             else:
                 # 没有区域信息，直接返回原始内容
                 if not region_id:
@@ -600,10 +610,11 @@ class ComplexContentStrategy(BaseStrategy):
                 if not os_name:
                     logger.info("ℹ 无OS名称，跳过区域筛选")
                 final_content = str(base_content)
-            
+                final_shared_content = shared_content
+
             return {
                 "content": final_content,
-                "shared_content": shared_content
+                "shared_content": final_shared_content
             }
             
         except Exception as e:

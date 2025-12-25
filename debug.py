@@ -24,8 +24,8 @@ from src.extractors.enhanced_cms_extractor import EnhancedCMSExtractor
 # product_key = "azure-firewall"
 # html_file = "data/prod-html/zh-cn/management/azure-firewall.html"
 # output_dir = "debug_output"
-product_key = "microsoft-sentinel"
-html_file = "data/prod-html/zh-cn/security/microsoft-sentinel.html"
+product_key = "databricks"
+html_file = "data/prod-html/zh-cn/ai-ml/databricks.html"
 output_dir = "debug_output"
 
 

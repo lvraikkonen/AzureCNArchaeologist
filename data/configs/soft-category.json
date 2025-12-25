@@ -6814,7 +6814,16 @@
     "os": "Logic Apps",
     "region": "east-china2",
     "tableIDs": [
-      "#logic-apps-integration-service-environment-north3-china-table"
+      "#logic-apps-integration-service-environment-north3-china-table",
+      "#logic-apps-integration-service-environment-n1e1-china-table"
+    ]
+  },
+  {
+    "os": "Logic Apps",
+    "region": "north-china2",
+    "tableIDs": [
+      "#logic-apps-integration-service-environment-north3-china-table",
+      "#logic-apps-integration-service-environment-n1e1-china-table"
     ]
   },
   {
@@ -6822,16 +6831,20 @@
     "region": "north-china3",
     "tableIDs": [
       "#logic-apps-integration-service-environment-table1",
-      "#logic-apps-integration-service-environment-table"
+      "#logic-apps-integration-service-environment-table",
+      "#logic-apps-integration-service-environment-n1e1-china-table"
     ]
   },
   {
     "os": "Logic Apps",
-    "region": "north-china2",
+    "region": "east-china3",
     "tableIDs": [
-      "#logic-apps-integration-service-environment-north3-china-table"
+      "#logic-apps-integration-service-environment-table1",
+      "#logic-apps-integration-service-environment-table",
+      "#logic-apps-integration-service-environment-n1e1-china-table"
     ]
   },
+
   {
     "os": "Search",
     "region": "east-china",
@@ -7667,6 +7680,7 @@
     "region": "east-china",
     "tableIDs": [
       "#databricks-data-analysis",
+      "#databricks-data-analysis-n3",
       "#databricks-data-analysis1",
       "#databricks-data-analysis2",
       "#databricks-data-analysis3",
@@ -7735,6 +7749,7 @@
     "region": "north-china",
     "tableIDs": [
       "#databricks-data-analysis",
+      "#databricks-data-analysis-n3",
       "#databricks-data-analysis1",
       "#databricks-data-analysis2",
       "#databricks-data-analysis3",
@@ -7795,7 +7810,8 @@
       "#databricks-data-NCas_T4_v3",
       "#databricks-General-all-NCas_T4_v3",
       "#databricks-Compute-Photon-NCas_T4_v3",
-      "#databricks-Compute-Photon-Job-NCas_T4_v3"
+      "#databricks-Compute-Photon-Job-NCas_T4_v3",
+      "#databricks-data-serverless-SQL-n3"
     ]
   },
   {
@@ -7809,7 +7825,9 @@
       "#databricks-data-NCas_T4_v3",
       "#databricks-light-job-computation-NCas_T4_v3",
       "#databricks-Compute-Photon-NCas_T4_v3",
-      "#databricks-Compute-Photon-Job-NCas_T4_v3"
+      "#databricks-Compute-Photon-Job-NCas_T4_v3",
+      "#databricks-data-analysis-n3",
+      "#databricks-data-serverless-SQL-n3"
     ]
   },
   {
@@ -7823,7 +7841,16 @@
       "#databricks-data-NCas_T4_v3",
       "#databricks-light-job-computation-NCas_T4_v3",
       "#databricks-Compute-Photon-NCas_T4_v3",
-      "#databricks-Compute-Photon-Job-NCas_T4_v3"
+      "#databricks-Compute-Photon-Job-NCas_T4_v3",
+      "#databricks-data-analysis-n3",
+      "#databricks-data-serverless-SQL-n3"
+    ]
+  },
+  {
+    "os": "databricks",
+    "region": "north-china3",
+    "tableIDs": [
+      "#databricks-data-analysis"
     ]
   },
   {
@@ -8480,6 +8507,36 @@
      "region":"north-china",
      "tableIDs":[
       "#VPN_Gateway_table_Availability_Zones"
+    ]
+  },
+  {
+    "os":"notification-hubs",
+     "region":"north-china3",
+     "tableIDs":[
+    ]
+  },
+  {
+    "os":"notification-hubs",
+     "region":"north-china2",
+     "tableIDs":[
+    ]
+  },
+  {
+    "os":"notification-hubs",
+     "region":"east-china2",
+     "tableIDs":[
+    ]
+  },
+  {
+    "os":"notification-hubs",
+     "region":"north-china",
+     "tableIDs":[
+    ]
+  },
+  {
+    "os":"notification-hubs",
+     "region":"east-china",
+     "tableIDs":[
     ]
   }
 ]
