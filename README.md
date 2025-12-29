@@ -12,11 +12,12 @@
 ### 背景与挑战
 Azure中国定价网站 (https://www.azure.cn/pricing/) 原维护团队已解散，前端JavaScript代码丢失。项目团队获得了完整的HTML源码文件，需要通过"HTML解析式考古"，从大量HTML文件中提取结构化数据，重建整个产品价格和计算器页面系统。
 
-### 核心目标
-- 🔍 **智能解析**: 从HTML文件中智能提取所有产品信息、价格数据、描述和图片路径
-- 🏗️ **深度建模**: 构建结构化的数据模型，支持复杂定价计算逻辑和明细展示
-- 🤖 **AI驱动**: 集成混合智能RAG系统，提供智能问答和价格计算服务
-- 📦 **CMS就绪**: 输出标准化数据格式，便于后续CMS系统导入和团队手动维护
+### 核心目标（已实现）
+- 🔍 **智能解析**: ✅ 从HTML文件中智能提取所有产品信息，支持92个Azure产品
+- 🏗️ **深度建模**: ✅ 构建策略化提取器架构，支持3+1策略自动识别
+- 🤖 **批量处理**: ✅ 集成企业级批处理系统，支持4-8并发处理
+- 📦 **CMS就绪**: ✅ 输出Flexible JSON Schema 1.1格式，完全符合CMS标准
+- 🔄 **完整工作流**: ✅ 从HTML导入到Blob上传的端到端自动化
 
 ### 🌟 核心特性
 
@@ -165,18 +166,25 @@ python scripts/verify_installation.py
 #### 统一CLI界面
 
 ```bash
-# 查看所有可用命令
-uv run cli.py --help
-
-# 从生产环境自动复制HTML文件
+# 完整工作流示例
+# 步骤1: 从生产环境导入HTML
 uv run cli.py copy-from-prod --language both
-uv run cli.py copy-from-prod --language zh-cn --categories database storage
 
-# 提取产品数据
-uv run cli.py extract mysql --html-file data/prod-html/mysql.html --format json
+# 步骤2: 批量处理所有产品
+uv run cli.py batch-process --all --parallel-jobs 6
 
-# 列出支持的产品
+# 步骤3: 查看处理状态
+uv run cli.py batch-status --detailed
+
+# 步骤4: 上传到Azure Blob
+uv run cli.py upload --output-dir output --prefix cms
+
+# 单产品提取
+uv run cli.py extract mysql --html-file data/prod-html/zh-cn/database/mysql.html --format json
+
+# 列出支持的产品（92个产品）
 uv run cli.py list-products
+uv run cli.py list-categories
 
 # 查看项目状态
 uv run cli.py status
