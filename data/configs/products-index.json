@@ -1,7 +1,7 @@
 {
   "version": "2.1",
   "last_updated": "2025-09-08",
-  "total_products": 87,
+  "total_products": 97,
   "future_capacity": 120,
   "categories": {
     "ai-ml": {
@@ -204,6 +204,28 @@
       "config_path": "products/dev-ops/",
       "products": [
         "managed-grafana"
+      ]
+    },
+    "icp": {
+      "count": 8,
+      "config_path": "products/icp/",
+      "products": [
+        "icp-summary",
+        "icp-new",
+        "icp-change",
+        "icp-cancel",
+        "icp-addweb",
+        "icp-newweb",
+        "icp-newinsert",
+        "icp-faq"
+      ]
+    },
+    "sla": {
+      "count": 2,
+      "config_path": "products/sla/",
+      "products": [
+        "sla-cognitive-services",
+        "summary"
       ]
     }
   },

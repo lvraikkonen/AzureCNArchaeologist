@@ -105,7 +105,7 @@ class BatchProcessEngine:
         
         try:
             # Get products for this group
-            products = self._get_products_for_group(group_name, html_base_dir, language)
+            products = self._get_products_for_group(group_name, html_base_dir, language, output_dir)
             if not products:
                 logger.warning(f"No products found for group '{group_name}' in language '{language}'")
                 report.finalize()
@@ -245,31 +245,40 @@ class BatchProcessEngine:
         return self._process_products_with_report(products, output_dir, batch_id)
     
     def _get_products_for_group(self, group_name: str, html_base_dir: str,
-                               language: str = "zh-cn") -> List[ProductProcessingInfo]:
+                               language: str = "zh-cn",
+                               output_base_dir: str = None) -> List[ProductProcessingInfo]:
         """Get list of products for a specific group with language support."""
         products = []
-        
+
         try:
             # Use ProductManager's new file discovery capability
             found_products = self.product_manager.find_products_for_category(
                 group_name, language, html_base_dir
             )
-            
+
             for product_info in found_products:
+                # Use caller-supplied output_base_dir if provided, otherwise use default
+                if output_base_dir:
+                    resolved_output_dir = self.product_manager.get_output_directory(
+                        product_info['product_key'], language, output_base_dir
+                    )
+                else:
+                    resolved_output_dir = product_info['output_dir']
+
                 try:
                     # Get product configuration for URL
                     config = self.product_manager.get_product_config(product_info['product_key'])
                     url = config.get('url', '')
-                    
+
                     products.append(ProductProcessingInfo(
                         product_key=product_info['product_key'],
                         html_file_path=product_info['html_path'],
                         product_group=product_info['category'],
-                        output_dir=product_info['output_dir'],
+                        output_dir=resolved_output_dir,
                         language=product_info['language'],
                         url=url
                     ))
-                    
+
                 except Exception as e:
                     logger.warning(f"Failed to get config for product {product_info['product_key']}: {e}")
                     # Still add product with minimal info
@@ -277,7 +286,7 @@ class BatchProcessEngine:
                         product_key=product_info['product_key'],
                         html_file_path=product_info['html_path'],
                         product_group=product_info['category'],
-                        output_dir=product_info['output_dir'],
+                        output_dir=resolved_output_dir,
                         language=product_info['language'],
                         url=""
                     ))

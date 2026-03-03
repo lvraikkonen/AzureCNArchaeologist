@@ -28,6 +28,7 @@ class PageType(Enum):
     REGION_FILTER = "region_filter"      # Type B: Region filter pages (api-management, hdinsight)
     COMPLEX = "complex"                  # Type C: Complex pages (cloud-services)
     LARGE_FILE = "large_file"           # Special: Large files requiring optimization
+    SUPPORT_ARTICLE = "support_article"  # Support article pages (SLA/ICP/Legal/公安备案)
 
 
 class StrategyType(Enum):
@@ -36,6 +37,7 @@ class StrategyType(Enum):
     REGION_FILTER = "region_filter"
     COMPLEX = "complex"                  # Replaces: TAB, REGION_TAB, MULTI_FILTER
     LARGE_FILE = "large_file"
+    SUPPORT_ARTICLE = "support_article"
 
 
 class FilterType(Enum):

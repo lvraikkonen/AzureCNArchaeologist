@@ -65,12 +65,22 @@ class StrategyManager:
         
         print(f"📏 文件大小: {file_size_mb:.2f} MB")
         
-        # 2. 大文件优先处理
+        # 2. 支持文章类型检测（基于产品配置的 category 字段）
+        try:
+            product_config = self.product_manager.get_product_config(product_key)
+            category = product_config.get("category", "")
+            if category in ("sla", "icp", "legal", "public-security-registration"):
+                print(f"📄 支持文章策略: category={category}")
+                return self._create_support_article_strategy(product_key, category)
+        except Exception:
+            pass
+
+        # 3. 大文件优先处理
         if is_large_file:
             print(f"🔥 大文件策略: 文件大小超过 {self.large_file_threshold_mb} MB")
             return self._create_large_file_strategy(file_size_mb, product_key)
-        
-        # 3. 页面分析和策略决策 (基于3+1架构)
+
+        # 4. 页面分析和策略决策 (基于3+1架构)
         try:
             from bs4 import BeautifulSoup
             with open(html_file_path, 'r', encoding='utf-8') as f:
@@ -137,6 +147,12 @@ class StrategyManager:
                 "description": "大文件优化处理",
                 "features": ["流式处理", "内存优化", "分块处理"],
                 "complexity_threshold": 1.0
+            },
+            StrategyType.SUPPORT_ARTICLE: {
+                "processor": "SupportArticleProcessor",
+                "description": "支持文章页面处理 (SLA/ICP/Legal/公安备案)",
+                "features": ["文章内容提取", "元数据提取", "扁平JSON输出"],
+                "complexity_threshold": 0.1
             }
         }
     
@@ -150,7 +166,8 @@ class StrategyManager:
             PageType.SIMPLE_STATIC: StrategyType.SIMPLE_STATIC,
             PageType.REGION_FILTER: StrategyType.REGION_FILTER,
             PageType.COMPLEX: StrategyType.COMPLEX,
-            PageType.LARGE_FILE: StrategyType.LARGE_FILE
+            PageType.LARGE_FILE: StrategyType.LARGE_FILE,
+            PageType.SUPPORT_ARTICLE: StrategyType.SUPPORT_ARTICLE
         }
         
         strategy_type = page_to_strategy_mapping.get(page_type, StrategyType.SIMPLE_STATIC)
@@ -173,7 +190,23 @@ class StrategyManager:
             recommended_page_type=page_type
         )
     
-    def _create_large_file_strategy(self, file_size_mb: float, 
+    def _create_support_article_strategy(self, product_key: str,
+                                        category: str) -> ExtractionStrategy:
+        """创建支持文章处理策略。"""
+        strategy_config = self.strategy_registry[StrategyType.SUPPORT_ARTICLE]
+
+        return ExtractionStrategy(
+            strategy_type=StrategyType.SUPPORT_ARTICLE,
+            processor=strategy_config["processor"],
+            description=strategy_config["description"],
+            features=strategy_config["features"],
+            priority_features=["articleDescription", "mainContent"],
+            config_overrides={"category": category},
+            complexity_score=0.0,
+            recommended_page_type=PageType.SUPPORT_ARTICLE
+        )
+
+    def _create_large_file_strategy(self, file_size_mb: float,
                                   product_key: str) -> ExtractionStrategy:
         """创建大文件处理策略。"""
         strategy_config = self.strategy_registry[StrategyType.LARGE_FILE]

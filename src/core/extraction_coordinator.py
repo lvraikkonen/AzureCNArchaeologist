@@ -285,7 +285,12 @@ class ExtractionCoordinator:
             处理后的数据
         """
         logger.info("后处理和验证...")
-        
+
+        # SupportArticle 策略输出仅包含业务字段，不添加元数据
+        if extraction_strategy.strategy_type == StrategyType.SUPPORT_ARTICLE:
+            logger.info("SupportArticle 策略: 跳过 extraction_metadata 和 validation")
+            return data
+
         # 添加提取元数据
         data["extraction_metadata"] = {
             "extractor_version": "enhanced_v3.0",
@@ -297,7 +302,7 @@ class ExtractionCoordinator:
             "strategy_features": extraction_strategy.features,
             "priority_features": extraction_strategy.priority_features
         }
-        
+
         # 数据验证
         try:
             validation_result = validate_extracted_data(data, product_config)
@@ -310,7 +315,7 @@ class ExtractionCoordinator:
                 "errors": [str(e)],
                 "warnings": []
             }
-        
+
         return data
 
     def _create_error_result(self, error_message: str, html_file_path: str, url: str) -> Dict[str, Any]:
