@@ -10,7 +10,9 @@
       "#vm-table1-Dav4-Windows-N3",
       "#vm-table1-Dasv4-Windows-N3",
       "#vm-table1-NVads-Windows-N3",
+      "#vm-table1-NVads-Windows-E2",
       "#vm-table1-NVads-Linux-N3",
+      "#vm-table1-NVads-Linux-E2",
       "#vm-table1-HBv3-Windows-N3",
       "#vm-table1-HBv3-Constrained-Windows-N3",
       "#vm-table1-HBv3-Linux-N3",
@@ -40,9 +42,11 @@
       "#vm-table1-1-6-east3",
       "#vm-table2-1-new-east3",
       "#vm-table1-2-new-east3",
+      "#vm-table1-2-new-east",
       "#vm-table2-4-new-east3",
       "#vm-table1-3-new-east3",
       "#vm-table1-4-new-east3",
+      "#vm-table1-4-new-east",
       "#vm-table1-r2-5-east3",
       "#vm-table1-r2-7-east3",
       "#vm-table1-r2-8-east3",
@@ -80,7 +84,6 @@
       "#vm-table-Constrained-1-1-north3",
       "#vm-table1-11-cpp-new-east3",
       "#vm-table1-11-cpp-new-north3",
-      "#vm-table1-1-7",
       "#vm-table1-3-3",
       "#vm-table1-3-1",
       "#vm-table1-r2-4",
@@ -134,7 +137,15 @@
       "#vm-table1-ddsv5-Win-E3",
       "#vm-table1-ev5-n3",
       "#vm-table1-4-cpp-new",
-      "#vm-table1-1-6"
+      "#vm-table1-1-6",
+      "#vm-table1-1-new-east",
+      "#vm-table1-3-new-east",
+      "#vm-table1-d2dv5-Linux-N3E3",
+      "#vm-table1-ddsv5-Linux-E3",
+      "#vm-table1-ddsv5-dsen2-N3",
+      "#vm-table1-ddv5-dsen2-N3",
+      "#vm-table1-edv5-s-n3",
+      "#vm-table1-d2dv5-Win-N3E3"
     ]
   },
   {
@@ -154,7 +165,9 @@
       "#vm-table1-windows-B2pts-north3-north2-east2",
       "#vm-table1-linux-B2pts-north3-north2-east2",
       "#vm-table1-NVads-Windows-N3",
+      "#vm-table1-NVads-Windows-E2",
       "#vm-table1-NVads-Linux-N3",
+      "#vm-table1-NVads-Linux-E2",
       "#vm-table1-HBv3-Windows-N3",
       "#vm-table1-HBv3-Constrained-Windows-N3",
       "#vm-table1-HBv3-Linux-N3",
@@ -162,7 +175,6 @@
       "#vm-table-Dldsv5-Windows-N2-E2-N3",
       "#vm-table-Dldsv5-Linux-N2-E2-N3",
       "#vm-table-Dlsv5-Windows-N2-E2-N3",
-      "#vm-table-Dlsv5-Linux-N2-E2-N3",
       "#vm-table1-Ebsv5-Windows-N3-N2-E2",
       "#vm-table1-Ebsv5-Linux-N3-N2-E2",
       "#vm-table-NCas_T4_v3-Windows-N3-CPP",
@@ -184,7 +196,10 @@
       "#vm-table2-L80s-v3-linux",
       "#vm-table-Lasv3-Windows-N3",
       "#vm-table-Lasv3-Linux-N3",
-      "#vm-table1-d2v51-dsen2",
+      "#vm-table1-ddsv5-dsen2",
+      "#vm-table1-ddsv5-dsen2-N3",
+      "#vm-table1-ddv5-dsen2",
+      "#vm-table1-ddv5-dsen2-N3",
       "#vm-table1-ev5-s-en2",
       "#vm-table1-ev5-ls",
       "#vm-table1-d2v51-ls",
@@ -208,9 +223,11 @@
       "#vm-table2-5-cpp-new-north3",
       "#vm-table2-5-cpp-new-east3",
       "#vm-table1-2-new-east3",
+      "#vm-table1-2-new-east",
       "#vm-table2-4-new-east3",
       "#vm-table1-3-new-east3",
       "#vm-table1-4-new-east3",
+      "#vm-table1-4-new-east",
       "#vm-table1-r2-5-east3",
       "#vm-table1-r2-7-east3",
       "#vm-table1-r2-8-east3",
@@ -292,6 +309,7 @@
       "#vm-table1-3-6-ml",
       "#vm-table1-4-1-ml",
       "#vm-table1-1-new",
+      "#vm-table1-1-new-east",
       "#vm-table1-2-new",
       "#vm-table1-3-new",
       "#vm-table1-4-new",
@@ -326,7 +344,12 @@
       "#vm-table1-ev5-ls-n3",
       "#vm-table1-ddsv5-Win-E3",
       "#vm-table-Msv2-w-n2e2",
-      "#vm-table-mdsv2-w-n2e2"
+      "#vm-table-mdsv2-w-n2e2",
+      "#vm-table1-d2dv5-Win-N3E3",
+      "#vm-table1-d2dv5-Linux-N3E3",
+      "#vm-table1-ddsv5-Linux-E3",
+      "#vm-table1-edv5-s-n3",
+      "#vm-table1-edv5-s"
     ]
   },
   {
@@ -341,6 +364,7 @@
       "#vm-table1-Dasv4-Windows-N3",
       "#vm-table1-NVads-Windows-N3",
       "#vm-table1-NVads-Linux-N3",
+      "#vm-table1-NVads-Linux-E2",
       "#vm-table1-HBv3-Windows-N3",
       "#vm-table1-HBv3-Constrained-Windows-N3",
       "#vm-table1-HBv3-Linux-N3",
@@ -370,11 +394,13 @@
       "#vm-table1-1-6-east3",
       "#vm-table2-1-new-east3",
       "#vm-table1-2-new-east3",
+      "#vm-table1-2-new-east",
       "#vm-table2-4-new-east3",
       "#vm-table2-5-cpp-new-north3",
       "#vm-table2-5-cpp-new-east3",
       "#vm-table1-3-new-east3",
       "#vm-table1-4-new-east3",
+      "#vm-table1-4-new-east",
       "#vm-table1-r2-5-east3",
       "#vm-table1-r2-7-east3",
       "#vm-table1-r2-8-east3",
@@ -410,7 +436,6 @@
       "#vm-table1-7-new-north3",
       "#vm-table1-8-new-north3",
       "#vm-table-Constrained-1-1-north3",
-      "#vm-table1-1-7",
       "#vm-table1-3-3",
       "#vm-table1-3-1",
       "#vm-table-windows-memoryprioritization-d15v2",
@@ -463,7 +488,14 @@
       "#vm-table1-ev5-s-n3",
       "#vm-table1-ddsv5-Win-E3",
       "#vm-table1-4-cpp-new",
-      "#vm-table1-1-6"
+      "#vm-table1-1-6",
+      "#vm-table1-1-new-east",
+      "#vm-table1-d2dv5-Linux-N3E3",
+      "#vm-table1-ddsv5-Linux-E3",
+      "#vm-table1-ddsv5-dsen2-N3",
+      "#vm-table1-ddv5-dsen2-N3",
+      "#vm-table1-edv5-s-n3",
+      "#vm-table1-d2dv5-Win-N3E3"
     ]
   },
   {
@@ -483,7 +515,9 @@
       "#vm-table1-windows-B2pts-north3-north2-east2",
       "#vm-table1-linux-B2pts-north3-north2-east2",
       "#vm-table1-NVads-Windows-N3",
+      "#vm-table1-NVads-Windows-E2",
       "#vm-table1-NVads-Linux-N3",
+      "#vm-table1-NVads-Linux-E2",
       "#vm-table1-HBv3-Windows-N3",
       "#vm-table1-HBv3-Constrained-Windows-N3",
       "#vm-table1-HBv3-Linux-N3",
@@ -491,7 +525,6 @@
       "#vm-table-Dldsv5-Windows-N2-E2-N3",
       "#vm-table-Dldsv5-Linux-N2-E2-N3",
       "#vm-table-Dlsv5-Windows-N2-E2-N3",
-      "#vm-table-Dlsv5-Linux-N2-E2-N3",
       "#vm-table1-Ebsv5-Windows-N3-N2-E2",
       "#vm-table1-Ebsv5-Linux-N3-N2-E2",
       "#vm-table-NCas_T4_v3-Windows-N3-CPP",
@@ -513,7 +546,10 @@
       "#vm-table2-L80s-v3-linux",
       "#vm-table-Lasv3-Windows-N3",
       "#vm-table-Lasv3-Linux-N3",
-      "#vm-table1-d2v51-dsen2",
+      "#vm-table1-ddsv5-dsen2",
+      "#vm-table1-ddsv5-dsen2-N3",
+      "#vm-table1-ddv5-dsen2",
+      "#vm-table1-ddv5-dsen2-N3",
       "#vm-table1-ev5-s-en2",
       "#vm-table1-ev5-ls",
       "#vm-table1-d2v51-s",
@@ -643,11 +679,18 @@
       "#vm-table-Constrained-1-3",
       "#vm-table1-d2v51-n3",
       "#vm-table1-d2v51-s-n3",
+      "#vm-table1-d2v51-l-n3",
       "#vm-table1-ev5-n3",
       "#vm-table1-ev5-s-n3",
       "#vm-table1-ddsv5-Win-E3",
       "#vm-table-Msv2-w-n2e2",
-      "#vm-table-mdsv2-w-n2e2"
+      "#vm-table-mdsv2-w-n2e2",
+      "#vm-table1-d2dv5-Win-N3E3",
+      "#vm-table1-d2dv5-Linux-N3E3",
+      "#vm-table1-ddsv5-Linux-E3",
+      "#vm-table-Dlsv5-Linux-N2-E2-N3",
+      "#vm-table1-edv5-s-n3",
+      "#vm-table1-edv5-s"
     ]
   },
   {
@@ -671,9 +714,11 @@
       "#vm-table2-1-new-east3",
       "#vm-table2-5-cpp-new-east3",
       "#vm-table1-2-new-east3",
+      "#vm-table1-2-new-east",
       "#vm-table2-4-new-east3",
       "#vm-table1-3-new-east3",
       "#vm-table1-4-new-east3",
+      "#vm-table1-4-new-east",
       "#vm-table1-r2-5-east3",
       "#vm-table1-r2-7-east3",
       "#vm-table1-r2-8-east3",
@@ -699,11 +744,11 @@
       "#vm-table1-4-cpp-new",
       "#vm-table1-1-6",
       "#vm-table1-1-new",
+      "#vm-table1-1-new-east",
       "#vm-table1-2-new",
       "#vm-table1-3-new",
       "#vm-table1-4-new",
       "#vm-table1-r2-5",
-      "#vm-table1-5-cpp-new",
       "#vm-windows-computingoptimization-fsv2",
       "#vm-table1-r2-7",
       "#vm-table1-7-cpp-new",
@@ -712,7 +757,6 @@
       "#vm-table1-3-1",
       "#vm-windows-memoryprioritization-ev3-region2",
       "#vm-table1-r2-6",
-      "#vm-table1-6-cpp-new",
       "#vm-table1-3-2",
       "#vm-table1-5-new",
       "#vm-table1-6-new",
@@ -726,17 +770,23 @@
       "#vm-table-Constrained-1-2",
       "#vm-table-Constrained-1-3",
       "#vm-table1-4-1",
-      "#vm-table1-d2v51-n3",
-      "#vm-table1-d2v51-s-n3",
+      "#vm-table1-d2v51",
+      "#vm-table1-d2v51-s",
       "#vm-table1-ev5",
       "#vm-table1-ev5-s",
       "#vm-table1-ddsv5-Win-E3",
-      "#vm-table1-ddsv5-Linux-E3",
-      "#vm-table1-d2dv5-Linux-N3E3",
       "#vm-table1-r2-4-n2e2",
       "#vm-table1-1-6-n2e2",
       "#vm-table-Msv2-w-n2e2",
-      "#vm-table-mdsv2-w-n2e2"
+      "#vm-table-mdsv2-w-n2e2",
+      "#vm-table2-1-new-east",
+      "#vm-table1-d2dv5-Linux-N3E3",
+      "#vm-table1-ddsv5-Linux-E3",
+      "#vm-table1-NVads-Linux-E2",
+      "#vm-table1-NVads-Windows-E2",
+      "#vm-table1-ddsv5-dsen2",
+      "#vm-table1-ddv5-dsen2",
+      "#vm-table1-edv5-s"
     ]
   },
   {
@@ -750,15 +800,15 @@
       "#vm-table1-windows-B2pts-north3-north2-east2",
       "#vm-table1-linux-B2pts-north3-north2-east2",
       "#vm-table1-NVads-Windows-N3",
+      "#vm-table1-NVads-Windows-E2",
       "#vm-table1-NVads-Linux-N3",
+      "#vm-table1-NVads-Linux-E2",
       "#vm-table1-HBv3-Windows-N3",
       "#vm-table1-HBv3-Constrained-Windows-N3",
       "#vm-table1-HBv3-Linux-N3",
       "#vm-table1-HBv3-Constrained-Linux-N3",
-      "#vm-table-Dldsv5-Windows-N2-E2-N3",
       "#vm-table-Dldsv5-Linux-N2-E2-N3",
       "#vm-table-Dlsv5-Windows-N2-E2-N3",
-      "#vm-table-Dlsv5-Linux-N2-E2-N3",
       "#vm-table1-Ebsv5-Windows-N3-N2-E2",
       "#vm-table1-Ebsv5-Linux-N3-N2-E2",
       "#vm-table-NCas_T4_v3-Windows-N3-CPP",
@@ -782,7 +832,9 @@
       "#vm-table1-1-6-n2e2",
       "#vm-table2-1-new-north3",
       "#vm-table1-2-new-north3",
+      "#vm-table1-2-new-east",
       "#vm-table1-4-new-north3",
+      "#vm-table1-4-new-east",
       "#vm-table1-11-cpp-new-north3",
       "#vm-table1-6-cpp-new-north3",
       "#vm-table1-r2-5-north3",
@@ -808,6 +860,7 @@
       "#vm-table1-4-cpp-new",
       "#vm-table1-1-6",
       "#vm-table1-1-new",
+      "#vm-table1-1-new-east",
       "#vm-table1-2-new",
       "#vm-table1-3-new",
       "#vm-table1-4-new",
@@ -839,15 +892,19 @@
       "#vm-table1-Dav4-Windows-N3",
       "#vm-table1-Dadsv5-Windows-N3",
       "#vm-table1-Dasv5-Windows-N3",
-      "#vm-table1-d2dv5-Linux-N3E3",
-      "#vm-table1-ddsv5-Linux-E3",
       "#vm-table2-4-new-east3",
       "#vm-table1-3-new-east3",
       "#vm-table1-ev5",
       "#vm-table1-ev5-s",
       "#vm-table1-ev5-n3",
       "#vm-table-Msv2-w-n2e2",
-      "#vm-table-mdsv2-w-n2e2"
+      "#vm-table-mdsv2-w-n2e2",
+      "#vm-table1-d2dv5-Linux-N3E3",
+      "#vm-table1-ddsv5-Linux-E3",
+      "#vm-table1-ddsv5-dsen2",
+      "#vm-table1-ddv5-dsen2",
+      "#vm-table1-1-7",
+      "#vm-table1-edv5-s"
     ]
   },
   {
@@ -861,7 +918,9 @@
       "#vm-table1-Dav4-Linux-N3",
       "#vm-table1-Dasv4-Linux-N3",  
       "#vm-table1-NVads-Windows-N3",
+      "#vm-table1-NVads-Windows-E2",
       "#vm-table1-NVads-Linux-N3",
+      "#vm-table1-NVads-Linux-E2",
       "#vm-table1-HBv3-Windows-N3",
       "#vm-table1-HBv3-Constrained-Windows-N3",
       "#vm-table1-HBv3-Linux-N3",
@@ -892,6 +951,7 @@
       "#vm-table1-linux-1-3-north3",
       "#vm-table2-5-cpp-new-north3",
       "#vm-table2-5-cpp-new-east3",
+      "#vm-table2-5-cpp-new-n1e1",
       "#vm-table1-linux-r2-3-north3",
       "#vm-table1-linux-r2-4-north3",
       "#vm-table1-linux-1-6-north3",
@@ -944,7 +1004,6 @@
       "#vm-table2-2-2-region2-east3",
       "#vm-table-Constrained-2-1-east3",
       "#vm-table2-1-5s",
-      "#vm-table2-1-7",
       "#vm-table2-3-1",
       "#vm-table2-3-3",
       "#vm-table-linux-memoryprioritization-d15v2",
@@ -1023,7 +1082,14 @@
       "#vm-table1-d2v51-l-n3",
       "#vm-table1-ev5-l-n3",
       "#vm-table1-ev5-ls-n3",
-      "#vm-table1-d2v51-ls"
+      "#vm-table1-d2v51-ls",
+      "#vm-table2-2-new-east",
+      "#vm-table2-1-new-east",
+      "#vm-table2-4-new-east",
+      "#vm-table1-ddsv5-ls-en3",
+      "#vm-table1-ddv5-ls-en3",
+      "#vm-table1-d2v51-l-s-n3",
+      "#vm-table1-edv5-l-n3"
     ]
   },
   {
@@ -1043,7 +1109,9 @@
       "#vm-table1-windows-B2pts-north3-north2-east2",
       "#vm-table1-linux-B2pts-north3-north2-east2",
       "#vm-table1-NVads-Windows-N3",
+      "#vm-table1-NVads-Windows-E2",
       "#vm-table1-NVads-Linux-N3",
+      "#vm-table1-NVads-Linux-E2",
       "#vm-table1-HBv3-Windows-N3",
       "#vm-table1-HBv3-Constrained-Windows-N3",
       "#vm-table1-HBv3-Linux-N3",
@@ -1073,10 +1141,13 @@
       "#vm-table2-L80s-v3-linux",
       "#vm-table-Lasv3-Windows-N3",
       "#vm-table-Lasv3-Linux-N3",
-      "#vm-table1-ev5-ls-en2",
-      "#vm-table1-d2v51-ls-en3",
+      "#vm-table1-ddsv5-ls-en3",
+      "#vm-table1-ddv5-ls",
+      "#vm-table1-ddv5-ls-en3",
+      "#vm-table1-ddsv5-ls",
       "#vm-table1-d2v51-ls",
-      "#vm-table1-d2v51-l",
+      "#vm-table1-d2v51-l-s",
+      "#vm-table1-d2v51-l-s-n3",
       "#vm-table1-linux-r2-11-north3",
       "#vm-table-mdsv2-l-n3",
       "#vm-table-mdsv2-l-n3-1",
@@ -1091,6 +1162,7 @@
       "#vm-table1-linux-1-3-north3",
       "#vm-table2-5-cpp-new-north3",
       "#vm-table2-5-cpp-new-east3",
+      "#vm-table2-5-cpp-new",
       "#vm-table1-linux-r2-3-north3",
       "#vm-table1-linux-r2-4-north3",
       "#vm-table1-linux-1-6-north3",
@@ -1245,6 +1317,7 @@
       "#vm-table2-4-1-ml-enterprise",
       "#vm-table2-1-new",
       "#vm-table2-2-new",
+      "#vm-table2-2-new-east",
       "#vm-table2-3-new",
       "#vm-table2-4-new",
       "#vm-table2-5-new",
@@ -1255,21 +1328,27 @@
       "#vm-table2-2-cpp-new",
       "#vm-table2-3-cpp-new",
       "#vm-table2-4-cpp-new",
-      "#vm-table2-5-cpp-new",
       "#vm-table2-6-cpp-new",
       "#vm-table2-7-cpp-new",
       "#vm-table2-8-cpp-new",
       "#vm-table2-9-cpp-new",
       "#vm-table-Constrained-2-1",
       "#vm-table-Constrained-2-2",
-      "#vm-table1-d2v51-l-n3",
       "#vm-table1-ev5-l-n3",
       "#vm-table1-ev5-ls-n3",
       "#vm-table1-ev5-l",
       "#vm-table1-ev5-ls",
       "#vm-table-mdsv2-l-n3-1",
       "#vm-table-Msv2-l-n2e2",
-      "#vm-table-mdsv2-l-n2e2-1"
+      "#vm-table-mdsv2-l-n2e2-1",
+      "#vm-table2-1-new-east",
+      "#vm-table2-4-new-east",
+      "#vm-table1-ddsv5-Linux-E3",
+      "#vm-table1-d2v51-l-n3",
+      "#vm-table1-d2v51-l",
+      "#vm-table1-edv5-l",
+      "#vm-table1-edv5-l-n3",
+      "#vm-table1-linux-r2-6"
     ]
   },
   {
@@ -1317,6 +1396,7 @@
       "#vm-table1-linux-1-6-north3",
       "#vm-table2-5-cpp-new-north3",
       "#vm-table2-5-cpp-new-east3",
+      "#vm-table2-5-cpp-new-n1e1",
       "#vm-table2-linux-1-new-north3",
       "#vm-table1-linux-2-new-north3",
       "#vm-table2-linux-4-new-north3",
@@ -1366,7 +1446,6 @@
       "#vm-table2-2-2-region2-east3",
       "#vm-table-Constrained-2-1-east3",
       "#vm-table2-1-5s",
-      "#vm-table2-1-7",
       "#vm-table2-3-3",
       "#vm-table2-3-1",
       "#vm-table-linux-memoryprioritization-d15v2",
@@ -1414,10 +1493,17 @@
       "#vm-table1-linux-r2-11",
       "#vm-table-Constrained-2-2",
       "#vm-table-Constrained-2-3",
-      "#vm-table1-d2v51-l-n3",
+      "#vm-table1-d2v51-l-s-n3",
       "#vm-table1-ev5-l-n3",
       "#vm-table1-ev5-ls-n3",
-      "#vm-table1-d2v51-ls"
+      "#vm-table1-d2v51-ls",
+      "#vm-table2-2-new-east",
+      "#vm-table2-1-new-east",
+      "#vm-table2-4-new-east",
+      "#vm-table1-ddsv5-ls-en3",
+      "#vm-table1-ddv5-ls-en3",
+      "#vm-table1-d2v51-l-n3",
+      "#vm-table1-edv5-l-n3"
     ]
   },
   {
@@ -1437,7 +1523,9 @@
       "#vm-table1-windows-B2pts-north3-north2-east2",
       "#vm-table1-linux-B2pts-north3-north2-east2",
       "#vm-table1-NVads-Windows-N3",
+      "#vm-table1-NVads-Windows-E2",
       "#vm-table1-NVads-Linux-N3",
+      "#vm-table1-NVads-Linux-E2",
       "#vm-table1-HBv3-Windows-N3",
       "#vm-table1-HBv3-Constrained-Windows-N3",
       "#vm-table1-HBv3-Linux-N3",
@@ -1450,13 +1538,13 @@
       "#vm-table1-Ebsv5-Linux-N3-N2-E2",
       "#vm-table-NCas_T4_v3-Linux-N3-CPP",  
       "#vm-table1-Ebdsv5-Linux-N3-N2-E2",  
-    "#vm-table1-Eadsv5-Linux-N3",
+      "#vm-table1-Eadsv5-Linux-N3",
       "#vm-table1-Easv5-Linux-N2-E2-N3",
       "#vm-table1-Dadsv5-Linux-N2-E2-N3",  
-    "#vm-table1-Dasv5-Linux-N2-E2-N3",  
-    "#vm-table1-Easv4-Linux-N3-N2-E2",  
-    "#vm-table1-Eav4-Linux-N3-N2-E2",  
-    "#vm-table1-Dasv4-Linux-N2-E2-N3",
+      "#vm-table1-Dasv5-Linux-N2-E2-N3",  
+      "#vm-table1-Easv4-Linux-N3-N2-E2",  
+      "#vm-table1-Eav4-Linux-N3-N2-E2",  
+      "#vm-table1-Dasv4-Linux-N2-E2-N3",
       "#vm-table1-Dav4-Linux-N2-E2-N3",
       "#vm-table1-NCsv3-Linux-N3",
       "#vm-table1-NVv4-windows-N3",
@@ -1468,9 +1556,12 @@
       "#vm-table-Lasv3-Windows-N3",
       "#vm-table-Lasv3-Linux-N3",
       "#vm-table1-ev5-ls-en2",
-      "#vm-table1-d2v51-ls-en3",
+      "#vm-table1-ev5-ls-n3",
+      "#vm-table1-ddsv5-ls-en3",
+      "#vm-table1-ddv5-ls-en3",
+      "#vm-table1-ddsv5-ls",
+      "#vm-table1-ddv5-ls",
       "#vm-table1-d2v51-ls",
-      "#vm-table1-d2v51-l",
       "#vm-table1-ev5-l",
       "#vm-table1-linux-r2-11-north3",
       "#vm-table1-linux-r2-11-east3",
@@ -1489,6 +1580,7 @@
       "#vm-table1-linux-1-6-north3",
       "#vm-table2-5-cpp-new-north3",
       "#vm-table2-5-cpp-new-east3",
+      "#vm-table2-5-cpp-new",
       "#vm-table2-linux-1-new-north3",
       "#vm-table1-linux-2-new-north3",
       "#vm-table2-linux-4-new-north3",
@@ -1650,18 +1742,24 @@
       "#vm-table2-2-cpp-new",
       "#vm-table2-3-cpp-new",
       "#vm-table2-4-cpp-new",
-      "#vm-table2-5-cpp-new",
       "#vm-table2-6-cpp-new",
       "#vm-table2-7-cpp-new",
       "#vm-table2-8-cpp-new",
       "#vm-table2-9-cpp-new",
       "#vm-table-Constrained-2-1",
       "#vm-table-Constrained-2-2",
-      "#vm-table1-d2v51-l-n3",
+      "#vm-table1-d2v51-l-s",
+      "#vm-table1-d2v51-l-s-n3",
       "#vm-table1-ev5-l-n3",
       "#vm-table1-ev5-ls-n3",
       "#vm-table-Msv2-l-n2e2",
-      "#vm-table-mdsv2-l-n2e2-1"
+      "#vm-table-mdsv2-l-n2e2-1",
+      "#vm-table1-ddsv5-Linux-E3",
+      "#vm-table1-d2v51-l-n3",
+      "#vm-table1-d2v51-l",
+      "#vm-table1-edv5-l-n3",
+      "#vm-table1-edv5-l",
+      "#vm-table1-linux-r2-6"
     ]
   },
   {
@@ -1675,12 +1773,13 @@
       "#vm-table1-windows-B2pts-north3-north2-east2",
       "#vm-table1-linux-B2pts-north3-north2-east2",
       "#vm-table1-NVads-Windows-N3",
+      "#vm-table1-NVads-Windows-E2",
       "#vm-table1-NVads-Linux-N3",
+      "#vm-table1-NVads-Linux-E2",
       "#vm-table1-HBv3-Windows-N3",
       "#vm-table1-HBv3-Constrained-Windows-N3",
       "#vm-table1-HBv3-Linux-N3",
       "#vm-table1-HBv3-Constrained-Linux-N3",
-      "#vm-table-Dldsv5-Windows-N2-E2-N3",
       "#vm-table-Dldsv5-Linux-N2-E2-N3",
       "#vm-table-Dlsv5-Windows-N2-E2-N3",
       "#vm-table-Dlsv5-Linux-N2-E2-N3",
@@ -1708,6 +1807,7 @@
       "#vm-table1-linux-r2-3-north3",
       "#vm-table1-linux-r2-4-north3",
       "#vm-table2-5-cpp-new-north3",
+      "#vm-table2-5-cpp-new-n1e1",
       "#vm-table1-linux-1-6-north3",
       "#vm-table2-linux-1-new-north3",
       "#vm-table1-linux-2-new-north3",
@@ -1754,6 +1854,7 @@
       "#vm-table2-4-cpp-new",
       "#vm-table2-1-new",
       "#vm-table2-2-new",
+      "#vm-table2-2-new-east",
       "#vm-table2-3-new",
       "#vm-table2-4-new",
       "#vm-table2-5-cpp-new",
@@ -1789,7 +1890,13 @@
       "#vm-table1-ev5-l",
       "#vm-table1-ev5-ls",
       "#vm-table-Msv2-l-n2e2",
-      "#vm-table-mdsv2-l-n2e2-1"
+      "#vm-table-mdsv2-l-n2e2-1",
+      "#vm-table2-1-new-east",
+      "#vm-table2-4-new-east",
+      "#vm-table1-ddsv5-ls",
+      "#vm-table1-ddv5-ls",
+      "#vm-table1-d2v51-l-s",
+      "#vm-table1-edv5-l"
     ]
   },
   {
@@ -1817,6 +1924,7 @@
       "#vm-table2-linux-4-new-east3",
       "#vm-table1-linux-3-new-east3",
       "#vm-table2-5-cpp-new-east3",
+      "#vm-table2-5-cpp-new-n1e1",
       "#vm-table1-linux-4-new-east3",
       "#vm-table1-linux-r2-5-east3",
       "#vm-table1-linux-r2-7-east3",
@@ -1860,12 +1968,11 @@
       "#vm-table2-1-cpp-new",
       "#vm-table2-2-cpp-new",
       "#vm-table2-r2-3-cpp",
-      "#vm-table2-4-cpp-new",
       "#vm-table2-1-new",
       "#vm-table2-2-new",
+      "#vm-table2-2-new-east",
       "#vm-table2-3-new",
       "#vm-table2-4-new",
-      "#vm-table2-5-cpp-new",
       "#vm-table2-7-cpp-new",
       "#vm-table2-8-cpp-new",
       "#vm-table2-6-cpp-new",
@@ -1878,7 +1985,6 @@
       "#vm-table2-1-3",
       "#vm-table2-3-cpp-new",
       "#vm-table2-linux-r2-4",
-      "#vm-table2-1-7",
       "#vm-linux-computingoptimization-fsv2",
       "#vm-table-linux-computingprioritization-f1-f16-region2",
       "#vm-table2-2-2-region2",
@@ -1888,13 +1994,20 @@
       "#vm-table-Constrained-2-3",
       "#vm-table-Constrained-2-2",
       "#vm-table2-4-1",
-      "#vm-table1-d2v51-l-n3",
+      "#vm-table1-d2v51-l",
       "#vm-table1-ev5-l",
       "#vm-table1-ev5-ls",
       "#vm-table1-d2v51-ls",
       "#vm-table-Msv2-l-n2e2",
-      "#vm-table-mdsv2-l-n2e2-1"
-
+      "#vm-table-mdsv2-l-n2e2-1",
+      "#vm-table2-1-new-east",
+      "#vm-table2-4-new-east",
+      "#vm-table1-NVads-Linux-E2",
+      "#vm-table1-NVads-Windows-E2",
+      "#vm-table1-ddsv5-ls",
+      "#vm-table1-ddv5-ls",
+      "#vm-table1-d2v51-l-s",
+      "#vm-table1-edv5-l"
     ]
   },
   {
@@ -4119,6 +4232,9 @@
       "#MI_Business_Critical_Gen5_16_E3",
       "#MI_Business_Critical_Storage_15_N3",
       "#MI_Business_Critical_Storage_15_E3",
+      "#Additional_Memory_NE3",
+       "#Additional_Memory_N3",
+       "#MI_Business_Additional_Memory_15_N3",
       "#MI_2-2_Point_N3",
       "#MI_2-2_Point_E3",
       "#Managed_Instance_Premium-series-2",
@@ -4157,6 +4273,9 @@
       "#MI_Business_Critical_Gen5_16_E3",
       "#MI_Business_Critical_Storage_15_N3",
       "#MI_Business_Critical_Storage_15_E3",
+      "#Additional_Memory_NE3",
+      "#Additional_Memory_N3",
+      "#MI_Business_Additional_Memory_15_N3",
       "#Elastic_Database_NE3_5-east3",
       "#MI_2-2_Point_N3",
       "#MI_2-2_Point_E3",
@@ -4252,7 +4371,8 @@
       "#Elastic_Database_NE3_2",
       "#Elastic_Database_NE4",
       "#elastic_1-4_Point_N3",
-      "#elastic_1-4_Long_N3"
+      "#elastic_1-4_Long_N3",
+      "#zone-redundant-Elastic_1-1-zone3"
     ]
   },
   {
@@ -4324,7 +4444,8 @@
       "#Standard-series-primary-n3-elastic",
       "#Elastic_Database_NE4",
       "#elastic_1-4_Point_N3",
-      "#elastic_1-4_Long_N3"
+      "#elastic_1-4_Long_N3",
+      "#zone-redundant-Elastic_1-1-zone3"
     ]
   },
   {
@@ -4408,7 +4529,8 @@
       "#Single_database_NE3_15-t",
       "#single_1-4_Long_N3-t",
       "#Single_3_Dtu_Premium_N3-t",
-      "#sqldb-elastic-vcore-hyperscale-gen5"
+      "#sqldb-elastic-vcore-hyperscale-gen5",
+      "#zone-redundant_1-1-zone3"
     ]
   },
   {
@@ -4495,7 +4617,8 @@
       "#sqldb-elastic-vcore-hyperscale-gen5",
       "#Single_database_NE3_2_1_a",
       "#Single_database_NE3_5",
-      "#Single_database_NE3_2_a"
+      "#Single_database_NE3_2_a",
+      "#zone-redundant_1-1-zone3"
     ]
   },
   {
@@ -4518,6 +4641,7 @@
       "#MI_Business_Critical_Gen5_16_E3",
       "#MI_Business_Critical_Storage_15_N3",
       "#MI_Business_Critical_Storage_15_E3",
+      "#Additional_Memory_NE3",
       "#MI_2-2_Point_N3",
       "#MI_2-2_Point_E3",
       "#Managed_Instance_area-5_General_Purpose-1",
@@ -4525,7 +4649,8 @@
       "#Managed_Instance_area-5_General_Purpose-3",
       "#Managed_Instance_area-5_Business_Critical-1",
       "#Managed_Instance_area-5_Business_Critical-2",
-      "#Managed_Instance_area-5"
+      "#Managed_Instance_area-5",
+      "#zone-redundant_1-1-zone3"
     ]
   },
   {
@@ -4548,6 +4673,7 @@
       "#MI_Business_Critical_Gen5_16_E3",
       "#MI_Business_Critical_Storage_15_N3",
       "#MI_Business_Critical_Storage_15_E3",
+      "#Additional_Memory_NE3",
       "#MI_2-2_Point_N3",
       "#MI_2-2_Point_E3",
       "#Managed_Instance_area-5_General_Purpose-1",
@@ -4622,7 +4748,8 @@
       "#Elastic_Database_NE4",
       "#elastic_1-4_Point_N3",
       "#elastic_1-4_Long_N3",
-      "#Elastic_Database_NE3_7"
+      "#Elastic_Database_NE3_7",
+      "#zone-redundant-Elastic_1-1-zone3"
     ]
   },
   {
@@ -4691,7 +4818,8 @@
       "#Elastic_Database_NE4",
       "#elastic_1-4_Long_N3",
       "#elastic_1-4_Point_N3",
-      "#Elastic_Database_NE3_7"
+      "#Elastic_Database_NE3_7",
+      "#zone-redundant-Elastic_1-1-zone3"
     ]
   },
   {
@@ -4772,7 +4900,8 @@
       "#Standard-series-preview-storage-n3_a",
       "#sqldb-single-vcore-serverless-compute-gen5",
       "#sqldb-single-vcore-serverless-compute-gen5_a",
-      "#Single_database_NE3_12"
+      "#Single_database_NE3_12",
+      "#zone-redundant_1-1-zone3"
     ]
   },
   {
@@ -4852,7 +4981,8 @@
       "#Standard-series-preview-storage-n3",
       "#Standard-series-preview-storage-n3_a",
       "#sqldb-single-vcore-serverless-compute-gen5",
-      "#sqldb-single-vcore-serverless-compute-gen5_a"
+      "#sqldb-single-vcore-serverless-compute-gen5_a",
+      "#zone-redundant_1-1-zone3"
     ]
   },
   {
@@ -4876,6 +5006,7 @@
       "#sqldb-managed-instance-business-critical-gen5",
       "#Managed_Instance_NE3_3",
       "#Managed_Instance_NE3_4",
+      "#Additional_Memory_N3",
       "#All_NE3",
       "#All_NE1",
       "#All_NE2",
@@ -4883,6 +5014,10 @@
       "#sqldb-managed-instance-business-premium-serries-2",
       "#sqldb-managed-instance-business-premium-serries-2-yh",
       "#Managed_Instance_area-5-storage",
+      "#Managed_Instance_area-5-memory",
+      "#Managed_Instance_area-5-iops",
+      "#Additional_Storage_area-5-storage",
+      "#Additional_IOPS_area-5-storage",
       "#MI_2-2_Point_N3",
       "#Managed_Instance_area-5_General_Purpose-1",
       "#Managed_Instance_area-5_General_Purpose-2",
@@ -4913,6 +5048,7 @@
       "#sqldb-managed-instance-business-critical-gen5",
       "#Managed_Instance_NE3_3",
       "#Managed_Instance_NE3_4",
+      "#Additional_Memory_N3",
       "#All_NE3",
       "#All_NE1",
       "#All_NE2",
@@ -5497,9 +5633,12 @@
       "#managed-disks-ssd-v2-kz-no3",
       "#managed-disks-premium-region2",
       "#managed-disks-premium-region3",
+      "#managed-disks-premium-ZRS",
       "#managed-disks-standard-ssd-region2",
       "#managed-disks-standard-ssd-region3",
+      "#managed-disks-standard-ssd-ZRS",
       "#managed-disks-standard-hhd-region3",
+      "#managed-disks-standard-hhd",
       "#managed-disks-premium-ssd-snapshot-east3",
       "#managed-disks-standard-ssd-snapshot-east3",
       "#managed-disks-standard-hhd-snapshot-east3",
@@ -5520,9 +5659,12 @@
       "#managed-disks-ssd-v2-kz-no3",
       "#managed-disks-premium",
       "#managed-disks-premium-region3",
+      "#managed-disks-premium-ZRS",
       "#managed-disks-standard-ssd",
       "#managed-disks-standard-ssd-region3",
+      "#managed-disks-standard-ssd-ZRS",
       "#managed-disks-standard-hhd-region3",
+      "#managed-disks-standard-hhd-E1N1",
       "#managed-disks-premium-ssd-snapshot-east3",
       "#managed-disks-standard-ssd-snapshot-east3",
       "#managed-disks-standard-hhd-snapshot-east3",
@@ -5541,9 +5683,12 @@
       "#managed-disks-ssd-v2-kz-no3",
       "#managed-disks-premium-region2",
       "#managed-disks-premium-region3",
+      "#managed-disks-premium-ZRS",
       "#managed-disks-standard-ssd-region2",
       "#managed-disks-standard-ssd-region3",
+      "#managed-disks-standard-ssd-ZRS",
       "#managed-disks-standard-hhd-region3",
+      "#managed-disks-standard-hhd",
       "#managed-disks-premium-ssd-snapshot-east3",
       "#managed-disks-standard-ssd-snapshot-east3",
       "#managed-disks-standard-hhd-snapshot-east3",
@@ -5564,9 +5709,12 @@
       "#managed-disks-ssd-v2-kz-no3",
       "#managed-disks-premium",
       "#managed-disks-premium-region3",
+      "#managed-disks-premium-ZRS",
       "#managed-disks-standard-ssd",
       "#managed-disks-standard-ssd-region3",
+      "#managed-disks-standard-ssd-ZRS",
       "#managed-disks-standard-hhd-region3",
+      "#managed-disks-standard-hhd-E1N1",
       "#managed-disks-premium-ssd-snapshot-east3",
       "#managed-disks-standard-ssd-snapshot-east3",
       "#managed-disks-standard-hhd-snapshot-east3",
@@ -5580,12 +5728,12 @@
     "os": "Managed Disks",
     "region": "north-china3",
     "tableIDs": [
-
       "#managed-disks-premium",
       "#managed-disks-premium-region2",
       "#managed-disks-standard-ssd",
       "#managed-disks-standard-ssd-region3",
       "#managed-disks-standard-hhd-region3",
+      "#managed-disks-standard-hhd-E1N1",
       "#managed-disks-premium-ssd-snapshot-east3",
       "#managed-disks-standard-ssd-snapshot-east3",
       "#managed-disks-standard-hhd-snapshot-east3",
@@ -5598,12 +5746,14 @@
     "os": "Managed Disks",
     "region": "east-china3",
     "tableIDs": [
-
       "#managed-disks-premium",
       "#managed-disks-premium-region2",
+      "#managed-disks-premium-ZRS",
       "#managed-disks-standard-ssd",
       "#managed-disks-standard-ssd-region3",
-      "#managed-disks-standard-hhd-region3",
+      "#managed-disks-standard-ssd-ZRS",
+      "#managed-disks-standard-hhd",
+      "#managed-disks-standard-hhd-E1N1",
       "#managed-disks-premium-ssd-snapshot-east3",
       "#managed-disks-standard-ssd-snapshot-east3",
       "#managed-disks-standard-hhd-snapshot-east3",
@@ -6035,7 +6185,10 @@
       "#data-factory-ssis-standard-e2v3-e64v3",
       "#data-factory-ssis-enterprise-e2v3-e64v3",
       "#data-factory-ssis-standard-d2v3-d64v3",
-      "#data-factory-ssis-enterprise-d2v3-d64v3"
+      "#data-factory-ssis-enterprise-d2v3-d64v3",
+      "#Azure_Synapse_Analytics1-2",
+      "#Azure_Synapse_Analytics3-3",
+      "#Azure_Synapse_Analytics3-3-east"
     ]
   },
   {
@@ -6067,7 +6220,10 @@
       "#data-factory-ssis-standard-e2v3-e64v3",
       "#data-factory-ssis-enterprise-e2v3-e64v3",
       "#data-factory-ssis-standard-d2v3-d64v3",
-      "#data-factory-ssis-enterprise-d2v3-d64v3"
+      "#data-factory-ssis-enterprise-d2v3-d64v3",
+      "#Azure_Synapse_Analytics1-2",
+      "#Azure_Synapse_Analytics3-3",
+      "#Azure_Synapse_Analytics3-3-east"
     ]
   },
   {
@@ -6077,7 +6233,10 @@
       "#Azure_Synapse_Analytics3-2",
       "#Azure_Synapse_Analytics3-2-1",
       "#Azure_Synapse_Analytics3-online2",
-      "#Azure_Synapse_Analytics3-online2-1"
+      "#Azure_Synapse_Analytics3-online2-1",
+      "#Azure_Synapse_Analytics1-2",
+      "#Azure_Synapse_Analytics3-3",
+      "#Azure_Synapse_Analytics3-3-east"
     ]
   },
   {
@@ -6085,21 +6244,45 @@
     "region": "north-china2",
     "tableIDs": [
       "#Azure_Synapse_Analytics3-online2",
-      "#Azure_Synapse_Analytics3-online2-1"
+      "#Azure_Synapse_Analytics3-online2-1",
+      "#Azure_Synapse_Analytics1-2",
+      "#Azure_Synapse_Analytics3-3",
+      "#Azure_Synapse_Analytics3-3-east"
     ]
   },
   {
     "os": "Azure Synapse Analytics",
     "region": "north-china3",
     "tableIDs": [
-      "#Azure_Synapse_Analytics3-online",
       "#Azure_Synapse_Analytics3-online-1",
       "#Azure_Synapse_Analytics0-2",
       "#Azure_Synapse_Analytics3-1exx",
       "#Azure_Synapse_Analytics0-3",
       "#Azure_Synapse_Analytics0-3-a",
       "#Azure_Synapse_Analytics_new_1-1ex",
-      "#Azure_Synapse_Analytics_new_1-1ex1"
+      "#Azure_Synapse_Analytics_new_1-1ex1",
+      "#Azure_Synapse_Analytics1-2",
+      "#Azure_Synapse_Analytics3-3",
+      "#Azure_Synapse_Analytics3-3-east",
+      "#Azure_Synapse_Analytics3-online2"
+    ]
+  },
+  {
+    "os": "Azure Synapse Analytics",
+    "region": "east-china3",
+    "tableIDs": [
+      "#Azure_Synapse_Analytics3-online2-1",
+      "#Azure_Synapse_Analytics3-online2",
+      "#Azure_Synapse_Analytics0-2",
+      "#Azure_Synapse_Analytics3-1exx",
+      "#Azure_Synapse_Analytics0-3",
+      "#Azure_Synapse_Analytics0-3-a",
+      "#Azure_Synapse_Analytics_new_1-1ex",
+      "#Azure_Synapse_Analytics_new_1-1ex1",
+      "#Azure_Synapse_Analytics1-1",
+      "#Azure_Synapse_Analytics3-2",
+      "#Azure_Synapse_Analytics0-1",
+      "#Azure_Synapse_Analytics3-2-1"
     ]
   },
   {
@@ -6220,7 +6403,8 @@
     "tableIDs": [
       "#cognitive-services-table-speech-services",
       "#cognitive-services-table-speech-services-neural",
-      "#cognitive-services-table-speech-services-north"
+      "#cognitive-services-table-speech-services-north",
+      "#cognitive-services-table-speech-services-north3"
     ]
   },
   {
@@ -6230,6 +6414,7 @@
       "#cognitive-services-table-speech-services",
       "#cognitive-services-table-speech-services-neural",
       "#cognitive-services-table-speech-services-north",
+      "#cognitive-services-table-speech-services-east2",
      "#cognitive-services-table-speech-commitment-tiers-north2east2",
       "#cognitive-services1",
       "#cognitive-services-table-training",
@@ -6243,6 +6428,7 @@
       "#cognitive-services-table-speech-services",
       "#cognitive-services-table-speech-services-neural",
       "#cognitive-services-table-speech-services-east2",
+      "#cognitive-services-table-speech-services-north3",
       "#cognitive-services-table-speech-servicesv1",
       "#cognitive-services1",
       "#cognitive-services2",
@@ -6261,9 +6447,9 @@
     "region": "north-china2",
     "tableIDs": [
       "#cognitive-services-table-speech-services",
-      "#cognitive-services-table-speech-servicesv1",
-      "#cognitive-services-table-speech-services-east2",
+      "#cognitive-services-table-speech-services-neural",
       "#cognitive-services-table-speech-services-north",
+      "#cognitive-services-table-speech-services-north3",
       "#cognitive-services1",
       "#cognitive-services3",
       "#cognitive-services4",
@@ -6278,6 +6464,7 @@
     "tableIDs": [
       "#cognitive-services-table-speech-services-neural",
       "#cognitive-services-table-speech-services-east2",
+      "#cognitive-services-table-speech-services-north3",
       "#cognitive-services-table-speech-servicesv1",
       "#cognitive-services1",
       "#cognitive-services3",
@@ -6476,14 +6663,12 @@
     "os": "Azure AI Search",
     "region": "north-china2",
     "tableIDs": [
-      "#Azure-Cognitive-Search1"
     ]
   },
   {
     "os": "Azure AI Search",
     "region": "east-china2",
     "tableIDs": [
-      "#Azure-Cognitive-Search1"
     ]
   },
   {
@@ -6603,7 +6788,10 @@
       "#backup-table-sap-hana-space",
       "#backup-table-sap-hana-east3",
       "#backup-table-vm-backup-1-north3",
-      "#backup-table-sap-hana-space-east3"
+      "#backup-table-sap-hana-space-east3",
+      "#backup-table-azure-redundancy-N3",
+      "#backup-table-azure-redundancy-N2E2",
+      "#backup-table-storage-N3"
     ]
   },
   {
@@ -6623,7 +6811,10 @@
       "#backup-table-sap-hana-space-north3",
       "#backup-table-sql-server-space-north3",
       "#backup-table-sap-hana-space-east3",
-      "#backup-table-vm-backup-1-north3"
+      "#backup-table-vm-backup-1-north3",
+      "#backup-table-azure-redundancy-N3",
+      "#backup-table-azure-redundancy-E3",
+      "#backup-table-storage-N3"
     ]
   },
   {
@@ -6645,7 +6836,13 @@
       "#backup-table-sql-server-space-north3",
       "#backup-table-sap-hana-space-east3",
       "#backup-table-vm-backup-1-north3",
-      "#backup-table-azure-file-storage-east2andnorth2andnorth3"
+      "#backup-table-azure-file-storage-east2andnorth2andnorth3",
+      "#backup-table-azure-redundancy-N3",
+      "#backup-table-azure-redundancy-E3",
+      "#backup-table-azure-redundancy-N2E2",
+      "#backup-table-storage-E3N2E2",
+      "#backup-table-storage-N3",
+      "#backup-table-azure-blob-east2andnorth2andnorth3"
     ]
   },
   {
@@ -6665,7 +6862,10 @@
       "#backup-table-sap-hana-space",
       "#backup-table-sap-hana-east3",
       "#backup-table-vm-backup-1-north3",
-      "#backup-table-sap-hana-space-east3"
+      "#backup-table-sap-hana-space-east3",
+      "#backup-table-azure-redundancy-E3",
+      "#backup-table-azure-redundancy-N2E2",
+      "#backup-table-storage-E3N2E2"
     ]
   },
   {
@@ -6685,7 +6885,10 @@
       "#backup-table-sap-hana-space-north3",
       "#backup-table-sql-server-space-north3",
       "#backup-table-sap-hana-space-east3",
-      "#backup-table-vm-backup-1-north3"
+      "#backup-table-vm-backup-1-north3",
+      "#backup-table-azure-redundancy-N3",
+      "#backup-table-azure-redundancy-E3",
+      "#backup-table-storage-N3"
     ]
   },
   {
@@ -6707,7 +6910,13 @@
       "#backup-table-sap-hana-space-north3",
       "#backup-table-sap-hana-space-east3",
       "#backup-table-vm-backup-1-north3",
-      "#backup-table-azure-file-storage-east2andnorth2andnorth3"    
+      "#backup-table-azure-file-storage-east2andnorth2andnorth3",
+      "#backup-table-azure-redundancy-N3",
+      "#backup-table-azure-redundancy-E3",
+      "#backup-table-azure-redundancy-N2E2",
+      "#backup-table-azure-blob-east2andnorth2andnorth3",
+      "#backup-table-storage-E3N2E2",
+      "#backup-table-storage-N3"
     ]
   },
   {
@@ -7394,6 +7603,7 @@
     "os": "Azure Database for PostgreSQL",
     "region": "north-china",
     "tableIDs": [
+      "#postgresql-flexible-burstable-burstable-E2",
       "#postgresql-flexible-burstable-burstable",
       "#postgresql-flexible-burstable-storage",
       "#postgresql-flexible-burstable-backstorage",
@@ -7409,7 +7619,13 @@
       "#postgresql-flexible-memory-backstorage",
       "#postgresql-flexible-general-ddsv5-east3",
       "#Azure_PostgreSQL_Database_Extended_Support_East3",
-      "#Azure_PostgreSQL_Database_Extended_Support_E2N2N3"
+      "#Azure_PostgreSQL_Database_Extended_Support_E2N2N3",
+      "#postgresql-flexible-burstable-storage-E2N2",
+      "#postgresql-flexible-burstable-backstorage-E2N2",
+      "#postgresql-flexible-general-storage-E2N2",
+      "#postgresql-flexible-general-backstorage-E2N2",
+      "#postgresql-flexible-memory-storage-E2N2",
+      "#postgresql-flexible-memory-backstorage-E2N2"
     ]
   },
   {
@@ -7418,11 +7634,9 @@
     "tableIDs": [
       "#postgresql-flexible-burstable-burstable",
       "#postgresql-flexible-burstable-storage",
-      "#postgresql-flexible-burstable-backstorage",
-      "#postgresql-flexible-general-dsv3",      
+      "#postgresql-flexible-burstable-backstorage",      
       "#postgresql-flexible-general-storage",
       "#postgresql-flexible-general-backstorage",
-      "#postgresql-flexible-memory-esv3",
       "#postgresql-flexible-memory-storage",
       "#postgresql-flexible-memory-backstorage",
       "#postgresql-flexible-general-ddsv5",
@@ -7437,8 +7651,15 @@
     "os": "Azure Database for PostgreSQL",
     "region": "north-china3",
     "tableIDs": [
+      "#postgresql-flexible-burstable-burstable-E2",
       "#postgresql-flexible-general-ddsv5-east3",
-      "#Azure_PostgreSQL_Database_Extended_Support_East3"
+      "#Azure_PostgreSQL_Database_Extended_Support_East3",
+      "#postgresql-flexible-burstable-storage-E2N2",
+      "#postgresql-flexible-burstable-backstorage-E2N2",
+      "#postgresql-flexible-general-storage-E2N2",
+      "#postgresql-flexible-general-backstorage-E2N2",
+      "#postgresql-flexible-memory-storage-E2N2",
+      "#postgresql-flexible-memory-backstorage-E2N2"
     ]
   },
   
@@ -7449,10 +7670,8 @@
       "#postgresql-flexible-burstable-burstable",
     "#postgresql-flexible-burstable-storage",
     "#postgresql-flexible-burstable-backstorage",
-    "#postgresql-flexible-general-dsv3",    
     "#postgresql-flexible-general-storage",
     "#postgresql-flexible-general-backstorage",
-    "#postgresql-flexible-memory-esv3",
     "#postgresql-flexible-memory-storage",
     "#postgresql-flexible-memory-backstorage",
     "#postgresql-flexible-general-ddsv5",
@@ -7467,6 +7686,7 @@
     "os": "Azure Database for PostgreSQL",
     "region": "east-china",
     "tableIDs": [
+      "#postgresql-flexible-burstable-burstable-E2",
       "#postgresql-flexible-burstable-burstable",
     "#postgresql-flexible-burstable-storage",
     "#postgresql-flexible-burstable-backstorage",
@@ -7482,17 +7702,30 @@
     "#postgresql-flexible-memory-backstorage",
     "#postgresql-flexible-general-ddsv5-east3",
     "#Azure_PostgreSQL_Database_Extended_Support_East3",
-    "#Azure_PostgreSQL_Database_Extended_Support_E2N2N3"
+    "#Azure_PostgreSQL_Database_Extended_Support_E2N2N3",
+    "#postgresql-flexible-burstable-storage-E2N2",
+    "#postgresql-flexible-burstable-backstorage-E2N2",
+    "#postgresql-flexible-general-storage-E2N2",
+    "#postgresql-flexible-general-backstorage-E2N2",
+    "#postgresql-flexible-memory-storage-E2N2",
+    "#postgresql-flexible-memory-backstorage-E2N2"
   ]
   },
   {
     "os": "Azure Database for PostgreSQL",
     "region": "east-china3",
     "tableIDs": [
+      "#postgresql-flexible-burstable-burstable-E2",
       "#postgresql-flexible-memory-esv3",
       "#postgresql-flexible-general-dsv3",
       "#postgresql-flexible-general-ddsv5",
-      "#Azure_PostgreSQL_Database_Extended_Support_E2N2N3"
+      "#Azure_PostgreSQL_Database_Extended_Support_E2N2N3",
+      "#postgresql-flexible-burstable-storage-E2N2",
+      "#postgresql-flexible-burstable-backstorage-E2N2",
+      "#postgresql-flexible-general-storage-E2N2",
+      "#postgresql-flexible-general-backstorage-E2N2",
+      "#postgresql-flexible-memory-storage-E2N2",
+      "#postgresql-flexible-memory-backstorage-E2N2"
     ]
   },
 
@@ -7934,42 +8167,15 @@
     "os": "azure-firewall",
     "region": "north-china",
     "tableIDs": [
-      
+      "#azure_firewall_standard2-n3"
     ]
   },
   {
     "os": "azure-firewall",
     "region": "north-china2",
     "tableIDs": [
-      "#azure_firewall_standard3"
-    ]
-  },
-  {
-    "os": "azure-firewall",
-    "region": "east-china2",
-    "tableIDs": [
-      "#azure_firewall_standard3"
-    ]
-  },
-  {
-    "os": "azure-firewall",
-    "region": "east-china",
-    "tableIDs": [
-   
-    ]
-  },
-  {
-    "os": "azure-firewall",
-    "region": "north-china2",
-    "tableIDs": [
-      "#azure_firewall_premium"
-    ]
-  },
-  {
-    "os": "azure-firewall",
-    "region": "east-china2",
-    "tableIDs": [
-      "#azure_firewall_premium"
+      "#azure_firewall_standard3",
+      "#azure_firewall_standard2-n3"
     ]
   },
   {
@@ -7977,6 +8183,21 @@
     "region": "north-china3",
     "tableIDs": [
       "#azure_firewall_standard2"
+    ]
+  },  
+  {
+    "os": "azure-firewall",
+    "region": "east-china",
+    "tableIDs": [
+      "#azure_firewall_standard2-n3"
+    ]
+  },
+  {
+    "os": "azure-firewall",
+    "region": "east-china2",
+    "tableIDs": [
+      "#azure_firewall_standard3",
+      "#azure_firewall_standard2-n3"
     ]
   },  
   {
@@ -8142,32 +8363,46 @@
       "#queues-storage-data-v1-east3",
       "#queues-storage-data-v1-north3",
       "#queues-storage-ops-v1-east3",
-      "#queues-storage-ops-v1-north3"
+      "#queues-storage-ops-v1-north3",
+      "#page-blobs-gv1-premium-addition-tier"
     ]
   },
   {
     "os": "Page Blobs",
     "region": "east-china3",
     "tableIDs": [
+      "#page-blobs-gv1-premium-addition-n3",
       "#page-blobs-gv2-premium-addition-n3",
+      "#page-blobs-gv1-premium-addition-n1e1",
+      "#page-blobs-gv2-premium-addition-n1e1",
+      "#page-blobs-gv2-premium-addition-tier-n1e1",
+      "#page-blobs-gv2-premium-addition-tier-n3",
       "#page-blobs-gv1-premium",
-      "#page-blobs-gv1-premium-addition",
       "#page-blobs-gv1-standard-data-storage-east3",
       "#page-blobs-gv1-standard-data-storage",
       "#page-blobs-gv1-unmanaged-disks-east3",
       "#page-blobs-gv1-unmanaged-disks",
-      "#page-blobs-gv1-standard-non-disk-east3",
+      "#page-blobs-gv1-standard-non-disk-north3",
       "#page-blobs-gv1-standard-non-disk",
       "#page-blobs-gv2-premium",
-      "#page-blobs-gv2-standard-data-storage-N3",
-      "#page-blobs-gv2-standard-non-disk"
+      "#page-blobs-gv2-standard-data-storage",
+      "#page-blobs-gv2-standard-non-disk",
+      "#page-blobs-gv1-standard-data-storage-n3",
+      "#page-blobs-gv1-standard-data-storage",
+      "#page-blobs-gv1-premium-addition-tier-n3",
+      "#page-blobs-gv1-premium-addition-tier-n1e1"
     ]
   },
   {
     "os": "Page Blobs",
     "region": "north-china3",
     "tableIDs": [
+      "#page-blobs-gv1-premium-addition",
       "#page-blobs-gv2-premium-addition",
+      "#page-blobs-gv1-premium-addition-n1e1",
+      "#page-blobs-gv2-premium-addition-n1e1",
+      "#page-blobs-gv2-premium-addition-tier-n1e1",
+      "#page-blobs-gv2-premium-addition-tier",
       "#page-blobs-gv1-premium-east3",
       "#page-blobs-gv1-premium-addition",
       "#page-blobs-gv1-standard-data-storage-east3",
@@ -8177,8 +8412,12 @@
       "#page-blobs-gv1-standard-non-disk-east3",
       "#page-blobs-gv1-standard-non-disk",
       "#page-blobs-gv2-premium",
-      "#page-blobs-gv2-standard-data-storage",
-      "#page-blobs-gv2-standard-non-disk-east3"
+      "#page-blobs-gv2-standard-data-storage-e3",
+      "#page-blobs-gv2-standard-non-disk",
+      "#page-blobs-gv1-standard-data-storage-e3",
+      "#page-blobs-gv1-standard-data-storage",
+      "#page-blobs-gv1-premium-addition-tier",
+      "#page-blobs-gv1-premium-addition-tier-n1e1"
     ]
   },
   {
@@ -8186,40 +8425,63 @@
     "region": "east-china2",
     "tableIDs": [
       "#page-blobs-gv2-premium-addition-n3",
+      "#page-blobs-gv1-premium-addition-n3",
+      "#page-blobs-gv2-premium-addition-n1e1",
+      "#page-blobs-gv1-premium-addition-n1e1",
+      "#page-blobs-gv2-premium-addition-tier-n1e1",
+      "#page-blobs-gv2-premium-addition-tier-n3",
       "#page-blobs-gv1-premium-east3",
       "#page-blobs-gv1-standard-data-storage-north3",
       "#page-blobs-gv1-standard-data-storage-east3",
       "#page-blobs-gv1-unmanaged-disks-east3",
       "#page-blobs-gv1-unmanaged-disks-north3",
-      "#page-blobs-gv1-standard-non-disk-north3",
+      "#page-blobs-gv1-standard-non-disk",
       "#page-blobs-gv1-standard-non-disk-east3",
       "#page-blobs-gv2-premium",
-      "#page-blobs-gv2-standard-data-storage-N3",
-      "#page-blobs-gv2-standard-non-disk-east3"
+      "#page-blobs-gv2-standard-data-storage-e3",
+      "#page-blobs-gv2-standard-non-disk-east3",
+      "#page-blobs-gv1-standard-data-storage-e3",
+      "#page-blobs-gv1-standard-data-storage-n3",
+      "#page-blobs-gv1-premium-addition-tier-n3",
+      "#page-blobs-gv1-premium-addition-tier-n1e1"
     ]
   },
   {
     "os": "Page Blobs",
     "region": "north-china2",
     "tableIDs": [
+      "#page-blobs-gv1-premium-addition-n3",
       "#page-blobs-gv2-premium-addition-n3",
+      "#page-blobs-gv1-premium-addition-n1e1",
+      "#page-blobs-gv2-premium-addition-n1e1",
+      "#page-blobs-gv2-premium-addition-tier-n1e1",
+      "#page-blobs-gv2-premium-addition-tier-n3",
       "#page-blobs-gv1-premium-east3",
       "#page-blobs-gv1-standard-data-storage-north3",
       "#page-blobs-gv1-standard-data-storage-east3",
       "#page-blobs-gv1-unmanaged-disks-east3",
       "#page-blobs-gv1-unmanaged-disks-north3",
-      "#page-blobs-gv1-standard-non-disk-north3",
+      "#page-blobs-gv1-standard-non-disk",
       "#page-blobs-gv1-standard-non-disk-east3",
       "#page-blobs-gv2-premium",
-      "#page-blobs-gv2-standard-data-storage-N3",
-      "#page-blobs-gv2-standard-non-disk-east3"
+      "#page-blobs-gv2-standard-data-storage-e3",
+      "#page-blobs-gv2-standard-non-disk-east3",
+      "#page-blobs-gv1-standard-data-storage-e3",
+      "#page-blobs-gv1-standard-data-storage-n3",
+      "#page-blobs-gv1-premium-addition-tier-n3",
+      "#page-blobs-gv1-premium-addition-tier-n1e1"
     ]
   },
   {
     "os": "Page Blobs",
     "region": "east-china",
     "tableIDs": [
+      "#page-blobs-gv1-premium-addition-n3",
       "#page-blobs-gv2-premium-addition-n3",
+      "#page-blobs-gv1-premium-addition",
+      "#page-blobs-gv2-premium-addition",
+      "#page-blobs-gv2-premium-addition-tier",
+      "#page-blobs-gv2-premium-addition-tier-n3",
       "#page-blobs-gv1-premium-east3",
       "#page-blobs-gv1-standard-data-storage-north3",
       "#page-blobs-gv1-standard-data-storage-east3",
@@ -8228,15 +8490,24 @@
       "#page-blobs-gv1-standard-non-disk-north3",
       "#page-blobs-gv1-standard-non-disk-east3",
       "#page-blobs-gv2-premium",
-      "#page-blobs-gv2-standard-data-storage-N3",
-      "#page-blobs-gv2-standard-non-disk-east3"
+      "#page-blobs-gv2-standard-data-storage-e3",
+      "#page-blobs-gv2-standard-non-disk-east3",
+      "#page-blobs-gv1-standard-data-storage-e3",
+      "#page-blobs-gv1-standard-data-storage-n3",
+      "#page-blobs-gv1-premium-addition-tier-n3",
+      "#page-blobs-gv1-premium-addition-tier"
     ]
   },
   {
     "os": "Page Blobs",
     "region": "north-china",
     "tableIDs": [
+      "#page-blobs-gv1-premium-addition-n3",
       "#page-blobs-gv2-premium-addition-n3",
+      "#page-blobs-gv1-premium-addition",
+      "#page-blobs-gv2-premium-addition",
+      "#page-blobs-gv2-premium-addition-tier",
+      "#page-blobs-gv2-premium-addition-tier-n3",
       "#page-blobs-gv1-premium-east3",
       "#page-blobs-gv1-standard-data-storage-north3",
       "#page-blobs-gv1-standard-data-storage-east3",
@@ -8245,8 +8516,12 @@
       "#page-blobs-gv1-standard-non-disk-north3",
       "#page-blobs-gv1-standard-non-disk-east3",
       "#page-blobs-gv2-premium",
-      "#page-blobs-gv2-standard-data-storage-N3",
-      "#page-blobs-gv2-standard-non-disk-east3"
+      "#page-blobs-gv2-standard-data-storage-e3",
+      "#page-blobs-gv2-standard-non-disk-east3",
+      "#page-blobs-gv1-standard-data-storage-e3",
+      "#page-blobs-gv1-standard-data-storage-n3",
+      "#page-blobs-gv1-premium-addition-tier-n3",
+      "#page-blobs-gv1-premium-addition-tier"
     ]
   },
   {
@@ -8492,14 +8767,12 @@
     "os":"VPN Gateway",
      "region":"east-china2",
      "tableIDs":[
-      "#VPN_Gateway_table_Availability_Zones"
     ]
   },
   {
     "os":"VPN Gateway",
      "region":"north-china2",
      "tableIDs":[
-      "#VPN_Gateway_table_Availability_Zones"
     ]
   },
   {

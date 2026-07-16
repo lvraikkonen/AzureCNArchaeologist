@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=2.0" name="viewport" />
+    <meta content="Azure 微软云, ExpressRoute 专线 VPN" name="keywords" />
+    <meta
+        content="了解 Azure ExpressRoute 的价格详情，Azure ExpressRoute 是一个云集成解决方案，提供两种定价计划，无限数据计划和计量数据计划。1元试用即获1500元人民币的服务使用额度，也可直接购买成为 Azure 预付费客户，尽享最高 99.99% 的服务级别协议。"
+        name="description" />
+    <title>
+        Azure ExpressRoute 服务定价 - Azure 云计算
+    </title>
+    <link href="../../../Static/Favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
+    <link href="../../../Static/Favicon/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="../../../Static/Favicon/favicon.ico" rel="icon" type="image/x-icon" />
+    <link href="../../../Static/Favicon/manifest.json" rel="manifest" />
+    <link color="#0078D4" href="../../../Static/Favicon/safari-pinned-tab.svg" rel="mask-icon" />
+    <meta content="/Static/Favicon/browserconfig.xml" name="msapplication-config" />
+    <meta content="#ffffff" name="theme-color" />
+    <link href="https://azure.microsoft.com/pricing/details/expressroute/" rel="canonical" />
+    <!-- BEGIN: Azure UI Style -->
+    <link href="../../../Static/CSS/azureui.min.css" rel="stylesheet" />
+    <link href="../../../Static/CSS/common.min.css" rel="stylesheet" />
+    <!-- END: Azure UI Style -->
+    <!-- BEGIN: Page Style -->
+    <!-- END: Page Style -->
+    <!-- BEGIN: Minified Page Style -->
+    <link href="../../../Static/CSS/a05a0e4e99489d7b3cb548e24414e01adf779d77.css" rel="stylesheet" />
+    <!-- END: Minified Page Style -->
+    <link href="../../../StaticService/css/service.min.css" rel="stylesheet" />
+</head>
+
+<body class="zh-cn">
+    <script>
+        window.requireUrlArgs = "2019/6/24 6:51:27";
+        window.currentLocale = "zh-CN";
+        window.headerTimestamp = "2019/1/23 8:25:24";
+        window.footerTimestamp = "2019/1/8 8:07:06";
+        window.locFileTimestamp = "2018/11/29 7:49:17";
+
+        window.AcnHeaderFooter = {
+            IsEnableQrCode: true,
+            CurrentLang: window.currentLocale.toLowerCase(),
+        };
+    </script>
+    <style>
+        @media (min-width: 0) {
+            .acn-header-placeholder {
+                height: 48px;
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 980px) {
+            .acn-header-placeholder {
+                height: 89px;
+                width: 100%;
+            }
+        }
+
+        .acn-header-placeholder {
+            background-color: #1A1A1A;
+        }
+
+        .acn-header-service {
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+    </style>
+    <div class="acn-header-container">
+        <div class="acn-header-placeholder">
+        </div>
+        <div class="public_headerpage">
+        </div>
+    </div>
+    <!-- BEGIN: Documentation Content -->
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bread-crumb hidden-sm hidden-xs">
+                        <ul>
+                            <li>
+                                <span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="single-page">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+                            <div class="loader">
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-10 pure-content">
+                        <div class="select left-navigation-select hidden-md hidden-lg">
+                            <select>
+                                <option selected="selected">
+                                    加载中...
+                                </option>
+                            </select>
+                            <span class="icon icon-arrow-top">
+                            </span>
+                        </div>
+                        <tags ms.date="09/30/2015" ms.service="expressroute" wacn.date="11/27/2015">
+                        </tags>
+                        <!-- BEGIN: Product-Detail-TopBanner -->
+                        <div class="common-banner col-top-banner"
+                            data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'/Images/marketing-resource/css/express_route.png','imageHeight':'auto'}">
+                            <div class="common-banner-image">
+                                <div class="common-banner-title">
+                                    <img src="/Images/marketing-resource/css/expressroute@2x.png" />
+                                    <h2>
+                                        ExpressRoute
+                                    </h2>
+                                    <h4>
+                                        Azure 专用网络光纤连接
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END: Product-Detail-TopBanner -->
+                        <div class="pricing-page-section">
+                            <p>
+                                使用ExpressRoute 可以在 Azure 数据中心与客户自有环境之间创建专用连接。ExpressRoute
+                                连接不通过公共互联网，并且与互联网连接相比，提供更高的可靠性、更快的速度以及更低的延迟。
+                            </p>
+                            <p>
+                                ExpressRoute 服务要求部署：
+                            </p>
+                            <ul>
+                                <li>
+                                    ExpressRoute 线路：ExpressRoute 线路部署在对等互连位置或 meet-me 位置，并映射到
+                                    <a href="https://docs.azure.cn/zh-cn/expressroute/expressroute-locations">
+                                        不同区
+                                    </a>
+                                    .
+                                </li>
+                                <li>
+                                    ExpressRoute 网关：ExpressRoute 网关部署在 Azure 区域。
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- BEGIN: TAB-CONTROL -->
+                        <h2>
+                            定价详细信息
+                        </h2>
+                        <div class="technical-azure-selector tab-control-selector">
+                            <a class="active" data-href="#tabContent1" href="javascript:void(0)"
+                                id="home_single_database">
+                                ExpressRoute 线路
+                            </a>
+                            <a data-href="#tabContent2" href="javascript:void(0)" id="home_elastic_database">
+                                ExpressRoute 网关
+                            </a>
+                            <div class="clearfix">
+                            </div>
+                            <!-- BEGIN: TAB-CONTAINER-1 -->
+                            <div class="tab-control-container tab-active" id="tabContent1">
+                                <h3>
+                                    计量数据计划
+                                </h3>
+                                <p>
+                                    所有传入数据流量都是免费的。所有传出数据流量将按照预设费率收费（请参见下表）。用户每月还需要支付定额的端口费（基于高可用性双端口）。
+                                </p>
+                                <!-- <p>从 2016 年 4 月 1 日起，计量数据计划价格会下调 25.5%，以下是下调后的新价格：</p> -->
+                                <div class="tags-date">
+                                    <div class="ms-date">
+                                        *以下价格均为含税价格。
+                                    </div>
+                                    <br />
+                                    <div class="ms-date">
+                                        *每月价格估算基于每个月 744 小时的使用量。
+                                    </div>
+                                </div>
+                                <table cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <th align="left">
+                                            <strong>
+                                                端口速度
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                每月标准版价格
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                每月高级版价格
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                包括入站数据传输
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                包括出站数据传输
+                                            </strong>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            50 Mbps
+                                        </td>
+                                        <td>
+                                            ¥253.02/月
+                                        </td>
+                                        <td>
+                                            ¥4,922/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            不包括
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            100 Mbps
+                                        </td>
+                                        <td>
+                                            ¥461.68/月
+                                        </td>
+                                        <td>
+                                            ¥9,944/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            不包括
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            200 Mbps
+                                        </td>
+                                        <td>
+                                            ¥670.02/月
+                                        </td>
+                                        <td>
+                                            ¥19,988/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            不包括
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            500 Mbps
+                                        </td>
+                                        <td>
+                                            ¥1,340.36/月
+                                        </td>
+                                        <td>
+                                            ¥49,220/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            不包括
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            1 Gbps
+                                        </td>
+                                        <td>
+                                            ¥2,010.70/月
+                                        </td>
+                                        <td>
+                                            ¥86,540.00/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            不包括
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            2 Gbps
+                                        </td>
+                                        <td>
+                                            ¥4,028.96/月
+                                        </td>
+                                        <td>
+                                            ¥143,090.00/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            不包括
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            5 Gbps
+                                        </td>
+                                        <td>
+                                            ¥10,067.98/月
+                                        </td>
+                                        <td>
+                                            ¥357,720.00/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            不包括
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            10 Gbps
+                                        </td>
+                                        <td>
+                                            ¥19500/月
+                                        </td>
+                                        <td>
+                                            ¥719,400.00/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            不包括
+                                        </td>
+                                    </tr>
+                                </table>
+                                <!-- END: Table1-Content-->
+                                <p>
+                                    传出数据流量的费率为：¥0.22 /GB。
+                                </p>
+                                <p>
+                                    一旦客户通过ExpressRoute连接到Azure，访问同一ExpressRoute区位置中的其他Azure区域将无需购买高级版附加组件及支付现有计划以外的其他费用。例如：客户连接到中国东部后，可以从从中国东部
+                                    2发送或获取数据，无需支付现有计划以外费用。同样，客户连接到中国北部后，可以从中国北部 2发送或获取数据，无需支付现有计划以外费用。
+                                </p>
+                                <p>
+                                    <strong>
+                                        注意：
+                                    </strong>
+                                <p>ExpressRoute从创建成功即开始收费。</p>
+                                <p>ExpressRoute连接服务商可能会收取在上面列出的费用中未包括的其他费用。</p>
+                                </p>
+                                <br />
+                                <br />
+                                <h3>
+                                    出站数据传输定价
+                                </h3>
+                                <table cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <th align="left">
+                                            <strong>
+                                                区
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                价格/GB
+                                            </strong>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            1区
+                                        </td>
+                                        <td>
+                                            ￥0.22
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            2区
+                                        </td>
+                                        <td>
+                                            ￥0.22
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p>
+                                    一旦连接到 ExpressRoute
+                                    位置，用户可以连接到同一地域中的其他区域，而无需高级版线路，也无需支付超过现有计划费用的额外成本。例如：客户连接到中国东部后，可以从从中国东部
+                                    2发送或获取数据，无需支付现有计划以外费用。同样，客户连接到中国北部后，可以从中国北部 2发送或获取数据，无需支付现有计划以外费用。
+                                </p>
+                                <p>
+                                    <strong>
+                                        注意
+                                    </strong>
+                                    ：客户可能需要向其服务提供商支付额外费用来启用与 ExpressRoute 的连接。
+                                </p>
+                                <br />
+                                <br />
+                                <h3>
+                                    无限数据计划
+                                </h3>
+                                <p>
+                                    所有传入和传出的数据流量都是免费的。用户将根据固定月费的形式支付端口费用（基于高可用性双端口）。
+                                </p>
+                                <!-- <p>从2016年4月1日起，无限数据计划价格会下调 25.5%，以下是下调后的新价格：</p> -->
+                                <div class="tags-date">
+                                    <div class="ms-date">
+                                        *以下价格均为含税价格。
+                                    </div>
+                                    <br />
+                                    <div class="ms-date">
+                                        *每月价格估算基于每个月 744 小时的使用量。
+                                    </div>
+                                </div>
+                                <table cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <th align="left">
+                                            <strong>
+                                                端口速度
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                每月价格
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                高级版附加组件的每月价格
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                包括入站数据传输
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                包括出站数据传输
+                                            </strong>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            50 Mbps
+                                        </td>
+                                        <td>
+                                            ¥2,815.12/月
+                                        </td>
+                                        <td>
+                                            ¥13,540.00/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            100 Mbps
+                                        </td>
+                                        <td>
+                                            ¥5,681.82/月
+                                        </td>
+                                        <td>
+                                            ¥23,220.00/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            200 Mbps
+                                        </td>
+                                        <td>
+                                            ¥10,619.04/月
+                                        </td>
+                                        <td>
+                                            ¥40,080.00/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            500 Mbps
+                                        </td>
+                                        <td>
+                                            ¥24,008.50/月
+                                        </td>
+                                        <td>
+                                            ¥83,490.00/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            1 Gbps
+                                        </td>
+                                        <td>
+                                            ¥40,168.06/月
+                                        </td>
+                                        <td>
+                                            ¥137,780.00/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            2 Gbps
+                                        </td>
+                                        <td>
+                                            ¥80,336.13/月
+                                        </td>
+                                        <td>
+                                            ¥245,560.00/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            5 Gbps
+                                        </td>
+                                        <td>
+                                            ¥189,297.60/月
+                                        </td>
+                                        <td>
+                                            ¥598,400.00/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            10 Gbps
+                                        </td>
+                                        <td>
+                                            ¥378,595.80/月
+                                        </td>
+                                        <td>
+                                            ¥1,196,800.00/月
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                        <td>
+                                            无限制
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p>
+                                    一旦客户通过ExpressRoute连接到Azure，访问同一ExpressRoute位置中的其他Azure区域将无需购买高级版附加组件及支付现有计划以外的其他费用。例如：客户连接到中国东部后，可以从从中国东部
+                                    2发送或获取数据，无需支付现有计划以外费用。同样，客户连接到中国北部后，可以从中国北部 2发送或获取数据，无需支付现有计划以外费用。
+                                </p>
+                                <p>
+                                    <strong>
+                                        注意：
+                                    </strong>
+                                <p>ExpressRoute从创建成功即开始收费。</p>
+                                <p>ExpressRoute连接服务商可能会收取在上面列出的费用中未包括的其他费用。</p>
+                                </p>
+                                <br />
+                                <br />
+                                <h3>
+                                    ExpressRoute 高级版线路
+                                </h3>
+                                <p>
+                                    请参阅
+                                    <a href="https://docs.azure.cn/zh-cn/expressroute/expressroute-locations-providers">
+                                        ExpressRoute 文档
+                                    </a>
+                                    ，了解高级版线路提供的功能集合。
+                                </p>
+                                <br />
+                                <br />
+                                <h3>
+                                    ExpressRoute Direct
+                                </h3>
+                                <p>
+                                    借助 ExpressRoute Direct，客户可通过一对 10Gbps 的端口直接连接到 Microsoft 的网络，从而创建 ExpressRoute标准版线路和
+                                    ExpressRoute 高级版线路。
+                                </p>
+                                <p>
+                                    ExpressRoute Direct 同时包含端口月度费用和 ExpressRoute 高级版线路的费用。出站数据传输适用于标准版和高级版线路，但不适用于本地版线路。
+                                </p>
+                                <p>
+                                    有关 ExpressRoute Direct 中包含的功能的详细信息，请参阅
+                                    <a href="https://docs.azure.cn/zh-cn/expressroute/" style="margin: 0px;">
+                                        ExpressRoute 文档
+                                    </a>
+                                    。
+                                </p>
+                                <table cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <th align="left">
+                                            <strong>
+                                                端口配对速度
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                每月1区价格
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                每月2区价格
+                                            </strong>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            10 Gbps
+                                        </td>
+                                        <td>
+                                            ￥20400
+                                        </td>
+                                        <td>
+                                            ￥20400
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            100 Gbps
+                                        </td>
+                                        <td>
+                                            ￥170000
+                                        </td>
+                                        <td>
+                                            ￥170000
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <th align="left">
+                                            <strong>
+                                                线路带宽
+                                            </strong>
+                                        </th>
+                                        <!-- 每月本地版线路价格删除 -->
+                                        <!-- <th align="left">
+            <strong>
+             每月本地版线路价格
+            </strong>
+           </th> -->
+                                        <th align="left">
+                                            <strong>
+                                                每月标准版线路价格
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                每月高级版线路价格
+                                            </strong>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            1 Gbp
+                                        </td>
+                                        <!-- <td>
+            包含
+           </td> -->
+                                        <td>
+                                            包含
+                                        </td>
+                                        <td>
+                                            ￥ 5,502.83
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            2 Gbp
+                                        </td>
+                                        <!-- <td>
+            包含
+           </td> -->
+                                        <td>
+                                            包含
+                                        </td>
+                                        <td>
+                                            ￥11,792.45
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            5 Gbp
+                                        </td>
+                                        <!-- <td>
+            包含
+           </td> -->
+                                        <td>
+                                            包含
+                                        </td>
+                                        <td>
+                                            ￥ 15,723.58
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            10 Gbp
+                                        </td>
+                                        <!-- <td>
+            包含
+           </td> -->
+                                        <td>
+                                            包含
+                                        </td>
+                                        <td>
+                                            ￥ 23,584.9
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            40 Gbp
+                                        </td>
+                                        <!-- <td>
+            包含
+           </td> -->
+                                        <td>
+                                            包含
+                                        </td>
+                                        <td>
+                                            ￥ 39,308.49
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            100 Gbp
+                                        </td>
+                                        <!-- <td>
+            包含
+           </td> -->
+                                        <td>
+                                            包含
+                                        </td>
+                                        <td>
+                                            ￥78,616.03
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br />
+                                <br />
+                                <h3>
+                                    出站数据传输定价
+                                </h3>
+                                <table cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <th align="left">
+                                            <strong>
+                                                区
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                价格/GB
+                                            </strong>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            1区
+                                        </td>
+                                        <td>
+                                            ￥0.22
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            2区
+                                        </td>
+                                        <td>
+                                            ￥0.22
+                                        </td>
+                                    </tr>
+                                </table>
+                                <!-- BEGIN: Table1-Content-->
+                                <br />
+                                <br />
+                                <h3>
+                                    ExpressRoute 高级版附加组件
+                                </h3>
+                                <p>
+                                    ExpressRoute 高级版是 ExpressRoute 无限数据计划/计量数据计划上的一个附加组件。ExpressRoute 高级版附加组件提供以下功能：
+                                </p>
+                                <ul>
+                                    <li>
+                                        公共对等项和私有对等项的路由表限制由 4000 个路由增加为 10,000 个路由。
+                                    </li>
+                                    <li>
+                                        通过 Azure 核心网络连接中国任意区域。您可以使用中国任意一个区域创建的 ExpressRoute 线路访问其他区域的资源。例如：您可以通过中国北部创建的
+                                        ExpressRoute线路访问中国东部创建的 Vnet。
+                                    </li>
+                                    <li>
+                                        连接到 ExpressRoute 线路的 VNet 的数量由10个增加为更多（具体数量取决于线路带宽）。
+                                    </li>
+                                </ul>
+                                <p>
+                                    更多详细信息，请参考
+                                    <a href="https://docs.azure.cn/expressroute/" id="stor-sla-info"
+                                        style="color: #00a8d9;">
+                                        ExpressRoute 服务文档
+                                    </a>
+                                    页面。
+                                </p>
+                            </div>
+                            <!-- END: TAB-CONTAINER-1 -->
+                            <!-- BEGIN: TAB-CONTAINER-2 -->
+                            <div class="tab-control-container" id="tabContent2">
+                                <h3>
+                                    虚拟网络网关
+                                </h3>
+                                <p>
+                                    当在 ExpressRoute 线路上使用 Azure 专用对等互连时，需要虚拟网络网关才能访问虚拟网络。
+                                </p>
+                                <div class="tags-date">
+                                    <div class="ms-date">
+                                        *以下价格均为含税价格。
+                                    </div>
+                                    <br />
+                                    <div class="ms-date">
+                                        *每月价格估算基于每个月 744 小时的使用量。
+                                    </div>
+                                </div>
+                                <table cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <th align="left">
+                                            <strong>
+                                                网关类型
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                每小时价格
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                            <strong>
+                                                带宽（高达）
+                                            </strong>
+                                        </th>
+                                    </tr>
+                                    <!-- <tr>
+                        <td>基本 VNet 网关</td>
+                        <td>￥0.25 每个网关/小时（约￥186.00 /月）</td>
+                    </tr> -->
+                                    <tr>
+                                        <td>
+                                            标准 VNet 网关
+                                        </td>
+                                        <td>
+                                            ￥1.1914 每个网关/小时（约￥885.36 /月）
+                                        </td>
+                                        <td>
+                                            1 Gbps
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            高性能 VNet 网关
+                                        </td>
+                                        <td>
+                                            ￥3.1276 每个网关/小时（约￥2,328.72 /月）
+                                        </td>
+                                        <td>
+                                            2 Gbps
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            超高性能 VNet 网关
+                                        </td>
+                                        <td>
+                                            ￥11.9069 每个网关 / 小时（约￥8,861.04 / 月）
+                                        </td>
+                                        <td>
+                                            9 Gbps
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p>
+                                    关于不同 VPN 网关的技术规范和限制，请参阅
+                                    <a href="https://docs.azure.cn/vpn-gateway/vpn-gateway-about-vpngateways/"
+                                        id="Virtual_Network_price_vpn" style="color: #00a8d9;" target="_blank">
+                                        关于 VPN 网关
+                                    </a>
+                                    ，虚拟网络间收费现在提供下面所列的折扣（以前按标准
+                                    <a href="/pricing/details/data-transfer/" id="Virtual_Network_price_sjcs"
+                                        style="color: #00a8d9;" target="_blank">
+                                        数据传输
+                                    </a>
+                                    费率进行收费）。
+                                </p>
+                                
+                            <br/>
+
+                            <h3>可用性区域</h3>
+                            <p>如同所有 Azure 服务一样，我们不断地创新、升级和优化虚拟网络网关，以便进一步提高可靠性和可用性。通过添加对  
+                                <a href="https://docs.azure.cn/zh-cn/reliability/availability-zones-overview?tabs=azure-cli" style="color: #00a8d9;" target="_blank">
+                                Azure 可用性区域 
+                            </a>
+                                的支持，我们提高了虚拟网络网关的复原能力、可缩放性和可用性。可通过使用新的区域冗余网关 SKU，在 Azure 可用性区域中部署 VPN 网关和 ExpressRoute 网关。
+                                这在物理上和逻辑上将它们分成不同的可用性区域，从而保护本地网络与 Azure 的连接免受区域级故障的影响。</p>
+
+                            <table cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <th align="left">
+                                        <strong>
+                                            网关类型
+                                        </strong>
+                                    </th>
+                                    <th align="left">
+                                        <strong>
+                                            价格
+                                        </strong>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        ErGw1AZ*
+                                    </td>
+                                    <td>
+                                        ￥3.67/小时
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        ErGw2AZ*
+                                    </td>
+                                    <td>
+                                        ￥6.43/小时
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        ErGw3AZ*
+                                    </td>
+                                    <td>
+                                        ￥21.89/小时
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div class="tags-date">
+                                <div class="ms-date">
+                                    每月价格估算基于 744 小时的使用量。
+                                </div>
+                                <br/>
+                                <div class="ms-date">
+                                    *ErGw1AZ、ErGw2AZ 和 ErGw3AZ 是标准 Vnet 网关、高性能 VNet 网关和超高性能 VNet 网关的区域复原版本。区域冗余网关的带宽阈值保持不变。
+                                </div>
+                            </div>
+                            </div>
+                            <!-- END: TAB-CONTAINER-2 -->
+                        </div>
+                        <!-- END: TAB-CONTROL -->
+                        <div class="pricing-page-section">
+                            <!-- <h3>ExpressRoute Direct</h3>
+            <p>借助 ExpressRoute Direct，客户可通过一对 10Gbps 或 100Gbps 的端口直接连接到 Microsoft 的网络，从而创建 ExpressRoute 本地版线路、标准版线路和 ExpressRoute 高级版线路。</p>
+            <P>ExpressRoute Direct 同时包含端口月度费用和 ExpressRoute 高级版线路的费用。出站数据传输适用于标准版和高级版线路，但不适用于本地版线路。ExpressRoute Global Reach 附加组件费用以及 Global Reach 入站和出站费用适用于 Global Reach 线路。</P>
+            <p>有关 ExpressRoute Direct 中包含的功能的详细信息，请参阅 <a href="https://docs.azure.cn/zh-cn/expressroute/" style="margin: 0px;">ExpressRoute 文档</a>。</p>
+            <table cellpadding="0" cellspacing="0" width="100%">
+             <tr>
+                 <th align="left"><strong>端口配对速度</strong></th>
+                 <th align="left"><strong>每月区域 1 价格</strong></th>
+                 <th align="left"><strong>每月区域 2 价格</strong></th>
+             </tr>
+             <tr>
+                 <td>10 Gbps</td>
+                 <td>￥19,500</td>
+                 <td>￥19,500</td>
+             </tr>
+            </table>
+            <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                    <th align="left"><strong>线路带宽</strong></th>
+                    <th align="left"><strong>每月本地版线路价格</strong></th>
+                    <th align="left"><strong>每月标准版线路价格</strong></th>
+                    <th align="left"><strong>每月高级版线路价格</strong></th>
+                </tr>
+                <tr>
+                    <td>10 Gbps</td>
+                    <td>包含</td>
+                    <td>包含</td>
+                    <td>￥20,400</td>
+                </tr>
+            </table>
+
+            <h3>ExpressRoute 高级版附加组件</h3>
+                    <p>ExpressRoute 高级版是 ExpressRoute 无限数据计划/计量数据计划上的一个附加组件。ExpressRoute 高级版附加组件提供以下功能：</p>
+                    <ul>
+                        <li>公共对等项和私有对等项的路由表限制由 4000 个路由增加为 10,000 个路由。</li>
+                        <li>通过 Azure 核心网络连接中国任意区域。您可以使用中国任意一个区域创建的 ExpressRoute 线路访问其他区域的资源。例如：您可以通过中国北部创建的 ExpressRoute线路访问中国东部创建的 Vnet。</li>
+                        <li>连接到 ExpressRoute 线路的 VNet 的数量由10个增加为更多（具体数量取决于线路带宽）。</li>
+                    </ul>
+                    <p>更多详细信息，请参考<a id="stor-sla-info" style="color: #00a8d9;" href="https://docs.azure.cn/expressroute/">ExpressRoute 服务文档</a>页面。</p> -->
+                            <div class="more-detail">
+                                <h2>
+                                    常见问题
+                                </h2>
+                                <em>
+                                    全部展开
+                                </em>
+                                <ul>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="expressroute_dedicate-link">
+                                                此解决方案中，其他方将会对我收取哪些附加费用？
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    你可能需要向你的服务提供商支付额外费用才能启用与 ExpressRoute 的连接。请与你的服务提供商联系，了解其定价信息。
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="expressroute-cost">
+                                                在针对 ExpressRoute 的每月费用中包括多少端口？
+                                            </a>
+                                            <section>
+                                                出于冗余性目的，在所示的每月费用中包含 2 个端口（在 2 个路由器上）。
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="expressroute-port">
+                                                每个区包含哪些 ExpressRoute 对等位置？
+                                            </a>
+                                            <section>
+                                                请参阅
+                                                <a
+                                                    href="https://docs.azure.cn/zh-cn/expressroute/expressroute-locations">
+                                                    ExpressRoute 文档
+                                                </a>
+                                                ，了解将位置与区域映射进行对等互连的 ExpressRoute。
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="expressroute-china">
+                                                ExpressRoute 的计费何时开始和停止？
+                                            </a>
+                                            <section>
+                                                向客户颁发服务密钥后即会开始计收 ExpressRoute 费用，在出现以下情况后将停止收费：(1) 客户请求删除某个线路；(2)
+                                                Exchange 提供商或者网络服务提供商已取消设置该线路。
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="expressroute-area">
+                                                如果我在一个月的某个时间段中使用 ExpressRoute，费率是否不同？
+                                            </a>
+                                            <section>
+                                                如果你的 ExpressRoute 服务对整个月有效，将按每月费率对你收费，而与使用情况无关。但是，如果你在该月期间取消了
+                                                ExpressRoute 服务，将只会收到针对所使用小时数的按比例分配的帐单，并且支付在取消当月发生的超额的数据传输量部分。
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="expressroute-account">
+                                                我是否可以在月度中更改端口速度？
+                                            </a>
+                                            <section>
+                                                你可以随时在没有任何中断的情况下增加端口速度。你可以通过删除现有定价计划下的线路并在新的定价计划下重新创建该线路，从而降低端口速度。请与你的服务提供商进行协调以设置新的线路
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="expressroute-Rate">
+                                                我应该选择哪个定价选项？
+                                            </a>
+                                            <section>
+                                                具体答案取决于线路大小、利用率和区域，但如果你的利用率较高，则最好选择
+                                                <strong>
+                                                    无限制数据
+                                                </strong>
+                                                定价选项，而如果利用率较低，则最好选择
+                                                <strong>
+                                                    计量数据
+                                                </strong>
+                                                定价选项。
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="expressroute-billing">
+                                                我是否能更改线路的定价计划？
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    你可以随时在没有任何中断的情况下，将你的定价计划从计量更改为无限制。你可以通过删除无限制定价计划下的线路并在计量定价计划下重新创建该线路，从而将定价计划从无限制更改为计量。请与你的服务提供商进行协调以设置新的线路。
+                                                </p>
+                                                <p>
+                                                    更多详细信息，请参考
+                                                    <a
+                                                        href="https://docs.azure.cn/zh-cn/expressroute/expressroute-introduction">
+                                                        ExpressRoute 技术文档
+                                                    </a>
+                                                    页面
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="expressroute-speed">
+                                                是否可以在 ExpressRoute 上使用 Office365（包括用于商业的 Exchange 和 Skype）？
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    不可以。目前中国区暂不支持通过ExpressRoute连接Office365。更多详细信息，请参考
+                                                    <a
+                                                        href="https://docs.azure.cn/zh-cn/expressroute/expressroute-introduction">
+                                                        ExpressRoute 技术文档
+                                                    </a>
+                                                    页面
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="pricing-page-section">
+                            <h2>
+                                支持和服务级别协议
+                            </h2>
+                            <p>
+                                如有任何疑问或需要帮助，请访问
+                                <a href="https://support.azure.cn/zh-cn/support/contact" id="expressroute-contact-page">
+                                    Azure 支持
+                                </a>
+                                选择自助服务或者其他任何方式联系我们获得支持。
+                            </p>
+                            <p>
+                                我们保证 ExpressRoute 专用线路可用性至少为 99.9%。若要了解有关我们的服务器级别协议的详细信息，请访问
+                                <a href="../../../support/sla/expressroute/index.html" id="pricing_expressroute_sla">
+                                    服务级别协议
+                                </a>
+                                页。
+                            </p>
+                        </div>
+                        <!--BEGIN: Support and service code chunk-->
+                        <!--
+
+            <h2>支持和服务级别协议</h2>
+            <p>Azure 支持功能：</p>
+            <p>我们免费向用户提供以下支持服务：</p>
+            <table cellpadding="0" cellspacing="0" class="table-col6">
+                <tr>
+                    <th align="left">&nbsp;</th>
+                    <th align="left"><strong>是否支持</strong></th>
+                </tr>
+                <tr>
+                    <td>计费和订阅管理</td>
+                    <td><i class="icon icon-tick"></i></td>
+                </tr>
+                <tr>
+                    <td>服务仪表板</td>
+                    <td><i class="icon icon-tick"></i></td>
+                </tr>
+                <tr>
+                    <td>Web事件提交</td>
+                    <td><i class="icon icon-tick"></i></td>
+                </tr>
+                <tr>
+                    <td>中断/修复不受限制</td>
+                    <td><i class="icon icon-tick"></i></td>
+                </tr>
+                <tr>
+                    <td>电话支持</td>
+                    <td><i class="icon icon-tick"></i></td>
+                </tr>
+                <tr>
+                    <td>ICP备案支持</td>
+                    <td><i class="icon icon-tick"></i></td>
+                </tr>
+            </table>
+            <p>您可以<a href="/support/support-ticket-form/?l=zh-cn" id="vm-sla-sup">在线申请支持</a>，也可以通过服务热线联系我们。</p>
+            <h2>服务热线：</h2>
+            <ul>
+                <li>400-089-0365</li>
+                <li>010-84563652</li>
+            </ul>
+            <p>社区帮助：<a href="https://social.msdn.microsoft.com/Forums/zh-cn/home?forum=windowsazurezhchs" id="pricing_vm_help">访问MSDN</a></p>
+            <p>更多支持信息，请访问<a href="/support/plans/" id="stor-sla-info">Azure 支持计划</a></p>
+              
+      -->
+                        <!--END: Support and service code chunk-->
+                        <!--BEGIN: Support and service code chunk-->
+                        <!--END: Support and service code chunk-->
+                        <!--END: Support and service code chunk-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Documentation Content -->
+    <!-- BEGIN: Footer -->
+    <div class="public_footerpage">
+    </div>
+    <!--END: Common sidebar-->
+    <link href="../../../Static/CSS/Localization/zh-cn.css" rel="stylesheet" />
+    <script type="text/javascript">
+        function getAntiForgeryToken() {
+            var token = '<input name="__RequestVerificationToken" type="hidden" value="YhcHFzG85a3UAJQweiwprnRTvEX5tNn6keZXAZXJ4eSXbv-_-S88V79Ik1WE55GWPezPazuWLwGtxoIb2OxDKM1pxcvX461vfGoveffGd7U1" />';
+            token = $(token).val();
+            return token;
+        }
+        function setLocaleCookie(localeVal) {
+            var Days = 365 * 10; // Ten year expiration
+            var exp = new Date();
+
+            var hostName = window.location.hostname;
+            var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain + "; path=/;expires=" + exp.toGMTString();
+        }
+
+        setLocaleCookie(window.currentLocale);
+    </script>
+    <script type="text/javascript">
+        var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+        var TECHNICAL_STORAGE = '/blob/tech-content/';
+        var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+        var EnablePricingSync = 'false';
+    </script>
+    <!-- BEGIN: Minified RequireJs -->
+    <script src="../../../Static/Scripts/global.config.js" type="text/javascript">
+    </script>
+    <script src="../../../Static/Scripts/require.js" type="text/javascript">
+    </script>
+    <script src="../../../Static/Scripts/4552a1505e111da8c71780b349b683700a6158fa.js" type="text/javascript">
+    </script>
+    <!-- END: Minified RequireJs -->
+    <!-- begin JSLL -->
+    <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js">
+    </script>
+    <script type="text/javascript">
+        (function () {
+            var config = {
+                cookiesToCollect: ["_mkto_trk"],
+                syncMuid: true,
+                ix: {
+                    a: true,
+                    g: true
+                },
+                coreData: {
+                    appId: 'AzureCN',
+                    market: 'zh-cn',
+                }
+            };
+            awa.init(config);
+        })();
+    </script>
+    <!-- end JSLL -->
+    <script src="../../../Static/Scripts/plugins/cookie/jquery.cookie.js" type="text/javascript">
+    </script>
+    <script src="../../../Static/Scripts/wacndatatracker.js" type="text/javascript">
+    </script>
+    <script src="/common/useCommon.js" type="text/javascript">
+    </script>
+</body>
+
+</html>

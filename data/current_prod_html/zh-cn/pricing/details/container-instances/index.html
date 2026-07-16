@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=2.0" name="viewport"/>
+  <meta content="查看容器实例的定价。通过一个命令即可在 Azure 上运行容器，还可通过按秒计费降低基础结构成本。" name="description"/>
+  <meta content="azure 容器实例, 容器实例, 容器, azure 容器, docker on azure" name="keywords"/>
+  <title>
+   容器实例价格_容器实例价格估算 - Azure云服务
+  </title>
+  <link href="../../../Static/Favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+  <link href="../../../Static/Favicon/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+  <link href="../../../Static/Favicon/favicon.ico" rel="icon" type="image/x-icon"/>
+  <link href="../../../Static/Favicon/manifest.json" rel="manifest"/>
+  <link color="#0078D4" href="../../../Static/Favicon/safari-pinned-tab.svg" rel="mask-icon"/>
+  <meta content="/Static/Favicon/browserconfig.xml" name="msapplication-config"/>
+  <meta content="#ffffff" name="theme-color"/>
+  <link href="https://azure.microsoft.com/zh-cn/pricing/details/container-instances/" rel="canonical"/>
+  <!-- BEGIN: Azure UI Style -->
+  <link href="../../../Static/CSS/azureui.min.css" rel="stylesheet"/>
+  <link href="../../../Static/CSS/common.min.css" rel="stylesheet"/>
+  <!-- END: Azure UI Style -->
+  <!-- BEGIN: Page Style -->
+  <!-- END: Page Style -->
+  <!-- BEGIN: Minified Page Style -->
+  <link href="../../../Static/CSS/a05a0e4e99489d7b3cb548e24414e01adf779d77.css" rel="stylesheet"/>
+  <!-- END: Minified Page Style -->
+  <link href="../../../StaticService/css/service.min.css" rel="stylesheet"/>
+ </head>
+ <body class="zh-cn">
+  <script>
+   window.requireUrlArgs = "2019/6/24 6:51:27";
+    window.currentLocale = "zh-CN";
+    window.headerTimestamp = "2019/1/23 8:25:24";
+    window.footerTimestamp = "2019/1/8 8:07:06";
+    window.locFileTimestamp = "2018/11/29 7:49:17";
+
+    window.AcnHeaderFooter = {
+        IsEnableQrCode: true,
+        CurrentLang: window.currentLocale.toLowerCase(),
+    };
+  </script>
+  <style>
+   @media (min-width: 0) {
+        .acn-header-placeholder {
+            height: 48px;
+            width: 100%;
+        }
+    }
+
+    @media (min-width: 980px) {
+        .acn-header-placeholder {
+            height: 89px;
+            width: 100%;
+        }
+    }
+
+    .acn-header-placeholder {
+        background-color: #1A1A1A;
+    }
+
+    .acn-header-service {
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+  </style>
+  <div class="acn-header-container">
+   <div class="acn-header-placeholder">
+   </div>
+   <div class="public_headerpage">
+   </div>
+  </div>
+  <!-- BEGIN: Documentation Content -->
+  <div class="content">
+   <div class="container">
+    <div class="row">
+     <div class="col-md-12">
+      <div class="bread-crumb hidden-sm hidden-xs">
+       <ul>
+        <li>
+         <span>
+         </span>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+    <div class="single-page">
+     <div class="row">
+      <div class="col-md-2">
+       <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+        <div class="loader">
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+        </div>
+       </div>
+      </div>
+      <div class="col-md-10 pure-content">
+       <div class="select left-navigation-select hidden-md hidden-lg">
+        <select>
+         <option selected="selected">
+          加载中...
+         </option>
+        </select>
+        <span class="icon icon-arrow-top">
+        </span>
+       </div>
+       <tags ms.date="09/30/2015" ms.service="container-instances" wacn.date="11/27/2015">
+       </tags>
+       <style type="text/css">
+        .pricing-detail-tab .tab-nav {
+                            padding-left: 0 !important;
+                            margin-top: 5px;
+                            margin-bottom: 0;
+                            overflow: hidden;
+                        }
+
+                        .pricing-detail-tab .tab-nav li {
+                            list-style: none;
+                            float: left;
+                        }
+
+                        .pricing-detail-tab .tab-nav li.active a {
+                            border-bottom: 4px solid #00a3d9;
+                        }
+
+                        .pricing-detail-tab .tab-nav li.active a:hover {
+                            border-bottom: 4px solid #00a3d9;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel {
+                            display: none;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel.show-md {
+                            display: block;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel .tab-nav li a {
+                            padding-left: 5px;
+                            padding-right: 5px;
+                            color: #00a3d9;
+                            background-color: #FFF;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel .tab-nav li.active a {
+                            color: #FFF;
+                            background-color: #00a3d9;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel .tab-nav li a:hover {
+                            color: #FFF;
+                            background-color: #00a3d9;
+                        }
+
+                        .pure-content .technical-azure-selector .tags-date a,
+                        .pure-content .technical-azure-selector p a,
+                        .pure-content .technical-azure-selector table a {
+                            background: 0 0;
+                            padding: 0;
+                            margin: 0 6px;
+                            height: 21px;
+                            line-height: 22px;
+                            font-size: 14px;
+                            color: #00a3d9;
+                            float: none;
+                            display: inline;
+                        }
+
+                        #container-instances-linux-table tr {
+                            background-color: white;
+                        }
+       </style>
+       <div class="hide-info" style="display:none;">
+        <div class="bg-box">
+         <div class="cover-bg">
+         </div>
+        </div>
+        <div class="msg-box">
+         <div class="pricing-unavailable-message">
+          所选区域不可用
+         </div>
+        </div>
+       </div>
+       <div class="common-banner col-top-banner" data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'//wacnppe.blob.core.chinacloudapi.cn/marketing-resource/css/container-instances_banner.png','imageHeight':'auto'}">
+        <div class="common-banner-image">
+         <div class="common-banner-title">
+          <!--     <img
+                                        src="//wacnppe.blob.core.chinacloudapi.cn/marketing-resource/css/container-instances_icon@2x.svg" /> -->
+          <sapn style="    float: left;
+                                    margin-right: 10px;
+                                    margin-top: 5px;
+                                    width: 48px;">
+           <svg data-slug-id="container-instances" viewbox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+             <lineargradient gradientunits="userSpaceOnUse" id="container-instances:f7543904-4a89-435e-96cd-11521c829faa-e5aeab6d" x1="9" x2="9" y1="11.95">
+              <stop offset="0" stop-color="#0078d4">
+              </stop>
+              <stop offset="0.16" stop-color="#1380da">
+              </stop>
+              <stop offset="0.53" stop-color="#3c91e5">
+              </stop>
+              <stop offset="0.82" stop-color="#559cec">
+              </stop>
+              <stop offset="1" stop-color="#5ea0ef">
+              </stop>
+             </lineargradient>
+            </defs>
+            <path d="M17.43,8.21a3.78,3.78,0,0,0-3.29-3.64A4.77,4.77,0,0,0,9.22,0,4.91,4.91,0,0,0,4.54,3.19a4.52,4.52,0,0,0-4,4.35A4.6,4.6,0,0,0,5.32,12l.42,0h7.68l.21,0A3.84,3.84,0,0,0,17.43,8.21Z" fill="url(#container-instances:f7543904-4a89-435e-96cd-11521c829faa-e5aeab6d)">
+            </path>
+            <path d="M6.36,6.46,9,3.87a.3.3,0,0,1,.43,0L12,6.46a.13.13,0,0,1-.1.23H10.28a.15.15,0,0,0-.14.14v3.24a.11.11,0,0,1-.11.11H8.29a.11.11,0,0,1-.11-.11V6.83a.14.14,0,0,0-.13-.14H6.45A.13.13,0,0,1,6.36,6.46Z" fill="#f2f2f2">
+            </path>
+            <path d="M14,11.37a.13.13,0,0,0-.09-.13L9.16,9.65H9V18h.13l4.71-1.88A.13.13,0,0,0,14,16Z" fill="#a67af4">
+            </path>
+            <path d="M9,9.68l-4.51.83a.14.14,0,0,0-.12.13v6.23a.15.15,0,0,0,.11.14L9,18a.13.13,0,0,0,.16-.13v-8A.14.14,0,0,0,9,9.68Z" fill="#552f99">
+            </path>
+            <polygon fill="#b77af4" opacity="0.75" points="6.92 10.92 6.92 16.73 8.49 16.98 8.49 10.65 6.92 10.92">
+            </polygon>
+            <polygon fill="#b77af4" opacity="0.75" points="4.98 11.24 4.98 16.32 6.35 16.6 6.35 11.01 4.98 11.24">
+            </polygon>
+           </svg>
+          </sapn>
+          <h2>
+           容器实例
+           <span>
+            Container Instances
+           </span>
+          </h2>
+          <h4>
+           无需管理服务器，即可在 Azure 上轻松运行容器
+          </h4>
+         </div>
+        </div>
+       </div>
+       <div class="pricing-page-section">
+        <p>
+         Azure 容器实例按“容器组”级别进行计费，这些实例是可由单个容器使用或由多个容器分割的 vCPU
+                            /内存资源的分配。容器组是共同计划的容器，具有相同的网络和节点生命周期。价格取决于为该容器组分配的 vCPU 数和内存 (GB)。按秒收取容器组使用的 GB 内存和
+                            vCPU
+                            的费用。
+        </p>
+        <h2>
+         定价详细信息
+        </h2>
+       </div>
+       <!-- BEGIN: TAB-CONTROL -->
+       <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
+        <div class="tab-container-container">
+         <div class="tab-container-box">
+          <div class="tab-container">
+           <!-- 手动控制不显示 -->
+           <div class="dropdown-container software-kind-container" style="display: none;">
+            <label>
+             OS/软件:
+            </label>
+            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+             <span class="selected-item">
+              容器实例
+             </span>
+             <i class="icon">
+             </i>
+             <ol class="tab-items">
+              <li class="active">
+               <a data-href="#tabContent1" href="javascript:void(0)" id="home_container-instances-linux">
+                Linux
+               </a>
+              </li>
+              <!--<li><a href="javascript:void(0)" data-href="#tabContent2"
+                                                        id="home_container-instances-linux">Linux</a></li>-->
+             </ol>
+            </div>
+            <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
+             <option data-href="#tabContent1" selected="selected" value="Container Instances - Linux">
+              Linux
+             </option>
+             <!--<option data-href="#tabContent2" value="Container Instances - Linux">
+                                                Linux</option>-->
+            </select>
+           </div>
+           <div class="dropdown-container region-container">
+            <label>
+             地区:
+            </label>
+            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+             <span class="selected-item">
+              中国北部 3
+             </span>
+             <i class="icon">
+             </i>
+             <ol class="tab-items">
+              <li class="active">
+               <a data-href="#north-china3" href="javascript:void(0)" id="north-china3">
+                中国北部 3
+               </a>
+              </li>
+              <li>
+               <a data-href="#east-china2" href="javascript:void(0)" id="east-china2">
+                中国东部 2
+               </a>
+              </li>
+              <li>
+               <a data-href="#north-china2" href="javascript:void(0)" id="north-china2">
+                中国北部 2
+               </a>
+              </li>
+             </ol>
+            </div>
+            <select class="dropdown-select region-box hidden-lg hidden-md" id="region-box">
+             <option data-href="#north-china3" value="north-china3">
+              中国北部 3
+             </option>
+             <option data-href="#east-china2" value="east-china2">
+              中国东部 2
+             </option>
+             <option data-href="#north-china2" value="north-china2">
+              中国北部 2
+             </option>
+            </select>
+           </div>
+           <br/>
+           <br/>
+           <br/>
+           <br/>
+           <div class="clearfix">
+           </div>
+          </div>
+         </div>
+        </div>
+        <!-- BEGIN: TAB-CONTAINER-1 -->
+        <div class="tab-content">
+         <!-- BEGIN: TAB-CONTAINER-3 -->
+         <div class="tab-panel" id="tabContent1">
+          <!-- BEGIN: Tab level 2 navigator 2 -->
+          <!-- BEGIN: Tab level 2 content 3 -->
+          <div class="tab-content">
+           <!-- <h3>SQL Server Integration Services Standard A-series V2 VM</h3> -->
+           <div class="scroll-table" style="display: block;">
+            <div class="tags-date">
+             <div class="ms-date">
+              *以下价格均为含税价格。
+             </div>
+             <br/>
+             <div class="ms-date">
+              *每月价格估算基于每个月 744 小时的使用量。
+             </div>
+            </div>
+            <table cellpadding="0" cellspacing="0" id="container-instances-linux-table-north3east2" width="100%">
+             <tr>
+              <th align="left">
+               <strong>
+                计量
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                价格
+               </strong>
+              </th>
+             </tr>
+             <tr>
+              <td rowspan="2">
+               容器组持续时间
+              </td>
+              <td>
+               内存: ￥0.24995/GB/时
+              </td>
+             </tr>
+             <tr>
+              <td>
+               vCPU: ￥0.027467/VCPU/时
+              </td>
+             </tr>
+            </table>
+            <p>
+             <a href="https://docs.azure.cn/zh-cn/container-instances/container-instances-container-groups" style="font-size:16px;">
+              容器组
+             </a>
+             持续时间是指我们开始拉取你的第一个容器的映像（用于新的部署）或你的容器组重启（如果已部署）直到容器组停止之间的时间。对于每个容器组，可分配的最低值是
+                                            1 个 vCPU 和 1 GB，上限是每个 vCPU 16 GB 的内存。最多可向所部署的每个容器组分配 4 个 vCPU。
+            </p>
+            <p>
+            </p>
+           </div>
+           <div class="scroll-table" style="display: block;">
+            <div class="tags-date">
+             <div class="ms-date">
+              *以下价格均为含税价格。
+             </div>
+             <br/>
+             <div class="ms-date">
+              *每月价格估算基于每个月 744 小时的使用量。
+             </div>
+            </div>
+            <table cellpadding="0" cellspacing="0" id="container-instances-linux-table-north2" width="100%">
+             <tr>
+              <th align="left">
+               <strong>
+                计量
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                价格
+               </strong>
+              </th>
+             </tr>
+             <tr>
+              <td rowspan="2">
+               容器组持续时间
+              </td>
+              <td>
+               内存: 0.045282/GB/时
+              </td>
+             </tr>
+             <tr>
+              <td>
+               vCPU: ￥0.412128 /VCPU/时
+              </td>
+             </tr>
+            </table>
+            <p>
+             <a href="https://docs.azure.cn/zh-cn/container-instances/container-instances-container-groups" style="font-size:16px;">
+              容器组
+             </a>
+             持续时间是指我们开始拉取你的第一个容器的映像（用于新的部署）或你的容器组重启（如果已部署）直到容器组停止之间的时间。对于每个容器组，可分配的最低值是
+                                                1 个 vCPU 和 1 GB，上限是每个 vCPU 16 GB 的内存。最多可向所部署的每个容器组分配 4 个 vCPU。
+            </p>
+            <p>
+            </p>
+           </div>
+          </div>
+         </div>
+         <!-- END: TAB-CONTAINER-3 -->
+        </div>
+       </div>
+       <!-- END: TAB-CONTAINER-2 -->
+       <!-- END: TAB-CONTROL -->
+       <div class="pricing-page-section">
+        <h2>
+         公共 IP 地址
+        </h2>
+        <p>
+         分配到容器组的公共 IP 地址按标准
+         <a href="https://www.azure.cn/pricing/details/ip-addresses/index.html">
+          Azure 费率
+         </a>
+         收费。
+        </p>
+       </div>
+       <div class="pricing-page-section">
+        <h2>
+         定价示例
+        </h2>
+        <h3>
+         示例 1：
+        </h3>
+        <p>
+         1 个月（30 天）中，每天 1 次，每次创建 1 个 Linux 容器组（配置为 1 个 vCPU、1 GB）。每个容器组的持续时间为 5 小时。
+        </p>
+        <h3>
+         内存持续时间：
+        </h3>
+        <p>
+         容器组数目 * 内存持续时间（小时）* GB * 每 GB-时的价格 * 天数
+        </p>
+        <p>
+         1 个容器组 * 5小时 * 1 GB * 每 GB-时 ￥0.24995 * 30 天 = ￥37.4925
+        </p>
+        <h3>
+         vCPU 持续时间：
+        </h3>
+        <p>
+         容器组数目 * vCPU 持续时间（小时数）* vCPU 数 * 每 vCPU-小时的价格 * 天数
+        </p>
+        <p>
+         1 个容器组 * 5小时 * 1 vCPU * 每 vCPU-时 ￥0.027467* 30 天 = ￥4.12005
+        </p>
+        <h3>
+         总计：
+        </h3>
+        <p>
+         内存持续时间（小时）+ vCPU 持续时间（小时）= 总成本
+        </p>
+        <p>
+         ￥37.4925+ ￥4.12005 = ￥41.61255
+        </p>
+        <h3>
+         示例 2：
+        </h3>
+        <p>
+         1 个月（30 天）中，每天 50 次，每次创建 1 个 Linux 容器组（配置为 1 个 vCPU、2 GB）。
+        </p>
+        <p>
+         容器组持续时间为 15小时。
+        </p>
+        <h3>
+         内存持续时间：
+        </h3>
+        <p>
+         容器组数目 * 内存持续时间（小时）* GB * 每 GB-时的价格 * 天数
+        </p>
+        <p>
+         50 个容器组 * 15小时 * 2 GB * 每 GB-时￥0.24995* 30 天 = ￥374.925
+        </p>
+        <h3>
+         vCPU 持续时间：
+        </h3>
+        <p>
+         容器组数目 * vCPU 持续时间（小时）* vCPU 数 * 每 vCPU-时的价格 * 天数
+        </p>
+        <p>
+         50 个容器组 * 15小时 * 1 vCPU * 每 vCPU-小时 ￥0.027467* 30 天 = ￥618.0075
+        </p>
+        <h3>
+         总计：
+        </h3>
+        <p>
+         内存持续时间（小时）+ vCPU 持续时间（小时）= 总成本
+        </p>
+        <p>
+         ￥374.925 + ￥618.0075 = ￥992.9325
+        </p>
+       </div>
+       <!-- <div class="pricing-page-section">
+                  <div class="more-detail">
+                      <h2>FAQ</h2>
+                      <em>Expand all</em>
+                      <ul>
+                          <li>
+                              <i class="icon icon-plus"></i>
+                              <div>
+                                  <a id="data-factory-ssis_prepare-ssis">Provisioning the integration runtime for SQL Server Integration Services (SSIS) requires that an SSIS catalog be created on an Azure SQL Database instance. Do I pay for the SQL Database instance for the SSIS catalog separately?</a>
+                                  <section>
+                                      <p>Yes. The SQL Database instance for hosting the SSIS catalog on Azure must be paid for separately. You can either use an existing SQL Database server or create a new one under your Azure subscription.</p>
+                                  </section>
+                              </div>
+                          </li>
+                          <li>
+                              <i class="icon icon-plus"></i>
+                              <div>
+                                  <a id="data-factory-ssis_can-I-use-sqlserver-hybrid">What is the Azure Hybrid Benefit for SQL Server? Am I eligible for it?</a>
+                                  <section>
+                                      <p>Azure Hybrid Benefit for SQL Server is an offer designed to help you gain more value from your SQL Server licenses on Azure SQL Server Integration Services. Customers with active Software Assurance on Enterprise and Standard edition per-core licenses are eligible for the offer if they choose to move these licenses to the cloud. Azure Hybrid Benefit for SQL Server is not restricted to any specific licensing program, but you must have active Software Assurance coverage.</p>
+                                      <p>You can activate Azure Hybrid Benefit via the Azure portal by attesting you have sufficient active licenses with Software Assurance.</p>
+                                  </section>
+                              </div>
+                          </li>
+                          <li>
+                              <i class="icon icon-plus"></i>
+                              <div>
+                                  <a id="data-factory-ssis_face-to-sqlserver-bybrid">Can I apply Azure Hybrid Benefit for SQL Server retroactively?</a>
+                                  <section>
+                                      <p>No. Azure Hybrid Benefit cannot be applied retroactively.</p>
+                                  </section>
+                              </div>
+                          </li>
+                          <li>
+                              <i class="icon icon-plus"></i>
+                              <div>
+                                  <a id="data-factory-ssis_overdue-for-hybrid">What happens to my Azure Hybrid Benefit for SQL Server if my Software Assurance expires?</a>
+                                  <section>
+                                      <p>You need active Software Assurance to use Azure Hybrid Benefit for SQL Server. If your Software Assurance expires, and you don’t renew it, you’ll be moved to the license-included pricing of the relevant SKU.</p>
+                                  </section>
+                              </div>
+                          </li>
+                          <li>
+                              <i class="icon icon-plus"></i>
+                              <div>
+                                  <a id="data-factory-ssis_">Can I use my SQL Server license both on-premises and in the cloud?</a>
+                                  <section>
+                                      <p>To facilitate migration, Microsoft provides a 180-day grace period for using licenses both on-premises and in the cloud. After this period, licenses must be used either on-premises or in the cloud.</p>
+                                  </section>
+                              </div>
+                          </li>
+                      </ul>
+                  </div>
+              </div> -->
+       <div class="pricing-page-section">
+        <h2>
+         支持和服务级别协议
+        </h2>
+        <p>
+         如有任何疑问或需要帮助，请访问
+         <a href="https://support.azure.cn/zh-cn/support/contact" id="container-instances-ssis-contact-page">
+          Azure 支持
+         </a>
+         选择自助服务或者其他任何方式联系我们获得支持。
+        </p>
+        <p>
+         若要了解有关我们的服务器级别协议的详细信息，请访问
+         <a href="../../../support/sla/container-instances/v1_0/index.html" id="container-instances-ssis-contact-page">
+          服务级别协议页
+         </a>
+         。
+        </p>
+       </div>
+       <!--BEGIN: Support and service code chunk-->
+       <!--END: Support and service code chunk-->
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- END: Documentation Content -->
+  <!-- BEGIN: Footer -->
+  <div class="public_footerpage">
+  </div>
+  <!--END: Common sidebar-->
+  <link href="../../../Static/CSS/Localization/zh-cn.css" rel="stylesheet"/>
+  <script src="/Static/Scripts/lib/jquery-1.12.3.min.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   function getAntiForgeryToken() {
+        var token =
+            '<input name="__RequestVerificationToken" type="hidden" value="FtJS7EhZBT6rgbp0PkQRqZsvT4EkKorxier871BisK9SjwrzF-3NCsrqEl_VYuhENbkKwc9cRYh6MY_Z2AzDIMXeWXd32LE1Vl7rUDgXkV41" />';
+        token = $(token).val();
+        return token;
+    }
+
+    function setLocaleCookie(localeVal) {
+        var Days = 365 * 10; // Ten year expiration
+        var exp = new Date();
+
+        var hostName = window.location.hostname;
+        var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+        exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+        document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain +
+            "; path=/;expires=" + exp.toGMTString();
+    }
+
+    setLocaleCookie(window.currentLocale);
+  </script>
+  <script type="text/javascript">
+   var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+    var TECHNICAL_STORAGE = '/blob/tech-content/';
+    var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+    var EnablePricingSync = 'false';
+  </script>
+  <!-- BEGIN: Minified RequireJs -->
+  <script src="/Static/Scripts/global.config.js" type="text/javascript">
+  </script>
+  <script src="/Static/Scripts/require.js" type="text/javascript">
+  </script>
+  <script src="/Static/Scripts/pricing-page-detail.js" type="text/javascript">
+  </script>
+  <!--<script src='../../../Static/Scripts/4552a1505e111da8c71780b349b683700a6158fa.js' type='text/javascript'></script>-->
+  <!-- END: Minified RequireJs -->
+  <!-- begin JSLL -->
+  <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js">
+  </script>
+  <script type="text/javascript">
+   (function () {
+        var config = {
+            cookiesToCollect: ["_mkto_trk"],
+            syncMuid: true,
+            ix: {
+                a: true,
+                g: true
+            },
+            coreData: {
+                appId: 'AzureCN',
+                market: 'zh-cn',
+            }
+        };
+        awa.init(config);
+    })();
+  </script>
+  <!-- end JSLL -->
+  <script src="../../../Static/Scripts/plugins/cookie/jquery.cookie.js" type="text/javascript">
+  </script>
+  <script src="../../../Static/Scripts/wacndatatracker.js" type="text/javascript">
+  </script>
+  <script src="/common/useCommon.js" type="text/javascript">
+  </script>
+ </body>
+</html>

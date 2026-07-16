@@ -1,0 +1,4063 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=2.0" name="viewport"/>
+  <meta content="Access Windows 10 Enterprise and Windows 7 Enterprise desktops and apps at no additional cost if you have an eligible Windows or Microsoft 365 license." name="description"/>
+  <meta content="Access Windows 10 Enterprise and Windows 7 Enterprise desktops and apps at no additional cost if you have an eligible Windows or Microsoft 365 license." name="twitter:description" property="twitter:description"/>
+  <title>
+   Azure 虚拟桌面定价
+  </title>
+  <link href="../../../../Static/Favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+  <link href="../../../../Static/Favicon/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+  <link href="../../../../Static/Favicon/favicon.ico" rel="icon" type="image/x-icon"/>
+  <link href="../../../../Static/Favicon/manifest.json" rel="manifest"/>
+  <link color="#0078D4" href="../../../../Static/Favicon/safari-pinned-tab.svg" rel="mask-icon"/>
+  <meta content="/Static/Favicon/browserconfig.xml" name="msapplication-config"/>
+  <meta content="#ffffff" name="theme-color"/>
+  <link href="https://azure.microsoft.com/pricing/details/storage/managed-disks/" rel="canonical"/>
+  <!-- BEGIN: Azure UI Style -->
+  <link href="../../../../Static/CSS/azureui.min.css" rel="stylesheet"/>
+  <link href="../../../../Static/CSS/common.min.css" rel="stylesheet"/>
+  <!-- END: Azure UI Style -->
+  <!-- BEGIN: Page Style -->
+  <!-- END: Page Style -->
+  <!-- BEGIN: Minified Page Style -->
+  <link href="../../../../Static/CSS/a05a0e4e99489d7b3cb548e24414e01adf779d77.css" rel="stylesheet"/>
+  <!-- END: Minified Page Style -->
+  <link href="../../../../StaticService/css/service.min.css" rel="stylesheet"/>
+ </head>
+ <body class="zh-cn" onload="load();">
+  <script>
+   window.requireUrlArgs = "2019/6/24 6:51:27";
+        window.currentLocale = "zh-CN";
+        window.headerTimestamp = "2019/1/23 8:25:24";
+        window.footerTimestamp = "2019/1/8 8:07:06";
+        window.locFileTimestamp = "2018/11/29 7:49:17";
+
+        window.AcnHeaderFooter = {
+            IsEnableQrCode: true,
+            CurrentLang: window.currentLocale.toLowerCase(),
+        };
+  </script>
+  <style>
+   select {
+            height: 48PX;
+            width: 421.75px;
+            /*Chrome和Firefox里面的边框是不一样的，所以复写了一下*/
+
+        }
+
+        table {
+            display: none;
+        }
+
+        @media (min-width: 0) {
+            .acn-header-placeholder {
+                height: 48px;
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 980px) {
+            .acn-header-placeholder {
+                height: 89px;
+                width: 100%;
+            }
+        }
+
+        .acn-header-placeholder {
+            background-color: #1A1A1A;
+        }
+
+        .acn-header-service {
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+  </style>
+  <div class="acn-header-container">
+   <div class="acn-header-placeholder">
+   </div>
+   <div class="public_headerpage">
+   </div>
+  </div>
+  <!-- BEGIN: Documentation Content -->
+  <div class="content">
+   <div class="container">
+    <div class="row">
+     <div class="col-md-12">
+      <div class="bread-crumb hidden-sm hidden-xs">
+       <ul>
+        <li>
+         <span>
+         </span>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+    <div class="single-page">
+     <div class="row">
+      <div class="col-md-2">
+       <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+        <div class="loader">
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+        </div>
+       </div>
+      </div>
+      <div class="col-md-10 pure-content">
+       <div class="select left-navigation-select hidden-md hidden-lg">
+        <select>
+         <option selected="selected">
+          加载中...
+         </option>
+        </select>
+        <span class="icon icon-arrow-top">
+        </span>
+       </div>
+       <tags ms.date="09/30/2015" ms.service="virtual-desktop" wacn.date="11/27/2015">
+       </tags>
+       <style type="text/css">
+        .pricing-detail-tab .tab-nav {
+                                padding-left: 0 !important;
+                                margin-top: 5px;
+                                margin-bottom: 0;
+                                overflow: hidden;
+                            }
+
+                            .pricing-detail-tab .tab-nav li {
+                                list-style: none;
+                                float: left;
+                            }
+
+                            .pricing-detail-tab .tab-nav li.active a {
+                                border-bottom: 4px solid #00a3d9;
+                            }
+
+                            .pricing-detail-tab .tab-nav li.active a:hover {
+                                border-bottom: 4px solid #00a3d9;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel {
+                                display: none;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel.show-md {
+                                display: block;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel .tab-nav li a {
+                                padding-left: 5px;
+                                padding-right: 5px;
+                                color: #00a3d9;
+                                background-color: #FFF;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel .tab-nav li.active a {
+                                color: #FFF;
+                                background-color: #00a3d9;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel .tab-nav li a:hover {
+                                color: #FFF;
+                                background-color: #00a3d9;
+                            }
+
+                            .pure-content .technical-azure-selector p a,
+                            .pure-content .technical-azure-selector table a {
+                                background: 0 0;
+                                padding: 0;
+                                margin: 0 6px;
+                                height: 21px;
+                                line-height: 22px;
+                                font-size: 14px;
+                                color: #00a3d9;
+                                float: none;
+                                display: inline;
+                            }
+
+                            .remove_list_style {
+                                list-style: none;
+                                overflow: hidden;
+                                background-color: #f4f5f6;
+                            }
+
+                            .title_list {
+                                display: inline-block;
+                                float: left;
+                                width: 50%;
+                            }
+
+                            .svg {
+                                width: 50px;
+                                float: left;
+                                margin-right: 10px;
+                            }
+       </style>
+       <!-- <div class="hide-info" style="display:none;">
+							<div class="bg-box">
+								<div class="cover-bg">&nbsp;</div>
+							</div>
+							<div class="msg-box">
+								<div class="pricing-unavailable-message">所选区域不可用</div>
+							</div>
+						</div> -->
+       <div class="common-banner col-top-banner" data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'/Images/marketing-resource/media/images/production/virtual_machine.png','imageHeight':'auto'}">
+        <div class="common-banner-image">
+         <div class="common-banner-title">
+          <img src="/Images/marketing-resource/media/images/production/icon-virtual-machines.png"/>
+          <h2>
+           虚拟机
+           <span>
+            Virtual Machines
+           </span>
+          </h2>
+          <h4>
+           在几秒钟内预配好 Windows 和 Linux 虚拟机
+          </h4>
+         </div>
+        </div>
+       </div>
+       <!-- END: Product-Detail-TopBanner -->
+       <div class="pricing-page-section">
+        <p>
+         我们支持多种规模的虚拟机。虚拟机价格按分钟计费，以小时费率列出。如果虚拟机的运行时间不足 1 小时，则按总分钟数计费。
+        </p>
+        <p>
+         本页面包含两种价格：
+        </p>
+        <p>
+         1.适用于已签署或者计划签署世纪互联在线服务标准协议客户的标准预付费价格
+        </p>
+        <p>
+         2.适用于已签署或者计划签署世纪互联在线服务高级协议客户的年预付费计算实例（CPP，Compute
+                                Pre-Purchase）价格。若您需要购买CPP，请您联系您的客户经理或者合作伙伴。
+         <br/>
+         CPP节省百分比计算按照（每月标准预付费价格/(1+6%
+                                )-CPP价格）/(每月标准预付费价格/(1+6% ))， 比如A系列标准机型A1(Linux), 折扣率=（￥215.76/(1+6%）-￥64.17)/
+                                (￥215.76/(1+6%）)=68%。
+         <br/>
+         年预付费计算实例（简称CPP）是OSPA
+                                Azure客户获得计算资源（即虚拟机）折扣的最具性价比的方式。
+        </p>
+        <div style="margin-left: 25px;">
+         <ul>
+          <li>
+           CPP促销方案产品购买规则：初始订单以及校正年度订单只可以按年度购买（12个月）。附加订单需要根据当前合同年所剩余月数购买。如果当前合同年剩余月数少于7个月，则除购买当前合同年剩余月数外，还需加购下一合同年（12个月）的订单。
+          </li>
+          <li>
+           购买CPP需要新的人工订单（无法使用剩余的承诺金额），且必须基于有效的OSPA协议之上。
+          </li>
+          <li>
+           一个CPP实例相当于一个虚拟机实例一个月744小时的使用时间。
+          </li>
+          <li>
+           对于CPP实例来说来说，其虚拟机的详细信息，如系列、大小、数据中心和操作系统等都是固定的，一旦订单被接受就不能更改或取消。
+          </li>
+          <li>
+           当月未用完的小时数会清零，无法转移到下个月 。
+          </li>
+          <li>
+           3年的CPP（至少涵盖24个月，直至相关OSP协议终止）只适用于部分虚拟机类型。
+          </li>
+         </ul>
+        </div>
+        <h2>
+         虚拟机类型
+        </h2>
+       </div>
+       <div class="pricing-page-section">
+        <!-- BEGIN: TAB-CONTROL -->
+        <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
+         <div class="tab-container-container">
+          <div class="tab-container-box">
+           <div class="tab-container">
+            <div class="dropdown-container region-container">
+             <label>
+              OS:
+             </label>
+             <select id="system" name="select1" onchange="sle(this);">
+              <option value="S_WIN">
+               Windows
+              </option>
+              <option value="S_Linux">
+               Linux
+              </option>
+              <option value="S_SqlWIN">
+               SQL
+                                                        Server for Windows
+              </option>
+              <option value="S_SqlLIN">
+               SQL
+                                                        Server Ubuntu Linux
+              </option>
+              <option value="S_mMLS">
+               Machine
+                                                        Learning Server
+              </option>
+              <option value="S_SLEB">
+               SUSE Linux Enterprise Basic
+              </option>
+              <option value="S_ESSP">
+               SUSE Linux
+                                                        Enterprise Server for SAP Priority
+              </option>
+             </select>
+            </div>
+            <div class="dropdown-container region-container">
+             <label>
+              地区:
+             </label>
+             <select id="region" name="select2" onchange="sle(this);">
+              <option value="north_china3">
+               中国北部 3
+              </option>
+              <option value="east_china2">
+               中国东部 2
+              </option>
+              <option value="north_china2">
+               中国北部 2
+              </option>
+              <option value="east_china">
+               中国东部
+              </option>
+              <option value="north_china">
+               中国北部
+              </option>
+             </select>
+            </div>
+            <div class="dropdown-container region-container" onchange="sle(this);">
+             <label>
+              类别:
+             </label>
+             <select id="category" name="select3">
+              <!-- <option value="ALL">ALL</option> -->
+              <option value="general_purpose">
+               常规用途
+              </option>
+              <option value="compute_optimized">
+               计算优化
+              </option>
+              <option value="memory_optimized">
+               内存优化
+              </option>
+              <option value="GPU">
+               GPU
+              </option>
+             </select>
+            </div>
+            <div class="dropdown-container region-container">
+             <label>
+              系列:
+             </label>
+             <select id="series" name="select4" onchange="sle(this);">
+              <!-- <option value="ALL">ALL</option> -->
+              <option value="A">
+               A 系列
+              </option>
+              <option value="B">
+               B 系列
+              </option>
+              <option value="AV2">
+               AV2 系列
+              </option>
+              <option value="Dasv4">
+               Dasv4 系列
+              </option>
+              <option value="Dasv5">
+               Dasv5 系列
+              </option>
+              <option value="Dav4">
+               Dav4 系列
+              </option>
+              <option value="DCadsv5">
+               DCadsv5 系列
+              </option>
+              <option value="DCasv5">
+               DCasv5 系列
+              </option>
+              <option value="Dcdsv3">
+               DCdsv3 系列
+              </option>
+              <option value="Dcsv2">
+               DCsv2 系列
+              </option>
+              <option value="Dcsv3">
+               DCsv3 系列
+              </option>
+              <option value="Ddsv4">
+               Ddsv4 系列
+              </option>
+              <option value="Ddsv5">
+               Ddsv5 系列
+              </option>
+              <option value="Ddv4">
+               Ddv4 系列
+              </option>
+              <option value="Ddv5">
+               Ddv5 系列
+              </option>
+              <option value="Dsv2">
+               Dsv2 系列
+              </option>
+              <option value="Dsv3">
+               Dsv3 系列
+              </option>
+              <option value="Dsv4">
+               Dsv4 系列
+              </option>
+              <option value="Dsv5">
+               Dsv5 系列
+              </option>
+              <option value="Dv2">
+               Dv2 系列
+              </option>
+              <option value="Dv3">
+               Dv3 系列
+              </option>
+              <option value="Dv4">
+               Dv4 系列
+              </option>
+              <option value="Dv5">
+               Dv5 系列
+              </option>
+              <option value="Eadsv5">
+               Eadsv5 系列
+              </option>
+              <option value="Easv4">
+               Easv4 系列
+              </option>
+              <option value="Easv5">
+               Easv5 系列
+              </option>
+              <option value="Eav4">
+               Eav4 系列
+              </option>
+              <option value="Ebdsv5">
+               Ebdsv5 系列
+              </option>
+              <option value="Ebsv5">
+               Ebsv5 系列
+              </option>
+              <option value="ECadsv5">
+               ECadsv5 系列
+              </option>
+              <option value="ECasv5">
+               ECasv5 系列
+              </option>
+              <option value="Edsv4">
+               Edsv4 系列
+              </option>
+              <option value="Edsv5">
+               Edsv5 系列
+              </option>
+              <option value="Edv4">
+               Edv4 系列
+              </option>
+              <option value="Edv5">
+               Edv5 系列
+              </option>
+              <option value="Esv3">
+               Esv3 系列
+              </option>
+              <option value="Esv4">
+               Esv4 系列
+              </option>
+              <option value="Esv5">
+               Esv5 系列
+              </option>
+              <option value="Ev3">
+               Ev3 系列
+              </option>
+              <option value="Ev4">
+               Ev4 系列
+              </option>
+              <option value="Ev5">
+               Ev5 系列
+              </option>
+              <option value="F">
+               F 系列
+              </option>
+              <option value="Fs">
+               FS 系列
+              </option>
+              <option value="Fsv2">
+               Fsv2 系列
+              </option>
+              <option value="FX">
+               FX 系列
+              </option>
+              <option value="G">
+               G 系列
+              </option>
+              <option value="Gs">
+               Gs 系列
+              </option>
+              <option value="H">
+               H 系列
+              </option>
+              <option value="HB">
+               HB 系列
+              </option>
+              <option value="HBv2">
+               HBv2 系列
+              </option>
+              <option value="HBv3">
+               HBv3 系列
+              </option>
+              <option value="HC">
+               HC 系列
+              </option>
+              <option value="Ls">
+               Ls 系列
+              </option>
+              <option value="Lsv2">
+               Lsv2 系列
+              </option>
+              <option value="M">
+               M 系列
+              </option>
+              <option value="Mdsv2">
+               Mdsv2 系列
+              </option>
+              <option value="Msv2">
+               Msv2 系列
+              </option>
+              <option value="Mv2">
+               Mv2 系列
+              </option>
+              <option value="NC">
+               NC 系列
+              </option>
+              <option value="NCa100v4">
+               NCA100v4 系列
+              </option>
+              <option value="NCa10v4">
+               NCadsA10v4 系列
+              </option>
+              <option value="NCasT4v3">
+               NCas_T4_v3-series
+              </option>
+              <option value="NCsv2">
+               NCsv2 系列
+              </option>
+              <option value="NCsv3">
+               NCsv3 系列
+              </option>
+              <option value="NDasrv4">
+               NDA100v4-series
+              </option>
+              <option value="NDamsrv4">
+               NDmA100v4 系列
+              </option>
+              <option value="NDs">
+               NDs 系列
+              </option>
+              <option value="NDv2">
+               NDv2 系列
+              </option>
+              <option value="NV">
+               NV 系列
+              </option>
+              <option value="NVv3">
+               NVv3 系列
+              </option>
+              <option value="NVv4">
+               NVv4 系列
+              </option>
+              <option value="NVv5">
+               NVadsA10v5 系列
+              </option>
+             </select>
+            </div>
+           </div>
+          </div>
+         </div>
+         <!-- BEGIN: TAB-CONTAINER-1 -->
+         <div class="tab-content">
+          <!-- BEGIN: Tab level 2 content 2-1 -->
+          <div id="tabContent2-1">
+           <div id="S_WIN-general_purpose-A" style="display: none;">
+            <h3>
+             A 系列标准
+            </h3>
+            <p>
+             A 系列标准级别支持需要负载平衡、自动缩放的应用程序。这些虚拟机适用于开发工作负荷、生成服务器、代码存储库、低流量网站和 Web
+                                                应用程序、微服务、早期产品实验和小型数据库。
+            </p>
+            <!-- <p>从 2017 年 2 月 1 日起，Linux A 系列标准级别价格下调，以下是下调前及下调后的价格列表：</p> -->
+            <p>
+             CPP（计算预购买）仅适用于已签署或者计划签署世纪互联在线服务高级协议客户购买。
+            </p>
+            <div class="tags-date">
+             <div class="ms-date">
+              *请注意：以下价格除CPP(Compute Pre-Purchase)外，均为是含税价格。 CPP
+                                                    (Compute Pre-Purchase) 价格是基于每月的不含税价格。
+             </div>
+             <br/>
+             <div class="ms-date">
+              *每月价格估算基于每个月 744 小时的使用量。
+             </div>
+            </div>
+            <table cellpadding="0" cellspacing="0" id="S_WIN-north_china3-general_purpose-A" width="100%">
+             <tr>
+              <th align="left">
+               <strong>
+                实例
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                内核数
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                RAM
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                临时存储
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                标准预付费价格
+               </strong>
+              </th>
+             </tr>
+             <tr>
+              <td>
+               A0
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               0.75 GiB
+              </td>
+              <td>
+               20 GiB
+              </td>
+              <td>
+               ￥ 0.13 / 小时
+               <br/>
+               (约 ￥ 96.72 / 月 )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A1
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               1.75 GiB
+              </td>
+              <td>
+               70 GiB
+              </td>
+              <td>
+               ￥ 0.29 / 小时
+               <br/>
+               (约 ￥ 215.76 / 月 )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A2
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               3.5 GiB
+              </td>
+              <td>
+               135 GiB
+              </td>
+              <td>
+               ￥ 0.75 / 小时
+               <br/>
+               (约 ￥ 558 / 月 )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A3
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               7 GiB
+              </td>
+              <td>
+               285 GiB
+              </td>
+              <td>
+               ￥ 1.51 / 小时
+               <br/>
+               (约 ￥ 1,123.44 / 月 )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A4
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               14 GiB
+              </td>
+              <td>
+               605 GiB
+              </td>
+              <td>
+               ￥ 3.01 / 小时
+               <br/>
+               (约 ￥ 2,239.44 / 月 )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A5
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               14 GiB
+              </td>
+              <td>
+               135 GiB
+              </td>
+              <td>
+               ￥ 1.62 / 小时
+               <br/>
+               (约 ￥ 1,205.28 / 月 )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A6
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               28 GiB
+              </td>
+              <td>
+               285 GiB
+              </td>
+              <td>
+               ￥ 3.25 / 小时
+               <br/>
+               (约 ￥ 2,418 / 月 )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A7
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               56 GiB
+              </td>
+              <td>
+               605 GiB
+              </td>
+              <td>
+               ￥ 6.49 / 小时
+               <br/>
+               (约 ￥ 4,828.56 / 月 )
+              </td>
+             </tr>
+            </table>
+            <table cellpadding="0" cellspacing="0" id="S_WIN-east_china2-general_purpose-A" width="100%">
+             <tr>
+              <th align="left">
+               <strong>
+                实例
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                内核数
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                RAM
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                临时存储
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                标准预付费价格
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                CPP 保留 1 年（节省百分比）
+               </strong>
+              </th>
+             </tr>
+             <tr>
+              <td>
+               A0
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               0.75 GiB
+              </td>
+              <td>
+               20 GiB
+              </td>
+              <td>
+               ￥ 0.1296/ 小时
+               <br/>
+               (约 ￥ 96.72 / 月 )
+              </td>
+              <td>
+               不适用
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A1
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               1.75 GiB
+              </td>
+              <td>
+               70 GiB
+              </td>
+              <td>
+               ￥ 0.2898/ 小时
+               <br/>
+               (约 ￥ 215.76 / 月 )
+              </td>
+              <td>
+               ￥64.17
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A2
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               3.5 GiB
+              </td>
+              <td>
+               135 GiB
+              </td>
+              <td>
+               ￥ 0.75/ 小时
+               <br/>
+               (约 ￥ 558 / 月 )
+              </td>
+              <td>
+               ￥163.41
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A3
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               7 GiB
+              </td>
+              <td>
+               285 GiB
+              </td>
+              <td>
+               ￥ 1.512/ 小时
+               <br/>
+               (约 ￥ 1,123.44 / 月 )
+              </td>
+              <td>
+               ￥337.1
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A4
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               14 GiB
+              </td>
+              <td>
+               605 GiB
+              </td>
+              <td>
+               ￥ 3.012/ 小时
+               <br/>
+               (约 ￥ 2,239.44 / 月 )
+              </td>
+              <td>
+               ￥686.19
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A5
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               14 GiB
+              </td>
+              <td>
+               135 GiB
+              </td>
+              <td>
+               ￥ 1.62/ 小时
+               <br/>
+               (约 ￥ 1,205.28 / 月 )
+              </td>
+              <td>
+               ￥371.25
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A6
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               28 GiB
+              </td>
+              <td>
+               285 GiB
+              </td>
+              <td>
+               ￥ 3.246/ 小时
+               <br/>
+               (约 ￥ 2,418 / 月 )
+              </td>
+              <td>
+               ￥752.18
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A7
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               56 GiB
+              </td>
+              <td>
+               605 GiB
+              </td>
+              <td>
+               ￥ 6.492/ 小时
+               <br/>
+               (约 ￥ 4,828.56 / 月 )
+              </td>
+              <td>
+               ￥1514.78
+                                                        /月(~26%)
+              </td>
+             </tr>
+            </table>
+            <table cellpadding="0" cellspacing="0" id="S_WIN-north_china2-general_purpose-A" width="100%">
+             <tr>
+              <th align="left">
+               <strong>
+                实例
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                内核数
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                RAM
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                临时存储
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                标准预付费价格
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                CPP 保留 1 年（节省百分比）
+               </strong>
+              </th>
+             </tr>
+             <tr>
+              <td>
+               A0
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               0.75 GiB
+              </td>
+              <td>
+               20 GiB
+              </td>
+              <td>
+               ￥ 0.13 / 小时
+               <br/>
+               (约 ￥ 96.72 / 月 )
+              </td>
+              <td>
+               不适用
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A1
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               1.75 GiB
+              </td>
+              <td>
+               70 GiB
+              </td>
+              <td>
+               ￥ 0.29 / 小时
+               <br/>
+               (约 ￥ 215.76 / 月 )
+              </td>
+              <td>
+               ￥ 64.17
+                                                        /月(~68%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A2
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               3.5 GiB
+              </td>
+              <td>
+               135 GiB
+              </td>
+              <td>
+               ￥ 0.75 / 小时
+               <br/>
+               (约 ￥ 558 / 月 )
+              </td>
+              <td>
+               ￥ 163.41
+                                                        /月(~69%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A3
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               7 GiB
+              </td>
+              <td>
+               285 GiB
+              </td>
+              <td>
+               ￥ 1.51 / 小时
+               <br/>
+               (约 ￥ 1,123.44 / 月 )
+              </td>
+              <td>
+               ￥ 337.1
+                                                        /月(~68%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A4
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               14 GiB
+              </td>
+              <td>
+               605 GiB
+              </td>
+              <td>
+               ￥ 3.01 / 小时
+               <br/>
+               (约 ￥ 2,239.44 / 月 )
+              </td>
+              <td>
+               ￥ 686.19
+                                                        /月(~68%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A5
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               14 GiB
+              </td>
+              <td>
+               135 GiB
+              </td>
+              <td>
+               ￥ 1.62 / 小时
+               <br/>
+               (约 ￥ 1,205.28 / 月 )
+              </td>
+              <td>
+               ￥ 371.25
+                                                        /月(~67%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A6
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               28 GiB
+              </td>
+              <td>
+               285 GiB
+              </td>
+              <td>
+               ￥ 3.25 / 小时
+               <br/>
+               (约 ￥ 2,418 / 月 )
+              </td>
+              <td>
+               ￥ 752.18
+                                                        /月(~67%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A7
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               56 GiB
+              </td>
+              <td>
+               605 GiB
+              </td>
+              <td>
+               ￥ 6.49 / 小时
+               <br/>
+               (约 ￥ 4,828.56 / 月 )
+              </td>
+              <td>
+               ￥ 1514.78
+                                                        /月(~67%
+                                                        )
+              </td>
+             </tr>
+            </table>
+            <table cellpadding="0" cellspacing="0" id="S_WIN-east_china-general_purpose-A" width="100%">
+             <tr>
+              <th align="left">
+               <strong>
+                实例
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                内核数
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                RAM
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                临时存储
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                标准预付费价格
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                CPP 保留 1 年（节省百分比）
+               </strong>
+              </th>
+             </tr>
+             <tr>
+              <td>
+               A0
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               0.75 GiB
+              </td>
+              <td>
+               20 GiB
+              </td>
+              <td>
+               ￥ 0.13 / 小时
+               <br/>
+               (约 ￥ 96.72 / 月 )
+              </td>
+              <td>
+               不适用
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A1
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               1.75 GiB
+              </td>
+              <td>
+               70 GiB
+              </td>
+              <td>
+               ￥ 0.29 / 小时
+               <br/>
+               (约 ￥ 215.76 / 月 )
+              </td>
+              <td>
+               ￥ 64.17
+                                                        /月(~68%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A2
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               3.5 GiB
+              </td>
+              <td>
+               135 GiB
+              </td>
+              <td>
+               ￥ 0.75 / 小时
+               <br/>
+               (约 ￥ 558 / 月 )
+              </td>
+              <td>
+               ￥ 163.41
+                                                        /月(~69%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A3
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               7 GiB
+              </td>
+              <td>
+               285 GiB
+              </td>
+              <td>
+               ￥ 1.51 / 小时
+               <br/>
+               (约 ￥ 1,123.44 / 月 )
+              </td>
+              <td>
+               ￥ 337.1
+                                                        /月(~68%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A4
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               14 GiB
+              </td>
+              <td>
+               605 GiB
+              </td>
+              <td>
+               ￥ 3.01 / 小时
+               <br/>
+               (约 ￥ 2,239.44 / 月 )
+              </td>
+              <td>
+               ￥ 686.19
+                                                        /月(~68%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A5
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               14 GiB
+              </td>
+              <td>
+               135 GiB
+              </td>
+              <td>
+               ￥ 1.62 / 小时
+               <br/>
+               (约 ￥ 1,205.28 / 月 )
+              </td>
+              <td>
+               ￥ 371.25
+                                                        /月(~67%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A6
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               28 GiB
+              </td>
+              <td>
+               285 GiB
+              </td>
+              <td>
+               ￥ 3.25 / 小时
+               <br/>
+               (约 ￥ 2,418 / 月 )
+              </td>
+              <td>
+               ￥ 752.18
+                                                        /月(~67%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A7
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               56 GiB
+              </td>
+              <td>
+               605 GiB
+              </td>
+              <td>
+               ￥ 6.49 / 小时
+               <br/>
+               (约 ￥ 4,828.56 / 月 )
+              </td>
+              <td>
+               ￥ 1514.78
+                                                        /月(~67%
+                                                        )
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div id="S_WIN-general_purpose-B" style="display: none;">
+            <h3>
+             B 系列
+            </h3>
+            <p>
+             B 系列属于经济型虚拟机，可为通常以低到中等基准 CPU 性能运行但有时在需求提高时需要爆发到高得多的 CPU
+                                                性能的工作负荷提供低成本选项。这些工作负荷无需 CPU
+                                                始终满负荷运转，但偶尔需要爆发以更快完成某些任务。许多应用程序（如开发和测试服务器、低流量 Web
+                                                浏览器、小型数据库、微服务、概念验证服务器、生成服务器和代码存储库）均适应此模型。
+            </p>
+            <p>
+             CPP（计算预购买）仅适用于已签署或者计划签署世纪互联在线服务高级协议客户购买。
+            </p>
+            <div class="tags-date">
+             <div class="ms-date">
+              *请注意：以下价格除CPP(Compute Pre-Purchase)外，均为是含税价格。 CPP
+                                                    (Compute Pre-Purchase) 价格是基于每月的不含税价格。
+             </div>
+             <br/>
+             <div class="ms-date">
+              *每月价格估算基于每个月 744 小时的使用量。
+             </div>
+             <br/>
+            </div>
+            <table cellpadding="0" cellspacing="0" id="S_WIN-north_china3-general_purpose-B" width="100%">
+             <tr>
+              <th align="left">
+               <strong>
+                实例
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                内核数
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                RAM
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                临时存储
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                标准预付费价格
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                CPP 保留 1 年（节省百分比）
+               </strong>
+              </th>
+             </tr>
+             <tr>
+              <td>
+               B1LS
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               0.5 GiB
+              </td>
+              <td>
+               4 GiB
+              </td>
+              <td>
+               ￥ 0.025
+                                                        / 小时
+               <br/>
+               (约 ￥ 18.6
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 5.25
+                                                        /月(~70%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B1S
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               1 GiB
+              </td>
+              <td>
+               2 GiB
+              </td>
+              <td>
+               ￥ 0.051
+                                                        / 小时
+               <br/>
+               (约 ￥ 37.944
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 10.5
+                                                        /月(~71%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B1MS
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               2 GiB
+              </td>
+              <td>
+               4 GiB
+              </td>
+              <td>
+               ￥ 0.102
+                                                        / 小时
+               <br/>
+               (约 ￥ 75.888
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 21
+                                                        /月(~71%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B2S
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               4 GiB
+              </td>
+              <td>
+               8 GiB
+              </td>
+              <td>
+               ￥ 0.203
+                                                        / 小时
+               <br/>
+               (约 ￥ 151.032
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 42
+                                                        /月(~71%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B2MS
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               8 GiB
+              </td>
+              <td>
+               16 GiB
+              </td>
+              <td>
+               ￥ 0.406
+                                                        / 小时
+               <br/>
+               (约 ￥ 302.064
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 84
+                                                        /月(~71%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B4MS
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               16 GiB
+              </td>
+              <td>
+               32 GiB
+              </td>
+              <td>
+               ￥ 0.813
+                                                        / 小时
+               <br/>
+               (约 ￥ 604.872
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 168
+                                                        /月(~71%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B8MS
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               32 GiB
+              </td>
+              <td>
+               64 GiB
+              </td>
+              <td>
+               ￥ 1.626
+                                                        / 小时
+               <br/>
+               (约 ￥ 1,209.744
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 336
+                                                        /月(~71%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B12MS
+              </td>
+              <td>
+               12
+              </td>
+              <td>
+               48 GiB
+              </td>
+              <td>
+               96 GiB
+              </td>
+              <td>
+               ￥ 2.44
+                                                        / 小时
+               <br/>
+               (约 ￥ 1,815.36
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 504
+                                                        /月(~71%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B16MS
+              </td>
+              <td>
+               16
+              </td>
+              <td>
+               64 GiB
+              </td>
+              <td>
+               128 GiB
+              </td>
+              <td>
+               ￥ 3.254
+                                                        / 小时
+               <br/>
+               (约 ￥ 2,420.976
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 672
+                                                        /月(~71%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B20MS
+              </td>
+              <td>
+               20
+              </td>
+              <td>
+               80 GiB
+              </td>
+              <td>
+               160 GiB
+              </td>
+              <td>
+               ￥ 4.067
+                                                        / 小时
+               <br/>
+               (约 ￥ 3,025.848
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 840.19
+                                                        /月(~71%
+                                                        )
+              </td>
+             </tr>
+            </table>
+            <!-- 东三 -->
+            <table cellpadding="0" cellspacing="0" id="vm-table1-1-3-east3-l" width="100%">
+             <tr>
+              <th align="left">
+               <strong>
+                实例
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                内核数
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                RAM
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                临时存储
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                标准预付费价格
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                CPP 保留 1 年（节省百分比）
+               </strong>
+              </th>
+             </tr>
+             <tr>
+              <td>
+               B1LS
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               0.5 GiB
+              </td>
+              <td>
+               4 GiB
+              </td>
+              <td>
+               ￥ 0.03252/ 小时
+               <br/>
+               (约 ￥ 43.896
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 6.82
+                                                        /月(~39%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B1S
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               1 GiB
+              </td>
+              <td>
+               2 GiB
+              </td>
+              <td>
+               ￥ 0.0666/ 小时
+               <br/>
+               (约 ￥ 87.792
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 13.71
+                                                        /月(~39%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B1MS
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               2 GiB
+              </td>
+              <td>
+               4 GiB
+              </td>
+              <td>
+               ￥ 0.1326/ 小时
+               <br/>
+               (约 ￥ 174.84
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 27.3
+                                                        /月(~36%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B2S
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               4 GiB
+              </td>
+              <td>
+               8 GiB
+              </td>
+              <td>
+               ￥ 0.264/ 小时
+               <br/>
+               (约 ￥ 250.728
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 54.67
+                                                        /月(~43%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B2MS
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               8 GiB
+              </td>
+              <td>
+               16 GiB
+              </td>
+              <td>
+               ￥ 0.528/ 小时
+               <br/>
+               (约 ￥ 451.608
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 10.19
+                                                        /月(~48%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B4MS
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               16 GiB
+              </td>
+              <td>
+               32 GiB
+              </td>
+              <td>
+               ￥ 1.056/ 小时
+               <br/>
+               (约 ￥ 1,002.168
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 219.02
+                                                        /月(~43%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B8MS
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               32 GiB
+              </td>
+              <td>
+               64 GiB
+              </td>
+              <td>
+               ￥ 2.112/ 小时
+               <br/>
+               (约 ￥ 2,003.592
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 436.32
+                                                        /月(~43%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B12MS
+              </td>
+              <td>
+               12
+              </td>
+              <td>
+               48 GiB
+              </td>
+              <td>
+               96 GiB
+              </td>
+              <td>
+               ￥ 3.174/ 小时
+               <br/>
+               (约 ￥ 2,708.16
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 655.08
+
+
+                                                        /月(~53%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B16MS
+              </td>
+              <td>
+               16
+              </td>
+              <td>
+               64 GiB
+              </td>
+              <td>
+               128 GiB
+              </td>
+              <td>
+               ￥ 4.23/ 小时
+               <br/>
+               (约 ￥ 3,610.632
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 874.1
+
+                                                        /月(~53%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B20MS
+              </td>
+              <td>
+               20
+              </td>
+              <td>
+               80 GiB
+              </td>
+              <td>
+               160 GiB
+              </td>
+              <td>
+               ￥ 5.286/ 小时
+               <br/>
+               (约 ￥ 4,513.104
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 1091.5
+                                                        /月(~53%
+                                                        )
+              </td>
+             </tr>
+            </table>
+            <!-- 北三 -->
+            <table cellpadding="0" cellspacing="0" id="vm-table1-1-3-north3-l" width="100%">
+             <tr>
+              <th align="left">
+               <strong>
+                实例
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                内核数
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                RAM
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                临时存储
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                标准预付费价格
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                CPP 保留 1 年（节省百分比）
+               </strong>
+              </th>
+             </tr>
+             <tr>
+              <td>
+               B1LS
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               0.5 GiB
+              </td>
+              <td>
+               4 GiB
+              </td>
+              <td>
+               ￥ 0.02502/ 小时
+               <br/>
+               (约 ￥ 43.896
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 5.25
+                                                        /月(~39%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B1S
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               1 GiB
+              </td>
+              <td>
+               2 GiB
+              </td>
+              <td>
+               ￥ 0.051/ 小时
+               <br/>
+               (约 ￥ 87.792
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 10.5
+                                                        /月(~39%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B1MS
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               2 GiB
+              </td>
+              <td>
+               4 GiB
+              </td>
+              <td>
+               ￥ 0.102/ 小时
+               <br/>
+               (约 ￥ 174.84
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 21
+                                                        /月(~36%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B2S
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               4 GiB
+              </td>
+              <td>
+               8 GiB
+              </td>
+              <td>
+               ￥ 0.2028/ 小时
+               <br/>
+               (约 ￥ 250.728
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 42
+                                                        /月(~43%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B2MS
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               8 GiB
+              </td>
+              <td>
+               16 GiB
+              </td>
+              <td>
+               ￥ 0.4062/ 小时
+               <br/>
+               (约 ￥ 451.608
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 84
+                                                        /月(~48%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B4MS
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               16 GiB
+              </td>
+              <td>
+               32 GiB
+              </td>
+              <td>
+               ￥ 0.81/ 小时
+               <br/>
+               (约 ￥ 1,002.168
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 168
+                                                        /月(~43%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B8MS
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               32 GiB
+              </td>
+              <td>
+               64 GiB
+              </td>
+              <td>
+               ￥ 1.626/ 小时
+               <br/>
+               (约 ￥ 2,003.592
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 335.92
+                                                        /月(~43%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B12MS
+              </td>
+              <td>
+               12
+              </td>
+              <td>
+               48 GiB
+              </td>
+              <td>
+               96 GiB
+              </td>
+              <td>
+               ￥ 2.442/ 小时
+               <br/>
+               (约 ￥ 2,708.16
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 504
+                                                        /月(~53%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B16MS
+              </td>
+              <td>
+               16
+              </td>
+              <td>
+               64 GiB
+              </td>
+              <td>
+               128 GiB
+              </td>
+              <td>
+               ￥ 3.252/ 小时
+               <br/>
+               (约 ￥ 3,610.632
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 672
+                                                        /月(~53%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               B20MS
+              </td>
+              <td>
+               20
+              </td>
+              <td>
+               80 GiB
+              </td>
+              <td>
+               160 GiB
+              </td>
+              <td>
+               ￥ 4.068/ 小时
+               <br/>
+               (约 ￥ 4,513.104
+                                                        / 月 )
+              </td>
+              <td>
+               ￥ 840
+                                                        /月(~53%
+                                                        )
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div id="S_WIN-general_purpose-AV2 " style="display: none;">
+            <h3>
+             Av2 标准
+            </h3>
+            <p>
+             Av2 标准是最新一代的 A 系列虚拟机，具有类似的 CPU
+                                                性能但磁盘速度更快。这些虚拟机适用于开发工作负荷、生成服务器、代码存储库、低流量网站和 Web
+                                                应用程序、微服务、早期产品实验和小型数据库。与以前的 A 标准相同，Av2 虚拟机将包括负载平衡和自动缩放，且无需额外付费。
+            </p>
+            <p>
+             CPP（计算预购买）仅适用于已签署或者计划签署世纪互联在线服务高级协议客户购买。
+            </p>
+            <div class="tags-date">
+             <div class="ms-date">
+              *请注意：以下价格除CPP(Compute Pre-Purchase)外，均为是含税价格。 CPP
+                                                    (Compute Pre-Purchase) 价格是基于每月的不含税价格。
+             </div>
+             <br/>
+             <div class="ms-date">
+              *每月价格估算基于每个月 744 小时的使用量。
+             </div>
+            </div>
+            <table cellpadding="0" cellspacing="0" id="vm-table1-linux-r2-3" width="100%">
+             <tr>
+              <th align="left">
+               <strong>
+                实例
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                内核数
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                RAM
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                临时存储
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                标准预付费价格
+               </strong>
+              </th>
+             </tr>
+             <tr>
+              <td>
+               A1 v2
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               2 GiB
+              </td>
+              <td>
+               10 GiB
+              </td>
+              <td>
+               ￥ 0.437 / 小时
+               <br/>
+               (约 ￥ 325.128 / 月 )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A2 v2
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               4 GiB
+              </td>
+              <td>
+               20 GiB
+              </td>
+              <td>
+               ￥ 0.8625 / 小时
+               <br/>
+               (约 ￥ 641.7 / 月 )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A4 v2
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               8 GiB
+              </td>
+              <td>
+               40 GiB
+              </td>
+              <td>
+               ￥ 1.7365 / 小时
+               <br/>
+               (约 ￥ 1,291.956 / 月 )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A8 v2
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               16 GiB
+              </td>
+              <td>
+               80 GiB
+              </td>
+              <td>
+               ￥ 3.4615 / 小时
+               <br/>
+               (约 ￥ 2,575.356 / 月 )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A2m v2
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               16 GiB
+              </td>
+              <td>
+               20 GiB
+              </td>
+              <td>
+               ￥ 1.863 / 小时
+               <br/>
+               (约 ￥ 1,386.072 / 月 )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A4m v2
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               32 GiB
+              </td>
+              <td>
+               40 GiB
+              </td>
+              <td>
+               ￥ 3.7338 / 小时
+               <br/>
+               (约 ￥ 2,777.9472 / 月 )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A8m v2
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               64 GiB
+              </td>
+              <td>
+               80 GiB
+              </td>
+              <td>
+               ￥ 7.4635 / 小时
+               <br/>
+               (约 ￥ 5,552.844 / 月 )
+              </td>
+             </tr>
+            </table>
+            <!-- 东三 -->
+            <table cellpadding="0" cellspacing="0" id="vm-table1-linux-r2-3-east3" width="100%">
+             <tr>
+              <th align="left">
+               <strong>
+                实例
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                内核数
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                RAM
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                临时存储
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                标准预付费价格
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                CPP 保留 1 年（节省百分比）
+               </strong>
+              </th>
+             </tr>
+             <tr>
+              <td>
+               A1 v2
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               2 GiB
+              </td>
+              <td>
+               10 GiB
+              </td>
+              <td>
+               ￥ 0.5682/ 小时
+               <br/>
+               (约 ￥ 402.132 / 月 )
+              </td>
+              <td>
+               ￥296.04
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A2 v2
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               4 GiB
+              </td>
+              <td>
+               20 GiB
+              </td>
+              <td>
+               ￥ 1.122/ 小时
+               <br/>
+               (约 ￥ 804.264 / 月 )
+              </td>
+              <td>
+               ￥583.32
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A4 v2
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               8 GiB
+              </td>
+              <td>
+               40 GiB
+              </td>
+              <td>
+               ￥ 2.256/ 小时
+               <br/>
+               (约 ￥ 1,608.528 / 月 )
+              </td>
+              <td>
+               ￥1176.61
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A8 v2
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               16 GiB
+              </td>
+              <td>
+               80 GiB
+              </td>
+              <td>
+               ￥ 4.5/ 小时
+               <br/>
+               (约 ￥ 3,225.612 / 月 )
+              </td>
+              <td>
+               ￥2343.25
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A2m v2
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               16 GiB
+              </td>
+              <td>
+               20 GiB
+              </td>
+              <td>
+               ￥ 2.424/ 小时
+               <br/>
+               (约 ￥ 1,463.076 / 月 )
+              </td>
+              <td>
+               ￥1260.39
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A4m v2
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               32 GiB
+              </td>
+              <td>
+               40 GiB
+              </td>
+              <td>
+               ￥ 4.854/ 小时
+               <br/>
+               (约 ￥ 2,930.9136 / 月 )
+              </td>
+              <td>
+               ￥2529.18
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A8m v2
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               64 GiB
+              </td>
+              <td>
+               80 GiB
+              </td>
+              <td>
+               ￥ 9.702/ 小时
+               <br/>
+               (约 ￥ 5,860.86 / 月 )
+              </td>
+              <td>
+               ￥5052.46
+                                                        /月(~26%)
+              </td>
+             </tr>
+            </table>
+            <!-- 北三 -->
+            <table cellpadding="0" cellspacing="0" id="vm-table1-linux-r2-3-north3" width="100%">
+             <tr>
+              <th align="left">
+               <strong>
+                实例
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                内核数
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                RAM
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                临时存储
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                标准预付费价格
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                CPP 保留 1 年（节省百分比）
+               </strong>
+              </th>
+             </tr>
+             <tr>
+              <td>
+               A1 v2
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               2 GiB
+              </td>
+              <td>
+               10 GiB
+              </td>
+              <td>
+               ￥ 0.4368/ 小时
+               <br/>
+               (约 ￥ 402.132 / 月 )
+              </td>
+              <td>
+               ￥227.58
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A2 v2
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               4 GiB
+              </td>
+              <td>
+               20 GiB
+              </td>
+              <td>
+               ￥ 0.864/ 小时
+               <br/>
+               (约 ￥ 804.264 / 月 )
+              </td>
+              <td>
+               ￥449.19
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A4 v2
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               8 GiB
+              </td>
+              <td>
+               40 GiB
+              </td>
+              <td>
+               ￥ 1.734/ 小时
+               <br/>
+               (约 ￥ 1,608.528 / 月 )
+              </td>
+              <td>
+               ￥904.36
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A8 v2
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               16 GiB
+              </td>
+              <td>
+               80 GiB
+              </td>
+              <td>
+               ￥ 3.462/ 小时
+               <br/>
+               (约 ￥ 3,225.612 / 月 )
+              </td>
+              <td>
+               ￥1802.74
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A2m v2
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               16 GiB
+              </td>
+              <td>
+               20 GiB
+              </td>
+              <td>
+               ￥ 1.866/ 小时
+               <br/>
+               (约 ￥ 1,463.076 / 月 )
+              </td>
+              <td>
+               ￥970.25
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A4m v2
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               32 GiB
+              </td>
+              <td>
+               40 GiB
+              </td>
+              <td>
+               ￥ 3.732/ 小时
+               <br/>
+               (约 ￥ 2,930.9136 / 月 )
+              </td>
+              <td>
+               ￥1944.56
+                                                        /月(~26%)
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A8m v2
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               64 GiB
+              </td>
+              <td>
+               80 GiB
+              </td>
+              <td>
+               ￥ 7.464/ 小时
+               <br/>
+               (约 ￥ 5,860.86 / 月 )
+              </td>
+              <td>
+               ￥3886.99
+                                                        /月(~26%)
+              </td>
+             </tr>
+            </table>
+            <table cellpadding="0" cellspacing="0" id="vm-table2-3-cpp-new" width="100%">
+             <tr>
+              <th align="left">
+               <strong>
+                实例
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                内核数
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                RAM
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                临时存储
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                标准预付费价格
+               </strong>
+              </th>
+              <th align="left">
+               <strong>
+                CPP 保留 1 年（节省百分比）
+               </strong>
+              </th>
+             </tr>
+             <tr>
+              <td>
+               A1 v2
+              </td>
+              <td>
+               1
+              </td>
+              <td>
+               2 GiB
+              </td>
+              <td>
+               10 GiB
+              </td>
+              <td>
+               ￥ 0.437 / 小时
+               <br/>
+               (约 ￥ 325.128 / 月 )
+              </td>
+              <td>
+               ￥ 227.58
+                                                        /月(~26%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A2 v2
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               4 GiB
+              </td>
+              <td>
+               20 GiB
+              </td>
+              <td>
+               ￥ 0.8625 / 小时
+               <br/>
+               (约 ￥ 641.7 / 月 )
+              </td>
+              <td>
+               ￥ 449.19
+                                                        /月(~26%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A4 v2
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               8 GiB
+              </td>
+              <td>
+               40 GiB
+              </td>
+              <td>
+               ￥ 1.7365 / 小时
+               <br/>
+               (约 ￥ 1,291.956 / 月 )
+              </td>
+              <td>
+               ￥ 904.36
+                                                        /月(~26%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A8 v2
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               16 GiB
+              </td>
+              <td>
+               80 GiB
+              </td>
+              <td>
+               ￥ 3.4615 / 小时
+               <br/>
+               (约 ￥ 2,575.356 / 月 )
+              </td>
+              <td>
+               ￥ 1802.74
+                                                        /月(~26%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A2m v2
+              </td>
+              <td>
+               2
+              </td>
+              <td>
+               16 GiB
+              </td>
+              <td>
+               20 GiB
+              </td>
+              <td>
+               ￥ 1.863 / 小时
+               <br/>
+               (约 ￥ 1,386.072 / 月 )
+              </td>
+              <td>
+               ￥ 970.25
+                                                        /月(~26%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A4m v2
+              </td>
+              <td>
+               4
+              </td>
+              <td>
+               32 GiB
+              </td>
+              <td>
+               40 GiB
+              </td>
+              <td>
+               ￥ 3.7338 / 小时
+               <br/>
+               (约 ￥ 2,777.9472 / 月 )
+              </td>
+              <td>
+               ￥ 1944.56
+                                                        /月(~26%
+                                                        )
+              </td>
+             </tr>
+             <tr>
+              <td>
+               A8m v2
+              </td>
+              <td>
+               8
+              </td>
+              <td>
+               64 GiB
+              </td>
+              <td>
+               80 GiB
+              </td>
+              <td>
+               ￥ 7.4635 / 小时
+               <br/>
+               (约 ￥ 5,552.844 / 月 )
+              </td>
+              <td>
+               ￥ 3886.99
+                                                        /月(~26%
+                                                        )
+              </td>
+             </tr>
+            </table>
+           </div>
+          </div>
+          <!-- END: Tab level 2 content 2-3-->
+          <!-- BEGIN: Tab level 2 content 2-4 -->
+          <div class="tab-panel" id="tabContent2-4">
+           <h3>
+            GPU：专门针对大量图形绘制和视频编辑的虚拟机，可选择单个或多个 GPU。
+           </h3>
+           <h3>
+            NCsv3 系列
+            <sup style="color:#e66102; font-weight: bold">
+             new
+            </sup>
+           </h3>
+           <p>
+            NCsv3 系列虚拟机是 GPU 产品系列（该系列提供受欢迎的新一代 NC 系列虚拟机）的新成员，由 NVIDIA Tesla V100 GPU
+                                            提供支持。客户可将这些更新的 GPU 用于传统的 HPC 工作负荷，使其通过性能提升获利，为油藏模拟、DNA 测序、蛋白质分析、Monte
+                                            Carlo 模拟和其他方案提供支持。这些新 GPU 可提供当前 NCsv2 系列的 1.5 倍计算性能。与其他 NC
+                                            系列一样，我们为需要快速互连的工作负荷（例如石油与天然气、汽车和基因组学）提供具有 InfiniBand 网络的配置和 NC24rs
+                                            v3，以加快横向扩展功能并提升单个实例性能。
+           </p>
+           <p>
+            CPP（计算预购买）仅适用于已签署或者计划签署世纪互联在线服务高级协议客户购买。
+           </p>
+           <div class="tags-date">
+            <div class="ms-date">
+             *请注意：以下价格除CPP(Compute Pre-Purchase)外，均为是含税价格。 CPP
+                                                (Compute Pre-Purchase) 价格是基于每月的不含税价格。
+            </div>
+            <br/>
+            <div class="ms-date">
+             *每月价格估算基于每个月 744 小时的使用量。
+            </div>
+            <br/>
+           </div>
+           <table cellpadding="0" cellspacing="0" id="vm-table2-4-1" width="100%">
+            <tr>
+             <th align="left">
+              <strong>
+               实例
+              </strong>
+             </th>
+             <th align="left">
+              <strong>
+               核心
+              </strong>
+             </th>
+             <th align="left">
+              <strong>
+               RAM
+              </strong>
+             </th>
+             <th align="left">
+              <strong>
+               临时存储
+              </strong>
+             </th>
+             <th align="left">
+              <strong>
+               GPU
+              </strong>
+             </th>
+             <th align="left">
+              <strong>
+               标准预付费价格
+              </strong>
+             </th>
+             <th align="left">
+              <strong>
+               CPP 保留 1 年（节省百分比）
+              </strong>
+             </th>
+            </tr>
+            <tr>
+             <td>
+              NC6s v3
+             </td>
+             <td>
+              6
+             </td>
+             <td>
+              112 GiB
+             </td>
+             <td>
+              736 GiB
+             </td>
+             <td>
+              1X V100
+             </td>
+             <td>
+              ￥ 23.35 / 小时
+              <br/>
+              (约 ￥ 17,372.4 / 月 )
+             </td>
+             <td>
+              ￥ 7893
+                                                    /月(~52%
+                                                    )
+             </td>
+            </tr>
+            <tr>
+             <td>
+              NC12s v3
+             </td>
+             <td>
+              12
+             </td>
+             <td>
+              224 GiB
+             </td>
+             <td>
+              1474 GiB
+             </td>
+             <td>
+              2X V100
+             </td>
+             <td>
+              ￥ 46.7 / 小时
+              <br/>
+              (约 ￥ 34,744.8 / 月 )
+             </td>
+             <td>
+              ￥ 15786
+                                                    /月(~52%
+                                                    )
+             </td>
+            </tr>
+            <tr>
+             <td>
+              NC24s v3
+             </td>
+             <td>
+              24
+             </td>
+             <td>
+              448 GiB
+             </td>
+             <td>
+              2948 GiB
+             </td>
+             <td>
+              4X V100
+             </td>
+             <td>
+              ￥ 93.4 / 小时
+              <br/>
+              (约 ￥ 69,489.6 / 月 )
+             </td>
+             <td>
+              ￥ 31572
+                                                    /月(~52%
+                                                    )
+             </td>
+            </tr>
+            <tr>
+             <td>
+              NC24rs v3
+             </td>
+             <td>
+              24
+             </td>
+             <td>
+              448 GiB
+             </td>
+             <td>
+              2948 GiB
+             </td>
+             <td>
+              4X V100
+             </td>
+             <td>
+              ￥ 102.74 / 小时
+              <br/>
+              (约 ￥ 76,438.56 / 月 )
+             </td>
+             <td>
+              ￥ 34729
+                                                    /月(~52%
+                                                    )
+             </td>
+            </tr>
+           </table>
+          </div>
+          <!-- END: Tab level 2 content 2-4-->
+         </div>
+         <!-- END: TAB-CONTAINER-1 -->
+        </div>
+        <!-- END: TAB-CONTROL -->
+        <div class="pricing-page-section">
+         <h2>
+          IP 地址选项
+         </h2>
+         <p>
+          每项包含一台或多台 Azure 虚拟机的云服务都被自动分配了一个免费的动态虚拟 IP (VIP) 地址。如果另外付费，你还可以获得：
+         </p>
+         <ul>
+          <li>
+           <strong>
+            实例层级公共 IP 地址：
+           </strong>
+           动态公共 IP (PIP) 地址，分配给虚拟机用于直接访问。
+          </li>
+          <li>
+           <strong>
+            保留的 IP 地址：
+           </strong>
+           可以为订阅保留的公共 IP 地址，可以用作该区域内任何云服务的 VIP 地址。
+          </li>
+          <li>
+           <strong>
+            负载均衡的 IP 地址：
+           </strong>
+           其他负载均衡的 VIP 地址，可以分配给包含一台或多台 Azure 虚拟机的云服务。
+          </li>
+         </ul>
+         <a class="single-link" href="../ip-addresses/index.html" id="home_vm_ip_more">
+          了解 IP
+                                    地址价格
+          <i class="icon icon-arrow-right-thin">
+          </i>
+         </a>
+        </div>
+        <div class="pricing-page-section">
+         <div class="more-detail">
+          <h2>
+           常见问题
+          </h2>
+          <em>
+           全部展开
+          </em>
+          <h3>
+           CPP
+          </h3>
+          <ul>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-cque-1">
+              购买了CPP，是否可以中途更换机型或虚拟机所在的区域？
+             </a>
+             <section>
+              <p>
+               CPP是和虚拟机机型、所在区域完全强绑定的。如果已经开始使用CPP，无法在中途更换。如果还没有使用，可以联系微软的客户经理，通过协议变更的方式来更换。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-cque-2">
+              如果我是企业客户购买了 CPP 后，1 台 VM CPP
+                                                    每月包含的小时数是多少？如果当月未使用完，是否可以转到下月使用？
+             </a>
+             <section>
+              <p>
+               1 台 CPP 的包月小时数是 744 小时，当月未用完，会清零，无法转移到下个月。请注意，CPP
+                                                        的虚拟机采购需对应正确的型号和区域，具体选择事宜请联系您在微软的客户经理。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-cque-3">
+              如何查看CPP？
+             </a>
+             <section>
+              <p>
+               CPP 服务的购买和使用情况可以在 EA portal 进行查看。具体信息可以查看
+               <a href="" style="margin: 0px;">
+                这里
+               </a>
+               。
+              </p>
+             </section>
+            </div>
+           </li>
+          </ul>
+          <h3>
+           常规
+          </h3>
+          <ul>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-1">
+              本地磁盘存储器是否单独计费？
+             </a>
+             <section>
+              <p>
+               不会。所有新虚拟机都有操作系统磁盘和本地磁盘（也称“资源磁盘”）。我们不对本地磁盘存储器收费。操作系统磁盘按磁盘的常规费率收费。
+               <a href="https://docs.azure.cn/zh-cn/cloud-services/cloud-services-sizes-specs" id="vm-cloud-services-sizes-specs">
+                请参阅所有虚拟机配置
+               </a>
+               。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-2">
+              什么是临时磁盘？
+             </a>
+             <section>
+              <p>
+               临时磁盘指直接附加到部署的 VM 的存储器。VM
+                                                        关闭后，临时磁盘上的数据丢失。如果需要永久性存储，有各种类型和大小的永久型数据磁盘可供选择（这些磁盘单独收费）。请参阅
+               <a href="../storage/managed-disks/index.html" id="vm_storage">
+                存储定价页面
+               </a>
+               了解相关信息。对于永久性 VM
+                                                        存储，我们建议使用托管磁盘，以便获得更好的管理功能、可扩展性、可用性和安全性。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-q3">
+              如果我部署的实例显示“已停止”，还会计费吗？
+             </a>
+             <section>
+              <p>
+               也许。如果状态显示为“已停止(已取消分配)”，则不会计费。如果状态显示为“已停止(已分配)”，则仍会针对已分配的虚拟核心（不是软件许可证本身）计费。可在此处查看虚拟机状态的所有详细信息。
+              </p>
+              <table cellpadding="0" cellspacing="0" width="100%">
+               <tr>
+                <th align="left">
+                 <strong>
+                  状态
+                 </strong>
+                </th>
+                <th align="left">
+                 <strong>
+                  已计费
+                 </strong>
+                </th>
+                <th align="left">
+                 <strong>
+                  详细信息
+                 </strong>
+                </th>
+               </tr>
+               <tr>
+                <td>
+                 正在启动
+                </td>
+                <td>
+                 是
+                </td>
+                <td>
+                 虚拟机的初始启动状态，此时它们正在经历启动周期。此期间将计费，因为虚拟机正在运行。
+                </td>
+               </tr>
+               <tr>
+                <td>
+                 正在运行（已启动）
+                </td>
+                <td>
+                 是
+                </td>
+                <td>
+                 虚拟机的正在运行状态。
+                </td>
+               </tr>
+               <tr>
+                <td>
+                 已停止
+                </td>
+                <td>
+                 是
+                </td>
+                <td>
+                 如果虚拟机已停止（但未取消分配），不对软件计费，但对内核计费。
+                 <br/>
+                 注：若要将虚拟机置于“已停止”状态，请使用虚拟机内部（而不是来自
+                                                                Azure 经典门户）的电源选项。
+                </td>
+               </tr>
+               <tr>
+                <td>
+                 已停止（已取消分配）
+                </td>
+                <td>
+                 否
+                </td>
+                <td>
+                 不再对其进行收费。
+                 <br/>
+                 请注意 - 停止云服务中全部虚拟机的唯一方式是同时删除临时部署和生产部署。
+                </td>
+               </tr>
+              </table>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-q4">
+              虚拟机实例价格是否包括与运行的镜像关联的存储成本？
+             </a>
+             <section>
+              <p>
+               虚拟机价格仅包含本地磁盘存储。可在
+               <a href="../storage/index.html" id="vm_storage-disk">
+                托管磁盘
+               </a>
+               的定价页查看将高级磁盘（基于 SSD）和标准磁盘（基于
+                                                        HDD）附加到虚拟机的费用。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-5">
+              A 系列实例如何计费？
+             </a>
+             <section>
+              <p>
+               以前，A0、A2、A3 和 A4 标准和基本虚拟机的所有用量都发布为 A1 虚拟机计算分钟数的约数 (A0) 或倍数（A2、A3
+                                                        和
+                                                        A4）。我们了解到这给我们的客户造成了某些困扰，因此我们实行了更改，将每秒钟用量分配给专用的 A0、A2、A3 和 A4
+                                                        计价器。转换的结果是，A0、A2、A3 和 A4 虚拟机的资源 GUID 将有所改变。如果你有任何计费例程依赖于资源
+                                                        GUID，则你需要将其修改为将这些新的计价器纳入考虑。
+              </p>
+              <table>
+               <tr>
+                <th align="left">
+                 <strong>
+                  部署大小
+                 </strong>
+                </th>
+                <th align="left">
+                 <strong>
+                  2016 年 1 月 10 日当日，用量按 A1
+                                                                    的倍数发布
+                 </strong>
+                </th>
+                <th align="left">
+                 <strong>
+                  自 2016 年 1 月 11
+                                                                    日起，按专用计价器发布用量
+                 </strong>
+                </th>
+               </tr>
+               <tr>
+                <td>
+                 A0
+                </td>
+                <td>
+                 0.25 个 A1 小时
+                </td>
+                <td>
+                 1 个 A0 小时
+                </td>
+               </tr>
+               <tr>
+                <td>
+                 A2
+                </td>
+                <td>
+                 2 个 A1 小时
+                </td>
+                <td>
+                 1 个 A2 小时
+                </td>
+               </tr>
+               <tr>
+                <td>
+                 A3
+                </td>
+                <td>
+                 4 个 A1 小时
+                </td>
+                <td>
+                 1 个 A3 小时
+                </td>
+               </tr>
+               <tr>
+                <td>
+                 A4
+                </td>
+                <td>
+                 8 个 A1 小时
+                </td>
+                <td>
+                 1 个 A4 小时
+                </td>
+               </tr>
+              </table>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-q6">
+              如果我的虚拟机运行了 6 分钟 45 秒，会向我收取多少费用？
+             </a>
+             <section>
+              <p>
+               我们对虚拟机运行的整分钟数进行收费，因此你无需为任何额外的秒数付费。本示例中将按照 6 分钟的使用时间进行计费。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-q7">
+              什么是内部负载均衡？
+             </a>
+             <section>
+              <p>
+               它是具有专用 IP 地址的 Azure
+                                                        虚拟机的新预览功能。只有在虚拟网络（对于虚拟网络内的虚拟机）或云服务（对于虚拟网络外的虚拟机）内才能访问经过内部负载均衡的终结点。对于有些应用程序级别并不公开但仍要求负载均衡功能的多级应用程序，内部负载均衡是很有用的。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-q8">
+              如何检查是否已正确停止虚拟机并且将不对其计费？
+             </a>
+             <section>
+              <p>
+               可以在“虚拟机”选项卡和虚拟机仪表板中检查虚拟机的状态。如果虚拟机状态显示为“已停止”，则仍会计费。仅“已停止(已取消分配)”表示不计费。
+              </p>
+              <p>
+               要确保不被计费，请始终从管理门户停止虚拟机。还可以通过 Powershell
+                                                        调用“PostShutdownAction”等于“StoppedDeallocated”的
+                                                        ShutdownRoleOperation
+                                                        来停止虚拟机。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-q9">
+              如果我在两个不同的区域都有实例，会如何向我收取数据传输费用？
+             </a>
+             <section>
+              <p>
+               对每个实例跨区域的数据传出收费。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-10">
+              上价格是否含税？
+             </a>
+             <section>
+              <p>
+               是，所列价格均含税。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-11">
+              能否将服务器许可证传输到 Azure 并在虚拟机上运行它们？
+             </a>
+             <section>
+              <p>
+               可以，如果有软件保障，则可以通过许可移动性为所有虚拟机支持的服务器产品“自带许可”。
+              </p>
+             </section>
+            </div>
+           </li>
+          </ul>
+          <h3>
+           Windows Server
+          </h3>
+          <ul>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-12">
+              如果将我的本地 Windows Server 镜像上载到 Azure，是否需要提供我的许可证密钥？
+             </a>
+             <section>
+              <p>
+               不需要。Microsoft 将为任何正在运行的实例提供 Windows Server 许可证密钥。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-13">
+              如果我将 Azure Windows Server 映像下载到我的数据中心，许可证是可以转移的吗？
+             </a>
+             <section>
+              <p>
+               不。你需要提供该映像的许可证。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-18">
+              我有 Windows Server 的授权，那么在云上使用 Windows 的 VM
+                                                    时是否有价格优惠？
+             </a>
+             <section>
+              <p>
+               有优惠，我们是有一个混合权益的计划的，详情如下：
+              </p>
+              <p>
+               借助 A-HUB 权益计划 ( Azure Hybrid Use Benefit, Azure 混合云使用权益
+                                                        )，客户可以使用软件保障
+                                                        ( SA ） 涵盖的本地 Windows Server 许可在 Azure 中部署并运行特价的 Windows Server
+                                                        虚拟机，然后客户只需按照同等级别 Linux 虚拟机的费率支付基本的虚拟机费用即可。
+              </p>
+              <p>
+               特别提示：
+              </p>
+              <ul>
+               <li>
+                1. 本计划仅针对处于有效期之内的正版 Windows Server 软件和保障 ( SA )
+                                                            的客户有效，世纪互联将对使用本计划的用户进行审计并根据审计结果对用户的价格作出必要调整，和 /
+                                                            或要求客户偿付之前账单差额。
+               </li>
+               <li>
+                2. CPP 和 A-HUB （Azure Hybrid Use Benefit）
+                                                            不能重叠共享提示：如果您的虚拟机包含多项优惠，您仅能享受单项优惠，优惠不能叠加享受。
+               </li>
+               <li>
+                3. CPP 套餐是虚拟机的包年服务，目前只适用于在线服务高级协议用户（Online Service Premium
+                                                            Agreement）。
+               </li>
+              </ul>
+              <p>
+               相关链接：
+               <a href="../../hybrid-benefit/index.html">
+                https://www.azure.cn/zh-cn/pricing/hybrid-benefit/
+               </a>
+              </p>
+             </section>
+            </div>
+           </li>
+          </ul>
+          <h3>
+           SQL Server
+          </h3>
+          <ul>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-q14">
+              何时使用 Azure SQL 数据库？何时使用 SQL Server？
+             </a>
+             <section>
+              <p>
+               如果要将现有应用程序或工作负载迁移到云，或要将部分本地应用程序扩展到云，那么虚拟机中的 SQL Server
+                                                        是最容易的选择。如果你要建立新的关系应用程序，那么 SQL 数据库可能是最佳的长期解决方案。无论采用这两种方法中的哪一种，利用
+                                                        Azure 都可以很轻松地根据业务需求的变化在现场数据中心和云之间来回移动应用程序。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-q15">
+              我应该选用 SQL Server 2017 的哪个版本？
+             </a>
+             <section>
+              <p>
+               为了帮助你进行选择，
+               <a href="https://docs.microsoft.com/zh-cn/sql/sql-server/editions-and-components-of-sql-server-2017">
+                我们提供了详细的功能对比
+               </a>
+               。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-q16">
+              SQL Server Enterprise 的数据仓库版本有什么不同？
+             </a>
+             <section>
+              <p>
+               数据仓库的安装、配置和调优是具有代表性的复杂工作负荷。为 Azure
+                                                        虚拟机特别优化过的数据仓库映像可改进这些工作负载的性能，最多可高出常规 SQL Server Enterprise 虚拟机映像
+                                                        20%。查看
+               <a href="https://docs.azure.cn/zh-cn/virtual-machines/windows/sql/virtual-machines-windows-portal-sql-server-provision" id="vm_virtual-machines-windows-portal-sql-server-provision">
+                工作原理
+               </a>
+               。
+              </p>
+             </section>
+            </div>
+           </li>
+           <li>
+            <i class="icon icon-plus">
+            </i>
+            <div>
+             <a id="vm-que-q17">
+              是否需要单独采购 Windows 虚拟机？
+             </a>
+             <section>
+              <p>
+               不需要。以上价格表中的价格是 Windows 虚拟机和 SQL Server 的价格总和。
+              </p>
+             </section>
+            </div>
+           </li>
+           <!-- <li>
+                                            <i class="icon icon-plus"></i>
+                                            <div>
+                                                <a id="vm-que-q1">如何确保在已停止虚拟机后不对其计费？</a>
+                                                <section>
+                                                    <p>若要确保不计费，请从管理门户停止虚拟机。您还可以通过 Powershell 调用“PostShutdownAction”等于“StoppedDeallocated”的 ShutdownRoleOperation 来停止虚拟机。不过，如果从内部（例如，使用 Windows 中的电源选项)或通过 PowerShell 调用“PostShutdownAction”等于“Stopped”的 ShutdownRoleOperation 来关闭虚拟机，则将继续计费。</p>
+                                        </section>
+                </div>
+                            </li> -->
+           <!-- <li>
+                    <i class="icon icon-plus"></i>
+                    <div>
+                        <a id="vm-que-q3">如果我的虚拟机部署了不到一小时，将会向我收费多少？</a>
+                        <section>
+                            <p>按虚拟机的部署时间长短对虚拟机计费。如果虚拟机的部署时间不到 1 小时，或者为多个小时加上 1 小时的一部分，将仅对该持续时间收费。Azure 不会将不到 1 小时的时间向上舍入为完整的 1 小时来进行计费 - 您只需为虚拟机处于“正在运行”状态的该持续时间段付费。</p>
+                        </section>
+                    </div>
+                </li> -->
+          </ul>
+         </div>
+        </div>
+        <div class="pricing-page-section">
+         <h2>
+          支持和服务级别协议
+         </h2>
+         <p>
+          如有任何疑问或需要帮助，请访问
+          <a href="https://support.azure.cn/zh-cn/support/contact" id="vm-contact-page">
+           Azure 支持
+          </a>
+          选择自助服务或者其他任何方式联系我们获得支持。
+         </p>
+         <p>
+          对于在同一可用性集中部署了两个或多个实例的所有虚拟机，我们保证您在不少于 99.95%
+                                    的时间内与至少一个实例具有虚拟机连接。对于任何为所有磁盘使用高级存储的单实例虚拟机，我们保证您将在不少于 99.9%
+                                    的时间内具有虚拟机连接性。若要了解有关我们的服务器级别协议的详细信息，请访问
+          <a href="../../../support/sla/virtual-machines/index.html" id="vm-sla-page">
+           服务级别协议
+          </a>
+          页。
+         </p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!-- END: Documentation Content -->
+   <!-- BEGIN: Footer -->
+   <div class="public_footerpage">
+   </div>
+   <!--END: Common sidebar-->
+   <link href="../../../../Static/CSS/Localization/zh-cn.css" rel="stylesheet"/>
+   <script type="text/javascript">
+    function getAntiForgeryToken() {
+                var token =
+                    '<input name="__RequestVerificationToken" type="hidden" value="pp_xxKDshbtueTQmfHeAW98thEu6tY1pJ2-jULR15hLqSMGIANieFFwvAOlk-XxiH_alcAFK99NAwcIECWmXpVR8DnvNjMuxo3SsmH4iPvA1" />';
+                token = $(token).val();
+                return token;
+            }
+
+            function setLocaleCookie(localeVal) {
+                var Days = 365 * 10; // Ten year expiration
+                var exp = new Date();
+
+                var hostName = window.location.hostname;
+                var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+                exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+                document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain + "; path=/;expires=" + exp
+                    .toGMTString();
+            }
+
+            setLocaleCookie(window.currentLocale);
+   </script>
+   <script type="text/javascript">
+    var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+            var TECHNICAL_STORAGE = '/blob/tech-content/';
+            var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+            var EnablePricingSync = 'false';
+   </script>
+   <!-- BEGIN: Minified RequireJs -->
+   <script src="../../../../Static/Scripts/global.config.js" type="text/javascript">
+   </script>
+   <script src="../../../../Static/Scripts/require.js" type="text/javascript">
+   </script>
+   <script src="../../../../Static/Scripts/4552a1505e111da8c71780b349b683700a6158fa.js" type="text/javascript">
+   </script>
+   <!-- END: Minified RequireJs -->
+   <!-- begin JSLL -->
+   <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js">
+   </script>
+   <script type="text/javascript">
+    (function () {
+                var config = {
+                    cookiesToCollect: ["_mkto_trk"],
+                    syncMuid: true,
+                    ix: {
+                        a: true,
+                        g: true
+                    },
+                    coreData: {
+                        appId: 'AzureCN',
+                        market: 'zh-cn',
+                    }
+                };
+                awa.init(config);
+            })();
+   </script>
+   <!-- end JSLL -->
+   <script>
+    var select1 = document.getElementById("system").getElementsByTagName("option");
+            var select2 = document.getElementById("region").getElementsByTagName("option");
+            var select3 = document.getElementById("category").getElementsByTagName("option");
+            var select4 = document.getElementById("series").getElementsByTagName("option");
+            var divs = document.getElementsByTagName("div");
+            var divs1 = "1";
+            function sle(obj) {
+
+                // if(divs1!="1"){   
+                //     console.log(divs1);
+                //         divs[divs1].style.display = "none";
+                //     }
+                // }
+                for (var i = 0; i < select1.length; i++) {
+                    if (select1[i].selected) {
+                        for (var j = 0; j < select2.length; j++) {
+                            if (select2[j].selected) {
+                                for (var k = 0; k < select3.length; k++) {
+                                    if (select3[k].selected) {
+                                        for (var x = 0; x < select4.length; x++) {
+                                            if (select4[x].selected) {
+                                                var tableid = select1[i].value + "-" + select2[j].value + "-" + select3[k].value + "-" + select4[x].value;
+                                                var tables = document.getElementsByTagName("table");
+                                                console.log(tableid);
+                                                var divid = select1[i].value + "-" + select3[k].value + "-" + select4[x].value;
+
+
+                                                if (tableid == "S_WIN-north_china3-general_purpose-ALL") {
+                                                    for (var z = 0; z < tables.length; z++) {
+                                                        tables[z].style.display = "inline-table";
+                                                    }
+                                                }
+                                                else {
+                                                    for (var z = 0; z < tables.length; z++) {
+                                                        if (tableid == tables[z].id) {
+                                                            tables[z].style.display = "inline-table ";
+                                                        } else {
+                                                            tables[z].style.display = "none";
+                                                        }
+                                                    }
+                                                }
+
+                                                for (var z = 0; z < divs.length; z++) {
+                                                    if (divid == divs[z].id) {
+                                                        divs[divs1].style.display = "none";
+                                                        divs[1].style.display = "block";
+                                                        divs[z].style.display = "block";
+                                                        divs1 = z;
+
+
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                };
+            }
+   </script>
+   <script src="../../../../Static/Scripts/plugins/cookie/jquery.cookie.js" type="text/javascript">
+   </script>
+   <script src="../../../../Static/Scripts/wacndatatracker.js" type="text/javascript">
+   </script>
+   <script src="/common/useCommon.js" type="text/javascript">
+   </script>
+  </div>
+ </body>
+</html>
