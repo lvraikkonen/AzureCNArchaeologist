@@ -1,0 +1,505 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+    <meta name="keywords" content="" />
+    <meta name="description" content="
+            虚拟机的服务级别协议
+        " />
+
+    <title>虚拟机的服务级别协议 | Azure</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="../../../Static/Favicon/apple-touch-icon.png">
+    <link rel="shortcut icon" href="../../../Static/Favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../../../Static/Favicon/favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="../../../Static/Favicon/manifest.json">
+    <link rel="mask-icon" href="../../../Static/Favicon/safari-pinned-tab.svg" color="#0078D4">
+    <meta name="msapplication-config" content="/Static/Favicon/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <!-- BEGIN: Azure UI Style -->
+    <link href="../../../Static/CSS/azureui.min.css" rel="stylesheet">
+    <link href="../../../Static/CSS/common.min.css" rel="stylesheet">
+    <!-- END: Azure UI Style -->
+    <!-- BEGIN: Page Style -->
+    
+    <!-- END: Page Style -->
+
+    <!-- BEGIN: Minified Page Style -->
+    <link href='../../../Static/CSS/d32f7e46bb12eef495b9b58c4ab0c2dfb52c1f25.css' rel='stylesheet' />
+    <!-- END: Minified Page Style -->
+            
+    <link rel="stylesheet" href="../../../StaticService/css/service.min.css" />
+</head>
+<body class="zh-cn">    
+    <script>
+        window.requireUrlArgs = "2019/6/24 6:51:27";
+        window.currentLocale = "zh-CN";        
+        window.headerTimestamp = "2019/1/23 8:25:24";
+        window.footerTimestamp = "2019/1/8 8:07:06";
+        window.locFileTimestamp = "2018/11/29 7:49:17";
+
+        window.AcnHeaderFooter = {
+            IsEnableQrCode: true,
+            CurrentLang: window.currentLocale.toLowerCase(),
+        };
+    </script>
+
+    <style>
+       @media (min-width: 0) {
+            .acn-header-placeholder {
+                height: 48px; 
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 980px) {
+            .acn-header-placeholder {
+                height: 89px; 
+                width: 100%;
+            }
+        }
+
+        .acn-header-placeholder {
+            background-color: #1A1A1A;
+        }
+
+        .acn-header-service{
+            position: absolute; 
+            top: 0;
+            width: 100%;
+        }
+    </style>
+<div class="acn-header-container">
+        <div class="acn-header-placeholder">
+        </div>
+        <div class="public_headerpage"></div>
+</div>
+
+<!-- BEGIN: Documentation Content -->
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="bread-crumb hidden-sm hidden-xs">
+                    <ul>
+                        <li><span class="hidden-all">文档与资源</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="single-page">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+                        <div class="loader">
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                    </div>
+                </div>
+                </div>
+                <div class="col-md-8 pure-content">
+                    <div class="select left-navigation-select hidden-md hidden-lg">
+                        <select><option selected="selected">加载中...</option></select>
+                        <span class="icon icon-arrow-top"></span>
+                    </div>
+                    
+        <p><tags ms.service="legal" ms.date="10/2017" wacn.date="10/2017" wacn.lang="cn"/></p>
+
+        <h1>虚拟机的服务级别协议</h1><div class="tags-date"><div class="wacn-date">最后更新时间：2020年11月</div></div>
+        <!-- <p>对于在同一可用性集中部署了两个或多个实例的所有虚拟机，我们保证您在不少于 99.95% 的时间内至少与一个实例具有虚拟机连接。</p>
+        <p>对于任何为所有磁盘使用高级存储的单实例虚拟机，我们保证您在不少于 99.9% 的时间内具有虚拟机连接性。</p> -->
+        <ul>
+            <li>对于在同一 Azure 区域中跨两个或更多可用性区域部署了两个或多个实例的所有虚拟机，我们保证您可在不少于 99.99% 的时间内与至少一个实例具有虚拟机连接性。</li>
+            <li>对于在同一可用性集或同一专用主机组中部署了两个或两个以上实例的所有虚拟机，我们保证您在不少于 99.95% 的时间内与至少一个实例具有虚拟机连接性。</li>
+            <li>对于所有操作系统磁盘和数据磁盘均使用高级 SSD 或超级磁盘的任一单实例虚拟机，我们均保证您将在不少于 99.9% 的时间内具有虚拟机连接性。</li>
+            <li>对于操作系统磁盘和数据磁盘均使用标准 SSD 托管磁盘的任一单实例虚拟机，我们保证您将在不少于 99.5% 的时间内具有虚拟机连接性。</li>
+            <li>对于操作系统磁盘和数据磁盘均使用标准 HDD 托管磁盘的任一单实例虚拟机，我们保证您将在不少于 95% 的时间内具有虚拟机连接性。</li>
+        </ul>
+        <h2>引言</h2>
+        <p>此世纪互联在线服务的服务级别协议（本“SLA”）是世纪互联批量许可协议（简称“协议”）的一部分。本 SLA 中使用但未定义的术语应沿用其在“协议”中的含义。本 SLA 适用于文中列出的世纪互联在线服务（简称“服务”），但对与服务一起提供、与服务或任一服务中任何本地软件关联的独立品牌服务不适用。</p>
+        <p>如果我们未达到和保持本 SLA 规定的每种服务的服务级别，那么您可能有资格获得月度服务费用的部分退款。我们不会在您的订阅初始期限内修改您的 SLA 条款；但是，如果您续签订阅，则续签之时现行的本 SLA 的版本将适用于您的续签期。如本 SLA 有任何重大不利变更，我们将至少提前九十 (90) 天予以通知。</p>
+        <h2>一般条款</h2>
+        <h3>一、定义</h3>
+        <ol>
+        <li>
+        <p>“索赔” 指客户根据本服务级别协议向世纪互联提交的、有关尚未达到某个服务级别以及客户可获得的服务费抵扣的索赔。</p>
+        </li>
+        <li>
+        <p>“客户”指签订本协议的机构。</p>
+        </li>
+        <li>
+        <p>“客户支持”指世纪互联可由此为客户提供帮助以解决服务问题的服务。</p>
+        </li>
+        <li>
+        <p>“错误代码”用于指示某项操作出现了问题，例如，5xx 范围内的 HTTP 状态代码。</p>
+        </li>
+        <li>
+        <p>“外部连接”是指可通过受支持的协议（例如 HTTP 和 HTTPS）从公共 IP 地址发送和接收的双向网络流量。</p>
+        </li>
+        <li>
+        <p>“事件”表示导致无法达到服务级别的任何情况。</p>
+        </li>
+        <li>
+        <p>“管理门户”指由世纪互联提供的 web 界面，客户可以通过该界面来管理服务。</p>
+        </li>
+        <li>
+        <p>“世纪互联”指客户协议上载明的世纪互联实体。</p>
+        </li>
+        <li>
+        <p>“预览版”指提供用来获得客户反馈的服务或软件的预览版、测试版或其他预发行版。</p>
+        </li>
+        <li>
+        <p>“服务”表示根据协议为客户提供的并在以下指定服务级别协议的 Azure 服务。</p>
+        </li>
+        <li>
+        <p>“服务费抵扣”表示针对受影响的服务或服务资源的已经证实的服务索赔，返还给客户的月度服务费用的百分比。</p>
+        </li>
+        <li>
+        <p>“服务级别”指定世纪互联选择遵守并据此衡量其所提供的每种服务的服务级别的标准，具体如下所述。</p>
+        </li>
+        <li>
+        <p>“服务资源”指某个服务内可供使用的单独资源。</p>
+        </li>
+        <li>
+        <p>“成功代码”用于指示某项操作已经成功，例如，2xx 范围内的 HTTP 状态代码。</p>
+        </li>
+        <li>
+        <p>“支持时段”指支持某个服务功能或者支持与某个单独产品或服务兼容的时间范围。</p>
+        </li>
+        <li>
+        <p>“虚拟网络”指虚拟专用网络，包括用户定义的 IP 地址和子网的集合，形成了 Azure 内的网络边界。</p>
+        </li>
+        <li>
+        <p>“虚拟网络网关”是指促成虚拟网络和客户本地网络之间跨区域连接的网关。</p>
+        </li>
+        </ol>
+        <h3>二、服务费抵扣索赔</h3>
+        <ol>
+        <li>
+        <p>客户必须在事件（索赔主题）发生的帐单月份结束之后的两 (2) 个月内向客户支持提交索赔，世纪互联才会受理该索赔。客户必须向客户支持提供世纪互联证实该索赔所需的所有信息，包括但不限于：事件的详细说明、事件的发生时间和持续时间、受影响的资源或操作以及客户尝试解决该事件所做出的任何努力。</p>
+        </li>
+        <li>
+        <p>世纪互联将利用所有可合理获得的信息来验证索赔，并判定是否应兑现服务费抵扣。</p>
+        </li>
+        <li>
+        <p>如果由于同一事件导致未能达到某个特定服务的多个服务级别，客户必须仅选择一个服务级别并基于该服务级别针对此次事件提出索赔。</p>
+        </li>
+        <li>
+        <p>服务费抵扣仅适用于为未达到服务级别的特定服务、服务资源或服务层级所支付的费用。如果服务级别适用于单独的服务资源或单独的服务层级，则服务费抵扣仅适用于为受影响的服务资源或服务层级（如果有）所支付的费用。</p>
+        </li>
+        </ol>
+        <h3>三、服务级别协议排除项</h3>
+        <p>本服务级别协议和任何适用的服务级别不适用于由以下情况造成的任何性能或可用性问题：</p>
+        <ol>
+        <li>
+        <p>由于超出世纪互联合理控制范围的因素而导致的问题，例如，在世纪互联数据中心以外（包括在客户的站点或者客户的站点和世纪互联数据中心之间）的网络或设备故障；</p>
+        </li>
+        <li>
+        <p>由于客户使用非世纪互联提供的硬件、软件或服务（例如，从 Azure 商店购买的第三方软件或服务或者世纪互联提供的其他非 Azure 服务）作为服务的一部分而导致的问题；</p>
+        </li>
+        <li>
+        <p>由于客户未按与服务功能一致的方式（例如，尝试执行不受支持的操作）或者未按与发布的文档或指南一致的方式来使用服务而导致的问题；</p>
+        </li>
+        <li>
+        <p>由于错误的输入、指令或参数（例如，请求访问不存在的文件）而导致的问题；</p>
+        </li>
+        <li>
+        <p>世纪互联建议客户改变服务的使用方式之后，如果客户未按建议改变其使用方式而继续使用服务所导致的问题；</p>
+        </li>
+        <li>
+        <p>使用预览版期间出现问题或者与预览版有关的问题，或者使用世纪互联订购信用进行购买而导致的问题；</p>
+        </li>
+        <li>
+        <p>由于客户试图执行的操作超出了规定的服务配额而导致的问题，或者由于限制可疑的滥用行为而导致的问题；</p>
+        </li>
+        <li>
+        <p>由于客户使用的服务功能超出了相关支持时段而导致的问题；或</p>
+        </li>
+        <li>
+        <p>由于他人利用客户的密码或设备未经授权地访问世纪互联服务的行为，或由于客户未能遵循适当的安全惯例而导致的问题。</p>
+        </li>
+        </ol>
+        <h3>四、服务费抵扣</h3>
+        <ol>
+        <li>
+        <p>针对所描述的每一种服务，下文介绍了服务费抵扣的金额和计算方法。</p>
+        </li>
+        <li>
+        <p>服务费抵扣是客户针对未能达到任何服务级别的唯一且排他性的救济。</p>
+        </li>
+        <li>
+        <p>在任何情况下，任何帐单月份内提供的与特定服务或服务资源相关的服务费抵扣都不得超过客户在该帐单月份内用于该服务或服务资源（如果有）的月度服务费用。</p>
+        </li>
+        <li>
+        <p>对于作为套件一部分购买的服务，服务费抵扣将基于服务所占的成本比例进行计算，这将由世纪互联通过合理的判断确定。如果客户已从转售商处购买服务，服务费抵扣将基于适用服务的估计零售价进行计算，这将由世纪互联通过合理的判断确定。</p>
+        </li>
+        </ol>
+        <h2>SLA 详细信息</h2>
+        <h3>附加定义</h3>
+        <ol>
+        <li>
+        <p>“<strong>可用性集</strong>”是指为了避免单点故障在不同的容错域中部署的两台或多台虚拟机。</p>
+        </li>
+        <li>
+        <p>“<strong>可用性区域</strong>”是指 Azure 区域内的故障隔离区，用于提供冗余电力、冷却和联网。</p>
+        </li>
+        <li>
+        <p>“<strong>Azure 专用主机</strong>”为托管一个或多个 Azure 虚拟机的物理服务器提供任何 SLA 所需的 autoReplaceOnFailure（默认）设置。</p>
+        </li>
+        <li>
+        <p>“<strong>数据磁盘</strong>”是指用于存储应用程序数据的附加至虚拟机的永久性虚拟硬盘。</p>
+        </li>
+        <li>
+        <p>“<strong>专用主机组</strong>”是指为了避免单点故障在不同容错域中的 Azure 区域内部署的一系列 Azure 专用主机。</p>
+        </li>
+        <li>
+        <p>“<strong>容错域</strong>”是指一组共享公共资源（例如电源和网络连接）的服务器。</p>
+        </li>
+        <li>
+        <p>“<strong>操作系统磁盘</strong>”是指用于存储虚拟机操作系统的、附加至虚拟机的永久性虚拟硬盘。</p>
+        </li>
+        <li>
+        <p>“<strong>单实例</strong>”是指未部署在可用性集中的或在一个可用性集中仅部署了一个实例的任何单个Azure虚拟机。</p>
+        </li>
+        <li>
+        <p>“<strong>虚拟机</strong>”是指可以单独部署、作为可用性集的一部分部署或使用专用主机组部署的永久性实例类型。虚拟机可以部署在 Azure 的多租户环境中，也可以使用 Azure 专用主机部署在隔离的单租户环境中。</p>
+        </li>
+        <li>
+        <p>“<strong>虚拟机连接性</strong>”是指在 TCP 或 UDP 网络协议下，虚拟机与其他 IP 地址之间的双向网络流量。根据协议，虚拟机是针对允许的流量进行配置的。IP 地址可以是与虚拟机相同的云服务中的 IP 地址、与虚拟机相同的虚拟网络中的 IP 地址或公共可路由 IP 地址。</p>
+        </li>
+        </ol>
+        <h3>可用性区域中虚拟机的每月正常服务时间计算和服务级别</h3>
+        <ol>
+        <li>
+        <p>“<strong>最大可用分钟数</strong>”是指在一个计费月内，已在同一区域内跨两个或更多可用性区域部署了两个或更多实例的总累计分钟数。从同一区域内跨两个可用性区域的至少两个实例已经因客户发起的操作而开始发挥作用时开始，直到客户发起了可能导致停止或删除虚拟机的操作时截止，最大可用分钟数以这一段时间范围进行计量。</p>
+        </li>
+        <li>
+        <p>“<strong>停机时间</strong>”是指最大可用分钟数内在该区域不具备任何虚拟机连接性的总累计分钟数。</p>
+        </li>
+        <li>
+        <p>可用性区域中虚拟机的“<strong>每月正常服务时间百分比</strong>”计算方法为：指定 Azure 订购的一个计费月中，最大可用分钟数减去停机时间，再除以最大可用分钟数。每月正常服务时间百分比计算公式如下所示：</p>
+        <p>每月正常服务时间 %= (最大可用分钟数 − 停机时间) / 最大可用分钟数 X 100</p>
+        </li>
+        <li>
+        <p>以下服务级别和服务额度适用于客户对同一区域中跨两个或更多可用性区域部署的虚拟机的使用：</p>
+        <table>
+        <thead>
+        <tr>
+            <th>每月正常服务时间百分比</th>
+            <th>服务额度</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>&lt;99.99%</td>
+            <td>10%</td>
+        </tr>
+        <tr>
+            <td>&lt;99%</td>
+            <td>25%</td>
+        </tr>
+        <tr>
+            <td>&lt;95%</td>
+            <td>100%</td>
+        </tr>
+        </tbody>
+        </table>
+        </li>
+        </ol>
+        <h3>可用性集或同一专用主机组中虚拟机的每月正常服务时间计算和服务级别</h3>
+        <ol>
+        <li>
+        <p>“<strong>最大可用分钟数</strong>”是指在一个计费月内，在同一可用性集或同一专用主机组中具有两个或两个以上实例的所有虚拟机的总累计分钟数。从同一可用性集或同一专用主机组中至少有两个虚拟机已经因客户发起的操作而开始发挥作用时开始，直到客户发起了可能导致停止或删除虚拟机的操作时截止，最大可用分钟数是以这一段时间范围来计量的。</p>
+        </li>
+        <li>
+        <p>“<strong>停机时间</strong>”是指最大可用分钟数中不具备虚拟机连接性的总累计分钟数。</p>
+        </li>
+        <li>
+        <p>虚拟机的“<strong>每月正常服务时间百分比</strong>”按如下方式计算：指定的 Microsoft Azure 订购在一个计费月内的最大可用分钟数减去停机时间，再除以最大可用分钟数。每月正常服务时间百分比计算公式如下所示：</p>
+        <p>每月正常服务时间 % =（最大可用分钟数 - 停机时间）/最大可用分钟数 X 100</p>
+        </li>
+        <li>
+        <p>以下服务级别和服务额度适用于客户对可用性集或同一专用主机组中的虚拟机的使用。此 SLA 不适用于使用 Azure 共享磁盘的可用性集：</p>
+        <table>
+        <thead>
+        <tr>
+            <th>指定计费月中特定受保护实例的本地到本地故障转移的"每月运行时间百分比"</th>
+            <th>服务额度</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>&lt;99.95%</td>
+            <td>10%</td>
+        </tr>
+        <tr>
+            <td>&lt;99%</td>
+            <td>25%</td>
+        </tr>
+        <tr>
+            <td>&lt;95%</td>
+            <td>100%</td>
+        </tr>
+        </tbody>
+        </table>
+        <h3>单实例虚拟机的每月正常服务时间计算和服务级别</h3>
+        <ol>
+        <li>
+        <p>“<strong>当月分钟数</strong>”是指一个指定月份的总分钟数。</p>
+        </li>
+        <li>
+        <p>“<strong>停机时间</strong>”是指当月分钟数中不具备虚拟机连接性的总累计分钟数。</p>
+        </li>
+        <li>
+        <p>“<strong>每月正常服务时间百分比</strong>”通过当月分钟数的百分比进行计算，所述分钟数是指任一单实例虚拟机当月发生停机的分钟数。服务额度因虚拟机所用磁盘的类型而异，具体情况请参考见下表。</p>
+        <p>每月正常服务时间 % =（最大可用分钟数 - 停机时间）/最大可用分钟数 X 100</p>
+        </li>
+        <li>
+        <p>以下服务级别和服务额度按磁盘类型适用于客户对单实例虚拟机的使用。对于任何使用多磁盘类型的单实例虚拟机，虚拟机上所有磁盘的最低 SLA 将对其适用。</p>
+        <table>
+        <thead>
+        <tr>
+            <th>正常服务时间百分比（高级和超级 SSD</th>
+            <th>正常服务时间百分比（标准 SSD 托管磁盘）</th>
+            <th>正常服务时间百分比（标准 HDD 托管磁盘）</th>
+            <th>服务额度</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>&lt;99.9%</td>
+            <td>&lt;99.5%</td>
+            <td>&lt;95%</td>
+            <td>10%</td>
+        </tr>
+        <tr>
+            <td>&lt;99%</td>
+            <td>&lt;95%</td>
+            <td>&lt;92%</td>
+            <td>25%</td>
+        </tr>
+        <tr>
+            <td>&lt;95%</td>
+            <td>&lt;90%</td>
+            <td>&lt;90%</td>
+            <td>100%</td>
+        </tr>
+        </tbody>
+        </table>
+        </li>
+        </ol>
+        <h2>版本历史记录</h2>
+        <p><a id="vm-sla_vm-sla" href="index.html">1.5</a> 最后更新日期 ：2020 年 11 月</p>
+        <P>发布说明：基于存储类型澄清了针对单实例虚拟机的保证。针对可用性集中的虚拟机的共享磁盘添加了排除条款。</P>
+        <p><a id="vm-sla_vm-sla-1.4.pdf" href="/Images/marketing-resource/media/sla/virtual_machine_sla_chinese1.4.pdf">1.4</a> 最后更新日期 ：2017 年 10 月</p>
+        <p>发布说明：更新了虚拟机服务级别协议相关措辞。</p>
+        <p><a id="vm-sla_vm-sla-1.3.pdf" href="/Images/marketing-resource/media/sla/virtual_machine_sla_chinese1.3.pdf">1.3</a> 最后更新日期 ：2017 年 5 月</p>
+        <p>发布说明：如正常服务时间降低至 95% 以下，则添加 100% 的服务费抵扣保证；并从单实例服务级别协议上应用高级储存的要求中排除了临时磁盘。</p>
+        <p><a id="vm-sla_vm-sla-1.2pdf" href="/Images/marketing-resource/media/sla/virtual_machine_sla_chinese1.2.pdf">1.2</a> 最后更新日期 ：2017 年 3 月</p>
+        <p>发布说明：每月正常服务时间百分比公式添加了“X 100”</p>
+        <p><a id="vm-sla_vm-sla-1.1pdf" href="/Images/marketing-resource/media/sla/virtual_machine_sla_chinese1.1.pdf">1.1</a> 最后更新日期：2017 年 2 月</p>
+        <p>发布说明：增加新的单实例虚拟机服务级别协议，与最大可用分钟数有关的更新</p>
+        <p><a id="vm-sla_vm-sla-1.0pdf" href="/Images/marketing-resource/media/sla/virtual_machine_sla_chinese1.0.pdf">1.0</a> 最后更新日期：2016 年 3 月</p>
+    
+                    <div id="content_feedback"></div>
+                    
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="documentation-bookmark book-mark hidden-sm hidden-xs">
+                        <div class="loader">
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END: Documentation Content -->
+
+<!-- BEGIN: Footer -->
+<div class="public_footerpage"></div>
+<!--END: Common sidebar-->
+
+
+        
+<link href="../../../Static/CSS/Localization/zh-cn.css" rel="stylesheet">
+<script type="text/javascript">
+    function getAntiForgeryToken() {
+        var token = '<input name="__RequestVerificationToken" type="hidden" value="eT6-NKqjmGZnhngNVQBYdhZZZYYu1toYtAkDpWZnwgdmCZ8xrMMldGYZKBDMUkFmCiK_U-ks5I14rdjYGnCDFYTPMqvEIgMMlsZvH6xpq-k1" />';
+        token = $(token).val();
+        return token;
+    }
+    function setLocaleCookie(localeVal) {
+        var Days = 365 * 10; // Ten year expiration
+        var exp = new Date();
+
+        var hostName = window.location.hostname;
+        var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+        exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+        document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain + "; path=/;expires=" + exp.toGMTString();
+    }
+
+    setLocaleCookie(window.currentLocale);
+</script>
+
+<script type="text/javascript">
+    var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+    var TECHNICAL_STORAGE = '/blob/tech-content/';
+    var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+    var EnablePricingSync = 'false';
+</script>
+
+    <!-- BEGIN: Script -->
+    
+    <!-- END: Script -->
+
+    <!-- BEGIN: Minified RequireJs -->
+    <script src='../../../Static/Scripts/global.config.js' type='text/javascript'></script>
+    <script src='../../../Static/Scripts/require.js' type='text/javascript'></script>
+    <script src='../../../Static/Scripts/7c65de8a762eefb843488abc82df7494b2d9a22d.js' type='text/javascript'></script>
+    <!-- END: Minified RequireJs -->
+
+<!-- begin JSLL -->
+<script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js"></script>
+
+<script type="text/javascript">
+        (function () {
+            var config = {
+                cookiesToCollect: ["_mkto_trk"],
+                syncMuid: true,
+                ix: {
+                    a: true,
+                    g: true
+                },
+                coreData: {
+                    appId: 'AzureCN',
+                    market: 'zh-cn',
+                }
+            };
+            awa.init(config);
+        })();
+</script>
+<!-- end JSLL -->
+
+<script type="text/javascript" src="../../../Static/Scripts/plugins/cookie/jquery.cookie.js"></script>
+<script type="text/javascript" src="../../../Static/Scripts/wacndatatracker.js"></script>
+
+
+<script type="text/javascript" src="/common/useCommon.js"></script>
+
+</body>
+</html>

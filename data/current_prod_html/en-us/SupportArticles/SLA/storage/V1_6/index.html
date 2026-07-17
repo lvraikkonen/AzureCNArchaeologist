@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+    <meta name="keywords" content="" />
+    <meta name="description" content="
+            SLA for Storage
+        " />
+
+    <title>SLA for Storage | Azure</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/Static/Favicon/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/Static/Favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/Static/Favicon/favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="/Static/Favicon/manifest.json">
+    <link rel="mask-icon" href="/Static/Favicon/safari-pinned-tab.svg" color="#0078D4">
+    <meta name="msapplication-config" content="/Static/Favicon/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <!-- BEGIN: Azure UI Style -->
+    <link href="/Static/CSS/azureui.min.css" rel="stylesheet">
+    <link href="/Static/CSS/common.min.css" rel="stylesheet">
+    <!-- END: Azure UI Style -->
+    <!-- BEGIN: Page Style -->
+
+    <!-- END: Page Style -->
+
+    <!-- BEGIN: Minified Page Style -->
+    <link href='/Static/CSS/d32f7e46bb12eef495b9b58c4ab0c2dfb52c1f25.css' rel='stylesheet' />
+    <!-- END: Minified Page Style -->
+
+    <link rel="stylesheet" href="/StaticService/css/service.min.css" />
+</head>
+
+<body class="en-us">
+    <script>
+        window.requireUrlArgs = "1/6/2020 11:41:53 AM";
+        window.currentLocale = "en-US";
+        window.headerTimestamp = "5/9/2019 9:29:29 AM";
+        window.footerTimestamp = "5/9/2019 9:29:29 AM";
+        window.locFileTimestamp = "5/9/2019 9:29:21 AM";
+
+        window.AcnHeaderFooter = {
+            IsEnableQrCode: true,
+            CurrentLang: window.currentLocale.toLowerCase(),
+        };
+    </script>
+
+    <style>
+        @media (min-width: 0) {
+            .acn-header-placeholder {
+                height: 48px;
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 980px) {
+            .acn-header-placeholder {
+                height: 89px;
+                width: 100%;
+            }
+        }
+
+        .acn-header-placeholder {
+            background-color: #1A1A1A;
+        }
+
+        .acn-header-service {
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+    </style>
+    <div class="acn-header-container">
+        <div class="acn-header-placeholder">
+        </div>
+        <div class="public_headerpage"></div>
+    </div>
+
+    <!-- BEGIN: Documentation Content -->
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bread-crumb hidden-sm hidden-xs">
+                        <ul>
+                            <li><span class="hidden-all">文档与资源</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="single-page">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+                            <div class="loader">
+                                <i class="circle"></i>
+                                <i class="circle"></i>
+                                <i class="circle"></i>
+                                <i class="circle"></i>
+                                <i class="circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 pure-content">
+                        <div class="select left-navigation-select hidden-md hidden-lg">
+                            <select>
+                                <option selected="selected">加载中...</option>
+                            </select>
+                            <span class="icon icon-arrow-top"></span>
+                        </div>
+
+                        <p>
+                            <tags ms.service="legal-en" ms.date="08/2017" wacn.date="08/2017" wacn.lang="en" />
+                        </p>
+
+                        <h1>SLA for Storage</h1>
+                        <div class="tags-date">
+                            <div class="ms-date">Updated: 05/2023</div>
+                        </div>
+                        <ul>
+                            <li>
+                                We guarantee that at least 99.99% (99.9% for Cool and Archive* Access Tiers) of the
+                                time, we will successfully process requests to read data from Read Access-Geo Redundant
+                                Storage (RA-GRS) Accounts, provided that failed attempts to read data from the primary
+                                region are retried on the secondary region. Rehydration is not supported on the
+                                secondary region.
+                            </li>
+                            <li>
+                                We guarantee that at least 99.9% (99% for Cool and Archive* Access Tiers) of the time,
+                                we will successfully process requests to read data from Locally Redundant Storage (LRS),
+                                Zone Redundant Storage (ZRS), and Geo Redundant Storage (GRS) Accounts.
+                            </li>
+                            <li>
+                                We guarantee that at least 99.9% (99% for Cool and Archive* Access Tiers) of the time,
+                                we will successfully process requests to write data to Locally Redundant Storage (LRS),
+                                Zone Redundant Storage (ZRS), and Geo Redundant Storage (GRS) Accounts and Read
+                                Access-Geo Redundant Storage (RA-GRS) Accounts.
+                            </li>
+                        </ul>
+                        <h2>Introduction</h2>
+                        <p>This Service Level Agreement for 21Vianet Online Services (this “SLA”) is a part of your
+                            21Vianet volume licensing agreement (the “Agreement”). Capitalized terms used but not
+                            defined in this SLA will have the meaning assigned to them in the Agreement. This SLA
+                            applies to the 21Vianet Online Services listed herein (a “Service” or the “Services”), but
+                            does not apply to separately branded services made available with or connected to the
+                            Services or to any on-premises software that is part of any Service.</p>
+                        <p>If we do not achieve and maintain the Service Levels for each Service as described in this
+                            SLA, then you may be eligible for a credit towards a portion of your monthly service fees.
+                            We will not modify the terms of your SLA during the initial term of your subscription;
+                            however, if you renew your subscription, the version of this SLA that is current at the time
+                            of renewal will apply throughout your renewal term. We will provide at least 90 days’ notice
+                            for adverse material changes to this SLA.</p>
+                        <h2>General Terms</h2>
+                        <h3>Definitions</h3>
+                        <ol>
+                            <li>
+                                <p>&quot;Claim&quot; means a claim submitted by Customer to 21Vianet pursuant to this
+                                    SLA that a Service Level has not been met and that a Service Credit may be due to
+                                    Customer. </p>
+                            </li>
+                            <li>
+                                <p>&quot;Customer&quot; refers to the organization that has entered into the Agreement.
+                                </p>
+                            </li>
+                            <li>
+                                <p>&quot;Customer Support&quot; means the services by which 21Vianet may provide
+                                    assistance to Customer to resolve issues with the Services.</p>
+                            </li>
+                            <li>
+                                <p>&quot;Error Code&quot; means an indication that an operation has failed, such as an
+                                    HTTP status code in the 5xx range.</p>
+                            </li>
+                            <li>
+                                <p>&quot;External Connectivity&quot; is bi-directional network traffic over supported
+                                    protocols such as HTTP and HTTPS that can be sent and received from a public IP
+                                    address.</p>
+                            </li>
+                            <li>
+                                <p>&quot;Incident&quot; means any set of circumstances resulting in a failure to meet a
+                                    Service Level.</p>
+                            </li>
+                            <li>
+                                <p>&quot;Management Portal&quot; means the web interface, provided by 21Vianet, through
+                                    which customers may manage the Service.</p>
+                            </li>
+                            <li>
+                                <p>&quot;21Vianet&quot; means the 21Vianet entity that appears on Customer's Agreement.
+                                </p>
+                            </li>
+                            <li>
+                                <p>&quot;Preview&quot; refers to a preview, beta, or other pre-release version of a
+                                    service or software offered to obtain customer feedback.</p>
+                            </li>
+                            <li>
+                                <p>&quot;Service” or “Services&quot; refers to a Azure service provided to Customer
+                                    pursuant to the Agreement for which an SLA is provided below.</p>
+                            </li>
+                            <li>
+                                <p>&quot;Service Credit&quot; is the percentage of the monthly service fees for the
+                                    affected Service or Service Resource that is credited to Customer for a validated
+                                    Claim.</p>
+                            </li>
+                            <li>
+                                <p>&quot;Service Level&quot; means standards 21Vianet chooses to adhere to and by which
+                                    it measures the level of service it provides for each Service as specifically set
+                                    forth below.</p>
+                            </li>
+                            <li>
+                                <p>&quot;Service Resource&quot; means an individual resource available for use within a
+                                    Service.</p>
+                            </li>
+                            <li>
+                                <p>&quot;Success Code&quot; means an indication that an operation has succeeded, such as
+                                    an HTTP status code in the 2xx range.</p>
+                            </li>
+                            <li>
+                                <p>&quot;Support Window&quot; refers to the period of time during which a Service
+                                    feature or compatibility with a separate product or service is supported. </p>
+                            </li>
+                            <li>
+                                <p>&quot;Virtual Network&quot; refers to a virtual private network that includes a
+                                    collection of user-defined IP addresses and subnets that form a network boundary
+                                    within Azure.</p>
+                            </li>
+                            <li>
+                                <p>&quot;Virtual Network Gateway&quot; refers to a gateway that facilitates
+                                    cross-premises connectivity between a Virtual Network and a customer on-premises
+                                    network.</p>
+                            </li>
+                        </ol>
+                        <h3>Service Credit Claims</h3>
+                        <ol>
+                            <li>
+                                <p>In order for 21Vianet to consider a Claim, Customer must submit the Claim to Customer
+                                    Support within two months of the end of the billing month in which the Incident that
+                                    is the subject of the Claim occurs. Customer must provide to Customer Support all
+                                    information necessary for 21Vianet to validate the Claim, including but not limited
+                                    to detailed descriptions of the Incident, the time and duration of the Incident, the
+                                    affected resources or operations, and any attempts made by Customer to resolve the
+                                    Incident</p>
+                            </li>
+                            <li>
+                                <p>21Vianet will use all information reasonably available to it to validate the Claim
+                                    and to determine whether any Service Credits are due.</p>
+                            </li>
+                            <li>
+                                <p>In the event that more than one Service Level for a particular Service is not met
+                                    because of the same Incident, Customer must choose only one Service Level under
+                                    which a Claim may be made based on the Incident.</p>
+                            </li>
+                            <li>
+                                <p>Service Credits apply only to fees paid for the particular Service, Service Resource,
+                                    or Service tier for which a Service Level has not been met. In cases where Service
+                                    Levels apply to individual Service Resources or to separate Service tiers, Service
+                                    Credits apply only to fees paid for the affected Service Resource or Service tier,
+                                    as applicable.</p>
+                            </li>
+                        </ol>
+                        <h3>SLA Exclusions</h3>
+                        <p>This SLA and any applicable Service Levels do not apply to any performance or availability
+                            issues:</p>
+                        <ol>
+                            <li>
+                                <p>Due to factors outside 21Vianet’s reasonable control (for example, a network or
+                                    device failure external to 21Vianet’s data centers, including at Customer's site or
+                                    between Customer's site and 21Vianet’s data center);</p>
+                            </li>
+                            <li>
+                                <p>That resulted from Customer's use of hardware, software, or services not provided by
+                                    21Vianet as part of the Services (for example, third-party software or services
+                                    purchased from the Azure Store or other non-Azure services provided by 21Vianet);
+                                </p>
+                            </li>
+                            <li>
+                                <p>Due to Customer's use of the Service in a manner inconsistent with the features and
+                                    functionality of the Service (for example, attempts to perform operations that are
+                                    not supported) or inconsistent with published documentation or guidance;</p>
+                            </li>
+                            <li>
+                                <p>That resulted from faulty input, instructions, or arguments (for example, requests to
+                                    access files that do not exist);</p>
+                            </li>
+                            <li>
+                                <p>Caused by Customer's use of the Service after 21Vianet advised Customer to modify its
+                                    use of the Service, if Customer did not modify its use as advised;</p>
+                            </li>
+                            <li>
+                                <p>During or with respect to Previews or to purchases made using 21Vianet subscription
+                                    credits;</p>
+                            </li>
+                            <li>
+                                <p>That resulted from Customer's attempts to perform operations that exceed prescribed
+                                    quotas or that resulted from throttling of suspected abusive behavior;</p>
+                            </li>
+                            <li>
+                                <p>Due to Customer's use Service features that are outside of associated Support
+                                    Windows; or</p>
+                            </li>
+                            <li>
+                                <p>Attributable to acts by persons gaining unauthorized access to 21Vianet’s Service by
+                                    means of Customer's passwords or equipment or otherwise resulting from Customer's
+                                    failure to follow appropriate security practices.</p>
+                            </li>
+                        </ol>
+                        <h3>Service Credits</h3>
+                        <ol>
+                            <li>
+                                <p>The amount and method of calculation of Service Credits is described below in
+                                    connection with each Service. </p>
+                            </li>
+                            <li>
+                                <p>Service Credits are Customer's sole and exclusive remedy for any failure to meet any
+                                    Service Level.</p>
+                            </li>
+                            <li>
+                                <p>The Service Credits awarded in any billing month for a particular Service or Service
+                                    Resource will not, under any circumstance, exceed Customer's monthly service fees
+                                    that Service or Service Resource, as applicable, in the billing month.</p>
+                            </li>
+                            <li>
+                                <p>For Services purchased as part of a suite, the Service Credit will be based on the
+                                    pro-rata portion of the cost of the Service, as determined by 21Vianet in its
+                                    reasonable discretion. In cases where Customer has purchased Services from a
+                                    reseller, the Service Credit will be based on the estimated retail price for the
+                                    applicable Service, as determined by 21Vianet in its reasonable discretion.</p>
+                            </li>
+                        </ol>
+                        <h2>The SLA details</h2>
+                        <h3>Additional Definitions</h3>
+                        <p><strong>"Average Error Rate"</strong> for a billing month is the sum of Error Rates for each
+                            hour in the billing month divided by the total number of hours in the billing month.</p>
+                        <p><strong>"Blob Storage Account"</strong> is a storage account specialized for storing data as
+                            blobs and provides the ability to specify an access tier indicating how frequently the data
+                            in that account is accessed.</p>
+                        <p><strong>"Block Blob Storage Account"</strong> is a storage account specialized for storing
+                            data as block or append blobs on solid-state drives.</p>
+                        <p><strong>"Cool Access Tier"</strong> is an attribute of a blob or account indicating it is
+                            infrequently accessed and has a lower availability service level than blobs in Hot Access
+                            Tier.</p>
+                        <p><strong>"Hot Access Tier"</strong> is an attribute of a blob or account indicating it is
+                            frequently accessed.</p>
+                        <p><strong>"Excluded Transactions"</strong> are storage transactions that do not count toward
+                            either Total Storage Transactions or Failed Storage Transactions. Excluded Transactions
+                            include pre-authentication failures; authentication failures; attempted transactions for
+                            storage accounts over their prescribed quotas; creation or deletion of containers, file
+                            shares, tables, or queues; clearing of queues; and copying blobs or files between storage
+                            accounts.</p>
+                        <p><strong>"Error Rate"</strong> is the total number of Failed Storage Transactions divided by
+                            the Total Storage Transactions during a set time interval (currently set at one hour). If
+                            the Total Storage Transactions in a given one-hour interval is zero, the error rate for that
+                            interval is 0%.</p>
+                        <p><strong>"Failed Storage Transactions"</strong> is the set of all storage transactions within
+                            Total Storage Transactions that are not completed within the Maximum Processing Time
+                            associated with their respective transaction type, as specified in the table below. Maximum
+                            Processing Time includes only the time spent processing a transaction request within the
+                            Storage Service and does not include any time spent transferring the request to or from the
+                            Storage Service.</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>TRANSACTION TYPES</th>
+                                    <th>MAXIMUM PROCESSING TIME</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>PutBlob and GetBlob (includes blocks and pages) Get Valid Page Blob Ranges</td>
+                                    <td>Two (2) seconds multiplied by the number of MBs transferred in the course of
+                                        processing the request.</td>
+                                </tr>
+                                <tr>
+                                    <td>PutFile and GetFile</td>
+                                    <td>Two (2) seconds multiplied by the number of MBs transferred in the course of
+                                        processing the request.</td>
+                                </tr>
+                                <tr>
+                                    <td>Copy Blob</td>
+                                    <td>Ninety (90) seconds (where the source and destination blobs are within the same
+                                        storage account).</td>
+                                </tr>
+                                <tr>
+                                    <td>Copy File</td>
+                                    <td>Ninety (90) seconds (where the source and destination files are within the same
+                                        storage account).</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p>PutBlockList GetBlockList
+                                    </td>
+                                    <td>Sixty (60) seconds.</td>
+                                </tr>
+                                <tr>
+                                    <td>Table Query List Operations</td>
+                                    <td>Ten (10) seconds (to complete processing or return a continuation)</td>
+                                </tr>
+                                <tr>
+                                    <td>Batch Table Operations</td>
+                                    <td> Thirty (30) seconds</td>
+                                </tr>
+                                <tr>
+                                    <td>All Single Entity Table Operations
+                                        All other Blob, File and Message Operations</td>
+                                    <td>Two (2) seconds</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>These figures represent maximum processing times. Actual and average times are expected to be
+                            much lower.</p>
+                        <p>Failed Storage Transactions do not include:</p>
+                        <ol>
+                            <li>Transaction requests that are throttled by the Storage Service due to a failure to obey
+                                appropriate back-off principles.</li>
+                            <li>Transaction requests having timeouts set lower than the respective Maximum Processing
+                                Times specified above.</li>
+                            <li>Read transactions requests to RA-GRS Accounts for which you did not attempt to execute
+                                the request against Secondary Region associated with the storage account if the request
+                                to the Primary Region was not successful.</li>
+                            <li>Read transaction requests to RA-GRS Accounts that fail due to Geo-Replication Lag.</li>
+                        </ol>
+                        <p><strong>"Geo Replication Lag"</strong> for GRS and RA-GRS Accounts is the time it takes for
+                            data stored in the Primary Region of the storage account to replicate to the Secondary
+                            Region of the storage account. Because GRS and RA-GRS Accounts are replicated asynchronously
+                            to the Secondary Region, data written to the Primary Region of the storage account will not
+                            be immediately available in the Secondary Region. You can query the Geo Replication Lag for
+                            a storage account, but 21Vianet does not provide any guarantees as to the length of any Geo
+                            Replication Lag under this SLA.</p>
+                        <p><strong>"Geographically Redundant Storage (GRS) Account"</strong> is a storage account for
+                            which data is replicated synchronously within a Primary Region and then replicated
+                            asynchronously to a Secondary Region. You cannot directly read data from or write data to
+                            the Secondary Region associated with GRS Accounts.</p>
+                        <p><strong>"Locally Redundant Storage (LRS) Account"</strong> is a storage account for which
+                            data is replicated synchronously only within a Primary Region.</p>
+                        <p><strong>"Primary Region"</strong> is a geographical region in which data within a storage
+                            account is located, as selected by you when creating the storage account. You may execute
+                            write requests only against data stored within the Primary Region associated with storage
+                            accounts.</p>
+                        <p><strong>"Read Access Geographically Redundant Storage (RA-GRS) Account"</strong> is a storage
+                            account for which data is replicated synchronously within a Primary Region and then
+                            replicated asynchronously to a Secondary Region. You can directly read data from, but cannot
+                            write data to, the Secondary Region associated with RA-GRS Accounts.</p>
+                        <p><strong>"Secondary Region"</strong> is a geographical region in which data within a GRS or
+                            RA-GRS Account is replicated and stored, as assigned by 21Vianet Azure based on the Primary
+                            Region associated with the storage account. You cannot specify the Secondary Region
+                            associated with storage accounts.</p>
+                        <p><strong>"Total Storage Transactions"</strong> is the set of all storage transactions, other
+                            than Excluded Transactions, attempted within a one-hour interval across all storage accounts
+                            in the Storage Service in a given subscription.</p>
+                        <p><strong>"Zone Redundant Storage (ZRS) Account"</strong> is a storage account for which data
+                            is replicated across multiple facilities. These facilities may be within the same
+                            geographical region or across two geographical regions.</p>
+                        <p><strong>Monthly Uptime Percentage:</strong>Monthly Uptime Percentage is calculated using the
+                            following formula:</p>
+                        <p>100% - <i>Average Error Rate</i></p>
+                        <p>Service Credit – Hot Blobs in LRS, ZRS, GRS and RA-GRS (write requests) Accounts, blobs in
+                            Block Blob Storage Accounts, and files in storage accounts:</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>MONTHLY UPTIME PERCENTAGE</th>
+                                    <th>SERVICE CREDIT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>&lt;99.9%</td>
+                                    <td>10%</td>
+                                </tr>
+                                <tr>
+                                    <td>&lt;99%</td>
+                                    <td>25%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Service Credit – Hot Blobs in RA-GRS (read requests) Accounts:</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>MONTHLY UPTIME PERCENTAGE</th>
+                                    <th>SERVICE CREDIT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>&lt;99.99%</td>
+                                    <td>10%</td>
+                                </tr>
+                                <tr>
+                                    <td>&lt;99%</td>
+                                    <td>25%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Service Credit – Cool Blobs in LRS, GRS, RA-GRS (write requests) Accounts:</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>MONTHLY UPTIME PERCENTAGE</th>
+                                    <th>SERVICE CREDIT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>&lt;99%</td>
+                                    <td>10%</td>
+                                </tr>
+                                <tr>
+                                    <td>&lt;98%</td>
+                                    <td>25%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Service Credit – Cool Blobs in RA-GRS (read requests) Accounts:</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>MONTHLY UPTIME PERCENTAGE</th>
+                                    <th>SERVICE CREDIT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>&lt;99.9%</td>
+                                    <td>10%</td>
+                                </tr>
+                                <tr>
+                                    <td>&lt;98%</td>
+                                    <td>25%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Service Credit – Archive Blobs in LRS, GRS, RA-GRS (write requests) Accounts:</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>MONTHLY UPTIME PERCENTAGE</th>
+                                    <th>SERVICE CREDIT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>&lt;99%</td>
+                                    <td>10%</td>
+                                </tr>
+                                <tr>
+                                    <td>&lt;98%</td>
+                                    <td>25%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Service Credit – Archive Blobs in RA-GRS (read requests) Accounts:</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>MONTHLY UPTIME PERCENTAGE</th>
+                                    <th>SERVICE CREDIT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>&lt;99.9%</td>
+                                    <td>10%</td>
+                                </tr>
+                                <tr>
+                                    <td>&lt;98%</td>
+                                    <td>25%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="font-size: small;">* Cool and Archive SLA are applicable only to storage account types
+                            that support Cool and Archive tier.</p>
+                        <!-- add here begin -->
+                        <h2>Azure Files Premium Tier</h2>
+                        <p><strong>Additional Definitions</strong></p>
+                        <p><strong>“File Share”</strong> is a logical storage resource in Azure Files that contains a
+                            file system and is
+                            used to store data.</p>
+                        <p>
+                            <strong>“Locally Redundant Storage (LRS)”</strong> is a setting which indicates that data is
+                            replicated
+                            synchronously only within a Primary Region.
+                        </p>
+                        <p><strong>
+                                “Zone Redundant Storage (ZRS)”</strong> is a setting which indicates that data is
+                            replicated across
+                            multiple facilities. These facilities may be within the same geographical region or across
+                            two geographical regions.</p>
+                        <p>
+                            <strong>"Maximum Available Minutes"</strong> is the total number of minutes a given File
+                            Share is deployed by
+                            Customer in a given Microsoft Azure subscription during a billing month.
+                        </p>
+                        <p>
+                            <strong>“Service Side Issue”</strong> is reported when a request fails with response type
+                            ServerOtherError or
+                            ServerBusyError or ServerTimeoutError.
+                        </p>
+                        <p>
+                            <strong>"Downtime"</strong> is the total number of minutes in the billing month during which
+                            all requests
+                            against the File Share have failed due to a Service Side Issue.
+                        </p>
+                        <p>
+                            <strong>“Monthly Uptime Percentage”</strong>: Monthly Uptime Percentage is calculated using
+                            the following
+                            formula:
+                        </p>
+                        <p>
+                            "Maximum Available Minutes -Downtime " /"Maximum Available Minutes" x 100
+                        </p>
+                        <p>
+                            <strong>The following Service Levels and Service Credits are applicable to Customer's use of
+                                File
+                                Share with Premium Tier using Zone Redundant Storage (ZRS) or Locally Redundant Storage
+                                (LRS).</strong>
+                        </p>
+                        <table>
+                            <tr>
+                                <td>Monthly Uptime Percentage</td>
+                                <td>Service Credit</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    < 99.99%</td>
+                                <td> 10%</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    < 99%</td>
+                                <td> 25% </td>
+                            </tr>
+                        </table>
+                        <!-- add here end -->
+                        <h2>Version History</h2>
+                        <p><a id="storage-en-sla_storage-en-sla-1.5" href="/en-us/support/sla/storage/V1_5/">1.5</a> Last
+                            updated: Feb 2022</p>
+                        <p> Release notes: Addition of files in storage accounts to the list of features covered by
+                            uptime guarantee. </p>
+                        <p><a id="storage-en-sla_storage-en-sla-1.3" href="/en-us/support/sla/storage/">1.3</a> Last
+                            updated: May 2019</p>
+                        <p> Release notes: Updated SLA for the newly introduced Block Blob Storage Accounts. </p>
+                        <p><a id="storage-en-sla_storage-en-sla-1.2"
+                                href="/content/marketing-resource/media/sla/sla_for_storage-en_1.2.pdf">1.2</a> Last
+                            updated: Aug 2017</p>
+                        <p>Release notes: Updated SLA to reflect guarantees for Azure File Storage. </p>
+                        <p><a id="storage-en-sla_storage-en-sla-1.1pdf"
+                                href="/content/marketing-resource/media/sla/sla_for_storage-en_1.1.pdf">1.1</a> Last
+                            updated: Aug 2016</p>
+                        <p>Release notes: Updated SLA for the newly introduced Blob Storage Accounts with the Cool
+                            Access Tier on 8/9/2016. </p>
+                        <p><a id="storage-en-sla_storage-en-sla-1.0pdf"
+                                href="/content/marketing-resource/media/sla/sla_for_storage-en1.0.pdf">1.0</a> Last
+                            updated: Mar 2016</p>
+
+                        <div id="content_feedback"></div>
+
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="documentation-bookmark book-mark hidden-sm hidden-xs">
+                            <div class="loader">
+                                <i class="circle"></i>
+                                <i class="circle"></i>
+                                <i class="circle"></i>
+                                <i class="circle"></i>
+                                <i class="circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Documentation Content -->
+
+    <!-- BEGIN: Footer -->
+    <div class="public_footerpage"></div>
+    <!--END: Common sidebar-->
+
+
+
+    <link href="/Static/CSS/Localization/en-us.css" rel="stylesheet">
+    <script type="text/javascript">
+        function getAntiForgeryToken() {
+            var token = '<input name="__RequestVerificationToken" type="hidden" value="om6alOPTMOcibWMxN5pMwW4M-xnSZ24eFozvcmy4QqM9_7HpVGMQ0HM0sNnSfoAScp4LTslNLaUps6cdsRhkQkjkPBAdotX6JPubSF67JQU1" />';
+            token = $(token).val();
+            return token;
+        }
+        function setLocaleCookie(localeVal) {
+            var Days = 365 * 10; // Ten year expiration
+            var exp = new Date();
+
+            var hostName = window.location.hostname;
+            var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain + "; path=/;expires=" + exp.toGMTString();
+        }
+
+        setLocaleCookie(window.currentLocale);
+    </script>
+
+    <script type="text/javascript">
+        var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+        var TECHNICAL_STORAGE = '/blob/tech-content/';
+        var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+        var EnablePricingSync = 'false';
+    </script>
+
+    <!-- BEGIN: Script -->
+
+    <!-- END: Script -->
+
+    <!-- BEGIN: Minified RequireJs -->
+    <script src='/Static/Scripts/global.config.js' type='text/javascript'></script>
+    <script src='/Static/Scripts/require.js' type='text/javascript'></script>
+    <script src='/Static/Scripts/ad5c296cd375ba23de6e9b6f940729e549234d8c.js' type='text/javascript'></script>
+    <!-- END: Minified RequireJs -->
+
+    <!-- begin JSLL -->
+    <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js"></script>
+
+    <script type="text/javascript">
+        (function () {
+            var config = {
+                cookiesToCollect: ["_mkto_trk"],
+                syncMuid: true,
+                ix: {
+                    a: true,
+                    g: true
+                },
+                coreData: {
+                    appId: 'AzureCN',
+                    market: 'zh-cn',
+                }
+            };
+            awa.init(config);
+        })();
+    </script>
+    <!-- end JSLL -->
+
+    <script type="text/javascript" src="/Static/Scripts/plugins/cookie/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/Static/Scripts/wacndatatracker.js"></script>
+
+
+    <script type="text/javascript" src="/common/useCommon.js"></script>
+
+</body>
+
+</html>
