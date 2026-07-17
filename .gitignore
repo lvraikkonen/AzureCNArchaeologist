@@ -5,6 +5,7 @@
 .idea
 __pycache__
 .venv
+.DS_Store
 
 # data/current_prod_html/en-us/*
 # data/current_prod_html/zh-cn/*

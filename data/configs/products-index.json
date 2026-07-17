@@ -133,7 +133,6 @@
         "azure-nat-gateway",
         "core-control-plane",
         "dns",
-        "frontdoor",
         "ip-addresses",
         "load-balancer",
         "network-watcher",
