@@ -3,13 +3,13 @@
   "passed": true,
   "counts": {
     "zh-cn": {
-      "snapshots": 234,
-      "explained": 234,
+      "snapshots": 240,
+      "explained": 240,
       "unknown": 0
     },
     "en-us": {
-      "snapshots": 236,
-      "explained": 236,
+      "snapshots": 240,
+      "explained": 240,
       "unknown": 0
     }
   },
@@ -18,5 +18,6 @@
   "duplicate_explanations": [],
   "missing_primary_sources": [],
   "missing_source_aliases": [],
+  "missing_historical_sources": [],
   "normalized_input_issues": []
 }

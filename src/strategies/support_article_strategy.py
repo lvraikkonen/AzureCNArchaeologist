@@ -25,6 +25,7 @@ class SupportArticleStrategy(BaseStrategy):
     def __init__(self, product_config: dict[str, Any], html_file_path: str = "") -> None:
         super().__init__(product_config, html_file_path)
         self.support_article_type = product_config.get("support_article_type", "")
+        self.url_route_map = product_config.get("extraction", {}).get("url_route_map", {})
         if self.support_article_type not in self.SUPPORT_TYPES:
             raise ValueError(f"Invalid support_article_type: {self.support_article_type!r}")
 
@@ -73,7 +74,12 @@ class SupportArticleStrategy(BaseStrategy):
         if not date:
             return ""
         text = date.get_text(" ", strip=True)
-        return re.sub(r"^(?:最后更新时间|更新时间|Last\s+updated|Updated)\s*[：:]?\s*", "", text, flags=re.I).strip()
+        return re.sub(
+            r"^(?:最后更新(?:时间|日期)|更新时间|Last\s+updated|Updated)\s*[：:]?\s*",
+            "",
+            text,
+            flags=re.I,
+        ).strip()
 
     def _extract_article_description(self, content: Tag, source_url: str) -> str:
         h1 = content.find("h1")
@@ -111,4 +117,4 @@ class SupportArticleStrategy(BaseStrategy):
         for selector in self.UI_SELECTORS:
             for element in fragment.select(selector):
                 element.decompose()
-        rewrite_fragment_urls(fragment, source_url)
+        rewrite_fragment_urls(fragment, source_url, self.url_route_map)

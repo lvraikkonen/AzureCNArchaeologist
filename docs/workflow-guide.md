@@ -54,16 +54,34 @@ python cli.py copy-from-prod --language zh-cn --category database --category sto
 1. **读取事实源**: 加载唯一 Product Definition
 2. **解析 Source Location**: 只使用 `sources.{language}.snapshot_path` 的精确路径
 3. **选择产品**: 按 Product Key、Catalog Category 或 Support Article Type 筛选并按 Product Key 去重
-4. **复制文件**: Pricing 写入 `data/prod-html/{language}/pricing/{product_key}.html`；Support Article 写入 canonical type directory
+4. **复制文件**: Pricing 写入 `data/prod-html/{language}/pricing/{product_key}.html`；Support Article 写入 canonical type directory；已声明的历史 SLA 版本写入 `{product_key}--{version_key}.html`
 5. **哈希校验**: source/normalized SHA-256 必须一致
 
 ---
 
 ### 显式 Source Location 与 Alias
 
-原始目录与 Product Key 不一致时，直接在 Product Definition 的每个语言 source 中声明精确 `snapshot_path`。重复路由或历史副本登记为 source alias，包含精确路径、原因和 canonical Product Key。复制器没有特殊映射或“查找第一个 HTML”的回退。
+原始目录与 Product Key 不一致时，直接在 Product Definition 的每个语言 source 中声明精确 `snapshot_path`。不独立发布的重复或旧路由登记为 source alias；需要发布的历史 SLA 页面登记为 `historical_versions`，显式包含版本、slug、逐语言 source 和 CMS path。复制器没有特殊映射或“查找第一个 HTML”的回退。
 
 例如 `storage-files` 的中文 primary source 可以是 `pricing/details/storage/files/index.html`，规范输入仍固定为 `data/prod-html/zh-cn/pricing/storage-files.html`。
+
+### SLA 历史版本
+
+历史版本的 normalized HTML 保持生产快照原文与 SHA-256，不在复制阶段修改内部链接。提取阶段根据 Product Definition 的显式 URL/CMS route 表改写版本导航，并为每个可用版本生成独立 payload 和 Diagnostic Sidecar。
+
+```bash
+# 当前页
+python cli.py extract sla-cdn --language zh-cn
+
+# 单个历史版本
+python cli.py extract sla-cdn --language zh-cn --version v1-1
+
+# 当前页及该语言全部可用历史版本（双语分别执行）
+python cli.py extract sla-sql-data --language zh-cn --all-versions
+python cli.py extract sla-sql-data --language en-us --all-versions
+```
+
+历史资源使用 `{product_key}--{version_key}` 作为 Resource Key，但仍归属原 Product Key，不增加 Product Index 的产品总数。
 
 ---
 
@@ -587,7 +605,7 @@ find data/current_prod_html -name "*mysql*"
 某些产品总是导入失败
 
 **解决方案**:
-更新对应 Product Definition 的 `sources.{language}.snapshot_path`；重复或历史路由写入同一语言的 `aliases`，并记录精确路径、原因和 canonical Product Key。复制器不接受特殊映射或目录猜测。
+更新对应 Product Definition 的 `sources.{language}.snapshot_path`；非发布重复路由写入 `aliases`。可发布 SLA 历史页面必须写入 `historical_versions`，声明版本身份、逐语言 source 与 CMS path。复制器不接受特殊映射或目录猜测。
 
 ---
 

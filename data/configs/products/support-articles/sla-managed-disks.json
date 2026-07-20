@@ -4,7 +4,8 @@
   "display_name": "托管磁盘的服务级别协议",
   "slug": "managed-disks",
   "page_model": "SupportArticlePage",
-  "capability_status": "supported",
+  "capability_status": "known_unsupported",
+  "unsupported_reason": "The current bilingual source contains no H2 section, so the required SupportArticlePage mainContent cannot be produced under the v0.2 extraction contract.",
   "support_article_type": "SLA",
   "sources": {
     "zh-cn": {

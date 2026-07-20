@@ -16,13 +16,15 @@ class EnhancedCMSExtractor:
         product_key: str,
         language: str,
         html_file_path: str | None = None,
+        version_key: str | None = None,
     ) -> ExtractionResult:
-        return self.coordinator.coordinate_extraction(product_key, language, html_file_path)
+        return self.coordinator.coordinate_extraction(product_key, language, html_file_path, version_key)
 
     def extract_flexible_content(
         self,
         product_key: str,
         language: str,
         html_file_path: str | None = None,
+        version_key: str | None = None,
     ) -> ExtractionResult:
-        return self.extract_cms_content(product_key, language, html_file_path)
+        return self.extract_cms_content(product_key, language, html_file_path, version_key)

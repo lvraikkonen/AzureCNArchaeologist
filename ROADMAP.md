@@ -137,7 +137,7 @@ v1.0 中需要清晰区分：
 
 #### 主要工作
 
-- 以 Product Definition 1.0 作为产品全集的唯一事实来源，包括 Product Key、slug、能力状态、多分类成员关系和逐语言 Source Location；`products-index.json` 是可重复生成并校验漂移的 Product Index 3.0。
+- 以 Product Definition 1.0 作为产品全集的唯一事实来源，包括 Product Key、slug、能力状态、多分类成员关系、逐语言 Source Location，以及不增加产品计数的可发布 SLA 历史版本资源；`products-index.json` 是可重复生成并校验漂移的 Product Index 3.0。
 - 修复 `products-index.json` 中的：
   - 重复产品；
   - 分类数量漂移；

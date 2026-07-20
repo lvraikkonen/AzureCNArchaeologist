@@ -4,8 +4,8 @@ Status: **PASS**
 
 | Language | Snapshots | Explained | Unknown |
 |---|---:|---:|---:|
-| zh-cn | 234 | 234 | 0 |
-| en-us | 236 | 236 | 0 |
+| zh-cn | 240 | 240 | 0 |
+| en-us | 240 | 240 | 0 |
 
 ## Unknown snapshots
 
@@ -24,6 +24,10 @@ None.
 None.
 
 ## Missing source aliases
+
+None.
+
+## Missing historical sources
 
 None.
 

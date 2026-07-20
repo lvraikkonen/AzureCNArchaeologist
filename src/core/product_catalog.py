@@ -11,6 +11,12 @@ from typing import Any, Iterable
 
 from jsonschema import Draft202012Validator, FormatChecker
 
+from src.core.support_article_versions import (
+    historical_normalized_input_path,
+    historical_resource_key,
+    historical_versions,
+)
+
 
 LANGUAGES = ("zh-cn", "en-us")
 SUPPORT_TYPE_DIRECTORIES = {
@@ -62,6 +68,7 @@ class ProductCatalog:
         primary_sources: dict[tuple[str, str], str] = {}
         all_sources: dict[tuple[str, str], str] = {}
         slugs: dict[tuple[str, str], str] = {}
+        cms_paths: dict[tuple[str, str], str] = {}
 
         for path in sorted(self.products_root.glob("*/*.json")):
             definition = json.loads(path.read_text(encoding="utf-8"))
@@ -96,6 +103,12 @@ class ProductCatalog:
                 if key in all_sources:
                     errors.append(f"duplicate source route {language}/{snapshot_path}: {all_sources[key]}, {product_key}")
                 all_sources[key] = product_key
+                cms_path = source.get("cms_path")
+                if cms_path:
+                    cms_key = (language, cms_path)
+                    if cms_key in cms_paths:
+                        errors.append(f"duplicate CMS path {language}/{cms_path}: {cms_paths[cms_key]}, {product_key}")
+                    cms_paths[cms_key] = product_key
                 for alias in source.get("aliases", []):
                     alias_path = alias.get("snapshot_path", "")
                     alias_key = (language, alias_path)
@@ -104,6 +117,43 @@ class ProductCatalog:
                     if alias_key in all_sources:
                         errors.append(f"duplicate source route {language}/{alias_path}: {all_sources[alias_key]}, {product_key}")
                     all_sources[alias_key] = product_key
+
+            version_keys: set[str] = set()
+            for version in definition.get("historical_versions", []):
+                version_key = version.get("version_key", "")
+                resource_key = historical_resource_key(product_key, version_key)
+                if version_key in version_keys:
+                    errors.append(f"{relative}: duplicate historical version_key {version_key}")
+                version_keys.add(version_key)
+
+                version_slug_key = (page_model, version.get("slug", ""))
+                if version_slug_key in slugs:
+                    errors.append(
+                        f"duplicate slug in {page_model}: {version_slug_key[1]} "
+                        f"({slugs[version_slug_key]}, {resource_key})"
+                    )
+                else:
+                    slugs[version_slug_key] = resource_key
+
+                for language, source in version.get("sources", {}).items():
+                    if source.get("availability") != "available":
+                        continue
+                    snapshot_path = source.get("snapshot_path", "")
+                    source_key = (language, snapshot_path)
+                    if source_key in all_sources:
+                        errors.append(
+                            f"duplicate source route {language}/{snapshot_path}: "
+                            f"{all_sources[source_key]}, {resource_key}"
+                        )
+                    all_sources[source_key] = resource_key
+                    cms_path = source.get("cms_path", "")
+                    cms_key = (language, cms_path)
+                    if cms_key in cms_paths:
+                        errors.append(
+                            f"duplicate CMS path {language}/{cms_path}: "
+                            f"{cms_paths[cms_key]}, {resource_key}"
+                        )
+                    cms_paths[cms_key] = resource_key
 
         if errors:
             raise CatalogError("Product Definition validation failed:\n- " + "\n- ".join(errors))
@@ -128,6 +178,7 @@ class ProductCatalog:
                 "page_model": definition["page_model"],
                 "slug": definition["slug"],
                 "capability_status": definition["capability_status"],
+                "historical_version_count": len(historical_versions(definition)),
             }
             if definition["page_model"] == "FlexibleContentPage":
                 categories = sorted(definition["catalog_categories"])
@@ -147,6 +198,9 @@ class ProductCatalog:
             "total_products": len(products),
             "supported_products": supported,
             "known_unsupported_products": len(products) - supported,
+            "total_historical_versions": sum(
+                item["historical_version_count"] for item in products.values()
+            ),
             "products": products,
             "catalog_categories": {
                 key: {"count": len(values), "products": sorted(values)}
@@ -191,6 +245,7 @@ class ProductCatalog:
         duplicate_explanations: list[dict[str, str]] = []
         missing_primary: list[dict[str, str]] = []
         missing_aliases: list[dict[str, str]] = []
+        missing_historical_sources: list[dict[str, str]] = []
         normalized_input_issues: list[dict[str, str]] = []
 
         for key, record in records.items():
@@ -213,6 +268,47 @@ class ProductCatalog:
                         missing_aliases.append({"language": language, "snapshot_path": alias["snapshot_path"], "product_key": key})
                     self._add_explanation(explanations, duplicate_explanations, language, alias["snapshot_path"], "alias", key)
 
+            for version in historical_versions(record.definition):
+                version_key = version["version_key"]
+                resource_key = historical_resource_key(key, version_key)
+                for language, source in version["sources"].items():
+                    if source["availability"] != "available":
+                        continue
+                    raw_path = self.root / "data" / "current_prod_html" / language / source["snapshot_path"]
+                    if not raw_path.is_file():
+                        missing_historical_sources.append({
+                            "language": language,
+                            "snapshot_path": source["snapshot_path"],
+                            "product_key": key,
+                            "version_key": version_key,
+                        })
+                    if record.definition["capability_status"] == "supported":
+                        normalized = historical_normalized_input_path(
+                            self.root, record.definition, language, version_key
+                        )
+                        if not normalized.is_file():
+                            normalized_input_issues.append({
+                                "language": language,
+                                "product_key": key,
+                                "resource_key": resource_key,
+                                "reason": "missing_historical_normalized_input",
+                            })
+                        elif raw_path.is_file() and sha256_file(raw_path) != sha256_file(normalized):
+                            normalized_input_issues.append({
+                                "language": language,
+                                "product_key": key,
+                                "resource_key": resource_key,
+                                "reason": "historical_source_normalized_hash_mismatch",
+                            })
+                    self._add_explanation(
+                        explanations,
+                        duplicate_explanations,
+                        language,
+                        source["snapshot_path"],
+                        "historical_version",
+                        resource_key,
+                    )
+
         exclusions = self._load_exclusions()
         stale_exclusions: list[dict[str, str]] = []
         for item in exclusions:
@@ -234,7 +330,15 @@ class ProductCatalog:
                 "unknown": len(unexplained),
             }
 
-        passed = not (unknown or stale_exclusions or duplicate_explanations or missing_primary or missing_aliases or normalized_input_issues)
+        passed = not (
+            unknown
+            or stale_exclusions
+            or duplicate_explanations
+            or missing_primary
+            or missing_aliases
+            or missing_historical_sources
+            or normalized_input_issues
+        )
         return {
             "schema_version": "1.0",
             "passed": passed,
@@ -244,6 +348,7 @@ class ProductCatalog:
             "duplicate_explanations": duplicate_explanations,
             "missing_primary_sources": missing_primary,
             "missing_source_aliases": missing_aliases,
+            "missing_historical_sources": missing_historical_sources,
             "normalized_input_issues": normalized_input_issues,
         }
 
@@ -285,7 +390,15 @@ class ProductCatalog:
         lines = ["# v0.2 Source Snapshot Coverage", "", f"Status: **{'PASS' if audit['passed'] else 'FAIL'}**", "", "| Language | Snapshots | Explained | Unknown |", "|---|---:|---:|---:|"]
         for language, counts in audit["counts"].items():
             lines.append(f"| {language} | {counts['snapshots']} | {counts['explained']} | {counts['unknown']} |")
-        for title, key in (("Unknown snapshots", "unknown_snapshots"), ("Stale exclusions", "stale_exclusions"), ("Duplicate explanations", "duplicate_explanations"), ("Missing primary sources", "missing_primary_sources"), ("Missing source aliases", "missing_source_aliases"), ("Normalized input issues", "normalized_input_issues")):
+        for title, key in (
+            ("Unknown snapshots", "unknown_snapshots"),
+            ("Stale exclusions", "stale_exclusions"),
+            ("Duplicate explanations", "duplicate_explanations"),
+            ("Missing primary sources", "missing_primary_sources"),
+            ("Missing source aliases", "missing_source_aliases"),
+            ("Missing historical sources", "missing_historical_sources"),
+            ("Normalized input issues", "normalized_input_issues"),
+        ):
             lines.extend(["", f"## {title}", ""])
             values = audit[key]
             lines.extend(f"- `{item}`" for item in values) if values else lines.append("None.")
@@ -294,6 +407,7 @@ class ProductCatalog:
 
     def build_baseline_manifest(self) -> dict[str, Any]:
         entries = []
+        historical_entries = []
         records = self.load_definitions()
         for product_key, record in sorted(records.items()):
             definition = record.definition
@@ -320,11 +434,42 @@ class ProductCatalog:
                     "normalized_sha256": sha256_file(normalized) if normalized.is_file() else None,
                     "strategy": "support_article" if definition["page_model"] == "SupportArticlePage" else definition.get("extraction", {}).get("strategy", "auto"),
                 })
+            for version in historical_versions(definition):
+                version_key = version["version_key"]
+                resource_key = historical_resource_key(product_key, version_key)
+                for language in LANGUAGES:
+                    source = version["sources"][language]
+                    raw_path = (
+                        self.root / "data" / "current_prod_html" / language / source["snapshot_path"]
+                        if source["availability"] == "available" else None
+                    )
+                    normalized = historical_normalized_input_path(
+                        self.root, definition, language, version_key
+                    )
+                    historical_entries.append({
+                        "product_key": product_key,
+                        "resource_key": resource_key,
+                        "version_key": version_key,
+                        "version_label": version["version_label"],
+                        "slug": version["slug"],
+                        "language": language,
+                        "source_availability": source["availability"],
+                        "source_snapshot_path": source.get("snapshot_path"),
+                        "source_exists": bool(raw_path and raw_path.is_file()),
+                        "source_sha256": sha256_file(raw_path) if raw_path and raw_path.is_file() else None,
+                        "normalized_input_path": normalized.relative_to(self.root).as_posix(),
+                        "normalized_exists": normalized.is_file(),
+                        "normalized_sha256": sha256_file(normalized) if normalized.is_file() else None,
+                        "cms_path": source.get("cms_path"),
+                    })
         return {
             "schema_version": "1.0",
             "total_product_definitions": len(records),
             "total_product_language_entries": len(entries),
             "entries": entries,
+            "total_historical_versions": sum(len(historical_versions(record.definition)) for record in records.values()),
+            "total_historical_version_language_entries": len(historical_entries),
+            "historical_version_entries": historical_entries,
         }
 
     def write_baseline_manifest(self, output_dir: str | Path = "reports/v0.2") -> tuple[Path, Path]:
@@ -336,7 +481,7 @@ class ProductCatalog:
         json_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         lines = [
             "# v0.2 Product-Language Baseline", "",
-            f"Product Definitions: **{manifest['total_product_definitions']}**  ",
+            f"Product Definitions: **{manifest['total_product_definitions']}**",
             f"Product-language entries: **{manifest['total_product_language_entries']}**", "",
             "| Product Key | Language | Model | Capability | Source | Normalized | Strategy |",
             "|---|---|---|---|---|---|---|",
@@ -345,6 +490,22 @@ class ProductCatalog:
             lines.append(
                 f"| {item['product_key']} | {item['language']} | {item['page_model']} | {item['capability_status']} | "
                 f"{'yes' if item['source_exists'] else item['source_availability']} | {'yes' if item['normalized_exists'] else 'no'} | {item['strategy']} |"
+            )
+        lines.extend([
+            "",
+            "## Historical SLA versions",
+            "",
+            f"Historical versions: **{manifest['total_historical_versions']}**",
+            f"Version-language entries: **{manifest['total_historical_version_language_entries']}**",
+            "",
+            "| Resource Key | Version | Language | Source | Normalized | CMS Path |",
+            "|---|---|---|---|---|---|",
+        ])
+        for item in manifest["historical_version_entries"]:
+            lines.append(
+                f"| {item['resource_key']} | {item['version_label']} | {item['language']} | "
+                f"{'yes' if item['source_exists'] else item['source_availability']} | "
+                f"{'yes' if item['normalized_exists'] else 'no'} | {item['cms_path'] or 'n/a'} |"
             )
         markdown_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return json_path, markdown_path

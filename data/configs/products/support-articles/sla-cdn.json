@@ -10,21 +10,56 @@
     "zh-cn": {
       "availability": "available",
       "snapshot_path": "SupportArticles/SLA/cdn/index.html",
-      "url": "https://www.azure.cn/support/sla/cdn/"
+      "url": "https://www.azure.cn/support/sla/cdn/",
+      "cms_path": "/support/sla/cdn/",
+      "document_version": "1.2"
     },
     "en-us": {
       "availability": "available",
-      "snapshot_path": "SupportArticles/SLA/cdn-v1/index.html",
-      "url": "https://www.azure.cn/en-us/support/sla/cdn-v1/",
-      "aliases": [
-        {
-          "snapshot_path": "SupportArticles/SLA/cdn/index.html",
-          "reason": "Historical or duplicate source route retained for traceability.",
-          "canonical_product_key": "sla-cdn"
-        }
-      ]
+      "snapshot_path": "SupportArticles/SLA/cdn/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/cdn/",
+      "cms_path": "/en-us/support/sla/cdn/",
+      "document_version": "1.1"
     }
   },
+  "historical_versions": [
+    {
+      "version_key": "v1-1",
+      "version_label": "1.1",
+      "slug": "cdn-v1-1",
+      "sources": {
+        "zh-cn": {
+          "availability": "available",
+          "snapshot_path": "SupportArticles/SLA/cdn-v1_1/index.html",
+          "url": "https://www.azure.cn/support/sla/cdn-v1_1/",
+          "cms_path": "/support/sla/cdn-v1-1/"
+        },
+        "en-us": {
+          "availability": "unavailable",
+          "unavailable_reason": "Version 1.1 is the current English CDN source, not a separate historical snapshot."
+        }
+      }
+    },
+    {
+      "version_key": "v1-0",
+      "version_label": "1.0",
+      "slug": "cdn-v1",
+      "sources": {
+        "zh-cn": {
+          "availability": "available",
+          "snapshot_path": "SupportArticles/SLA/cdn-v1/index.html",
+          "url": "https://www.azure.cn/support/sla/cdn-v1/",
+          "cms_path": "/support/sla/cdn-v1/"
+        },
+        "en-us": {
+          "availability": "available",
+          "snapshot_path": "SupportArticles/SLA/cdn-v1/index.html",
+          "url": "https://www.azure.cn/en-us/support/sla/cdn-v1/",
+          "cms_path": "/en-us/support/sla/cdn-v1/"
+        }
+      }
+    }
+  ],
   "extraction": {
     "important_section_titles": [],
     "priority_sections": [],

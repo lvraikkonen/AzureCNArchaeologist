@@ -25,11 +25,19 @@ The exact language-specific snapshot path and production URL declared by a Produ
 _Avoid_: Source guess, derived URL
 
 **Source Alias**:
-An exact historical or duplicate Source Snapshot route assigned to one canonical Product Key with a recorded reason.
-_Avoid_: Fallback path, wildcard mapping
+An exact duplicate or legacy Source Snapshot route assigned to one canonical Product Key when it does not represent an independently publishable page.
+_Avoid_: Historical SLA Version, fallback path, wildcard mapping
+
+**Historical SLA Version**:
+A superseded, independently publishable Support Article Page reached through an SLA article's version history. It belongs to the current SLA Product Definition and has its own version identity and CMS route without becoming another product.
+_Avoid_: Source Alias, SLA product
+
+**Resource Key**:
+The stable identity of one current or historical publishable resource within a Product Definition. A historical Resource Key includes its canonical Product Key and SLA version identity but does not create another Product Definition.
+_Avoid_: Product Key, filename, slug
 
 **Normalized Input**:
-A Source Snapshot organized into the canonical product, language, and content-type structure consumed by extraction.
+A byte-identical Source Snapshot organized into the canonical product, language, content-type, and optional SLA-version structure consumed by extraction.
 _Avoid_: Source Snapshot, copied page
 
 **Flexible Content Page**:
@@ -43,6 +51,10 @@ _Avoid_: SLA page, support JSON
 **Support Article Type**:
 The canonical CMS classification of a Support Article Page: `SLA`, `LEGAL`, `ICP`, or `PSR`. It is independent of Catalog Category and Source Location.
 _Avoid_: Support category, lowercase page type
+
+**SLA Index**:
+The Support Article Page that lists and links to the current product SLA articles. Its Source Location is `SupportArticles/Legal/sla.html`; the `Legal` source directory does not change its `SLA` Support Article Type.
+_Avoid_: Legal summary, SLA product article
 
 **Catalog Category**:
 An organizational membership applied only to Flexible Content Pages. A Product Definition may have multiple Catalog Categories; membership does not determine identity or physical paths.

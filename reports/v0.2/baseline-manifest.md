@@ -1,6 +1,6 @@
 # v0.2 Product-Language Baseline
 
-Product Definitions: **211**  
+Product Definitions: **211**
 Product-language entries: **422**
 
 | Product Key | Language | Model | Capability | Source | Normalized | Strategy |
@@ -277,8 +277,8 @@ Product-language entries: **422**
 | sla-functions | en-us | SupportArticlePage | supported | yes | yes | support_article |
 | sla-hdinsight | zh-cn | SupportArticlePage | supported | yes | yes | support_article |
 | sla-hdinsight | en-us | SupportArticlePage | supported | yes | yes | support_article |
-| sla-hpc-cache | zh-cn | SupportArticlePage | supported | yes | yes | support_article |
-| sla-hpc-cache | en-us | SupportArticlePage | supported | yes | yes | support_article |
+| sla-hpc-cache | zh-cn | SupportArticlePage | known_unsupported | yes | yes | support_article |
+| sla-hpc-cache | en-us | SupportArticlePage | known_unsupported | yes | yes | support_article |
 | sla-information-protection | zh-cn | SupportArticlePage | supported | yes | yes | support_article |
 | sla-information-protection | en-us | SupportArticlePage | supported | yes | yes | support_article |
 | sla-iot-hub | zh-cn | SupportArticlePage | supported | yes | yes | support_article |
@@ -295,8 +295,8 @@ Product-language entries: **422**
 | sla-logic-apps | en-us | SupportArticlePage | supported | yes | yes | support_article |
 | sla-machine-learning | zh-cn | SupportArticlePage | supported | yes | yes | support_article |
 | sla-machine-learning | en-us | SupportArticlePage | supported | yes | yes | support_article |
-| sla-managed-disks | zh-cn | SupportArticlePage | supported | yes | yes | support_article |
-| sla-managed-disks | en-us | SupportArticlePage | supported | yes | yes | support_article |
+| sla-managed-disks | zh-cn | SupportArticlePage | known_unsupported | yes | yes | support_article |
+| sla-managed-disks | en-us | SupportArticlePage | known_unsupported | yes | yes | support_article |
 | sla-managed-grafana | zh-cn | SupportArticlePage | supported | yes | yes | support_article |
 | sla-managed-grafana | en-us | SupportArticlePage | supported | yes | yes | support_article |
 | sla-managed-instance | zh-cn | SupportArticlePage | supported | yes | yes | support_article |
@@ -361,10 +361,10 @@ Product-language entries: **422**
 | sla-time-series-insights | en-us | SupportArticlePage | supported | yes | yes | support_article |
 | sla-traffic-manager | zh-cn | SupportArticlePage | supported | yes | yes | support_article |
 | sla-traffic-manager | en-us | SupportArticlePage | supported | yes | yes | support_article |
-| sla-virtual-desktop | zh-cn | SupportArticlePage | supported | yes | yes | support_article |
-| sla-virtual-desktop | en-us | SupportArticlePage | supported | yes | yes | support_article |
-| sla-virtual-machine-scale-sets | zh-cn | SupportArticlePage | supported | yes | yes | support_article |
-| sla-virtual-machine-scale-sets | en-us | SupportArticlePage | supported | yes | yes | support_article |
+| sla-virtual-desktop | zh-cn | SupportArticlePage | known_unsupported | yes | yes | support_article |
+| sla-virtual-desktop | en-us | SupportArticlePage | known_unsupported | yes | yes | support_article |
+| sla-virtual-machine-scale-sets | zh-cn | SupportArticlePage | known_unsupported | yes | yes | support_article |
+| sla-virtual-machine-scale-sets | en-us | SupportArticlePage | known_unsupported | yes | yes | support_article |
 | sla-virtual-machines | zh-cn | SupportArticlePage | supported | yes | yes | support_article |
 | sla-virtual-machines | en-us | SupportArticlePage | supported | yes | yes | support_article |
 | sla-virtual-network | zh-cn | SupportArticlePage | supported | yes | yes | support_article |
@@ -427,3 +427,23 @@ Product-language entries: **422**
 | vpn-gateway | en-us | FlexibleContentPage | supported | yes | yes | auto |
 | web-pubsub | zh-cn | FlexibleContentPage | supported | yes | yes | auto |
 | web-pubsub | en-us | FlexibleContentPage | supported | yes | yes | auto |
+
+## Historical SLA versions
+
+Historical versions: **6**
+Version-language entries: **12**
+
+| Resource Key | Version | Language | Source | Normalized | CMS Path |
+|---|---|---|---|---|---|
+| sla-cdn--v1-1 | 1.1 | zh-cn | yes | yes | /support/sla/cdn-v1-1/ |
+| sla-cdn--v1-1 | 1.1 | en-us | unavailable | no | n/a |
+| sla-cdn--v1-0 | 1.0 | zh-cn | yes | yes | /support/sla/cdn-v1/ |
+| sla-cdn--v1-0 | 1.0 | en-us | yes | yes | /en-us/support/sla/cdn-v1/ |
+| sla-sql-data--v1-5 | 1.5 | zh-cn | yes | yes | /support/sla/sql-data-v1-5/ |
+| sla-sql-data--v1-5 | 1.5 | en-us | yes | yes | /en-us/support/sla/sql-data-v1-5/ |
+| sla-sql-data--v1-4 | 1.4 | zh-cn | yes | yes | /support/sla/sql-data-v1-4/ |
+| sla-sql-data--v1-4 | 1.4 | en-us | yes | yes | /en-us/support/sla/sql-data-v1-4/ |
+| sla-sql-data--v1-3 | 1.3 | zh-cn | yes | yes | /support/sla/sql-data-v1-3/ |
+| sla-sql-data--v1-3 | 1.3 | en-us | yes | yes | /en-us/support/sla/sql-data-v1-3/ |
+| sla-sql-data--v1-0 | 1.0 | zh-cn | yes | yes | /support/sla/sql-data-v1/ |
+| sla-sql-data--v1-0 | 1.0 | en-us | yes | yes | /en-us/support/sla/sql-data-v1/ |

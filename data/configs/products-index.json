@@ -1,15 +1,17 @@
 {
   "schema_version": "3.0",
-  "source_digest": "sha256:f69f653c33274ae17908d53006f69b0299141fd208f35b7eebeac37496892899",
+  "source_digest": "sha256:c102b60d533a619a6656ed0038f76873ada3d7b497510efb44f82c12f10fb5c0",
   "total_products": 211,
-  "supported_products": 188,
-  "known_unsupported_products": 23,
+  "supported_products": 184,
+  "known_unsupported_products": 27,
+  "total_historical_versions": 6,
   "products": {
     "active-directory": {
       "config_path": "products/pricing/active-directory.json",
       "page_model": "FlexibleContentPage",
       "slug": "active-directory",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "identity"
       ]
@@ -19,6 +21,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "active-directory-b2c",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "identity"
       ]
@@ -28,6 +31,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "active-directory-ds",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "identity"
       ]
@@ -37,6 +41,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "advisor",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "management"
       ]
@@ -46,6 +51,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "analysis-services",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "analysis"
       ]
@@ -55,6 +61,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "anomaly-detector",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "ai-ml"
       ]
@@ -64,6 +71,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "api-management",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "integration"
       ]
@@ -73,6 +81,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "app-configuration",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "dev-tools"
       ]
@@ -82,6 +91,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "app-service",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "compute"
       ]
@@ -91,6 +101,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "application-gateway",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -100,6 +111,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "automation",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "management"
       ]
@@ -109,6 +121,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "azure-bastion",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -118,6 +131,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "azure-defender",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "security"
       ]
@@ -127,6 +141,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "azure-firewall",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "management"
       ]
@@ -136,6 +151,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "azure-functions",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "compute"
       ]
@@ -145,6 +161,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "azure-migrate",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "migration"
       ]
@@ -154,6 +171,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "azure-nat-gateway",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -163,6 +181,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "azure-policy",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "management"
       ]
@@ -172,6 +191,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "azure-update-management-center",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "management"
       ]
@@ -181,6 +201,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "backup",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "management"
       ]
@@ -190,6 +211,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "bandwidth",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -199,6 +221,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "batch",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "compute"
       ]
@@ -208,6 +231,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "bot-services",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "ai-ml"
       ]
@@ -217,6 +241,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "cache",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "database"
       ]
@@ -226,6 +251,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "cdn",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -235,6 +261,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "cloud-connection-service",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -244,6 +271,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "cloud-services",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "compute"
       ]
@@ -253,6 +281,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "cognitive-services",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "ai-ml"
       ]
@@ -262,6 +291,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "container-apps",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "container"
       ]
@@ -271,6 +301,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "container-instances",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "container"
       ]
@@ -280,6 +311,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "container-registry",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "container"
       ]
@@ -289,6 +321,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "azure-arc-core-control-plane",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -298,6 +331,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "cosmos-db",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "database"
       ]
@@ -307,6 +341,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "customer-engagement-fabric",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "integration"
       ]
@@ -316,6 +351,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "data-explorer",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "database"
       ]
@@ -325,6 +361,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "data-factory",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "analysis"
       ]
@@ -334,6 +371,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "storage-data-lake",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "storage"
       ]
@@ -343,6 +381,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "data-factory-data-pipeline",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "analysis"
       ]
@@ -352,6 +391,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "data-transfer",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -361,6 +401,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "database-migration",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "database"
       ]
@@ -370,6 +411,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "databox",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "storage"
       ]
@@ -379,6 +421,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "databricks",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "ai-ml"
       ]
@@ -388,6 +431,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "ddos-protection",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -397,6 +441,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "virtual-machines-dedicated-host",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "compute"
       ]
@@ -406,6 +451,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "dns",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -415,6 +461,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "event-grid",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "integration"
       ]
@@ -424,6 +471,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "event-hubs",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "iot"
       ]
@@ -433,6 +481,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "expressroute",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -442,6 +491,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "firewall-manager",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -451,6 +501,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "fluid-relay",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "websites"
       ]
@@ -460,6 +511,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "form-recognizer",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "ai-ml"
       ]
@@ -469,6 +521,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "frontdoor",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking",
         "websites"
@@ -479,6 +532,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "azure-stack-hci",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "hybrid-multicloud"
       ]
@@ -488,6 +542,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "hdinsight",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "analysis"
       ]
@@ -497,6 +552,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "hpc-cache",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "compute"
       ]
@@ -506,6 +562,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "azure-stack-hub",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "hybrid-multicloud"
       ]
@@ -515,6 +572,7 @@
       "page_model": "SupportArticlePage",
       "slug": "icp-addweb",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "ICP"
     },
     "icp-cancel": {
@@ -522,6 +580,7 @@
       "page_model": "SupportArticlePage",
       "slug": "icp-cancel",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "ICP"
     },
     "icp-change": {
@@ -529,6 +588,7 @@
       "page_model": "SupportArticlePage",
       "slug": "icp-change",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "ICP"
     },
     "icp-faq": {
@@ -536,6 +596,7 @@
       "page_model": "SupportArticlePage",
       "slug": "icp-faq",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "ICP"
     },
     "icp-new": {
@@ -543,6 +604,7 @@
       "page_model": "SupportArticlePage",
       "slug": "icp-new",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "ICP"
     },
     "icp-newinsert": {
@@ -550,6 +612,7 @@
       "page_model": "SupportArticlePage",
       "slug": "icp-newinsert",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "ICP"
     },
     "icp-newweb": {
@@ -557,6 +620,7 @@
       "page_model": "SupportArticlePage",
       "slug": "icp-newweb",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "ICP"
     },
     "icp-summary": {
@@ -564,6 +628,7 @@
       "page_model": "SupportArticlePage",
       "slug": "icp",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "ICP"
     },
     "iot-edge": {
@@ -571,6 +636,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "iot-edge",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "iot"
       ]
@@ -580,6 +646,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "iot-hub",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "iot"
       ]
@@ -589,6 +656,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "ip-addresses",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -598,6 +666,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "key-vault",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "security"
       ]
@@ -607,6 +676,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "kubernetes-service",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "container"
       ]
@@ -616,6 +686,7 @@
       "page_model": "SupportArticlePage",
       "slug": "offer-rate-plans",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "LEGAL"
     },
     "legal-privacy-statement": {
@@ -623,6 +694,7 @@
       "page_model": "SupportArticlePage",
       "slug": "privacy-statement",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "LEGAL"
     },
     "legal-subscription-agreement": {
@@ -630,6 +702,7 @@
       "page_model": "SupportArticlePage",
       "slug": "subscription-agreement",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "LEGAL"
     },
     "legal-summary": {
@@ -637,6 +710,7 @@
       "page_model": "SupportArticlePage",
       "slug": "legal",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "LEGAL"
     },
     "load-balancer": {
@@ -644,6 +718,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "load-balancer",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -653,6 +728,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "logic-apps",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "iot"
       ]
@@ -662,6 +738,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "machine-learning",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "ai-ml"
       ]
@@ -671,6 +748,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "managed-grafana",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "dev-ops"
       ]
@@ -680,6 +758,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "managed-instance",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "database"
       ]
@@ -689,6 +768,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "mariadb",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "database"
       ]
@@ -698,6 +778,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "media-services",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "websites"
       ]
@@ -707,6 +788,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "metrics-advisor",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "ai-ml"
       ]
@@ -716,6 +798,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "microsoft-entra-external-id",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "identity"
       ]
@@ -725,6 +808,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "microsoft-sentinel",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "security"
       ]
@@ -734,6 +818,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "monitor",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "management"
       ]
@@ -743,6 +828,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "multi-factor-authentication",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "identity"
       ]
@@ -752,6 +838,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "mysql",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "database"
       ]
@@ -761,6 +848,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "network-watcher",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -770,6 +858,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "notification-hubs",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "websites"
       ]
@@ -779,6 +868,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "postgresql",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "database"
       ]
@@ -788,6 +878,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "power-bi-embedded",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "analysis"
       ]
@@ -797,6 +888,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "private-link",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -806,6 +898,7 @@
       "page_model": "SupportArticlePage",
       "slug": "public-security-registration",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "PSR"
     },
     "purview": {
@@ -813,6 +906,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "purview",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "analysis"
       ]
@@ -822,6 +916,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "route-server",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -831,6 +926,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "scheduler",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "management"
       ]
@@ -840,6 +936,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "search",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "ai-ml"
       ]
@@ -849,6 +946,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "service-bus",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "integration"
       ]
@@ -858,6 +956,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "service-fabric",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "container"
       ]
@@ -867,6 +966,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "signalr-service",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "websites"
       ]
@@ -876,6 +976,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "site-recovery",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "migration"
       ]
@@ -885,6 +986,7 @@
       "page_model": "SupportArticlePage",
       "slug": "active-directory",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-active-directory-b2c": {
@@ -892,6 +994,7 @@
       "page_model": "SupportArticlePage",
       "slug": "active-directory-b2c",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-active-directory-ds": {
@@ -899,6 +1002,7 @@
       "page_model": "SupportArticlePage",
       "slug": "active-directory-ds",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-analysis-services": {
@@ -906,6 +1010,7 @@
       "page_model": "SupportArticlePage",
       "slug": "analysis-services",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-api-management": {
@@ -913,6 +1018,7 @@
       "page_model": "SupportArticlePage",
       "slug": "api-management",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-app-configuration": {
@@ -920,6 +1026,7 @@
       "page_model": "SupportArticlePage",
       "slug": "app-configuration",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-app-service": {
@@ -927,6 +1034,7 @@
       "page_model": "SupportArticlePage",
       "slug": "app-service",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-application-gateway": {
@@ -934,6 +1042,7 @@
       "page_model": "SupportArticlePage",
       "slug": "application-gateway",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-application-insights": {
@@ -941,6 +1050,7 @@
       "page_model": "SupportArticlePage",
       "slug": "application-insights",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-automation": {
@@ -948,6 +1058,7 @@
       "page_model": "SupportArticlePage",
       "slug": "automation",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-azure-arc": {
@@ -955,6 +1066,7 @@
       "page_model": "SupportArticlePage",
       "slug": "azure-arc",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-azure-bastion": {
@@ -962,6 +1074,7 @@
       "page_model": "SupportArticlePage",
       "slug": "azure-bastion",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-azure-defender": {
@@ -969,6 +1082,7 @@
       "page_model": "SupportArticlePage",
       "slug": "azure-defender",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-azure-firewall": {
@@ -976,6 +1090,7 @@
       "page_model": "SupportArticlePage",
       "slug": "azure-firewall",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-backup": {
@@ -983,6 +1098,7 @@
       "page_model": "SupportArticlePage",
       "slug": "backup",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-bot-services": {
@@ -990,6 +1106,7 @@
       "page_model": "SupportArticlePage",
       "slug": "bot-services",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-cache": {
@@ -997,6 +1114,7 @@
       "page_model": "SupportArticlePage",
       "slug": "cache",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-cdn": {
@@ -1004,6 +1122,7 @@
       "page_model": "SupportArticlePage",
       "slug": "cdn",
       "capability_status": "supported",
+      "historical_version_count": 2,
       "support_article_type": "SLA"
     },
     "sla-cloud-services": {
@@ -1011,6 +1130,7 @@
       "page_model": "SupportArticlePage",
       "slug": "cloud-services",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-cognitive-services": {
@@ -1018,6 +1138,7 @@
       "page_model": "SupportArticlePage",
       "slug": "cognitive-services",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-container-apps": {
@@ -1025,6 +1146,7 @@
       "page_model": "SupportArticlePage",
       "slug": "container-apps",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-container-instances": {
@@ -1032,6 +1154,7 @@
       "page_model": "SupportArticlePage",
       "slug": "container-instances",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-container-registry": {
@@ -1039,6 +1162,7 @@
       "page_model": "SupportArticlePage",
       "slug": "container-registry",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-cosmos-db": {
@@ -1046,6 +1170,7 @@
       "page_model": "SupportArticlePage",
       "slug": "cosmos-db",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-data-explorer": {
@@ -1053,6 +1178,7 @@
       "page_model": "SupportArticlePage",
       "slug": "data-explorer",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-data-factory": {
@@ -1060,6 +1186,7 @@
       "page_model": "SupportArticlePage",
       "slug": "data-factory",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-databricks": {
@@ -1067,6 +1194,7 @@
       "page_model": "SupportArticlePage",
       "slug": "databricks",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-ddos-protection": {
@@ -1074,6 +1202,7 @@
       "page_model": "SupportArticlePage",
       "slug": "ddos-protection",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-dns": {
@@ -1081,6 +1210,7 @@
       "page_model": "SupportArticlePage",
       "slug": "dns",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-event-grid": {
@@ -1088,6 +1218,7 @@
       "page_model": "SupportArticlePage",
       "slug": "event-grid",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-event-hubs": {
@@ -1095,6 +1226,7 @@
       "page_model": "SupportArticlePage",
       "slug": "event-hubs",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-expressroute": {
@@ -1102,6 +1234,7 @@
       "page_model": "SupportArticlePage",
       "slug": "expressroute",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-fluid-relay": {
@@ -1109,6 +1242,7 @@
       "page_model": "SupportArticlePage",
       "slug": "fluid-relay",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-frontdoor": {
@@ -1116,6 +1250,7 @@
       "page_model": "SupportArticlePage",
       "slug": "frontdoor",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-functions": {
@@ -1123,6 +1258,7 @@
       "page_model": "SupportArticlePage",
       "slug": "functions",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-hdinsight": {
@@ -1130,13 +1266,15 @@
       "page_model": "SupportArticlePage",
       "slug": "hdinsight",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-hpc-cache": {
       "config_path": "products/support-articles/sla-hpc-cache.json",
       "page_model": "SupportArticlePage",
       "slug": "hpc-cache",
-      "capability_status": "supported",
+      "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-information-protection": {
@@ -1144,6 +1282,7 @@
       "page_model": "SupportArticlePage",
       "slug": "information-protection",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-iot-hub": {
@@ -1151,6 +1290,7 @@
       "page_model": "SupportArticlePage",
       "slug": "iot-hub",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-key-vault": {
@@ -1158,6 +1298,7 @@
       "page_model": "SupportArticlePage",
       "slug": "key-vault",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-kubernetes-service": {
@@ -1165,6 +1306,7 @@
       "page_model": "SupportArticlePage",
       "slug": "kubernetes-service",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-load-balancer": {
@@ -1172,6 +1314,7 @@
       "page_model": "SupportArticlePage",
       "slug": "load-balancer",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-log-analytics": {
@@ -1179,6 +1322,7 @@
       "page_model": "SupportArticlePage",
       "slug": "log-analytics",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-logic-apps": {
@@ -1186,6 +1330,7 @@
       "page_model": "SupportArticlePage",
       "slug": "logic-apps",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-machine-learning": {
@@ -1193,13 +1338,15 @@
       "page_model": "SupportArticlePage",
       "slug": "machine-learning",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-managed-disks": {
       "config_path": "products/support-articles/sla-managed-disks.json",
       "page_model": "SupportArticlePage",
       "slug": "managed-disks",
-      "capability_status": "supported",
+      "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-managed-grafana": {
@@ -1207,6 +1354,7 @@
       "page_model": "SupportArticlePage",
       "slug": "managed-grafana",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-managed-instance": {
@@ -1214,6 +1362,7 @@
       "page_model": "SupportArticlePage",
       "slug": "managed-instance",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-mariadb": {
@@ -1221,6 +1370,7 @@
       "page_model": "SupportArticlePage",
       "slug": "mariadb",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-media-services": {
@@ -1228,6 +1378,7 @@
       "page_model": "SupportArticlePage",
       "slug": "media-services",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-messaging": {
@@ -1235,6 +1386,7 @@
       "page_model": "SupportArticlePage",
       "slug": "messaging",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-microsoft-sentinel": {
@@ -1242,6 +1394,7 @@
       "page_model": "SupportArticlePage",
       "slug": "microsoft-sentinel",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-monitor": {
@@ -1249,6 +1402,7 @@
       "page_model": "SupportArticlePage",
       "slug": "monitor",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-multi-factor-authentication": {
@@ -1256,6 +1410,7 @@
       "page_model": "SupportArticlePage",
       "slug": "multi-factor-authentication",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-mysql": {
@@ -1263,6 +1418,7 @@
       "page_model": "SupportArticlePage",
       "slug": "mysql",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-nat-gateway": {
@@ -1270,6 +1426,7 @@
       "page_model": "SupportArticlePage",
       "slug": "nat-gateway",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-network-watcher": {
@@ -1277,6 +1434,7 @@
       "page_model": "SupportArticlePage",
       "slug": "network-watcher",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-notification-hubs": {
@@ -1284,6 +1442,7 @@
       "page_model": "SupportArticlePage",
       "slug": "notification-hubs",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-postgresql": {
@@ -1291,6 +1450,7 @@
       "page_model": "SupportArticlePage",
       "slug": "postgresql",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-power-bi-embedded": {
@@ -1298,6 +1458,7 @@
       "page_model": "SupportArticlePage",
       "slug": "power-bi-embedded",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-private-link": {
@@ -1305,6 +1466,7 @@
       "page_model": "SupportArticlePage",
       "slug": "private-link",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-purview": {
@@ -1312,6 +1474,7 @@
       "page_model": "SupportArticlePage",
       "slug": "purview",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-route-server": {
@@ -1319,6 +1482,7 @@
       "page_model": "SupportArticlePage",
       "slug": "route-server",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-scheduler": {
@@ -1326,6 +1490,7 @@
       "page_model": "SupportArticlePage",
       "slug": "scheduler",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-search": {
@@ -1333,6 +1498,7 @@
       "page_model": "SupportArticlePage",
       "slug": "search",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-service-bus": {
@@ -1340,6 +1506,7 @@
       "page_model": "SupportArticlePage",
       "slug": "service-bus",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-service-fabric": {
@@ -1347,6 +1514,7 @@
       "page_model": "SupportArticlePage",
       "slug": "service-fabric",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-signalr-service": {
@@ -1354,6 +1522,7 @@
       "page_model": "SupportArticlePage",
       "slug": "signalr-service",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-site-recovery": {
@@ -1361,6 +1530,7 @@
       "page_model": "SupportArticlePage",
       "slug": "site-recovery",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-spring-cloud": {
@@ -1368,6 +1538,7 @@
       "page_model": "SupportArticlePage",
       "slug": "spring-cloud",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-sql-data": {
@@ -1375,6 +1546,7 @@
       "page_model": "SupportArticlePage",
       "slug": "sql-data",
       "capability_status": "supported",
+      "historical_version_count": 4,
       "support_article_type": "SLA"
     },
     "sla-sql-server-stretch-database": {
@@ -1382,6 +1554,7 @@
       "page_model": "SupportArticlePage",
       "slug": "sql-server-stretch-database",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-storage": {
@@ -1389,6 +1562,7 @@
       "page_model": "SupportArticlePage",
       "slug": "storage",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-stream-analytics": {
@@ -1396,6 +1570,7 @@
       "page_model": "SupportArticlePage",
       "slug": "stream-analytics",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-summary": {
@@ -1403,6 +1578,7 @@
       "page_model": "SupportArticlePage",
       "slug": "sla",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-synapse-analytics": {
@@ -1410,6 +1586,7 @@
       "page_model": "SupportArticlePage",
       "slug": "synapse-analytics",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-time-series-insights": {
@@ -1417,6 +1594,7 @@
       "page_model": "SupportArticlePage",
       "slug": "time-series-insights",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-traffic-manager": {
@@ -1424,20 +1602,23 @@
       "page_model": "SupportArticlePage",
       "slug": "traffic-manager",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-virtual-desktop": {
       "config_path": "products/support-articles/sla-virtual-desktop.json",
       "page_model": "SupportArticlePage",
       "slug": "virtual-desktop",
-      "capability_status": "supported",
+      "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-virtual-machine-scale-sets": {
       "config_path": "products/support-articles/sla-virtual-machine-scale-sets.json",
       "page_model": "SupportArticlePage",
       "slug": "virtual-machine-scale-sets",
-      "capability_status": "supported",
+      "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-virtual-machines": {
@@ -1445,6 +1626,7 @@
       "page_model": "SupportArticlePage",
       "slug": "virtual-machines",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-virtual-network": {
@@ -1452,6 +1634,7 @@
       "page_model": "SupportArticlePage",
       "slug": "virtual-network",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-virtual-network-manager": {
@@ -1459,6 +1642,7 @@
       "page_model": "SupportArticlePage",
       "slug": "virtual-network-manager",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-vpn-gateway": {
@@ -1466,6 +1650,7 @@
       "page_model": "SupportArticlePage",
       "slug": "vpn-gateway",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "sla-web-pubsub": {
@@ -1473,6 +1658,7 @@
       "page_model": "SupportArticlePage",
       "slug": "web-pubsub",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "support_article_type": "SLA"
     },
     "spring-cloud": {
@@ -1480,6 +1666,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "spring-cloud",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "compute"
       ]
@@ -1489,6 +1676,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "sql-data-warehouse",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "database"
       ]
@@ -1498,6 +1686,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "sql-database",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "database"
       ]
@@ -1507,6 +1696,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "sql-edge",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "database"
       ]
@@ -1516,6 +1706,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "sql-server-stretch-database",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "database"
       ]
@@ -1525,6 +1716,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "ssis",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "analysis"
       ]
@@ -1534,6 +1726,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "storage",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "storage"
       ]
@@ -1543,6 +1736,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "storage-blobs",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "storage"
       ]
@@ -1552,6 +1746,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "storage-files",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "storage"
       ]
@@ -1561,6 +1756,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "storage-import-export",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "storage"
       ]
@@ -1570,6 +1766,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "storage-managed-disks",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "storage"
       ]
@@ -1579,6 +1776,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "storage-page-blobs",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "storage"
       ]
@@ -1588,6 +1786,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "storage-queues",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "storage"
       ]
@@ -1597,6 +1796,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "storage-tables",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "storage"
       ]
@@ -1606,6 +1806,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "stream-analytics",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "analysis"
       ]
@@ -1615,6 +1816,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "synapse-analytics",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "database"
       ]
@@ -1624,6 +1826,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "time-series-insights",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "iot"
       ]
@@ -1633,6 +1836,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "traffic-manager",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -1642,6 +1846,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "virtual-desktop",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "azure-virtual-desktop"
       ]
@@ -1651,6 +1856,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "virtual-machine-scale-sets",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "compute"
       ]
@@ -1660,6 +1866,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "virtual-machines",
       "capability_status": "known_unsupported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "compute"
       ]
@@ -1669,6 +1876,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "virtual-network",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -1678,6 +1886,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "virtual-network-manager",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -1687,6 +1896,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "virtual-wan",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -1696,6 +1906,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "vpn-gateway",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "networking"
       ]
@@ -1705,6 +1916,7 @@
       "page_model": "FlexibleContentPage",
       "slug": "web-pubsub",
       "capability_status": "supported",
+      "historical_version_count": 0,
       "catalog_categories": [
         "websites"
       ]

@@ -1,16 +1,13 @@
-
-
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
-    <meta name="keywords" content=" Azure 服务协议" />
-    <meta name="description" content="Azure 服务级别协议列表描述的是由世纪互联运营的 Microsoft Azure 关于运行时间和连接性方面的承诺。单个 Azure 服务的服务级别协议如下所列。" />
+    <meta name="keywords" content=""/>
+    <meta name="description" content="Service Level Agreements"/>
 
-    <title>Azure 服务级别协议列表 - Azure云计算</title>
-
+    <title>Service Level Agreements | Azure</title>
     <link rel="apple-touch-icon" sizes="180x180" href="/Static/Favicon/apple-touch-icon.png">
     <link rel="shortcut icon" href="/Static/Favicon/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/Static/Favicon/favicon.ico" type="image/x-icon">
@@ -23,58 +20,58 @@
     <link href="/Static/CSS/common.min.css" rel="stylesheet">
     <!-- END: Azure UI Style -->
     <!-- BEGIN: Page Style -->
-    
+
     <!-- END: Page Style -->
 
     <!-- BEGIN: Minified Page Style -->
-    <link href='/Static/CSS/d32f7e46bb12eef495b9b58c4ab0c2dfb52c1f25.css' rel='stylesheet' />
+    <link href='/Static/CSS/d32f7e46bb12eef495b9b58c4ab0c2dfb52c1f25.css' rel='stylesheet'/>
     <!-- END: Minified Page Style -->
-            
-    <link rel="stylesheet" href="/StaticService/css/service.min.css" />
+
+    <link rel="stylesheet" href="/StaticService/css/service.min.css"/>
 </head>
-<body class="en-us">     
-    <script>
-        window.requireUrlArgs = "1/6/2020 11:41:53 AM";
-        window.currentLocale = "en-US";        
-        window.headerTimestamp = "5/9/2019 9:29:29 AM";
-        window.footerTimestamp = "5/9/2019 9:29:29 AM";
-        window.locFileTimestamp = "5/9/2019 9:29:21 AM";
+<body class="en-us">
+<script>
+    window.requireUrlArgs = "12/9/2019 7:37:32 AM";
+    window.currentLocale = "en-US";
+    window.headerTimestamp = "11/6/2019 2:43:10 AM";
+    window.footerTimestamp = "11/6/2019 2:43:10 AM";
+    window.locFileTimestamp = "11/6/2019 2:43:04 AM";
 
-        window.AcnHeaderFooter = {
-            IsEnableQrCode: true,
-            CurrentLang: window.currentLocale.toLowerCase(),
-        };
-    </script>
-    
-    <style>
-       @media (min-width: 0) {
-            .acn-header-placeholder {
-                height: 48px; 
-                width: 100%;
-            }
-        }
+    window.AcnHeaderFooter = {
+        IsEnableQrCode: true,
+        CurrentLang: window.currentLocale.toLowerCase(),
+    };
+</script>
 
-        @media (min-width: 980px) {
-            .acn-header-placeholder {
-                height: 89px; 
-                width: 100%;
-            }
-        }
-
+<style>
+    @media (min-width: 0) {
         .acn-header-placeholder {
-            background-color: #1A1A1A;
-        }
-
-        .acn-header-service{
-            position: absolute; 
-            top: 0;
+            height: 48px;
             width: 100%;
         }
-    </style>
+    }
+
+    @media (min-width: 980px) {
+        .acn-header-placeholder {
+            height: 89px;
+            width: 100%;
+        }
+    }
+
+    .acn-header-placeholder {
+        background-color: #1A1A1A;
+    }
+
+    .acn-header-service {
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+</style>
 <div class="acn-header-container">
-        <div class="acn-header-placeholder">
-        </div>
-        <div class="public_headerpage"></div>
+    <div class="acn-header-placeholder">
+    </div>
+    <div class="public_headerpage"></div>
 </div>
 
 <!-- BEGIN: Documentation Content -->
@@ -99,173 +96,209 @@
                             <i class="circle"></i>
                             <i class="circle"></i>
                             <i class="circle"></i>
+                        </div>
                     </div>
-                </div>
                 </div>
                 <div class="col-md-8 pure-content">
                     <div class="select left-navigation-select hidden-md hidden-lg">
-                        <select><option selected="selected">加载中...</option></select>
+                        <select>
+                            <option selected="selected">加载中...</option>
+                        </select>
                         <span class="icon icon-arrow-top"></span>
                     </div>
-                    
-            <p><tags ms.service="en-us-legal" ms.date="12/2017" wacn.date="12/2017" wacn.lang="en"/></p>
 
-        <h1>服务级别协议</h1><div class="tags-date"><div class="wacn-date">最后更新时间：2019年9月</div></div>
-        <p>此协议描述的是由世纪互联运营的 Microsoft Azure 关于运行时间和连接性方面的承诺。单个 Azure 服务的服务级别协议如下所列。 </p>
-        <!--
-        |                       |                       |                       |                       |
-        |-----------------------|-----------------------|-----------------------|-----------------------|
-        |**计算**[虚拟机][云服务] |**Web 和移动**[应用服务][通知中心] |**数据和存储**[SQL 数据库][SQL Server 伸展数据库][Redis 缓存][存储][MySQL Database on Azure]  |**分析**[HDInsight][流分析]  |
-        |**物联网**[Azure IoT 中心][事件中心][流分析][通知中心] |**网络**[虚拟网络][ExpressRoute][流量管理器][VPN 网关][应用程序网关]  |**媒体和 CDN**[媒体服务][CDN]  |**混合集成**[服务总线][备份][站点恢复]  |
-        |**身份和访问管理**[多重身份验证]  |**管理与安全**[计划程序][自动化][密钥保管库] | | |
-        -->
-        <h2>AI</h2>
-        <ul>
-        <li><a href="../sla/cognitive-services/index.html">认知服务</a></li>
-        </ul>
+                    <p>
+                        <tags ms.service="en-us-legal" ms.date="12/2017" wacn.date="12/2017" wacn.lang="en"/>
+                    </p>
 
-        <h2>安全性</h2>
-        <ul>
-        <li><a href="../sla/key-vault/index.html">密钥保管库</a></li>
-        <li><a href="../sla/active-directory-b2c/index.html">Azure Active Directory B2C</a></li>
-        <li><a href="../sla/application-gateway/index.html">应用程序网关</a></li>
-        <li><a href="../sla/vpn-gateway/index.html">VPN 网关</a></li>
-        <li><a href="../sla/azure-defender/index.html">安全中心</a></li>
-        </ul>
+                    <h1>Service Level Agreements</h1>
+                    <div class="tags-date">
+                        <div class="ms-date">Updated: 12/2020</div>
+                    </div>
+                    <p>This agreement describes the commitment about uptime and connectivity of 21Vianet Azure operated by 21vianet. The SLA for individual Azure
+                        services are listed below. </p>
+                    <!--
+                    |                       |                       |                       |                       |
+                    |-----------------------|-----------------------|-----------------------|-----------------------|
+                    |**Compute**[Virtual Machines][Cloud Services]  |**Web & Mobile**[App Service][Notification Hubs]  |**Data & Storage**[SQL Database][SQL Server Stretch Database][Radis Cache][Storage][MySQL Database on Azure] |**Analytics**[HDInsight][Stream Analytics] |
+                    |**Internet of Things**[Azure IoT Hub][Event Hubs][Stream Analytics][Notification Hubs]  |**Networking**[Virtual Network][ExpressRoute][Traffic Manager][VPN Gateway][Application Gateway] |**Media & CDN**[Media Services][CDN] |**Hybrid Integration**[Service Bus][Backup][Site Recovery]  |
+                    |**Identity & Access Management**[Multi-Factor Authentication] |**Management & Security**[Scheduler][Automation][Key Vault]  | | |
+                    -->
+                    <h2>AI</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/cognitive-services/">Cognitive Services</a></li>
+                        <li><a href="/en-us/support/sla/search/v1_0/">Cognitive Search</a></li>
+                        <li><a href="/en-us/support/sla/machine-learning/">Auzre Machine Learning</a></li>
+                        <li><a href="/en-us/support/sla/databricks/">Azure Databricks</a></li>
+                    </ul>
 
-        <h2>标识</h2>
-        <ul>
-        <li><a href="../sla/multi-factor-authentication/index.html">多重身份验证</a></li>
-        </ul>
+                    <h2>Security</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/key-vault/">Key Vault</a></li>
+                        <li><a href="/en-us/support/sla/application-gateway/">Application Gateway</a></li>
+                        <li><a href="/en-us/support/sla/vpn-gateway/">VPN Gateway</a></li>
+                        <li><a href="/en-us/support/sla/azure-defender/">Defender</a></li>
+                        <li><a href="/en-us/support/sla/information-protection/">Azure Information Protection</a></li>
+                    </ul>
 
-        <h2>存储</h2>
-        <ul>
-        <li><a href="../sla/storage/index.html">存储</a></li>
-        <li><a href="../sla/managed-disks/index.html">托管磁盘</a></li>
-        </ul>
+                    <h2>Identity</h2>
+                    <ul>
+                        <!-- <li><a href="/en-us/support/sla/multi-factor-authentication/">Multi-Factor Authentication</a></li> -->
+                        <li><a href="/en-us/support/sla/active-directory/">Entra ID</a></li>
+                        <li><a href="/en-us/support/sla/active-directory-b2c/">Azure Active Directory B2C</a></li>
+                        <li><a href="/en-us/support/sla/active-directory-ds/v1_0/">Entra Domain Services</a></li>
+                        <li><a href="/en-us/support/sla/information-protection/">Azure Information Protection</a></li>
+                    </ul>
 
-        <h2>分析</h2>
-        <ul>
-        <li><a href="../sla/sql-data-warehouse/index.html">SQL 数据仓库</a></li>
-        <li><a href="../sla/hdinsight/index.html">HDInsight</a></li>
-        <li><a href="../sla/stream-analytics/index.html">流分析</a></li>
-        <li><a href="../sla/power-bi-embedded/index.html">Power BI Embedded</a></li>
-        <li><a href="../sla/analysis-services/index.html">Azure 分析服务</a></li>
-        <li><a href="../sla/event-hubs/index.html">事件中心</a></li>
-        <li><a href="../sla/data-factory/index.html">数据工厂</a></li>
-        </ul>
+                    <h2>Storage</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/storage/">Storage</a></li>
+                        <li><a href="/en-us/support/sla/managed-disks/">Managed Disks</a></li>
+                    </ul>
 
-        <h2>管理工具</h2>
-        <ul>
-        <li><a href="../sla/automation/index.html">自动化</a></li>
-        <li><a href="../sla/backup/index.html">备份</a></li>
-        <li><a href="../sla/site-recovery/index.html">站点恢复</a></li>
-        <li><a href="../sla/scheduler/index.html">计划程序</a></li>
-        <li><a href="../sla/monitor/index.html">Azure 监控器</a></li>
-        <li><a href="../sla/traffic-manager/index.html">流量管理器</a></li>
-        <li><a href="../sla/network-watcher/index.html">网络观察程序</a></li>
-        <li><a href="../sla/data-explorer/index.html">Azure 数据资源管理器</a></li>
-        </ul>
+                    <h2>Analysis</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/purview/index.html">Purview</a></li>
+                        <li><a href="/en-us/support/sla/synapse-analytics/index.html">Azure Synapse Analytics</a></li>
+                        <li><a href="/en-us/support/sla/hdinsight/">HDInsight</a></li>
+                        <li><a href="/en-us/support/sla/stream-analytics/">Stream Analytics</a></li>
+                        <li><a href="/en-us/support/sla/power-bi-embedded/">Power BI Embedded</a></li>
+                        <li><a href="/en-us/support/sla/analysis-services/">Azure Analysis Services</a></li>
+                        <li><a href="/en-us/support/legal/sla/event-hubs/v1_2/">Event Hubs</a></li>
+                        <li><a href="/en-us/support/sla/data-factory/">Data Factory</a></li>
+                    </ul>
 
-        
-        <h2>集成</h2>
-        <ul>
-        <li><a href="../sla/service-bus/index.html">服务总线</a></li>
-        <li><a href="../sla/api-management/index.html">API 管理</a></li>
-        <li><a href="../sla/event-grid/index.html">事件网格</a></li>
-        </ul>
+                    <h2>Management Tools</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/automation/">Automation</a></li>
+                        <li><a href="/en-us/support/sla/backup/">Backup</a></li>
+                        <li><a href="/en-us/support/sla/site-recovery/">Site Recovery</a></li>
+                        <li><a href="/en-us/support/sla/scheduler/">Scheduler</a></li>
+                        <li><a href="/en-us/support/sla/monitor/">Azure Monitor</a></li>
+                        <li><a href="/en-us/support/sla/traffic-manager/">Traffic Manager</a></li>
+                        <li><a href="/en-us/support/sla/network-watcher/">Network Watcher</a></li>
+                        <li><a href="/en-us/support/sla/data-explorer/">Azure Data Explorer</a></li>
+                    </ul>
 
-        <h2>计算</h2>
-        <ul>
-        <li><a href="../sla/virtual-machines/index.html">虚拟机</a></li>
-        <li><a href="../sla/virtual-machine-scale-sets/index.html">虚拟机规模集</a></li>
-        <li><a href="../sla/app-service/index.html">应用服务</a></li>
-        <li><a href="../sla/service-fabric/index.html">Service Fabric</a></li>
-        <li><a href="../sla/cloud-services/index.html">云服务</a></li>
-        <li><a href="../sla/functions/index.html">Functions</a></li>
-        <li><a href="../sla/kubernetes-service/index.html">Azure Kubernetes 服务（AKS）</a></li>
-        </ul>
+                    <h2>Integration</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/service-bus/">Service Bus</a></li>
+                        <li><a href="/en-us/support/sla/api-management/">API Management</a></li>
+                        <li><a href="/en-us/support/sla/event-grid/">Event Grid</a></li>
+                    </ul>
 
-        <h2>联网</h2>
-        <ul>
-        <li><a href="../sla/dns/index.html">DNS</a></li>
-        <li><a href="../sla/load-balancer/index.html">负载均衡器</a></li>
-        <li><a href="../sla/application-gateway/index.html">应用程序网关</a></li>
-        <li><a href="../sla/vpn-gateway/index.html">VPN 网关</a></li>
-        <li><a href="../sla/cdn/index.html">CDN</a></li>
-        <li><a href="../sla/traffic-manager/index.html">流量管理器</a></li>
-        <li><a href="../sla/expressroute/index.html">ExpressRoute</a></li>
-        <li><a href="../sla/network-watcher/index.html">网络观察程序</a></li>
-        <li><a href="../sla/azure-firewall/index.html">Azure 防火墙</a></li>
-        </ul>
+                    <h2>Compute</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/virtual-machines/">Virtual Machines</a></li>
+                        <li><a href="/en-us/support/sla/virtual-machine-scale-sets/">Virtual Machine Scale Sets</a></li>
+                        <li><a href="/en-us/support/sla/app-service/">App Service</a></li>
+                        <li><a href="/en-us/support/sla/service-fabric/">Service Fabric</a></li>
+                        <li><a href="/en-us/support/sla/cloud-services/">Cloud Services</a></li>
+                        <li><a href="/en-us/support/sla/functions/">Functions</a></li>
+                        <li><a href="/en-us/support/sla/kubernetes-service/">Azure Kubernetes Service (AKS)</a></li>
+                        <li><a href="/en-us/support/sla/virtual-machines/">Azure Dedicated Host</a></li>
+                        <li><a href="/en-us/support/sla/spring-cloud/">Azure Spring Cloud</a></li>
+                        <li><a href="/en-us/support/sla/hpc-cache/v1_0/">Azure HPC Cache</a></li>
+                        <li><a href="/en-us/support/legal/sla/batch/">Batch</a></li>
+                    </ul>
 
-        <h2>媒体</h2>
-        <ul>
-        <li><a href="../sla/media-services/index.html">媒体服务</a></li>
-        </ul>
+                    <h2>Networking</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/dns/">DNS</a></li>
+                        <li><a href="/en-us/support/sla/load-balancer/">Load Balancer</a></li>
+                        <li><a href="/en-us/support/sla/application-gateway/">Application Gateway</a></li>
+                        <li><a href="/en-us/support/sla/vpn-gateway/">VPN Gateway</a></li>
+                        <li><a href="/en-us/support/sla/frontdoor/">Azure Front Door</a></li>
+                        <li><a href="/en-us/support/sla/traffic-manager/">Traffic Manager</a></li>
+                        <li><a href="/en-us/support/sla/expressroute/">ExpressRoute</a></li>
+                        <li><a href="/en-us/support/sla/network-watcher/">Network Watcher</a></li>
+                        <li><a href="/en-us/support/sla/azure-firewall/">Azure Firewall</a></li>
+                        <li><a href="/en-us/support/sla/azure-bastion/v1_0/">Azure Bastion</a></li>
+                        <li><a href="/en-us/support/sla/private-link/index.html">Azure Private Link</a></li>
+                        <li><a href="/en-us/support/sla/route-server/index.html">Azure Route Server</a></li>
+                        <li><a href="/en-us/support/sla/virtual-network/index.html">Virtual Network</a></li>
+                        <li><a href="/en-us/support/sla/virtual-network-manager/index.html">Azure Virtual Network Manager</a></li>
+                    </ul>
 
-        <h2>迁移</h2>
-        <ul>
-        <li><a href="../sla/site-recovery/index.html">站点恢复</a></li>
-        </ul>
+<!--                     <h2>Media</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/media-services/">Media Services</a></li>
+                    </ul> -->
 
-        <h2>容器</h2>
-        <ul>
-        <li><a href="../sla/app-service/index.html">应用服务</a></li>
-        <li><a href="../sla/service-fabric/index.html">Service Fabric</a></li>
-        <li><a href="../sla/container-registry/index.html">容器注册表</a></li>
-        </ul>
+                    <h2>Migration</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/site-recovery/">Site Recovery</a></li>
+                    </ul>
+
+                    <h2>Containers</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/app-service/">App Service</a></li>
+                        <li><a href="/en-us/support/sla/service-fabric/">Service Fabric</a></li>
+                        <li><a href="/en-us/support/sla/container-registry/">Container Registry</a></li>
+                        <li><a href="/en-us/support/sla/container-instances/v1_0/index.html">Container Instances</a></li>
+                        <li><a href="/en-us/support/sla/container-apps/v1_0/">Container Apps</a></li>
+                    </ul>
 
 
-        <h2>数据库</h2>
-        <ul>
-        <li><a href="../sla/sql-data/index.html">SQL 数据库</a></li>
-        <li><a href="../sla/managed-instance/index.html">SQL 托管实例</a></li>
-        <li><a href="../sla/sql-data-warehouse/index.html">SQL 数据仓库</a></li>
-        <li><a href="../sla/sql-server-stretch-database/index.html">SQL Server 伸展数据库</a></li>
-        <li><a href="../sla/cosmos-db/index.html">Azure Cosmos DB</a></li>
-        <li><a href="../sla/cache/index.html">用于 Redis 的 Azure 缓存</a></li>
-        <li><a href="../sla/mysql/index.html">Azure Database for MySQL</a></li>
-        <li><a href="../sla/postgresql/index.html">Azure Database for PostgreSQL</a></li>
-        <li><a href="../sla/mariadb/index.html">Azure Database for MariaDB</a></li>
-        </ul>
+                    <h2>Databases</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/sql-data/">SQL Database</a></li>
+                        <li><a href="/en-us/support/sla/managed-instance/index.html">SQL Managed Instance</a></li>
+                        <!-- <li><a href="/en-us/support/sla/mysqldatabaseonazure/">MySQL Database on Azure</a></li> -->
+                        <li><a href="/en-us/support/sla/synapse-analytics/index.html">Azure Synapse Analytics</a></li>
+                        <li><a href="/en-us/support/sla/sql-server-stretch-database/">SQL Server Stretch Database</a></li>
+                        <li><a href="/en-us/support/sla/cosmos-db/">Azure Cosmos DB</a></li>
+                        <li><a href="/en-us/support/sla/cache/">Azure Cache for Redis</a></li>
+                        <li><a href="/en-us/support/sla/mysql/">Azure Database for MySQL</a></li>
+                        <li><a href="/en-us/support/sla/postgresql/">Azure Database for PostgreSQL</a></li>
+<!--                         <li><a href="/en-us/support/sla/mariadb/">Azure Database for MariaDB</a></li> -->
+                    </ul>
 
-        <h2>网站</h2>
-        <ul>
-        <li><a href="../sla/app-service/index.html">应用服务</a></li>
-        <li><a href="../sla/notification-hubs/index.html">通知中心</a></li>
-        <li><a href="../sla/api-management/index.html">API 管理</a></li>
-        <li><a href="../sla/cdn/index.html">CDN</a></li>
-        <li><a href="../sla/fluid-relay/index.html">Fluid Relay</a></li>
-        </ul>
+                    <h2>Web</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/app-service/">App Service</a></li>
+                        <li><a href="/en-us/support/sla/notification-hubs/">Notification Hubs</a></li>
+                        <li><a href="/en-us/support/sla/api-management/">API Management</a></li>
+                        <li><a href="/en-us/support/sla/cdn/">CDN</a></li>
+                        <li><a href="/en-us/support/sla/signalr-service/">Azure SignalR Service</a></li>
+                        <li><a href="/en-us/support/sla/fluid-relay/">Azure Fluid Relay</a></li>
+                    </ul>
 
-        <h2>物联网</h2>
-        <ul>
-        <li><a href="../sla/iot-hub/index.html">Azure IoT 中心</a></li>
-        <li><a href="../sla/event-hubs/index.html">事件中心</a></li>
-        <li><a href="../sla/stream-analytics/index.html">流分析</a></li>
-        <li><a href="../sla/cosmos-db/index.html">Azure Cosmos DB</a></li>
-        <li><a href="../sla/notification-hubs/index.html">通知中心</a></li>
-        <li><a href="../sla/api-management/index.html">API 管理</a></li>
-        <li><a href="../sla/time-series-insights/index.html">Azure 时序见解</a></li>
-        </ul>
+                    <h2>Internet of Things</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/iot-hub/">Azure IoT Hub</a></li>
+                        <li><a href="/en-us/support/sla/event-hubs/">Event Hubs</a></li>
+                        <li><a href="/en-us/support/sla/stream-analytics/">Stream Analytics</a></li>
+                        <li><a href="/en-us/support/sla/logic-apps/v1_0/index.html">Logic Apps</a></li>
+                        <li><a href="/en-us/support/sla/cosmos-db/">Azure Cosmos DB</a></li>
+                        <li><a href="/en-us/support/sla/notification-hubs/">Notification Hubs</a></li>
+                        <li><a href="/en-us/support/sla/api-management/">API Management</a></li>
+                        <li><a href="/en-us/support/sla/time-series-insights/">Azure Time Series Insights</a></li>
+                    </ul>
 
-        <h2>移动</h2>
-        <ul>
-        <li><a href="../sla/app-service/index.html">应用服务</a></li>
-        </ul>
+                    <h2>Mobile</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/app-service/">App Service</a></li>
+                    </ul>
+                    <h2>Developer Tools</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/app-configuration/index.html">App Configuration</a></li>
+                    </ul>
+                    <h2>Azure Virtual Desktop</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/virtual-desktop/v1_0/">Azure Virtual Desktop</a> </li>
+                    </ul>
 
-        <h2>DevOps</h2>
-        <ul>
-        <li><a href="../sla/managed-grafana/index.html">Managed Grafana</a></li>
-        </ul>
+                    <h2>DevOps</h2>
+                    <ul>
+                        <li><a href="/en-us/support/sla/managed-grafana/index.html">Managed Grafana</a> </li>
+                    </ul>
+                    <p><a href="/en-us/support/sla/summary/">Summary of the SLA for all Azure Services</a></p>
+                    <p>Click <a href="/content/marketing-resource/media/sla/Consolidated_SLA_English_201209.docx">here</a> to download SLA for most Azure Services</p>
 
-        <p><a href="../sla/summary/index.html">所有 Azure 服务的服务级别协议的摘要</a></p>
-        <p>点击<a href="/content/marketing-resource/media/sla/Consolidated_SLA_Chinese_190905.pdf">此处</a>可以下载大部分 Azure 服务的服务级别协议</p>
-            
                     <div id="content_feedback"></div>
-                    
-                    
+
+
                 </div>
                 <div class="col-md-2">
                     <div class="documentation-bookmark book-mark hidden-sm hidden-xs">
@@ -283,20 +316,19 @@
     </div>
 </div>
 <!-- END: Documentation Content -->
-
 <!-- BEGIN: Footer -->
 <div class="public_footerpage"></div>
 <!--END: Common sidebar-->
 
 
-    
 <link href="/Static/CSS/Localization/en-us.css" rel="stylesheet">
 <script type="text/javascript">
     function getAntiForgeryToken() {
-        var token = '<input name="__RequestVerificationToken" type="hidden" value="Lc47kWjVfEU0VpxaGvQR9OyvB35lBL8UeU08EWc1IGlgii2VrFl-xEVtD0EjNEQ5Bl_hPICg_nlNnfmKovFwLUhG5xXvvXaCWrAPuCmYGxk1" />';
+        var token = '<input name="__RequestVerificationToken" type="hidden" value="BFF0dIdiuNg2Utaz6HoVJ7aBb_fhnlkKZiq_H-uQNpgHz7wIilCjMGHUUpB6ZGXSU3C2zfKS5NSmCXWn1NeiLB3xVaoLsfArmAnxlRynpCk1" />';
         token = $(token).val();
         return token;
     }
+
     function setLocaleCookie(localeVal) {
         var Days = 365 * 10; // Ten year expiration
         var exp = new Date();
@@ -317,9 +349,11 @@
     var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
     var EnablePricingSync = 'false';
 </script>
-    <!-- BEGIN: Script -->
-    
-    <!-- END: Script -->
+
+<!-- BEGIN: Script -->
+
+<!-- END: Script -->
+
 <!-- BEGIN: Minified RequireJs -->
 <script src='/Static/Scripts/global.config.js' type='text/javascript'></script>
 <script src='/Static/Scripts/require.js' type='text/javascript'></script>
@@ -330,21 +364,21 @@
 <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js"></script>
 
 <script type="text/javascript">
-        (function () {
-            var config = {
-                cookiesToCollect: ["_mkto_trk"],
-                syncMuid: true,
-                ix: {
-                    a: true,
-                    g: true
-                },
-                coreData: {
-                    appId: 'AzureCN',
-                    market: 'zh-cn',
-                }
-            };
-            awa.init(config);
-        })();
+    (function () {
+        var config = {
+            cookiesToCollect: ["_mkto_trk"],
+            syncMuid: true,
+            ix: {
+                a: true,
+                g: true
+            },
+            coreData: {
+                appId: 'AzureCN',
+                market: 'zh-cn',
+            }
+        };
+        awa.init(config);
+    })();
 </script>
 <!-- end JSLL -->
 

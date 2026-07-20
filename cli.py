@@ -39,7 +39,15 @@ def catalog_audit_command(args: argparse.Namespace) -> int:
     print(f"Coverage reports: {json_path}, {markdown_path}")
     print(f"Baseline manifests: {manifest_json}, {manifest_markdown}")
     if not audit["passed"]:
-        for key in ("unknown_snapshots", "stale_exclusions", "duplicate_explanations", "missing_primary_sources", "missing_source_aliases", "normalized_input_issues"):
+        for key in (
+            "unknown_snapshots",
+            "stale_exclusions",
+            "duplicate_explanations",
+            "missing_primary_sources",
+            "missing_source_aliases",
+            "missing_historical_sources",
+            "normalized_input_issues",
+        ):
             for issue in audit[key]:
                 print(f"FAIL {key}: {issue}")
         return 1
@@ -56,7 +64,11 @@ def copy_from_prod_command(args: argparse.Namespace) -> int:
     failures = 0
     for language, result in results.items():
         failures += result["total_fail"]
-        print(f"{language}: copied={result['total_success']} skipped={result['total_skipped']} failed={result['total_fail']}")
+        print(
+            f"{language}: copied={result['total_success']} "
+            f"files={result['total_files_copied']} "
+            f"skipped={result['total_skipped']} failed={result['total_fail']}"
+        )
         for item in result["results"]:
             if item["status"] == "failed":
                 print(f"FAIL {item['product_key']}: {item['reason']}")
@@ -67,20 +79,38 @@ def extract_command(args: argparse.Namespace) -> int:
     from src.core.extraction_coordinator import ExtractionCoordinator
 
     try:
-        result = ExtractionCoordinator(args.output_dir).coordinate_extraction(args.product_key, args.language, args.html_file)
+        coordinator = ExtractionCoordinator(args.output_dir)
+        if args.all_versions:
+            if args.html_file:
+                raise ValueError("--html-file cannot be combined with --all-versions")
+            results = coordinator.coordinate_product_extractions(args.product_key, args.language)
+        else:
+            results = [coordinator.coordinate_extraction(
+                args.product_key,
+                args.language,
+                args.html_file,
+                args.version,
+            )]
     except Exception as error:
         print(f"FAIL: {error}")
         return 1
-    status = result.sidecar["status"]
-    print(f"execution={status['execution']} validation={status['validation']} review={status['review']} publication={status['publication']}")
-    if result.payload_path:
-        print(f"payload: {result.payload_path}")
-    print(f"sidecar: {result.sidecar_path}")
-    for issue in result.sidecar["validation"]["errors"]:
-        print(f"ERROR {issue['code']} {issue['path']}: {issue['message']}")
-    for issue in result.sidecar["validation"]["warnings"]:
-        print(f"WARN {issue['code']} {issue['path']}: {issue['message']}")
-    return result.exit_code
+    exit_codes = []
+    for result in results:
+        exit_codes.append(result.exit_code)
+        status = result.sidecar["status"]
+        print(
+            f"resource={result.sidecar['resource']['resource_key']} "
+            f"execution={status['execution']} validation={status['validation']} "
+            f"review={status['review']} publication={status['publication']}"
+        )
+        if result.payload_path:
+            print(f"payload: {result.payload_path}")
+        print(f"sidecar: {result.sidecar_path}")
+        for issue in result.sidecar["validation"]["errors"]:
+            print(f"ERROR {issue['code']} {issue['path']}: {issue['message']}")
+        for issue in result.sidecar["validation"]["warnings"]:
+            print(f"WARN {issue['code']} {issue['path']}: {issue['message']}")
+    return 1 if 1 in exit_codes else (2 if 2 in exit_codes else 0)
 
 
 def contract_validate_command(args: argparse.Namespace) -> int:
@@ -162,6 +192,9 @@ def create_parser() -> argparse.ArgumentParser:
     extract.add_argument("product_key")
     extract.add_argument("--language", choices=["zh-cn", "en-us"], required=True)
     extract.add_argument("--html-file", help="Explicit input override")
+    version_selection = extract.add_mutually_exclusive_group()
+    version_selection.add_argument("--version", help="Historical SLA version key, for example v1-1")
+    version_selection.add_argument("--all-versions", action="store_true", help="Extract the current page and every available historical SLA version")
     extract.add_argument("--output-dir", default="output")
     extract.set_defaults(func=extract_command)
 

@@ -34,10 +34,15 @@ class ProductCatalogTests(unittest.TestCase):
         stored = json.loads((ROOT / "data/configs/products-index.json").read_text(encoding="utf-8"))
         self.assertEqual(stored, built)
         self.assertEqual(built["total_products"], len(built["products"]))
+        self.assertEqual(built["total_historical_versions"], 6)
+        self.assertEqual(built["products"]["sla-cdn"]["historical_version_count"], 2)
+        self.assertEqual(built["products"]["sla-sql-data"]["historical_version_count"], 4)
         self.assertEqual(built["products"]["frontdoor"]["catalog_categories"], ["networking", "websites"])
         self.assertEqual(sum("frontdoor" in view["products"] for view in built["catalog_categories"].values()), 2)
         manifest = catalog.build_baseline_manifest()
         self.assertEqual(manifest["total_product_language_entries"], built["total_products"] * 2)
+        self.assertEqual(manifest["total_historical_versions"], 6)
+        self.assertEqual(manifest["total_historical_version_language_entries"], 12)
 
     def test_every_raw_snapshot_is_explained_exactly_once(self):
         audit = ProductCatalog(ROOT).audit_snapshots()
@@ -59,6 +64,11 @@ class ProductCatalogTests(unittest.TestCase):
         invalid_support = copy.deepcopy(support)
         invalid_support["catalog_categories"] = ["support"]
         self.assertTrue(list(validator.iter_errors(invalid_support)))
+        invalid_history_owner = copy.deepcopy(definition)
+        invalid_history_owner["historical_versions"] = copy.deepcopy(
+            ProductManager().get_product_config("sla-cdn")["historical_versions"]
+        )
+        self.assertTrue(list(validator.iter_errors(invalid_history_owner)))
 
     def test_duplicate_product_key_and_primary_source_are_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -87,6 +97,55 @@ class ProductCatalogTests(unittest.TestCase):
         self.assertEqual(result["status"], "copied")
         self.assertEqual(file_sha256(Path(result["source"])), file_sha256(Path(result["target"])))
         self.assertIn("SupportArticles/SLA/sla-cognitive-services.html", result["target"])
+
+    def test_sla_current_sources_and_publishable_versions_are_explicit(self):
+        manager = ProductManager()
+        cdn = manager.get_product_config("sla-cdn")
+        sql_data = manager.get_product_config("sla-sql-data")
+
+        self.assertEqual(cdn["sources"]["zh-cn"]["snapshot_path"], "SupportArticles/SLA/cdn/index.html")
+        self.assertEqual(cdn["sources"]["en-us"]["snapshot_path"], "SupportArticles/SLA/cdn/index.html")
+        self.assertNotIn("aliases", cdn["sources"]["zh-cn"])
+        self.assertNotIn("aliases", sql_data["sources"]["zh-cn"])
+        self.assertEqual(
+            {version["version_key"]: version["slug"] for version in cdn["historical_versions"]},
+            {"v1-1": "cdn-v1-1", "v1-0": "cdn-v1"},
+        )
+        self.assertEqual(
+            {version["version_key"]: version["slug"] for version in sql_data["historical_versions"]},
+            {
+                "v1-5": "sql-data-v1-5",
+                "v1-4": "sql-data-v1-4",
+                "v1-3": "sql-data-v1-3",
+                "v1-0": "sql-data-v1",
+            },
+        )
+        cdn_v11 = next(version for version in cdn["historical_versions"] if version["version_key"] == "v1-1")
+        self.assertEqual(cdn_v11["sources"]["en-us"]["availability"], "unavailable")
+
+        copied = HTMLFileCopier(ROOT).copy_product("sla-cdn", "en-us")
+        self.assertEqual(copied["status"], "copied")
+        self.assertTrue(copied["source"].endswith("SupportArticles/SLA/cdn/index.html"))
+        self.assertEqual(file_sha256(Path(copied["source"])), file_sha256(Path(copied["target"])))
+        self.assertEqual(copied["copied_files"], 2)
+        historical = next(item for item in copied["resources"] if item["resource_key"] == "sla-cdn--v1-0")
+        self.assertTrue(historical["target"].endswith("SupportArticles/SLA/sla-cdn--v1-0.html"))
+        self.assertEqual(file_sha256(Path(historical["source"])), file_sha256(Path(historical["target"])))
+
+        copied_zh = HTMLFileCopier(ROOT).copy_product("sla-sql-data", "zh-cn")
+        self.assertEqual(copied_zh["copied_files"], 5)
+        for resource in copied_zh["resources"]:
+            self.assertEqual(file_sha256(Path(resource["source"])), file_sha256(Path(resource["target"])))
+
+        for key in (
+            "sla-hpc-cache",
+            "sla-managed-disks",
+            "sla-virtual-desktop",
+            "sla-virtual-machine-scale-sets",
+        ):
+            definition = manager.get_product_config(key)
+            self.assertEqual(definition["capability_status"], "known_unsupported")
+            self.assertIn("no H2 section", definition["unsupported_reason"])
 
 
 class ContractTests(unittest.TestCase):
@@ -140,8 +199,57 @@ class ContractTests(unittest.TestCase):
         self.assertNotIn("tag UI", payload["mainContent"])
         self.assertNotIn("<script", payload["mainContent"])
 
+        for source, expected in (
+            ("最后更新时间：2016年03月", "2016年03月"),
+            ("最后更新日期：2023 年 1 月", "2023 年 1 月"),
+            ("更新时间：2026 年 7 月", "2026 年 7 月"),
+        ):
+            date_content = BeautifulSoup(f'<div class="wacn-date">{source}</div>', "html.parser")
+            self.assertEqual(SupportArticleStrategy._extract_last_modified(date_content), expected)
+
 
 class ExtractionStateTests(unittest.TestCase):
+    def test_historical_sla_versions_have_independent_payloads_and_explicit_routes(self):
+        HTMLFileCopier(ROOT).copy_product("sla-cdn", "zh-cn")
+        HTMLFileCopier(ROOT).copy_product("sla-sql-data", "zh-cn")
+        with tempfile.TemporaryDirectory() as directory:
+            coordinator = ExtractionCoordinator(directory)
+            cdn_results = coordinator.coordinate_product_extractions("sla-cdn", "zh-cn")
+            self.assertEqual(
+                [result.sidecar["resource"]["resource_key"] for result in cdn_results],
+                ["sla-cdn", "sla-cdn--v1-1", "sla-cdn--v1-0"],
+            )
+            self.assertTrue(all(result.exit_code == 0 for result in cdn_results))
+            current, version_11, version_10 = cdn_results
+            self.assertEqual(version_11.payload["slug"], "cdn-v1-1")
+            self.assertEqual(version_11.sidecar["schema_version"], "1.1")
+            self.assertEqual(version_11.sidecar["product_key"], "sla-cdn")
+            self.assertEqual(version_11.sidecar["resource"]["version_label"], "1.1")
+            self.assertEqual(version_11.sidecar["source"]["sha256"], version_11.sidecar["normalized_input"]["sha256"])
+            self.assertIn("{base_url}/support/sla/cdn-v1-1/", current.payload["mainContent"])
+            self.assertIn("{base_url}/support/sla/cdn-v1/", version_11.payload["mainContent"])
+
+            unavailable = coordinator.coordinate_extraction("sla-cdn", "en-us", version_key="v1-1")
+            self.assertEqual(unavailable.sidecar["status"]["execution"], "skipped")
+            self.assertEqual(unavailable.sidecar["error"]["code"], "source_unavailable")
+            self.assertIsNone(unavailable.payload_path)
+
+            sql_current = coordinator.coordinate_extraction("sla-sql-data", "zh-cn")
+            sql_v15 = coordinator.coordinate_extraction("sla-sql-data", "zh-cn", version_key="v1-5")
+            self.assertEqual(sql_current.exit_code, 0)
+            self.assertEqual(sql_v15.exit_code, 0)
+            for route in ("sql-data-v1-5", "sql-data-v1-4", "sql-data-v1-3", "sql-data-v1"):
+                self.assertIn(f"{{base_url}}/support/sla/{route}/", sql_current.payload["mainContent"])
+            self.assertNotIn("sql-data-V1_5", sql_v15.payload["mainContent"])
+            self.assertNotIn("sql-data-v1_5", sql_v15.payload["mainContent"])
+            self.assertIn("{base_url}/support/sla/sql-data-v1-5/", sql_v15.payload["mainContent"])
+
+            eligible, rejected = eligible_payloads(Path(directory) / "payloads")
+            eligible_keys = {path.stem for path, _, _ in eligible}
+            self.assertIn("sla-cdn--v1-1", eligible_keys)
+            self.assertIn("sla-sql-data--v1-5", eligible_keys)
+            self.assertFalse(any(item.get("path", "").endswith("sla-cdn--v1-1.json") for item in rejected))
+
     def test_success_validation_failure_and_execution_failure_are_distinct(self):
         with tempfile.TemporaryDirectory() as directory:
             coordinator = ExtractionCoordinator(directory)

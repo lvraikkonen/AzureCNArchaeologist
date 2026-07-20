@@ -41,7 +41,7 @@ class ContractValidationResult:
 CONTRACTS = {
     "FlexibleContentPage": ("flexible-content-page-1.1.schema.json", "1.1"),
     "SupportArticlePage": ("support-article-page-1.0.schema.json", "1.0"),
-    "DiagnosticSidecar": ("diagnostic-sidecar-1.0.schema.json", "1.0"),
+    "DiagnosticSidecar": ("diagnostic-sidecar-1.1.schema.json", "1.1"),
 }
 
 

@@ -25,6 +25,10 @@
         "en-us": {"$ref": "#/$defs/source"}
       }
     },
+    "historical_versions": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {"$ref": "#/$defs/historical_version"}
+    },
     "extraction": {"type": "object", "additionalProperties": true},
     "quality": {
       "type": "object", "additionalProperties": false,
@@ -41,6 +45,15 @@
       "if": {"properties": {"page_model": {"const": "FlexibleContentPage"}}},
       "then": {"required": ["catalog_categories"], "not": {"required": ["support_article_type"]}},
       "else": {"required": ["support_article_type"], "not": {"required": ["catalog_categories"]}}
+    },
+    {
+      "if": {"required": ["historical_versions"]},
+      "then": {
+        "properties": {
+          "page_model": {"const": "SupportArticlePage"},
+          "support_article_type": {"const": "SLA"}
+        }
+      }
     }
   ],
   "$defs": {
@@ -50,6 +63,12 @@
         "availability": {"enum": ["available", "unavailable"]},
         "snapshot_path": {"type": "string", "minLength": 1},
         "url": {"type": "string", "format": "uri"},
+        "url_aliases": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"type": "string", "format": "uri"}
+        },
+        "cms_path": {"type": "string", "pattern": "^/[^\\s]*$"},
+        "document_version": {"type": "string", "minLength": 1},
         "unavailable_reason": {"type": "string", "minLength": 1},
         "aliases": {
           "type": "array", "uniqueItems": true,
@@ -69,6 +88,46 @@
           "if": {"properties": {"availability": {"const": "available"}}},
           "then": {"required": ["snapshot_path", "url"], "not": {"required": ["unavailable_reason"]}},
           "else": {"required": ["unavailable_reason"], "not": {"anyOf": [{"required": ["snapshot_path"]}, {"required": ["url"]}]}}
+        }
+      ]
+    },
+    "historical_version": {
+      "type": "object", "additionalProperties": false,
+      "required": ["version_key", "version_label", "slug", "sources"],
+      "properties": {
+        "version_key": {"type": "string", "pattern": "^v[0-9]+(?:-[0-9]+)*$"},
+        "version_label": {"type": "string", "minLength": 1},
+        "slug": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+        "sources": {
+          "type": "object", "additionalProperties": false, "required": ["zh-cn", "en-us"],
+          "properties": {
+            "zh-cn": {"$ref": "#/$defs/historical_source"},
+            "en-us": {"$ref": "#/$defs/historical_source"}
+          }
+        }
+      }
+    },
+    "historical_source": {
+      "type": "object", "additionalProperties": false, "required": ["availability"],
+      "properties": {
+        "availability": {"enum": ["available", "unavailable"]},
+        "snapshot_path": {"type": "string", "minLength": 1},
+        "url": {"type": "string", "format": "uri"},
+        "url_aliases": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"type": "string", "format": "uri"}
+        },
+        "cms_path": {"type": "string", "pattern": "^/[^\\s]*$"},
+        "unavailable_reason": {"type": "string", "minLength": 1}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"availability": {"const": "available"}}},
+          "then": {"required": ["snapshot_path", "url", "cms_path"], "not": {"required": ["unavailable_reason"]}},
+          "else": {
+            "required": ["unavailable_reason"],
+            "not": {"anyOf": [{"required": ["snapshot_path"]}, {"required": ["url"]}, {"required": ["url_aliases"]}, {"required": ["cms_path"]}]}
+          }
         }
       ]
     }

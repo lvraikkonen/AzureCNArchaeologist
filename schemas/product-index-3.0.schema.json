@@ -4,13 +4,14 @@
   "title": "Product Index 3.0",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "source_digest", "total_products", "supported_products", "known_unsupported_products", "products", "catalog_categories", "support_article_types"],
+  "required": ["schema_version", "source_digest", "total_products", "supported_products", "known_unsupported_products", "total_historical_versions", "products", "catalog_categories", "support_article_types"],
   "properties": {
     "schema_version": {"const": "3.0"},
     "source_digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
     "total_products": {"type": "integer", "minimum": 0},
     "supported_products": {"type": "integer", "minimum": 0},
     "known_unsupported_products": {"type": "integer", "minimum": 0},
+    "total_historical_versions": {"type": "integer", "minimum": 0},
     "products": {"type": "object", "additionalProperties": {"$ref": "#/$defs/product"}},
     "catalog_categories": {"type": "object", "additionalProperties": {"$ref": "#/$defs/view"}},
     "support_article_types": {"type": "object", "additionalProperties": {"$ref": "#/$defs/view"}}
@@ -18,12 +19,13 @@
   "$defs": {
     "product": {
       "type": "object", "additionalProperties": false,
-      "required": ["config_path", "page_model", "slug", "capability_status"],
+      "required": ["config_path", "page_model", "slug", "capability_status", "historical_version_count"],
       "properties": {
         "config_path": {"type": "string", "minLength": 1},
         "page_model": {"enum": ["FlexibleContentPage", "SupportArticlePage"]},
         "slug": {"type": "string", "minLength": 1},
         "capability_status": {"enum": ["supported", "known_unsupported"]},
+        "historical_version_count": {"type": "integer", "minimum": 0},
         "catalog_categories": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
         "support_article_type": {"enum": ["SLA", "LEGAL", "ICP", "PSR"]}
       }

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import time
+from copy import deepcopy
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
@@ -18,6 +19,13 @@ from src.core.logging import get_logger
 from src.core.product_catalog import artifact_relative_directory, normalized_input_path, sha256_file
 from src.core.product_manager import ProductManager
 from src.core.strategy_manager import StrategyManager
+from src.core.support_article_versions import (
+    available_historical_versions,
+    build_support_url_route_map,
+    get_historical_version,
+    historical_normalized_input_path,
+    historical_resource_key,
+)
 from src.strategies.strategy_factory import StrategyFactory
 from src.utils.media.image_processor import preprocess_image_paths
 
@@ -39,21 +47,36 @@ class ExtractionCoordinator:
         product_key: str,
         language: str,
         html_file_path: str | None = None,
+        version_key: str | None = None,
     ) -> ExtractionResult:
         if language not in ("zh-cn", "en-us"):
             raise ValueError(f"Unsupported language: {language}")
         definition = self.product_manager.get_product_config(product_key)
-        input_path = Path(html_file_path).resolve() if html_file_path else normalized_input_path(self.root, definition, language)
+        version = get_historical_version(definition, version_key) if version_key else None
+        resource_key = historical_resource_key(product_key, version_key) if version_key else product_key
+        resource_kind = "historical_version" if version else "current"
+        resource_slug = version["slug"] if version else definition["slug"]
+        version_label = version["version_label"] if version else definition["sources"][language].get("document_version")
+        source_definition = version["sources"][language] if version else definition["sources"][language]
+        default_input_path = (
+            historical_normalized_input_path(self.root, definition, language, version_key)
+            if version_key else normalized_input_path(self.root, definition, language)
+        )
+        input_path = Path(html_file_path).resolve() if html_file_path else default_input_path
         relative_dir = artifact_relative_directory(definition, language)
-        payload_target_path = self.output_dir / "payloads" / relative_dir / f"{product_key}.json"
+        payload_target_path = self.output_dir / "payloads" / relative_dir / f"{resource_key}.json"
         payload_path: Optional[Path] = payload_target_path
-        sidecar_path = self.output_dir / "diagnostics" / relative_dir / f"{product_key}.sidecar.json"
-        source_definition = definition["sources"][language]
+        sidecar_path = self.output_dir / "diagnostics" / relative_dir / f"{resource_key}.sidecar.json"
         source_path = (
             self.root / "data" / "current_prod_html" / language / source_definition["snapshot_path"]
             if source_definition["availability"] == "available"
             else input_path
         )
+        runtime_definition = deepcopy(definition)
+        runtime_definition["slug"] = resource_slug
+        runtime_definition.setdefault("extraction", {})["url_route_map"] = build_support_url_route_map(
+            definition, language
+        ) if definition["page_model"] == "SupportArticlePage" else {}
         started = datetime.now(timezone.utc)
         started_clock = time.perf_counter()
         payload: Optional[dict[str, Any]] = None
@@ -68,19 +91,28 @@ class ExtractionCoordinator:
                 structured_error = {"code": "known_unsupported", "stage": "catalog", "message": definition["unsupported_reason"]}
                 payload_target_path.unlink(missing_ok=True)
                 payload_path = None
+            elif source_definition["availability"] != "available":
+                status["execution"] = "skipped"
+                structured_error = {
+                    "code": "source_unavailable",
+                    "stage": "catalog",
+                    "message": source_definition["unavailable_reason"],
+                }
+                payload_target_path.unlink(missing_ok=True)
+                payload_path = None
             else:
                 if not input_path.is_file():
                     raise FileNotFoundError(f"Normalized Input does not exist: {input_path}")
                 strategy = self.strategy_manager.determine_extraction_strategy(str(input_path), product_key)
                 strategy_metadata = self._strategy_metadata(strategy)
-                strategy_instance = StrategyFactory.create_strategy(strategy, definition, str(input_path))
+                strategy_instance = StrategyFactory.create_strategy(strategy, runtime_definition, str(input_path))
                 soup = self._read_html(input_path)
                 expected_ms_service = self._extract_ms_service(soup) if definition["page_model"] == "FlexibleContentPage" else None
                 payload = strategy_instance.extract_flexible_content(soup, source_definition.get("url", ""))
-                self._normalize_business_fields(payload, definition, language)
+                self._normalize_business_fields(payload, runtime_definition, language)
                 validation = self.contract_validator.validate(payload, definition["page_model"], expected_ms_service)
                 validation_issues = validation.to_dict()
-                validation_issues["warnings"].extend(self._quality_warnings(payload, definition))
+                validation_issues["warnings"].extend(self._quality_warnings(payload, runtime_definition))
                 status["execution"] = "succeeded"
                 status["validation"] = "passed" if validation.passed else "failed"
                 payload_target_path.parent.mkdir(parents=True, exist_ok=True)
@@ -97,8 +129,15 @@ class ExtractionCoordinator:
         completed = datetime.now(timezone.utc)
         duration_ms = max(0, round((time.perf_counter() - started_clock) * 1000))
         sidecar = {
-            "schema_version": "1.0",
+            "schema_version": "1.1",
             "product_key": product_key,
+            "resource": {
+                "kind": resource_kind,
+                "resource_key": resource_key,
+                "slug": resource_slug,
+                "version_key": version_key,
+                "version_label": version_label,
+            },
             "language": language,
             "page_model": definition["page_model"],
             "contract": self.contract_validator.contract_metadata(definition["page_model"]),
@@ -118,6 +157,20 @@ class ExtractionCoordinator:
         sidecar_path.parent.mkdir(parents=True, exist_ok=True)
         sidecar_path.write_text(json.dumps(sidecar, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         return ExtractionResult(product_key, language, payload, sidecar, payload_path, sidecar_path)
+
+    def coordinate_product_extractions(
+        self,
+        product_key: str,
+        language: str,
+    ) -> list[ExtractionResult]:
+        """Extract the current page and every available historical SLA version."""
+        definition = self.product_manager.get_product_config(product_key)
+        results = [self.coordinate_extraction(product_key, language)]
+        results.extend(
+            self.coordinate_extraction(product_key, language, version_key=version["version_key"])
+            for version in available_historical_versions(definition, language)
+        )
+        return results
 
     @staticmethod
     def _read_html(path: Path) -> BeautifulSoup:

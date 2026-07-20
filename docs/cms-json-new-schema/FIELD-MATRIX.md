@@ -9,4 +9,4 @@
 | Common sections | `sectionTitle` may be empty | Empty string accepted | `SectionExtractor` | Content warnings remain diagnostic |
 | Support root | Exactly nine business keys | `support-article-page-1.0.schema.json`, no extra properties | `SupportArticleStrategy` | Optional empty strings become warnings |
 | Support type | `SLA`, `LEGAL`, `ICP`, `PSR` | Enum of four uppercase values | Product Definition `support_article_type` | Source directory is not consulted |
-| Artifacts | Business payload importable independently | Payload schemas | `ExtractionCoordinator` | Provenance, hashes, states and structured errors use `diagnostic-sidecar-1.0.schema.json` |
+| Artifacts | Business payload importable independently | Payload schemas | `ExtractionCoordinator` | Provenance, resource/version identity, hashes, states and structured errors use `diagnostic-sidecar-1.1.schema.json` |
