@@ -142,6 +142,12 @@ class SimpleStaticStrategy(BaseStrategy):
                         
                         logger.info(f"✓ 找到technical-azure-selector内容，共{len(content_sections)}个content sections")
                         return clean_html_content(main_content)
+
+                # 生产页面通常将完整定价主体直接放在 technical-azure-selector
+                # 中，而不是再嵌套 pricing-page-section。此容器已经位于描述与
+                # FAQ/SLA 之间，是 Simple 页面的精确业务边界；不能继续落入整页回退。
+                logger.info("✓ 使用technical-azure-selector作为Simple页面baseContent边界")
+                return clean_html_content(str(technical_selector))
             
             # 方案2: 查找所有pricing-page-section，智能分类后处理
             logger.info("🔍 方案2: 查找所有pricing-page-section（智能分类）...")

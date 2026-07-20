@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "product_key": "azure-functions",
+  "display_name": "Azure Functions",
+  "slug": "azure-functions",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "compute"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/azure-functions/index.html",
+      "url": "https://www.azure.cn/pricing/details/azure-functions/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/azure-functions/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/azure-functions/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价信息",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议",
+      "Support & SLA"
+    ],
+    "estimated_size_mb": 0.7,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": true
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

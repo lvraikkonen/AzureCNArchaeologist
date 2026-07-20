@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "product_key": "storage-blobs",
+  "display_name": "Blob Storage",
+  "slug": "storage-blobs",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "known_unsupported",
+  "unsupported_reason": "not_yet_qualified_for_extraction",
+  "catalog_categories": [
+    "storage"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/storage/blobs/index.html",
+      "url": "https://www.azure.cn/pricing/details/storage/blobs/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/storage/blobs.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "storage-blobs"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/storage/blobs/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/storage/blobs/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/storage/blobs.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "storage-blobs"
+        }
+      ]
+    }
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

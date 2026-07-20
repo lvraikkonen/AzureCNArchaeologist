@@ -1,162 +1,1764 @@
 {
-  "version": "2.1",
-  "last_updated": "2025-09-08",
-  "total_products": 97,
-  "future_capacity": 120,
-  "categories": {
-    "ai-ml": {
-      "count": 6,
-      "config_path": "products/ai-ml/",
-      "products": [
-        "cognitive-services",
-        "anomaly-detector",
-        "search",
-        "machine-learning",
-        "databricks",
-        "form-recognizer",
-        "metrics-advisor",
-        "bot-services"
+  "schema_version": "3.0",
+  "source_digest": "sha256:f69f653c33274ae17908d53006f69b0299141fd208f35b7eebeac37496892899",
+  "total_products": 211,
+  "supported_products": 188,
+  "known_unsupported_products": 23,
+  "products": {
+    "active-directory": {
+      "config_path": "products/pricing/active-directory.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "active-directory",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "identity"
       ]
     },
-    "management": {
-      "count": 8,
-      "config_path": "products/management/",
-      "products": [
-        "automation",
-        "backup",
-        "scheduler",
-        "monitor",
-        "azure-policy",
-        "advisor",
-        "azure-firewall",
-        "azure-update-management-center"
+    "active-directory-b2c": {
+      "config_path": "products/pricing/active-directory-b2c.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "active-directory-b2c",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "identity"
       ]
     },
-    "migration": {
-      "count": 2,
-      "config_path": "products/migration/",
-      "products": [
-        "azure-migrate",
-        "site-recovery"
+    "active-directory-ds": {
+      "config_path": "products/pricing/active-directory-ds.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "active-directory-ds",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "identity"
       ]
     },
-    "database": {
-      "count": 12,
-      "config_path": "products/database/",
-      "products": [
-        "managed-instance",
-        "sql-database",
-        "synapse-analytics",
-        "sql-server-stretch-database",
-        "cosmos-db",
-        "cache",
-        "mysql",
-        "postgresql",
-        "mariadb",
-        "data-explorer",
-        "database-migration",
-        "sql-edge"
+    "advisor": {
+      "config_path": "products/pricing/advisor.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "advisor",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "management"
       ]
     },
-    "security": {
-      "count": 3,
-      "config_path": "products/security/",
-      "products": [
-        "azure-defender",
-        "key-vault",
-        "microsoft-sentinel"
+    "analysis-services": {
+      "config_path": "products/pricing/analysis-services.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "analysis-services",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "analysis"
       ]
     },
-    "integration": {
-      "count": 3,
-      "config_path": "products/integration/",
-      "products": [
-        "api-management",
-        "event-grid",
-        "service-bus"
+    "anomaly-detector": {
+      "config_path": "products/pricing/anomaly-detector.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "anomaly-detector",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "ai-ml"
       ]
     },
-    "compute": {
-      "count": 8,
-      "config_path": "products/compute/",
-      "products": [
-        "virtual-machine-scale-sets",
-        "app-service",
-        "batch",
-        "cloud-services",
-        "azure-functions",
-        "dedicated-host",
-        "spring-cloud",
-        "hpc-cache"
-      ],
-      "large_html_products": []
-    },
-    "iot":{
-      "count": 5,
-      "config_path": "products/iot/",
-      "products": [
-        "iot-hub",
-        "iot-edge",
-        "event-hubs",
-        "logic-apps",
-        "time-series-insights"
+    "api-management": {
+      "config_path": "products/pricing/api-management.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "api-management",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "integration"
       ]
     },
-    "identity": {
-      "count": 3,
-      "config_path": "products/identity/",
-      "products": [
-        "active-directory-b2c",
-        "active-directory-ds",
-        "multi-factor-authentication"
+    "app-configuration": {
+      "config_path": "products/pricing/app-configuration.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "app-configuration",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "dev-tools"
       ]
     },
-    "analysis": {
-      "count": 7,
-      "config_path": "products/analysis/",
-      "products": [
-        "purview",
-        "hdinsight",
-        "stream-analytics",
-        "power-bi-embedded",
-        "analysis-services",
-        "ssis",
-        "data-pipeline"
-      ],
-      "large_html_products": []
+    "app-service": {
+      "config_path": "products/pricing/app-service.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "app-service",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "compute"
+      ]
     },
-    "networking": {
-      "count": 13,
-      "config_path": "products/networking/",
-      "products": [
-        "application-gateway",
-        "azure-nat-gateway",
-        "core-control-plane",
-        "dns",
-        "ip-addresses",
-        "load-balancer",
-        "network-watcher",
-        "route-server",
-        "traffic-manager",
-        "private-link",
-        "firewall-manager",
-        "virtual-network",
-        "virtual-network-manager",
-        "virtual-wan",
-        "vpn-gateway"
+    "application-gateway": {
+      "config_path": "products/pricing/application-gateway.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "application-gateway",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "automation": {
+      "config_path": "products/pricing/automation.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "automation",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "management"
+      ]
+    },
+    "azure-bastion": {
+      "config_path": "products/pricing/azure-bastion.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "azure-bastion",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "azure-defender": {
+      "config_path": "products/pricing/azure-defender.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "azure-defender",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "security"
+      ]
+    },
+    "azure-firewall": {
+      "config_path": "products/pricing/azure-firewall.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "azure-firewall",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "management"
+      ]
+    },
+    "azure-functions": {
+      "config_path": "products/pricing/azure-functions.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "azure-functions",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "compute"
+      ]
+    },
+    "azure-migrate": {
+      "config_path": "products/pricing/azure-migrate.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "azure-migrate",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "migration"
+      ]
+    },
+    "azure-nat-gateway": {
+      "config_path": "products/pricing/azure-nat-gateway.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "azure-nat-gateway",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "azure-policy": {
+      "config_path": "products/pricing/azure-policy.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "azure-policy",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "management"
+      ]
+    },
+    "azure-update-management-center": {
+      "config_path": "products/pricing/azure-update-management-center.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "azure-update-management-center",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "management"
+      ]
+    },
+    "backup": {
+      "config_path": "products/pricing/backup.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "backup",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "management"
+      ]
+    },
+    "bandwidth": {
+      "config_path": "products/pricing/bandwidth.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "bandwidth",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "batch": {
+      "config_path": "products/pricing/batch.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "batch",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "compute"
+      ]
+    },
+    "bot-services": {
+      "config_path": "products/pricing/bot-services.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "bot-services",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "ai-ml"
+      ]
+    },
+    "cache": {
+      "config_path": "products/pricing/cache.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "cache",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "database"
+      ]
+    },
+    "cdn": {
+      "config_path": "products/pricing/cdn.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "cdn",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "cloud-connection-service": {
+      "config_path": "products/pricing/cloud-connection-service.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "cloud-connection-service",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "cloud-services": {
+      "config_path": "products/pricing/cloud-services.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "cloud-services",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "compute"
+      ]
+    },
+    "cognitive-services": {
+      "config_path": "products/pricing/cognitive-services.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "cognitive-services",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "ai-ml"
+      ]
+    },
+    "container-apps": {
+      "config_path": "products/pricing/container-apps.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "container-apps",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "container"
+      ]
+    },
+    "container-instances": {
+      "config_path": "products/pricing/container-instances.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "container-instances",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "container"
+      ]
+    },
+    "container-registry": {
+      "config_path": "products/pricing/container-registry.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "container-registry",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "container"
+      ]
+    },
+    "core-control-plane": {
+      "config_path": "products/pricing/core-control-plane.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "azure-arc-core-control-plane",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "cosmos-db": {
+      "config_path": "products/pricing/cosmos-db.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "cosmos-db",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "database"
+      ]
+    },
+    "customer-engagement-fabric": {
+      "config_path": "products/pricing/customer-engagement-fabric.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "customer-engagement-fabric",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "integration"
+      ]
+    },
+    "data-explorer": {
+      "config_path": "products/pricing/data-explorer.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "data-explorer",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "database"
+      ]
+    },
+    "data-factory": {
+      "config_path": "products/pricing/data-factory.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "data-factory",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "analysis"
+      ]
+    },
+    "data-lake-storage": {
+      "config_path": "products/pricing/data-lake-storage.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "storage-data-lake",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "storage"
+      ]
+    },
+    "data-pipeline": {
+      "config_path": "products/pricing/data-pipeline.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "data-factory-data-pipeline",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "analysis"
+      ]
+    },
+    "data-transfer": {
+      "config_path": "products/pricing/data-transfer.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "data-transfer",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "database-migration": {
+      "config_path": "products/pricing/database-migration.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "database-migration",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "database"
+      ]
+    },
+    "databox": {
+      "config_path": "products/pricing/databox.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "databox",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "storage"
+      ]
+    },
+    "databricks": {
+      "config_path": "products/pricing/databricks.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "databricks",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "ai-ml"
+      ]
+    },
+    "ddos-protection": {
+      "config_path": "products/pricing/ddos-protection.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "ddos-protection",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "dedicated-host": {
+      "config_path": "products/pricing/dedicated-host.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "virtual-machines-dedicated-host",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "compute"
+      ]
+    },
+    "dns": {
+      "config_path": "products/pricing/dns.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "dns",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "event-grid": {
+      "config_path": "products/pricing/event-grid.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "event-grid",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "integration"
+      ]
+    },
+    "event-hubs": {
+      "config_path": "products/pricing/event-hubs.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "event-hubs",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "iot"
+      ]
+    },
+    "expressroute": {
+      "config_path": "products/pricing/expressroute.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "expressroute",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "firewall-manager": {
+      "config_path": "products/pricing/firewall-manager.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "firewall-manager",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "fluid-relay": {
+      "config_path": "products/pricing/fluid-relay.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "fluid-relay",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "websites"
+      ]
+    },
+    "form-recognizer": {
+      "config_path": "products/pricing/form-recognizer.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "form-recognizer",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "ai-ml"
+      ]
+    },
+    "frontdoor": {
+      "config_path": "products/pricing/frontdoor.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "frontdoor",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking",
+        "websites"
+      ]
+    },
+    "hci": {
+      "config_path": "products/pricing/hci.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "azure-stack-hci",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "hybrid-multicloud"
+      ]
+    },
+    "hdinsight": {
+      "config_path": "products/pricing/hdinsight.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "hdinsight",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "analysis"
+      ]
+    },
+    "hpc-cache": {
+      "config_path": "products/pricing/hpc-cache.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "hpc-cache",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "compute"
+      ]
+    },
+    "hub": {
+      "config_path": "products/pricing/hub.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "azure-stack-hub",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "hybrid-multicloud"
+      ]
+    },
+    "icp-addweb": {
+      "config_path": "products/support-articles/icp-addweb.json",
+      "page_model": "SupportArticlePage",
+      "slug": "icp-addweb",
+      "capability_status": "supported",
+      "support_article_type": "ICP"
+    },
+    "icp-cancel": {
+      "config_path": "products/support-articles/icp-cancel.json",
+      "page_model": "SupportArticlePage",
+      "slug": "icp-cancel",
+      "capability_status": "supported",
+      "support_article_type": "ICP"
+    },
+    "icp-change": {
+      "config_path": "products/support-articles/icp-change.json",
+      "page_model": "SupportArticlePage",
+      "slug": "icp-change",
+      "capability_status": "supported",
+      "support_article_type": "ICP"
+    },
+    "icp-faq": {
+      "config_path": "products/support-articles/icp-faq.json",
+      "page_model": "SupportArticlePage",
+      "slug": "icp-faq",
+      "capability_status": "supported",
+      "support_article_type": "ICP"
+    },
+    "icp-new": {
+      "config_path": "products/support-articles/icp-new.json",
+      "page_model": "SupportArticlePage",
+      "slug": "icp-new",
+      "capability_status": "supported",
+      "support_article_type": "ICP"
+    },
+    "icp-newinsert": {
+      "config_path": "products/support-articles/icp-newinsert.json",
+      "page_model": "SupportArticlePage",
+      "slug": "icp-newinsert",
+      "capability_status": "supported",
+      "support_article_type": "ICP"
+    },
+    "icp-newweb": {
+      "config_path": "products/support-articles/icp-newweb.json",
+      "page_model": "SupportArticlePage",
+      "slug": "icp-newweb",
+      "capability_status": "supported",
+      "support_article_type": "ICP"
+    },
+    "icp-summary": {
+      "config_path": "products/support-articles/icp-summary.json",
+      "page_model": "SupportArticlePage",
+      "slug": "icp",
+      "capability_status": "supported",
+      "support_article_type": "ICP"
+    },
+    "iot-edge": {
+      "config_path": "products/pricing/iot-edge.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "iot-edge",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "iot"
+      ]
+    },
+    "iot-hub": {
+      "config_path": "products/pricing/iot-hub.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "iot-hub",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "iot"
+      ]
+    },
+    "ip-addresses": {
+      "config_path": "products/pricing/ip-addresses.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "ip-addresses",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "key-vault": {
+      "config_path": "products/pricing/key-vault.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "key-vault",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "security"
+      ]
+    },
+    "kubernetes-service": {
+      "config_path": "products/pricing/kubernetes-service.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "kubernetes-service",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "container"
+      ]
+    },
+    "legal-offer-rate-plans": {
+      "config_path": "products/support-articles/legal-offer-rate-plans.json",
+      "page_model": "SupportArticlePage",
+      "slug": "offer-rate-plans",
+      "capability_status": "supported",
+      "support_article_type": "LEGAL"
+    },
+    "legal-privacy-statement": {
+      "config_path": "products/support-articles/legal-privacy-statement.json",
+      "page_model": "SupportArticlePage",
+      "slug": "privacy-statement",
+      "capability_status": "supported",
+      "support_article_type": "LEGAL"
+    },
+    "legal-subscription-agreement": {
+      "config_path": "products/support-articles/legal-subscription-agreement.json",
+      "page_model": "SupportArticlePage",
+      "slug": "subscription-agreement",
+      "capability_status": "supported",
+      "support_article_type": "LEGAL"
+    },
+    "legal-summary": {
+      "config_path": "products/support-articles/legal-summary.json",
+      "page_model": "SupportArticlePage",
+      "slug": "legal",
+      "capability_status": "supported",
+      "support_article_type": "LEGAL"
+    },
+    "load-balancer": {
+      "config_path": "products/pricing/load-balancer.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "load-balancer",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "logic-apps": {
+      "config_path": "products/pricing/logic-apps.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "logic-apps",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "iot"
+      ]
+    },
+    "machine-learning": {
+      "config_path": "products/pricing/machine-learning.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "machine-learning",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "ai-ml"
+      ]
+    },
+    "managed-grafana": {
+      "config_path": "products/pricing/managed-grafana.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "managed-grafana",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "dev-ops"
+      ]
+    },
+    "managed-instance": {
+      "config_path": "products/pricing/managed-instance.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "managed-instance",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "database"
+      ]
+    },
+    "mariadb": {
+      "config_path": "products/pricing/mariadb.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "mariadb",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "database"
+      ]
+    },
+    "media-services": {
+      "config_path": "products/pricing/media-services.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "media-services",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "websites"
+      ]
+    },
+    "metrics-advisor": {
+      "config_path": "products/pricing/metrics-advisor.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "metrics-advisor",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "ai-ml"
+      ]
+    },
+    "microsoft-entra-external-id": {
+      "config_path": "products/pricing/microsoft-entra-external-id.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "microsoft-entra-external-id",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "identity"
+      ]
+    },
+    "microsoft-sentinel": {
+      "config_path": "products/pricing/microsoft-sentinel.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "microsoft-sentinel",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "security"
+      ]
+    },
+    "monitor": {
+      "config_path": "products/pricing/monitor.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "monitor",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "management"
+      ]
+    },
+    "multi-factor-authentication": {
+      "config_path": "products/pricing/multi-factor-authentication.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "multi-factor-authentication",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "identity"
+      ]
+    },
+    "mysql": {
+      "config_path": "products/pricing/mysql.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "mysql",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "database"
+      ]
+    },
+    "network-watcher": {
+      "config_path": "products/pricing/network-watcher.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "network-watcher",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "notification-hubs": {
+      "config_path": "products/pricing/notification-hubs.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "notification-hubs",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "websites"
+      ]
+    },
+    "postgresql": {
+      "config_path": "products/pricing/postgresql.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "postgresql",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "database"
+      ]
+    },
+    "power-bi-embedded": {
+      "config_path": "products/pricing/power-bi-embedded.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "power-bi-embedded",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "analysis"
+      ]
+    },
+    "private-link": {
+      "config_path": "products/pricing/private-link.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "private-link",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "psr-summary": {
+      "config_path": "products/support-articles/psr-summary.json",
+      "page_model": "SupportArticlePage",
+      "slug": "public-security-registration",
+      "capability_status": "supported",
+      "support_article_type": "PSR"
+    },
+    "purview": {
+      "config_path": "products/pricing/purview.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "purview",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "analysis"
+      ]
+    },
+    "route-server": {
+      "config_path": "products/pricing/route-server.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "route-server",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "scheduler": {
+      "config_path": "products/pricing/scheduler.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "scheduler",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "management"
+      ]
+    },
+    "search": {
+      "config_path": "products/pricing/search.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "search",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "ai-ml"
+      ]
+    },
+    "service-bus": {
+      "config_path": "products/pricing/service-bus.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "service-bus",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "integration"
+      ]
+    },
+    "service-fabric": {
+      "config_path": "products/pricing/service-fabric.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "service-fabric",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "container"
+      ]
+    },
+    "signalr-service": {
+      "config_path": "products/pricing/signalr-service.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "signalr-service",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "websites"
+      ]
+    },
+    "site-recovery": {
+      "config_path": "products/pricing/site-recovery.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "site-recovery",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "migration"
+      ]
+    },
+    "sla-active-directory": {
+      "config_path": "products/support-articles/sla-active-directory.json",
+      "page_model": "SupportArticlePage",
+      "slug": "active-directory",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-active-directory-b2c": {
+      "config_path": "products/support-articles/sla-active-directory-b2c.json",
+      "page_model": "SupportArticlePage",
+      "slug": "active-directory-b2c",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-active-directory-ds": {
+      "config_path": "products/support-articles/sla-active-directory-ds.json",
+      "page_model": "SupportArticlePage",
+      "slug": "active-directory-ds",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-analysis-services": {
+      "config_path": "products/support-articles/sla-analysis-services.json",
+      "page_model": "SupportArticlePage",
+      "slug": "analysis-services",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-api-management": {
+      "config_path": "products/support-articles/sla-api-management.json",
+      "page_model": "SupportArticlePage",
+      "slug": "api-management",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-app-configuration": {
+      "config_path": "products/support-articles/sla-app-configuration.json",
+      "page_model": "SupportArticlePage",
+      "slug": "app-configuration",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-app-service": {
+      "config_path": "products/support-articles/sla-app-service.json",
+      "page_model": "SupportArticlePage",
+      "slug": "app-service",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-application-gateway": {
+      "config_path": "products/support-articles/sla-application-gateway.json",
+      "page_model": "SupportArticlePage",
+      "slug": "application-gateway",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-application-insights": {
+      "config_path": "products/support-articles/sla-application-insights.json",
+      "page_model": "SupportArticlePage",
+      "slug": "application-insights",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-automation": {
+      "config_path": "products/support-articles/sla-automation.json",
+      "page_model": "SupportArticlePage",
+      "slug": "automation",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-azure-arc": {
+      "config_path": "products/support-articles/sla-azure-arc.json",
+      "page_model": "SupportArticlePage",
+      "slug": "azure-arc",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-azure-bastion": {
+      "config_path": "products/support-articles/sla-azure-bastion.json",
+      "page_model": "SupportArticlePage",
+      "slug": "azure-bastion",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-azure-defender": {
+      "config_path": "products/support-articles/sla-azure-defender.json",
+      "page_model": "SupportArticlePage",
+      "slug": "azure-defender",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-azure-firewall": {
+      "config_path": "products/support-articles/sla-azure-firewall.json",
+      "page_model": "SupportArticlePage",
+      "slug": "azure-firewall",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-backup": {
+      "config_path": "products/support-articles/sla-backup.json",
+      "page_model": "SupportArticlePage",
+      "slug": "backup",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-bot-services": {
+      "config_path": "products/support-articles/sla-bot-services.json",
+      "page_model": "SupportArticlePage",
+      "slug": "bot-services",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-cache": {
+      "config_path": "products/support-articles/sla-cache.json",
+      "page_model": "SupportArticlePage",
+      "slug": "cache",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-cdn": {
+      "config_path": "products/support-articles/sla-cdn.json",
+      "page_model": "SupportArticlePage",
+      "slug": "cdn",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-cloud-services": {
+      "config_path": "products/support-articles/sla-cloud-services.json",
+      "page_model": "SupportArticlePage",
+      "slug": "cloud-services",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-cognitive-services": {
+      "config_path": "products/support-articles/sla-cognitive-services.json",
+      "page_model": "SupportArticlePage",
+      "slug": "cognitive-services",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-container-apps": {
+      "config_path": "products/support-articles/sla-container-apps.json",
+      "page_model": "SupportArticlePage",
+      "slug": "container-apps",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-container-instances": {
+      "config_path": "products/support-articles/sla-container-instances.json",
+      "page_model": "SupportArticlePage",
+      "slug": "container-instances",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-container-registry": {
+      "config_path": "products/support-articles/sla-container-registry.json",
+      "page_model": "SupportArticlePage",
+      "slug": "container-registry",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-cosmos-db": {
+      "config_path": "products/support-articles/sla-cosmos-db.json",
+      "page_model": "SupportArticlePage",
+      "slug": "cosmos-db",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-data-explorer": {
+      "config_path": "products/support-articles/sla-data-explorer.json",
+      "page_model": "SupportArticlePage",
+      "slug": "data-explorer",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-data-factory": {
+      "config_path": "products/support-articles/sla-data-factory.json",
+      "page_model": "SupportArticlePage",
+      "slug": "data-factory",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-databricks": {
+      "config_path": "products/support-articles/sla-databricks.json",
+      "page_model": "SupportArticlePage",
+      "slug": "databricks",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-ddos-protection": {
+      "config_path": "products/support-articles/sla-ddos-protection.json",
+      "page_model": "SupportArticlePage",
+      "slug": "ddos-protection",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-dns": {
+      "config_path": "products/support-articles/sla-dns.json",
+      "page_model": "SupportArticlePage",
+      "slug": "dns",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-event-grid": {
+      "config_path": "products/support-articles/sla-event-grid.json",
+      "page_model": "SupportArticlePage",
+      "slug": "event-grid",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-event-hubs": {
+      "config_path": "products/support-articles/sla-event-hubs.json",
+      "page_model": "SupportArticlePage",
+      "slug": "event-hubs",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-expressroute": {
+      "config_path": "products/support-articles/sla-expressroute.json",
+      "page_model": "SupportArticlePage",
+      "slug": "expressroute",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-fluid-relay": {
+      "config_path": "products/support-articles/sla-fluid-relay.json",
+      "page_model": "SupportArticlePage",
+      "slug": "fluid-relay",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-frontdoor": {
+      "config_path": "products/support-articles/sla-frontdoor.json",
+      "page_model": "SupportArticlePage",
+      "slug": "frontdoor",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-functions": {
+      "config_path": "products/support-articles/sla-functions.json",
+      "page_model": "SupportArticlePage",
+      "slug": "functions",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-hdinsight": {
+      "config_path": "products/support-articles/sla-hdinsight.json",
+      "page_model": "SupportArticlePage",
+      "slug": "hdinsight",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-hpc-cache": {
+      "config_path": "products/support-articles/sla-hpc-cache.json",
+      "page_model": "SupportArticlePage",
+      "slug": "hpc-cache",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-information-protection": {
+      "config_path": "products/support-articles/sla-information-protection.json",
+      "page_model": "SupportArticlePage",
+      "slug": "information-protection",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-iot-hub": {
+      "config_path": "products/support-articles/sla-iot-hub.json",
+      "page_model": "SupportArticlePage",
+      "slug": "iot-hub",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-key-vault": {
+      "config_path": "products/support-articles/sla-key-vault.json",
+      "page_model": "SupportArticlePage",
+      "slug": "key-vault",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-kubernetes-service": {
+      "config_path": "products/support-articles/sla-kubernetes-service.json",
+      "page_model": "SupportArticlePage",
+      "slug": "kubernetes-service",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-load-balancer": {
+      "config_path": "products/support-articles/sla-load-balancer.json",
+      "page_model": "SupportArticlePage",
+      "slug": "load-balancer",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-log-analytics": {
+      "config_path": "products/support-articles/sla-log-analytics.json",
+      "page_model": "SupportArticlePage",
+      "slug": "log-analytics",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-logic-apps": {
+      "config_path": "products/support-articles/sla-logic-apps.json",
+      "page_model": "SupportArticlePage",
+      "slug": "logic-apps",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-machine-learning": {
+      "config_path": "products/support-articles/sla-machine-learning.json",
+      "page_model": "SupportArticlePage",
+      "slug": "machine-learning",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-managed-disks": {
+      "config_path": "products/support-articles/sla-managed-disks.json",
+      "page_model": "SupportArticlePage",
+      "slug": "managed-disks",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-managed-grafana": {
+      "config_path": "products/support-articles/sla-managed-grafana.json",
+      "page_model": "SupportArticlePage",
+      "slug": "managed-grafana",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-managed-instance": {
+      "config_path": "products/support-articles/sla-managed-instance.json",
+      "page_model": "SupportArticlePage",
+      "slug": "managed-instance",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-mariadb": {
+      "config_path": "products/support-articles/sla-mariadb.json",
+      "page_model": "SupportArticlePage",
+      "slug": "mariadb",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-media-services": {
+      "config_path": "products/support-articles/sla-media-services.json",
+      "page_model": "SupportArticlePage",
+      "slug": "media-services",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-messaging": {
+      "config_path": "products/support-articles/sla-messaging.json",
+      "page_model": "SupportArticlePage",
+      "slug": "messaging",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-microsoft-sentinel": {
+      "config_path": "products/support-articles/sla-microsoft-sentinel.json",
+      "page_model": "SupportArticlePage",
+      "slug": "microsoft-sentinel",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-monitor": {
+      "config_path": "products/support-articles/sla-monitor.json",
+      "page_model": "SupportArticlePage",
+      "slug": "monitor",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-multi-factor-authentication": {
+      "config_path": "products/support-articles/sla-multi-factor-authentication.json",
+      "page_model": "SupportArticlePage",
+      "slug": "multi-factor-authentication",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-mysql": {
+      "config_path": "products/support-articles/sla-mysql.json",
+      "page_model": "SupportArticlePage",
+      "slug": "mysql",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-nat-gateway": {
+      "config_path": "products/support-articles/sla-nat-gateway.json",
+      "page_model": "SupportArticlePage",
+      "slug": "nat-gateway",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-network-watcher": {
+      "config_path": "products/support-articles/sla-network-watcher.json",
+      "page_model": "SupportArticlePage",
+      "slug": "network-watcher",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-notification-hubs": {
+      "config_path": "products/support-articles/sla-notification-hubs.json",
+      "page_model": "SupportArticlePage",
+      "slug": "notification-hubs",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-postgresql": {
+      "config_path": "products/support-articles/sla-postgresql.json",
+      "page_model": "SupportArticlePage",
+      "slug": "postgresql",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-power-bi-embedded": {
+      "config_path": "products/support-articles/sla-power-bi-embedded.json",
+      "page_model": "SupportArticlePage",
+      "slug": "power-bi-embedded",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-private-link": {
+      "config_path": "products/support-articles/sla-private-link.json",
+      "page_model": "SupportArticlePage",
+      "slug": "private-link",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-purview": {
+      "config_path": "products/support-articles/sla-purview.json",
+      "page_model": "SupportArticlePage",
+      "slug": "purview",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-route-server": {
+      "config_path": "products/support-articles/sla-route-server.json",
+      "page_model": "SupportArticlePage",
+      "slug": "route-server",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-scheduler": {
+      "config_path": "products/support-articles/sla-scheduler.json",
+      "page_model": "SupportArticlePage",
+      "slug": "scheduler",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-search": {
+      "config_path": "products/support-articles/sla-search.json",
+      "page_model": "SupportArticlePage",
+      "slug": "search",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-service-bus": {
+      "config_path": "products/support-articles/sla-service-bus.json",
+      "page_model": "SupportArticlePage",
+      "slug": "service-bus",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-service-fabric": {
+      "config_path": "products/support-articles/sla-service-fabric.json",
+      "page_model": "SupportArticlePage",
+      "slug": "service-fabric",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-signalr-service": {
+      "config_path": "products/support-articles/sla-signalr-service.json",
+      "page_model": "SupportArticlePage",
+      "slug": "signalr-service",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-site-recovery": {
+      "config_path": "products/support-articles/sla-site-recovery.json",
+      "page_model": "SupportArticlePage",
+      "slug": "site-recovery",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-spring-cloud": {
+      "config_path": "products/support-articles/sla-spring-cloud.json",
+      "page_model": "SupportArticlePage",
+      "slug": "spring-cloud",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-sql-data": {
+      "config_path": "products/support-articles/sla-sql-data.json",
+      "page_model": "SupportArticlePage",
+      "slug": "sql-data",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-sql-server-stretch-database": {
+      "config_path": "products/support-articles/sla-sql-server-stretch-database.json",
+      "page_model": "SupportArticlePage",
+      "slug": "sql-server-stretch-database",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-storage": {
+      "config_path": "products/support-articles/sla-storage.json",
+      "page_model": "SupportArticlePage",
+      "slug": "storage",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-stream-analytics": {
+      "config_path": "products/support-articles/sla-stream-analytics.json",
+      "page_model": "SupportArticlePage",
+      "slug": "stream-analytics",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-summary": {
+      "config_path": "products/support-articles/sla-summary.json",
+      "page_model": "SupportArticlePage",
+      "slug": "sla",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-synapse-analytics": {
+      "config_path": "products/support-articles/sla-synapse-analytics.json",
+      "page_model": "SupportArticlePage",
+      "slug": "synapse-analytics",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-time-series-insights": {
+      "config_path": "products/support-articles/sla-time-series-insights.json",
+      "page_model": "SupportArticlePage",
+      "slug": "time-series-insights",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-traffic-manager": {
+      "config_path": "products/support-articles/sla-traffic-manager.json",
+      "page_model": "SupportArticlePage",
+      "slug": "traffic-manager",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-virtual-desktop": {
+      "config_path": "products/support-articles/sla-virtual-desktop.json",
+      "page_model": "SupportArticlePage",
+      "slug": "virtual-desktop",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-virtual-machine-scale-sets": {
+      "config_path": "products/support-articles/sla-virtual-machine-scale-sets.json",
+      "page_model": "SupportArticlePage",
+      "slug": "virtual-machine-scale-sets",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-virtual-machines": {
+      "config_path": "products/support-articles/sla-virtual-machines.json",
+      "page_model": "SupportArticlePage",
+      "slug": "virtual-machines",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-virtual-network": {
+      "config_path": "products/support-articles/sla-virtual-network.json",
+      "page_model": "SupportArticlePage",
+      "slug": "virtual-network",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-virtual-network-manager": {
+      "config_path": "products/support-articles/sla-virtual-network-manager.json",
+      "page_model": "SupportArticlePage",
+      "slug": "virtual-network-manager",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-vpn-gateway": {
+      "config_path": "products/support-articles/sla-vpn-gateway.json",
+      "page_model": "SupportArticlePage",
+      "slug": "vpn-gateway",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "sla-web-pubsub": {
+      "config_path": "products/support-articles/sla-web-pubsub.json",
+      "page_model": "SupportArticlePage",
+      "slug": "web-pubsub",
+      "capability_status": "supported",
+      "support_article_type": "SLA"
+    },
+    "spring-cloud": {
+      "config_path": "products/pricing/spring-cloud.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "spring-cloud",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "compute"
+      ]
+    },
+    "sql-data-warehouse": {
+      "config_path": "products/pricing/sql-data-warehouse.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "sql-data-warehouse",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "database"
+      ]
+    },
+    "sql-database": {
+      "config_path": "products/pricing/sql-database.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "sql-database",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "database"
+      ]
+    },
+    "sql-edge": {
+      "config_path": "products/pricing/sql-edge.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "sql-edge",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "database"
+      ]
+    },
+    "sql-server-stretch-database": {
+      "config_path": "products/pricing/sql-server-stretch-database.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "sql-server-stretch-database",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "database"
+      ]
+    },
+    "ssis": {
+      "config_path": "products/pricing/ssis.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "ssis",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "analysis"
       ]
     },
     "storage": {
-      "count": 2,
-      "config_path": "products/storage/",
+      "config_path": "products/pricing/storage.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "storage",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "storage"
+      ]
+    },
+    "storage-blobs": {
+      "config_path": "products/pricing/storage-blobs.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "storage-blobs",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "storage"
+      ]
+    },
+    "storage-files": {
+      "config_path": "products/pricing/storage-files.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "storage-files",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "storage"
+      ]
+    },
+    "storage-import-export": {
+      "config_path": "products/pricing/storage-import-export.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "storage-import-export",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "storage"
+      ]
+    },
+    "storage-managed-disks": {
+      "config_path": "products/pricing/storage-managed-disks.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "storage-managed-disks",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "storage"
+      ]
+    },
+    "storage-page-blobs": {
+      "config_path": "products/pricing/storage-page-blobs.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "storage-page-blobs",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "storage"
+      ]
+    },
+    "storage-queues": {
+      "config_path": "products/pricing/storage-queues.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "storage-queues",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "storage"
+      ]
+    },
+    "storage-tables": {
+      "config_path": "products/pricing/storage-tables.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "storage-tables",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "storage"
+      ]
+    },
+    "stream-analytics": {
+      "config_path": "products/pricing/stream-analytics.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "stream-analytics",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "analysis"
+      ]
+    },
+    "synapse-analytics": {
+      "config_path": "products/pricing/synapse-analytics.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "synapse-analytics",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "database"
+      ]
+    },
+    "time-series-insights": {
+      "config_path": "products/pricing/time-series-insights.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "time-series-insights",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "iot"
+      ]
+    },
+    "traffic-manager": {
+      "config_path": "products/pricing/traffic-manager.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "traffic-manager",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "virtual-desktop": {
+      "config_path": "products/pricing/virtual-desktop.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "virtual-desktop",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "azure-virtual-desktop"
+      ]
+    },
+    "virtual-machine-scale-sets": {
+      "config_path": "products/pricing/virtual-machine-scale-sets.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "virtual-machine-scale-sets",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "compute"
+      ]
+    },
+    "virtual-machines": {
+      "config_path": "products/pricing/virtual-machines.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "virtual-machines",
+      "capability_status": "known_unsupported",
+      "catalog_categories": [
+        "compute"
+      ]
+    },
+    "virtual-network": {
+      "config_path": "products/pricing/virtual-network.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "virtual-network",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "virtual-network-manager": {
+      "config_path": "products/pricing/virtual-network-manager.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "virtual-network-manager",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "virtual-wan": {
+      "config_path": "products/pricing/virtual-wan.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "virtual-wan",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "vpn-gateway": {
+      "config_path": "products/pricing/vpn-gateway.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "vpn-gateway",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "networking"
+      ]
+    },
+    "web-pubsub": {
+      "config_path": "products/pricing/web-pubsub.json",
+      "page_model": "FlexibleContentPage",
+      "slug": "web-pubsub",
+      "capability_status": "supported",
+      "catalog_categories": [
+        "websites"
+      ]
+    }
+  },
+  "catalog_categories": {
+    "ai-ml": {
+      "count": 8,
       "products": [
-        "storage-files",
-        "data-lake-storage"
+        "anomaly-detector",
+        "bot-services",
+        "cognitive-services",
+        "databricks",
+        "form-recognizer",
+        "machine-learning",
+        "metrics-advisor",
+        "search"
+      ]
+    },
+    "analysis": {
+      "count": 8,
+      "products": [
+        "analysis-services",
+        "data-factory",
+        "data-pipeline",
+        "hdinsight",
+        "power-bi-embedded",
+        "purview",
+        "ssis",
+        "stream-analytics"
+      ]
+    },
+    "azure-virtual-desktop": {
+      "count": 1,
+      "products": [
+        "virtual-desktop"
+      ]
+    },
+    "compute": {
+      "count": 9,
+      "products": [
+        "app-service",
+        "azure-functions",
+        "batch",
+        "cloud-services",
+        "dedicated-host",
+        "hpc-cache",
+        "spring-cloud",
+        "virtual-machine-scale-sets",
+        "virtual-machines"
       ]
     },
     "container": {
       "count": 5,
-      "config_path": "products/container/",
       "products": [
         "container-apps",
         "container-instances",
@@ -165,79 +1767,273 @@
         "service-fabric"
       ]
     },
-    "websites": {
-      "count": 5,
-      "config_path": "products/websites/",
+    "database": {
+      "count": 13,
       "products": [
-        "notification-hubs",
-        "frontdoor",
-        "signalr-service",
-        "fluid-relay",
-        "web-pubsub"
+        "cache",
+        "cosmos-db",
+        "data-explorer",
+        "database-migration",
+        "managed-instance",
+        "mariadb",
+        "mysql",
+        "postgresql",
+        "sql-data-warehouse",
+        "sql-database",
+        "sql-edge",
+        "sql-server-stretch-database",
+        "synapse-analytics"
+      ]
+    },
+    "dev-ops": {
+      "count": 1,
+      "products": [
+        "managed-grafana"
       ]
     },
     "dev-tools": {
       "count": 1,
-      "config_path": "products/dev-tools/",
       "products": [
         "app-configuration"
       ]
     },
     "hybrid-multicloud": {
       "count": 2,
-      "config_path": "products/hybrid-multicloud/",
       "products": [
         "hci",
         "hub"
       ]
     },
-    "azure-virtual-desptop": {
-      "count": 1,
-      "config_path": "products/azure-virtual-desktop/",
+    "identity": {
+      "count": 5,
       "products": [
-        "virtual-desktop"
+        "active-directory",
+        "active-directory-b2c",
+        "active-directory-ds",
+        "microsoft-entra-external-id",
+        "multi-factor-authentication"
       ]
     },
-    "dev-ops": {
-      "count": 1,
-      "config_path": "products/dev-ops/",
+    "integration": {
+      "count": 4,
       "products": [
-        "managed-grafana"
+        "api-management",
+        "customer-engagement-fabric",
+        "event-grid",
+        "service-bus"
       ]
     },
-    "icp": {
+    "iot": {
+      "count": 5,
+      "products": [
+        "event-hubs",
+        "iot-edge",
+        "iot-hub",
+        "logic-apps",
+        "time-series-insights"
+      ]
+    },
+    "management": {
       "count": 8,
-      "config_path": "products/icp/",
       "products": [
-        "icp-summary",
-        "icp-new",
-        "icp-change",
-        "icp-cancel",
-        "icp-addweb",
-        "icp-newweb",
-        "icp-newinsert",
-        "icp-faq"
+        "advisor",
+        "automation",
+        "azure-firewall",
+        "azure-policy",
+        "azure-update-management-center",
+        "backup",
+        "monitor",
+        "scheduler"
       ]
     },
-    "sla": {
+    "migration": {
       "count": 2,
-      "config_path": "products/sla/",
       "products": [
-        "sla-cognitive-services",
-        "summary"
+        "azure-migrate",
+        "site-recovery"
+      ]
+    },
+    "networking": {
+      "count": 23,
+      "products": [
+        "application-gateway",
+        "azure-bastion",
+        "azure-nat-gateway",
+        "bandwidth",
+        "cdn",
+        "cloud-connection-service",
+        "core-control-plane",
+        "data-transfer",
+        "ddos-protection",
+        "dns",
+        "expressroute",
+        "firewall-manager",
+        "frontdoor",
+        "ip-addresses",
+        "load-balancer",
+        "network-watcher",
+        "private-link",
+        "route-server",
+        "traffic-manager",
+        "virtual-network",
+        "virtual-network-manager",
+        "virtual-wan",
+        "vpn-gateway"
+      ]
+    },
+    "security": {
+      "count": 3,
+      "products": [
+        "azure-defender",
+        "key-vault",
+        "microsoft-sentinel"
+      ]
+    },
+    "storage": {
+      "count": 10,
+      "products": [
+        "data-lake-storage",
+        "databox",
+        "storage",
+        "storage-blobs",
+        "storage-files",
+        "storage-import-export",
+        "storage-managed-disks",
+        "storage-page-blobs",
+        "storage-queues",
+        "storage-tables"
+      ]
+    },
+    "websites": {
+      "count": 6,
+      "products": [
+        "fluid-relay",
+        "frontdoor",
+        "media-services",
+        "notification-hubs",
+        "signalr-service",
+        "web-pubsub"
       ]
     }
   },
-  "load_strategy": {
-    "lazy_load": true,
-    "cache_configs": true,
-    "parallel_load": false,
-    "cache_ttl_minutes": 30
-  },
-  "processing_defaults": {
-    "memory_limit_mb": 512,
-    "timeout_seconds": 120,
-    "chunk_size_kb": 1024,
-    "large_file_threshold_mb": 2
+  "support_article_types": {
+    "ICP": {
+      "count": 8,
+      "products": [
+        "icp-addweb",
+        "icp-cancel",
+        "icp-change",
+        "icp-faq",
+        "icp-new",
+        "icp-newinsert",
+        "icp-newweb",
+        "icp-summary"
+      ]
+    },
+    "LEGAL": {
+      "count": 4,
+      "products": [
+        "legal-offer-rate-plans",
+        "legal-privacy-statement",
+        "legal-subscription-agreement",
+        "legal-summary"
+      ]
+    },
+    "PSR": {
+      "count": 1,
+      "products": [
+        "psr-summary"
+      ]
+    },
+    "SLA": {
+      "count": 85,
+      "products": [
+        "sla-active-directory",
+        "sla-active-directory-b2c",
+        "sla-active-directory-ds",
+        "sla-analysis-services",
+        "sla-api-management",
+        "sla-app-configuration",
+        "sla-app-service",
+        "sla-application-gateway",
+        "sla-application-insights",
+        "sla-automation",
+        "sla-azure-arc",
+        "sla-azure-bastion",
+        "sla-azure-defender",
+        "sla-azure-firewall",
+        "sla-backup",
+        "sla-bot-services",
+        "sla-cache",
+        "sla-cdn",
+        "sla-cloud-services",
+        "sla-cognitive-services",
+        "sla-container-apps",
+        "sla-container-instances",
+        "sla-container-registry",
+        "sla-cosmos-db",
+        "sla-data-explorer",
+        "sla-data-factory",
+        "sla-databricks",
+        "sla-ddos-protection",
+        "sla-dns",
+        "sla-event-grid",
+        "sla-event-hubs",
+        "sla-expressroute",
+        "sla-fluid-relay",
+        "sla-frontdoor",
+        "sla-functions",
+        "sla-hdinsight",
+        "sla-hpc-cache",
+        "sla-information-protection",
+        "sla-iot-hub",
+        "sla-key-vault",
+        "sla-kubernetes-service",
+        "sla-load-balancer",
+        "sla-log-analytics",
+        "sla-logic-apps",
+        "sla-machine-learning",
+        "sla-managed-disks",
+        "sla-managed-grafana",
+        "sla-managed-instance",
+        "sla-mariadb",
+        "sla-media-services",
+        "sla-messaging",
+        "sla-microsoft-sentinel",
+        "sla-monitor",
+        "sla-multi-factor-authentication",
+        "sla-mysql",
+        "sla-nat-gateway",
+        "sla-network-watcher",
+        "sla-notification-hubs",
+        "sla-postgresql",
+        "sla-power-bi-embedded",
+        "sla-private-link",
+        "sla-purview",
+        "sla-route-server",
+        "sla-scheduler",
+        "sla-search",
+        "sla-service-bus",
+        "sla-service-fabric",
+        "sla-signalr-service",
+        "sla-site-recovery",
+        "sla-spring-cloud",
+        "sla-sql-data",
+        "sla-sql-server-stretch-database",
+        "sla-storage",
+        "sla-stream-analytics",
+        "sla-summary",
+        "sla-synapse-analytics",
+        "sla-time-series-insights",
+        "sla-traffic-manager",
+        "sla-virtual-desktop",
+        "sla-virtual-machine-scale-sets",
+        "sla-virtual-machines",
+        "sla-virtual-network",
+        "sla-virtual-network-manager",
+        "sla-vpn-gateway",
+        "sla-web-pubsub"
+      ]
+    }
   }
 }

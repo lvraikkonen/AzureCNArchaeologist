@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional, List
 
-from .models import BatchProcessStatus
+from .models import ExecutionStatus
 from .record_manager import BatchProcessRecordManager  
 from .process_engine import BatchProcessEngine
 from .status_tracker import BatchStatusTracker, create_simple_progress_tracker
@@ -150,11 +150,17 @@ def batch_status_command(args):
         print(f"成功率:          {success_rate:.1f}%")
         print()
         
-        # Status breakdown
-        print("状态分布:")
-        for status, count in status_counts.items():
-            percentage = (count / max(total_records, 1)) * 100
-            print(f"  {status:12s}: {count:4d} ({percentage:5.1f}%)")
+        # Orthogonal status breakdown
+        for dimension, counts in (
+            ("execution", status_counts),
+            ("validation", stats.get('validation_counts', {})),
+            ("review", stats.get('review_counts', {})),
+            ("publication", stats.get('publication_counts', {})),
+        ):
+            print(f"{dimension}:")
+            for status, count in counts.items():
+                percentage = (count / max(total_records, 1)) * 100
+                print(f"  {status:16s}: {count:4d} ({percentage:5.1f}%)")
         
         # Product group statistics
         if args.detailed and stats.get('group_statistics'):
@@ -164,7 +170,7 @@ def batch_status_command(args):
             group_stats = stats['group_statistics']
             for group_name, group_data in group_stats.items():
                 total_group = sum(group_data.values())
-                successful_group = group_data.get('success', 0)
+                successful_group = group_data.get('succeeded', 0)
                 group_success_rate = (successful_group / max(total_group, 1)) * 100
                 
                 print(f"{group_name:20s}: {successful_group:3d}/{total_group:3d} "
@@ -178,8 +184,8 @@ def batch_status_command(args):
             strategy_stats = stats['strategy_performance']
             for strategy_name, strategy_data in strategy_stats.items():
                 total_strategy = sum(data.get('count', 0) for data in strategy_data.values())
-                successful_strategy = strategy_data.get('success', {}).get('count', 0)
-                avg_time = strategy_data.get('success', {}).get('avg_processing_time_ms', 0)
+                successful_strategy = strategy_data.get('succeeded', {}).get('count', 0)
+                avg_time = strategy_data.get('succeeded', {}).get('avg_processing_time_ms', 0)
                 strategy_success_rate = (successful_strategy / max(total_strategy, 1)) * 100
                 
                 print(f"{strategy_name:20s}: {successful_strategy:3d}/{total_strategy:3d} "
@@ -264,25 +270,26 @@ def batch_history_command(args):
             return 1
         
         # Print records table
-        print("-" * 120)
-        print(f"{'产品':15s} {'状态':8s} {'策略':15s} {'时间(ms)':8s} {'处理时间':16s} {'错误信息':30s}")
-        print("-" * 120)
+        print("-" * 150)
+        print(f"{'产品':20s} {'execution':10s} {'validation':10s} {'review':14s} {'publication':14s} {'策略':15s} {'时间(ms)':8s} {'错误信息':30s}")
+        print("-" * 150)
         
         for record in records[:args.limit]:
             status_symbol = {
-                BatchProcessStatus.SUCCESS: "✅",
-                BatchProcessStatus.FAILED: "❌", 
-                BatchProcessStatus.PROCESSING: "🔄",
-                BatchProcessStatus.PENDING: "⏳",
-                BatchProcessStatus.RETRY: "🔄"
-            }.get(record.processing_status, "❓")
+                ExecutionStatus.SUCCEEDED: "✅",
+                ExecutionStatus.FAILED: "❌",
+                ExecutionStatus.RUNNING: "🔄",
+                ExecutionStatus.PENDING: "⏳",
+                ExecutionStatus.SKIPPED: "⏭"
+            }.get(record.execution_status, "❓")
             
             processing_time = f"{record.processing_time_ms}" if record.processing_time_ms else "-"
             timestamp = record.extraction_timestamp.strftime('%Y-%m-%d %H:%M') if record.extraction_timestamp else "-"
             error_msg = (record.error_message[:27] + "...") if record.error_message and len(record.error_message) > 30 else (record.error_message or "-")
             
-            print(f"{record.product_key:15s} {status_symbol:>8s} {record.strategy_used or '-':15s} "
-                  f"{processing_time:>8s} {timestamp:16s} {error_msg:30s}")
+            print(f"{record.product_key:20s} {status_symbol}{record.execution_status.value:9s} {record.validation_status.value:10s} "
+                  f"{record.review_status.value:14s} {record.publication_status.value:14s} {record.strategy_used or '-':15s} "
+                  f"{processing_time:>8s} {error_msg:30s}")
         
         return 0
         

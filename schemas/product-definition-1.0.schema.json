@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/product-definition-1.0.schema.json",
+  "title": "Product Definition 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "product_key", "display_name", "slug", "page_model", "capability_status", "sources"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "product_key": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "display_name": {"type": "string", "minLength": 1},
+    "slug": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "page_model": {"enum": ["FlexibleContentPage", "SupportArticlePage"]},
+    "capability_status": {"enum": ["supported", "known_unsupported"]},
+    "unsupported_reason": {"type": "string", "minLength": 1},
+    "catalog_categories": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"}
+    },
+    "support_article_type": {"enum": ["SLA", "LEGAL", "ICP", "PSR"]},
+    "sources": {
+      "type": "object", "additionalProperties": false, "required": ["zh-cn", "en-us"],
+      "properties": {
+        "zh-cn": {"$ref": "#/$defs/source"},
+        "en-us": {"$ref": "#/$defs/source"}
+      }
+    },
+    "extraction": {"type": "object", "additionalProperties": true},
+    "quality": {
+      "type": "object", "additionalProperties": false,
+      "properties": {"min_content_length": {"type": "integer", "minimum": 0}}
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"capability_status": {"const": "known_unsupported"}}},
+      "then": {"required": ["unsupported_reason"]},
+      "else": {"not": {"required": ["unsupported_reason"]}}
+    },
+    {
+      "if": {"properties": {"page_model": {"const": "FlexibleContentPage"}}},
+      "then": {"required": ["catalog_categories"], "not": {"required": ["support_article_type"]}},
+      "else": {"required": ["support_article_type"], "not": {"required": ["catalog_categories"]}}
+    }
+  ],
+  "$defs": {
+    "source": {
+      "type": "object", "additionalProperties": false, "required": ["availability"],
+      "properties": {
+        "availability": {"enum": ["available", "unavailable"]},
+        "snapshot_path": {"type": "string", "minLength": 1},
+        "url": {"type": "string", "format": "uri"},
+        "unavailable_reason": {"type": "string", "minLength": 1},
+        "aliases": {
+          "type": "array", "uniqueItems": true,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["snapshot_path", "reason", "canonical_product_key"],
+            "properties": {
+              "snapshot_path": {"type": "string", "minLength": 1},
+              "reason": {"type": "string", "minLength": 1},
+              "canonical_product_key": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"}
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"availability": {"const": "available"}}},
+          "then": {"required": ["snapshot_path", "url"], "not": {"required": ["unavailable_reason"]}},
+          "else": {"required": ["unavailable_reason"], "not": {"anyOf": [{"required": ["snapshot_path"]}, {"required": ["url"]}]}}
+        }
+      ]
+    }
+  }
+}

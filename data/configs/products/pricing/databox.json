@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "product_key": "databox",
+  "display_name": "Data Box",
+  "slug": "databox",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "known_unsupported",
+  "unsupported_reason": "not_yet_qualified_for_extraction",
+  "catalog_categories": [
+    "storage"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/databox/index.html",
+      "url": "https://www.azure.cn/pricing/details/databox/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/databox/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/databox/"
+    }
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

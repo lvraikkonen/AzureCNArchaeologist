@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "product_key": "media-services",
+  "display_name": "Media Services",
+  "slug": "media-services",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "known_unsupported",
+  "unsupported_reason": "not_yet_qualified_for_extraction",
+  "catalog_categories": [
+    "websites"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/media-services/index.html",
+      "url": "https://www.azure.cn/pricing/details/media-services/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/media-services/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/media-services/"
+    }
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

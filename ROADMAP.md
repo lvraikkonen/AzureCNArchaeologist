@@ -34,8 +34,8 @@ data/current_prod_html/{language}/SupportArticles/{articleType}/...
 阶段 2：标准化输入
 products-index.json
   → scripts/auto_copy_html.py
-  → data/prod-html/{language}/{category}/{product}.html
-  → data/prod-html/{language}/SupportArticles/{articleType}/{product}.html
+  → data/prod-html/{language}/pricing/{product_key}.html
+  → data/prod-html/{language}/SupportArticles/{type-dir}/{product_key}.html
 
 阶段 3：解析与导出
 cli.py
@@ -49,11 +49,11 @@ cli.py
 其中：
 
 - `data/current_prod_html` 保存从生产环境取得的最新原始 HTML 快照；定价页位于 `pricing/details`，支持文章位于 `SupportArticles`；
-- `scripts/auto_copy_html.py` 根据 `products-index.json` 查找、复制并重命名 HTML；
+- `scripts/auto_copy_html.py` 根据 Product Definition 中逐语言声明的精确 Source Location 复制并校验 HTML；
 - `data/prod-html` 是解析管道使用的标准化输入；支持文章在每个语言下继续保留 `SupportArticles/{articleType}` 分类；
 - 单产品和批处理最终复用 `ExtractionCoordinator`。
 
-`SupportArticles/{articleType}` 是已确认的生产快照与标准化输入目录约定；当前复制脚本和产品索引尚未完整接入该模型，需在 v0.2 完成。
+`SupportArticles/{articleType}` 是标准化输入和产物的 canonical 目录约定；生产快照的原始目录不用于推导 Support Article Type。
 
 ### 2.2 已实现的解析策略
 
@@ -137,13 +137,13 @@ v1.0 中需要清晰区分：
 
 #### 主要工作
 
-- 以逐产品配置作为产品全集的唯一事实来源，包括每个产品的 slug；`products-index.json` 改为可重复生成并校验漂移的派生索引，并携带从逐产品配置汇总的 slug。
+- 以 Product Definition 1.0 作为产品全集的唯一事实来源，包括 Product Key、slug、能力状态、多分类成员关系和逐语言 Source Location；`products-index.json` 是可重复生成并校验漂移的 Product Index 3.0。
 - 修复 `products-index.json` 中的：
   - 重复产品；
   - 分类数量漂移；
   - 分类名称拼写错误；
   - 配置目录不一致；
-  - 配置 `category` 与索引分类不一致；
+  - 单值 category 与跨分类重复定义；
   - URL、slug 和标准化文件路径不一致。
 - 将 CMS 同事提供的两份文档登记为上游契约说明基线：
   - `docs/cms-json-new-schema/FlexibleContentPage-JSON-Schema-1.1.md`；
@@ -160,7 +160,7 @@ v1.0 中需要清晰区分：
   - Flexible 业务 JSON 中未在契约说明里声明的字段（例如 `language`）由 CMS 忽略，不因这些字段存在而导入或验证失败；
   - SupportArticle 业务 JSON 的 `pageType` 只能输出大写 `SLA`、`LEGAL`、`ICP`、`PSR`；
   - SupportArticle slug 仍由逐产品配置维护，生成的 `products-index.json` 必须包含同值 slug。
-- 建立 SupportArticle 类型、CMS `pageType` 和物理目录的固定映射：
+- 建立 SupportArticle 类型、CMS `pageType` 和 canonical 标准化/产物目录的固定映射；该映射不约束生产 Source Snapshot 的原始目录：
 
   | 支持文章类型 | CMS `pageType` | `{articleType}` 目录 |
   |---|---|---|
@@ -169,10 +169,8 @@ v1.0 中需要清晰区分：
   | ICP 备案 | `ICP` | `ICP` |
   | 公安备案 | `PSR` | `PublicSecurityRegistration` |
 
-- SupportArticle 生产快照和标准化输入均使用相同的中英文目录骨架：
-  - `data/current_prod_html/{zh-cn|en-us}/SupportArticles/{articleType}/...`；
-  - `data/prod-html/{zh-cn|en-us}/SupportArticles/{articleType}/{product}.html`。
-- 扩展 `scripts/auto_copy_html.py` 及其配置输入，使 SupportArticle 能按逐产品配置中的文章类型和源路径，从对应语言的 `current_prod_html/SupportArticles` 复制到 `prod-html/SupportArticles`。
+- Source Snapshot 由 Product Definition 的 `sources.zh-cn/en-us.snapshot_path` 精确定位，标准化输入使用 `data/prod-html/{lang}/SupportArticles/{articleType}/{product_key}.html`。
+- `scripts/auto_copy_html.py` 不再包含特殊映射、目录猜测或首个 HTML 回退；复制后 source/normalized SHA-256 必须一致。
 - `options.isDefault` 和 `order` 在 CMS 进一步确认前不进入 v0.2 业务契约；后续若增加，必须升级本地契约版本并补充导入回归。
 - 生成并冻结两套 CMS 业务 JSON 的机器可执行 Schema；Flexible 使用已明确的 1.1 版本，SupportArticle 在 CMS 确认后建立本地契约版本并记录上游文档哈希。
 - 明确业务 JSON 与运行诊断的边界：CMS 业务 payload 保持纯净，提取元数据、验证结果和错误信息进入独立 sidecar。
@@ -198,7 +196,7 @@ v1.0 中需要清晰区分：
 #### 验收标准
 
 - 索引中产品总数等于唯一产品列表长度。
-- 产品不存在跨分类重复。
+- Product Key 全局唯一；同一 Product Definition 可以出现在多个 catalog category 视图中，分类成员数之和允许大于唯一产品总数。
 - 每个索引产品都能定位到配置文件，或被明确标记为不支持。
 - 配置、标准化路径、slug 和 URL 的差异均有明确规则。
 - 所有产品 slug 均满足 CMS 契约，或存在经 CMS 确认并记录的兼容例外。
@@ -207,8 +205,8 @@ v1.0 中需要清晰区分：
 - `filtersJsonConfig` 符合已确认的 `filterKey`/`filterType`/`displayName`/`options` 结构，v0.2 不擅自输出尚未确认的 `options.isDefault` 和 `order`。
 - `filterCriteriaJson` 内部是条件对象数组，`matchValues` 按字符串验证，并能与同一 `filterKey` 下的选项值对应。
 - Flexible 业务 JSON 中的 `language` 等未声明字段被容忍并忽略，不导致本地 Schema 验证或 CMS 导入失败。
-- SupportArticle 仅输出 `SLA`、`LEGAL`、`ICP`、`PSR` 四个大写 `pageType`，并能按固定映射定位 zh-cn 和 en-us 的生产快照与标准化 HTML。
-- `event-grid`、`api-management`、`cloud-services`、`icp-faq` 四个代表产品均通过本地机器契约和 CMS 测试导入。
+- SupportArticle 仅输出 `SLA`、`LEGAL`、`ICP`、`PSR` 四个大写 `pageType`；类型来自 Product Definition，而 Source Snapshot 和标准化 HTML 分别按显式 Source Location 与 canonical type directory 定位。
+- `service-bus`、`dns`、`api-management`、`cloud-services`、`icp-faq` 五个代表产品均通过本地机器契约和 CMS 测试导入；Event Grid 在生产源页面修复前明确排除。
 - Flexible 业务 payload 可以保留 CMS 会忽略的未声明业务字段（例如 `language`）；项目仍不主动把 `validation`、`extraction_metadata`、错误和来源信息混入业务 payload，而是写入诊断 sidecar。
 - `filtersJsonConfig` 和 `filterCriteriaJson` 的外层与内层结构均通过验证，筛选器定义、选项和内容组条件能够相互对应。
 - Flexible 输出不再被旧版字段规则错误判定为无效。

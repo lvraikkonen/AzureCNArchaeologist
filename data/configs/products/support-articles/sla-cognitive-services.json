@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-cognitive-services",
+  "display_name": "认知服务的服务级别协议",
+  "slug": "cognitive-services",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/cognitive-services/index.html",
+      "url": "https://www.azure.cn/support/sla/cognitive-services/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/cognitive-services/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/cognitive-services/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

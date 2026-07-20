@@ -1,0 +1,2542 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=2.0" name="viewport" />
+    <meta content="Azure Cosmos DB, NoSQL, pricing details" name="keywords" />
+    <meta
+        content="Pricing details for Azure Cosmos DB. Azure Cosmos DB bills for each collection on an hourly basis based on the amount of data stored (in GB) and reserved throughput (in units of 100 RU/second). "
+        name="description" />
+    <title>
+        Azure Cosmos DB Pricing Details - Azure Cloud Computing
+    </title>
+    <link href="/Static/Favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
+    <link href="/Static/Favicon/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="/Static/Favicon/favicon.ico" rel="icon" type="image/x-icon" />
+    <link href="/Static/Favicon/manifest.json" rel="manifest" />
+    <link color="#0078D4" href="/Static/Favicon/safari-pinned-tab.svg" rel="mask-icon" />
+    <meta content="/Static/Favicon/browserconfig.xml" name="msapplication-config" />
+    <meta content="#ffffff" name="theme-color" />
+    <link href="https://azure.microsoft.com/pricing/details/cosmos-db/" rel="canonical" />
+    <!-- BEGIN: Azure UI Style -->
+    <link href="/Static/CSS/azureui.min.css" rel="stylesheet" />
+    <link href="/Static/CSS/common.min.css" rel="stylesheet" />
+    <!-- END: Azure UI Style -->
+    <!-- BEGIN: Page Style -->
+    <!-- END: Page Style -->
+    <!-- BEGIN: Minified Page Style -->
+    <link href="/Static/CSS/a05a0e4e99489d7b3cb548e24414e01adf779d77.css" rel="stylesheet" />
+    <!-- END: Minified Page Style -->
+    <link href="/StaticService/css/service.min.css" rel="stylesheet" />
+    <style>
+        .scroll-table:has(.pricing-unavailable-message) {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="en-us">
+    <script>
+        window.requireUrlArgs = "1/6/2020 11:41:53 AM";
+        window.currentLocale = "en-US";
+        window.headerTimestamp = "5/9/2019 9:29:29 AM";
+        window.footerTimestamp = "5/9/2019 9:29:29 AM";
+        window.locFileTimestamp = "5/9/2019 9:29:21 AM";
+
+        window.AcnHeaderFooter = {
+            IsEnableQrCode: true,
+            CurrentLang: window.currentLocale.toLowerCase(),
+        };
+    </script>
+    <style>
+        @media (min-width: 0) {
+            .acn-header-placeholder {
+                height: 48px;
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 980px) {
+            .acn-header-placeholder {
+                height: 89px;
+                width: 100%;
+            }
+        }
+
+        .acn-header-placeholder {
+            background-color: #1A1A1A;
+        }
+
+        .acn-header-service {
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+    </style>
+    <style type="text/css">
+        .pricing-detail-tab .tab-nav {
+            padding-left: 0 !important;
+            margin-top: 5px;
+            margin-bottom: 0;
+            overflow: hidden;
+        }
+
+        .pricing-detail-tab .tab-nav li {
+            list-style: none;
+            float: left;
+        }
+
+        .pricing-detail-tab .tab-nav li.active a {
+            border-bottom: 4px solid #00a3d9;
+        }
+
+        .pricing-detail-tab .tab-nav li.active a:hover {
+            border-bottom: 4px solid #00a3d9;
+        }
+
+        .pricing-detail-tab .tab-content .tab-panel {
+            display: none;
+        }
+
+        .pricing-detail-tab .tab-content .tab-panel.show-md {
+            display: block;
+        }
+
+        .pricing-detail-tab .tab-content .tab-panel .tab-nav li a {
+            padding-left: 5px;
+            padding-right: 5px;
+            color: #00a3d9;
+            background-color: #FFF;
+        }
+
+        .pricing-detail-tab .tab-content .tab-panel .tab-nav li.active a {
+            color: #FFF;
+            background-color: #00a3d9;
+        }
+
+        .pricing-detail-tab .tab-content .tab-panel .tab-nav li a:hover {
+            color: #FFF;
+            background-color: #00a3d9;
+        }
+
+        .pure-content .technical-azure-selector .tags-date a,
+        .pure-content .technical-azure-selector p a,
+        .pure-content .technical-azure-selector table a {
+            background: 0 0;
+            padding: 0;
+            margin: 0 6px;
+            height: 21px;
+            line-height: 22px;
+            font-size: 14px;
+            color: #00a3d9;
+            float: none;
+            display: inline;
+        }
+
+        .updatetime {
+            color: black;
+            text-align: right;
+            font-size: 12px;
+        }
+
+    </style>
+    <div class="hide-info" style="display:none;">
+        <div class="bg-box">
+            <div class="cover-bg">
+            </div>
+        </div>
+        <div class="msg-box">
+            <div class="pricing-unavailable-message">
+                Not available in the selected region
+            </div>
+        </div>
+    </div>
+    <div class="acn-header-container">
+        <div class="acn-header-placeholder">
+        </div>
+        <div class="public_headerpage">
+        </div>
+    </div>
+    <!-- BEGIN: Documentation Content -->
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bread-crumb hidden-sm hidden-xs">
+                        <ul>
+                            <li>
+                                <span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="single-page">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+                            <div class="loader">
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-10 pure-content">
+                        <div class="select left-navigation-select hidden-md hidden-lg">
+                            <select>
+                                <option selected="selected">
+                                    loading...
+                                </option>
+                            </select>
+                            <span class="icon icon-arrow-top">
+                            </span>
+                        </div>
+                        <tags ms.date="09/30/2015" ms.service="en-us-cosmos-db" wacn.date="11/27/2015">
+                        </tags>
+                        <!-- BEGIN: Product-Detail-TopBanner -->
+                        <div class="common-banner col-top-banner"
+                            data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'/Images/marketing-resource/css/cosmos-db_banner.png','imageHeight':'auto'}">
+                            <div class="common-banner-image">
+                                <div class="common-banner-title">
+                                    <img src="/Images/marketing-resource/css/cosmos-db_icon@2x.svg" />
+                                    <h2>
+                                        Azure Cosmos DB pricing
+                                    </h2>
+                                    <h4>
+                                        Fast NoSQL database with open APIs for any scale
+                                    </h4>
+                                    <div class = "updatetime">Updated on：2025/10/28</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END: Product-Detail-TopBanner -->
+                        <div class="pricing-page-section">
+                            <p>
+                                Quickly and easily develop apps at any scale with fully managed NoSQL database service
+                                <a href="https://azure.microsoft.com/en-us/support/legal/sla/cosmos-db/v1_3/">
+                                    offering guaranteed speed and availability
+                                </a>
+                                , automatic and instant scalability, and open source APIs. Azure Cosmos DB offers
+                                cost-effective pricing models for apps of any size, from
+                                dev/test to production.
+                            </p>
+                            <h2>
+                                Azure Cosmos DB pricing model
+                            </h2>
+                            <p>
+                                Azure Cosmos DB bills for three different types of usage: compute, storage and
+                                bandwidth. The tabs below describe each compute pricing model in greater detail with its
+                                accompanying storage and bandwidth pricing models.
+                            </p>
+                            <p>
+                                Once a compute pricing model and API are chosen, they cannot be changed.
+                            </p>
+                            <h2>Compute Pricing:</h2>
+                            <p><strong>Request Unit (throughput):</strong> Azure Cosmos DB bills using Request Units
+                                (RU) measured per second (RU/s). Request Units are a proxy for compute, memory and IO
+                                used to process database operations and are billed across all selected Azure regions for
+                                your Azure Cosmos DB account.</p>
+                            <p>Options for throughput include: Standard Provisioned throughput, Autoscale provisioned
+                                throughput and Serverless.</p>
+                            <p>Applicable APIs: NoSQL, MongoDB (RU), Cassandra, Gremlin, and Table.</p>
+                            <p><strong>vCore:</strong> Azure Cosmos DB bills for vCores (compute and memory) per node to
+                                process database operations and are billed on the size and number of nodes provisioned.
+                            </p>
+                            <p>Available APIs: PostgreSQL and MongoDB (vCore).</p>
+                            <h2>Storage Pricing:</h2>
+                            <p><strong>Consumed Storage:</strong> Azure Cosmos DB bills for consumed storage rounded up
+                                to the next GB per container/collection/table/graph per region. Consumed storage
+                                includes all transactional and analytical data and indexes, and backups.</p>
+                            <p>Applicable APIs: NoSQL, MongoDB (RU), Cassandra, Gremlin, and Table.</p>
+                            <p><strong>Disk Storage:</strong> Azure Cosmos DB bills for disks provisioned for each node
+                                by storage size.</p>
+                            <p>Applicable APIs: PostgreSQL and MongoDB (vCore).</p>
+                            <h2>Bandwidth Pricing:</h2>
+                            <p><strong>Data Egress:</strong> Azure bills for data that egresses the Azure cloud or
+                                transits the Azure WAN across regions or availability zones.</p>
+                            <p>Applicable APIs: All.</p>
+                        </div>
+                        <!-- BEGIN: TAB-CONTROL -->
+                        <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
+                            <div class="tab-container-container">
+                                <div class="tab-container-box">
+                                    <div class="tab-container">
+                                        <div class="dropdown-container software-kind-container" style="display:none;">
+                                            <label>
+                                                OS/软件:
+                                            </label>
+                                            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                                <span class="selected-item">
+                                                    Azure Cosmos DB
+                                                </span>
+                                                <i class="icon">
+                                                </i>
+                                                <ol class="tab-items">
+                                                    <li class="active">
+                                                        <a data-href="#tabContent1" href="javascript:void(0)"
+                                                            id="home_storage-blobs">
+                                                            Azure Cosmos DB
+                                                        </a>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <select class="dropdown-select software-box hidden-lg hidden-md"
+                                                id="software-box">
+                                                <option data-href="#tabContent1" selected="selected"
+                                                    value="Azure Cosmos DB">
+                                                    Azure Cosmos DB
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="dropdown-container region-container">
+                                            <label>
+                                                Region:
+                                            </label>
+                                            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                                <span class="selected-item">
+                                                    China East 3
+                                                </span>
+                                                <i class="icon">
+                                                </i>
+                                                <ol class="tab-items">
+                                                    <li>
+                                                        <a data-href="#east-china3" href="javascript:void(0)"
+                                                            id="east-china3">
+                                                            China East 3
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#north-china3" href="javascript:void(0)"
+                                                            id="north-china3">
+                                                            China North 3
+                                                        </a>
+                                                    </li>
+                                                    <li class="active">
+                                                        <a data-href="#east-china2" href="javascript:void(0)"
+                                                            id="east-china2">
+                                                            China East 2
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#north-china2" href="javascript:void(0)"
+                                                            id="north-china2">
+                                                            China North 2
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#east-china" href="javascript:void(0)"
+                                                            id="east-china">
+                                                            China East
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#north-china" href="javascript:void(0)"
+                                                            id="north-china">
+                                                            China North
+                                                        </a>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <select class="dropdown-select region-box hidden-lg hidden-md"
+                                                id="region-box">
+                                                <option data-href="#east-china3" value="east-china3">
+                                                    China East 3
+                                                </option>
+                                                <option data-href="#north-china3" value="north-china3">
+                                                    China North 3
+                                                </option>
+                                                <option data-href="#east-china2" selected="selected"
+                                                    value="east-china2">
+                                                    China East 2
+                                                </option>
+                                                <option data-href="#north-china2" value="north-china2">
+                                                    China North 2
+                                                </option>
+                                                <option data-href="#east-china" value="east-china">
+                                                    China East
+                                                </option>
+                                                <option data-href="#north-china" value="north-china">
+                                                    China North
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="clearfix">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-content">
+                                <div class="tab-panel" id="tabContent1">
+                                    <div class="category-container-container">
+                                        <div class="category-container-box">
+                                            <div class="category-container">
+                                                <span class="category-title hidden-lg hidden-md">
+                                                    类别：
+                                                </span>
+                                                <ul class="os-tab-nav category-tabs hidden-xs hidden-sm">
+                                                    <li class="active">
+                                                        <a data-href="#tabContent1-1" href="javascript:void(0)"
+                                                            id="home_storage_gpvhy">
+                                                            Standard provisioned throughput
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#tabContent1-2" href="javascript:void(0)"
+                                                            id="home_storage_gpv2">
+                                                            Autoscale provisioned throughput
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#tabContent1-3" href="javascript:void(0)"
+                                                            id="home_storage_blobs">
+                                                            Serverless
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <select class="dropdown-select category-tabs hidden-lg hidden-md">
+                                                    <option data-href="#tabContent1-1" id="home_storage_gpv2"
+                                                        value="General Purpose v2">
+                                                        Standard provisioned throughput
+                                                    </option>
+                                                    <option data-href="#tabContent1-2" id="home_storage_blobs"
+                                                        value="Blob storage">
+                                                        Autoscale provisioned throughput
+                                                    </option>
+                                                    <option data-href="#tabContent1-3" id="home_storage_gpv2"
+                                                        value="General Purpose V2 Hierarchical Namspace">
+                                                        Serverless
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-content">
+                                        <div class="tab-panel" id="tabContent1-1">
+                                            <h3>
+                                                Provisioned Throughput
+                                            </h3>
+                                            <p>
+                                                Provisioned Throughput offers single-digit millisecond reads and writes
+                                                and 99.999-percent availability worldwide, backed by
+                                                SLAs. It is ideal for large, critical workloads requiring guaranteed
+                                                low-latency and high-availability. New accounts are
+                                                eligible to receive 1000 request units per second (RU/s) throughput and
+                                                25 GBs storage per month with
+                                                <a href="https://docs.azure.cn/en-us/cosmos-db/optimize-dev-test#azure-cosmos-db-free-tier"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    Azure Cosmos DB free tier
+                                                </a>
+                                                .
+                                            </p>
+                                            <p>
+                                                There are two capacity management options for provisioned throughput:
+                                                autoscale provisioned throughput and standard
+                                                provisioned throughput. The one you choose will depend on the
+                                                predictability of your workload and whether you wish to manually
+                                                manage capacity.
+                                            </p>
+                                            <br />
+                                            <h3>
+                                                Standard (manual) provisioned throughput
+                                            </h3>
+                                            <p>
+                                                Directly manage capacity with standard provisioned throughput. This
+                                                option is ideal for large, critical workloads with
+                                                predictable traffic patterns.
+                                            </p>
+                                            <p>
+                                                Starting at a minimum 400 request units per second (RU/s), standard
+                                                provisioned throughput can be manually configured on your
+                                                container or database using
+                                                <a href="https://docs.azure.cn/en-us/cosmos-db/set-throughput#set-throughput-on-a-database-and-a-container"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    Azure portal
+                                                </a>
+                                                or
+                                                <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.cosmos.container.replacethroughputasync?view=azure-dotnet#Microsoft_Azure_Cosmos_Container_ReplaceThroughputAsync_System_Int32_Microsoft_Azure_Cosmos_RequestOptions_System_Threading_CancellationToken"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    programmatically using an API.
+                                                </a>
+                                                You will be billed an hourly rate for the RU/s provisioned on your
+                                                container or database.
+                                            </p>
+                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Standard Provisioned Throughput
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total RU/s per hour
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per 100 RU/s
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Single-region write account
+                                                    </td>
+                                                    <td>
+                                                        100 RU/s x 1 region
+                                                    </td>
+                                                    <td>
+                                                        ￥0.051/hour
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Single-region write account distributed across N regions
+                                                    </td>
+                                                    <td>
+                                                        100 RU/s x N regions
+                                                    </td>
+                                                    <td>
+                                                        ￥0.051/hour
+                                                    </td>
+                                                </tr>
+                                                <!-- <tr>
+                                                                                   <td>Single-region write account, with regions using availability zones</td>
+                                                                                   <td>100 RU/s x 1.25 x N zones</td>
+                                                                                   <td>￥0.051/hour</td>
+                                                                               </tr> -->
+                                                <tr>
+                                                    <td>
+                                                        Multi-region write (formerly "multi-master") account with N
+                                                        regions
+                                                    </td>
+                                                    <td>
+                                                        100 RU/s x N regions
+                                                    </td>
+                                                    <td>
+                                                        ￥0.102/hour
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-db-s-n3" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Standard Provisioned Throughput
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total RU/s per hour
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per 100 RU/s
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Single-region write account, with regions using availability
+                                                        zones
+                                                    </td>
+                                                    <td>
+                                                        100 RU/s x 1.25 x N zones
+                                                    </td>
+                                                    <td>
+                                                        ￥0.051/hour
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <div class="tags-date">
+                                                <div class="ms-date">
+                                                    Standard data transfer rates apply.
+                                                </div>
+                                                <br />
+                                                <div class="ms-date">
+                                                    A minimum of 400 RU/s throughput must be provisioned for Azure
+                                                    Cosmos DB containers and databases.
+                                                </div>
+                                                <br />
+                                                <div class="ms-date">
+                                                    * See "Availability Zone" section below for more details.
+                                                </div>
+                                                <br />
+                                            </div>
+                                            <br />
+                                            <h3>
+                                                Consumed Storage
+                                            </h3>
+                                            <p>
+                                                Azure Cosmos DB offers unlimited transactional and analytical storage,
+                                                billed as GBs of SSD-backed logical storage used by
+                                                data and indexes across all regions selected for geo-replication. For
+                                                example, if you replicate an Azure Cosmos DB account
+                                                across three regions, you will pay for the total storage cost in each of
+                                                those three regions.
+                                            </p>
+                                            <p>
+                                                Your data is managed in two distinct storage tiers, transactional and
+                                                analytical, with workloads operating on the same logical
+                                                data without interfering with each other. While transactional storage is
+                                                always enabled by default, you must explicitly enable
+                                                analytical storage on your Azure Cosmos DB container in order to use
+                                                <a href="https://docs.azure.cn/en-us/cosmos-db/synapse-link"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    Azure Synapse Link
+                                                </a>
+                                                to run analytics over data in Azure Cosmos DB.
+                                            </p>
+                                            <p>
+                                                Provisioned throughput (RU/s) scales relative to the amount of
+                                                transactional storage at a rate of 10 RU/s for every 1 GB
+                                                storage. 
+                                            </p>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-db-3" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Consumed Storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Transactional storage (row-oriented)
+                                                    </td>
+                                                    <td>
+                                                        1 GB
+                                                    </td>
+                                                    <td>
+                                                        ￥ 2.576/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Analytical storage (column-oriented)
+                                                    </td>
+                                                    <td>
+                                                        1 GB
+                                                    </td>
+                                                    <td>
+                                                        ￥ 0.149/month
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-db-3-n3" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Consumed Storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Transactional storage (row-oriented)
+                                                    </td>
+                                                    <td>
+                                                        1 GB
+                                                    </td>
+                                                    <td>
+                                                        ￥ 2.576/month
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <br />
+                                            <h3>
+                                                Backup storage
+                                            </h3>
+                                            <p>
+                                                Accounts can select either periodic or continuous backup. By default,
+                                                periodic backup is activated on all accounts and two
+                                                backup copies of your data are stored free of charge. Periodic data
+                                                backups can be configured to be geo, local, or zone
+                                                resilient. Please see technical documentation for details.
+                                            </p>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-2" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Periodic backup storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB-LRS
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB- ZRS
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB- RA-GRS
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Stored periodic backup data (2 copies)
+                                                    </td>
+                                                    <td>
+                                                        GBs per copy
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Stored periodic backup data (&gt;2 copies)
+                                                    </td>
+                                                    <td>
+                                                        GBs per copy
+                                                    </td>
+                                                    <td>
+                                                        ￥0.786/month
+                                                    </td>
+                                                    <td>
+                                                        ￥0.978/month
+                                                    </td>
+                                                    <td>
+                                                        ￥1.566/month
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <p>
+                                                Continuous backup (preview) can be activated instead of periodic backups
+                                                on accounts using either the Core (SQL) API or API
+                                                for MongoDB. Once activated, backups are charged on a monthly basis
+                                                based on the total amount of data stored across all
+                                                selected Azure regions. Point-in-time restoration from the continuous
+                                                backup data is billed as total GBs of data restored to
+                                                the primary write region.
+                                            </p>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-3" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Continuous backup storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Continuous backup data – 7-day retention
+                                                    </td>
+                                                    <td>
+                                                        GBs x N regions
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Continuous backup data – 30-day retention
+                                                    </td>
+                                                    <td>
+                                                        GB × N regions
+                                                    </td>
+                                                    <td>
+                                                        ￥2.03/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Point-in-time restore
+                                                    </td>
+                                                    <td>
+                                                        GB
+                                                    </td>
+                                                    <td>
+                                                        ￥1.524/month
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-11-1" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Continuous backup storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Continuous backup data – 7-day retention
+                                                    </td>
+                                                    <td>
+                                                        GBs x N regions
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Continuous backup data – 30-day retention
+                                                    </td>
+                                                    <td>
+                                                        GB × N regions
+                                                    </td>
+                                                    <td>
+                                                        ￥2.03/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Point-in-time restore
+                                                    </td>
+                                                    <td>
+                                                        GB
+                                                    </td>
+                                                    <td>
+                                                        ￥1.02/month
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <h3>
+                                                Analytical storage (Azure Synapse Link) transactions
+                                            </h3>
+                                            <p>
+                                                IO (input/output) transactions for analytical storage are billed by
+                                                quantity of operations.
+                                            </p>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-4" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Transactions
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Operations
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Write Operations - analytical storage
+                                                    </td>
+                                                    <td>
+                                                        10,000
+                                                    </td>
+                                                    <td>
+                                                        ￥0.045
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Read Operations - analytical storage
+                                                    </td>
+                                                    <td>
+                                                        10,000
+                                                    </td>
+                                                    <td>
+                                                        ￥0.015
+                                                    </td>
+                                                </tr>
+                                            </table>
+
+                                            <h3>Bandwidth</h3>
+                                            <p>Azure Cosmos DB bills for data that egresses the Azure cloud to a
+                                                destination on the internet or transits the Azure WAN between regions.
+                                            </p>
+                                            <h3>Data Transfer In (Ingress)</h3>
+                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                <tr>
+                                                    <th align="left" style="width: 700px;">
+
+                                                    </th>
+                                                    <th align="left">
+                                                        Price
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>Data transfer into any region</td>
+                                                    <td>Free</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Data transfer within any region</td>
+                                                    <td>Free</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Data transfer within an availability zone or between
+                                                        availability zones within any region</td>
+                                                    <td>Free</td>
+                                                </tr>
+                                            </table>
+                                            <h3>Data Transfer Out (Egress)</h3>
+                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                <tr>
+                                                    <th align="left"></th>
+                                                    <th align="left">First 5GB/Month</th>
+                                                    <th align="left">Price</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>Data transfer from CN Zone 1</td>
+                                                    <td>Free</td>
+                                                    <td>￥0.408/GB</td>
+                                                </tr>
+                                            </table>
+                                            <div class="tags-date">
+                                                <div class="ms-date">
+                                                    For a more detailed estimate of analytical storage operations for
+                                                    your workload please refer to
+                                                    <a href="https://docs.azure.cn/en-us/cosmos-db/analytical-store-introduction#analytical-store-pricing"
+                                                        style="color: #006fc3; font-size: 12px; display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                        the Azure Cosmos DB analytical store pricing documentation
+                                                    </a>
+                                                    for additional detail.
+                                                </div>
+                                                <br />
+                                                <div class="ms-date">
+                                                    Note: there are no separate IO charges for transactional storage as
+                                                    these form part of the RU.
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <h3>
+                                                Multiple regions
+                                            </h3>
+                                            <p>
+                                                Azure Cosmos DB offers guaranteed low-latency and high availability
+                                                through multi-region reads and
+                                                <a href="https://docs.azure.cn/en-us/cosmos-db/global-dist-under-the-hood"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    multi-region writes
+                                                </a>
+                                                (formerly “multi-master”), across any or all Azure regions. You can
+                                                <a href="https://docs.azure.cn/en-us/cosmos-db/distribute-data-globally"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    add and remove regions
+                                                </a>
+                                                to your Azure Cosmos DB account at any time. The billing impact of
+                                                multiple regions is that provisioned throughput and
+                                                consumed storage are multiplied by every region associated with your
+                                                account.
+                                            </p>
+                                            <!-- <h3>Availability zones</h3>
+                                                                        <p>You can enable <a href="https://docs.microsoft.com/en-us/azure/availability-zones/az-region">availability zones</a> when selecting regions to associate with your Azure Cosmos DB account in the Azure portal. This provides additional redundancy within a given region by replicating data across multiple zones in that region. The Azure regions eligible to be availability zones are: UK South, Southeast Asia, East US, East US 2, Central US, West Europe, West US 2, Japan East, North Europe, France Central, and Australia East.</p>
+                                                                        <p>The billing impact is:</p>
+                                                                        <ul>
+                                                                            <li>For single-region write accounts using standard provisioned throughput, request units per second (RU/s) are multiplied by a factor of 1.25 in each region designated as an Availability Zone</li>
+                                                                            <li>For single-region serverless accounts, request units (RU) are multiplied by a factor of 1.25</li>
+                                                                            <li>For multi-region write (formerly “multi-master”) accounts using provisioned throughput, there is no billing impact</li>
+
+                                                                      </ul> -->
+                                        </div>
+                                        <div class="tab-panel" id="tabContent1-2">
+                                            <h3>
+                                                Provisioned Throughput
+                                            </h3>
+                                            <p>
+                                                Provisioned Throughput offers single-digit millisecond reads and writes
+                                                and 99.999-percent availability worldwide, backed by
+                                                SLAs. It is ideal for large, critical workloads requiring guaranteed
+                                                low-latency and high-availability. New accounts are
+                                                eligible to receive 1000 request units per second (RU/s) throughput and
+                                                25 GBs storage per month with
+                                                <a href="https://docs.azure.cn/en-us/cosmos-db/optimize-dev-test#azure-cosmos-db-free-tier"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    Azure Cosmos DB free tier
+                                                </a>
+                                                .
+                                            </p>
+                                            <p>
+                                                There are two capacity management options for provisioned throughput:
+                                                autoscale provisioned throughput and standard
+                                                provisioned throughput. The one you choose will depend on the
+                                                predictability of your workload and whether you wish to manually
+                                                manage capacity.
+                                            </p>
+                                            <br />
+                                            <h3>
+                                                Autoscale provisioned throughput
+                                            </h3>
+                                            <p>
+                                                Eliminate the need to manually manage capacity for your large, critical
+                                                workloads and achieve cost benefits when traffic
+                                                patterns are unpredictable. You set a custom throughput limit (starting
+                                                at 1,000 RU/s) either using
+                                                <a href="https://docs.azure.cn/en-us/cosmos-db/set-throughput#set-throughput-on-a-database-and-a-container"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    Azure portal
+                                                </a>
+                                                or
+                                                <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.cosmos.container.replacethroughputasync?view=azure-dotnet#Microsoft_Azure_Cosmos_Container_ReplaceThroughputAsync_System_Int32_Microsoft_Azure_Cosmos_RequestOptions_System_Threading_CancellationToken"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    programmatically using an API.
+                                                </a>
+                                                Billing is based on the maximum number of request units per second
+                                                (RU/s) used each hour, between 10 - 100% of your throughput
+                                                limit.
+                                            </p>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-5" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Autoscale provisioned throughput
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total RU/s per hour
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per 100 RU/s
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Single-region write account
+                                                    </td>
+                                                    <td>
+                                                        100 RU/s x 1.5 x 1 region
+                                                    </td>
+                                                    <td>
+                                                        ￥ 0.051/hour
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Single-region write account with data distributed across
+                                                        multiple regions
+                                                    </td>
+                                                    <td>
+                                                        100 RU/s x 1.5 x N regions
+                                                    </td>
+                                                    <td>
+                                                        ￥ 0.0765/hour
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Multi-region write (formerly called multi-master) account
+                                                        distributed across multiple regions
+                                                    </td>
+                                                    <td>
+                                                        100 RU/s x N regions
+                                                    </td>
+                                                    <td>
+                                                        ￥ 0.102/hour
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <div class="tags-date">
+                                                <div class="ms-date">
+                                                    *Availability zones do not have a separate charge with autoscale
+                                                    provisioned throughput.
+                                                </div>
+                                                <br />
+                                                <div class="ms-date">
+                                                    Autoscale was previously known as “autopilot”.
+                                                </div>
+                                                <br />
+                                                <div class="ms-date">
+                                                    A minimum of 1,000 RU/s must be provisioned for autoscale
+                                                    provisioned throughput. For more information, see
+                                                    <a href="https://docs.azure.cn/en-us/cosmos-db/"
+                                                        style="color: #006fc3; font-size: 12px; display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                        documentation
+                                                    </a>
+                                                    page
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <h3>
+                                                Consumed Storage
+                                            </h3>
+                                            <p>
+                                                Azure Cosmos DB offers unlimited transactional and analytical storage,
+                                                billed as GBs of SSD-backed logical storage used by
+                                                data and indexes across all regions selected for geo-replication. For
+                                                example, if you replicate an Azure Cosmos DB account
+                                                across three regions, you will pay for the total storage cost in each of
+                                                those three regions.
+                                            </p>
+                                            <p>
+                                                Your data is managed in two distinct storage tiers, transactional and
+                                                analytical, with workloads operating on the same logical
+                                                data without interfering with each other. While transactional storage is
+                                                always enabled by default, you must explicitly enable
+                                                analytical storage on your Azure Cosmos DB container in order to use
+                                                <a href="https://docs.azure.cn/en-us/cosmos-db/synapse-link"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    Azure Synapse Link
+                                                </a>
+                                                to run analytics over data in Azure Cosmos DB.
+                                            </p>
+                                            <p>
+                                                Provisioned throughput (RU/s) scales relative to the amount of
+                                                transactional storage at a rate of 10 RU/s for every 1 GB
+                                                storage. 
+                                            </p>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-db-2" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Consumed Storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Transactional storage (row-oriented)
+                                                    </td>
+                                                    <td>
+                                                        1 GB
+                                                    </td>
+                                                    <td>
+                                                        ￥ 2.576/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Analytical storage (column-oriented)
+                                                    </td>
+                                                    <td>
+                                                        1 GB
+                                                    </td>
+                                                    <td>
+                                                        ￥ 0.149/month
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-db-2-n3" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Consumed Storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Transactional storage (row-oriented)
+                                                    </td>
+                                                    <td>
+                                                        1 GB
+                                                    </td>
+                                                    <td>
+                                                        ￥ 2.576/month
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <br />
+                                            <h3>
+                                                Backup storage
+                                            </h3>
+                                            <p>
+                                                Accounts can select either periodic or continuous backup. By default,
+                                                periodic backup is activated on all accounts and two
+                                                backup copies of your data are stored free of charge. Periodic data
+                                                backups can be configured to be geo, local, or zone
+                                                resilient. Please see technical documentation for details.
+                                            </p>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-6" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Periodic backup storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB-LRS
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB-ZRS
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB-RA-GRS
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Stored periodic backup data (2 copies)
+                                                    </td>
+                                                    <td>
+                                                        GBs per copy
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Stored periodic backup data (&gt;2 copies)
+                                                    </td>
+                                                    <td>
+                                                        GBs per copy
+                                                    </td>
+                                                    <td>
+                                                        ￥0.786/month
+                                                    </td>
+                                                    <td>
+                                                        ￥0.978/month
+                                                    </td>
+                                                    <td>
+                                                        ￥1.566/month
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <p>
+                                                Continuous backup (preview) can be activated instead of periodic backups
+                                                on accounts using either the Core (SQL) API or API
+                                                for MongoDB. Once activated, backups are charged on a monthly basis
+                                                based on the total amount of data stored across all
+                                                selected Azure regions. Point-in-time restoration from the continuous
+                                                backup data is billed as total GBs of data restored to
+                                                the primary write region.
+                                            </p>
+                                            <!-- <table cellpadding="0" cellspacing="0" width="100%" id="cosmos-7">
+                                                                            <tr>
+                                                                                <th align="left"><strong>Continuous backup storage</strong></th>
+                                                                                <th align="left"><strong>Total GB</strong></th>
+                                                                                <th align="left"><strong>Price per GB</strong></th>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Continuous backup<sup>Preview</sup> data</td>
+                                                                                <td>GBs x selected Azure regions</td>
+                                                                                <td>￥2.034/month</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Point-in-time restore</td>
+                                                                                <td>GBs</td>
+                                                                                <td>￥1.524/month</td>
+                                                                            </tr>
+                                                                        </table> -->
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-3-2" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Continuous backup storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Continuous backup data – 7-day retention
+                                                    </td>
+                                                    <td>
+                                                        GBs x N regions
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Continuous backup data – 30-day retention
+                                                    </td>
+                                                    <td>
+                                                        GB × N regions
+                                                    </td>
+                                                    <td>
+                                                        ￥2.03/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Point-in-time restore
+                                                    </td>
+                                                    <td>
+                                                        GB
+                                                    </td>
+                                                    <td>
+                                                        ￥1.524/month
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-11-2" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Continuous backup storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Continuous backup data – 7-day retention
+                                                    </td>
+                                                    <td>
+                                                        GBs x N regions
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Continuous backup data – 30-day retention
+                                                    </td>
+                                                    <td>
+                                                        GB × N regions
+                                                    </td>
+                                                    <td>
+                                                        ￥2.03/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Point-in-time restore
+                                                    </td>
+                                                    <td>
+                                                        GB
+                                                    </td>
+                                                    <td>
+                                                        ￥1.02/month
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <h3>
+                                                Analytical storage (Azure Synapse Link) transactions
+                                            </h3>
+                                            <p>
+                                                IO (input/output) transactions for analytical storage are billed by
+                                                quantity of operations.
+                                            </p>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-8" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Transactions
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Operations
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Write Operations - analytical storage
+                                                    </td>
+                                                    <td>
+                                                        10,000
+                                                    </td>
+                                                    <td>
+                                                        ￥0.045
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Read Operations - analytical storage
+                                                    </td>
+                                                    <td>
+                                                        10,000
+                                                    </td>
+                                                    <td>
+                                                        ￥0.015
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <h3>Bandwidth</h3>
+                                            <p>Azure Cosmos DB bills for data that egresses the Azure cloud to a
+                                                destination on the internet or transits the Azure WAN between regions.
+                                            </p>
+                                            <h3>Data Transfer In (Ingress)</h3>
+                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                <tr>
+                                                    <th align="left" style="width: 700px;">
+
+                                                    </th>
+                                                    <th align="left">
+                                                        Price
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>Data transfer into any region</td>
+                                                    <td>Free</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Data transfer within any region</td>
+                                                    <td>Free</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Data transfer within an availability zone or between
+                                                        availability zones within any region</td>
+                                                    <td>Free</td>
+                                                </tr>
+                                            </table>
+                                            <h3>Data Transfer Out (Egress)</h3>
+                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                <tr>
+                                                    <th align="left"></th>
+                                                    <th align="left">First 5GB/Month</th>
+                                                    <th align="left">Price</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>Data transfer from CN Zone 1</td>
+                                                    <td>Free</td>
+                                                    <td>￥0.408/GB</td>
+                                                </tr>
+                                            </table>
+                                            <div class="tags-date">
+                                                <div class="ms-date">
+                                                    For a more detailed estimate of analytical storage operations for
+                                                    your workload please refer to
+                                                    <a href="https://docs.azure.cn/en-us/cosmos-db/analytical-store-introduction#analytical-store-pricing"
+                                                        style="color: #006fc3; font-size: 12px; display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                        the Azure Cosmos DB analytical store pricing documentation
+                                                    </a>
+                                                    for additional detail.
+                                                </div>
+                                                <br />
+                                                <div class="ms-date">
+                                                    Note: there are no separate IO charges for transactional storage as
+                                                    these form part of the RU.
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <h3>
+                                                Multiple regions
+                                            </h3>
+                                            <p>
+                                                Azure Cosmos DB offers guaranteed low-latency and high availability
+                                                through multi-region reads and
+                                                <a href="https://docs.azure.cn/en-us/cosmos-db/global-dist-under-the-hood"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    multi-region writes
+                                                </a>
+                                                (formerly “multi-master”), across any or all Azure regions. You can
+                                                <a href="https://docs.azure.cn/en-us/cosmos-db/distribute-data-globally"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    add and remove regions
+                                                </a>
+                                                to your Azure Cosmos DB account at any time. The billing impact of
+                                                multiple regions is that provisioned throughput and
+                                                consumed storage are multiplied by every region associated with your
+                                                account.
+                                            </p>
+                                            <!-- <h3>Availability zones</h3>
+                                                                        <p>You can enable <a href="https://docs.microsoft.com/en-us/azure/availability-zones/az-region">availability zones</a> when selecting regions to associate with your Azure Cosmos DB account in the Azure portal. This provides additional redundancy within a given region by replicating data across multiple zones in that region. The Azure regions eligible to be availability zones are: UK South, Southeast Asia, East US, East US 2, Central US, West Europe, West US 2, Japan East, North Europe, France Central, and Australia East.</p>
+                                                                        <p>The billing impact is:</p>
+                                                                        <ul>
+                                                                            <li>For single-region write accounts using standard provisioned throughput, request units per second (RU/s) are multiplied by a factor of 1.25 in each region designated as an Availability Zone</li>
+                                                                            <li>For single-region serverless accounts, request units (RU) are multiplied by a factor of 1.25</li>
+                                                                            <li>For multi-region write (formerly “multi-master”) accounts using provisioned throughput, there is no billing impact</li>
+
+                                                                      </ul> -->
+                                        </div>
+                                        <div class="tab-panel" id="tabContent1-3">
+                                            <h3>
+                                                Serverless
+                                            </h3>
+                                            <p>
+                                                <b>
+                                                    Serverless
+                                                </b>
+                                                makes it easy to run workloads with low traffic. It can handle
+                                                intermittent bursts on demand, without resource planning or
+                                                management, and bills only for resources used per database operation
+                                                with no minimum. As a pay-per-request billing model with
+                                                no minimum operations and request units (RU), serverless is a great
+                                                option for running small applications that don’t have
+                                                sustained traffic.
+                                            </p>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-9" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Serverless
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total Request Units (RU)
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per 1M RU
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Serverless request units (RU)
+                                                    </td>
+                                                    <td>
+                                                        1,000,000
+                                                    </td>
+                                                    <td>
+                                                        ￥2.36
+                                                    </td>
+                                                </tr>
+                                                <!-- <tr>
+                                                                                   <td>Serverless request units (RU) with availability zone</td>
+                                                                                   <td>1,000,000 x 1.25</td>
+                                                                                   <td>￥2.36</td>
+                                                                               </tr> -->
+                                            </table>
+                                            <br />
+                                            <h3>
+                                                Consumed Storage
+                                            </h3>
+                                            <p>
+                                                Azure Cosmos DB offers unlimited transactional and analytical storage,
+                                                billed as GBs of SSD-backed logical storage used by
+                                                data and indexes across all regions selected for geo-replication. For
+                                                example, if you replicate an Azure Cosmos DB account
+                                                across three regions, you will pay for the total storage cost in each of
+                                                those three regions.
+                                            </p>
+                                            <p>
+                                                Your data is managed in two distinct storage tiers, transactional and
+                                                analytical, with workloads operating on the same logical
+                                                data without interfering with each other. While transactional storage is
+                                                always enabled by default, you must explicitly enable
+                                                analytical storage on your Azure Cosmos DB container in order to use
+                                                <a href="https://docs.azure.cn/en-us/cosmos-db/synapse-link"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    Azure Synapse Link
+                                                </a>
+                                                to run analytics over data in Azure Cosmos DB.
+                                            </p>
+                                            <p>
+                                                Provisioned throughput (RU/s) scales relative to the amount of
+                                                transactional storage at a rate of 10 RU/s for every 1 GB
+                                                storage. To estimate your storage requirement, use the
+                                                <a href="https://cosmos.azure.com/capacitycalculator/"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    capacity planner tool
+                                                </a>
+                                                , and ensure you’ve provisioned enough throughput to meet your storage
+                                                needs.
+                                            </p>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-db-1" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Consumed Storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Transactional storage (row-oriented)
+                                                    </td>
+                                                    <td>
+                                                        1 GB
+                                                    </td>
+                                                    <td>
+                                                        ￥ 2.576/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Analytical storage (column-oriented)
+                                                    </td>
+                                                    <td>
+                                                        1 GB
+                                                    </td>
+                                                    <td>
+                                                        ￥ 0.149/month
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-db-1-n3" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Consumed Storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Transactional storage (row-oriented)
+                                                    </td>
+                                                    <td>
+                                                        1 GB
+                                                    </td>
+                                                    <td>
+                                                        ￥ 2.576/month
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <br />
+                                            <h3>
+                                                Backup storage
+                                            </h3>
+                                            <p>
+                                                Accounts can select either periodic or continuous backup. By default,
+                                                periodic backup is activated on all accounts and two
+                                                backup copies of your data are stored free of charge. Periodic data
+                                                backups can be configured to be geo, local, or zone
+                                                resilient. Please see technical documentation for details.
+                                            </p>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-10" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Periodic backup storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB-LRS
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB-ZRS
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB-RA-GRS
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Stored periodic backup data (2 copies)
+                                                    </td>
+                                                    <td>
+                                                        GBs per copy
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Stored periodic backup data (&gt;2 copies)
+                                                    </td>
+                                                    <td>
+                                                        GBs per copy
+                                                    </td>
+                                                    <td>
+                                                        ￥0.786/月
+                                                    </td>
+                                                    <td>
+                                                        ￥0.978/月
+                                                    </td>
+                                                    <td>
+                                                        ￥1.566/月
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <p>
+                                                Continuous backup (preview) can be activated instead of periodic backups
+                                                on accounts using either the Core (SQL) API or API
+                                                for MongoDB. Once activated, backups are charged on a monthly basis
+                                                based on the total amount of data stored across all
+                                                selected Azure regions. Point-in-time restoration from the continuous
+                                                backup data is billed as total GBs of data restored to
+                                                the primary write region.
+                                            </p>
+                                            <!-- <table cellpadding="0" cellspacing="0" width="100%"  id="cosmos-11">
+                                                                            <tr>
+                                                                                <th align="left"><strong>Continuous backup storage</strong></th>
+                                                                                <th align="left"><strong>Total GB</strong></th>
+                                                                                <th align="left"><strong>Price per GB</strong></th>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Continuous backup<sup>Preview</sup> data</td>
+                                                                                <td>GBs x selected Azure regions</td>
+                                                                                <td>￥2.034/month</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Point-in-time restore</td>
+                                                                                <td>GBs</td>
+                                                                                <td>￥1.524/month</td>
+                                                                            </tr>
+                                                                        </table>
+                                                                        <table cellpadding="0" cellspacing="0" width="100%" id="cosmos-11-3">
+                                                                            <tr>
+                                                                                <th align="left"><strong>Continuous backup storage</strong></th>
+                                                                                <th align="left"><strong>Total GB</strong></th>
+                                                                                <th align="left"><strong>Price per GB</strong></th>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td>Point-in-time restore</td>
+                                                                                <td>GBs</td>
+                                                                                <td>￥1.02/month</td>
+                                                                            </tr>
+                                                                        </table> -->
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-3-3" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Continuous backup storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Continuous backup data – 7-day retention
+                                                    </td>
+                                                    <td>
+                                                        GBs x N regions
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Continuous backup data – 30-day retention
+                                                    </td>
+                                                    <td>
+                                                        GB × N regions
+                                                    </td>
+                                                    <td>
+                                                        ￥2.03/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Point-in-time restore
+                                                    </td>
+                                                    <td>
+                                                        GB
+                                                    </td>
+                                                    <td>
+                                                        ￥1.524/month
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-11-4" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Continuous backup storage
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Total GB
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price per GB
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Continuous backup data – 7-day retention
+                                                    </td>
+                                                    <td>
+                                                        GBs x N regions
+                                                    </td>
+                                                    <td>
+                                                        Free/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Continuous backup data – 30-day retention
+                                                    </td>
+                                                    <td>
+                                                        GB × N regions
+                                                    </td>
+                                                    <td>
+                                                        ￥2.03/month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Point-in-time restore
+                                                    </td>
+                                                    <td>
+                                                        GB
+                                                    </td>
+                                                    <td>
+                                                        ￥1.02/month
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <h3>
+                                                Analytical storage (Azure Synapse Link) transactions
+                                            </h3>
+                                            <p>
+                                                IO (input/output) transactions for analytical storage are billed by
+                                                quantity of operations.
+                                            </p>
+                                            <table cellpadding="0" cellspacing="0" id="cosmos-12" width="100%">
+                                                <tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Transactions
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Operations
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            Price
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Write Operations - analytical storage
+                                                    </td>
+                                                    <td>
+                                                        10,000
+                                                    </td>
+                                                    <td>
+                                                        ￥0.045
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Read Operations - analytical storage
+                                                    </td>
+                                                    <td>
+                                                        10,000
+                                                    </td>
+                                                    <td>
+                                                        ￥0.015
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <h3>Bandwidth</h3>
+                                            <p>Azure Cosmos DB bills for data that egresses the Azure cloud to a
+                                                destination on the internet or transits the Azure WAN between regions.
+                                            </p>
+                                            <h3>Data Transfer In (Ingress)</h3>
+                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                <tr>
+                                                    <th align="left" style="width: 700px;">
+
+                                                    </th>
+                                                    <th align="left">
+                                                        Price
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>Data transfer into any region</td>
+                                                    <td>Free</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Data transfer within any region</td>
+                                                    <td>Free</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Data transfer within an availability zone or between
+                                                        availability zones within any region</td>
+                                                    <td>Free</td>
+                                                </tr>
+                                            </table>
+                                            <h3>Data Transfer Out (Egress)</h3>
+                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                <tr>
+                                                    <th align="left"></th>
+                                                    <th align="left">First 5GB/Month</th>
+                                                    <th align="left">Price</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>Data transfer from CN Zone 1</td>
+                                                    <td>Free</td>
+                                                    <td>￥0.408/GB</td>
+                                                </tr>
+                                            </table>
+                                            <div class="tags-date">
+                                                <div class="ms-date">
+                                                    For a more detailed estimate of analytical storage operations for
+                                                    your workload please use the
+                                                    <a href="https://cosmos.azure.com/capacitycalculator/"
+                                                        style="color: #006fc3; font-size: 12px; display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                        capacity planner tool
+                                                    </a>
+                                                    and refer to
+                                                    <a href="https://docs.azure.cn/en-us/cosmos-db/analytical-store-introduction#analytical-store-pricing"
+                                                        style="color: #006fc3; font-size: 12px; display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                        the Azure Cosmos DB analytical store pricing documentation
+                                                    </a>
+                                                    for additional detail.
+                                                </div>
+                                                <br />
+                                                <div class="ms-date">
+                                                    Note: there are no separate IO charges for transactional storage as
+                                                    these form part of the RU.
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <h3>
+                                                Multiple regions
+                                            </h3>
+                                            <p>
+                                                Azure Cosmos DB offers guaranteed low-latency and high availability
+                                                through multi-region reads and
+                                                <a href="https://docs.azure.cn/en-us/cosmos-db/global-dist-under-the-hood"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    multi-region writes
+                                                </a>
+                                                (formerly “multi-master”), across any or all Azure regions. You can
+                                                <a href="https://docs.azure.cn/en-us/cosmos-db/distribute-data-globally"
+                                                    style="display: inline; float: none; margin: 0; padding: 0; background: transparent;">
+                                                    add and remove regions
+                                                </a>
+                                                to your Azure Cosmos DB account at any time. The billing impact of
+                                                multiple regions is that provisioned throughput and
+                                                consumed storage are multiplied by every region associated with your
+                                                account.
+                                            </p>
+                                            <!-- <h3>Availability zones</h3>
+                                                                        <p>You can enable <a href="https://docs.microsoft.com/en-us/azure/availability-zones/az-region">availability zones</a> when selecting regions to associate with your Azure Cosmos DB account in the Azure portal. This provides additional redundancy within a given region by replicating data across multiple zones in that region. The Azure regions eligible to be availability zones are: UK South, Southeast Asia, East US, East US 2, Central US, West Europe, West US 2, Japan East, North Europe, France Central, and Australia East.</p>
+                                                                        <p>The billing impact is:</p>
+                                                                        <ul>
+                                                                            <li>For single-region write accounts using standard provisioned throughput, request units per second (RU/s) are multiplied by a factor of 1.25 in each region designated as an Availability Zone</li>
+                                                                            <li>For single-region serverless accounts, request units (RU) are multiplied by a factor of 1.25</li>
+                                                                            <li>For multi-region write (formerly “multi-master”) accounts using provisioned throughput, there is no billing impact</li>
+
+                                                                      </ul> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END: TAB-CONTROL -->
+                        <div class="pricing-page-section">
+                            <div class="more-detail">
+                                <h2>
+                                    FAQ
+                                </h2>
+                                <em>
+                                    Expand all
+                                </em>
+                                <ul>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="Storage_question1">
+                                                What is a request unit?
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    A request unit (RU) is the unit of measurement for throughput in
+                                                    Azure Cosmos DB. 1 RU corresponds to
+                                                    the throughput for obtaining a 1 KB file. Every operation performed
+                                                    in DocumentDB (including reads,
+                                                    writes, SQL queries, and stored procedure executions) has a
+                                                    determined request unit value based on
+                                                    the throughput required to complete the operation. Instead of
+                                                    thinking about CPU, IO, and memory,
+                                                    and how they affect your application throughput, you can think in
+                                                    terms of a single Request Unit
+                                                    measure.
+                                                </p>
+                                                <p>
+                                                    A request unit used through provisioned RUs per second or a
+                                                    one-minute bucket is the same.
+                                                </p>
+                                                <p>
+                                                    For details on request units and help determining your collection
+                                                    needs, please see
+                                                    <a href="//docs.azure.cn/en-us/documentdb/documentdb-request-units/"
+                                                        id="pricing-cosmos-db_docs-documentdb-request-units"
+                                                        style="color: #00a8d9;">
+                                                        Request
+                                                        Units in Azure Cosmos
+                                                        DB
+                                                    </a>
+                                                    .
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="Storage_question2">
+                                                How does request unit usage appear on my bill?
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    During this period, billing is based on the total capacity
+                                                    (RU/second) provisioned under your Azure
+                                                    Cosmos DB account, using predictable hourly rates that fluctuate
+                                                    steadily
+                                                </p>
+                                                <p>
+                                                    If you create accounts for two partitions that use 500 RU/second and
+                                                    700 RU/second respectively, the
+                                                    total provisioned capacity will reach 1,200 RU/second. Therefore,
+                                                    the billing amount will be 12 x ¥
+                                                    0.051 = ¥ 0.612 /hour.
+                                                </p>
+                                                <p>
+                                                    If your throughput needs to be changed and you increase the capacity
+                                                    of each partition by 500
+                                                    RU/second, while also creating a new unlimited container using
+                                                    20,000 RU/s, your overall provisioned
+                                                    capacity would be 22,200 RU/second (1,000 RU/second + 1,200
+                                                    RU/second + 20,000 RU/second). Your bill
+                                                    would then change to: ¥ 0.051 x 222 = ¥11.322/hour.
+                                                </p>
+                                                <p>
+                                                    In a month of 720 hours, if 500 hours are provisioned at 1,200
+                                                    RU/second and 220 hours are
+                                                    provisioned at 22,200 RU/second, the monthly bill will show: 500 x ¥
+                                                    0.612/hour + 220 x ¥
+                                                    11.322/hour = ¥ 2,796.84.
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="Storage_question9">
+                                                Working principles of request units per minute
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    In addition to the normal preview throughput, additional per minute
+                                                    request units can now be
+                                                    provisioned. You can use these additional throughput units in the
+                                                    UTC minute window. If per minute
+                                                    request units are enabled, an additional 1,000 request units per
+                                                    minute can be used for every 100
+                                                    RU/second provisioned in a container.
+                                                </p>
+                                                <p>
+                                                    For example, if you provision 400 RU/second, you can use an
+                                                    additional 4,000 request units per
+                                                    second. Suppose that an application requires more than 400 RU/second
+                                                    at 12 o'clock noon. From
+                                                    12:00:01 p.m. to 12:01:00 p.m., the application will be able to use
+                                                    4,000 additional request units
+                                                    while continuing to use the provisioned 400 RU/second throughput.
+                                                    Starting from 12:00:01 p.m., if
+                                                    all 4,000 request units are used before 12:01:00 p.m., the other
+                                                    request units cannot be used until
+                                                    the next UTC minute (starting from 12:01:01 p.m.). If you do not use
+                                                    all 4,000 request units within
+                                                    a given minute time interval, the remaining request units will not
+                                                    accumulate to the next minute
+                                                    time interval.
+                                                </p>
+                                                <p>
+                                                    Please see
+                                                    <a href="//docs.azure.cn/en-us/cosmos-db/request-units-per-minute/"
+                                                        id="pricing-cosmos-db_docs-request-units-per-minute"
+                                                        style="color: #00a8d9;">
+                                                        Number
+                                                        of per minute request units in
+                                                        Azure Cosmos DB
+                                                    </a>
+                                                    for details.
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="Storage_question3">
+                                                If I specify my own performance for the container,
+                                                how will the storage be
+                                                billed?
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    Storage capacity is billed according to the maximum hourly amount of
+                                                    data stored (in GB) over a
+                                                    monthly period. For example, if you used 100 GB of storage in the
+                                                    first half of the month and 50 GB
+                                                    in the second half of the month, you would be billed for an
+                                                    equivalent of 75 GB of storage during
+                                                    that month.
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="Storage_question4">
+                                                How will I be billed if my container is active for
+                                                less than an hour?
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    You are billed the flat rate for each hour the container exists,
+                                                    regardless of usage or if the
+                                                    collection is active for less than an hour. For example, if you
+                                                    create a container and delete it
+                                                    five minutes later, your bill will reflect a charge of one unit
+                                                    hour.
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <!-- <li>
+                                                                      <i class="icon icon-plus"></i>
+                                                                      <div>
+                                                                          <a id="Storage_question5">When does the billing rate change after I have upgraded a container?</a>
+                                                                          <section>
+                                                                              <p>If you define your own performance for a container and upgrade from 400 RU to 1,000 RU at 9:30 a.m., then downgrade back to 400 RU at 10:45 a.m., you will be charged for two hours of 1,000 RU.</p>
+                                                                              <p>If you select a predefined collection performance level and upgrade from an S1 collection to an S3 collection at 9:30 a.m., then downgrade back to S1 at 10:45 a.m., you will be charged for two hours of S3.</p>
+                                                                          </section>
+
+                                                                      </div>
+                                                                  </li> -->
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="Storage_question6">
+                                                How do I increase or decrease the throughput for
+                                                each collection?
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    You can increase or decrease the number of request units per
+                                                    container in an Azure Cosmos DB account
+                                                    using one of the supported SDKs or REST APIs in the
+                                                    <a href="/portal/" id="cosmos-db_azure-menhu"
+                                                        style="color: #00a8d9;">
+                                                        Azure portal
+                                                    </a>
+                                                    .
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="Storage_question7">
+                                                What is the difference between "autopilot" and
+                                                "autoscale" in Azure Cosmos DB?
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    "Autoscale" or "autoscale provisioned throughput" is the updated
+                                                    name
+                                                    for the feature, previously known as "autopilot." With the current
+                                                    release of autoscale, we've added new features, including the
+                                                    ability to set custom max RU/s and programmatic support.
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="Storage_question8">
+                                                How does autoscale show up on my bill?
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    In single-master accounts, the autoscale rate per 100 RU/s is 1.5x
+                                                    the rate of standard (manual) provisioned throughput. On your bill,
+                                                    you will see the existing standard provisioned throughput meter. The
+                                                    quantity of this meter will be multiplied by 1.5. For example, if
+                                                    the highest RU/s the system scaled to within an hour was 6000 RU/s,
+                                                    you'd be billed 60 * 1.5 = 90 units of the meter for that hour.
+                                                </p>
+                                                <p>
+                                                    In multi-master accounts, the autoscale rate per 100 RU/s is the
+                                                    same
+                                                    as the rate for standard (manual) provisioned multi-master
+                                                    throughput. On your bill, you will see the existing multi-master
+                                                    meter. Since the rates are the same, if you use autoscale, you'll
+                                                    see the same quantity as with standard throughput.
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <!--
+                                                                  <li>
+                                                                      <i class="icon icon-plus"></i>
+                                                                      <div>
+                                                                          <a id="Storage_question7">我是否可以用一个数据库帐户购买具有预定义性能和用户定义的性能的多个集合？</a>
+                                                                          <section>
+                                                                              <p>是的，你可以拥有多个集合。但是，对于新应用程序，建议使用用户定义的性能来创建集合，因为它们可支持较大的存储大小和预配的吞吐量，以及灵活而精细的计费模型。</p>
+                                                                          </section>
+                                                                      </div>
+                                                                  </li>
+                                                                  -->
+                                    <!-- <li>
+                                                                      <i class="icon icon-plus"></i>
+                                                                      <div>
+                                                                          <a id="Storage_question8">How can I move from an S1/S2/S3 collection to a single partition?</a>
+                                                                          <section>
+                                                                               <p>If you want to move an S1, S2, or S3 performance level collection to a single partition with the same storage size, please see <a id="pricing-cosmos-db_docs-documentdb-performance-levels-2" style="color: #00a8d9;" href="//docs.azure.cn/documentdb/documentdb-performance-levels/">Changing performance levels using the Azure portal</a>.</p>
+                                                                               <p>If you want to move an existing single collection into an unlimited container, please see <a id="pricing-cosmos-db_docs-documentdb-partition-data-2" style="color: #00a8d9;" href="//docs.azure.cn/en-us/documentdb/documentdb-partition-data/">Partitioning and scaling in Azure Cosmos DB</a>.</p>
+                                                                          </section>
+                                                                      </div>
+                                                                  </li> -->
+                                    <!-- <li>
+                                                                      <i class="icon icon-plus"></i>
+                                                                      <div>
+                                                                          <a id="Storage_question10">What are the advantages of replacing an S1/S2/S3 collection with a 10 GB container?</a>
+                                                                          <section>
+                                                                               <p>At an entry point, the throughput of a single partition will exceed S1 (400 RU/second compared to 250 RU/second) and the price will be lower. It can also be increased to 10,000 RU/second compared to 2,500 RU/second for S3. The advantage of the new provisioning model is that it can be increased in increments of 100 RU/second, so you do not have to pay to buy 2,500 RU/second of S3 when you only need 1,200 RU/second.</p>
+                                                                          </section>
+                                                                      </div>
+                                                                  </li> -->
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="pricing-page-section">
+                            <h2>
+                                Support &amp; SLA
+                            </h2>
+                            <p>
+                                If you have any questions or need help, please visit
+                                <a href="https://support.azure.cn/en-us/support/contact" id="cosmos-db-contact-page">
+                                    Azure Support
+                                </a>
+                                and select self-help service or any
+                                other method to contact us for support.
+                            </p>
+                            <p>
+                                <a href="/en-us/home/features/cosmos-db/">
+                                    Azure Cosmos DB
+                                </a>
+                                operated by 21Vianet in
+                                China is a
+                                <a href="https://docs.azure.cn/en-us/cosmos-db/distribute-data-globally/">
+                                    distributed
+                                </a>
+                                multi-model
+                                database service. It provides turnkey data distribution in different Azure Data Centers
+                                in China, so your
+                                users can adjust and replicate your data transparently, no matter where they are
+                                located. This service offers a
+                                comprehensive 99.99% Service Level Agreement that includes a Cosmos DB database account
+                                for a single Azure region
+                                configured with any of five levels of consistency, or throughput, consistency,
+                                availability, and latency guarantees for
+                                database accounts across multiple Azure regions configured with any of four levels of
+                                loose consistency. In addition to
+                                consistency level selection, Cosmos DB also offers a 99.999% Service Level Agreement for
+                                database accounts with read
+                                availability across two or more Azure regions.
+                            </p>
+                            <p>
+                                To learn more about the details of our Service Level Agreement, please visit the
+                                <a href="/en-us/support/sla/cosmos-db/" id="cosmos-db-pricing_sla" target="_blank">
+                                    Service Level Agreements
+                                </a>
+                                page.
+                            </p>
+                        </div>
+                        <!--BEGIN: Support and service code chunk-->
+                        <!--
+
+                         <h2>Support &amp; SLA</h2>
+                         <p>Azure Support Features:</p>
+                         <p>We provide users with the following free support services:</p>
+                         <table cellpadding="0" cellspacing="0" class="table-col6">
+                             <tr>
+                                 <th align="left"> </th>
+                                 <th align="left"><strong>Supported or not</strong></th>
+                             </tr>
+                             <tr>
+                                 <td>Billing and Subscription Management</td>
+                                 <td><i class="icon icon-tick"></i></td>
+                             </tr>
+                             <tr>
+                                 <td>Service Dashboard</td>
+                                 <td><i class="icon icon-tick"></i></td>
+                             </tr>
+                             <tr>
+                                 <td>Web Event Submission</td>
+                                 <td><i class="icon icon-tick"></i></td>
+                             </tr>
+                             <tr>
+                                 <td>Unlimited Disruption/Restoration</td>
+                                 <td><i class="icon icon-tick"></i></td>
+                             </tr>
+                             <tr>
+                                 <td>Telephone Support</td>
+                                 <td><i class="icon icon-tick"></i></td>
+                             </tr>
+                             <tr>
+                                 <td>ICP Filing Support</td>
+                                 <td><i class="icon icon-tick"></i></td>
+                             </tr>
+                         </table>
+                         <p>You can <a href="/en-us/support/support-ticket-form/?l=en-us" id="vm-sla-sup">request support online</a> or contact us via the service hotline.</p>
+                         <h2>Service hotline:</h2>
+                         <ul>
+                             <li>400-089-0365</li>
+                             <li>010-84563652</li>
+                         </ul>
+                         <p>Community help: <a href="https://social.msdn.microsoft.com/Forums/en-us/home?forum=windowsazurezhchs" id="pricing_vm_help">Visit MSDN</a></p>
+                         <p>For more support information, please visit <a href="/en-us/support/plans/" id="stor-sla-info">Azure Support Plans</a></p>
+
+                     -->
+                        <!--END: Support and service code chunk-->
+                        <!--BEGIN: Support and service code chunk-->
+                        <!--END: Support and service code chunk-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Documentation Content -->
+    <!-- BEGIN: Footer -->
+    <div class="public_footerpage">
+    </div>
+    <!--END: Common sidebar-->
+    <link href="/Static/CSS/Localization/en-us.css" rel="stylesheet" />
+    <script type="text/javascript">
+        function getAntiForgeryToken() {
+            var token =
+                '<input name="__RequestVerificationToken" type="hidden" value="xzhMvygm1NzqoUl5S6_dFcHROs8oBecKK8E-VXgxvKTklq558vTgaucJnGNhNH4hrP1W287i3OVCclLd0Rr7HYwViMO5QK_DeAyZqB6qSms1" />';
+            token = $(token).val();
+            return token;
+        }
+
+        function setLocaleCookie(localeVal) {
+            var Days = 365 * 10; // Ten year expiration
+            var exp = new Date();
+
+            var hostName = window.location.hostname;
+            var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain +
+                "; path=/;expires=" + exp.toGMTString();
+        }
+
+        setLocaleCookie(window.currentLocale);
+    </script>
+    <script type="text/javascript">
+        var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+        var TECHNICAL_STORAGE = '/blob/tech-content/';
+        var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+        var EnablePricingSync = 'false';
+    </script>
+    <!-- BEGIN: Minified RequireJs -->
+    <script src="/Static/Scripts/global.config.js" type="text/javascript">
+    </script>
+    <script src="/Static/Scripts/require.js" type="text/javascript">
+    </script>
+    <script src="/Static/Scripts/ef3815ab64d6cfe32680fc9c60373db97e92ccc1.js" type="text/javascript">
+    </script>
+    <!-- END: Minified RequireJs -->
+    <!-- begin JSLL -->
+    <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js">
+    </script>
+    <script type="text/javascript">
+        (function () {
+            var config = {
+                cookiesToCollect: ["_mkto_trk"],
+                syncMuid: true,
+                ix: {
+                    a: true,
+                    g: true
+                },
+                coreData: {
+                    appId: 'AzureCN',
+                    market: 'zh-cn',
+                }
+            };
+            awa.init(config);
+        })();
+    </script>
+    <!-- end JSLL -->
+    <script src="/Static/Scripts/plugins/cookie/jquery.cookie.js" type="text/javascript">
+    </script>
+    <script src="/Static/Scripts/wacndatatracker.js" type="text/javascript">
+    </script>
+    <script src="/common/useCommon.js" type="text/javascript">
+    </script>
+</body>
+
+</html>

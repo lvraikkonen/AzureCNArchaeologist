@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "product_key": "data-lake-storage",
+  "display_name": "Data Lake Storage",
+  "slug": "storage-data-lake",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "storage"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/storage/data-lake/index.html",
+      "url": "https://www.azure.cn/pricing/details/storage/data-lake/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/storage/data-lake.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "data-lake-storage"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/storage/data-lake/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/storage/data-lake/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/storage/data-lake.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "data-lake-storage"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "Data Lake Storage",
+      "storage/data-lake"
+    ],
+    "estimated_size_mb": 0.22,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": true
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

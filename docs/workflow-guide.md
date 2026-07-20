@@ -37,7 +37,7 @@ python cli.py copy-from-prod --language zh-cn
 python cli.py copy-from-prod --language en-us
 
 # 处理指定分组
-python cli.py copy-from-prod --language zh-cn --categories database storage
+python cli.py copy-from-prod --language zh-cn --category database --category storage
 ```
 
 #### 参数说明
@@ -45,64 +45,25 @@ python cli.py copy-from-prod --language zh-cn --categories database storage
 | 参数 | 说明 | 可选值 | 默认值 |
 |------|------|--------|--------|
 | `--language` | 语言版本 | `zh-cn`, `en-us`, `both` | `both` |
-| `--categories` | 产品类别 | database, networking, ai-ml等 | 全部类别 |
-| `--dry-run` | 试运行模式 | - | False |
-| `--verbose` | 详细输出 | - | False |
+| `--category` | 产品类别，可重复 | database, networking, ai-ml等 | 全部类别 |
+| `--product` | Product Key，可重复 | event-grid, icp-faq 等 | 全部 supported 产品 |
+| `--support-type` | 支持文章类型，可重复 | `SLA`, `LEGAL`, `ICP`, `PSR` | 全部类型 |
 
 #### 工作原理
 
-1. **发现HTML文件**: 扫描 `data/current_prod_html/{language}/pricing/details/` 目录
-2. **应用路径映射**: 使用特殊路径映射表转换路径
-3. **产品别名处理**: 处理产品名称别名（如 `files` → `storage-files`）
-4. **复制文件**: 复制到 `data/prod-html/{language}/{category}/{product}.html`
-5. **统计报告**: 输出复制统计信息
+1. **读取事实源**: 加载唯一 Product Definition
+2. **解析 Source Location**: 只使用 `sources.{language}.snapshot_path` 的精确路径
+3. **选择产品**: 按 Product Key、Catalog Category 或 Support Article Type 筛选并按 Product Key 去重
+4. **复制文件**: Pricing 写入 `data/prod-html/{language}/pricing/{product_key}.html`；Support Article 写入 canonical type directory
+5. **哈希校验**: source/normalized SHA-256 必须一致
 
 ---
 
-### 特殊路径映射
+### 显式 Source Location 与 Alias
 
-某些产品的HTML文件路径与标准不同，系统内置了特殊映射表：
+原始目录与 Product Key 不一致时，直接在 Product Definition 的每个语言 source 中声明精确 `snapshot_path`。重复路由或历史副本登记为 source alias，包含精确路径、原因和 canonical Product Key。复制器没有特殊映射或“查找第一个 HTML”的回退。
 
-```python
-special_mappings = {
-    "storage-files": ("storage/files", "index.html"),
-    "anomaly-detector": ("cognitive-services/anomaly-detector", "index.html"),
-    "ssis": ("data-factory", "ssis.html"),
-    "dedicated-host": ("virtual-machines/dedicated-host", "index.html"),
-    "hpc-cache": ("virtual-machines/hpc-cache", "index.html"),
-    "managed-grafana": ("managed-grafana", "index.html"),
-    "bot-services": ("cognitive-services/bot-services", "index.html"),
-    "form-recognizer": ("cognitive-services/form-recognizer", "index.html"),
-    "metrics-advisor": ("cognitive-services/metrics-advisor", "index.html"),
-    "data-lake-storage": ("storage/data-lake-storage", "index.html"),
-    "hci": ("azure-stack/hci", "index.html"),
-    "hub": ("azure-stack/hub", "index.html"),
-    "managed-instance": ("managed-instance", "index.html"),
-    "sql-server-stretch-database": ("sql-server-stretch-database", "index.html"),
-    "database-migration": ("database-migration", "index.html"),
-    "sql-edge": ("sql-edge", "index.html"),
-    "azure-update-management-center": ("automation", "azure-update-management-center.html"),
-    "core-control-plane": ("networking", "core-control-plane.html"),
-    "azure-nat-gateway": ("virtual-network", "nat-gateway.html"),
-    "route-server": ("virtual-network", "route-server.html"),
-    "virtual-network-manager": ("virtual-network", "virtual-network-manager.html"),
-    "firewall-manager": ("firewall-manager", "index.html"),
-    "purview": ("purview", "index.html"),
-    "data-pipeline": ("data-factory", "data-pipeline.html"),
-    "fluid-relay": ("fluid-relay", "index.html"),
-    "web-pubsub": ("web-pubsub", "index.html")
-}
-```
-
-**映射格式**:
-```python
-"product-key": ("source_path_relative_to_details", "filename")
-```
-
-**示例**:
-- 产品: `storage-files`
-- 源路径: `data/current_prod_html/zh-cn/pricing/details/storage/files/index.html`
-- 目标路径: `data/prod-html/zh-cn/storage/storage-files.html`
+例如 `storage-files` 的中文 primary source 可以是 `pricing/details/storage/files/index.html`，规范输入仍固定为 `data/prod-html/zh-cn/pricing/storage-files.html`。
 
 ---
 
@@ -450,13 +411,13 @@ echo "=== 全量刷新完成 ==="
 0 1 * * * cd /path/to/project && python cli.py copy-from-prod --language both
 ```
 
-#### 2. 使用--categories参数
+#### 2. 使用可重复的 --category 参数
 
 如果只需要更新特定类别：
 
 ```bash
 # 仅更新数据库和存储类产品
-python cli.py copy-from-prod --language zh-cn --categories database storage
+python cli.py copy-from-prod --language zh-cn --category database --category storage
 ```
 
 #### 3. 多语言处理策略
@@ -606,8 +567,8 @@ Warning: HTML file not found for product 'mysql' at expected path
 # 1. 检查源目录是否存在
 ls data/current_prod_html/zh-cn/pricing/details/mysql/
 
-# 2. 检查产品是否使用特殊路径
-grep "mysql" scripts/auto_copy_html.py
+# 2. 检查 Product Definition 中声明的精确 source route
+rg '"product_key": "mysql"' data/configs/products
 
 # 3. 手动查找文件
 find data/current_prod_html -name "*mysql*"
@@ -615,25 +576,18 @@ find data/current_prod_html -name "*mysql*"
 
 **解决方案**:
 - 确认HTML文件已下载到 `current_prod_html`
-- 检查是否需要添加特殊路径映射
+- 检查 Product Definition 的 `sources.{language}.snapshot_path`
 - 验证产品键名称是否正确
 
 ---
 
-#### 问题2: 特殊路径映射缺失
+#### 问题2: Source Location 声明错误
 
 **症状**:
 某些产品总是导入失败
 
 **解决方案**:
-在 `scripts/auto_copy_html.py` 中添加特殊映射：
-
-```python
-special_mappings = {
-    # ... 现有映射 ...
-    "new-product": ("custom/path", "filename.html"),
-}
-```
+更新对应 Product Definition 的 `sources.{language}.snapshot_path`；重复或历史路由写入同一语言的 `aliases`，并记录精确路径、原因和 canonical Product Key。复制器不接受特殊映射或目录猜测。
 
 ---
 
@@ -815,7 +769,7 @@ jobs:
       - name: Upload to Blob
         env:
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-        run: uv run python cli.py upload --output-dir output --prefix cms-$(date +%Y%m%d)
+        run: uv run python cli.py upload --output-dir output/payloads --prefix cms-$(date +%Y%m%d)
 
       - name: Check status
         run: uv run python cli.py batch-status --detailed
@@ -827,10 +781,10 @@ jobs:
 
 工作流系统提供完整的端到端自动化能力：
 
-✅ **HTML导入**: 自动处理102个产品的HTML文件，支持特殊路径映射
+✅ **HTML导入**: 由 Product Definition 精确路由，并验证复制哈希
 ✅ **批量处理**: 高效的并行提取，智能变更检测
 ✅ **数据库记录**: 完整的处理历史追踪
-✅ **Blob上传**: 无缝的云存储集成，带元数据管理
+✅ **Blob上传**: 只交付 execution/validation 均通过且哈希一致的业务 payload
 ✅ **自动化脚本**: 开箱即用的定时任务模板
 
 通过合理配置和定期维护，工作流系统可以实现完全自动化的定价数据处理。

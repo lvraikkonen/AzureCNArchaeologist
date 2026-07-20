@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-multi-factor-authentication",
+  "display_name": "多重身份验证的服务级别协议",
+  "slug": "multi-factor-authentication",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/multi-factor-authentication/index.html",
+      "url": "https://www.azure.cn/support/sla/multi-factor-authentication/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/multi-factor-authentication/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/multi-factor-authentication/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

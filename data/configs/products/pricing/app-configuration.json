@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "product_key": "app-configuration",
+  "display_name": "App Configuration",
+  "slug": "app-configuration",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "dev-tools"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/app-configuration/index.html",
+      "url": "https://www.azure.cn/pricing/details/app-configuration/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/app-configuration/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/app-configuration/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价信息",
+      "pricing details",
+      "支持和服务级别协议",
+      "Support & SLA"
+    ],
+    "estimated_size_mb": 0.7,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": true
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

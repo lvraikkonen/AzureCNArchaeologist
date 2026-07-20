@@ -4002,55 +4002,6 @@
   },
   {
     "os": "Cloud Services",
-    "region": "north-china3",
-    "tableIDs": [
-      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-east3",
-      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-east3",
-      "#cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-east3",
-      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
-      "#cloudservice-table-computeoptimized-F2v2-F72v2-east3",
-      "#cloudservice-table-generalpurpose-A1v2-east3-east3",
-      "#cloudservice-table-generalpurpose-A1v2-A8mv2-region2",
-      "#cloudservice-table-generalpurpose-A1v2-A8mv2",
-      "#cloudservice-table-memoryintensive-A5-A7",
-      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1-D4",
-      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D11-D4",
-      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2",
-      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3",
-      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-region",
-      "#cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2",
-      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3",
-      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-re",
-      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-region",
-      "#cloudservice-table-computeoptimized-F2v2-F72v2"
-    ]
-  },
-  {
-    "os": "Cloud Services",
-    "region": "east-china3",
-    "tableIDs": [
-      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-north3",
-      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-north3",
-      "#cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-north3",
-      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
-      "#cloudservice-table-computeoptimized-F2v2-F72v2-north3",
-      "#cloudservice-table-generalpurpose-A1v2-north3",
-      "#cloudservice-table-generalpurpose-A1v2-A8mv2-region2",
-      "#cloudservice-table-generalpurpose-A1v2-A8mv2",
-      "#cloudservice-table-memoryintensive-A5-A7",
-      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1-D4",
-      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D11-D4",
-      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2",
-      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3",
-      "#cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-region",
-      "#cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2",
-      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3",
-      "#cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-region",
-      "#cloudservice-table-computeoptimized-F2v2-F72v2"
-    ]
-  },
-  {
-    "os": "Cloud Services",
     "region": "north-china2",
     "tableIDs": [
       "#cloudservice-table-generalpurpose-A1v2-A8mv2",

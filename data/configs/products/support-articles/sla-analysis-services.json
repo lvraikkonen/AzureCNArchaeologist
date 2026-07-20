@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-analysis-services",
+  "display_name": "Azure 分析服务的服务级别协议",
+  "slug": "analysis-services",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/analysis-services/index.html",
+      "url": "https://www.azure.cn/support/sla/analysis-services/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/analysis-services/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/analysis-services/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

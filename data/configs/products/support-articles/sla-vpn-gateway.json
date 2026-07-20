@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-vpn-gateway",
+  "display_name": "VPN 网关服务级别协议",
+  "slug": "vpn-gateway",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/vpn-gateway/index.html",
+      "url": "https://www.azure.cn/support/sla/vpn-gateway/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/vpn-gateway/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/vpn-gateway/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

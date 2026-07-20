@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "product_key": "data-factory",
+  "display_name": "Data Factory",
+  "slug": "data-factory",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "known_unsupported",
+  "unsupported_reason": "not_yet_qualified_for_extraction",
+  "catalog_categories": [
+    "analysis"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/data-factory/index.html",
+      "url": "https://www.azure.cn/pricing/details/data-factory/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/data-factory/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/data-factory/"
+    }
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

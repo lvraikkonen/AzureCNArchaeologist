@@ -5,7 +5,7 @@ This context defines the language used to describe Azure China source pages, nor
 ## Language
 
 **Product Definition**:
-The authoritative description of one supported or known source page, including its canonical identity and CMS routing data.
+The authoritative description of one product or support page, including its stable identity, capability, CMS routing, and language-specific source locations.
 _Avoid_: Product record, index entry
 
 **Product Key**:
@@ -20,6 +20,14 @@ _Avoid_: Product Key, filename
 An unmodified HTML page captured from the production site for a specific language.
 _Avoid_: Source page, normalized HTML
 
+**Source Location**:
+The exact language-specific snapshot path and production URL declared by a Product Definition. It is never inferred from a Product Key, Slug, Catalog Category, or directory name.
+_Avoid_: Source guess, derived URL
+
+**Source Alias**:
+An exact historical or duplicate Source Snapshot route assigned to one canonical Product Key with a recorded reason.
+_Avoid_: Fallback path, wildcard mapping
+
 **Normalized Input**:
 A Source Snapshot organized into the canonical product, language, and content-type structure consumed by extraction.
 _Avoid_: Source Snapshot, copied page
@@ -33,8 +41,16 @@ A CMS business page for support material classified as SLA, legal, ICP filing, o
 _Avoid_: SLA page, support JSON
 
 **Support Article Type**:
-The canonical CMS classification of a Support Article Page: `SLA`, `LEGAL`, `ICP`, or `PSR`.
+The canonical CMS classification of a Support Article Page: `SLA`, `LEGAL`, `ICP`, or `PSR`. It is independent of Catalog Category and Source Location.
 _Avoid_: Support category, lowercase page type
+
+**Catalog Category**:
+An organizational membership applied only to Flexible Content Pages. A Product Definition may have multiple Catalog Categories; membership does not determine identity or physical paths.
+_Avoid_: Product owner, source directory
+
+**Capability Status**:
+The explicit statement that a Product Definition is either eligible for extraction and publication (`supported`) or deliberately excluded because its source or pipeline is known unsuitable (`known_unsupported`); every exclusion includes a concrete reason.
+_Avoid_: Missing config, implicit failure
 
 **CMS Contract Description**:
 The human-readable field and import rules supplied by the CMS team.

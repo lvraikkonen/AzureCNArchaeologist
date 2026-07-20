@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-media-services",
+  "display_name": "媒体服务的服务级别协议",
+  "slug": "media-services",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/media-services/index.html",
+      "url": "https://www.azure.cn/support/sla/media-services/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/media-services/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/media-services/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

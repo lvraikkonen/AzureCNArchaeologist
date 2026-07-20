@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-log-analytics",
+  "display_name": "Log Analytics的服务级别协议",
+  "slug": "log-analytics",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/log-analytics/index.html",
+      "url": "https://www.azure.cn/support/sla/log-analytics/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/Log Analytics/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/Log%20Analytics/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

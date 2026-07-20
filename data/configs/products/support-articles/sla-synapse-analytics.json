@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-synapse-analytics",
+  "display_name": "Azure Synapse Analytics的服务级别协议",
+  "slug": "synapse-analytics",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/synapse-analytics/index.html",
+      "url": "https://www.azure.cn/support/sla/synapse-analytics/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/sql-data-warehouse/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/sql-data-warehouse/",
+      "aliases": [
+        {
+          "snapshot_path": "SupportArticles/SLA/synapse-analytics/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-synapse-analytics"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

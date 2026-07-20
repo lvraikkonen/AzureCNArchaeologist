@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "legal-summary",
+  "display_name": "法律信息",
+  "slug": "legal",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "LEGAL",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/Legal/legal.html",
+      "url": "https://www.azure.cn/support/legal/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/Legal/legal.html",
+      "url": "https://www.azure.cn/en-us/support/legal/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

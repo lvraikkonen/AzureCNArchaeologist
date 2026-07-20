@@ -370,11 +370,11 @@ python cli.py batch-status --detailed --since "1 hour ago"
 # 1. 查看产品历史
 python cli.py batch-history --product <product-key> --limit 5
 
-# 2. 检查HTML文件
-ls data/prod-html/zh-cn/<category>/<product>.html
+# 2. 检查规范输入
+ls data/prod-html/zh-cn/pricing/<product-key>.html
 
 # 3. 手动测试单产品提取
-python cli.py extract <product-key> --html-file <path> --format json
+python cli.py extract <product-key> --language zh-cn --html-file <path> --output-dir output
 ```
 
 **可能原因**:

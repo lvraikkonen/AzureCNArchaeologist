@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-azure-defender",
+  "display_name": "Defender的服务级别协议",
+  "slug": "azure-defender",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/azure-defender/index.html",
+      "url": "https://www.azure.cn/support/sla/azure-defender/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/azure-defender/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/azure-defender/",
+      "aliases": [
+        {
+          "snapshot_path": "SupportArticles/SLA/security-center/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-azure-defender"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

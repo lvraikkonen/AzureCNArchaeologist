@@ -13,7 +13,7 @@
 Azure中国定价网站 (https://www.azure.cn/pricing/) 原维护团队已解散，前端JavaScript代码丢失。项目团队获得了完整的HTML源码文件，需要通过"HTML解析式考古"，从大量HTML文件中提取结构化数据，重建整个产品价格和计算器页面系统。
 
 ### 核心目标（已实现）
-- 🔍 **智能解析**: ✅ 从HTML文件中智能提取所有产品信息，支持92个Azure产品
+- 🔍 **可信事实源**: ✅ 211 个唯一 Product Definition，支持多分类和显式双语 Source Snapshot 路由
 - 🏗️ **深度建模**: ✅ 构建策略化提取器架构，支持3+1策略自动识别
 - 🤖 **批量处理**: ✅ 集成企业级批处理系统，支持4-8并发处理
 - 📦 **CMS就绪**: ✅ 输出Flexible JSON Schema 1.1格式，完全符合CMS标准
@@ -170,19 +170,23 @@ python scripts/verify_installation.py
 # 步骤1: 从生产环境导入HTML
 uv run cli.py copy-from-prod --language both
 
-# 步骤2: 批量处理所有产品
+# 步骤2: 检查事实源和快照闭环
+uv run cli.py catalog-build --check
+uv run cli.py catalog-audit --language both
+
+# 步骤3: 批量处理所有产品
 uv run cli.py batch-process --all --parallel-jobs 6
 
-# 步骤3: 查看处理状态
+# 步骤4: 查看处理状态
 uv run cli.py batch-status --detailed
 
-# 步骤4: 上传到Azure Blob
-uv run cli.py upload --output-dir output --prefix cms
+# 步骤5: 上传已通过契约验证的业务 payload
+uv run cli.py upload --output-dir output/payloads --prefix cms
 
 # 单产品提取
-uv run cli.py extract mysql --html-file data/prod-html/zh-cn/database/mysql.html --format json
+uv run cli.py extract mysql --language zh-cn --output-dir output
 
-# 列出支持的产品（92个产品）
+# 列出唯一 Product Definition 和分类视图
 uv run cli.py list-products
 uv run cli.py list-categories
 

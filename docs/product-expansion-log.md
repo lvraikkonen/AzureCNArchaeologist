@@ -654,7 +654,7 @@ data/configs/products/
 
 | 挑战 | 解决方案 |
 |------|---------|
-| 路径映射复杂 | 建立special_mappings表，集中管理 |
+| 路径映射复杂 | v0.2 在 Product Definition 中逐语言声明精确 Source Location 和 Alias |
 | 页面类型多样 | 策略模式+工厂模式动态创建 |
 | 配置文件数量多 | 分布式目录结构，懒加载+缓存 |
 | 处理时间长 | 批处理并行处理，4-8并发 |

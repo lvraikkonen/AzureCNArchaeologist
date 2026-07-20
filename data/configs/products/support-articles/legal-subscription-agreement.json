@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "legal-subscription-agreement",
+  "display_name": "世纪互联有关 Azure 的在线服务标准协议",
+  "slug": "subscription-agreement",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "LEGAL",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/Legal/subscription-agreement.html",
+      "url": "https://www.azure.cn/support/legal/subscription-agreement/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/Legal/subscription-agreement.html",
+      "url": "https://www.azure.cn/en-us/support/legal/subscription-agreement/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

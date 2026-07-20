@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "product_key": "active-directory",
+  "display_name": "Microsoft Entra ID",
+  "slug": "active-directory",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "known_unsupported",
+  "unsupported_reason": "not_yet_qualified_for_extraction",
+  "catalog_categories": [
+    "identity"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/active-directory/index.html",
+      "url": "https://www.azure.cn/pricing/details/active-directory/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/active-directory/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/active-directory/"
+    }
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

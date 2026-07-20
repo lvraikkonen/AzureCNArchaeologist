@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "product_key": "storage-managed-disks",
+  "display_name": "Managed Disks",
+  "slug": "storage-managed-disks",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "known_unsupported",
+  "unsupported_reason": "not_yet_qualified_for_extraction",
+  "catalog_categories": [
+    "storage"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/storage/managed-disks/index.html",
+      "url": "https://www.azure.cn/pricing/details/storage/managed-disks/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/storage/managed-disks.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "storage-managed-disks"
+        },
+        {
+          "snapshot_path": "pricing/details/storage/managed-disks/indexs.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "storage-managed-disks"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/storage/managed-disks/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/storage/managed-disks/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/storage/managed-disks.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "storage-managed-disks"
+        },
+        {
+          "snapshot_path": "pricing/details/storage/managed-disks/indexs.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "storage-managed-disks"
+        }
+      ]
+    }
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

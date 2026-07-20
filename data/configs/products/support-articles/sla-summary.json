@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-summary",
+  "display_name": "Service Level Agreements",
+  "slug": "sla",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/Legal/sla.html",
+      "url": "https://www.azure.cn/support/legal/sla/",
+      "aliases": [
+        {
+          "snapshot_path": "SupportArticles/SLA/summary/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-summary"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/Legal/sla.html",
+      "url": "https://www.azure.cn/en-us/support/legal/sla/",
+      "aliases": [
+        {
+          "snapshot_path": "SupportArticles/SLA/summary/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-summary"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

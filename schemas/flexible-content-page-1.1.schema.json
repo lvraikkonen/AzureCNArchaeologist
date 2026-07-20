@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/flexible-content-page-1.1.schema.json",
+  "title": "FlexibleContentPage 1.1",
+  "type": "object",
+  "required": ["title", "slug", "language", "baseContent", "contentGroups", "commonSections", "pageConfig"],
+  "properties": {
+    "title": {"type": "string", "minLength": 1},
+    "metaTitle": {"type": "string"},
+    "metaDescription": {"type": "string"},
+    "metaKeywords": {"type": "string"},
+    "slug": {"type": "string", "minLength": 1, "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "language": {"enum": ["zh-cn", "en-us"]},
+    "baseContent": {"type": "string"},
+    "contentGroups": {"type": "array", "items": {"$ref": "#/$defs/contentGroup"}},
+    "commonSections": {"type": "array", "items": {"$ref": "#/$defs/commonSection"}},
+    "pageConfig": {"$ref": "#/$defs/pageConfig"}
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "contentGroup": {
+      "type": "object", "additionalProperties": true,
+      "required": ["groupName", "filterCriteriaJson", "content", "sortOrder", "isActive"],
+      "properties": {
+        "groupName": {"type": "string"},
+        "filterCriteriaJson": {"type": "string"},
+        "content": {"type": "string"},
+        "sortOrder": {"type": "integer"},
+        "isActive": {"type": "boolean"}
+      }
+    },
+    "commonSection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sectionType", "sectionTitle", "content", "sortOrder", "isActive"],
+      "properties": {
+        "sectionType": {"type": "string", "minLength": 1},
+        "sectionTitle": {"type": "string"},
+        "content": {"type": "string"},
+        "sortOrder": {"type": "integer"},
+        "isActive": {"type": "boolean"}
+      }
+    },
+    "pageConfig": {
+      "type": "object", "additionalProperties": true,
+      "required": ["displayTitle", "pageIcon", "leftNavigationIdentifier", "pageType", "enableFilters", "filtersJsonConfig"],
+      "properties": {
+        "displayTitle": {"type": "string"},
+        "pageIcon": {"type": "string"},
+        "leftNavigationIdentifier": {"type": "string", "minLength": 1},
+        "pageType": {"enum": ["Simple", "RegionFilter", "ComplexFilter"]},
+        "enableFilters": {"type": "boolean"},
+        "filtersJsonConfig": {"type": "string"}
+      }
+    }
+  }
+}

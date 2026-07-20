@@ -115,7 +115,7 @@ class FlexibleBuilder:
                     "groupName": group_name,
                     "filterCriteriaJson": json.dumps([{
                         "filterKey": "region",
-                        "matchValues": [region_id]
+                        "matchValues": region_id
                     }], ensure_ascii=False),
                     "content": content if isinstance(content, str) else str(content),
                     "sortOrder": len(content_groups) + 1,
@@ -178,9 +178,9 @@ class FlexibleBuilder:
                                 content_group = {
                                     "groupName": group_name,
                                     "filterCriteriaJson": json.dumps([
-                                        {"filterKey": "region", "matchValues": [region_id]},
-                                        {"filterKey": "software", "matchValues": [software_id]},
-                                        {"filterKey": "category", "matchValues": [tab_id]}
+                                        {"filterKey": "region", "matchValues": region_id},
+                                        {"filterKey": "software", "matchValues": software_id},
+                                        {"filterKey": "category", "matchValues": tab_id}
                                     ], ensure_ascii=False),
                                     "content": clean_html_content(content_result.get("content", "")),
                                     "sortOrder": len(content_groups) + 1,
@@ -204,8 +204,8 @@ class FlexibleBuilder:
                             content_group = {
                                 "groupName": group_name,
                                 "filterCriteriaJson": json.dumps([
-                                    {"filterKey": "region", "matchValues": [region_id]},
-                                    {"filterKey": "software", "matchValues": [software_id]}
+                                    {"filterKey": "region", "matchValues": region_id},
+                                    {"filterKey": "software", "matchValues": software_id}
                                 ], ensure_ascii=False),
                                 "content": clean_html_content(content_result.get("content", "")),
                                 "sortOrder": len(content_groups) + 1,
@@ -233,8 +233,8 @@ class FlexibleBuilder:
                         content_group = {
                             "groupName": group_name,
                             "filterCriteriaJson": json.dumps([
-                                {"filterKey": "region", "matchValues": [region_id]},
-                                {"filterKey": "category", "matchValues": [tab_id]}
+                                {"filterKey": "region", "matchValues": region_id},
+                                {"filterKey": "category", "matchValues": tab_id}
                             ], ensure_ascii=False),
                             "content": clean_html_content(content_result.get("content", "")),
                             "sortOrder": len(content_groups) + 1,
@@ -398,7 +398,7 @@ class FlexibleBuilder:
             filter_definitions = []
             
             # 处理区域筛选器 (适配FilterDetector的平铺结构)
-            if filter_analysis.get("region_visible", False):
+            if filter_analysis.get("region_options"):
                 region_options_data = filter_analysis.get("region_options", [])
                 region_options = []
                 
@@ -417,7 +417,7 @@ class FlexibleBuilder:
                 })
             
             # 处理软件类别筛选器 (适配FilterDetector的平铺结构)
-            if filter_analysis.get("software_visible", False):
+            if filter_analysis.get("software_options"):
                 software_options_data = filter_analysis.get("software_options", [])
                 software_options = []
                 
@@ -440,7 +440,8 @@ class FlexibleBuilder:
                 category_options = [
                     {
                         "value": tab.get("href", "").replace("#", ""),
-                        "label": tab.get("label", "")
+                        "label": tab.get("label", ""),
+                        "href": tab.get("href", "")
                     }
                     for tab in tab_analysis.get("category_tabs", [])
                 ]

@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-cache",
+  "display_name": "缓存的服务级别协议",
+  "slug": "cache",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/cache/index.html",
+      "url": "https://www.azure.cn/support/sla/cache/",
+      "aliases": [
+        {
+          "snapshot_path": "SupportArticles/SLA/redis-cache/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-cache"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/cache/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/cache/",
+      "aliases": [
+        {
+          "snapshot_path": "SupportArticles/SLA/redis-cache/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-cache"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

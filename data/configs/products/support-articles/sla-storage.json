@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-storage",
+  "display_name": "存储的服务级别协议",
+  "slug": "storage",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/storage/index.html",
+      "url": "https://www.azure.cn/support/sla/storage/",
+      "aliases": [
+        {
+          "snapshot_path": "SupportArticles/SLA/storage/V1_7/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-storage"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/storage/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/storage/",
+      "aliases": [
+        {
+          "snapshot_path": "SupportArticles/SLA/storage/V1_5/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-storage"
+        },
+        {
+          "snapshot_path": "SupportArticles/SLA/storage/V1_6/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-storage"
+        },
+        {
+          "snapshot_path": "SupportArticles/SLA/storage/V1_7/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-storage"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

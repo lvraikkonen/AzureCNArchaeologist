@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "product_key": "storage-queues",
+  "display_name": "Queue Storage",
+  "slug": "storage-queues",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "known_unsupported",
+  "unsupported_reason": "not_yet_qualified_for_extraction",
+  "catalog_categories": [
+    "storage"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/storage/queues/index.html",
+      "url": "https://www.azure.cn/pricing/details/storage/queues/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/storage/queues.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "storage-queues"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/storage/queues/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/storage/queues/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/storage/queues.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "storage-queues"
+        }
+      ]
+    }
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

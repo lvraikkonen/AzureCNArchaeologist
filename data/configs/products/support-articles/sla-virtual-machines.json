@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-virtual-machines",
+  "display_name": "虚拟机的服务级别协议",
+  "slug": "virtual-machines",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/virtual-machines/index.html",
+      "url": "https://www.azure.cn/support/sla/virtual-machines/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/virtual-machines/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/virtual-machines/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

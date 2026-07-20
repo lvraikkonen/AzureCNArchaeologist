@@ -51,7 +51,7 @@ src/utils/
 ### 验证结果
 ```bash
 # 测试命令
-python cli.py extract api-management --html-file data/prod-html/api-management-index.html --format json --output-dir output
+python cli.py extract api-management --language zh-cn --output-dir output
 
 # 验证结果
 ✅ 所有utils模块导入正常
@@ -223,7 +223,12 @@ class LargeFileStrategy(BaseStrategy):
 class ExtractionCoordinator:
     """提取流程协调器 - Phase 3架构核心"""
     
-    def coordinate_extraction(self, html_file_path: str, url: str) -> Dict[str, Any]
+    def coordinate_extraction(
+        self,
+        product_key: str,
+        language: str,
+        html_file_path: str | None = None,
+    ) -> ExtractionResult
     def _orchestrate_extraction_pipeline(self, strategy: ExtractionStrategy)
 ```
 

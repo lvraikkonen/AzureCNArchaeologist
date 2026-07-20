@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-app-service",
+  "display_name": "应用服务的服务级别协议",
+  "slug": "app-service",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/app-service/index.html",
+      "url": "https://www.azure.cn/support/sla/app-service/",
+      "aliases": [
+        {
+          "snapshot_path": "SupportArticles/SLA/app-service/V_1_2/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-app-service"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/app-service/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/app-service/",
+      "aliases": [
+        {
+          "snapshot_path": "SupportArticles/SLA/app-service/V_1_2/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-app-service"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

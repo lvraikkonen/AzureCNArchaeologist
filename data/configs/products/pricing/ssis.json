@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "product_key": "ssis",
+  "display_name": "SQL Server Integration Services",
+  "slug": "ssis",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "analysis"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/data-factory/ssis.html",
+      "url": "https://www.azure.cn/pricing/details/data-factory/ssis/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/data-factory/ssis.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/data-factory/ssis/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/data-factory/ssis/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "ssis"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议",
+      "SQL Server Integration Services",
+      "ssis"
+    ],
+    "estimated_size_mb": 0.6,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": true
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-virtual-network-manager",
+  "display_name": "Azure 虚拟网络管理器的服务级别协议",
+  "slug": "virtual-network-manager",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/virtual-network-manager/index.html",
+      "url": "https://www.azure.cn/support/sla/virtual-network-manager/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/virtual-network-manager/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/virtual-network-manager/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

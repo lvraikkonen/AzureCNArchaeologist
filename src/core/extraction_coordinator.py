@@ -1,397 +1,182 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-提取协调器
-负责协调整个提取流程，集成策略管理器、策略工厂和各种处理组件
-"""
+"""Explicit v0.2 extraction pipeline with payload/diagnostic isolation."""
 
-import os
-import sys
-from datetime import datetime
+from __future__ import annotations
+
+import json
+import re
+import time
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Any, Optional
+
 from bs4 import BeautifulSoup
 
-# 添加项目根目录到Python路径
-project_root = Path(__file__).parent.parent.parent
-sys.path.append(str(project_root))
-
+from src.core.contract_validator import ContractIssue, ContractValidator
+from src.core.data_models import ExtractionStrategy
+from src.core.extraction_result import ExtractionResult
+from src.core.logging import get_logger
+from src.core.product_catalog import artifact_relative_directory, normalized_input_path, sha256_file
 from src.core.product_manager import ProductManager
 from src.core.strategy_manager import StrategyManager
-from src.core.data_models import StrategyType, ExtractionStrategy
-from src.core.logging import get_logger
 from src.strategies.strategy_factory import StrategyFactory
 from src.utils.media.image_processor import preprocess_image_paths
-from src.utils.data.validation_utils import validate_extracted_data
+
 
 logger = get_logger(__name__)
 
 
 class ExtractionCoordinator:
-    """提取流程协调器 - Phase 3架构的核心组件"""
-
-    def __init__(self, output_dir: str):
-        """
-        初始化提取协调器
-        
-        Args:
-            output_dir: 输出目录
-        """
-        self.output_dir = Path(output_dir)
+    def __init__(self, output_dir: str = "output") -> None:
+        self.root = Path(__file__).resolve().parents[2]
+        self.output_dir = Path(output_dir).resolve()
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
-        # 初始化核心组件
-        self.product_manager = ProductManager()
+        self.product_manager = ProductManager(str(self.root / "data" / "configs"))
         self.strategy_manager = StrategyManager(self.product_manager)
+        self.contract_validator = ContractValidator(self.root)
 
-        logger.info("提取协调器初始化完成")
-        logger.info(f"输出目录: {self.output_dir}")
-
-        # 验证策略注册状态
-        self._validate_strategy_setup()
-
-    def coordinate_extraction(self, html_file_path: str, url: str = "") -> Dict[str, Any]:
-        """
-        协调整个提取流程
-        
-        Args:
-            html_file_path: HTML文件路径
-            url: 源URL
-            
-        Returns:
-            提取的内容数据
-            
-        Raises:
-            Exception: 提取过程中的各种异常
-        """
-        logger.info("开始协调提取流程")
-        logger.info(f"源文件: {html_file_path}")
-        logger.info(f"源URL: {url}")
+    def coordinate_extraction(
+        self,
+        product_key: str,
+        language: str,
+        html_file_path: str | None = None,
+    ) -> ExtractionResult:
+        if language not in ("zh-cn", "en-us"):
+            raise ValueError(f"Unsupported language: {language}")
+        definition = self.product_manager.get_product_config(product_key)
+        input_path = Path(html_file_path).resolve() if html_file_path else normalized_input_path(self.root, definition, language)
+        relative_dir = artifact_relative_directory(definition, language)
+        payload_target_path = self.output_dir / "payloads" / relative_dir / f"{product_key}.json"
+        payload_path: Optional[Path] = payload_target_path
+        sidecar_path = self.output_dir / "diagnostics" / relative_dir / f"{product_key}.sidecar.json"
+        source_definition = definition["sources"][language]
+        source_path = (
+            self.root / "data" / "current_prod_html" / language / source_definition["snapshot_path"]
+            if source_definition["availability"] == "available"
+            else input_path
+        )
+        started = datetime.now(timezone.utc)
+        started_clock = time.perf_counter()
+        payload: Optional[dict[str, Any]] = None
+        strategy_metadata: dict[str, Any] = {"type": "not_selected", "processor": "not_selected"}
+        validation_issues = {"errors": [], "warnings": []}
+        status = {"execution": "running", "validation": "not_run", "review": "not_requested", "publication": "not_published"}
+        structured_error: Optional[dict[str, str]] = None
 
         try:
-            # 阶段1: 检测产品类型
-            product_key = self._detect_product_key(html_file_path)
-            logger.info(f"检测到产品: {product_key}")
+            if definition["capability_status"] != "supported":
+                status["execution"] = "skipped"
+                structured_error = {"code": "known_unsupported", "stage": "catalog", "message": definition["unsupported_reason"]}
+                payload_target_path.unlink(missing_ok=True)
+                payload_path = None
+            else:
+                if not input_path.is_file():
+                    raise FileNotFoundError(f"Normalized Input does not exist: {input_path}")
+                strategy = self.strategy_manager.determine_extraction_strategy(str(input_path), product_key)
+                strategy_metadata = self._strategy_metadata(strategy)
+                strategy_instance = StrategyFactory.create_strategy(strategy, definition, str(input_path))
+                soup = self._read_html(input_path)
+                expected_ms_service = self._extract_ms_service(soup) if definition["page_model"] == "FlexibleContentPage" else None
+                payload = strategy_instance.extract_flexible_content(soup, source_definition.get("url", ""))
+                self._normalize_business_fields(payload, definition, language)
+                validation = self.contract_validator.validate(payload, definition["page_model"], expected_ms_service)
+                validation_issues = validation.to_dict()
+                validation_issues["warnings"].extend(self._quality_warnings(payload, definition))
+                status["execution"] = "succeeded"
+                status["validation"] = "passed" if validation.passed else "failed"
+                payload_target_path.parent.mkdir(parents=True, exist_ok=True)
+                payload_target_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        except Exception as error:
+            logger.error(f"Extraction failed for {language}/{product_key}: {error}", exc_info=True)
+            payload = None
+            payload_target_path.unlink(missing_ok=True)
+            payload_path = None
+            status["execution"] = "failed"
+            status["validation"] = "not_run"
+            structured_error = {"code": type(error).__name__, "stage": "extraction", "message": str(error)}
 
-            # 阶段2: 获取产品配置
-            product_config = self._get_product_config(product_key)
-            product_url = product_config.get('url', '')
+        completed = datetime.now(timezone.utc)
+        duration_ms = max(0, round((time.perf_counter() - started_clock) * 1000))
+        sidecar = {
+            "schema_version": "1.0",
+            "product_key": product_key,
+            "language": language,
+            "page_model": definition["page_model"],
+            "contract": self.contract_validator.contract_metadata(definition["page_model"]),
+            "source": self._artifact(source_path, source_definition.get("url")),
+            "normalized_input": self._artifact(input_path),
+            "payload": self._artifact(payload_path) if payload_path else None,
+            "strategy": strategy_metadata,
+            "status": status,
+            "validation": validation_issues,
+            "timing": {"started_at": started.isoformat(), "completed_at": completed.isoformat(), "duration_ms": duration_ms},
+            "error": structured_error,
+        }
+        sidecar_validation = self.contract_validator.validate_sidecar(sidecar)
+        if not sidecar_validation.passed:
+            messages = "; ".join(issue.message for issue in sidecar_validation.errors)
+            raise RuntimeError(f"Diagnostic Sidecar contract failure: {messages}")
+        sidecar_path.parent.mkdir(parents=True, exist_ok=True)
+        sidecar_path.write_text(json.dumps(sidecar, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        return ExtractionResult(product_key, language, payload, sidecar, payload_path, sidecar_path)
 
-            # 阶段3: 策略决策
-            extraction_strategy = self._determine_extraction_strategy(html_file_path, product_key)
-            logger.info(f"选择策略: {extraction_strategy.strategy_type.value}")
-            logger.info(f"处理器: {extraction_strategy.processor}")
-            
-            # 阶段4: 创建策略实例
-            strategy_instance = self._create_strategy_instance(
-                extraction_strategy, product_config, html_file_path
-            )
-            
-            # 阶段5: 准备HTML内容
-            soup = self._prepare_html_content(html_file_path)
-            
-            # 阶段6: 执行提取
-            extracted_data = self._execute_extraction(strategy_instance, soup, url=product_url)
-            
-            # 阶段7: 后处理和验证
-            final_data = self._post_process_and_validate(
-                extracted_data, product_config, extraction_strategy
-            )
-            
-            logger.info("提取流程完成")
-            return final_data
-
-        except Exception as e:
-            logger.error(f"提取流程失败: {e}", exc_info=True)
-            return self._create_error_result(str(e), html_file_path, url)
-
-    def _detect_product_key(self, html_file_path: str) -> str:
-        """
-        检测产品类型
-        
-        Args:
-            html_file_path: HTML文件路径
-            
-        Returns:
-            产品键
-        """
-        try:
-            product_key = self.product_manager.detect_product_from_filename(html_file_path)
-            if product_key:
-                return product_key
-        except Exception as e:
-            logger.warning(f"产品类型检测失败: {e}")
-
-        # 如果检测失败，尝试从文件名推断
-        file_name = Path(html_file_path).stem
-        if file_name.endswith('-index'):
-            return file_name[:-6]  # 移除'-index'后缀
-
-        logger.warning("无法检测产品类型，使用unknown")
-        return "unknown"
-
-    def _get_product_config(self, product_key: str) -> Dict[str, Any]:
-        """
-        获取产品配置
-        
-        Args:
-            product_key: 产品键
-            
-        Returns:
-            产品配置信息
-        """
-        try:
-            config = self.product_manager.get_product_config(product_key)
-            logger.info(f"获取产品配置: {len(config)} 个配置项")
-            return config
-        except Exception as e:
-            logger.warning(f"无法获取产品配置 ({product_key}): {e}")
-            # 返回默认配置
-            return {
-                "product_key": product_key,
-                "default_url": f"https://www.azure.cn/pricing/details/{product_key}/",
-                "service_name": product_key
-            }
-
-    def _determine_extraction_strategy(self, html_file_path: str, product_key: str) -> ExtractionStrategy:
-        """
-        确定提取策略
-        
-        Args:
-            html_file_path: HTML文件路径
-            product_key: 产品键
-            
-        Returns:
-            提取策略配置
-        """
-        try:
-            strategy = self.strategy_manager.determine_extraction_strategy(html_file_path, product_key)
-            logger.info(f"策略决策成功: {strategy.strategy_type.value}")
-            return strategy
-        except Exception as e:
-            logger.warning(f"策略决策失败，使用回退策略: {e}")
-            # 返回回退策略
-            from src.core.data_models import ExtractionStrategy
-            return ExtractionStrategy(
-                strategy_type=StrategyType.SIMPLE_STATIC,
-                processor="SimpleStaticProcessor",
-                description="回退策略",
-                features=["基础内容提取"],
-                priority_features=["Title", "DescriptionContent"],
-                config_overrides={}
-            )
-
-    def _create_strategy_instance(self, extraction_strategy: ExtractionStrategy, 
-                                 product_config: Dict[str, Any], 
-                                 html_file_path: str):
-        """
-        创建策略实例
-        
-        Args:
-            extraction_strategy: 提取策略配置
-            product_config: 产品配置
-            html_file_path: HTML文件路径
-            
-        Returns:
-            策略实例
-        """
-        try:
-            strategy = StrategyFactory.create_strategy(
-                extraction_strategy, product_config, html_file_path
-            )
-            logger.info(f"策略实例创建成功: {strategy.__class__.__name__}")
-            return strategy
-        except Exception as e:
-            logger.warning(f"策略实例创建失败，使用回退策略: {e}")
-            # 使用回退策略
-            return StrategyFactory.create_fallback_strategy(product_config, html_file_path)
-
-    def _prepare_html_content(self, html_file_path: str) -> BeautifulSoup:
-        """
-        准备HTML内容
-        
-        Args:
-            html_file_path: HTML文件路径
-            
-        Returns:
-            BeautifulSoup对象
-            
-        Raises:
-            Exception: 文件读取或解析失败
-        """
-        logger.info("读取和解析HTML文件...")
-
-        # 检查文件是否存在
-        if not os.path.exists(html_file_path):
-            raise FileNotFoundError(f"HTML文件不存在: {html_file_path}")
-        
-        # 读取HTML文件
-        try:
-            with open(html_file_path, 'r', encoding='utf-8') as f:
-                html_content = f.read()
-        except UnicodeDecodeError:
-            # 尝试其他编码
+    @staticmethod
+    def _read_html(path: Path) -> BeautifulSoup:
+        for encoding in ("utf-8", "gbk", "iso-8859-1"):
             try:
-                with open(html_file_path, 'r', encoding='gbk') as f:
-                    html_content = f.read()
+                html = path.read_text(encoding=encoding)
+                return preprocess_image_paths(BeautifulSoup(html, "html.parser"))
             except UnicodeDecodeError:
-                with open(html_file_path, 'r', encoding='iso-8859-1') as f:
-                    html_content = f.read()
-        
-        # 解析HTML
-        soup = BeautifulSoup(html_content, 'html.parser')
-        
-        # 预处理图片路径
-        soup = preprocess_image_paths(soup)
+                continue
+        raise UnicodeError(f"Unable to decode {path}")
 
-        logger.info(f"HTML解析完成: {len(html_content)} 字符")
-        return soup
+    @staticmethod
+    def _normalize_business_fields(payload: dict[str, Any], definition: dict[str, Any], language: str) -> None:
+        for key in ("validation", "extraction_metadata", "error", "source_file", "source_url", "quality_score"):
+            payload.pop(key, None)
+        payload["slug"] = definition["slug"]
+        if definition["page_model"] == "FlexibleContentPage":
+            payload["language"] = language
 
-    def _execute_extraction(self, strategy, soup: BeautifulSoup, url: str) -> Dict[str, Any]:
-        """
-        执行提取
-        
-        Args:
-            strategy: 策略实例
-            soup: BeautifulSoup对象
-            url: 源URL
-            
-        Returns:
-            提取的数据
-        """
-        logger.info(f"执行提取策略: {strategy.__class__.__name__}")
+    @staticmethod
+    def _extract_ms_service(soup: BeautifulSoup) -> str:
+        metadata_tag = soup.find("tags", attrs={"ms.service": True})
+        if metadata_tag:
+            return str(metadata_tag.get("ms.service", "")).strip()
+        meta = soup.find("meta", attrs={"name": re.compile(r"^ms\.service$", re.I)})
+        return str(meta.get("content", "")).strip() if meta else ""
 
-        try:
-            extracted_data = strategy.extract_flexible_content(soup, url)
+    @staticmethod
+    def _quality_warnings(payload: dict[str, Any], definition: dict[str, Any]) -> list[dict[str, str]]:
+        minimum = definition.get("quality", {}).get("min_content_length")
+        if minimum is None:
+            return []
+        if definition["page_model"] == "SupportArticlePage":
+            fragments = [payload.get("mainContent", "")]
+        else:
+            fragments = [payload.get("baseContent", "")]
+            fragments.extend(group.get("content", "") for group in payload.get("contentGroups", []))
+            fragments.extend(section.get("content", "") for section in payload.get("commonSections", []))
+        length = len(BeautifulSoup("".join(fragments), "html.parser").get_text(" ", strip=True))
+        if length >= minimum:
+            return []
+        return [{
+            "code": "content_below_threshold",
+            "path": "$.mainContent" if definition["page_model"] == "SupportArticlePage" else "$",
+            "message": f"Extracted text length {length} is below configured minimum {minimum}.",
+        }]
 
-            logger.info("策略提取完成")
-            return extracted_data
-        except Exception as e:
-            logger.error(f"策略提取失败: {e}", exc_info=True)
-            raise
-
-    def _post_process_and_validate(self, data: Dict[str, Any], 
-                                  product_config: Dict[str, Any],
-                                  extraction_strategy: ExtractionStrategy) -> Dict[str, Any]:
-        """
-        后处理和验证
-        
-        Args:
-            data: 提取的数据
-            product_config: 产品配置
-            extraction_strategy: 提取策略
-            
-        Returns:
-            处理后的数据
-        """
-        logger.info("后处理和验证...")
-
-        # SupportArticle 策略输出仅包含业务字段，不添加元数据
-        if extraction_strategy.strategy_type == StrategyType.SUPPORT_ARTICLE:
-            logger.info("SupportArticle 策略: 跳过 extraction_metadata 和 validation")
-            return data
-
-        # 添加提取元数据
-        data["extraction_metadata"] = {
-            "extractor_version": "enhanced_v3.0",
-            "extraction_timestamp": datetime.now().isoformat(),
-            "strategy_used": extraction_strategy.strategy_type.value,
-            "processor_used": extraction_strategy.processor,
-            "processing_mode": "strategy_coordinated",
-            "page_complexity_score": getattr(extraction_strategy, 'complexity_score', 0.0),
-            "strategy_features": extraction_strategy.features,
-            "priority_features": extraction_strategy.priority_features
-        }
-
-        # 数据验证
-        try:
-            validation_result = validate_extracted_data(data, product_config)
-            data["validation"] = validation_result
-            logger.info(f"数据验证完成: {'有效' if validation_result.get('is_valid') else '无效'}")
-        except Exception as e:
-            logger.warning(f"数据验证失败: {e}")
-            data["validation"] = {
-                "is_valid": False,
-                "errors": [str(e)],
-                "warnings": []
-            }
-
-        return data
-
-    def _create_error_result(self, error_message: str, html_file_path: str, url: str) -> Dict[str, Any]:
-        """
-        创建错误结果
-        
-        Args:
-            error_message: 错误信息
-            html_file_path: HTML文件路径
-            url: 源URL
-            
-        Returns:
-            错误结果数据
-        """
+    @staticmethod
+    def _strategy_metadata(strategy: ExtractionStrategy) -> dict[str, Any]:
         return {
-            "error": error_message,
-            "source_file": str(html_file_path),
-            "source_url": url,
-            "extraction_timestamp": datetime.now().isoformat(),
-            "extraction_metadata": {
-                "extractor_version": "enhanced_v3.0",
-                "status": "failed",
-                "error_message": error_message
-            },
-            "validation": {
-                "is_valid": False,
-                "errors": [error_message],
-                "warnings": []
-            }
+            "type": strategy.strategy_type.value,
+            "processor": strategy.processor,
+            "complexity_score": strategy.complexity_score,
+            "features": strategy.features,
         }
 
-    def _validate_strategy_setup(self) -> None:
-        """验证策略设置"""
-        logger.info("验证策略设置...")
-
-        # 检查策略注册状态
-        status = StrategyFactory.get_registration_status()
-        registered_count = status["registered_strategies"]
-        total_count = status["total_strategies"]
-
-        logger.info(f"策略注册状态: {registered_count}/{total_count} "
-              f"({status['completion_rate']:.1f}%)")
-
-        if status["missing"]:
-            logger.warning(f"缺少策略: {[s['strategy_type'] for s in status['missing']]}")
-
-        # 如果没有注册任何策略，给出警告
-        if registered_count == 0:
-            logger.warning("警告: 没有注册任何策略，将只能使用回退策略")
-
-    def get_coordinator_status(self) -> Dict[str, Any]:
-        """
-        获取协调器状态
-        
-        Returns:
-            协调器状态信息
-        """
-        strategy_status = StrategyFactory.get_registration_status()
-        
-        return {
-            "coordinator_version": "v3.0",
-            "output_dir": str(self.output_dir),
-            "components": {
-                "product_manager": {
-                    "status": "active",
-                    "supported_products": len(self.product_manager.get_supported_products())
-                },
-                "strategy_manager": {
-                    "status": "active"
-                },
-                "strategy_factory": {
-                    "status": "active",
-                    "registered_strategies": strategy_status["registered_strategies"],
-                    "total_strategies": strategy_status["total_strategies"],
-                    "completion_rate": strategy_status["completion_rate"]
-                }
-            },
-            "strategy_details": strategy_status
-        }
+    @staticmethod
+    def _artifact(path: Path, url: str | None = None) -> dict[str, Any]:
+        value: dict[str, Any] = {"path": str(path), "sha256": sha256_file(path) if path.is_file() else None}
+        if url:
+            value["url"] = url
+        return value

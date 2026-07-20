@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "product_key": "container-instances",
+  "display_name": "Container Instances",
+  "slug": "container-instances",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "container"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/container-instances/index.html",
+      "url": "https://www.azure.cn/pricing/details/container-instances/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/container-instances/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/container-instances/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议",
+      "Container Instances",
+      "container-instances"
+    ],
+    "estimated_size_mb": 1.0,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": true,
+    "extra_sections": [
+      {
+        "title": "公共 IP 地址",
+        "type": "content",
+        "include_in": "contentGroups",
+        "position": "after_main"
+      },
+      {
+        "title": "定价示例",
+        "type": "content",
+        "include_in": "contentGroups",
+        "position": "after_main"
+      }
+    ]
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

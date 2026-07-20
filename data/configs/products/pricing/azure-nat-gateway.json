@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "product_key": "azure-nat-gateway",
+  "display_name": "Azure NAT Gateway",
+  "slug": "azure-nat-gateway",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "networking"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/azure-nat-gateway/index.html",
+      "url": "https://www.azure.cn/pricing/details/azure-nat-gateway/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/azure-nat-gateway/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/azure-nat-gateway/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议"
+    ],
+    "estimated_size_mb": 1.0,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": false,
+    "extra_sections": [
+      {
+        "title": "虚拟网络 NAT",
+        "type": "content",
+        "include_in": "baseContent",
+        "position": "after_main"
+      }
+    ]
+  },
+  "quality": {
+    "min_content_length": 10
+  }
+}

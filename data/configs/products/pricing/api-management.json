@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "product_key": "api-management",
+  "display_name": "API Management",
+  "slug": "api-management",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "integration"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/api-management/index.html",
+      "url": "https://www.azure.cn/pricing/details/api-management/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/api-management/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/api-management/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议",
+      "API Management",
+      "api-management"
+    ],
+    "estimated_size_mb": 0.7,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": true
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

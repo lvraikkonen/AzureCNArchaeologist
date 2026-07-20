@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "product_key": "virtual-network",
+  "display_name": "Virtual Network",
+  "slug": "virtual-network",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "networking"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/virtual-network/index.html",
+      "url": "https://www.azure.cn/pricing/details/virtual-network/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/virtual-network/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/virtual-network/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议"
+    ],
+    "estimated_size_mb": 1.0,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": false,
+    "extra_sections": [
+      {
+        "title": "虚拟网络对等互连",
+        "type": "content",
+        "include_in": "baseContent",
+        "position": "after_main"
+      },
+      {
+        "title": "虚拟网络 NAT",
+        "type": "content",
+        "include_in": "baseContent",
+        "position": "after_main"
+      },
+      {
+        "title": "IP 地址",
+        "type": "content",
+        "include_in": "baseContent",
+        "position": "after_main"
+      },
+      {
+        "title": "VPN 网关",
+        "type": "content",
+        "include_in": "baseContent",
+        "position": "after_main"
+      }
+    ]
+  },
+  "quality": {
+    "min_content_length": 10
+  }
+}

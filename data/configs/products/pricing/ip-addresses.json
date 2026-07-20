@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "product_key": "ip-addresses",
+  "display_name": "IP Address",
+  "slug": "ip-addresses",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "networking"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/ip-addresses/index.html",
+      "url": "https://www.azure.cn/pricing/details/ip-addresses/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/reserved-ip-addresses/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "ip-addresses"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/ip-addresses/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/ip-addresses/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/reserved-ip-addresses/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "ip-addresses"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价信息",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议",
+      "Support & SLA"
+    ],
+    "estimated_size_mb": 0.7,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": true
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

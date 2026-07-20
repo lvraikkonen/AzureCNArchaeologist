@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "product_key": "metrics-advisor",
+  "display_name": "Metrics Advisor",
+  "slug": "metrics-advisor",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "ai-ml"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/metrics-advisor/index.html",
+      "url": "https://www.azure.cn/pricing/details/metrics-advisor/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/cognitive-services/metrics-advisor/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "metrics-advisor"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/metrics-advisor/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/metrics-advisor/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议",
+      "Metrics Advisor",
+      "metrics-advisor"
+    ],
+    "estimated_size_mb": 1.0,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": true
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

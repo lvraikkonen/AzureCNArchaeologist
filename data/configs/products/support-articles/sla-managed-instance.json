@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-managed-instance",
+  "display_name": "Azure SQL 托管实例的服务级别协议",
+  "slug": "managed-instance",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/managed-instance/index.html",
+      "url": "https://www.azure.cn/support/sla/managed-instance/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/azure-sql-sql-managed-instance/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/azure-sql-sql-managed-instance/",
+      "aliases": [
+        {
+          "snapshot_path": "SupportArticles/SLA/managed-instance/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-managed-instance"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

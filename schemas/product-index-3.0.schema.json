@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/product-index-3.0.schema.json",
+  "title": "Product Index 3.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source_digest", "total_products", "supported_products", "known_unsupported_products", "products", "catalog_categories", "support_article_types"],
+  "properties": {
+    "schema_version": {"const": "3.0"},
+    "source_digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "total_products": {"type": "integer", "minimum": 0},
+    "supported_products": {"type": "integer", "minimum": 0},
+    "known_unsupported_products": {"type": "integer", "minimum": 0},
+    "products": {"type": "object", "additionalProperties": {"$ref": "#/$defs/product"}},
+    "catalog_categories": {"type": "object", "additionalProperties": {"$ref": "#/$defs/view"}},
+    "support_article_types": {"type": "object", "additionalProperties": {"$ref": "#/$defs/view"}}
+  },
+  "$defs": {
+    "product": {
+      "type": "object", "additionalProperties": false,
+      "required": ["config_path", "page_model", "slug", "capability_status"],
+      "properties": {
+        "config_path": {"type": "string", "minLength": 1},
+        "page_model": {"enum": ["FlexibleContentPage", "SupportArticlePage"]},
+        "slug": {"type": "string", "minLength": 1},
+        "capability_status": {"enum": ["supported", "known_unsupported"]},
+        "catalog_categories": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "support_article_type": {"enum": ["SLA", "LEGAL", "ICP", "PSR"]}
+      }
+    },
+    "view": {
+      "type": "object", "additionalProperties": false, "required": ["count", "products"],
+      "properties": {
+        "count": {"type": "integer", "minimum": 0},
+        "products": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    }
+  }
+}

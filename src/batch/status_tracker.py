@@ -13,7 +13,7 @@ from dataclasses import dataclass, field
 from threading import Lock
 
 from .models import (
-    BatchProcessRecord, BatchProcessStatus, BatchProcessReport,
+    BatchProcessRecord, ExecutionStatus, BatchProcessReport,
     ProcessingResult
 )
 from .record_manager import BatchProcessRecordManager
@@ -350,7 +350,7 @@ class BatchStatusTracker:
         if strategy_stats:
             for strategy, strategy_data in strategy_stats.items():
                 strategy_success_rate = (
-                    strategy_data.get('success', {}).get('count', 0) /
+                    strategy_data.get('succeeded', {}).get('count', 0) /
                     max(sum(status_data.get('count', 0) for status_data in strategy_data.values()), 1) * 100
                 )
                 

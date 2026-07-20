@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "icp-summary",
+  "display_name": "ICP 备案",
+  "slug": "icp",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "ICP",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/ICP/icp.html",
+      "url": "https://www.azure.cn/support/icp/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/ICP/icp.html",
+      "url": "https://www.azure.cn/en-us/support/icp/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

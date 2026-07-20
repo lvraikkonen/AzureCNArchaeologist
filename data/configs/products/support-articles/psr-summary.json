@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "psr-summary",
+  "display_name": "公安备案",
+  "slug": "public-security-registration",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "PSR",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/PublicSecurityRegistration/index.html",
+      "url": "https://www.azure.cn/support/announcement/public-security-registration/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/PublicSecurityRegistration/index.html",
+      "url": "https://www.azure.cn/en-us/support/announcement/public-security-registration/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

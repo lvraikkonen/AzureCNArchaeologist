@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "product_key": "active-directory-ds",
+  "display_name": "Azure AD DS",
+  "slug": "active-directory-ds",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "identity"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/active-directory-ds/index.html",
+      "url": "https://www.azure.cn/pricing/details/active-directory-ds/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/active-directory-ds/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/active-directory-ds/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议",
+      "Azure AD DS",
+      "active-directory-ds"
+    ],
+    "estimated_size_mb": 1.0,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": true
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

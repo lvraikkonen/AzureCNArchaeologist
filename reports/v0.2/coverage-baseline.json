@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "passed": true,
+  "counts": {
+    "zh-cn": {
+      "snapshots": 234,
+      "explained": 234,
+      "unknown": 0
+    },
+    "en-us": {
+      "snapshots": 236,
+      "explained": 236,
+      "unknown": 0
+    }
+  },
+  "unknown_snapshots": [],
+  "stale_exclusions": [],
+  "duplicate_explanations": [],
+  "missing_primary_sources": [],
+  "missing_source_aliases": [],
+  "normalized_input_issues": []
+}

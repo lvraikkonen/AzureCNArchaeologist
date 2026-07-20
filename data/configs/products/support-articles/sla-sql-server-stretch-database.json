@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-sql-server-stretch-database",
+  "display_name": "SQL Server 伸展数据库的服务级别协议",
+  "slug": "sql-server-stretch-database",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/sql-server-stretch-database/index.html",
+      "url": "https://www.azure.cn/support/sla/sql-server-stretch-database/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/sql-server-stretch-database/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/sql-server-stretch-database/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

@@ -13,7 +13,10 @@ Components:
 - cli_commands: CLI command integration for batch operations
 """
 
-from .models import BatchProcessRecord, BatchProcessStatus, ProcessingResult
+from .models import (
+    BatchProcessRecord, ExecutionStatus, ValidationStatus,
+    ReviewStatus, PublicationStatus, ProcessingResult,
+)
 from .record_manager import BatchProcessRecordManager
 from .process_engine import BatchProcessEngine
 from .status_tracker import BatchStatusTracker
@@ -21,7 +24,10 @@ from .status_tracker import BatchStatusTracker
 __version__ = "1.0.0"
 __all__ = [
     "BatchProcessRecord",
-    "BatchProcessStatus", 
+    "ExecutionStatus",
+    "ValidationStatus",
+    "ReviewStatus",
+    "PublicationStatus",
     "ProcessingResult",
     "BatchProcessRecordManager",
     "BatchProcessEngine", 

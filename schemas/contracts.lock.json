@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "upstream_contracts": [
+    {
+      "path": "docs/cms-json-new-schema/FlexibleContentPage-JSON-Schema-1.1.md",
+      "sha256": "b985b0249679a6adc4ce9489baff852ef92bc63655975dae64af24340131a83c"
+    },
+    {
+      "path": "docs/cms-json-new-schema/SupportArticlePage-JSON-schema.md",
+      "sha256": "fc0627a7a2aa9ff952cf652cf27cd0dd2cf29b46dd477ffed9091713b3d3c4c4"
+    },
+    {
+      "path": "docs/cms-json-new-schema/CONTRACT-CONFIRMATIONS.md",
+      "sha256": "5047fd38c88f0e447d825df039f22b279b90080904951ca4bb6cf141ca69401e"
+    }
+  ],
+  "confirmation": "v0.2 local contracts reconfirmed against the recorded CMS Markdown and confirmations; any digest change requires explicit reconfirmation or a contract version upgrade."
+}

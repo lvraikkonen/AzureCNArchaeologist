@@ -65,15 +65,28 @@ class StrategyManager:
         
         print(f"📏 文件大小: {file_size_mb:.2f} MB")
         
-        # 2. 支持文章类型检测（基于产品配置的 category 字段）
+        # 2. SupportArticle is selected by the explicit page model. Its CMS type is
+        # independent from catalog categories and source directories.
         try:
             product_config = self.product_manager.get_product_config(product_key)
-            category = product_config.get("category", "")
-            if category in ("sla", "icp", "legal", "public-security-registration"):
-                print(f"📄 支持文章策略: category={category}")
-                return self._create_support_article_strategy(product_key, category)
+            if product_config.get("page_model") == "SupportArticlePage":
+                support_type = product_config["support_article_type"]
+                print(f"📄 支持文章策略: support_article_type={support_type}")
+                return self._create_support_article_strategy(product_key, support_type)
         except Exception:
             pass
+
+        # A Product Definition may pin a stable strategy when source controls are
+        # present but intentionally belong in static content (for example Event Grid).
+        configured_strategy = product_config.get("extraction", {}).get("strategy")
+        configured_page_types = {
+            "simple_static": PageType.SIMPLE_STATIC,
+            "region_filter": PageType.REGION_FILTER,
+            "complex": PageType.COMPLEX,
+        }
+        if configured_strategy in configured_page_types:
+            print(f"📌 Product Definition strategy: {configured_strategy}")
+            return self._select_strategy_by_page_type(configured_page_types[configured_strategy], product_key, None)
 
         # 3. 大文件优先处理
         if is_large_file:
@@ -191,7 +204,7 @@ class StrategyManager:
         )
     
     def _create_support_article_strategy(self, product_key: str,
-                                        category: str) -> ExtractionStrategy:
+                                        support_type: str) -> ExtractionStrategy:
         """创建支持文章处理策略。"""
         strategy_config = self.strategy_registry[StrategyType.SUPPORT_ARTICLE]
 
@@ -201,7 +214,7 @@ class StrategyManager:
             description=strategy_config["description"],
             features=strategy_config["features"],
             priority_features=["articleDescription", "mainContent"],
-            config_overrides={"category": category},
+            config_overrides={"support_article_type": support_type},
             complexity_score=0.0,
             recommended_page_type=PageType.SUPPORT_ARTICLE
         )
@@ -285,13 +298,7 @@ class StrategyManager:
             product_config = self.product_manager.get_product_config(product_key)
             if product_config:
                 # 提取策略相关的配置
-                strategy_config = product_config.get('extraction_strategy', {})
-                strategy_specific = strategy_config.get(strategy_type.value, {})
-                overrides.update(strategy_specific)
-                
-                # 通用配置覆盖
-                common_overrides = strategy_config.get('common', {})
-                overrides.update(common_overrides)
+                overrides.update(product_config.get('extraction', {}))
                 
         except Exception as e:
             print(f"⚠ 获取产品配置失败: {e}")

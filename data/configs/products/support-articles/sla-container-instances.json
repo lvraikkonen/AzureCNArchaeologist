@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-container-instances",
+  "display_name": "容器实例的服务级别协议",
+  "slug": "container-instances",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/container-instances/v1_0/index.html",
+      "url": "https://www.azure.cn/support/sla/container-instances/v1_0/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/container-instances/v1_0/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/container-instances/v1_0/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

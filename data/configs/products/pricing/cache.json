@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "product_key": "cache",
+  "display_name": "Azure Cache for Redis",
+  "slug": "cache",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "database"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/cache/index.html",
+      "url": "https://www.azure.cn/pricing/details/cache/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/redis-cache/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "cache"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/cache/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/cache/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/redis-cache/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "cache"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议",
+      "Azure Cache for Redis",
+      "cache"
+    ],
+    "estimated_size_mb": 1.2,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": true
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "product_key": "bot-services",
+  "display_name": "Azure AI 机器人服务定价",
+  "slug": "bot-services",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "ai-ml"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/bot-services/index.html",
+      "url": "https://www.azure.cn/pricing/details/bot-services/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/bot-services/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/bot-services/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题"
+    ],
+    "estimated_size_mb": 1.0,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

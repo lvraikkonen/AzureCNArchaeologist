@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-virtual-machine-scale-sets",
+  "display_name": "虚拟机规模集的服务级别协议",
+  "slug": "virtual-machine-scale-sets",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/virtual-machine-scale-sets/index.html",
+      "url": "https://www.azure.cn/support/sla/virtual-machine-scale-sets/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/virtual-machine-scale-sets/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/virtual-machine-scale-sets/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

@@ -1,166 +1,48 @@
-# HTML文件自动复制脚本
+# v0.2 输入复制与上传脚本
 
-## 概述
+## HTML 标准化复制
 
-这个脚本用于自动化处理Azure CN Archaeologist项目中的HTML文件复制任务。它根据`data/configs/products-index.json`配置文件，自动从`data/current_prod_html`中查找对应的HTML文件，复制到相应分组文件夹并重命名为产品名.html。
+`auto_copy_html.py` 只读取 Product Definition 中 `sources.{language}.snapshot_path` 声明的精确 Source Snapshot，不进行目录猜测、文件名回退或特殊路径映射。复制完成后必须满足 source/normalized SHA-256 相同。
 
-## 功能特性
+规范输入位置：
 
-- ✅ 支持多语言版本（zh-cn 和 en-us）
-- ✅ 自动创建多语言目录结构：`data/prod-html/{language}/{category}/{product}.html`
-- ✅ 智能文件查找，支持特殊路径映射
-- ✅ 详细的日志输出和错误处理
-- ✅ 灵活的命令行参数配置
-- ✅ 批量处理和单分组处理
+- Pricing：`data/prod-html/{language}/pricing/{product_key}.html`
+- Support Article：`data/prod-html/{language}/SupportArticles/{type-dir}/{product_key}.html`
 
-## 目录结构
-
-### 输入结构
-```
-data/current_prod_html/
-├── zh-cn/pricing/details/
-│   ├── sql-database/index.html
-│   ├── storage/files/index.html
-│   ├── cognitive-services/anomaly-detector/index.html
-│   └── ...
-└── en-us/pricing/details/
-    ├── sql-database/index.html
-    ├── storage/files/index.html
-    └── ...
-```
-
-### 输出结构
-```
-data/prod-html/
-├── zh-cn/
-│   ├── database/
-│   │   ├── sql-database.html
-│   │   ├── mysql.html
-│   │   └── ...
-│   ├── storage/
-│   │   ├── storage-files.html
-│   │   └── data-lake-storage.html
-│   └── ...
-└── en-us/
-    ├── database/
-    │   ├── sql-database.html
-    │   └── ...
-    └── ...
-```
-
-## 使用方法
-
-### 通过CLI使用（推荐）
+推荐通过统一 CLI 调用：
 
 ```bash
-# 处理两种语言版本的所有分组
-uv run cli.py copy-from-prod
-
-# 只处理中文版本
-uv run cli.py copy-from-prod --language zh-cn
-
-# 只处理英文版本
-uv run cli.py copy-from-prod --language en-us
-
-# 只处理特定分组
-uv run cli.py copy-from-prod --categories database storage
-
-# 处理特定分组的英文版本
-uv run cli.py copy-from-prod --language en-us --categories database ai-ml
+uv run cli.py copy-from-prod --language both
+uv run cli.py copy-from-prod --language zh-cn --product event-grid
+uv run cli.py copy-from-prod --language both --category networking
+uv run cli.py copy-from-prod --language en-us --support-type SLA
 ```
 
-### 直接使用脚本
+参数 `--product`、`--category`、`--support-type` 均可重复。多分类产品按照 Product Key 去重，只复制一次。
+
+直接运行脚本也使用同一套参数：
 
 ```bash
-# 处理两种语言版本的所有分组
-uv run scripts/auto_copy_html.py
-
-# 或者明确指定
 uv run scripts/auto_copy_html.py --language both
+uv run scripts/auto_copy_html.py --language zh-cn --category database
+uv run scripts/auto_copy_html.py --language en-us --support-type ICP
 ```
 
-### 单语言处理
+如果配置的源文件不存在，或复制后的哈希不同，命令失败。修复方式是更新对应 Product Definition 的精确 source route，不能向复制器增加路径猜测。
+
+## Payload 上传
+
+`upload_to_blob.py` 默认仅扫描 `output/payloads`。每个 payload 必须有镜像路径的 sidecar，且：
+
+- `execution=succeeded`
+- `validation=passed`
+- sidecar 中的 payload SHA-256 与文件一致
+
+`output/diagnostics` 和验证失败的候选 payload 不会上传。
 
 ```bash
-# 只处理中文版本
-uv run scripts/auto_copy_html.py --language zh-cn
-
-# 只处理英文版本
-uv run scripts/auto_copy_html.py --language en-us
+uv run cli.py upload --output-dir output/payloads --prefix cms --dry-run
+uv run cli.py upload --output-dir output/payloads --prefix cms
 ```
 
-### 指定分组处理
-
-```bash
-# 只处理database和storage分组
-uv run scripts/auto_copy_html.py --categories database storage
-
-# 处理特定分组的英文版本
-uv run scripts/auto_copy_html.py --language en-us --categories database ai-ml
-```
-
-### 指定项目目录
-
-```bash
-# 如果不在项目根目录运行
-uv run scripts/auto_copy_html.py --base-dir /path/to/project
-```
-
-## 命令行参数
-
-| 参数 | 短参数 | 默认值 | 说明 |
-|------|--------|--------|------|
-| `--language` | `-l` | `both` | 语言版本：`zh-cn`、`en-us`、`both` |
-| `--categories` | `-c` | 所有分组 | 要处理的分组列表 |
-| `--base-dir` | `-d` | `.` | 项目根目录路径 |
-
-## 特殊映射规则
-
-脚本内置了一些特殊的文件路径映射规则，用于处理产品名称与实际文件路径不一致的情况：
-
-### 特殊路径映射
-- `storage-files` → `storage/files/index.html`
-- `data-lake-storage` → `storage/data-lake/index.html`
-- `anomaly-detector` → `cognitive-services/anomaly-detector/index.html`
-- `metrics-advisor` → `cognitive-services/metrics-advisor/index.html`
-- `ssis` → `data-factory/ssis.html`
-- `ip-address` → `ip-addresses/index.html`
-- `core-control-plane` → `azure-arc/core-control-plane/index.html`
-
-### 分组名称映射
-- `ai-ml` → `ai`
-- `websites` → `website`
-- `dev-tool` → `dev-tools`
-
-## 日志输出
-
-脚本会生成详细的日志输出，包括：
-- 文件查找过程
-- 复制操作结果
-- 错误信息和警告
-- 处理统计信息
-
-日志会同时输出到控制台和`auto_copy_html.log`文件。
-
-## 故障排除
-
-### 常见问题
-
-1. **找不到HTML文件**
-   - 检查产品名称是否在配置文件中正确定义
-   - 检查源文件是否存在于`data/current_prod_html`中
-   - 查看日志中的详细错误信息
-
-2. **权限错误**
-   - 确保对目标目录有写权限
-   - 在Windows上可能需要以管理员身份运行
-
-3. **配置文件错误**
-   - 验证JSON格式是否正确
-   - 检查产品列表和分组配置
-
-### 获取帮助
-
-```bash
-uv run scripts/auto_copy_html.py --help
-```
+外部存储交付成功后，脚本将对应 sidecar 的 `publication` 更新为 `published`。

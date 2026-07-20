@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-signalr-service",
+  "display_name": "Azure SignalR的服务级别协议",
+  "slug": "signalr-service",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/signalr-service/index.html",
+      "url": "https://www.azure.cn/support/sla/signalr-service/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/signale-service/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/signale-service/",
+      "aliases": [
+        {
+          "snapshot_path": "SupportArticles/SLA/signalr-service/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-signalr-service"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

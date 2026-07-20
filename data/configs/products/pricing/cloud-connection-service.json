@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "product_key": "cloud-connection-service",
+  "display_name": "Cloud Connection Service",
+  "slug": "cloud-connection-service",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "known_unsupported",
+  "unsupported_reason": "not_yet_qualified_for_extraction",
+  "catalog_categories": [
+    "networking"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/cloud-connection-service/index.html",
+      "url": "https://www.azure.cn/pricing/details/cloud-connection-service/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/ccs/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "cloud-connection-service"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/cloud-connection-service/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/cloud-connection-service/"
+    }
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

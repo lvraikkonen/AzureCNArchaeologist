@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-spring-cloud",
+  "display_name": "Azure Spring Cloud 的 SLA",
+  "slug": "spring-cloud",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/spring-cloud/index.html",
+      "url": "https://www.azure.cn/support/sla/spring-cloud/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/spring-cloud/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/spring-cloud/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

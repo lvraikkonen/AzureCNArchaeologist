@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-data-explorer",
+  "display_name": "Azure 数据资源管理器的服务级别协议",
+  "slug": "data-explorer",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/data-explorer/index.html",
+      "url": "https://www.azure.cn/support/sla/data-explorer/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/data-explorer/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/data-explorer/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

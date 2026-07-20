@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "product_key": "data-explorer",
+  "display_name": "Azure Data Explorer",
+  "slug": "data-explorer",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "database"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/data-explorer/index.html",
+      "url": "https://www.azure.cn/pricing/details/data-explorer/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/data-explorer/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/data-explorer/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议",
+      "Azure Data Explorer",
+      "data-explorer"
+    ],
+    "estimated_size_mb": 1.0,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": true
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

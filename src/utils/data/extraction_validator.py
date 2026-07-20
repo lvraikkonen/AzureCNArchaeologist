@@ -74,11 +74,8 @@ class ExtractionValidator:
         """
         logger.info("✅ 验证flexible JSON格式提取结果...")
         
-        validation_result = self._validate_flexible_structure(flexible_data)
-        
-        # 添加验证结果到数据中
-        flexible_data["validation"] = validation_result
-        
+        # v0.2: CMS Business Payloads never carry validation or quality diagnostics.
+        # ContractValidator runs after strategy extraction and writes issues to the sidecar.
         return flexible_data
 
     def _validate_flexible_structure(self, flexible_data: Dict[str, Any]) -> Dict[str, Any]:

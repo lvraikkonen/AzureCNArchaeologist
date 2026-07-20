@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "product_key": "multi-factor-authentication",
+  "display_name": "Multi-Factor Authentication",
+  "slug": "multi-factor-authentication",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "identity"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/multi-factor-authentication/index.html",
+      "url": "https://www.azure.cn/pricing/details/multi-factor-authentication/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/multi-factor-authentication/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/multi-factor-authentication/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议",
+      "Multi-Factor Authentication",
+      "multi-factor-authentication"
+    ],
+    "estimated_size_mb": 1.0,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

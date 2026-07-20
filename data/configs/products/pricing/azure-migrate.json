@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "product_key": "azure-migrate",
+  "display_name": "Azure Migrate",
+  "slug": "azure-migrate",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "migration"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/azure-migrate/index.html",
+      "url": "https://www.azure.cn/pricing/details/azure-migrate/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/azure-migrate/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/azure-migrate/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议",
+      "Azure Migrate",
+      "azure-migrate"
+    ],
+    "estimated_size_mb": 1.0,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

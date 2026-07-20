@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "exclusions": [
+    {
+      "language": "en-us",
+      "snapshot_path": "pricing/details/azure-stack/hci/hci-download/index.html",
+      "reason_code": "non_product",
+      "reason": "Download helper page, not a pricing or support business page."
+    },
+    {
+      "language": "en-us",
+      "snapshot_path": "pricing/details/storage/files/index.bak.html",
+      "reason_code": "backup",
+      "reason": "Source-system backup page."
+    },
+    {
+      "language": "zh-cn",
+      "snapshot_path": "pricing/details/azure-stack/hci/hci-download/index.html",
+      "reason_code": "non_product",
+      "reason": "Download helper page, not a pricing or support business page."
+    },
+    {
+      "language": "zh-cn",
+      "snapshot_path": "pricing/details/managed-instance/index2.html",
+      "reason_code": "backup",
+      "reason": "Historical duplicate retained in the source dump."
+    },
+    {
+      "language": "zh-cn",
+      "snapshot_path": "pricing/details/metrics-advisor/test.html",
+      "reason_code": "test_fixture",
+      "reason": "Source-system test page."
+    },
+    {
+      "language": "zh-cn",
+      "snapshot_path": "pricing/details/sql-database/index_bak.html",
+      "reason_code": "backup",
+      "reason": "Source-system backup page."
+    },
+    {
+      "language": "zh-cn",
+      "snapshot_path": "pricing/details/virtual-machines/v-mtest/index.html",
+      "reason_code": "test_fixture",
+      "reason": "Source-system virtual-machine test route."
+    }
+  ]
+}

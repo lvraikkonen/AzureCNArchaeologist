@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "product_key": "kubernetes-service",
+  "display_name": "Kubernetes Service",
+  "slug": "kubernetes-service",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "container"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/kubernetes-service/index.html",
+      "url": "https://www.azure.cn/pricing/details/kubernetes-service/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/kubernetes-service/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/kubernetes-service/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议",
+      "Kubernetes Service",
+      "kubernetes-service"
+    ],
+    "estimated_size_mb": 1.0,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

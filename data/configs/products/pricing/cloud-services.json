@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "product_key": "cloud-services",
+  "display_name": "Cloud Services",
+  "slug": "cloud-services",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "compute"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/cloud-services/index.html",
+      "url": "https://www.azure.cn/pricing/details/cloud-services/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/cloud-services/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/cloud-services/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议",
+      "Cloud Services",
+      "cloud-services"
+    ],
+    "estimated_size_mb": 1.0,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": true
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

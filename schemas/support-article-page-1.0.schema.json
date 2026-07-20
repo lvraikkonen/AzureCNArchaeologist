@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/support-article-page-1.0.schema.json",
+  "title": "SupportArticlePage 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["title", "slug", "metaTitle", "metaDescription", "metaKeywords", "pageType", "lastModifiedDate", "articleDescription", "mainContent"],
+  "properties": {
+    "title": {"type": "string", "minLength": 1},
+    "slug": {"type": "string", "minLength": 1, "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "metaTitle": {"type": "string"},
+    "metaDescription": {"type": "string"},
+    "metaKeywords": {"type": "string"},
+    "pageType": {"enum": ["SLA", "LEGAL", "ICP", "PSR"]},
+    "lastModifiedDate": {"type": "string"},
+    "articleDescription": {"type": "string"},
+    "mainContent": {"type": "string", "minLength": 1}
+  }
+}

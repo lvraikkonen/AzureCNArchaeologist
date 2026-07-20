@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "product_key": "site-recovery",
+  "display_name": "Site Recovery",
+  "slug": "site-recovery",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "migration"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/site-recovery/index.html",
+      "url": "https://www.azure.cn/pricing/details/site-recovery/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/site-recovery/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/site-recovery/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议",
+      "Site Recovery",
+      "site-recovery"
+    ],
+    "estimated_size_mb": 1.0,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

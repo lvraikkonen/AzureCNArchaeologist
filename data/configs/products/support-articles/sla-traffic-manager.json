@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-traffic-manager",
+  "display_name": "流量管理器的服务级别协议",
+  "slug": "traffic-manager",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/traffic-manager/index.html",
+      "url": "https://www.azure.cn/support/sla/traffic-manager/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/traffic-manager/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/traffic-manager/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}

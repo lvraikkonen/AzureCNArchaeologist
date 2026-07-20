@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "product_key": "azure-defender",
+  "display_name": "Microsoft Defender for Cloud",
+  "slug": "azure-defender",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "security"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/azure-defender/index.html",
+      "url": "https://www.azure.cn/pricing/details/azure-defender/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/security-center/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "azure-defender"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/azure-defender/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/azure-defender/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/security-center/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "azure-defender"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "important_section_titles": [
+      "定价详细信息",
+      "定价详情",
+      "pricing details",
+      "常见问题",
+      "faq",
+      "frequently asked questions",
+      "支持和服务级别协议"
+    ],
+    "estimated_size_mb": 1.0,
+    "priority_sections": [
+      "pricing-tables",
+      "banner",
+      "description",
+      "faq"
+    ],
+    "enable_region_processing": true
+  },
+  "quality": {
+    "min_content_length": 100
+  }
+}

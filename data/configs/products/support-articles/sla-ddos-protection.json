@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "product_key": "sla-ddos-protection",
+  "display_name": "Azure DDos保护的服务级别协议",
+  "slug": "ddos-protection",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/ddos-protection/index.html",
+      "url": "https://www.azure.cn/support/sla/ddos-protection/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/ddos-protection/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/ddos-protection/"
+    }
+  },
+  "extraction": {
+    "important_section_titles": [],
+    "priority_sections": [],
+    "enable_region_processing": false
+  },
+  "quality": {
+    "min_content_length": 1
+  }
+}
