@@ -51,6 +51,12 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def sha256_contract_text(path: Path) -> str:
+    """Hash a text contract after canonicalizing platform line endings to LF."""
+    content = path.read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(content).hexdigest()
+
+
 class ProductCatalog:
     def __init__(self, root: str | Path = ".") -> None:
         self.root = Path(root).resolve()
@@ -221,11 +227,15 @@ class ProductCatalog:
         lock_path = self.schema_root / "contracts.lock.json"
         lock = json.loads(lock_path.read_text(encoding="utf-8"))
         errors = []
+        canonicalization = lock.get("digest_canonicalization", "raw")
+        if canonicalization not in {"raw", "line-endings-lf"}:
+            errors.append(f"unsupported contract digest canonicalization: {canonicalization}")
+        digest_file = sha256_contract_text if canonicalization == "line-endings-lf" else sha256_file
         for item in lock.get("upstream_contracts", []):
             path = self.root / item["path"]
             if not path.is_file():
                 errors.append(f"missing upstream contract: {item['path']}")
-            elif sha256_file(path) != item["sha256"]:
+            elif digest_file(path) != item["sha256"]:
                 errors.append(f"upstream contract digest changed: {item['path']}")
         if errors:
             raise CatalogError("Contract lock validation failed:\n- " + "\n- ".join(errors))

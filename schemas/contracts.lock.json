@@ -1,5 +1,6 @@
 {
   "schema_version": "1.0",
+  "digest_canonicalization": "line-endings-lf",
   "upstream_contracts": [
     {
       "path": "docs/cms-json-new-schema/FlexibleContentPage-JSON-Schema-1.1.md",

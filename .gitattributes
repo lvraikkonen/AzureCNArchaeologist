@@ -1,0 +1,4 @@
+# Keep locked CMS contract descriptions stable in Windows working trees.
+docs/cms-json-new-schema/FlexibleContentPage-JSON-Schema-1.1.md text eol=lf
+docs/cms-json-new-schema/SupportArticlePage-JSON-schema.md text eol=lf
+docs/cms-json-new-schema/CONTRACT-CONFIRMATIONS.md text eol=lf

@@ -571,6 +571,10 @@ az storage blob delete-batch \
 
 ## 故障排除
 
+### Windows 契约锁校验
+
+契约 Markdown 使用 `line-endings-lf` 规范化后计算 SHA-256，因此 Windows Git 将工作树行尾转换为 CRLF 时不会产生误报。真实文本内容发生变化仍会使 `catalog-build --check` 失败。若旧版本代码同时报告全部三份契约文档 digest changed，请更新代码后重新运行命令，不要手工修改 `schemas/contracts.lock.json` 中的哈希。
+
 ### HTML导入问题
 
 #### 问题1: 文件未找到

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import shutil
 import sqlite3
@@ -28,6 +29,33 @@ FIXTURES = ROOT / "tests" / "fixtures" / "regression" / "payloads"
 
 
 class ProductCatalogTests(unittest.TestCase):
+    def test_contract_lock_digest_is_stable_across_windows_line_endings(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            contract_path = root / "docs/contracts/example.md"
+            contract_path.parent.mkdir(parents=True)
+            contract_lf = b"# Contract\n\nConfirmed.\n"
+            contract_path.write_bytes(contract_lf.replace(b"\n", b"\r\n"))
+
+            schema_root = root / "schemas"
+            schema_root.mkdir()
+            lock = {
+                "schema_version": "1.0",
+                "digest_canonicalization": "line-endings-lf",
+                "upstream_contracts": [
+                    {
+                        "path": "docs/contracts/example.md",
+                        "sha256": hashlib.sha256(contract_lf).hexdigest(),
+                    }
+                ],
+            }
+            (schema_root / "contracts.lock.json").write_text(json.dumps(lock), encoding="utf-8")
+
+            ProductCatalog(root).validate_contract_lock()
+            contract_path.write_bytes(b"# Contract\r\n\r\nChanged.\r\n")
+            with self.assertRaisesRegex(CatalogError, "digest changed"):
+                ProductCatalog(root).validate_contract_lock()
+
     def test_index_is_deterministic_and_frontdoor_is_multi_category(self):
         catalog = ProductCatalog(ROOT)
         built = catalog.build_index()
