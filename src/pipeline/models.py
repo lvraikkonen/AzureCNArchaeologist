@@ -349,7 +349,14 @@ def derive_batch_availability(
         item["status"]["execution"] == "failed"
         for item in manifest["items"].values()
     )
+    recoverable_report_failure = (
+        stored_status == "failed"
+        and manifest["checkpoints"]["report"]["status"] == "succeeded"
+    )
     return (
         "interrupted" if interrupted else stored_status,
-        interrupted or incomplete_checkpoint or execution_failure,
+        interrupted
+        or incomplete_checkpoint
+        or execution_failure
+        or recoverable_report_failure,
     )

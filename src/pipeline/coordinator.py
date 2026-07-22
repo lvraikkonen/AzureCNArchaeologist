@@ -111,6 +111,7 @@ class PipelineCoordinator:
         self._batch_id_factory = batch_id_factory or generate_batch_id
         self._now = now
         self._contract_validator = ContractValidator(self.root)
+        self._active_stage: str | None = None
 
     def run(
         self,
@@ -130,10 +131,12 @@ class PipelineCoordinator:
         # The clean/index/contract gates intentionally run before create_run.
         # The repository lock may create its ignored lock parent, never a batch
         # directory or an input manifest.
-        with RepositoryLock(self.root):
+        batch_id = self._batch_id_factory()
+        with RepositoryLock(
+            self.root, batch_id=batch_id, command="pipeline-run"
+        ):
             frozen_provenance = self.provenance.capture(allow_dirty=allow_dirty)
             plan = self.planner.plan(scope, group=group, language=language)
-            batch_id = self._batch_id_factory()
             frozen = InputManifest.from_plan(
                 batch_id,
                 plan,
@@ -141,39 +144,64 @@ class PipelineCoordinator:
                 created_at=self._now(),
             )
             run_dir = self.store.create_run(frozen)
+            self._activate_stage("discovery")
             try:
                 self._complete_discovery(batch_id)
                 return self._execute(batch_id, parallel_jobs, resume=False)
             except KeyboardInterrupt:
-                self._log_event(batch_id, "discovery", "interrupted", error_code="USER_INTERRUPTED")
+                self._log_event(
+                    batch_id,
+                    self._active_stage or "discovery",
+                    "interrupted",
+                    error_code="USER_INTERRUPTED",
+                )
                 raise
             except Exception as exc:
-                self._mark_batch_failed(batch_id, exc)
+                self._mark_batch_failed(
+                    batch_id, exc, stage=self._active_stage or "discovery"
+                )
                 raise
+            finally:
+                self._active_stage = None
 
     def resume(self, batch_id: str, *, parallel_jobs: int = 4) -> PipelineOutcome:
         """Resume operationally failed or interrupted stages without redoing success."""
         self._validate_parallel_jobs(parallel_jobs)
-        with RepositoryLock(self.root):
+        with RepositoryLock(
+            self.root, batch_id=batch_id, command="pipeline-resume"
+        ):
             frozen = self.store.read_input_manifest(batch_id)
             self.provenance.verify(frozen["provenance"])
             manifest = self.store.read_manifest(batch_id)
+            self._activate_stage("discovery")
             try:
                 if manifest["checkpoints"]["discovery"]["status"] != "succeeded":
                     self._complete_discovery(batch_id)
+                self._activate_stage("normalize")
                 self._reconcile_for_resume(batch_id, frozen)
                 return self._execute(batch_id, parallel_jobs, resume=True)
             except KeyboardInterrupt:
-                self._log_event(batch_id, "discovery", "interrupted", error_code="USER_INTERRUPTED")
+                self._log_event(
+                    batch_id,
+                    self._active_stage or "discovery",
+                    "interrupted",
+                    error_code="USER_INTERRUPTED",
+                )
                 raise
             except Exception as exc:
-                self._mark_batch_failed(batch_id, exc)
+                self._mark_batch_failed(
+                    batch_id, exc, stage=self._active_stage or "discovery"
+                )
                 raise
+            finally:
+                self._active_stage = None
 
     def validate(self, batch_id: str, *, parallel_jobs: int = 4) -> PipelineOutcome:
         """Revalidate existing successful extractions without invoking earlier stages."""
         self._validate_parallel_jobs(parallel_jobs)
-        with RepositoryLock(self.root):
+        with RepositoryLock(
+            self.root, batch_id=batch_id, command="pipeline-validate"
+        ):
             frozen = self.store.read_input_manifest(batch_id)
             self.provenance.verify(frozen["provenance"])
             manifest = self.store.read_manifest(batch_id)
@@ -181,6 +209,7 @@ class PipelineCoordinator:
                 raise PipelineError(
                     "pipeline-validate requires a completed batch; resume interrupted work first"
                 )
+            self._activate_stage("validate")
             try:
                 items = items_from_dicts(frozen["items"])
                 candidates = [
@@ -188,14 +217,25 @@ class PipelineCoordinator:
                     if manifest["items"][item.item_id]["status"]["execution"] == "succeeded"
                 ]
                 self._run_validation_stage(batch_id, candidates, parallel_jobs, explicit=True)
+                self._activate_stage("review")
                 self._rebuild_review(batch_id, items)
+                self._activate_stage("report")
                 return self._finish_report(batch_id, items)
             except KeyboardInterrupt:
-                self._log_event(batch_id, "validate", "interrupted", error_code="USER_INTERRUPTED")
+                self._log_event(
+                    batch_id,
+                    self._active_stage or "validate",
+                    "interrupted",
+                    error_code="USER_INTERRUPTED",
+                )
                 raise
             except Exception as exc:
-                self._mark_batch_failed(batch_id, exc)
+                self._mark_batch_failed(
+                    batch_id, exc, stage=self._active_stage or "validate"
+                )
                 raise
+            finally:
+                self._active_stage = None
 
     def status(self, batch_id: str) -> dict[str, Any]:
         """Read status without taking or mutating the repository lock."""
@@ -203,7 +243,10 @@ class PipelineCoordinator:
         summary = self._status_summary(manifest)
         stored_status = manifest["status"]
         display_status, resumable = derive_batch_availability(
-            manifest, lock_is_held=RepositoryLock.is_locked(self.root)
+            manifest,
+            lock_is_held=RepositoryLock.is_locked(
+                self.root, batch_id=batch_id
+            ),
         )
         return {
             "batch_id": batch_id,
@@ -216,6 +259,7 @@ class PipelineCoordinator:
         }
 
     def _execute(self, batch_id: str, parallel_jobs: int, *, resume: bool) -> PipelineOutcome:
+        self._activate_stage("normalize")
         frozen = self.store.read_input_manifest(batch_id)
         items = items_from_dicts(frozen["items"])
 
@@ -229,6 +273,7 @@ class PipelineCoordinator:
         ]
         self._run_normalize_stage(batch_id, normalize, parallel_jobs)
 
+        self._activate_stage("preflight")
         manifest = self.store.read_manifest(batch_id)
         preflight = [
             item for item in items
@@ -240,6 +285,7 @@ class PipelineCoordinator:
         ]
         self._run_preflight_stage(batch_id, preflight, parallel_jobs)
 
+        self._activate_stage("extract")
         manifest = self.store.read_manifest(batch_id)
         extract = [
             item for item in items
@@ -251,6 +297,7 @@ class PipelineCoordinator:
         ]
         self._run_extract_stage(batch_id, extract, parallel_jobs)
 
+        self._activate_stage("validate")
         manifest = self.store.read_manifest(batch_id)
         validate = [
             item for item in items
@@ -260,7 +307,9 @@ class PipelineCoordinator:
         ]
         self._run_validation_stage(batch_id, validate, parallel_jobs, explicit=False)
         self._rebuild_missing_validation_projections(batch_id, items)
+        self._activate_stage("review")
         self._rebuild_review(batch_id, items)
+        self._activate_stage("report")
         return self._finish_report(batch_id, items)
 
     # ---- stage implementations -------------------------------------------------
@@ -385,18 +434,31 @@ class PipelineCoordinator:
             expected_sidecar = (
                 run_dir / info.metadata["batch_item"].diagnostic_path
             ).resolve()
-            if result.payload_path is None or result.payload_path.resolve() != expected_payload:
-                raise ValueError(
-                    f"Payload path mismatch for {info.resource_key}: {result.payload_path}"
-                )
             if result.sidecar_path.resolve() != expected_sidecar:
                 raise ValueError(
                     f"Diagnostic path mismatch for {info.resource_key}: {result.sidecar_path}"
                 )
+            if result.execution_succeeded:
+                if (
+                    result.payload_path is None
+                    or result.payload_path.resolve() != expected_payload
+                ):
+                    raise ValueError(
+                        f"Payload path mismatch for {info.resource_key}: "
+                        f"{result.payload_path}"
+                    )
+            elif result.payload_path is not None:
+                raise ValueError(
+                    f"Failed extraction returned an unexpected payload path for "
+                    f"{info.resource_key}: {result.payload_path}"
+                )
             return result
 
         def callback(result: ResourceProcessingResult, completed: int, total: int) -> None:
-            if not result.execution_succeeded:
+            if (
+                not result.execution_succeeded
+                and result.extraction_result is None
+            ):
                 result.error_code = "EXTRACTION_FAILED"
             self._commit_stage_result(batch_id, "extract", result)
 
@@ -727,6 +789,7 @@ class PipelineCoordinator:
             if not item.runnable:
                 continue
             current = current_manifest["items"][item.item_id]
+            self._activate_stage("normalize")
             normalized = self.root / item.normalized_path
             normalized_ok = (
                 item.normalized_sha256 is not None
@@ -736,6 +799,7 @@ class PipelineCoordinator:
             if current["checkpoints"]["normalize"]["status"] == "succeeded" and not normalized_ok:
                 resets[item.item_id] = "normalize"
                 continue
+            self._activate_stage("extract")
             if (
                 current["checkpoints"]["extract"]["status"] == "succeeded"
                 and self._validate_frozen_extraction_artifacts_from_state(
@@ -746,6 +810,10 @@ class PipelineCoordinator:
 
         if not resets:
             return
+
+        self._activate_stage(
+            min(resets.values(), key=STAGES.index)
+        )
 
         def mutate(manifest: dict[str, Any]) -> None:
             for item_id, stage in resets.items():
@@ -943,8 +1011,10 @@ class PipelineCoordinator:
                 if item.runnable
             )
         )
-        stage_needed = not checkpoints_complete or manifest["status"] != desired_status
-        if stage_needed:
+        checkpoint_needed = not checkpoints_complete
+        status_reconcile_needed = manifest["status"] != desired_status
+        state_changed = checkpoint_needed or status_reconcile_needed
+        if checkpoint_needed:
             self._start_stage(batch_id, "report", [item for item in items if item.runnable])
             completed_at = self._now()
 
@@ -967,6 +1037,15 @@ class PipelineCoordinator:
 
             self.store.update_manifest(batch_id, mutate)
             self._finish_stage(batch_id, "report")
+        elif status_reconcile_needed:
+            def reconcile_status(value: dict[str, Any]) -> None:
+                current_summary = self._status_summary(value)
+                value["status"] = self._completed_status(current_summary)
+                value["summary"] = current_summary
+
+            self.store.update_manifest(
+                batch_id, reconcile_status, changed_item_ids=()
+            )
 
         manifest = self.store.read_manifest(batch_id)
         summary = self._status_summary(manifest)
@@ -989,13 +1068,13 @@ class PipelineCoordinator:
                 existing = json.loads(target.read_text(encoding="utf-8"))
                 self.store.validate_document(existing, "report")
                 if existing == report:
-                    if stage_needed:
+                    if state_changed:
                         self._log_event(batch_id, "report", manifest["status"])
                     return self._outcome_from_manifest(batch_id, manifest)
             except (OSError, ValueError, StateStoreError):
                 pass
         self.store.write_projection(batch_id, "report", report)
-        if stage_needed:
+        if state_changed:
             self._log_event(batch_id, "report", manifest["status"])
         return self._outcome_from_manifest(batch_id, manifest)
 
@@ -1381,7 +1460,9 @@ class PipelineCoordinator:
     def _status_summary(manifest: Mapping[str, Any]) -> dict[str, int]:
         return summarize_batch_manifest(manifest)
 
-    def _mark_batch_failed(self, batch_id: str, exc: Exception) -> None:
+    def _mark_batch_failed(
+        self, batch_id: str, exc: Exception, *, stage: str
+    ) -> None:
         try:
             self.store.update_manifest(
                 batch_id,
@@ -1390,7 +1471,7 @@ class PipelineCoordinator:
             )
             self._log_event(
                 batch_id,
-                "report",
+                stage,
                 "failed",
                 error_code="PIPELINE_FATAL",
                 message=str(exc),
@@ -1398,6 +1479,11 @@ class PipelineCoordinator:
         except Exception:
             # Preserve the original fatal error if state itself is unreadable.
             pass
+
+    def _activate_stage(self, stage: str) -> None:
+        if stage not in STAGES:
+            raise PipelineError(f"Unknown pipeline stage: {stage}")
+        self._active_stage = stage
 
     def _log_item_event(
         self,

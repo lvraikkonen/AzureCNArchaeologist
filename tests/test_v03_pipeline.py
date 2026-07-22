@@ -25,7 +25,7 @@ from src.pipeline.cli_commands import (
 from src.pipeline.coordinator import PipelineCoordinator, PipelineError, PipelineOutcome
 from src.pipeline.models import BatchItem, PipelinePlan
 from src.pipeline.provenance import ProvenanceError
-from src.pipeline.state_store import ImmutableManifestError, StateStore
+from src.pipeline.state_store import ImmutableManifestError, RepositoryLock, StateStore
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -144,6 +144,7 @@ class _Extractor:
         self.extract_calls: Counter[str] = Counter()
         self.validation_calls: Counter[str] = Counter()
         self.extract_failures_remaining: Counter[str] = Counter()
+        self.returned_extract_failures: dict[str, tuple[str, str]] = {}
         self.validation_failures: set[str] = set()
         self.validation_exceptions: set[str] = set()
 
@@ -160,6 +161,27 @@ class _Extractor:
         if self.extract_failures_remaining[item.resource_key] > 0:
             self.extract_failures_remaining[item.resource_key] -= 1
             raise RuntimeError(f"fixture extraction failed for {item.resource_key}")
+
+        returned_failure = self.returned_extract_failures.get(item.resource_key)
+        if returned_failure is not None:
+            code, message = returned_failure
+            sidecar = self._sidecar(item, validation="not_run")
+            sidecar["status"]["execution"] = "failed"
+            sidecar["error"] = {
+                "code": code,
+                "stage": "extraction",
+                "message": message,
+            }
+            sidecar_path = self.run_dir / item.diagnostic_path
+            self._write_json(sidecar_path, sidecar)
+            return ExtractionResult(
+                product_key=item.product_key,
+                language=item.language,
+                payload=None,
+                sidecar=sidecar,
+                payload_path=None,
+                sidecar_path=sidecar_path,
+            )
 
         payload = {
             "title": item.resource_key,
@@ -442,6 +464,48 @@ class PipelineCoordinatorTests(unittest.TestCase):
             self.assertEqual(beta["error"]["code"], "EXTRACTION_FAILED")
             self.assertEqual(extractor.extract_calls, Counter({"alpha": 1, "beta": 1}))
 
+    def test_failed_extraction_result_preserves_sidecar_error(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            harness = _Harness(Path(directory))
+            extractor = harness._extractor_factory(
+                harness.store.run_dir(FIXED_BATCH_ID)
+            )
+            extractor.returned_extract_failures["beta"] = (
+                "FIXTURE_PARSE_FAILED",
+                "fixture parser rejected beta",
+            )
+
+            outcome = harness.run()
+
+            self.assertEqual(outcome.exit_code, 2)
+            manifest = harness.store.read_manifest(FIXED_BATCH_ID)
+            beta_item = next(
+                item for item in harness.items if item.resource_key == "beta"
+            )
+            beta = manifest["items"][beta_item.item_id]
+            self.assertEqual(beta["status"]["execution"], "failed")
+            self.assertEqual(beta["error"]["code"], "FIXTURE_PARSE_FAILED")
+            self.assertEqual(
+                beta["error"]["message"], "fixture parser rejected beta"
+            )
+            self.assertFalse((outcome.run_dir / beta_item.output_path).exists())
+            self.assertTrue((outcome.run_dir / beta_item.diagnostic_path).is_file())
+
+            events = [
+                json.loads(line)
+                for line in (outcome.run_dir / "logs/pipeline.jsonl")
+                .read_text(encoding="utf-8")
+                .splitlines()
+            ]
+            beta_failure = next(
+                event
+                for event in events
+                if event["item_id"] == beta_item.item_id
+                and event["stage"] == "extract"
+                and event["status"] == "failed"
+            )
+            self.assertEqual(beta_failure["error_code"], "FIXTURE_PARSE_FAILED")
+
     def test_resume_appends_failed_attempt_and_does_not_rerun_success(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             harness = _Harness(Path(directory))
@@ -494,6 +558,152 @@ class PipelineCoordinatorTests(unittest.TestCase):
                     for item in manifest["items"].values()
                 )
             )
+
+    def test_status_ignores_a_live_lock_owned_by_another_batch(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            harness = _Harness(Path(directory))
+            with patch.object(
+                harness.coordinator,
+                "_complete_discovery",
+                side_effect=KeyboardInterrupt(),
+            ):
+                with self.assertRaises(KeyboardInterrupt):
+                    harness.run()
+
+            other_batch = "20260721T200001Z-deadbeef"
+            with RepositoryLock(
+                harness.root,
+                batch_id=other_batch,
+                command="pipeline-resume",
+            ):
+                self.assertTrue(RepositoryLock.is_locked(harness.root))
+                self.assertTrue(
+                    RepositoryLock.is_locked(
+                        harness.root, batch_id=other_batch
+                    )
+                )
+                self.assertFalse(
+                    RepositoryLock.is_locked(
+                        harness.root, batch_id=FIXED_BATCH_ID
+                    )
+                )
+                status = harness.coordinator.status(FIXED_BATCH_ID)
+                cli_stdout = io.StringIO()
+                with patch(
+                    "src.pipeline.cli_commands.ROOT", harness.root
+                ), redirect_stdout(cli_stdout):
+                    self.assertEqual(
+                        pipeline_status_command(
+                            SimpleNamespace(
+                                batch_id=FIXED_BATCH_ID,
+                                runs_dir="runs",
+                                json=True,
+                            )
+                        ),
+                        0,
+                    )
+                cli_status = json.loads(cli_stdout.getvalue())
+
+            self.assertEqual(status["stored_status"], "created")
+            self.assertEqual(status["status"], "interrupted")
+            self.assertTrue(status["resumable"])
+            self.assertEqual(cli_status["status"], "interrupted")
+            self.assertTrue(cli_status["resumable"])
+
+    def test_extract_interrupt_is_logged_at_the_active_stage_once(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            harness = _Harness(Path(directory))
+            with patch.object(
+                harness.coordinator,
+                "_run_extract_stage",
+                side_effect=KeyboardInterrupt(),
+            ):
+                with self.assertRaises(KeyboardInterrupt):
+                    harness.run()
+
+            events = [
+                json.loads(line)
+                for line in (
+                    harness.store.run_dir(FIXED_BATCH_ID)
+                    / "logs/pipeline.jsonl"
+                )
+                .read_text(encoding="utf-8")
+                .splitlines()
+            ]
+            interruptions = [
+                event
+                for event in events
+                if event["error_code"] == "USER_INTERRUPTED"
+            ]
+            self.assertEqual(len(interruptions), 1)
+            self.assertEqual(interruptions[0]["stage"], "extract")
+            self.assertEqual(interruptions[0]["status"], "interrupted")
+
+    def test_preflight_fatal_error_is_logged_at_the_active_stage(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            harness = _Harness(Path(directory))
+            with patch.object(
+                harness.coordinator,
+                "_run_preflight_stage",
+                side_effect=RuntimeError("fixture preflight batch failure"),
+            ):
+                with self.assertRaisesRegex(
+                    RuntimeError, "fixture preflight batch failure"
+                ):
+                    harness.run()
+
+            events = [
+                json.loads(line)
+                for line in (
+                    harness.store.run_dir(FIXED_BATCH_ID)
+                    / "logs/pipeline.jsonl"
+                )
+                .read_text(encoding="utf-8")
+                .splitlines()
+            ]
+            fatal = [
+                event
+                for event in events
+                if event["error_code"] == "PIPELINE_FATAL"
+            ]
+            self.assertEqual(len(fatal), 1)
+            self.assertEqual(fatal[0]["stage"], "preflight")
+            self.assertEqual(fatal[0]["status"], "failed")
+
+    def test_resume_interrupt_is_logged_at_the_active_stage_once(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            harness = _Harness(Path(directory))
+            extractor = harness._extractor_factory(
+                harness.store.run_dir(FIXED_BATCH_ID)
+            )
+            extractor.extract_failures_remaining["beta"] = 1
+            self.assertEqual(harness.run().exit_code, 2)
+
+            with patch.object(
+                harness.coordinator,
+                "_run_extract_stage",
+                side_effect=KeyboardInterrupt(),
+            ):
+                with self.assertRaises(KeyboardInterrupt):
+                    harness.coordinator.resume(FIXED_BATCH_ID, parallel_jobs=2)
+
+            events = [
+                json.loads(line)
+                for line in (
+                    harness.store.run_dir(FIXED_BATCH_ID)
+                    / "logs/pipeline.jsonl"
+                )
+                .read_text(encoding="utf-8")
+                .splitlines()
+            ]
+            interruptions = [
+                event
+                for event in events
+                if event["error_code"] == "USER_INTERRUPTED"
+            ]
+            self.assertEqual(len(interruptions), 1)
+            self.assertEqual(interruptions[0]["stage"], "extract")
+            self.assertEqual(interruptions[0]["status"], "interrupted")
 
     def test_resume_finishes_an_interrupted_explicit_validation_attempt(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -771,6 +981,99 @@ class PipelineCoordinatorTests(unittest.TestCase):
             self.assertEqual(rebuilt_review["summary"], {"pending": 2})
             self.assertEqual(rebuilt_report["batch_id"], FIXED_BATCH_ID)
             self.assertEqual(manifest_path.read_bytes(), manifest_before)
+
+    def test_report_projection_failure_is_resumable_without_a_new_attempt(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            harness = _Harness(Path(directory))
+            original_write_projection = harness.store.write_projection
+            report_failures_remaining = 1
+
+            def flaky_write_projection(
+                batch_id: str,
+                kind: str,
+                value: object,
+                **options: object,
+            ) -> Path:
+                nonlocal report_failures_remaining
+                if kind == "report" and report_failures_remaining:
+                    report_failures_remaining -= 1
+                    raise OSError("fixture report projection write failed")
+                return original_write_projection(
+                    batch_id, kind, value, **options
+                )
+
+            with patch.object(
+                harness.store,
+                "write_projection",
+                side_effect=flaky_write_projection,
+            ):
+                with self.assertRaisesRegex(
+                    OSError, "fixture report projection write failed"
+                ):
+                    harness.run()
+
+            before = harness.store.read_manifest(FIXED_BATCH_ID)
+            self.assertEqual(before["status"], "failed")
+            self.assertEqual(
+                before["checkpoints"]["report"]["status"], "succeeded"
+            )
+            report_attempts = list(
+                before["checkpoints"]["report"]["attempts"]
+            )
+            item_attempts = {
+                item_id: list(item["checkpoints"]["report"]["attempts"])
+                for item_id, item in before["items"].items()
+            }
+            status = harness.coordinator.status(FIXED_BATCH_ID)
+            self.assertEqual(status["status"], "failed")
+            self.assertTrue(status["resumable"])
+            extractor = harness.extractor
+            assert extractor is not None
+            calls = (
+                harness.copier.calls.copy(),
+                harness.strategy_manager.calls.copy(),
+                extractor.extract_calls.copy(),
+                extractor.validation_calls.copy(),
+            )
+
+            resumed = harness.coordinator.resume(FIXED_BATCH_ID, parallel_jobs=2)
+
+            self.assertEqual(resumed.exit_code, 0)
+            self.assertTrue((resumed.run_dir / "batch-report.json").is_file())
+            after = harness.store.read_manifest(FIXED_BATCH_ID)
+            self.assertEqual(after["status"], "completed")
+            self.assertEqual(
+                after["checkpoints"]["report"]["attempts"], report_attempts
+            )
+            self.assertEqual(
+                {
+                    item_id: item["checkpoints"]["report"]["attempts"]
+                    for item_id, item in after["items"].items()
+                },
+                item_attempts,
+            )
+            self.assertEqual(
+                calls,
+                (
+                    harness.copier.calls,
+                    harness.strategy_manager.calls,
+                    extractor.extract_calls,
+                    extractor.validation_calls,
+                ),
+            )
+            events = [
+                json.loads(line)
+                for line in (resumed.run_dir / "logs/pipeline.jsonl")
+                .read_text(encoding="utf-8")
+                .splitlines()
+            ]
+            fatal = [
+                event
+                for event in events
+                if event["error_code"] == "PIPELINE_FATAL"
+            ]
+            self.assertEqual(len(fatal), 1)
+            self.assertEqual(fatal[0]["stage"], "report")
 
     def test_resume_rejects_provenance_and_input_manifest_drift(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

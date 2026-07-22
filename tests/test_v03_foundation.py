@@ -385,6 +385,79 @@ class PipelineStateFoundationTests(unittest.TestCase):
             self.assertFalse(first.acquired)
             self.assertFalse(RepositoryLock.is_locked(directory))
 
+    def test_lock_owner_metadata_is_published_before_target_status(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            stale_batch = "20260721T193456Z-aaaaaaaa"
+            active_batch = "20260721T193457Z-bbbbbbbb"
+            with RepositoryLock(
+                directory,
+                batch_id=stale_batch,
+                command="pipeline-resume",
+            ):
+                pass
+
+            metadata_started = threading.Event()
+            allow_metadata = threading.Event()
+            owner_ready = threading.Event()
+            release_owner = threading.Event()
+            probe_done = threading.Event()
+            owner_errors: list[BaseException] = []
+            probe_result: dict[str, bool] = {}
+
+            class _DelayedRepositoryLock(RepositoryLock):
+                def _write_metadata(self, stream: Any) -> None:
+                    metadata_started.set()
+                    allow_metadata.wait(timeout=2)
+                    super()._write_metadata(stream)
+
+            active_lock = _DelayedRepositoryLock(
+                directory,
+                batch_id=active_batch,
+                command="pipeline-run",
+            )
+
+            def own_repository() -> None:
+                try:
+                    with active_lock:
+                        owner_ready.set()
+                        release_owner.wait(timeout=2)
+                except BaseException as error:  # pragma: no cover - asserted below
+                    owner_errors.append(error)
+                    owner_ready.set()
+
+            def probe_stale_batch() -> None:
+                probe_result["locked"] = RepositoryLock.is_locked(
+                    directory, batch_id=stale_batch
+                )
+                probe_done.set()
+
+            owner_thread = threading.Thread(target=own_repository)
+            probe_thread = threading.Thread(target=probe_stale_batch)
+            owner_thread.start()
+            try:
+                self.assertTrue(metadata_started.wait(timeout=1))
+                probe_thread.start()
+                self.assertFalse(probe_done.wait(timeout=0.05))
+                allow_metadata.set()
+                self.assertTrue(owner_ready.wait(timeout=1))
+                self.assertTrue(probe_done.wait(timeout=1))
+                self.assertFalse(probe_result["locked"])
+                self.assertTrue(
+                    RepositoryLock.is_locked(
+                        directory, batch_id=active_batch
+                    )
+                )
+            finally:
+                allow_metadata.set()
+                release_owner.set()
+                owner_thread.join(timeout=2)
+                if probe_thread.ident is not None:
+                    probe_thread.join(timeout=2)
+
+            self.assertEqual(owner_errors, [])
+            self.assertFalse(owner_thread.is_alive())
+            self.assertFalse(probe_thread.is_alive())
+
     def test_incremental_manifest_validation_covers_only_declared_item_changes(self) -> None:
         with tempfile.TemporaryDirectory() as catalog_directory, tempfile.TemporaryDirectory() as run_directory:
             plan = _build_mini_planner(Path(catalog_directory)).plan(language="zh-cn")

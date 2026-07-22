@@ -97,7 +97,10 @@ def pipeline_status_command(args: argparse.Namespace) -> int:
         manifest = store.read_manifest(args.batch_id)
         summary = summarize_batch_manifest(manifest)
         display_status, resumable = derive_batch_availability(
-            manifest, lock_is_held=RepositoryLock.is_locked(ROOT)
+            manifest,
+            lock_is_held=RepositoryLock.is_locked(
+                ROOT, batch_id=args.batch_id
+            ),
         )
         value = {
             "batch_id": args.batch_id,

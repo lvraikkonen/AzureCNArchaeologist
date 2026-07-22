@@ -71,20 +71,33 @@ python cli.py pipeline-run --all --language both --parallel-jobs 8
 | `batch-report.json` | `6492bfcaac82c39c7cea5b75f8d048447d306bcc6b11dc29f20ad201c0ebc6d2` |
 | `logs/pipeline.jsonl` | `295d09d41b69a3061d872a92390e86af636c897cfd5e18282f497f52f2a364a3` |
 
-## 自动化测试
+## 自动化测试（post-review 后）
+
+下列结果是修复后的当前回归基线；`full-run-summary.json` 中的 42 项记录仍保留为原始全量验收快照，不改写历史证据。
 
 ```text
-Ran 42 tests in 19.217s
+Ran 49 tests
 OK
 ```
 
 测试集合包括：
 
 - 17 个既有 v0.2 基线断言；
-- 8 个 v0.3 foundation/planner/state-store 断言；
-- 17 个 v0.3 pipeline/CLI/recovery/tamper 断言。
+- 9 个 v0.3 foundation/planner/state-store 断言；
+- 23 个 v0.3 pipeline/CLI/recovery/tamper 断言。
 
 覆盖 mini-catalog 的 10/7/3 规划、真实全集 434/379/55 规划、`integration/zh-cn` smoke、原子 manifest、锁竞争、future 异常隔离、中断恢复、attempt 追加、provenance 漂移拒绝、投影重建、payload/sidecar 篡改、review queue 同步、旧 `batch-*` 公共命令移除及 `0/1/2/130` 退出码。
+
+## Post-implementation review 修复
+
+2026-07-21 对 v0.3 实现完成 Standards/Spec 双轴复核，并修复全部四项 Spec 缺陷：
+
+- report 投影写入失败现在显示为可恢复，`pipeline-resume` 只修复批次状态并重建投影，不追加重复的 report attempt，也不重跑已成功的复制、预检、提取或验证；
+- 用户中断和 batch fatal JSONL 事件记录实际活动阶段，不再固定为 discovery/report；
+- 正常失败的 `ExtractionResult` 保留 Diagnostic Sidecar 中的原始错误码和消息，只有 future/路径不变量异常使用通用 `EXTRACTION_FAILED`；
+- repository lock 写入 Batch ID 与命令，`pipeline-status` 仅把目标 Batch ID 的有效活锁视为运行中，其他批次持锁时仍正确显示 `interrupted/resumable`。
+
+新增七个定向回归断言覆盖上述场景，其中锁测试还覆盖了新 owner 已取得 OS lock、但尚未发布 metadata 的竞态窗口。修复范围仅涉及 pipeline 控制面、恢复投影、错误投影和锁归属，不改变 planner 范围、提取算法、CMS payload、Diagnostic Sidecar 1.1 或 validation 契约，因此沿用上方 434 项全量内容验收证据。
 
 ## 范围说明
 

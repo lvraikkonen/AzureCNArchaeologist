@@ -63,11 +63,24 @@ def generate_batch_id(
 class RepositoryLock:
     """An OS advisory lock shared by every mutating run in this repository."""
 
-    def __init__(self, root: str | Path = ".", *, timeout: float = 0.0, poll_interval: float = 0.1) -> None:
+    def __init__(
+        self,
+        root: str | Path = ".",
+        *,
+        timeout: float = 0.0,
+        poll_interval: float = 0.1,
+        batch_id: str | None = None,
+        command: str | None = None,
+    ) -> None:
         self.root = Path(root).resolve()
         self.path = self.root / "runs" / ".pipeline.lock"
+        # The short-lived guard serializes main-lock handoff with owner metadata
+        # publication. It is never held for the duration of a pipeline command.
+        self.guard_path = self.root / "runs" / ".pipeline.lock.guard"
         self.timeout = max(0.0, timeout)
         self.poll_interval = max(0.01, poll_interval)
+        self.batch_id = batch_id
+        self.command = command
         self._stream: IO[str] | None = None
 
     @property
@@ -81,26 +94,67 @@ class RepositoryLock:
             raise RepositoryLockError("OS advisory locking is unavailable on this platform")
         self.path.parent.mkdir(parents=True, exist_ok=True)
         stream = self.path.open("a+", encoding="utf-8")
+        try:
+            guard_stream = self.guard_path.open("a+", encoding="utf-8")
+        except Exception:
+            stream.close()
+            raise
         deadline = time.monotonic() + self.timeout
-        while True:
-            try:
-                fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-                break
-            except OSError as error:
-                if error.errno not in (errno.EACCES, errno.EAGAIN):
-                    stream.close()
-                    raise RepositoryLockError(f"Unable to acquire repository lock: {error}") from error
-                if time.monotonic() >= deadline:
-                    stream.close()
-                    raise RepositoryLockError(f"Repository pipeline lock is held: {self.path}") from error
-                time.sleep(min(self.poll_interval, max(0.0, deadline - time.monotonic())))
+        try:
+            while True:
+                wait_for: float | None = None
+                fcntl.flock(guard_stream.fileno(), fcntl.LOCK_EX)
+                try:
+                    try:
+                        fcntl.flock(
+                            stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB
+                        )
+                    except OSError as error:
+                        if error.errno not in (errno.EACCES, errno.EAGAIN):
+                            stream.close()
+                            raise RepositoryLockError(
+                                f"Unable to acquire repository lock: {error}"
+                            ) from error
+                        if time.monotonic() >= deadline:
+                            stream.close()
+                            raise RepositoryLockError(
+                                f"Repository pipeline lock is held: {self.path}"
+                            ) from error
+                        wait_for = min(
+                            self.poll_interval,
+                            max(0.0, deadline - time.monotonic()),
+                        )
+                    else:
+                        try:
+                            self._write_metadata(stream)
+                        except Exception:
+                            fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
+                            stream.close()
+                            raise
+                        self._stream = stream
+                        return self
+                finally:
+                    fcntl.flock(guard_stream.fileno(), fcntl.LOCK_UN)
+                if wait_for is not None:
+                    time.sleep(wait_for)
+        finally:
+            guard_stream.close()
+            if self._stream is None and not stream.closed:
+                stream.close()
+
+    def _write_metadata(self, stream: IO[str]) -> None:
+        metadata = {
+            "schema_version": "1.0",
+            "pid": os.getpid(),
+            "acquired_at": utc_now(),
+            "batch_id": self.batch_id,
+            "command": self.command,
+        }
         stream.seek(0)
         stream.truncate()
-        stream.write(json.dumps({"pid": os.getpid(), "acquired_at": utc_now()}, sort_keys=True) + "\n")
+        stream.write(json.dumps(metadata, sort_keys=True) + "\n")
         stream.flush()
         os.fsync(stream.fileno())
-        self._stream = stream
-        return self
 
     def release(self) -> None:
         stream, self._stream = self._stream, None
@@ -117,7 +171,19 @@ class RepositoryLock:
         self.release()
 
     @classmethod
-    def is_locked(cls, root: str | Path = ".") -> bool:
+    def is_locked(
+        cls,
+        root: str | Path = ".",
+        *,
+        batch_id: str | None = None,
+    ) -> bool:
+        """Return whether the repository, or a specific batch, owns a live lock.
+
+        ``flock`` remains authoritative. Lock-file metadata is consulted only
+        after a live owner is observed and is never sufficient on its own.
+        Legacy or damaged metadata therefore remains a repository-wide lock,
+        but cannot be treated as an effective lock for a particular batch.
+        """
         if fcntl is None:
             return False
         path = Path(root).resolve() / "runs" / ".pipeline.lock"
@@ -132,7 +198,50 @@ class RepositoryLock:
                 fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
             except OSError as error:
                 if error.errno in (errno.EACCES, errno.EAGAIN):
-                    return True
+                    if batch_id is None:
+                        return True
+                    guard_path = path.with_name(f"{path.name}.guard")
+                    if not guard_path.is_file():
+                        return False
+                    try:
+                        guard_stream = guard_path.open("r", encoding="utf-8")
+                    except OSError:
+                        return False
+                    try:
+                        fcntl.flock(guard_stream.fileno(), fcntl.LOCK_SH)
+                        try:
+                            fcntl.flock(
+                                stream.fileno(),
+                                fcntl.LOCK_EX | fcntl.LOCK_NB,
+                            )
+                        except OSError as retry_error:
+                            if retry_error.errno not in (
+                                errno.EACCES,
+                                errno.EAGAIN,
+                            ):
+                                raise RepositoryLockError(
+                                    f"Unable to re-probe repository lock: "
+                                    f"{retry_error}"
+                                ) from retry_error
+                            try:
+                                stream.seek(0)
+                                metadata = json.load(stream)
+                            except (OSError, ValueError):
+                                return False
+                            return (
+                                isinstance(metadata, dict)
+                                and metadata.get("schema_version") == "1.0"
+                                and metadata.get("batch_id") == batch_id
+                            )
+                        else:
+                            fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
+                            return False
+                        finally:
+                            fcntl.flock(
+                                guard_stream.fileno(), fcntl.LOCK_UN
+                            )
+                    finally:
+                        guard_stream.close()
                 raise RepositoryLockError(f"Unable to probe repository lock: {error}") from error
             fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
             return False
