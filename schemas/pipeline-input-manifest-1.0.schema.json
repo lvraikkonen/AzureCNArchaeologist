@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/pipeline-input-manifest-1.0.schema.json",
+  "title": "Pipeline Input Manifest 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "batch_id", "created_at", "scope", "languages", "summary", "provenance", "items"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "batch_id": {"$ref": "#/$defs/batch_id"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "scope": {
+      "type": "object", "additionalProperties": false, "required": ["kind"],
+      "properties": {"kind": {"enum": ["all", "group"]}, "group": {"type": "string", "minLength": 1}},
+      "allOf": [{"if": {"properties": {"kind": {"const": "group"}}}, "then": {"required": ["group"]}, "else": {"not": {"required": ["group"]}}}]
+    },
+    "languages": {"type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true, "items": {"enum": ["zh-cn", "en-us"]}},
+    "summary": {"$ref": "#/$defs/summary"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "items": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/item"}}
+  },
+  "$defs": {
+    "batch_id": {"type": "string", "pattern": "^[0-9]{8}T[0-9]{6}Z-[a-f0-9]{8}$"},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "nullable_sha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]},
+    "relative_path": {"type": "string", "minLength": 1, "not": {"anyOf": [{"pattern": "^/"}, {"pattern": "(^|/)\\.\\.(/|$)"}]}},
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["total", "runnable", "skipped", "known_unsupported", "source_unavailable"],
+      "properties": {
+        "total": {"type": "integer", "minimum": 0}, "runnable": {"type": "integer", "minimum": 0},
+        "skipped": {"type": "integer", "minimum": 0}, "known_unsupported": {"type": "integer", "minimum": 0},
+        "source_unavailable": {"type": "integer", "minimum": 0}
+      }
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "captured_at", "git_commit", "dirty", "reproducible", "worktree_changes", "worktree_fingerprint", "immutable_fingerprint", "immutable_files"],
+      "properties": {
+        "schema_version": {"const": "1.0"}, "captured_at": {"type": "string", "format": "date-time"},
+        "git_commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"}, "dirty": {"type": "boolean"},
+        "reproducible": {"type": "boolean"}, "worktree_changes": {"type": "array", "items": {"type": "string"}},
+        "worktree_fingerprint": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "immutable_fingerprint": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "immutable_files": {"type": "object", "propertyNames": {"$ref": "#/$defs/relative_path"}, "additionalProperties": {"$ref": "#/$defs/sha256"}}
+      }
+    },
+    "artifact": {
+      "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+      "properties": {"path": {"$ref": "#/$defs/relative_path"}, "sha256": {"$ref": "#/$defs/nullable_sha256"}}
+    },
+    "config_artifact": {
+      "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+      "properties": {"path": {"$ref": "#/$defs/relative_path"}, "sha256": {"$ref": "#/$defs/sha256"}}
+    },
+    "item": {
+      "type": "object", "additionalProperties": false,
+      "required": ["item_id", "identity", "product_key", "resource", "page_model", "capability_status", "catalog_categories", "support_article_type", "strategy", "config", "source", "normalized_input", "artifacts", "skip_reason"],
+      "properties": {
+        "item_id": {"type": "string", "pattern": "^(?:zh-cn|en-us)/[a-z0-9]+(?:-[a-z0-9]+)*(?:--v[0-9]+(?:-[0-9]+)*)?$"},
+        "identity": {
+          "type": "object", "additionalProperties": false, "required": ["language", "resource_key"],
+          "properties": {"language": {"enum": ["zh-cn", "en-us"]}, "resource_key": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*(?:--v[0-9]+(?:-[0-9]+)*)?$"}}
+        },
+        "product_key": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+        "resource": {
+          "type": "object", "additionalProperties": false, "required": ["kind", "slug", "version_key", "version_label"],
+          "properties": {
+            "kind": {"enum": ["current", "historical_version"]}, "slug": {"type": "string", "minLength": 1},
+            "version_key": {"oneOf": [{"type": "null"}, {"type": "string", "pattern": "^v[0-9]+(?:-[0-9]+)*$"}]},
+            "version_label": {"oneOf": [{"type": "null"}, {"type": "string", "minLength": 1}]}
+          }
+        },
+        "page_model": {"enum": ["FlexibleContentPage", "SupportArticlePage"]},
+        "capability_status": {"enum": ["supported", "known_unsupported"]},
+        "catalog_categories": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "support_article_type": {"oneOf": [{"type": "null"}, {"enum": ["SLA", "LEGAL", "ICP", "PSR"]}]},
+        "strategy": {"type": "string", "minLength": 1},
+        "config": {"$ref": "#/$defs/config_artifact"},
+        "source": {
+          "type": "object", "additionalProperties": false, "required": ["availability", "path", "url", "cms_path", "sha256"],
+          "properties": {
+            "availability": {"enum": ["available", "unavailable"]},
+            "path": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/relative_path"}]},
+            "url": {"oneOf": [{"type": "null"}, {"type": "string", "format": "uri"}]},
+            "cms_path": {"oneOf": [{"type": "null"}, {"type": "string"}]},
+            "sha256": {"$ref": "#/$defs/nullable_sha256"}
+          }
+        },
+        "normalized_input": {"$ref": "#/$defs/artifact"},
+        "artifacts": {
+          "type": "object", "additionalProperties": false, "required": ["payload", "diagnostic", "validation"],
+          "properties": {"payload": {"$ref": "#/$defs/artifact"}, "diagnostic": {"$ref": "#/$defs/artifact"}, "validation": {"$ref": "#/$defs/artifact"}}
+        },
+        "skip_reason": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "object", "additionalProperties": false, "required": ["code", "message"], "properties": {"code": {"enum": ["KNOWN_UNSUPPORTED", "SOURCE_UNAVAILABLE"]}, "message": {"type": "string", "minLength": 1}}}
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/pipeline-batch-manifest-1.0.schema.json",
+  "title": "Pipeline Batch Manifest 1.0",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "batch_id", "revision", "status", "created_at", "updated_at", "input_manifest", "checkpoints", "items", "summary"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "batch_id": {"type": "string", "pattern": "^[0-9]{8}T[0-9]{6}Z-[a-f0-9]{8}$"},
+    "revision": {"type": "integer", "minimum": 0},
+    "status": {"enum": ["created", "running", "completed", "completed_with_failures", "failed"]},
+    "created_at": {"type": "string", "format": "date-time"}, "updated_at": {"type": "string", "format": "date-time"},
+    "input_manifest": {"$ref": "#/$defs/input_manifest"},
+    "checkpoints": {"$ref": "#/$defs/checkpoints"},
+    "items": {"type": "object", "propertyNames": {"pattern": "^(?:zh-cn|en-us)/"}, "additionalProperties": {"$ref": "#/$defs/item"}},
+    "summary": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}}
+  },
+  "$defs": {
+    "sha256": {"oneOf": [{"type": "null"}, {"type": "string", "pattern": "^[a-f0-9]{64}$"}]},
+    "relative_path": {"type": "string", "minLength": 1, "not": {"anyOf": [{"pattern": "^/"}, {"pattern": "(^|/)\\.\\.(/|$)"}]}},
+    "input_manifest": {"type": "object", "additionalProperties": false, "required": ["path", "sha256"], "properties": {"path": {"const": "input-manifest.json"}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}},
+    "artifact": {"type": "object", "additionalProperties": false, "required": ["path", "sha256"], "properties": {"path": {"$ref": "#/$defs/relative_path"}, "sha256": {"$ref": "#/$defs/sha256"}}},
+    "error": {"oneOf": [{"type": "null"}, {"type": "object", "additionalProperties": true, "required": ["code", "message"], "properties": {"code": {"type": "string", "minLength": 1}, "stage": {"type": "string"}, "message": {"type": "string"}}}]},
+    "attempt": {
+      "type": "object", "additionalProperties": true,
+      "required": ["attempt", "started_at", "completed_at", "duration_ms", "status", "error"],
+      "properties": {
+        "attempt": {"type": "integer", "minimum": 1}, "started_at": {"type": "string", "format": "date-time"},
+        "completed_at": {"oneOf": [{"type": "null"}, {"type": "string", "format": "date-time"}]},
+        "duration_ms": {"oneOf": [{"type": "null"}, {"type": "integer", "minimum": 0}]},
+        "status": {"enum": ["running", "succeeded", "failed", "skipped"]}, "error": {"$ref": "#/$defs/error"}
+      }
+    },
+    "checkpoint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "attempts", "started_at", "completed_at", "duration_ms", "error"],
+      "properties": {
+        "status": {"enum": ["pending", "running", "succeeded", "failed", "skipped"]},
+        "attempts": {"type": "array", "items": {"$ref": "#/$defs/attempt"}},
+        "started_at": {"oneOf": [{"type": "null"}, {"type": "string", "format": "date-time"}]},
+        "completed_at": {"oneOf": [{"type": "null"}, {"type": "string", "format": "date-time"}]},
+        "duration_ms": {"oneOf": [{"type": "null"}, {"type": "integer", "minimum": 0}]},
+        "error": {"$ref": "#/$defs/error"}
+      }
+    },
+    "checkpoints": {
+      "type": "object", "additionalProperties": false,
+      "required": ["discovery", "normalize", "preflight", "extract", "validate", "review", "report"],
+      "properties": {
+        "discovery": {"$ref": "#/$defs/checkpoint"}, "normalize": {"$ref": "#/$defs/checkpoint"},
+        "preflight": {"$ref": "#/$defs/checkpoint"}, "extract": {"$ref": "#/$defs/checkpoint"},
+        "validate": {"$ref": "#/$defs/checkpoint"}, "review": {"$ref": "#/$defs/checkpoint"},
+        "report": {"$ref": "#/$defs/checkpoint"}
+      }
+    },
+    "item": {
+      "type": "object", "additionalProperties": false,
+      "required": ["item_id", "identity", "product_key", "resource", "page_model", "strategy", "status", "checkpoints", "artifacts", "error"],
+      "properties": {
+        "item_id": {"type": "string"},
+        "identity": {"type": "object", "additionalProperties": false, "required": ["language", "resource_key"], "properties": {"language": {"enum": ["zh-cn", "en-us"]}, "resource_key": {"type": "string"}}},
+        "product_key": {"type": "string", "minLength": 1},
+        "resource": {"type": "object", "additionalProperties": false, "required": ["kind", "slug", "version_key", "version_label"], "properties": {"kind": {"enum": ["current", "historical_version"]}, "slug": {"type": "string"}, "version_key": {"type": ["string", "null"]}, "version_label": {"type": ["string", "null"]}}},
+        "page_model": {"enum": ["FlexibleContentPage", "SupportArticlePage"]}, "strategy": {"type": "string", "minLength": 1},
+        "status": {
+          "type": "object", "additionalProperties": false, "required": ["execution", "validation", "review", "publication"],
+          "properties": {
+            "execution": {"enum": ["pending", "running", "succeeded", "failed", "skipped"]},
+            "validation": {"enum": ["not_run", "passed", "failed"]},
+            "review": {"enum": ["not_requested", "pending", "approved", "rejected"]},
+            "publication": {"enum": ["not_published", "published"]}
+          }
+        },
+        "checkpoints": {"$ref": "#/$defs/checkpoints"},
+        "artifacts": {"type": "object", "additionalProperties": false, "required": ["normalized_input", "payload", "diagnostic", "validation"], "properties": {"normalized_input": {"$ref": "#/$defs/artifact"}, "payload": {"$ref": "#/$defs/artifact"}, "diagnostic": {"$ref": "#/$defs/artifact"}, "validation": {"$ref": "#/$defs/artifact"}}},
+        "error": {"$ref": "#/$defs/error"}
+      }
+    }
+  }
+}

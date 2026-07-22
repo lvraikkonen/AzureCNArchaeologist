@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import tempfile
 import time
 from copy import deepcopy
 from datetime import datetime, timezone
@@ -12,8 +14,8 @@ from typing import Any, Optional
 
 from bs4 import BeautifulSoup
 
-from src.core.contract_validator import ContractIssue, ContractValidator
-from src.core.data_models import ExtractionStrategy
+from src.core.contract_validator import ContractIssue, ContractValidationResult, ContractValidator
+from src.core.data_models import ExtractionStrategy, PageType, StrategyType
 from src.core.extraction_result import ExtractionResult
 from src.core.logging import get_logger
 from src.core.product_catalog import artifact_relative_directory, normalized_input_path, sha256_file
@@ -34,10 +36,33 @@ logger = get_logger(__name__)
 
 
 class ExtractionCoordinator:
-    def __init__(self, output_dir: str = "output") -> None:
+    def __init__(
+        self,
+        output_dir: str = "output",
+        *,
+        payload_root: str | Path | None = None,
+        diagnostic_root: str | Path | None = None,
+        deferred_validation: bool = False,
+        defer_validation: bool | None = None,
+    ) -> None:
         self.root = Path(__file__).resolve().parents[2]
         self.output_dir = Path(output_dir).resolve()
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.payload_root = (
+            Path(payload_root).resolve()
+            if payload_root is not None
+            else self.output_dir / "payloads"
+        )
+        self.diagnostic_root = (
+            Path(diagnostic_root).resolve()
+            if diagnostic_root is not None
+            else self.output_dir / "diagnostics"
+        )
+        # ``defer_validation`` is retained as a concise constructor alias for
+        # pipeline clients; the longer name is the documented spelling.
+        self.deferred_validation = (
+            defer_validation if defer_validation is not None else deferred_validation
+        )
         self.product_manager = ProductManager(str(self.root / "data" / "configs"))
         self.strategy_manager = StrategyManager(self.product_manager)
         self.contract_validator = ContractValidator(self.root)
@@ -48,6 +73,9 @@ class ExtractionCoordinator:
         language: str,
         html_file_path: str | None = None,
         version_key: str | None = None,
+        strategy: ExtractionStrategy | StrategyType | str | None = None,
+        defer_validation: bool | None = None,
+        preselected_strategy: ExtractionStrategy | StrategyType | str | None = None,
     ) -> ExtractionResult:
         if language not in ("zh-cn", "en-us"):
             raise ValueError(f"Unsupported language: {language}")
@@ -64,9 +92,9 @@ class ExtractionCoordinator:
         )
         input_path = Path(html_file_path).resolve() if html_file_path else default_input_path
         relative_dir = artifact_relative_directory(definition, language)
-        payload_target_path = self.output_dir / "payloads" / relative_dir / f"{resource_key}.json"
+        payload_target_path = self.payload_root / relative_dir / f"{resource_key}.json"
         payload_path: Optional[Path] = payload_target_path
-        sidecar_path = self.output_dir / "diagnostics" / relative_dir / f"{resource_key}.sidecar.json"
+        sidecar_path = self.diagnostic_root / relative_dir / f"{resource_key}.sidecar.json"
         source_path = (
             self.root / "data" / "current_prod_html" / language / source_definition["snapshot_path"]
             if source_definition["availability"] == "available"
@@ -103,20 +131,20 @@ class ExtractionCoordinator:
             else:
                 if not input_path.is_file():
                     raise FileNotFoundError(f"Normalized Input does not exist: {input_path}")
-                strategy = self.strategy_manager.determine_extraction_strategy(str(input_path), product_key)
-                strategy_metadata = self._strategy_metadata(strategy)
-                strategy_instance = StrategyFactory.create_strategy(strategy, runtime_definition, str(input_path))
+                if strategy is not None and preselected_strategy is not None:
+                    raise ValueError("Specify only one of strategy or preselected_strategy")
+                selected_strategy = self._resolve_strategy(
+                    preselected_strategy if preselected_strategy is not None else strategy,
+                    input_path,
+                    product_key,
+                )
+                strategy_metadata = self._strategy_metadata(selected_strategy)
+                strategy_instance = StrategyFactory.create_strategy(selected_strategy, runtime_definition, str(input_path))
                 soup = self._read_html(input_path)
-                expected_ms_service = self._extract_ms_service(soup) if definition["page_model"] == "FlexibleContentPage" else None
                 payload = strategy_instance.extract_flexible_content(soup, source_definition.get("url", ""))
                 self._normalize_business_fields(payload, runtime_definition, language)
-                validation = self.contract_validator.validate(payload, definition["page_model"], expected_ms_service)
-                validation_issues = validation.to_dict()
-                validation_issues["warnings"].extend(self._quality_warnings(payload, runtime_definition))
                 status["execution"] = "succeeded"
-                status["validation"] = "passed" if validation.passed else "failed"
-                payload_target_path.parent.mkdir(parents=True, exist_ok=True)
-                payload_target_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+                self._write_json_atomic(payload_target_path, payload)
         except Exception as error:
             logger.error(f"Extraction failed for {language}/{product_key}: {error}", exc_info=True)
             payload = None
@@ -154,9 +182,159 @@ class ExtractionCoordinator:
         if not sidecar_validation.passed:
             messages = "; ".join(issue.message for issue in sidecar_validation.errors)
             raise RuntimeError(f"Diagnostic Sidecar contract failure: {messages}")
-        sidecar_path.parent.mkdir(parents=True, exist_ok=True)
-        sidecar_path.write_text(json.dumps(sidecar, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        return ExtractionResult(product_key, language, payload, sidecar, payload_path, sidecar_path)
+        self._write_json_atomic(sidecar_path, sidecar)
+        result = ExtractionResult(product_key, language, payload, sidecar, payload_path, sidecar_path)
+        should_defer = self.deferred_validation if defer_validation is None else defer_validation
+        if result.execution_succeeded and not should_defer:
+            return self.validate_persisted_payload(result, html_file_path=input_path)
+        return result
+
+    def validate_persisted_payload(
+        self,
+        product_key: ExtractionResult | str,
+        language: str | None = None,
+        payload_path: str | Path | None = None,
+        sidecar_path: str | Path | None = None,
+        *,
+        html_file_path: str | Path | None = None,
+        version_key: str | None = None,
+    ) -> ExtractionResult:
+        """Validate a persisted payload and atomically refresh its sidecar.
+
+        This is the single validation entry point used both by the default
+        inline flow and by a deferred pipeline validation stage.  Artifact
+        hashes already frozen in the sidecar are treated as expectations and
+        are never replaced with hashes from a modified file.
+        """
+        if isinstance(product_key, ExtractionResult):
+            extraction_result = product_key
+            product_key = extraction_result.product_key
+            language = extraction_result.language
+            payload_file = extraction_result.payload_path
+            sidecar_file = extraction_result.sidecar_path
+        else:
+            if language is None:
+                raise ValueError("language is required when validating by Product Key")
+            definition = self.product_manager.get_product_config(product_key)
+            resource_key = historical_resource_key(product_key, version_key) if version_key else product_key
+            relative_dir = artifact_relative_directory(definition, language)
+            payload_file = (
+                Path(payload_path).resolve()
+                if payload_path is not None
+                else self.payload_root / relative_dir / f"{resource_key}.json"
+            )
+            sidecar_file = (
+                Path(sidecar_path).resolve()
+                if sidecar_path is not None
+                else self.diagnostic_root / relative_dir / f"{resource_key}.sidecar.json"
+            )
+
+        if language not in ("zh-cn", "en-us"):
+            raise ValueError(f"Unsupported language: {language}")
+        if payload_file is None:
+            raise ValueError(f"No persisted payload exists for {language}/{product_key}")
+        payload_file = Path(payload_file).resolve()
+        sidecar_file = Path(sidecar_file).resolve()
+        try:
+            sidecar = json.loads(sidecar_file.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as error:
+            raise ValueError(f"Unable to read Diagnostic Sidecar {sidecar_file}: {error}") from error
+        if not isinstance(sidecar, dict):
+            raise ValueError(f"Diagnostic Sidecar must be an object: {sidecar_file}")
+        sidecar_contract = self.contract_validator.validate_sidecar(sidecar)
+        if not sidecar_contract.passed:
+            messages = "; ".join(issue.message for issue in sidecar_contract.errors)
+            raise ValueError(f"Invalid Diagnostic Sidecar {sidecar_file}: {messages}")
+
+        sidecar_version_key = sidecar.get("resource", {}).get("version_key")
+        if version_key is not None and sidecar_version_key != version_key:
+            raise ValueError(
+                f"Diagnostic Sidecar version mismatch: expected {version_key}, found {sidecar_version_key}"
+            )
+        version_key = sidecar_version_key
+        definition = self.product_manager.get_product_config(product_key)
+        version = get_historical_version(definition, version_key) if version_key else None
+        runtime_definition = deepcopy(definition)
+        if version:
+            runtime_definition["slug"] = version["slug"]
+
+        errors: list[ContractIssue] = []
+        warnings: list[ContractIssue] = []
+        if sidecar.get("product_key") != product_key or sidecar.get("language") != language:
+            errors.append(ContractIssue(
+                "sidecar_identity_mismatch",
+                "$",
+                "Diagnostic Sidecar product_key/language does not match the requested resource.",
+            ))
+
+        declared_payload = sidecar.get("payload") or {}
+        declared_payload_path = declared_payload.get("path")
+        if declared_payload_path and Path(declared_payload_path).resolve() != payload_file:
+            errors.append(ContractIssue(
+                "payload_path_mismatch",
+                "$.payload.path",
+                "Persisted payload path does not match the path frozen in the Diagnostic Sidecar.",
+            ))
+
+        payload: dict[str, Any] | None = None
+        if not payload_file.is_file():
+            errors.append(ContractIssue("payload_missing", "$.payload.path", f"Payload does not exist: {payload_file}"))
+        else:
+            actual_payload_hash = sha256_file(payload_file)
+            expected_payload_hash = declared_payload.get("sha256")
+            if expected_payload_hash and actual_payload_hash != expected_payload_hash:
+                errors.append(ContractIssue(
+                    "payload_hash_mismatch",
+                    "$.payload.sha256",
+                    "Persisted payload SHA-256 does not match the frozen extraction hash.",
+                ))
+            try:
+                loaded_payload = json.loads(payload_file.read_text(encoding="utf-8"))
+                if not isinstance(loaded_payload, dict):
+                    raise TypeError("Business Payload must be a JSON object")
+                payload = loaded_payload
+            except (OSError, json.JSONDecodeError, TypeError) as error:
+                errors.append(ContractIssue("invalid_payload_json", "$", str(error)))
+
+        input_file = self._artifact_path(
+            html_file_path or sidecar.get("normalized_input", {}).get("path")
+        )
+        self._append_artifact_hash_issue(
+            errors, sidecar.get("normalized_input"), input_file, "normalized_input"
+        )
+        source_file = self._artifact_path(sidecar.get("source", {}).get("path"))
+        self._append_artifact_hash_issue(errors, sidecar.get("source"), source_file, "source")
+
+        if payload is not None:
+            expected_ms_service = None
+            if definition["page_model"] == "FlexibleContentPage" and input_file.is_file():
+                expected_ms_service = self._extract_ms_service(self._read_html(input_file))
+            contract_result = self.contract_validator.validate(
+                payload, definition["page_model"], expected_ms_service
+            )
+            errors.extend(contract_result.errors)
+            warnings.extend(contract_result.warnings)
+            warnings.extend(
+                ContractIssue(item["code"], item["path"], item["message"])
+                for item in self._quality_warnings(payload, runtime_definition)
+            )
+
+        validation = ContractValidationResult(errors, warnings)
+        sidecar["validation"] = validation.to_dict()
+        sidecar["status"]["validation"] = "passed" if validation.passed else "failed"
+        updated_contract = self.contract_validator.validate_sidecar(sidecar)
+        if not updated_contract.passed:
+            messages = "; ".join(issue.message for issue in updated_contract.errors)
+            raise RuntimeError(f"Diagnostic Sidecar contract failure: {messages}")
+        self._write_json_atomic(sidecar_file, sidecar)
+        return ExtractionResult(
+            product_key,
+            language,
+            payload,
+            sidecar,
+            payload_file,
+            sidecar_file,
+        )
 
     def coordinate_product_extractions(
         self,
@@ -171,6 +349,75 @@ class ExtractionCoordinator:
             for version in available_historical_versions(definition, language)
         )
         return results
+
+    def _resolve_strategy(
+        self,
+        strategy: ExtractionStrategy | StrategyType | str | None,
+        input_path: Path,
+        product_key: str,
+    ) -> ExtractionStrategy:
+        if strategy is None:
+            return self.strategy_manager.determine_extraction_strategy(
+                str(input_path), product_key
+            )
+        if isinstance(strategy, ExtractionStrategy):
+            return strategy
+        strategy_type = strategy if isinstance(strategy, StrategyType) else StrategyType(strategy)
+        return self.strategy_manager._select_strategy_by_page_type(
+            PageType(strategy_type.value), product_key, None
+        )
+
+    def _artifact_path(self, value: str | Path | None) -> Path:
+        if value is None:
+            return Path("")
+        path = Path(value)
+        return path.resolve() if path.is_absolute() else (self.root / path).resolve()
+
+    @staticmethod
+    def _append_artifact_hash_issue(
+        errors: list[ContractIssue],
+        artifact: dict[str, Any] | None,
+        path: Path,
+        name: str,
+    ) -> None:
+        artifact = artifact or {}
+        expected_hash = artifact.get("sha256")
+        if not path.is_file():
+            errors.append(ContractIssue(
+                f"{name}_missing", f"$.{name}.path", f"Artifact does not exist: {path}"
+            ))
+        elif expected_hash and sha256_file(path) != expected_hash:
+            errors.append(ContractIssue(
+                f"{name}_hash_mismatch",
+                f"$.{name}.sha256",
+                f"Artifact SHA-256 does not match the frozen {name} hash.",
+            ))
+
+    @staticmethod
+    def _write_json_atomic(path: Path, value: dict[str, Any]) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        descriptor, temporary_name = tempfile.mkstemp(
+            dir=path.parent, prefix=f".{path.name}.", suffix=".tmp"
+        )
+        temporary_path = Path(temporary_name)
+        try:
+            with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+                stream.write(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.replace(temporary_path, path)
+            try:
+                directory_descriptor = os.open(path.parent, os.O_RDONLY)
+                try:
+                    os.fsync(directory_descriptor)
+                finally:
+                    os.close(directory_descriptor)
+            except OSError:
+                # Directory fsync is not available on every supported platform.
+                pass
+        except Exception:
+            temporary_path.unlink(missing_ok=True)
+            raise
 
     @staticmethod
     def _read_html(path: Path) -> BeautifulSoup:

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/pipeline-review-queue-1.0.schema.json",
+  "title": "Pipeline Review Queue 1.0",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "batch_id", "generated_at", "summary", "items"],
+  "properties": {
+    "schema_version": {"const": "1.0"}, "batch_id": {"type": "string"}, "generated_at": {"type": "string", "format": "date-time"},
+    "summary": {"type": "object", "additionalProperties": false, "required": ["pending"], "properties": {"pending": {"type": "integer", "minimum": 0}}},
+    "items": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["item_id", "product_key", "language", "resource_key", "strategy", "status", "payload", "diagnostic", "validation"], "properties": {"item_id": {"type": "string"}, "product_key": {"type": "string"}, "language": {"enum": ["zh-cn", "en-us"]}, "resource_key": {"type": "string"}, "strategy": {"type": "string"}, "status": {"enum": ["pending", "approved", "rejected"]}, "payload": {"$ref": "#/$defs/artifact"}, "diagnostic": {"$ref": "#/$defs/artifact"}, "validation": {"$ref": "#/$defs/artifact"}}}}
+  },
+  "$defs": {"artifact": {"type": "object", "additionalProperties": false, "required": ["path", "sha256"], "properties": {"path": {"type": "string"}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}}}
+}

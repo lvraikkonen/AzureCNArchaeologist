@@ -13,6 +13,14 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 
+class CliArgumentParser(argparse.ArgumentParser):
+    """Use the pipeline's fatal-error exit code for invalid CLI arguments."""
+
+    def error(self, message: str) -> None:
+        self.print_usage(sys.stderr)
+        self.exit(1, f"{self.prog}: error: {message}\n")
+
+
 def catalog_build_command(args: argparse.Namespace) -> int:
     from src.core.product_catalog import ProductCatalog
 
@@ -170,7 +178,7 @@ def status_command(args: argparse.Namespace) -> int:
 
 
 def create_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Azure China content reconstruction")
+    parser = CliArgumentParser(description="Azure China content reconstruction")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     build = subparsers.add_parser("catalog-build", help="Generate deterministic Product Index 3.0")
@@ -216,8 +224,8 @@ def create_parser() -> argparse.ArgumentParser:
     status = subparsers.add_parser("status")
     status.set_defaults(func=status_command)
 
-    from src.batch.cli_commands import add_batch_commands
-    add_batch_commands(subparsers)
+    from src.pipeline.cli_commands import add_pipeline_commands
+    add_pipeline_commands(subparsers)
     return parser
 
 

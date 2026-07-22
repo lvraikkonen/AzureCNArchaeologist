@@ -17,6 +17,11 @@ class ExtractionResult:
     sidecar_path: Path
 
     @property
+    def execution_succeeded(self) -> bool:
+        """Whether extraction produced a payload, independent of validation."""
+        return self.sidecar["status"]["execution"] == "succeeded"
+
+    @property
     def exit_code(self) -> int:
         execution = self.sidecar["status"]["execution"]
         validation = self.sidecar["status"]["validation"]

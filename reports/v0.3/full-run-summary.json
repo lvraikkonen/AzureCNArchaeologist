@@ -1,0 +1,55 @@
+{
+  "accepted_at": "2026-07-21",
+  "artifact_checksums": {
+    "batch_manifest": "656610b0492ca95e7ac6ff03cabd57abd3ba1b55e0551b99d1df2f5990b2a0ff",
+    "batch_report": "6492bfcaac82c39c7cea5b75f8d048447d306bcc6b11dc29f20ad201c0ebc6d2",
+    "pipeline_log": "295d09d41b69a3061d872a92390e86af636c897cfd5e18282f497f52f2a364a3",
+    "review_queue": "a1db8c415d708df81a07fdba98a375b5d3b068fff93ece63d821f4d3871f35d0"
+  },
+  "batch_id": "20260721T092141Z-2ff9c302",
+  "checkpoints": {
+    "discovery": "succeeded",
+    "extract": "succeeded",
+    "normalize": "succeeded",
+    "preflight": "succeeded",
+    "report": "succeeded",
+    "review": "succeeded",
+    "validate": "succeeded"
+  },
+  "command": "python cli.py pipeline-run --all --language both --parallel-jobs 8",
+  "completed_at": "2026-07-21T09:39:46.111886Z",
+  "exit_code": 0,
+  "integrity": {
+    "all_runnable_artifact_hashes_match": true,
+    "batch_report_matches_manifest": true,
+    "no_op_resume_byte_stable": true,
+    "review_queue_matches_manifest": true,
+    "versioned_json_schemas_passed": true
+  },
+  "reproducible": true,
+  "revision": 1911,
+  "schema_version": "1.0",
+  "snapshot_clean": true,
+  "snapshot_commit": "cb5bfe83ab483321d278be7c99ec4624abee93b6",
+  "started_at": "2026-07-21T09:21:41.774006Z",
+  "status": "completed",
+  "summary": {
+    "execution_failed": 0,
+    "execution_succeeded": 379,
+    "known_unsupported": 54,
+    "not_published": 434,
+    "review_pending": 379,
+    "runnable": 379,
+    "skipped": 55,
+    "source_unavailable": 1,
+    "total": 434,
+    "validation_failed": 0,
+    "validation_passed": 379
+  },
+  "tests": {
+    "passed": 42,
+    "v0_2_baseline": 17,
+    "v0_3_foundation": 8,
+    "v0_3_pipeline": 17
+  }
+}

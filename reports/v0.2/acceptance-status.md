@@ -8,7 +8,7 @@
 | Global Product Key uniqueness and membership counts | PASS | 211 definitions; 6 historical SLA resources do not increase product count; Front Door has one definition and two catalog memberships |
 | Exact Source Snapshot accounting | PASS | zh-cn 240/240; en-us 240/240, including 11 publishable CDN/SQL historical language snapshots |
 | Canonical normalized inputs | PASS | 184 current supported pages per language plus 6 zh-cn/5 en-us historical resources, all with matching source SHA-256 |
-| Product, payload and sidecar machine contracts | PASS | 16 tests; historical resources use Diagnostic Sidecar 1.1 |
+| Product, payload and sidecar machine contracts | PASS | 17 tests; historical resources use Diagnostic Sidecar 1.1; Windows CRLF contract-lock regression covered |
 | Simple / Region / Complex local contracts | PASS | service-bus + dns / api-management / cloud-services regression payloads |
 | ICP / LEGAL / PSR / SLA local contracts | PASS | frozen support regression payloads |
 | Complete supported SLA baseline | PASS | 162 current + 11 historical language resources: 173/173 execution succeeded and validation passed |
@@ -35,12 +35,14 @@
 
 | Gate | Status |
 |---|---|
-| CMS test import: service-bus | PENDING |
-| CMS test import: dns | PENDING |
-| CMS test import: api-management | PENDING |
-| CMS test import: cloud-services | PENDING |
-| CMS test import: icp-faq | PENDING |
-| CMS test import and version navigation: sla-cdn--v1-1 | PENDING |
-| CMS test import and version navigation: sla-sql-data--v1-5 | PENDING |
+| CMS test import: service-bus | PASS |
+| CMS test import: dns | PASS |
+| CMS test import: api-management | PASS |
+| CMS test import: cloud-services | PASS |
+| CMS test import: icp-faq | PASS |
+| CMS test import and version navigation: sla-cdn--v1-1 | PASS |
+| CMS test import and version navigation: sla-sql-data--v1-5 | PASS |
 
-The project version remains `0.1.0` until the seven CMS imports are recorded using the import evidence template. Only after those external gates pass may `pyproject.toml` be changed to `0.2.0`.
+Evidence: [`v0.2-cms-validation.yaml`](../../docs/cms-json-new-schema/import-evidence/v0.2-cms-validation.yaml). CMS import and validation were confirmed by the CMS colleague and accepted by the user on 2026-07-21. The user also verified rendered content against the Azure.cn production pages. Local re-verification confirmed the seven frozen payload hashes, sidecar execution/validation states, source-copy hashes, and canonical SLA version routes; a redundant live CMS login was explicitly waived by the user.
+
+All automated and external gates are complete. The project version is `0.2.0`.

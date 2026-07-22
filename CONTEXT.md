@@ -1,6 +1,6 @@
 # Azure China Pricing Content Reconstruction
 
-This context defines the language used to describe Azure China source pages, normalized inputs, CMS business payloads, and the evidence required to trust them.
+This context defines the language used to describe Azure China source pages, batch reconstruction runs, normalized inputs, CMS business payloads, and the evidence required to trust them.
 
 ## Language
 
@@ -35,6 +35,18 @@ _Avoid_: Source Alias, SLA product
 **Resource Key**:
 The stable identity of one current or historical publishable resource within a Product Definition. A historical Resource Key includes its canonical Product Key and SLA version identity but does not create another Product Definition.
 _Avoid_: Product Key, filename, slug
+
+**Batch Run**:
+A uniquely identified attempt to reconstruct a frozen selection of publishable resources and languages. Repeating the same selection creates a distinct Batch Run.
+_Avoid_: Batch job, batch process
+
+**Batch Item**:
+One language-specific resource in a Batch Run, identified by the pair of Language and Resource Key. Its identity is independent of Catalog Category, and its outcome does not determine the outcome of sibling items.
+_Avoid_: Product task, category item
+
+**Review Queue**:
+The batch-specific collection of Batch Items whose reconstructed Business Payloads passed validation and await human review. Membership is neither approval nor authorization to publish.
+_Avoid_: Approval queue, publication queue
 
 **Normalized Input**:
 A byte-identical Source Snapshot organized into the canonical product, language, content-type, and optional SLA-version structure consumed by extraction.

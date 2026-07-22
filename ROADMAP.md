@@ -1,13 +1,13 @@
 # AzureCNArchaeologist v0.1 → v1.0 路线图
 
 > 文档状态：当前项目路线图  
-> 当前版本：v0.1  
-> 基线日期：2026-07-16  
+> 当前版本：v0.3
+> 基线日期：2026-07-21
 > 适用范围：Azure 中国区产品 HTML 标准化、策略化解析、CMS JSON 导出与质量验证
 
 ## 1. 路线图目的
 
-AzureCNArchaeologist 当前已经具备可运行的核心提取链路和 4 种解析策略，但还没有形成稳定、可信、可重复执行的生产工作流。
+AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流。后续版本仍需补齐深度内容质量验证、人工核验与发布门禁，才能达到稳定生产版本目标。
 
 从 v0.1 到 v1.0 的核心目标不是继续堆叠功能，而是把现有能力收敛为一套：
 
@@ -131,6 +131,8 @@ v1.0 中需要清晰区分：
 
 ### v0.2：建立可信事实基线
 
+> 状态：已完成（2026-07-21）。自动化门槛、双语快照闭环、代表 payload CMS 测试导入、内容核验及 SLA 历史版本路由验证均已通过；证据见 `reports/v0.2/acceptance-status.md`。
+
 #### 目标
 
 先解决“产品有多少、支持什么、输出应该长什么样、成功如何定义”等基础问题。
@@ -214,13 +216,13 @@ v1.0 中需要清晰区分：
 
 ### v0.3：建立统一批次工作流
 
+> 状态：已完成。v0.3 全量双语验收于 2026-07-21 通过，项目版本已升级为 v0.3.0。
+
 #### 目标
 
 将当前分散的三个阶段串联成一个可观察、可恢复的批次。
 
-#### 计划中的 CLI 能力
-
-以下命令名称是目标接口，最终命名可在实现时调整：
+#### 正式 CLI 接口
 
 ```bash
 uv run cli.py pipeline-run --all --language both
@@ -264,21 +266,24 @@ snapshot discovery
 - 支持失败隔离、断点续跑和幂等重跑。
 - 未经批准的结果不得自动进入发布阶段。
 
-#### 推荐批次目录
+#### 固定批次目录
 
 ```text
 runs/{batch_id}/
 ├── batch-manifest.json
 ├── input-manifest.json
-├── outputs/
-│   ├── zh-cn/{category}/{product}.json
-│   ├── en-us/{category}/{product}.json
-│   ├── zh-cn/SupportArticles/{articleType}/{product}.json
-│   └── en-us/SupportArticles/{articleType}/{product}.json
-├── validation/
-├── review/
+├── outputs/{language}/pricing/{resource}.json
+├── outputs/{language}/SupportArticles/{articleType}/{resource}.json
+├── diagnostics/{language}/pricing/{resource}.sidecar.json
+├── diagnostics/{language}/SupportArticles/{articleType}/{resource}.sidecar.json
+├── validation/{language}/pricing/{resource}.validation.json
+├── validation/{language}/SupportArticles/{articleType}/{resource}.validation.json
+├── review/review-queue.json
+├── logs/pipeline.jsonl
 └── batch-report.json
 ```
+
+Pricing 始终写入 `{language}/pricing`；同一 Product Definition 即使属于多个 catalog category 也只生成一份产物，category 仅作为元数据。`batch-manifest.json` 是唯一可变状态真源，validation、review queue、sidecar 和 report 均为可重建投影。
 
 #### 验收标准
 
@@ -288,6 +293,14 @@ runs/{batch_id}/
 - 单个产品失败不会中断整个批次。
 - 每个产物都能追溯到源 HTML、配置、代码版本和批次。
 - 批次报告能够准确汇总成功、失败、跳过和待审核数量。
+
+#### 验收结果
+
+- 全量双语批次共规划 434 项：379 项可运行且全部完成抽取与验证，54 项按 `known_unsupported` 跳过，1 项按历史源不可用跳过。
+- 批次退出码为 `0`，七个阶段全部成功，379 项进入 review queue，434 项 publication 均保持 `not_published`。
+- 无操作恢复保持 manifest、review queue、report 和 JSONL 日志逐字节不变；独立复核确认所有可运行项的 normalized input、payload、sidecar 和 validation 哈希一致。
+- 42 个 `unittest` 回归测试全部通过，包含既有 17 个 v0.2 基线测试和 25 个 v0.3 测试。
+- 完整证据见 [`reports/v0.3/acceptance-status.md`](reports/v0.3/acceptance-status.md) 和机器可读摘要 [`reports/v0.3/full-run-summary.json`](reports/v0.3/full-run-summary.json)。
 
 ### v0.4：建立自动化质量验证
 
@@ -492,7 +505,7 @@ Schema 验证失败
 - 完整批次的资源使用有可重复基线。
 - 相同输入和代码版本产生确定性等价输出。
 - 中断后的批次可以恢复，不会丢失已完成结果。
-- 并发处理不破坏 SQLite 记录、日志或输出文件。
+- 并发处理不破坏权威 JSON manifest、结构化 JSONL 日志或输出文件；旧 SQLite API 仅作为内部兼容层，不参与 pipeline 状态判定。
 - 性能优化不得降低 golden baseline 的准确性。
 
 ### v0.8：架构清理与 stale 代码治理
@@ -512,7 +525,7 @@ Schema 验证失败
 
 #### 优先审查对象
 
-- 未实现的传统 `batch_command`；
+- 已移除的 `batch-*` 公共命令所遗留的 `src/batch/cli_commands.py` 内部兼容入口；
 - CLI 无法正确调用的 HTML/RAG 导出路径；
 - 新旧两套验证逻辑；
 - 未实现但可被选中的 `large_file` 路径；

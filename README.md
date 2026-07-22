@@ -12,12 +12,14 @@
 ### 背景与挑战
 Azure中国定价网站 (https://www.azure.cn/pricing/) 原维护团队已解散，前端JavaScript代码丢失。项目团队获得了完整的HTML源码文件，需要通过"HTML解析式考古"，从大量HTML文件中提取结构化数据，重建整个产品价格和计算器页面系统。
 
-### 核心目标（已实现）
+### 核心能力与当前状态
 - 🔍 **可信事实源**: ✅ 211 个唯一 Product Definition，支持多分类和显式双语 Source Snapshot 路由
 - 🏗️ **深度建模**: ✅ 构建策略化提取器架构，支持3+1策略自动识别
-- 🤖 **批量处理**: ✅ 集成企业级批处理系统，支持4-8并发处理
-- 📦 **CMS就绪**: ✅ 输出Flexible JSON Schema 1.1格式，完全符合CMS标准
-- 🔄 **完整工作流**: ✅ 从HTML导入到Blob上传的端到端自动化
+- 🤖 **统一批次工作流**: ✅ v0.3 已完成；七阶段 pipeline 支持1-8并发、严格恢复和可追溯状态
+- 📦 **CMS就绪**: ✅ 输出兼容 CMS 业务契约与 Diagnostic Sidecar 1.1 的 JSON；379 个可运行批次项通过当前本地契约验证
+- 🔄 **可追溯工作流**: ✅ 从快照发现到审核队列和批次报告已通过全量双语验收；发布保持为独立流程
+
+v0.3 全量验收结果为 434 项终态守恒（379 项通过、55 项预期跳过）；详见 [`reports/v0.3/acceptance-status.md`](reports/v0.3/acceptance-status.md)。379 项仍处于 `review=pending`，本版本没有执行发布。
 
 ### 🌟 核心特性
 
@@ -33,31 +35,27 @@ Azure中国定价网站 (https://www.azure.cn/pricing/) 原维护团队已解散
 
 #### 🔧 工程化解决方案
 - **容错性强的HTML解析**: 多编码支持、智能降级、异常恢复
-- **大规模数据处理**: 智能批处理、内存优化、并行计算
+- **大规模数据处理**: 批次清单、失败隔离、可恢复并行计算
 - **质量控制体系**: 0-100分量化评估、多重验证、置信度评估
 
 ## 🏗️ 技术架构
 
 ### 整体架构图
 ```mermaid
-graph TB
-    A[HTML源文件] --> B[阶段一: 文件分析与分类]
-    B --> C[阶段二: HTML解析与数据提取]
-    C --> D[阶段三: 数据清洗与标准化]
-    D --> E[阶段四: 数据建模与关系构建]
-    E --> F[阶段五: 计算器逻辑重建]
-    F --> G[阶段六: 混合智能RAG数据准备]
-    G --> H[阶段七: 数据验证与质量保证]
-    H --> I[阶段八: 多目标数据导出]
-    
-    G --> J[传统RAG系统]
-    G --> K[大上下文RAG系统]
-    J --> L[AI智能助手]
-    K --> L
-    
-    I --> M[CMS系统]
-    I --> N[API接口]
-    I --> O[监控仪表板]
+flowchart LR
+    A["1. Snapshot discovery"] --> B["2. Normalize"]
+    B --> C["3. Preflight"]
+    C --> D["4. Extract"]
+    D --> E["5. Validate"]
+    E --> F["6. Review queue"]
+    F --> G["7. Report"]
+    H["Product Definitions / Source Snapshots"] --> A
+    M["batch-manifest.json<br/>权威状态"] -. checkpoint .-> A
+    M -. checkpoint .-> D
+    M -. checkpoint .-> G
+    D --> O["outputs + diagnostics"]
+    E --> V["validation 投影"]
+    F --> R["review/review-queue.json"]
 ```
 
 ### 核心技术栈
@@ -166,22 +164,28 @@ python scripts/verify_installation.py
 #### 统一CLI界面
 
 ```bash
-# 完整工作流示例
-# 步骤1: 从生产环境导入HTML
-uv run cli.py copy-from-prod --language both
-
-# 步骤2: 检查事实源和快照闭环
+# 统一批次工作流示例
+# 步骤1: 检查事实源和快照闭环
 uv run cli.py catalog-build --check
 uv run cli.py catalog-audit --language both
 
-# 步骤3: 批量处理所有产品
-uv run cli.py batch-process --all --parallel-jobs 6
+# 步骤2: 运行全量双语统一 pipeline（包含逐资源 normalize；--language 默认 both）
+uv run cli.py pipeline-run --all --parallel-jobs 6
 
-# 步骤4: 查看处理状态
-uv run cli.py batch-status --detailed
+# 步骤3: 使用上一步返回的 Batch ID 查看状态
+uv run cli.py pipeline-status --batch-id <batch-id>
 
-# 步骤5: 上传已通过契约验证的业务 payload
-uv run cli.py upload --output-dir output/payloads --prefix cms
+# 如运行被中断，在 provenance 未漂移时恢复
+uv run cli.py pipeline-resume --batch-id <batch-id>
+
+# 只重新验证已有、提取成功的 payload
+uv run cli.py pipeline-validate --batch-id <batch-id>
+
+# 通过 validation 的业务 payload 位于 runs/<batch-id>/outputs；
+# pipeline 本身不会审核、上传或发布它们
+
+# 如需脱离 Batch Run 单独准备规范输入，可手动复制
+uv run cli.py copy-from-prod --language both
 
 # 单产品提取
 uv run cli.py extract mysql --language zh-cn --output-dir output

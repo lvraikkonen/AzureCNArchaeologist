@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/pipeline-batch-report-1.0.schema.json",
+  "title": "Pipeline Batch Report 1.0",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "batch_id", "generated_at", "status", "revision", "summary", "items"],
+  "properties": {
+    "schema_version": {"const": "1.0"}, "batch_id": {"type": "string"}, "generated_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["completed", "completed_with_failures", "failed"]},
+    "revision": {"type": "integer", "minimum": 0},
+    "summary": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+    "items": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["item_id", "product_key", "identity", "strategy", "status", "error", "artifacts"], "properties": {"item_id": {"type": "string"}, "product_key": {"type": "string"}, "identity": {"type": "object"}, "strategy": {"type": "string"}, "status": {"type": "object"}, "error": {"type": ["object", "null"]}, "artifacts": {"type": "object"}}}}
+  }
+}

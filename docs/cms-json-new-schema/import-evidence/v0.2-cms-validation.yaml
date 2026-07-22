@@ -1,0 +1,121 @@
+schema_version: "1.0"
+release: "0.2.0"
+confirmed_at: "2026-07-21"
+evidence_basis:
+  cms_attestation: "CMS colleague confirmed that the packaged payloads imported and validated successfully."
+  user_acceptance: "User accepted the CMS colleague confirmation and waived a redundant live CMS login verification."
+  content_review: "User inspected the imported content in the HTML viewer and confirmed consistency with the Azure.cn production pages."
+  local_reverification:
+    product_index: "PASS: 211 unique products; deterministic digest matched"
+    snapshot_audit: "PASS: zh-cn 240/240 and en-us 240/240; unknown=0"
+    automated_tests: "PASS: 17/17"
+    payload_hashes: "PASS: all seven payloads matched the frozen SHA-256 values and Diagnostic Sidecars"
+    sidecar_status: "PASS: execution=succeeded and validation=passed for all seven payloads"
+    source_copy_hashes: "PASS: source SHA-256 matched normalized input SHA-256 for all seven payloads"
+    sla_navigation_routes: "PASS: canonical CDN and SQL Database current/history routes present; legacy route names=0"
+
+imports:
+  - product_key: service-bus
+    resource_key: service-bus
+    version_key: null
+    version_label: null
+    language: zh-cn
+    page_model: FlexibleContentPage
+    payload_path: output/payloads/zh-cn/pricing/service-bus.json
+    payload_sha256: 7f73f43f455596b59922d76cfbcb2308931caf28efabcf4d3785d4d1239d4b19
+    cms_environment: "CMS test environment (identifier not provided)"
+    imported_at: null
+    imported_by: "CMS colleague (identity not recorded)"
+    cms_result: passed
+    cms_record_identifier: null
+    notes: "CMS import/validation confirmed by colleague; rendered content accepted by user."
+
+  - product_key: dns
+    resource_key: dns
+    version_key: null
+    version_label: null
+    language: zh-cn
+    page_model: FlexibleContentPage
+    payload_path: output/payloads/zh-cn/pricing/dns.json
+    payload_sha256: 3ef0bdd756553e2e5e98c322908670a464b7492798e79e49b00f191ecc4f9dbb
+    cms_environment: "CMS test environment (identifier not provided)"
+    imported_at: null
+    imported_by: "CMS colleague (identity not recorded)"
+    cms_result: passed
+    cms_record_identifier: null
+    notes: "CMS import/validation confirmed by colleague; rendered content accepted by user."
+
+  - product_key: api-management
+    resource_key: api-management
+    version_key: null
+    version_label: null
+    language: zh-cn
+    page_model: FlexibleContentPage
+    payload_path: output/payloads/zh-cn/pricing/api-management.json
+    payload_sha256: 4d8884afd15b60452120ee4092b4ebe11c846024844625cce2f6e6318536cdfa
+    cms_environment: "CMS test environment (identifier not provided)"
+    imported_at: null
+    imported_by: "CMS colleague (identity not recorded)"
+    cms_result: passed
+    cms_record_identifier: null
+    notes: "CMS import/validation confirmed by colleague; rendered content accepted by user."
+
+  - product_key: cloud-services
+    resource_key: cloud-services
+    version_key: null
+    version_label: null
+    language: zh-cn
+    page_model: FlexibleContentPage
+    payload_path: output/payloads/zh-cn/pricing/cloud-services.json
+    payload_sha256: 3c89655fdca1fb64471d79b1b96890cbdc6c0aed8432e5ebb7ec5b96f790460b
+    cms_environment: "CMS test environment (identifier not provided)"
+    imported_at: null
+    imported_by: "CMS colleague (identity not recorded)"
+    cms_result: passed
+    cms_record_identifier: null
+    notes: "CMS import/validation confirmed by colleague; rendered content accepted by user."
+
+  - product_key: icp-faq
+    resource_key: icp-faq
+    version_key: null
+    version_label: null
+    language: zh-cn
+    page_model: SupportArticlePage
+    payload_path: output/payloads/zh-cn/SupportArticles/ICP/icp-faq.json
+    payload_sha256: c3056a4361d18cf2c9ba77ea841e9910d501c2fd9bfca77667d6e99d2bd29c82
+    cms_environment: "CMS test environment (identifier not provided)"
+    imported_at: null
+    imported_by: "CMS colleague (identity not recorded)"
+    cms_result: passed
+    cms_record_identifier: null
+    notes: "CMS import/validation confirmed by colleague; rendered content accepted by user."
+
+  - product_key: sla-cdn
+    resource_key: sla-cdn--v1-1
+    version_key: v1-1
+    version_label: "1.1"
+    language: zh-cn
+    page_model: SupportArticlePage
+    payload_path: output/payloads/zh-cn/SupportArticles/SLA/sla-cdn--v1-1.json
+    payload_sha256: a3030225a8cb1f3e8e6e12581e5f52738211563da846d89103b7bccc422c09ce
+    cms_environment: "CMS test environment (identifier not provided)"
+    imported_at: null
+    imported_by: "CMS colleague (identity not recorded)"
+    cms_result: passed
+    cms_record_identifier: null
+    notes: "CMS import/validation confirmed; local navigation check verified current -> 1.1 and 1.1 -> 1.0 canonical routes."
+
+  - product_key: sla-sql-data
+    resource_key: sla-sql-data--v1-5
+    version_key: v1-5
+    version_label: "1.5"
+    language: zh-cn
+    page_model: SupportArticlePage
+    payload_path: output/payloads/zh-cn/SupportArticles/SLA/sla-sql-data--v1-5.json
+    payload_sha256: b1085cb2e6101b6788d931d4debd77a7da245780f804bc0571b11dd5ea7fa11e
+    cms_environment: "CMS test environment (identifier not provided)"
+    imported_at: null
+    imported_by: "CMS colleague (identity not recorded)"
+    cms_result: passed
+    cms_record_identifier: null
+    notes: "CMS import/validation confirmed; local navigation check verified current and 1.5/1.4/1.3/1.0 canonical routes."

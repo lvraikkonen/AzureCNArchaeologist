@@ -20,3 +20,5 @@ notes:
 ```
 
 v0.2 requires evidence for `service-bus`, `dns`, `api-management`, `cloud-services`, `icp-faq`, `sla-cdn--v1-1`, and `sla-sql-data--v1-5`. The two SLA version resources must also verify navigation between the current and historical CMS routes. Event Grid is excluded because its production maintainer confirmed the current source content is incorrect. The hash must equal the corresponding Diagnostic Sidecar `payload.sha256`.
+
+Completed v0.2 evidence: [`v0.2-cms-validation.yaml`](v0.2-cms-validation.yaml). The record distinguishes the CMS colleague's external import/validation confirmation from the locally reproduced hash, sidecar, source-copy and SLA route checks.
