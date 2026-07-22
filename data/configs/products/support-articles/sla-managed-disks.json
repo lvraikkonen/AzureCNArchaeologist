@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "product_key": "sla-managed-disks",
   "display_name": "托管磁盘的服务级别协议",
   "slug": "managed-disks",
@@ -20,11 +20,6 @@
     }
   },
   "extraction": {
-    "important_section_titles": [],
-    "priority_sections": [],
-    "enable_region_processing": false
-  },
-  "quality": {
-    "min_content_length": 1
+    "semantic_strategy": "support_article"
   }
 }

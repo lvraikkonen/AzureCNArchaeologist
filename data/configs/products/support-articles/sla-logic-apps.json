@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "product_key": "sla-logic-apps",
   "display_name": "逻辑应用 的 SLA",
   "slug": "logic-apps",
@@ -19,11 +19,6 @@
     }
   },
   "extraction": {
-    "important_section_titles": [],
-    "priority_sections": [],
-    "enable_region_processing": false
-  },
-  "quality": {
-    "min_content_length": 1
+    "semantic_strategy": "support_article"
   }
 }

@@ -67,7 +67,7 @@ class ProductCatalog:
         self.schema_root = self.root / "schemas"
 
     def load_definitions(self) -> dict[str, ProductDefinitionRecord]:
-        schema = json.loads((self.schema_root / "product-definition-1.0.schema.json").read_text(encoding="utf-8"))
+        schema = json.loads((self.schema_root / "product-definition-1.1.schema.json").read_text(encoding="utf-8"))
         validator = Draft202012Validator(schema, format_checker=FormatChecker())
         records: dict[str, ProductDefinitionRecord] = {}
         errors: list[str] = []
@@ -442,7 +442,7 @@ class ProductCatalog:
                     "normalized_input_path": normalized.relative_to(self.root).as_posix(),
                     "normalized_exists": normalized.is_file(),
                     "normalized_sha256": sha256_file(normalized) if normalized.is_file() else None,
-                    "strategy": "support_article" if definition["page_model"] == "SupportArticlePage" else definition.get("extraction", {}).get("strategy", "auto"),
+                    "strategy": definition["extraction"]["semantic_strategy"],
                 })
             for version in historical_versions(definition):
                 version_key = version["version_key"]

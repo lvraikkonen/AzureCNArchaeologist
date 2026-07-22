@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "product_key": "storage-managed-disks",
   "display_name": "Managed Disks",
   "slug": "storage-managed-disks",
@@ -45,7 +45,7 @@
       ]
     }
   },
-  "quality": {
-    "min_content_length": 100
+  "extraction": {
+    "semantic_strategy": "region_filter"
   }
 }

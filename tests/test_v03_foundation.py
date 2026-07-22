@@ -15,6 +15,7 @@ from src.batch.process_engine import (
     ResourceProcessingResult,
 )
 from src.core.product_catalog import ProductDefinitionRecord
+from src.core.validation_context import ValidationContextRegistry
 from src.pipeline.models import InputManifest
 from src.pipeline.planner import PipelinePlanner
 from src.pipeline.state_store import (
@@ -70,7 +71,7 @@ def _available(snapshot_path: str, url: str, *, cms_path: str | None = None) -> 
 
 def _mini_definitions() -> dict[str, tuple[str, dict[str, Any]]]:
     frontdoor = {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "product_key": "frontdoor",
         "display_name": "Azure Front Door",
         "slug": "frontdoor",
@@ -87,10 +88,10 @@ def _mini_definitions() -> dict[str, tuple[str, dict[str, Any]]]:
                 "https://www.azure.cn/en-us/pricing/details/frontdoor/",
             ),
         },
-        "extraction": {"strategy": "complex"},
+        "extraction": {"semantic_strategy": "complex"},
     }
     event_grid = {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "product_key": "event-grid",
         "display_name": "Event Grid",
         "slug": "event-grid",
@@ -108,16 +109,17 @@ def _mini_definitions() -> dict[str, tuple[str, dict[str, Any]]]:
                 "https://www.azure.cn/en-us/pricing/details/event-grid/",
             ),
         },
-        "extraction": {"strategy": "simple_static"},
+        "extraction": {"semantic_strategy": "simple_static"},
     }
     sla_cdn = {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "product_key": "sla-cdn",
         "display_name": "CDN SLA",
         "slug": "cdn",
         "page_model": "SupportArticlePage",
         "capability_status": "supported",
         "support_article_type": "SLA",
+        "extraction": {"semantic_strategy": "support_article"},
         "sources": {
             "zh-cn": _available(
                 "SupportArticles/SLA/cdn/index.html",
@@ -222,6 +224,10 @@ def _frozen_provenance() -> dict[str, Any]:
         "immutable_fingerprint": f"sha256:{SHA256_ZERO}",
         "immutable_files": {},
     }
+
+
+def _frozen_validation_context() -> dict[str, Any]:
+    return ValidationContextRegistry(ROOT).freeze()
 
 
 class PipelinePlannerTests(unittest.TestCase):
@@ -329,8 +335,27 @@ class PipelineStateFoundationTests(unittest.TestCase):
                 plan,
                 _frozen_provenance(),
                 created_at=FIXED_TIMESTAMP,
+                **_frozen_validation_context(),
             )
             store = StateStore(ROOT, runs_dir=Path(run_directory) / "runs")
+            self.assertEqual(frozen.schema_version, "2.0")
+            self.assertEqual(
+                set(frozen.validation_context),
+                {
+                    "validation_profile",
+                    "applicability_map",
+                    "rendering_profile",
+                    "in_memory_capability_profile",
+                },
+            )
+            tampered = frozen.to_dict()
+            tampered["validation_context"]["validation_profile"]["sha256"] = (
+                "0" * 64
+            )
+            with self.assertRaisesRegex(
+                ManifestValidationError, "validation_profile SHA-256 drifted"
+            ):
+                store.create_run(tampered)
             batch_directory = store.create_run(frozen)
 
             initial = store.read_manifest(FIXED_BATCH_ID)
@@ -466,6 +491,7 @@ class PipelineStateFoundationTests(unittest.TestCase):
                 plan,
                 _frozen_provenance(),
                 created_at=FIXED_TIMESTAMP,
+                **_frozen_validation_context(),
             )
             store = StateStore(ROOT, runs_dir=Path(run_directory) / "runs")
             store.create_run(frozen)

@@ -47,7 +47,7 @@ class ExperimentalRepositoryFixture:
         self.root = root
         (root / "schemas").mkdir(parents=True)
         for name in (
-            "product-definition-1.0.schema.json",
+            "product-definition-1.1.schema.json",
             "experimental-extraction-exceptions-1.0.schema.json",
             "experimental-extraction-manifest-1.0.schema.json",
             "experimental-payload-candidate-1.0.schema.json",

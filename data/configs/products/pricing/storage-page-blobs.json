@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "product_key": "storage-page-blobs",
   "display_name": "Page Blobs",
   "slug": "storage-page-blobs",
@@ -28,7 +28,7 @@
       "url": "https://www.azure.cn/en-us/pricing/details/storage/page-blobs/"
     }
   },
-  "quality": {
-    "min_content_length": 100
+  "extraction": {
+    "semantic_strategy": "complex"
   }
 }

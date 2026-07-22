@@ -41,7 +41,11 @@ class ContractValidationResult:
 CONTRACTS = {
     "FlexibleContentPage": ("flexible-content-page-1.1.schema.json", "1.1"),
     "SupportArticlePage": ("support-article-page-1.0.schema.json", "1.0"),
-    "DiagnosticSidecar": ("diagnostic-sidecar-1.1.schema.json", "1.1"),
+    "DiagnosticSidecar": ("diagnostic-sidecar-1.2.schema.json", "1.2"),
+    "ReconstructionParseability": (
+        "reconstruction-parseability-1.0.schema.json",
+        "1.0",
+    ),
 }
 
 
@@ -74,6 +78,13 @@ class ContractValidator:
 
     def validate_sidecar(self, sidecar: dict[str, Any]) -> ContractValidationResult:
         return ContractValidationResult(self._schema_errors(sidecar, "DiagnosticSidecar"), [])
+
+    def validate_reconstruction_parseability(
+        self, evidence: dict[str, Any]
+    ) -> ContractValidationResult:
+        return ContractValidationResult(
+            self._schema_errors(evidence, "ReconstructionParseability"), []
+        )
 
     def _schema_errors(self, value: dict[str, Any], contract_name: str) -> list[ContractIssue]:
         filename, _ = CONTRACTS[contract_name]

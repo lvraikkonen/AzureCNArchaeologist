@@ -1,0 +1,467 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/diagnostic-sidecar-1.2.schema.json",
+  "title": "Diagnostic Sidecar 1.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "product_key",
+    "resource",
+    "language",
+    "page_model",
+    "contract",
+    "source",
+    "normalized_input",
+    "payload",
+    "strategy",
+    "status",
+    "validation",
+    "timing",
+    "error",
+    "input_assurance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.2"
+    },
+    "product_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resource": {
+      "$ref": "#/$defs/resource"
+    },
+    "language": {
+      "enum": [
+        "zh-cn",
+        "en-us"
+      ]
+    },
+    "page_model": {
+      "enum": [
+        "FlexibleContentPage",
+        "SupportArticlePage"
+      ]
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version",
+        "schema_sha256"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "schema_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "source": {
+      "$ref": "#/$defs/artifact"
+    },
+    "normalized_input": {
+      "$ref": "#/$defs/artifact"
+    },
+    "payload": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/artifact"
+        }
+      ]
+    },
+    "strategy": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "type",
+        "processor"
+      ],
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "processor": {
+          "type": "string"
+        }
+      }
+    },
+    "status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "execution",
+        "validation",
+        "review",
+        "publication"
+      ],
+      "properties": {
+        "execution": {
+          "enum": [
+            "pending",
+            "running",
+            "succeeded",
+            "failed",
+            "skipped"
+          ]
+        },
+        "validation": {
+          "enum": [
+            "not_run",
+            "passed",
+            "failed"
+          ]
+        },
+        "review": {
+          "enum": [
+            "not_requested",
+            "pending",
+            "approved",
+            "rejected"
+          ]
+        },
+        "publication": {
+          "enum": [
+            "not_published",
+            "published"
+          ]
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "errors",
+        "warnings"
+      ],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/issue"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/issue"
+          }
+        }
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "started_at",
+        "completed_at",
+        "duration_ms"
+      ],
+      "properties": {
+        "started_at": {
+          "type": "string"
+        },
+        "completed_at": {
+          "type": "string"
+        },
+        "duration_ms": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "error": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code",
+            "stage",
+            "message"
+          ],
+          "properties": {
+            "code": {
+              "type": "string"
+            },
+            "stage": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "input_assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "encoding",
+        "has_utf8_bom",
+        "source_normalized_byte_identical",
+        "source_findings",
+        "reconstruction_parseability"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "passed",
+            "failed"
+          ]
+        },
+        "encoding": {
+          "const": "utf-8-strict"
+        },
+        "has_utf8_bom": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "source_normalized_byte_identical": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "source_findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source_finding"
+          }
+        },
+        "reconstruction_parseability": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "verdict",
+                "input_sha256",
+                "profile_sha256",
+                "evidence"
+              ],
+              "properties": {
+                "verdict": {
+                  "enum": [
+                    "passed",
+                    "failed"
+                  ]
+                },
+                "input_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "profile_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "evidence": {
+                  "$ref": "#/$defs/artifact"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "resource_key",
+        "slug",
+        "version_key",
+        "version_label"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "current",
+            "historical_version"
+          ]
+        },
+        "resource_key": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*(?:--v[0-9]+(?:-[0-9]+)*)?$"
+        },
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "version_key": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^v[0-9]+(?:-[0-9]+)*$"
+            }
+          ]
+        },
+        "version_label": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "minLength": 1
+            }
+          ]
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "sha256": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          ]
+        }
+      }
+    },
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "path",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "source_finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "code",
+        "category",
+        "severity",
+        "message",
+        "evidence"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "1.0"
+        },
+        "code": {
+          "enum": [
+            "SOURCE_CHARSET_BOM_CONFLICT",
+            "SOURCE_CHARSET_DECLARATIONS_CONFLICT",
+            "SOURCE_CHARSET_DECLARATION_NOT_UTF8"
+          ]
+        },
+        "category": {
+          "const": "charset"
+        },
+        "severity": {
+          "const": "warning"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "actual_encoding",
+            "utf8_bom",
+            "declarations"
+          ],
+          "properties": {
+            "actual_encoding": {
+              "const": "utf-8"
+            },
+            "utf8_bom": {
+              "type": "boolean"
+            },
+            "declarations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "source",
+                  "value",
+                  "normalized"
+                ],
+                "properties": {
+                  "source": {
+                    "enum": [
+                      "meta_charset",
+                      "http_equiv"
+                    ]
+                  },
+                  "value": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "normalized": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

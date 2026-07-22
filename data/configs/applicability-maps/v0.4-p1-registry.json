@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "map_id": "v0.4-applicability-p1",
+  "status": "identity_frozen_pending_p3_population",
+  "approval_use": "prohibited_until_p3_population",
+  "strategy_requirements": {
+    "simple_static": "not_applicable",
+    "region_filter": "required",
+    "complex": "required",
+    "support_article": "not_applicable"
+  },
+  "legacy_candidates": [
+    "azure-nat-gateway",
+    "container-instances",
+    "virtual-network"
+  ]
+}

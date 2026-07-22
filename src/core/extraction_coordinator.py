@@ -14,13 +14,23 @@ from typing import Any, Optional
 
 from bs4 import BeautifulSoup
 
+from src.core.canonical_input import (
+    CanonicalHtmlInput,
+    CanonicalInputLoader,
+    InputAssuranceError,
+)
 from src.core.contract_validator import ContractIssue, ContractValidationResult, ContractValidator
-from src.core.data_models import ExtractionStrategy, PageType, StrategyType
+from src.core.data_models import ExtractionStrategy, StrategyType
 from src.core.extraction_result import ExtractionResult
 from src.core.logging import get_logger
 from src.core.product_catalog import artifact_relative_directory, normalized_input_path, sha256_file
 from src.core.product_manager import ProductManager
+from src.core.reconstruction_parseability import (
+    ParseabilityResult,
+    ReconstructionParseabilityValidator,
+)
 from src.core.strategy_manager import StrategyManager
+from src.core.validation_context import ValidationContextRegistry
 from src.core.support_article_versions import (
     available_historical_versions,
     build_support_url_route_map,
@@ -66,13 +76,21 @@ class ExtractionCoordinator:
         self.product_manager = ProductManager(str(self.root / "data" / "configs"))
         self.strategy_manager = StrategyManager(self.product_manager)
         self.contract_validator = ContractValidator(self.root)
+        self.validation_context = ValidationContextRegistry(self.root)
+        self.input_loader = CanonicalInputLoader(
+            self.root,
+            self.product_manager,
+            max_input_bytes=self.validation_context.max_input_bytes,
+        )
+        self.parseability_validator = ReconstructionParseabilityValidator()
 
     def coordinate_extraction(
         self,
         product_key: str,
         language: str,
-        html_file_path: str | None = None,
+        *,
         version_key: str | None = None,
+        expected_input_sha256: str | None = None,
         strategy: ExtractionStrategy | StrategyType | str | None = None,
         defer_validation: bool | None = None,
         preselected_strategy: ExtractionStrategy | StrategyType | str | None = None,
@@ -90,11 +108,16 @@ class ExtractionCoordinator:
             historical_normalized_input_path(self.root, definition, language, version_key)
             if version_key else normalized_input_path(self.root, definition, language)
         )
-        input_path = Path(html_file_path).resolve() if html_file_path else default_input_path
+        input_path = default_input_path
         relative_dir = artifact_relative_directory(definition, language)
         payload_target_path = self.payload_root / relative_dir / f"{resource_key}.json"
         payload_path: Optional[Path] = payload_target_path
         sidecar_path = self.diagnostic_root / relative_dir / f"{resource_key}.sidecar.json"
+        parseability_path = (
+            self.diagnostic_root
+            / relative_dir
+            / f"{resource_key}.parseability.json"
+        )
         source_path = (
             self.root / "data" / "current_prod_html" / language / source_definition["snapshot_path"]
             if source_definition["availability"] == "available"
@@ -112,6 +135,9 @@ class ExtractionCoordinator:
         validation_issues = {"errors": [], "warnings": []}
         status = {"execution": "running", "validation": "not_run", "review": "not_requested", "publication": "not_published"}
         structured_error: Optional[dict[str, str]] = None
+        canonical_input: CanonicalHtmlInput | None = None
+        parseability: ParseabilityResult | None = None
+        parseability_path.unlink(missing_ok=True)
 
         try:
             if definition["capability_status"] != "supported":
@@ -129,18 +155,45 @@ class ExtractionCoordinator:
                 payload_target_path.unlink(missing_ok=True)
                 payload_path = None
             else:
-                if not input_path.is_file():
-                    raise FileNotFoundError(f"Normalized Input does not exist: {input_path}")
+                canonical_input = self.input_loader.load(
+                    product_key,
+                    language,
+                    version_key=version_key,
+                    expected_sha256=expected_input_sha256,
+                )
+                input_path = canonical_input.normalized_path
+                parseability = self.parseability_validator.validate(canonical_input)
+                evidence_contract = (
+                    self.contract_validator.validate_reconstruction_parseability(
+                        dict(parseability.evidence)
+                    )
+                )
+                if not evidence_contract.passed:
+                    messages = "; ".join(
+                        issue.message for issue in evidence_contract.errors
+                    )
+                    raise RuntimeError(
+                        f"Reconstruction Parseability evidence contract failure: {messages}"
+                    )
+                self._write_json_atomic(
+                    parseability_path, dict(parseability.evidence)
+                )
+                if not parseability.passed or parseability.production_soup is None:
+                    raise InputAssuranceError(
+                        "RECONSTRUCTION_PARSEABILITY_FAILED",
+                        "Independent HTML parsers materially disagree on reconstruction content",
+                    )
                 if strategy is not None and preselected_strategy is not None:
                     raise ValueError("Specify only one of strategy or preselected_strategy")
                 selected_strategy = self._resolve_strategy(
                     preselected_strategy if preselected_strategy is not None else strategy,
-                    input_path,
+                    parseability.production_soup,
                     product_key,
+                    input_bytes=canonical_input.size_bytes,
                 )
                 strategy_metadata = self._strategy_metadata(selected_strategy)
                 strategy_instance = StrategyFactory.create_strategy(selected_strategy, runtime_definition, str(input_path))
-                soup = self._read_html(input_path)
+                soup = preprocess_image_paths(parseability.production_soup)
                 payload = strategy_instance.extract_flexible_content(soup, source_definition.get("url", ""))
                 self._normalize_business_fields(payload, runtime_definition, language)
                 status["execution"] = "succeeded"
@@ -152,12 +205,16 @@ class ExtractionCoordinator:
             payload_path = None
             status["execution"] = "failed"
             status["validation"] = "not_run"
-            structured_error = {"code": type(error).__name__, "stage": "extraction", "message": str(error)}
+            structured_error = {
+                "code": error.code if isinstance(error, InputAssuranceError) else type(error).__name__,
+                "stage": "input_assurance" if isinstance(error, InputAssuranceError) else "extraction",
+                "message": str(error),
+            }
 
         completed = datetime.now(timezone.utc)
         duration_ms = max(0, round((time.perf_counter() - started_clock) * 1000))
         sidecar = {
-            "schema_version": "1.1",
+            "schema_version": "1.2",
             "product_key": product_key,
             "resource": {
                 "kind": resource_kind,
@@ -171,6 +228,9 @@ class ExtractionCoordinator:
             "contract": self.contract_validator.contract_metadata(definition["page_model"]),
             "source": self._artifact(source_path, source_definition.get("url")),
             "normalized_input": self._artifact(input_path),
+            "input_assurance": self._input_assurance_metadata(
+                canonical_input, parseability, parseability_path
+            ),
             "payload": self._artifact(payload_path) if payload_path else None,
             "strategy": strategy_metadata,
             "status": status,
@@ -186,7 +246,7 @@ class ExtractionCoordinator:
         result = ExtractionResult(product_key, language, payload, sidecar, payload_path, sidecar_path)
         should_defer = self.deferred_validation if defer_validation is None else defer_validation
         if result.execution_succeeded and not should_defer:
-            return self.validate_persisted_payload(result, html_file_path=input_path)
+            return self.validate_persisted_payload(result)
         return result
 
     def validate_persisted_payload(
@@ -196,7 +256,6 @@ class ExtractionCoordinator:
         payload_path: str | Path | None = None,
         sidecar_path: str | Path | None = None,
         *,
-        html_file_path: str | Path | None = None,
         version_key: str | None = None,
     ) -> ExtractionResult:
         """Validate a persisted payload and atomically refresh its sidecar.
@@ -297,7 +356,7 @@ class ExtractionCoordinator:
                 errors.append(ContractIssue("invalid_payload_json", "$", str(error)))
 
         input_file = self._artifact_path(
-            html_file_path or sidecar.get("normalized_input", {}).get("path")
+            sidecar.get("normalized_input", {}).get("path")
         )
         self._append_artifact_hash_issue(
             errors, sidecar.get("normalized_input"), input_file, "normalized_input"
@@ -305,10 +364,134 @@ class ExtractionCoordinator:
         source_file = self._artifact_path(sidecar.get("source", {}).get("path"))
         self._append_artifact_hash_issue(errors, sidecar.get("source"), source_file, "source")
 
+        canonical_input: CanonicalHtmlInput | None = None
+        parseability: ParseabilityResult | None = None
+        try:
+            canonical_input = self.input_loader.load(
+                product_key,
+                language,
+                version_key=version_key,
+                expected_sha256=sidecar.get("normalized_input", {}).get("sha256"),
+            )
+            if input_file != canonical_input.normalized_path.resolve():
+                errors.append(ContractIssue(
+                    "normalized_input_path_mismatch",
+                    "$.normalized_input.path",
+                    "Diagnostic Sidecar does not reference the canonical Normalized Input.",
+                ))
+            if source_file != canonical_input.source_path.resolve():
+                errors.append(ContractIssue(
+                    "source_path_mismatch",
+                    "$.source.path",
+                    "Diagnostic Sidecar does not reference the canonical Source Snapshot.",
+                ))
+            parseability = self.parseability_validator.validate(canonical_input)
+            replay_contract = (
+                self.contract_validator.validate_reconstruction_parseability(
+                    dict(parseability.evidence)
+                )
+            )
+            errors.extend(replay_contract.errors)
+            if not parseability.passed or parseability.production_soup is None:
+                errors.append(ContractIssue(
+                    "reconstruction_parseability_failed",
+                    "$.input_assurance.reconstruction_parseability",
+                    "Independent HTML parsers materially disagree during replay.",
+                ))
+            frozen_parseability = sidecar.get("input_assurance", {}).get(
+                "reconstruction_parseability"
+            ) or {}
+            frozen_assurance = sidecar.get("input_assurance", {})
+            expected_assurance = {
+                "status": "passed" if parseability.passed else "failed",
+                "encoding": "utf-8-strict",
+                "has_utf8_bom": canonical_input.has_utf8_bom,
+                "source_normalized_byte_identical": True,
+                "source_findings": [
+                    finding.to_dict()
+                    for finding in canonical_input.source_findings
+                ],
+            }
+            for field, expected in expected_assurance.items():
+                if frozen_assurance.get(field) != expected:
+                    errors.append(ContractIssue(
+                        "input_assurance_replay_mismatch",
+                        f"$.input_assurance.{field}",
+                        "Frozen input-assurance metadata differs from canonical replay.",
+                    ))
+            expected_reconstruction = {
+                "verdict": parseability.evidence["verdict"],
+                "input_sha256": canonical_input.normalized_sha256,
+                "profile_sha256": parseability.evidence["profile"]["sha256"],
+            }
+            for field, expected in expected_reconstruction.items():
+                if frozen_parseability.get(field) != expected:
+                    errors.append(ContractIssue(
+                        "parseability_replay_mismatch",
+                        f"$.input_assurance.reconstruction_parseability.{field}",
+                        "Frozen parseability metadata differs from canonical replay.",
+                    ))
+            evidence_artifact = frozen_parseability.get("evidence")
+            evidence_file = self._artifact_path(
+                evidence_artifact.get("path") if evidence_artifact else None
+            )
+            expected_evidence_file = sidecar_file.with_name(
+                sidecar_file.name.removesuffix(".sidecar.json")
+                + ".parseability.json"
+            )
+            if evidence_file != expected_evidence_file:
+                errors.append(ContractIssue(
+                    "parseability_evidence_path_mismatch",
+                    "$.input_assurance.reconstruction_parseability.evidence.path",
+                    "Parseability evidence is not at the canonical diagnostic path.",
+                ))
+            self._append_artifact_hash_issue(
+                errors,
+                evidence_artifact,
+                evidence_file,
+                "parseability_evidence",
+            )
+            if evidence_file.is_file():
+                try:
+                    frozen_evidence = json.loads(
+                        evidence_file.read_text(encoding="utf-8")
+                    )
+                except (OSError, json.JSONDecodeError) as error:
+                    errors.append(ContractIssue(
+                        "invalid_parseability_evidence",
+                        "$.input_assurance.reconstruction_parseability.evidence",
+                        str(error),
+                    ))
+                else:
+                    frozen_contract = (
+                        self.contract_validator.validate_reconstruction_parseability(
+                            frozen_evidence
+                        )
+                    )
+                    errors.extend(frozen_contract.errors)
+                    if parseability is not None and frozen_evidence != parseability.evidence:
+                        errors.append(ContractIssue(
+                            "parseability_replay_mismatch",
+                            "$.input_assurance.reconstruction_parseability.evidence",
+                            "Replayed parseability evidence differs from frozen evidence.",
+                        ))
+        except InputAssuranceError as error:
+            errors.append(ContractIssue(
+                error.code.lower(),
+                "$.normalized_input",
+                str(error),
+            ))
+
         if payload is not None:
             expected_ms_service = None
-            if definition["page_model"] == "FlexibleContentPage" and input_file.is_file():
-                expected_ms_service = self._extract_ms_service(self._read_html(input_file))
+            if (
+                definition["page_model"] == "FlexibleContentPage"
+                and parseability is not None
+                and parseability.production_soup is not None
+            ):
+                expected_ms_service = self._extract_ms_service(
+                    parseability.production_soup
+                )
             contract_result = self.contract_validator.validate(
                 payload, definition["page_model"], expected_ms_service
             )
@@ -353,19 +536,29 @@ class ExtractionCoordinator:
     def _resolve_strategy(
         self,
         strategy: ExtractionStrategy | StrategyType | str | None,
-        input_path: Path,
+        soup: BeautifulSoup,
         product_key: str,
+        *,
+        input_bytes: int,
     ) -> ExtractionStrategy:
-        if strategy is None:
-            return self.strategy_manager.determine_extraction_strategy(
-                str(input_path), product_key
-            )
-        if isinstance(strategy, ExtractionStrategy):
-            return strategy
-        strategy_type = strategy if isinstance(strategy, StrategyType) else StrategyType(strategy)
-        return self.strategy_manager._select_strategy_by_page_type(
-            PageType(strategy_type.value), product_key, None
+        configured = self.strategy_manager.determine_extraction_strategy(
+            soup, product_key, input_bytes=input_bytes
         )
+        if strategy is None:
+            return configured
+        strategy_type = (
+            strategy.strategy_type
+            if isinstance(strategy, ExtractionStrategy)
+            else strategy if isinstance(strategy, StrategyType) else StrategyType(strategy)
+        )
+        if strategy_type is not configured.strategy_type:
+            raise ValueError(
+                "Preselected strategy differs from the Product Definition "
+                f"semantic_strategy for {product_key}"
+            )
+        # A caller may preflight the semantic type, but it cannot substitute
+        # arbitrary processor metadata or bypass the frozen Product Definition.
+        return configured
 
     def _artifact_path(self, value: str | Path | None) -> Path:
         if value is None:
@@ -394,6 +587,44 @@ class ExtractionCoordinator:
             ))
 
     @staticmethod
+    def _input_assurance_metadata(
+        canonical_input: CanonicalHtmlInput | None,
+        parseability: ParseabilityResult | None,
+        evidence_path: Path,
+    ) -> dict[str, Any]:
+        findings = (
+            [finding.to_dict() for finding in canonical_input.source_findings]
+            if canonical_input is not None
+            else []
+        )
+        reconstruction = None
+        if canonical_input is not None and parseability is not None:
+            reconstruction = {
+                "verdict": parseability.evidence["verdict"],
+                "input_sha256": canonical_input.normalized_sha256,
+                "profile_sha256": parseability.evidence["profile"]["sha256"],
+                "evidence": ExtractionCoordinator._artifact(evidence_path),
+            }
+        return {
+            "status": (
+                "passed"
+                if canonical_input is not None
+                and parseability is not None
+                and parseability.passed
+                else "failed"
+            ),
+            "encoding": "utf-8-strict",
+            "has_utf8_bom": (
+                canonical_input.has_utf8_bom if canonical_input is not None else None
+            ),
+            "source_normalized_byte_identical": (
+                True if canonical_input is not None else None
+            ),
+            "source_findings": findings,
+            "reconstruction_parseability": reconstruction,
+        }
+
+    @staticmethod
     def _write_json_atomic(path: Path, value: dict[str, Any]) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         descriptor, temporary_name = tempfile.mkstemp(
@@ -420,16 +651,6 @@ class ExtractionCoordinator:
             raise
 
     @staticmethod
-    def _read_html(path: Path) -> BeautifulSoup:
-        for encoding in ("utf-8", "gbk", "iso-8859-1"):
-            try:
-                html = path.read_text(encoding=encoding)
-                return preprocess_image_paths(BeautifulSoup(html, "html.parser"))
-            except UnicodeDecodeError:
-                continue
-        raise UnicodeError(f"Unable to decode {path}")
-
-    @staticmethod
     def _normalize_business_fields(payload: dict[str, Any], definition: dict[str, Any], language: str) -> None:
         for key in ("validation", "extraction_metadata", "error", "source_file", "source_url", "quality_score"):
             payload.pop(key, None)
@@ -445,11 +666,12 @@ class ExtractionCoordinator:
         meta = soup.find("meta", attrs={"name": re.compile(r"^ms\.service$", re.I)})
         return str(meta.get("content", "")).strip() if meta else ""
 
-    @staticmethod
-    def _quality_warnings(payload: dict[str, Any], definition: dict[str, Any]) -> list[dict[str, str]]:
-        minimum = definition.get("quality", {}).get("min_content_length")
-        if minimum is None:
-            return []
+    def _quality_warnings(
+        self, payload: dict[str, Any], definition: dict[str, Any]
+    ) -> list[dict[str, str]]:
+        minimum = self.validation_context.min_content_length(
+            definition["product_key"]
+        )
         if definition["page_model"] == "SupportArticlePage":
             fragments = [payload.get("mainContent", "")]
         else:

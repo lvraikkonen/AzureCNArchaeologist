@@ -15,9 +15,11 @@ from unittest.mock import Mock, patch
 
 import cli
 from src.batch.process_engine import BatchProcessEngine
+from src.core.canonical_input import CanonicalHtmlInput
 from src.core.data_models import ExtractionStrategy, StrategyType
 from src.core.extraction_result import ExtractionResult
 from src.core.product_catalog import sha256_file
+from src.core.validation_context import ValidationContextRegistry
 from src.pipeline.cli_commands import (
     pipeline_run_command,
     pipeline_status_command,
@@ -125,13 +127,72 @@ class _StrategyManager:
         self.calls: Counter[str] = Counter()
 
     def determine_extraction_strategy(
-        self, html_file_path: str, product_key: str
+        self, soup: object, product_key: str, *, input_bytes: int | None = None
     ) -> ExtractionStrategy:
         self.calls[product_key] += 1
         return ExtractionStrategy(
             strategy_type=StrategyType.SIMPLE_STATIC,
             processor="FixtureProcessor",
             description="pipeline fixture",
+        )
+
+
+class _FixtureValidationContext:
+    """Use the repository's frozen identities without applying them to a mini plan."""
+
+    def __init__(self) -> None:
+        self._registry = ValidationContextRegistry(ROOT)
+
+    @property
+    def max_input_bytes(self) -> int:
+        return self._registry.max_input_bytes
+
+    def assert_plan_matches_baseline(self, plan: PipelinePlan) -> None:
+        assert plan.items
+
+    def capability_delta_proposals(self, plan: PipelinePlan) -> list[dict[str, object]]:
+        return []
+
+    def freeze(self) -> dict[str, object]:
+        return self._registry.freeze()
+
+
+class _FixtureInputLoader:
+    def __init__(self, root: Path, items: tuple[BatchItem, ...]) -> None:
+        self.root = root
+        self.items = {
+            (item.product_key, item.language, item.version_key): item for item in items
+        }
+
+    def load(
+        self,
+        product_key: str,
+        language: str,
+        *,
+        version_key: str | None = None,
+        expected_sha256: str | None = None,
+    ) -> CanonicalHtmlInput:
+        item = self.items[(product_key, language, version_key)]
+        source = self.root / str(item.source_path)
+        normalized = self.root / item.normalized_path
+        source_bytes = source.read_bytes()
+        normalized_bytes = normalized.read_bytes()
+        assert source_bytes == normalized_bytes
+        digest = sha256_file(normalized)
+        assert expected_sha256 in (None, digest)
+        return CanonicalHtmlInput(
+            product_key=product_key,
+            resource_key=item.resource_key,
+            language=language,
+            source_path=source,
+            normalized_path=normalized,
+            source_sha256=digest,
+            normalized_sha256=digest,
+            expected_sha256=expected_sha256 or digest,
+            raw_bytes=normalized_bytes,
+            text=normalized_bytes.decode("utf-8", errors="strict"),
+            has_utf8_bom=normalized_bytes.startswith(b"\xef\xbb\xbf"),
+            source_findings=(),
         )
 
 
@@ -152,7 +213,7 @@ class _Extractor:
         self,
         product_key: str,
         language: str,
-        html_file_path: str,
+        *,
         version_key: str | None = None,
         **options: object,
     ) -> ExtractionResult:
@@ -209,7 +270,6 @@ class _Extractor:
         *,
         payload_path: Path,
         sidecar_path: Path,
-        html_file_path: str | Path,
         version_key: str | None = None,
     ) -> ExtractionResult:
         item = self.items[(product_key, language, version_key)]
@@ -237,10 +297,11 @@ class _Extractor:
             sidecar_path=sidecar_path,
         )
 
-    @staticmethod
-    def _sidecar(item: BatchItem, *, validation: str) -> dict[str, object]:
+    def _sidecar(self, item: BatchItem, *, validation: str) -> dict[str, object]:
+        evidence_path = self.run_dir / item.parseability_path
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
         return {
-            "schema_version": "1.1",
+            "schema_version": "1.2",
             "product_key": item.product_key,
             "resource": {
                 "kind": item.resource_kind,
@@ -276,6 +337,22 @@ class _Extractor:
                 "duration_ms": 1,
             },
             "error": None,
+            "input_assurance": {
+                "status": "passed",
+                "encoding": "utf-8-strict",
+                "has_utf8_bom": False,
+                "source_normalized_byte_identical": True,
+                "source_findings": [],
+                "reconstruction_parseability": {
+                    "verdict": evidence["verdict"],
+                    "input_sha256": evidence["input_sha256"],
+                    "profile_sha256": evidence["profile"]["sha256"],
+                    "evidence": {
+                        "path": str(evidence_path),
+                        "sha256": sha256_file(evidence_path),
+                    },
+                },
+            },
         }
 
     @staticmethod
@@ -300,22 +377,29 @@ class _Harness:
         self.copier = _Copier(root, self.items)
         self.strategy_manager = _StrategyManager()
         self.extractor: _Extractor | None = None
-        self.store = StateStore(root)
+        # Manifest 2.0 identities replay against the repository's frozen P1
+        # context while run artifacts remain isolated in this temporary root.
+        self.store = StateStore(ROOT, runs_dir=root / "runs")
         self.clock = _Clock()
-        self.coordinator = PipelineCoordinator(
-            root,
-            planner=self.planner,
-            state_store=self.store,
-            provenance=self.provenance,
-            copier_factory=lambda unused_root: self.copier,
-            extraction_factory=self._extractor_factory,
-            engine_factory=lambda workers: BatchProcessEngine(
-                max_workers=workers, persist_records=False
-            ),
-            strategy_manager_factory=lambda unused_root: self.strategy_manager,
-            batch_id_factory=lambda: FIXED_BATCH_ID,
-            now=self.clock,
-        )
+        with patch(
+            "src.pipeline.coordinator.ValidationContextRegistry",
+            lambda unused_root: _FixtureValidationContext(),
+        ):
+            self.coordinator = PipelineCoordinator(
+                root,
+                planner=self.planner,
+                state_store=self.store,
+                provenance=self.provenance,
+                copier_factory=lambda unused_root: self.copier,
+                extraction_factory=self._extractor_factory,
+                engine_factory=lambda workers: BatchProcessEngine(
+                    max_workers=workers, persist_records=False
+                ),
+                strategy_manager_factory=lambda unused_root: self.strategy_manager,
+                batch_id_factory=lambda: FIXED_BATCH_ID,
+                now=self.clock,
+            )
+        self.coordinator._input_loader = _FixtureInputLoader(root, self.items)
 
     def _make_item(self, product_key: str) -> BatchItem:
         config_path = Path("data/configs/products/pricing") / f"{product_key}.json"
@@ -403,6 +487,7 @@ class PipelineCoordinatorTests(unittest.TestCase):
                 for relative in (
                     item.output_path,
                     item.diagnostic_path,
+                    item.parseability_path,
                     item.validation_path,
                 ):
                     self.assertTrue((outcome.run_dir / relative).is_file(), relative)
@@ -413,6 +498,10 @@ class PipelineCoordinatorTests(unittest.TestCase):
                 self.assertEqual(
                     sha256_file(outcome.run_dir / item.diagnostic_path),
                     state["artifacts"]["diagnostic"]["sha256"],
+                )
+                self.assertEqual(
+                    sha256_file(outcome.run_dir / item.parseability_path),
+                    state["artifacts"]["parseability"]["sha256"],
                 )
                 validation = json.loads(
                     (outcome.run_dir / item.validation_path).read_text(encoding="utf-8")
@@ -589,14 +678,12 @@ class PipelineCoordinatorTests(unittest.TestCase):
                 )
                 status = harness.coordinator.status(FIXED_BATCH_ID)
                 cli_stdout = io.StringIO()
-                with patch(
-                    "src.pipeline.cli_commands.ROOT", harness.root
-                ), redirect_stdout(cli_stdout):
+                with redirect_stdout(cli_stdout):
                     self.assertEqual(
                         pipeline_status_command(
                             SimpleNamespace(
                                 batch_id=FIXED_BATCH_ID,
-                                runs_dir="runs",
+                                runs_dir=str(harness.store.runs_dir),
                                 json=True,
                             )
                         ),
@@ -871,6 +958,34 @@ class PipelineCoordinatorTests(unittest.TestCase):
             self.assertEqual(alpha["status"]["validation"], "failed")
             self.assertEqual(alpha["status"]["review"], "not_requested")
             self.assertEqual(alpha["error"]["code"], "DIAGNOSTIC_HASH_MISMATCH")
+
+    def test_tampered_parseability_evidence_fails_revalidation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            harness = _Harness(Path(directory))
+            outcome = harness.run()
+            item = harness.items[0]
+            before = harness.store.read_manifest(FIXED_BATCH_ID)
+            expected = before["items"][item.item_id]["artifacts"]["parseability"][
+                "sha256"
+            ]
+            evidence_path = outcome.run_dir / item.parseability_path
+            evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+            evidence["verdict"] = "failed"
+            _Extractor._write_json(evidence_path, evidence)
+            self.assertNotEqual(sha256_file(evidence_path), expected)
+
+            validated = harness.coordinator.validate(
+                FIXED_BATCH_ID, parallel_jobs=2
+            )
+
+            self.assertEqual(validated.exit_code, 2)
+            after = harness.store.read_manifest(FIXED_BATCH_ID)
+            current = after["items"][item.item_id]
+            self.assertEqual(
+                current["artifacts"]["parseability"]["sha256"], expected
+            )
+            self.assertEqual(current["status"]["validation"], "failed")
+            self.assertEqual(current["error"]["code"], "PARSEABILITY_HASH_MISMATCH")
 
     def test_completed_resume_is_a_byte_stable_no_op(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

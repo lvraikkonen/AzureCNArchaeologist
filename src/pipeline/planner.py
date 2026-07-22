@@ -182,11 +182,7 @@ class PipelinePlanner:
         validation = Path("validation") / relative_dir / f"{resource_key}.validation.json"
         config_relative = Path("data") / "configs" / config_path
         config_absolute = self.root / config_relative
-        strategy = (
-            "support_article"
-            if definition["page_model"] == "SupportArticlePage"
-            else definition.get("extraction", {}).get("strategy", "auto")
-        )
+        strategy = definition["extraction"]["semantic_strategy"]
 
         return BatchItem(
             language=language,

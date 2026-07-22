@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "product_key": "sla-virtual-desktop",
   "display_name": "Azure 虚拟桌面 的 SLA",
   "slug": "virtual-desktop",
@@ -20,11 +20,6 @@
     }
   },
   "extraction": {
-    "important_section_titles": [],
-    "priority_sections": [],
-    "enable_region_processing": false
-  },
-  "quality": {
-    "min_content_length": 1
+    "semantic_strategy": "support_article"
   }
 }

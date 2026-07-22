@@ -78,8 +78,19 @@ class ProductCatalogTests(unittest.TestCase):
         self.assertEqual(audit["counts"]["zh-cn"]["unknown"], 0)
         self.assertEqual(audit["counts"]["en-us"]["unknown"], 0)
 
+    def test_all_product_definitions_use_the_closed_world_v11_extraction_field(self):
+        records = ProductCatalog(ROOT).load_definitions()
+        self.assertEqual(len(records), 211)
+        for product_key, record in records.items():
+            with self.subTest(product_key=product_key):
+                self.assertEqual(record.definition["schema_version"], "1.1")
+                self.assertEqual(
+                    set(record.definition["extraction"]), {"semantic_strategy"}
+                )
+                self.assertNotIn("quality", record.definition)
+
     def test_definition_conditional_fields_and_slug(self):
-        schema = json.loads((ROOT / "schemas/product-definition-1.0.schema.json").read_text(encoding="utf-8"))
+        schema = json.loads((ROOT / "schemas/product-definition-1.1.schema.json").read_text(encoding="utf-8"))
         validator = Draft202012Validator(schema)
         definition = ProductManager().get_product_config("service-bus")
         invalid_slug = copy.deepcopy(definition)
@@ -97,12 +108,18 @@ class ProductCatalogTests(unittest.TestCase):
             ProductManager().get_product_config("sla-cdn")["historical_versions"]
         )
         self.assertTrue(list(validator.iter_errors(invalid_history_owner)))
+        deprecated_strategy = copy.deepcopy(definition)
+        deprecated_strategy["extraction"]["strategy"] = "simple_static"
+        self.assertTrue(list(validator.iter_errors(deprecated_strategy)))
+        deprecated_quality = copy.deepcopy(definition)
+        deprecated_quality["quality"] = {"min_content_length": 1}
+        self.assertTrue(list(validator.iter_errors(deprecated_quality)))
 
     def test_duplicate_product_key_and_primary_source_are_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "schemas").mkdir()
-            shutil.copy(ROOT / "schemas/product-definition-1.0.schema.json", root / "schemas")
+            shutil.copy(ROOT / "schemas/product-definition-1.1.schema.json", root / "schemas")
             pricing = root / "data/configs/products/pricing"
             support = root / "data/configs/products/support-articles"
             pricing.mkdir(parents=True)
@@ -250,7 +267,7 @@ class ExtractionStateTests(unittest.TestCase):
             self.assertTrue(all(result.exit_code == 0 for result in cdn_results))
             current, version_11, version_10 = cdn_results
             self.assertEqual(version_11.payload["slug"], "cdn-v1-1")
-            self.assertEqual(version_11.sidecar["schema_version"], "1.1")
+            self.assertEqual(version_11.sidecar["schema_version"], "1.2")
             self.assertEqual(version_11.sidecar["product_key"], "sla-cdn")
             self.assertEqual(version_11.sidecar["resource"]["version_label"], "1.1")
             self.assertEqual(version_11.sidecar["source"]["sha256"], version_11.sidecar["normalized_input"]["sha256"])
@@ -290,30 +307,19 @@ class ExtractionStateTests(unittest.TestCase):
             self.assertEqual(english_route.exit_code, 0)
             self.assertNotIn("language", {issue["code"] for issue in english_route.sidecar["validation"]["warnings"]})
 
-            invalid_html = Path(directory) / "invalid.html"
-            invalid_html.write_text("<div class='pure-content'><h1>Only a title</h1></div>", encoding="utf-8")
-            invalid = coordinator.coordinate_extraction("icp-faq", "zh-cn", str(invalid_html))
-            self.assertEqual(invalid.exit_code, 2)
-            self.assertIsNotNone(invalid.payload)
-            self.assertTrue(invalid.payload_path.is_file())
-            self.assertEqual(invalid.sidecar["status"]["execution"], "succeeded")
-            self.assertEqual(invalid.sidecar["status"]["validation"], "failed")
-            self.assertIn("content_below_threshold", {issue["code"] for issue in invalid.sidecar["validation"]["warnings"]})
-
-            empty_body_html = Path(directory) / "empty-body.html"
-            empty_body_html.write_text("<div class='pure-content'><h1>Title</h1><h2></h2></div>", encoding="utf-8")
-            empty_body = coordinator.coordinate_extraction("icp-faq", "zh-cn", str(empty_body_html))
-            self.assertEqual(empty_body.exit_code, 2)
-            self.assertEqual(empty_body.payload["mainContent"], "")
-
-            missing = coordinator.coordinate_extraction("icp-faq", "zh-cn", str(Path(directory) / "missing.html"))
-            self.assertEqual(missing.exit_code, 1)
-            self.assertIsNone(missing.payload)
-            self.assertIsNone(missing.payload_path)
-            self.assertTrue(missing.sidecar_path.is_file())
-            self.assertEqual(missing.sidecar["status"]["execution"], "failed")
-            self.assertEqual(missing.sidecar["status"]["validation"], "not_run")
-            self.assertFalse((Path(directory) / "payloads/zh-cn/SupportArticles/ICP/icp-faq.json").exists())
+            external_html = Path(directory) / "external.html"
+            external_html.write_text(
+                "<div class='pure-content'><h1>Untrusted override</h1></div>",
+                encoding="utf-8",
+            )
+            with self.assertRaises(TypeError):
+                coordinator.coordinate_extraction(
+                    "icp-faq", "zh-cn", str(external_html)
+                )
+            with self.assertRaises(TypeError):
+                coordinator.coordinate_extraction(
+                    "icp-faq", "zh-cn", str(Path(directory) / "missing.html")
+                )
 
             stale_event_grid = Path(directory) / "payloads/zh-cn/pricing/event-grid.json"
             stale_event_grid.parent.mkdir(parents=True, exist_ok=True)

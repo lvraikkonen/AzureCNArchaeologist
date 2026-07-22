@@ -1,7 +1,8 @@
-"""Product Definition v1 runtime access.
+"""Schema-validated Product Definition 1.1 runtime access.
 
 The generated Product Index is the lookup accelerator; Product Definitions remain the
-authoritative source for identity, routing, extraction and quality settings.
+authoritative source for identity, routing, and semantic extraction. Validation
+thresholds live in the separately frozen Validation Profile.
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ class ProductManager:
         self.root = self.config_dir.parents[1]
         self._index: dict[str, Any] | None = None
         self._configs: dict[str, dict[str, Any]] = {}
+        self._validated_definitions: dict[str, Any] | None = None
 
     def load_products_index(self) -> dict[str, Any]:
         if self._index is None:
@@ -44,8 +46,14 @@ class ProductManager:
         item = self.load_products_index()["products"].get(product_key)
         if item is None:
             raise ValueError(f"Product Definition does not exist: {product_key}")
-        path = self.config_dir / item["config_path"]
-        definition = json.loads(path.read_text(encoding="utf-8"))
+        if self._validated_definitions is None:
+            self._validated_definitions = ProductCatalog(self.root).load_definitions()
+        record = self._validated_definitions.get(product_key)
+        if record is None or record.relative_path != item["config_path"]:
+            raise ValueError(
+                f"Product Index route differs from validated Product Definition: {product_key}"
+            )
+        definition = record.definition
         self._configs[product_key] = definition
         return definition
 
@@ -138,18 +146,13 @@ class ProductManager:
                     seen.add(product_key)
         return found
 
-    def get_important_section_titles(self, product_key: str) -> list[str]:
-        return list(self.get_product_config(product_key).get("extraction", {}).get("important_section_titles", []))
-
     def get_extraction_config(self, product_key: str) -> dict[str, Any]:
         return dict(self.get_product_config(product_key).get("extraction", {}))
-
-    def is_large_html_product(self, product_key: str) -> bool:
-        return self.get_product_config(product_key).get("extraction", {}).get("processing_type") == "large_file"
 
     def clear_cache(self) -> None:
         self._index = None
         self._configs.clear()
+        self._validated_definitions = None
 
     def get_cache_stats(self) -> dict[str, Any]:
         return {"cached_products": len(self._configs), "total_products": len(self.get_all_product_keys())}

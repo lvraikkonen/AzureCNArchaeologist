@@ -1,0 +1,2197 @@
+{
+  "schema_version": "1.0",
+  "migration": "product-definition-1.0-to-1.1",
+  "status": "completed",
+  "source_definition_count": 211,
+  "target_definition_count": 211,
+  "unresolved_findings": 0,
+  "strategy_counts": {
+    "complex": 20,
+    "region_filter": 47,
+    "simple_static": 46,
+    "support_article": 98
+  },
+  "removed_legacy_extraction_fields": {
+    "enable_region_processing": 189,
+    "estimated_size_mb": 91,
+    "extra_sections": 3,
+    "important_section_titles": 189,
+    "priority_sections": 189
+  },
+  "quality_thresholds_migrated_to_validation_profile": {
+    "active-directory-b2c": 100,
+    "active-directory-ds": 100,
+    "active-directory": 100,
+    "advisor": 100,
+    "analysis-services": 100,
+    "anomaly-detector": 100,
+    "api-management": 100,
+    "app-configuration": 100,
+    "app-service": 100,
+    "application-gateway": 100,
+    "automation": 100,
+    "azure-bastion": 100,
+    "azure-defender": 100,
+    "azure-firewall": 100,
+    "azure-functions": 100,
+    "azure-migrate": 100,
+    "azure-nat-gateway": 10,
+    "azure-policy": 100,
+    "azure-update-management-center": 100,
+    "backup": 100,
+    "bandwidth": 100,
+    "batch": 100,
+    "bot-services": 100,
+    "cache": 100,
+    "cdn": 100,
+    "cloud-connection-service": 100,
+    "cloud-services": 100,
+    "cognitive-services": 100,
+    "container-apps": 100,
+    "container-instances": 100,
+    "container-registry": 100,
+    "core-control-plane": 100,
+    "cosmos-db": 100,
+    "customer-engagement-fabric": 100,
+    "data-explorer": 100,
+    "data-factory": 100,
+    "data-lake-storage": 100,
+    "data-pipeline": 100,
+    "data-transfer": 100,
+    "database-migration": 100,
+    "databox": 100,
+    "databricks": 100,
+    "ddos-protection": 100,
+    "dedicated-host": 100,
+    "dns": 100,
+    "event-grid": 50,
+    "event-hubs": 100,
+    "expressroute": 100,
+    "firewall-manager": 100,
+    "fluid-relay": 100,
+    "form-recognizer": 100,
+    "frontdoor": 100,
+    "hci": 100,
+    "hdinsight": 100,
+    "hpc-cache": 100,
+    "hub": 100,
+    "iot-edge": 100,
+    "iot-hub": 100,
+    "ip-addresses": 100,
+    "key-vault": 100,
+    "kubernetes-service": 100,
+    "load-balancer": 100,
+    "logic-apps": 100,
+    "machine-learning": 100,
+    "managed-grafana": 100,
+    "managed-instance": 100,
+    "mariadb": 100,
+    "media-services": 100,
+    "metrics-advisor": 100,
+    "microsoft-entra-external-id": 100,
+    "microsoft-sentinel": 100,
+    "monitor": 100,
+    "multi-factor-authentication": 100,
+    "mysql": 100,
+    "network-watcher": 100,
+    "notification-hubs": 100,
+    "postgresql": 100,
+    "power-bi-embedded": 100,
+    "private-link": 100,
+    "purview": 100,
+    "route-server": 100,
+    "scheduler": 100,
+    "search": 100,
+    "service-bus": 50,
+    "service-fabric": 100,
+    "signalr-service": 100,
+    "site-recovery": 100,
+    "spring-cloud": 100,
+    "sql-data-warehouse": 100,
+    "sql-database": 100,
+    "sql-edge": 100,
+    "sql-server-stretch-database": 100,
+    "ssis": 100,
+    "storage-blobs": 100,
+    "storage-files": 100,
+    "storage-import-export": 100,
+    "storage-managed-disks": 100,
+    "storage-page-blobs": 100,
+    "storage-queues": 100,
+    "storage-tables": 100,
+    "storage": 100,
+    "stream-analytics": 100,
+    "synapse-analytics": 100,
+    "time-series-insights": 100,
+    "traffic-manager": 100,
+    "virtual-desktop": 100,
+    "virtual-machine-scale-sets": 100,
+    "virtual-machines": 100,
+    "virtual-network-manager": 100,
+    "virtual-network": 10,
+    "virtual-wan": 100,
+    "vpn-gateway": 100,
+    "web-pubsub": 100,
+    "icp-addweb": 1,
+    "icp-cancel": 1,
+    "icp-change": 1,
+    "icp-faq": 1,
+    "icp-new": 1,
+    "icp-newinsert": 1,
+    "icp-newweb": 1,
+    "icp-summary": 1,
+    "legal-offer-rate-plans": 1,
+    "legal-privacy-statement": 1,
+    "legal-subscription-agreement": 1,
+    "legal-summary": 1,
+    "psr-summary": 1,
+    "sla-active-directory-b2c": 1,
+    "sla-active-directory-ds": 1,
+    "sla-active-directory": 1,
+    "sla-analysis-services": 1,
+    "sla-api-management": 1,
+    "sla-app-configuration": 1,
+    "sla-app-service": 1,
+    "sla-application-gateway": 1,
+    "sla-application-insights": 1,
+    "sla-automation": 1,
+    "sla-azure-arc": 1,
+    "sla-azure-bastion": 1,
+    "sla-azure-defender": 1,
+    "sla-azure-firewall": 1,
+    "sla-backup": 1,
+    "sla-bot-services": 1,
+    "sla-cache": 1,
+    "sla-cdn": 1,
+    "sla-cloud-services": 1,
+    "sla-cognitive-services": 1,
+    "sla-container-apps": 1,
+    "sla-container-instances": 1,
+    "sla-container-registry": 1,
+    "sla-cosmos-db": 1,
+    "sla-data-explorer": 1,
+    "sla-data-factory": 1,
+    "sla-databricks": 1,
+    "sla-ddos-protection": 1,
+    "sla-dns": 1,
+    "sla-event-grid": 1,
+    "sla-event-hubs": 1,
+    "sla-expressroute": 1,
+    "sla-fluid-relay": 1,
+    "sla-frontdoor": 1,
+    "sla-functions": 1,
+    "sla-hdinsight": 1,
+    "sla-hpc-cache": 1,
+    "sla-information-protection": 1,
+    "sla-iot-hub": 1,
+    "sla-key-vault": 1,
+    "sla-kubernetes-service": 1,
+    "sla-load-balancer": 1,
+    "sla-log-analytics": 1,
+    "sla-logic-apps": 1,
+    "sla-machine-learning": 1,
+    "sla-managed-disks": 1,
+    "sla-managed-grafana": 1,
+    "sla-managed-instance": 1,
+    "sla-mariadb": 1,
+    "sla-media-services": 1,
+    "sla-messaging": 1,
+    "sla-microsoft-sentinel": 1,
+    "sla-monitor": 1,
+    "sla-multi-factor-authentication": 1,
+    "sla-mysql": 1,
+    "sla-nat-gateway": 1,
+    "sla-network-watcher": 1,
+    "sla-notification-hubs": 1,
+    "sla-postgresql": 1,
+    "sla-power-bi-embedded": 1,
+    "sla-private-link": 1,
+    "sla-purview": 1,
+    "sla-route-server": 1,
+    "sla-scheduler": 1,
+    "sla-search": 1,
+    "sla-service-bus": 1,
+    "sla-service-fabric": 1,
+    "sla-signalr-service": 1,
+    "sla-site-recovery": 1,
+    "sla-spring-cloud": 1,
+    "sla-sql-data": 1,
+    "sla-sql-server-stretch-database": 1,
+    "sla-storage": 1,
+    "sla-stream-analytics": 1,
+    "sla-summary": 1,
+    "sla-synapse-analytics": 1,
+    "sla-time-series-insights": 1,
+    "sla-traffic-manager": 1,
+    "sla-virtual-desktop": 1,
+    "sla-virtual-machine-scale-sets": 1,
+    "sla-virtual-machines": 1,
+    "sla-virtual-network-manager": 1,
+    "sla-virtual-network": 1,
+    "sla-vpn-gateway": 1,
+    "sla-web-pubsub": 1
+  },
+  "applicability_map_candidates": [
+    {
+      "product_key": "azure-nat-gateway",
+      "legacy_extra_sections": [
+        {
+          "title": "虚拟网络 NAT",
+          "type": "content",
+          "include_in": "baseContent",
+          "position": "after_main"
+        }
+      ],
+      "disposition": "migrated_to_applicability_map_candidate"
+    },
+    {
+      "product_key": "container-instances",
+      "legacy_extra_sections": [
+        {
+          "title": "公共 IP 地址",
+          "type": "content",
+          "include_in": "contentGroups",
+          "position": "after_main"
+        },
+        {
+          "title": "定价示例",
+          "type": "content",
+          "include_in": "contentGroups",
+          "position": "after_main"
+        }
+      ],
+      "disposition": "migrated_to_applicability_map_candidate"
+    },
+    {
+      "product_key": "virtual-network",
+      "legacy_extra_sections": [
+        {
+          "title": "虚拟网络对等互连",
+          "type": "content",
+          "include_in": "baseContent",
+          "position": "after_main"
+        },
+        {
+          "title": "虚拟网络 NAT",
+          "type": "content",
+          "include_in": "baseContent",
+          "position": "after_main"
+        },
+        {
+          "title": "IP 地址",
+          "type": "content",
+          "include_in": "baseContent",
+          "position": "after_main"
+        },
+        {
+          "title": "VPN 网关",
+          "type": "content",
+          "include_in": "baseContent",
+          "position": "after_main"
+        }
+      ],
+      "disposition": "migrated_to_applicability_map_candidate"
+    }
+  ],
+  "strategy_calibration": [
+    {
+      "product_key": "active-directory-b2c",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "active-directory-ds",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "active-directory",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "advisor",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "analysis-services",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "anomaly-detector",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "api-management",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "app-configuration",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "app-service",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "application-gateway",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "automation",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "azure-bastion",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "azure-defender",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "azure-firewall",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "azure-functions",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "azure-migrate",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "azure-nat-gateway",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "azure-policy",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "azure-update-management-center",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "backup",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "bandwidth",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "batch",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "bot-services",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "cache",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "cdn",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "cloud-connection-service",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "cloud-services",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "cognitive-services",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "container-apps",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "container-instances",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "container-registry",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "core-control-plane",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "cosmos-db",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "customer-engagement-fabric",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "data-explorer",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "data-factory",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "data-lake-storage",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "data-pipeline",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "data-transfer",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "database-migration",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "databox",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "databricks",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "ddos-protection",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "dedicated-host",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "dns",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "existing_explicit_decision"
+    },
+    {
+      "product_key": "event-grid",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "existing_explicit_decision"
+    },
+    {
+      "product_key": "event-hubs",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "expressroute",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "firewall-manager",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "fluid-relay",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "form-recognizer",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "frontdoor",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "hci",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "hdinsight",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "hpc-cache",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "hub",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "iot-edge",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "iot-hub",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "ip-addresses",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "key-vault",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "kubernetes-service",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "load-balancer",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "logic-apps",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "machine-learning",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "managed-grafana",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "managed-instance",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "mariadb",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "media-services",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "metrics-advisor",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "microsoft-entra-external-id",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "microsoft-sentinel",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "monitor",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "multi-factor-authentication",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "mysql",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "network-watcher",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "notification-hubs",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "postgresql",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "power-bi-embedded",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "private-link",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "purview",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "route-server",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "scheduler",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "search",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "service-bus",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "existing_explicit_decision"
+    },
+    {
+      "product_key": "service-fabric",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "signalr-service",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "site-recovery",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "spring-cloud",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "sql-data-warehouse",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "sql-database",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "sql-edge",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "sql-server-stretch-database",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "ssis",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "storage-blobs",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "storage-files",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "storage-import-export",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "storage-managed-disks",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "storage-page-blobs",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "storage-queues",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "storage-tables",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "storage",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "stream-analytics",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "synapse-analytics",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "time-series-insights",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "traffic-manager",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "virtual-desktop",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "virtual-machine-scale-sets",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "virtual-machines",
+      "observed": {
+        "zh-cn": "complex",
+        "en-us": "complex"
+      },
+      "decision": "complex",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "virtual-network-manager",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "virtual-network",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "virtual-wan",
+      "observed": {
+        "zh-cn": "simple_static",
+        "en-us": "simple_static"
+      },
+      "decision": "simple_static",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "vpn-gateway",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "web-pubsub",
+      "observed": {
+        "zh-cn": "region_filter",
+        "en-us": "region_filter"
+      },
+      "decision": "region_filter",
+      "basis": "bilingual_analyzer_agreement"
+    },
+    {
+      "product_key": "icp-addweb",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "icp-cancel",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "icp-change",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "icp-faq",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "icp-new",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "icp-newinsert",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "icp-newweb",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "icp-summary",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "legal-offer-rate-plans",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "legal-privacy-statement",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "legal-subscription-agreement",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "legal-summary",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "psr-summary",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-active-directory-b2c",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-active-directory-ds",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-active-directory",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-analysis-services",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-api-management",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-app-configuration",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-app-service",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-application-gateway",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-application-insights",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-automation",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-azure-arc",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-azure-bastion",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-azure-defender",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-azure-firewall",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-backup",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-bot-services",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-cache",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-cdn",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-cloud-services",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-cognitive-services",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-container-apps",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-container-instances",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-container-registry",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-cosmos-db",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-data-explorer",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-data-factory",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-databricks",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-ddos-protection",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-dns",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-event-grid",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-event-hubs",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-expressroute",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-fluid-relay",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-frontdoor",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-functions",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-hdinsight",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-hpc-cache",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-information-protection",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-iot-hub",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-key-vault",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-kubernetes-service",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-load-balancer",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-log-analytics",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-logic-apps",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-machine-learning",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-managed-disks",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-managed-grafana",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-managed-instance",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-mariadb",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-media-services",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-messaging",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-microsoft-sentinel",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-monitor",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-multi-factor-authentication",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-mysql",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-nat-gateway",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-network-watcher",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-notification-hubs",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-postgresql",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-power-bi-embedded",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-private-link",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-purview",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-route-server",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-scheduler",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-search",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-service-bus",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-service-fabric",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-signalr-service",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-site-recovery",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-spring-cloud",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-sql-data",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-sql-server-stretch-database",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-storage",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-stream-analytics",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-summary",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-synapse-analytics",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-time-series-insights",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-traffic-manager",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-virtual-desktop",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-virtual-machine-scale-sets",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-virtual-machines",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-virtual-network-manager",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-virtual-network",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-vpn-gateway",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    },
+    {
+      "product_key": "sla-web-pubsub",
+      "observed": {
+        "zh-cn": "support_article",
+        "en-us": "support_article"
+      },
+      "decision": "support_article",
+      "basis": "page_model"
+    }
+  ]
+}

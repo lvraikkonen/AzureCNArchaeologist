@@ -1,8 +1,8 @@
 """
-Core data models for 3+1 strategy architecture.
+Core data models for the semantic extraction strategies.
 
 This module defines the data structures used throughout the extraction pipeline:
-- PageType & StrategyType: 3+1 strategy types (SIMPLE_STATIC, REGION_FILTER, COMPLEX, LARGE_FILE)
+- PageType & StrategyType: three pricing strategies plus Support Article
 - PageComplexity: Page structure analysis results
 - ExtractionStrategy: Strategy selection information  
 - FilterAnalysis: Filter detection results
@@ -10,11 +10,11 @@ This module defines the data structures used throughout the extraction pipeline:
 - RegionAnalysis: Region detection results
 - FlexibleContentData: Flexible JSON content models
 
-Supports the new 3+1 strategy architecture:
+Supports the semantic strategy architecture:
 - SimpleStatic: Simple static pages (event-grid, service-bus)
 - RegionFilter: Region filter pages (api-management, hdinsight)  
 - Complex: Complex pages (cloud-services)
-- LargeFile: Large file optimization
+- SupportArticle: SLA/ICP/legal/public-security articles
 """
 
 from dataclasses import dataclass, field
@@ -23,20 +23,18 @@ from enum import Enum
 
 
 class PageType(Enum):
-    """Supported page types for 3+1 strategy architecture."""
+    """Supported semantic page types."""
     SIMPLE_STATIC = "simple_static"      # Type A: Simple static pages (event-grid, service-bus)
     REGION_FILTER = "region_filter"      # Type B: Region filter pages (api-management, hdinsight)
     COMPLEX = "complex"                  # Type C: Complex pages (cloud-services)
-    LARGE_FILE = "large_file"           # Special: Large files requiring optimization
     SUPPORT_ARTICLE = "support_article"  # Support article pages (SLA/ICP/Legal/公安备案)
 
 
 class StrategyType(Enum):
-    """Extraction strategy types for 3+1 strategy architecture."""
+    """Extraction strategy types; processing mode is deliberately orthogonal."""
     SIMPLE_STATIC = "simple_static"
     REGION_FILTER = "region_filter"
     COMPLEX = "complex"                  # Replaces: TAB, REGION_TAB, MULTI_FILTER
-    LARGE_FILE = "large_file"
     SUPPORT_ARTICLE = "support_article"
 
 
@@ -130,15 +128,12 @@ class RegionAnalysis:
 
 @dataclass
 class PageComplexity:
-    """Page complexity analysis results for 3+1 strategy architecture."""
+    """Semantic page-structure analysis results."""
     # Basic structure detection (for backward compatibility)
     has_region_filter: bool
     has_tabs: bool
     has_multiple_filters: bool
     
-    # File characteristics
-    file_size_mb: float = 0.0
-    is_large_file: bool = False
     interactive_elements: int = 0
     
     # Component analysis results
@@ -174,18 +169,12 @@ class PageComplexity:
         # Interactive elements
         score += min(self.interactive_elements * 0.1, 2.0)
         
-        # File size impact
-        if self.is_large_file:
-            score += 3.0
-        elif self.file_size_mb > 1.0:
-            score += 1.0
-        
         return min(score, 10.0)
 
 
 @dataclass
 class ExtractionStrategy:
-    """Extraction strategy selection information for 3+1 strategy architecture."""
+    """Semantic extraction strategy selection information."""
     strategy_type: StrategyType
     processor: str                              # Processor class name
     description: str = ""                       # Human-readable description
@@ -198,7 +187,6 @@ class ExtractionStrategy:
     # Processing requirements (set in __post_init__)
     requires_region_processing: bool = False
     requires_tab_processing: bool = False
-    requires_large_file_optimization: bool = False
     
     def __post_init__(self):
         """Set processing requirements based on 3+1 strategy type."""
@@ -210,9 +198,12 @@ class ExtractionStrategy:
         if self.strategy_type == StrategyType.COMPLEX:
             self.requires_tab_processing = True
             
-        # Large file optimization
-        if self.strategy_type == StrategyType.LARGE_FILE:
-            self.requires_large_file_optimization = True
+        expected_page_type = PageType(self.strategy_type.value)
+        if self.recommended_page_type != expected_page_type:
+            raise ValueError(
+                "recommended_page_type must match the semantic strategy type: "
+                f"{self.strategy_type.value}"
+            )
 
 
 # === Flexible JSON Content Models ===

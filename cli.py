@@ -89,15 +89,12 @@ def extract_command(args: argparse.Namespace) -> int:
     try:
         coordinator = ExtractionCoordinator(args.output_dir)
         if args.all_versions:
-            if args.html_file:
-                raise ValueError("--html-file cannot be combined with --all-versions")
             results = coordinator.coordinate_product_extractions(args.product_key, args.language)
         else:
             results = [coordinator.coordinate_extraction(
                 args.product_key,
                 args.language,
-                args.html_file,
-                args.version,
+                version_key=args.version,
             )]
     except Exception as error:
         print(f"FAIL: {error}")
@@ -225,7 +222,6 @@ def create_parser() -> argparse.ArgumentParser:
     extract = subparsers.add_parser("extract", help="Extract one product into payload and diagnostic artifacts")
     extract.add_argument("product_key")
     extract.add_argument("--language", choices=["zh-cn", "en-us"], required=True)
-    extract.add_argument("--html-file", help="Explicit input override")
     version_selection = extract.add_mutually_exclusive_group()
     version_selection.add_argument("--version", help="Historical SLA version key, for example v1-1")
     version_selection.add_argument("--all-versions", action="store_true", help="Extract the current page and every available historical SLA version")

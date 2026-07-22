@@ -5,8 +5,6 @@ This module provides the core PageAnalyzer class for analyzing page complexity
 and structure to determine appropriate extraction strategies.
 """
 
-import os
-from typing import Dict, Any, Optional
 from bs4 import BeautifulSoup
 
 from ..core.data_models import (
@@ -29,32 +27,21 @@ class PageAnalyzer:
     
     def __init__(self):
         """Initialize the page analyzer."""
-        self.large_file_threshold_mb = 5.0  # 5MB threshold for large files
         self.filter_detector = FilterDetector()
         self.tab_detector = TabDetector()
         logger.info("初始化PageAnalyzer - 基于3策略架构")
         
-    def analyze_page_complexity(self, soup: BeautifulSoup, 
-                               html_file_path: Optional[str] = None) -> PageComplexity:
+    def analyze_page_complexity(self, soup: BeautifulSoup) -> PageComplexity:
         """
         Analyze page complexity and structure.
         
         Args:
             soup: BeautifulSoup object of the HTML page
-            html_file_path: Optional path to HTML file for size analysis
-            
         Returns:
             PageComplexity object with analysis results
         """
         logger.info("🔍 开始页面复杂度分析...")
         
-        # 获取文件大小信息
-        file_size_mb = 0.0
-        is_large_file = False
-        if html_file_path:
-            file_size_mb = self._get_file_size_mb(html_file_path)
-            is_large_file = file_size_mb > self.large_file_threshold_mb
-            
         # 使用新的检测器进行分析
         filter_analysis = self.filter_detector.detect_filters(soup)
         tab_analysis = self.tab_detector.detect_tabs(soup)
@@ -78,14 +65,12 @@ class PageAnalyzer:
             interactive_elements += tab_analysis['total_category_tabs']
             
         logger.info(f"复杂度分析结果: region_filter={has_region_filter}, tabs={has_tabs}, multiple_filters={has_multiple_filters}")
-        logger.info(f"文件大小: {file_size_mb:.2f}MB, 大文件: {is_large_file}, 交互元素: {interactive_elements}")
+        logger.info(f"交互元素: {interactive_elements}")
         
         return PageComplexity(
             has_region_filter=has_region_filter,
             has_tabs=has_tabs,
             has_multiple_filters=has_multiple_filters,
-            file_size_mb=file_size_mb,
-            is_large_file=is_large_file,
             interactive_elements=interactive_elements,
             filter_analysis=None,  # 简化架构，不需要详细分析对象
             tab_analysis=None,     # 简化架构，不需要详细分析对象
@@ -136,14 +121,6 @@ class PageAnalyzer:
         logger.info("✅ 决策: Complex (其他复杂情况)")
         return "Complex"
     
-    def _get_file_size_mb(self, file_path: str) -> float:
-        """Get file size in MB."""
-        try:
-            size_bytes = os.path.getsize(file_path)
-            return size_bytes / (1024 * 1024)
-        except OSError:
-            return 0.0
-    
     def get_recommended_page_type(self, complexity: PageComplexity) -> PageType:
         """
         Recommend page type based on complexity analysis for 3+1 strategy architecture.
@@ -155,11 +132,6 @@ class PageAnalyzer:
             Recommended PageType for strategy selection
         """
         logger.info("📋 根据复杂度分析推荐页面类型...")
-        
-        # Large file takes precedence
-        if complexity.is_large_file:
-            logger.info("✅ 推荐: LARGE_FILE (文件大小超过阈值)")
-            return PageType.LARGE_FILE
         
         # Complex pages: multiple filters + tabs
         if complexity.has_multiple_filters or complexity.has_tabs:

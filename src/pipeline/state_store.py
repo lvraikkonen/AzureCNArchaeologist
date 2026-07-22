@@ -17,6 +17,7 @@ from typing import Any, IO
 from jsonschema import Draft202012Validator, FormatChecker
 
 from src.core.product_catalog import sha256_file
+from src.core.validation_context import ValidationContextError, ValidationContextRegistry
 from src.pipeline.models import BatchManifest, InputManifest, utc_now
 
 try:  # pragma: no cover - exercised on the platform that provides it
@@ -253,11 +254,17 @@ class StateStore:
     """Persist immutable inputs, mutable truth, and rebuildable projections."""
 
     SCHEMAS = {
-        "input": "pipeline-input-manifest-1.0.schema.json",
-        "batch": "pipeline-batch-manifest-1.0.schema.json",
-        "validation": "pipeline-validation-1.0.schema.json",
-        "review": "pipeline-review-queue-1.0.schema.json",
-        "report": "pipeline-batch-report-1.0.schema.json",
+        "input": {
+            "1.0": "pipeline-input-manifest-1.0.schema.json",
+            "2.0": "pipeline-input-manifest-2.0.schema.json",
+        },
+        "batch": {
+            "1.0": "pipeline-batch-manifest-1.0.schema.json",
+            "2.0": "pipeline-batch-manifest-2.0.schema.json",
+        },
+        "validation": {"1.0": "pipeline-validation-1.0.schema.json"},
+        "review": {"1.0": "pipeline-review-queue-1.0.schema.json"},
+        "report": {"1.0": "pipeline-batch-report-1.0.schema.json"},
     }
 
     def __init__(self, root: str | Path = ".", runs_dir: str | Path = "runs") -> None:
@@ -265,9 +272,16 @@ class StateStore:
         candidate = Path(runs_dir)
         self.runs_dir = candidate.resolve() if candidate.is_absolute() else (self.root / candidate).resolve()
         self.schema_dir = self.root / "schemas"
-        self._validators: dict[str, Draft202012Validator] = {}
-        self._manifest_cache: dict[str, dict[str, Any]] = {}
-        self._batch_item_validator: Draft202012Validator | None = None
+        self._validators: dict[
+            tuple[str, str, str], Draft202012Validator
+        ] = {}
+        self._batch_item_validators: dict[
+            tuple[str, str], Draft202012Validator
+        ] = {}
+        self._document_cache: dict[
+            tuple[Path, str], tuple[str, str, dict[str, Any]]
+        ] = {}
+        self._validation_context = ValidationContextRegistry(self.root)
 
     def run_dir(self, batch_id: str) -> Path:
         self._validate_batch_id(batch_id)
@@ -279,6 +293,9 @@ class StateStore:
         batch_manifest: BatchManifest | Mapping[str, Any] | None = None,
     ) -> Path:
         frozen = input_manifest.to_dict() if isinstance(input_manifest, InputManifest) else copy.deepcopy(dict(input_manifest))
+        if frozen.get("schema_version") != "2.0":
+            raise ImmutableManifestError("New pipeline runs require Input Manifest 2.0")
+        self._validate(frozen, "input")
         batch_id = frozen["batch_id"]
         directory = self.run_dir(batch_id)
         if directory.exists():
@@ -297,8 +314,9 @@ class StateStore:
             "path": "input-manifest.json",
             "sha256": sha256_file(directory / "input-manifest.json"),
         }
+        if mutable.get("schema_version") != "2.0":
+            raise ImmutableManifestError("New pipeline runs require Batch Manifest 2.0")
         self._write_new(directory / "batch-manifest.json", mutable, "batch")
-        self._manifest_cache[batch_id] = copy.deepcopy(mutable)
         return directory
 
     def write_input_manifest(self, batch_id: str, value: InputManifest | Mapping[str, Any]) -> Path:
@@ -313,14 +331,52 @@ class StateStore:
         return path
 
     def read_input_manifest(self, batch_id: str) -> dict[str, Any]:
-        return self._read(self.run_dir(batch_id) / "input-manifest.json", "input")
+        value = self._read(
+            self.run_dir(batch_id) / "input-manifest.json",
+            "input",
+            verify_context=False,
+        )
+        if value.get("batch_id") != batch_id:
+            raise ImmutableManifestError(
+                f"Input Manifest batch_id does not match its directory: {batch_id}"
+            )
+        self._verify_frozen_context(value, "input")
+        return value
 
     def read_manifest(self, batch_id: str) -> dict[str, Any]:
-        value = self._read(self.run_dir(batch_id) / "batch-manifest.json", "batch")
+        value = self._read(
+            self.run_dir(batch_id) / "batch-manifest.json",
+            "batch",
+            verify_context=False,
+        )
+        if value.get("batch_id") != batch_id:
+            raise ImmutableManifestError(
+                f"Batch Manifest batch_id does not match its directory: {batch_id}"
+            )
         frozen_path = self.run_dir(batch_id) / value["input_manifest"]["path"]
-        if not frozen_path.is_file() or sha256_file(frozen_path) != value["input_manifest"]["sha256"]:
+        if (
+            frozen_path.is_symlink()
+            or not frozen_path.is_file()
+            or sha256_file(frozen_path) != value["input_manifest"]["sha256"]
+        ):
             raise ImmutableManifestError(f"Input manifest hash mismatch for batch {batch_id}")
-        self._manifest_cache[batch_id] = copy.deepcopy(value)
+        frozen = self._read(frozen_path, "input", verify_context=False)
+        if frozen.get("batch_id") != batch_id:
+            raise ImmutableManifestError(
+                f"Input Manifest batch_id does not match its directory: {batch_id}"
+            )
+        if frozen.get("schema_version") != value.get("schema_version"):
+            raise ImmutableManifestError(
+                f"Input/Batch Manifest schema versions differ for {batch_id}"
+            )
+        if value.get("schema_version") == "2.0" and (
+            value.get("planning") != frozen.get("planning")
+            or value.get("validation_context") != frozen.get("validation_context")
+        ):
+            raise ImmutableManifestError(
+                f"Batch Manifest frozen context differs from Input Manifest for {batch_id}"
+            )
+        self._verify_frozen_context(value, "batch")
         return value
 
     def update_manifest(
@@ -332,9 +388,14 @@ class StateStore:
         changed_item_ids: Iterable[str] | None = None,
     ) -> dict[str, Any]:
         path = self.run_dir(batch_id) / "batch-manifest.json"
-        current = copy.deepcopy(
-            self._manifest_cache.get(batch_id) or self.read_manifest(batch_id)
-        )
+        # The on-disk Batch/Input pair is authoritative.  Always replay it
+        # before a mutation so a warm cache cannot conceal manifest tampering
+        # and then overwrite that evidence with a fresh revision.
+        current = copy.deepcopy(self.read_manifest(batch_id))
+        if current.get("schema_version") != "2.0":
+            raise ImmutableManifestError(
+                "Pipeline Manifest 1.x is read-only; new mutation requires a 2.0 run"
+            )
         if expected_revision is not None and current["revision"] != expected_revision:
             raise ManifestConflictError(
                 f"Batch {batch_id} revision is {current['revision']}, expected {expected_revision}"
@@ -347,7 +408,14 @@ class StateStore:
         else:
             candidate = copy.deepcopy(dict(update))
 
-        for immutable_key in ("schema_version", "batch_id", "created_at", "input_manifest"):
+        for immutable_key in (
+            "schema_version",
+            "batch_id",
+            "created_at",
+            "input_manifest",
+            "planning",
+            "validation_context",
+        ):
             if candidate.get(immutable_key) != current.get(immutable_key):
                 raise ImmutableManifestError(f"Mutable manifest cannot change {immutable_key}")
         if set(candidate.get("items", {})) != set(current.get("items", {})):
@@ -355,11 +423,14 @@ class StateStore:
         candidate["revision"] = current["revision"] + 1
         candidate["updated_at"] = utc_now()
         if changed_item_ids is None:
-            self._validate(candidate, "batch")
+            # read_manifest() already replayed the immutable frozen context for
+            # this mutation; the equality checks above prevent the candidate
+            # from substituting it.
+            self._validate(candidate, "batch", verify_context=False)
         else:
             self._validate_batch_incremental(candidate, current, changed_item_ids)
         self._atomic_write(path, candidate)
-        self._manifest_cache[batch_id] = copy.deepcopy(candidate)
+        self._cache_validated_document(path, candidate, "batch")
         return copy.deepcopy(candidate)
 
     def _validate_batch_incremental(
@@ -371,7 +442,7 @@ class StateStore:
         """Apply the Batch Manifest schema to the root and changed items only.
 
         The repository lock gives a mutator exclusive ownership. Comparing the
-        candidate with the cached, fully validated revision ensures callers
+        candidate with the on-disk, fully validated revision ensures callers
         cannot hide an item mutation by omitting its identity.
         """
         declared = set(declared_item_ids)
@@ -393,9 +464,12 @@ class StateStore:
 
         root = copy.deepcopy(dict(candidate))
         root["items"] = {}
-        self._raise_validation_errors(self._validator("batch").iter_errors(root), "batch")
+        version = str(candidate.get("schema_version", ""))
+        self._raise_validation_errors(
+            self._validator("batch", version).iter_errors(root), "batch"
+        )
 
-        validator = self._batch_item_schema_validator()
+        validator = self._batch_item_schema_validator(version)
         for item_id in sorted(actual):
             item = candidate["items"][item_id]
             self._raise_validation_errors(
@@ -442,26 +516,100 @@ class StateStore:
     def validate_document(self, value: Mapping[str, Any], kind: str) -> None:
         self._validate(value, kind)
 
-    def _read(self, path: Path, kind: str) -> dict[str, Any]:
+    def _read(
+        self,
+        path: Path,
+        kind: str,
+        *,
+        verify_context: bool = True,
+    ) -> dict[str, Any]:
         if not path.is_file():
             raise UnknownBatchError(f"Pipeline state does not exist: {path}")
+        document_sha256 = sha256_file(path)
+        cache_key = (path.resolve(), kind)
+        cached = self._document_cache.get(cache_key)
+        if cached is not None and cached[0] == document_sha256:
+            cached_value = cached[2]
+            version = str(cached_value.get("schema_version", ""))
+            schema_sha256 = sha256_file(self._schema_path(kind, version))
+            if cached[1] == schema_sha256:
+                value = copy.deepcopy(cached_value)
+                if verify_context:
+                    self._verify_frozen_context(value, kind)
+                return value
         try:
             value = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, ValueError) as error:
             raise StateStoreError(f"Unable to read pipeline state {path}: {error}") from error
-        self._validate(value, kind)
+        if sha256_file(path) != document_sha256:
+            raise StateStoreError(
+                f"Pipeline state changed while it was being read: {path}"
+            )
+        if not isinstance(value, dict):
+            raise ManifestValidationError(
+                f"Invalid {kind} document: root must be a JSON object"
+            )
+        self._validate(value, kind, verify_context=verify_context)
+        self._cache_validated_document(
+            path, value, kind, document_sha256=document_sha256
+        )
         return value
 
     def _write_new(self, path: Path, value: Mapping[str, Any], kind: str) -> None:
         if path.exists():
             raise StateStoreError(f"Pipeline state already exists: {path}")
+        if kind in ("input", "batch") and value.get("schema_version") != "2.0":
+            raise ImmutableManifestError(
+                f"New {kind} documents must use schema_version 2.0"
+            )
         self._validate(value, kind)
         self._atomic_write(path, value)
+        self._cache_validated_document(path, value, kind)
 
-    def _validate(self, value: Mapping[str, Any], kind: str) -> None:
-        validator = self._validator(kind)
+    def _validate(
+        self,
+        value: Mapping[str, Any],
+        kind: str,
+        *,
+        verify_context: bool = True,
+    ) -> None:
+        version = str(value.get("schema_version", ""))
+        validator = self._validator(kind, version)
         self._raise_validation_errors(validator.iter_errors(value), kind)
         self._validate_semantics(value, kind)
+        if verify_context:
+            self._verify_frozen_context(value, kind)
+
+    def _verify_frozen_context(
+        self, value: Mapping[str, Any], kind: str
+    ) -> None:
+        if (
+            kind not in ("input", "batch")
+            or value.get("schema_version") != "2.0"
+        ):
+            return
+        try:
+            self._validation_context.verify_frozen(
+                value["planning"], value["validation_context"]
+            )
+        except ValidationContextError as error:
+            raise ManifestValidationError(str(error)) from error
+
+    def _cache_validated_document(
+        self,
+        path: Path,
+        value: Mapping[str, Any],
+        kind: str,
+        *,
+        document_sha256: str | None = None,
+    ) -> None:
+        version = str(value.get("schema_version", ""))
+        schema_sha256 = sha256_file(self._schema_path(kind, version))
+        self._document_cache[(path.resolve(), kind)] = (
+            document_sha256 or sha256_file(path),
+            schema_sha256,
+            copy.deepcopy(dict(value)),
+        )
 
     @staticmethod
     def _raise_validation_errors(errors: Iterable[Any], label: str) -> None:
@@ -475,18 +623,20 @@ class StateStore:
                 f"Invalid {label} document:\n- " + "\n- ".join(rendered)
             )
 
-    def _batch_item_schema_validator(self) -> Draft202012Validator:
-        if self._batch_item_validator is None:
-            batch_schema = self._validator("batch").schema
+    def _batch_item_schema_validator(self, version: str) -> Draft202012Validator:
+        schema_sha256 = sha256_file(self._schema_path("batch", version))
+        cache_key = (version, schema_sha256)
+        if cache_key not in self._batch_item_validators:
+            batch_schema = self._validator("batch", version).schema
             item_schema = {
                 "$schema": batch_schema.get("$schema"),
                 "$defs": batch_schema["$defs"],
                 "$ref": "#/$defs/item",
             }
-            self._batch_item_validator = Draft202012Validator(
+            self._batch_item_validators[cache_key] = Draft202012Validator(
                 item_schema, format_checker=FormatChecker()
             )
-        return self._batch_item_validator
+        return self._batch_item_validators[cache_key]
 
     @staticmethod
     def _validate_semantics(value: Mapping[str, Any], kind: str) -> None:
@@ -526,18 +676,30 @@ class StateStore:
                 if key != item["item_id"] or key != expected:
                     raise ManifestValidationError(f"Batch item key does not match identity: {key}")
 
-    def _validator(self, kind: str) -> Draft202012Validator:
-        if kind not in self.SCHEMAS:
-            raise StateStoreError(f"Unknown pipeline schema kind: {kind}")
-        if kind not in self._validators:
-            path = self.schema_dir / self.SCHEMAS[kind]
+    def _validator(self, kind: str, version: str) -> Draft202012Validator:
+        path = self._schema_path(kind, version)
+        schema_sha256 = sha256_file(path)
+        cache_key = (kind, version, schema_sha256)
+        if cache_key not in self._validators:
             try:
                 schema = json.loads(path.read_text(encoding="utf-8"))
             except (OSError, ValueError) as error:
                 raise StateStoreError(f"Unable to load pipeline schema {path}: {error}") from error
             Draft202012Validator.check_schema(schema)
-            self._validators[kind] = Draft202012Validator(schema, format_checker=FormatChecker())
-        return self._validators[kind]
+            self._validators[cache_key] = Draft202012Validator(
+                schema, format_checker=FormatChecker()
+            )
+        return self._validators[cache_key]
+
+    def _schema_path(self, kind: str, version: str) -> Path:
+        if kind not in self.SCHEMAS:
+            raise StateStoreError(f"Unknown pipeline schema kind: {kind}")
+        filename = self.SCHEMAS[kind].get(version)
+        if filename is None:
+            raise ManifestValidationError(
+                f"Unsupported {kind} schema_version: {version or '<missing>'}"
+            )
+        return self.schema_dir / filename
 
     @staticmethod
     def _atomic_write(path: Path, value: Mapping[str, Any]) -> None:

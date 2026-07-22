@@ -12,14 +12,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Debug one v0.2 extraction")
     parser.add_argument("product_key", nargs="?", default="event-grid")
     parser.add_argument("--language", choices=("zh-cn", "en-us"), default="zh-cn")
-    parser.add_argument("--html-file", help="Optional explicit HTML override")
     parser.add_argument("--output-dir", default="debug_output")
     args = parser.parse_args()
 
     result = ExtractionCoordinator(args.output_dir).coordinate_extraction(
         args.product_key,
         args.language,
-        args.html_file,
     )
     status = result.sidecar["status"]
     print(

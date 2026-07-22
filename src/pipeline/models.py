@@ -1,4 +1,4 @@
-"""Serializable domain models for the v0.3 batch pipeline.
+"""Serializable domain models for the v0.4 batch pipeline.
 
 The immutable input manifest records what a run means.  The batch manifest is
 the only mutable source of truth for what happened to that input.
@@ -75,6 +75,15 @@ class BatchItem:
     def runnable(self) -> bool:
         return self.skip_reason is None
 
+    @property
+    def parseability_path(self) -> str:
+        suffix = ".sidecar.json"
+        if not self.diagnostic_path.endswith(suffix):
+            raise ValueError(
+                f"Diagnostic path cannot derive parseability evidence: {self.diagnostic_path}"
+            )
+        return self.diagnostic_path[: -len(suffix)] + ".parseability.json"
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "item_id": self.item_id,
@@ -103,6 +112,7 @@ class BatchItem:
             "artifacts": {
                 "payload": {"path": self.output_path, "sha256": None},
                 "diagnostic": {"path": self.diagnostic_path, "sha256": None},
+                "parseability": {"path": self.parseability_path, "sha256": None},
                 "validation": {"path": self.validation_path, "sha256": None},
             },
             "skip_reason": dict(self.skip_reason) if self.skip_reason else None,
@@ -174,8 +184,10 @@ class InputManifest:
     languages: tuple[str, ...]
     summary: Mapping[str, int]
     provenance: Mapping[str, Any]
+    planning: Mapping[str, Any]
+    validation_context: Mapping[str, Any]
     items: tuple[Mapping[str, Any], ...]
-    schema_version: str = "1.0"
+    schema_version: str = "2.0"
 
     @classmethod
     def from_plan(
@@ -185,6 +197,8 @@ class InputManifest:
         provenance: Mapping[str, Any],
         *,
         created_at: str | None = None,
+        planning: Mapping[str, Any],
+        validation_context: Mapping[str, Any],
     ) -> "InputManifest":
         return cls(
             batch_id=batch_id,
@@ -193,6 +207,8 @@ class InputManifest:
             languages=plan.languages,
             summary=plan.summary,
             provenance=_clone(dict(provenance)),
+            planning=_clone(dict(planning)),
+            validation_context=_clone(dict(validation_context)),
             items=tuple(item.to_dict() for item in plan.items),
         )
 
@@ -205,6 +221,8 @@ class InputManifest:
             "languages": list(self.languages),
             "summary": _clone(dict(self.summary)),
             "provenance": _clone(dict(self.provenance)),
+            "planning": _clone(dict(self.planning)),
+            "validation_context": _clone(dict(self.validation_context)),
             "items": _clone(list(self.items)),
         }
 
@@ -223,7 +241,7 @@ def initial_checkpoint(status: str = "pending") -> dict[str, Any]:
 @dataclass(frozen=True)
 class BatchManifest:
     value: Mapping[str, Any]
-    SCHEMA_VERSION: ClassVar[str] = "1.0"
+    SCHEMA_VERSION: ClassVar[str] = "2.0"
 
     @classmethod
     def from_input_manifest(cls, manifest: InputManifest | Mapping[str, Any]) -> "BatchManifest":
@@ -266,6 +284,8 @@ class BatchManifest:
             "created_at": now,
             "updated_at": now,
             "input_manifest": {"path": "input-manifest.json", "sha256": None},
+            "planning": _clone(source["planning"]),
+            "validation_context": _clone(source["validation_context"]),
             "checkpoints": {stage: initial_checkpoint() for stage in STAGES},
             "items": items,
             "summary": _clone(source["summary"]),

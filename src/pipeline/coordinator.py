@@ -1,4 +1,4 @@
-"""Authoritative seven-stage coordinator for v0.3 batch runs."""
+"""Authoritative seven-stage coordinator for v0.4 batch runs."""
 
 from __future__ import annotations
 
@@ -18,11 +18,14 @@ from src.batch.process_engine import (
     ResourceProcessingResult,
 )
 from src.core.contract_validator import ContractValidator
+from src.core.canonical_input import CanonicalInputLoader
 from src.core.data_models import ExtractionStrategy
 from src.core.extraction_coordinator import ExtractionCoordinator
 from src.core.product_catalog import sha256_file
 from src.core.product_manager import ProductManager
+from src.core.reconstruction_parseability import ReconstructionParseabilityValidator
 from src.core.strategy_manager import StrategyManager
+from src.core.validation_context import ValidationContextRegistry
 from src.pipeline.models import (
     BatchItem,
     InputManifest,
@@ -111,6 +114,13 @@ class PipelineCoordinator:
         self._batch_id_factory = batch_id_factory or generate_batch_id
         self._now = now
         self._contract_validator = ContractValidator(self.root)
+        self._validation_context = ValidationContextRegistry(self.root)
+        self._input_loader = CanonicalInputLoader(
+            self.root,
+            ProductManager(str(self.root / "data" / "configs")),
+            max_input_bytes=self._validation_context.max_input_bytes,
+        )
+        self._parseability_validator = ReconstructionParseabilityValidator()
         self._active_stage: str | None = None
 
     def run(
@@ -137,11 +147,26 @@ class PipelineCoordinator:
         ):
             frozen_provenance = self.provenance.capture(allow_dirty=allow_dirty)
             plan = self.planner.plan(scope, group=group, language=language)
+            self._validation_context.assert_plan_matches_baseline(plan)
+            capability_proposals = self._validation_context.capability_delta_proposals(
+                plan
+            )
+            if capability_proposals:
+                candidate_path = self._write_planning_delta_candidate(
+                    batch_id, capability_proposals
+                )
+                raise PipelineError(
+                    "Unreviewed capability delta proposal(s) block planning; "
+                    f"candidate: {candidate_path}"
+                )
+            frozen_context = self._validation_context.freeze()
             frozen = InputManifest.from_plan(
                 batch_id,
                 plan,
                 frozen_provenance,
                 created_at=self._now(),
+                planning=frozen_context["planning"],
+                validation_context=frozen_context["validation_context"],
             )
             run_dir = self.store.create_run(frozen)
             self._activate_stage("discovery")
@@ -364,6 +389,7 @@ class PipelineCoordinator:
             return
         self._start_stage(batch_id, "preflight", items)
         strategy_manager = self._strategy_manager_factory(self.root)
+        run_dir = self.store.run_dir(batch_id)
         infos = [self._resource_info(batch_id, item) for item in items]
 
         def worker(info: ResourceProcessingInfo) -> ResourceProcessingResult:
@@ -371,8 +397,38 @@ class PipelineCoordinator:
             item = info.metadata["batch_item"]
             try:
                 self._check_preflight_artifacts(item)
+                canonical_input = self._input_loader.load(
+                    item.product_key,
+                    item.language,
+                    version_key=item.version_key,
+                    expected_sha256=item.normalized_sha256,
+                )
+                parseability = self._parseability_validator.validate(canonical_input)
+                evidence_contract = (
+                    self._contract_validator.validate_reconstruction_parseability(
+                        dict(parseability.evidence)
+                    )
+                )
+                if not evidence_contract.passed:
+                    raise RuntimeError(
+                        "Invalid Reconstruction Parseability evidence: "
+                        + "; ".join(
+                            issue.message for issue in evidence_contract.errors
+                        )
+                    )
+                self._write_json_atomic(
+                    run_dir / item.parseability_path,
+                    dict(parseability.evidence),
+                )
+                if not parseability.passed or parseability.production_soup is None:
+                    raise RuntimeError(
+                        "RECONSTRUCTION_PARSEABILITY_FAILED: independent parsers "
+                        "materially disagree"
+                    )
                 selected = strategy_manager.determine_extraction_strategy(
-                    str(self.root / item.normalized_path), item.product_key
+                    parseability.production_soup,
+                    item.product_key,
+                    input_bytes=canonical_input.size_bytes,
                 )
                 if not StrategyFactory.is_strategy_registered(selected.strategy_type):
                     raise RuntimeError(
@@ -419,8 +475,10 @@ class PipelineCoordinator:
             result = extractor.coordinate_extraction(
                 info.product_key,
                 info.language,
-                info.html_file_path,
-                info.version_key,
+                version_key=info.version_key,
+                expected_input_sha256=info.metadata[
+                    "batch_item"
+                ].normalized_sha256,
                 preselected_strategy=info.strategy,
                 defer_validation=True,
             )
@@ -437,6 +495,23 @@ class PipelineCoordinator:
             if result.sidecar_path.resolve() != expected_sidecar:
                 raise ValueError(
                     f"Diagnostic path mismatch for {info.resource_key}: {result.sidecar_path}"
+                )
+            reconstruction = result.sidecar.get("input_assurance", {}).get(
+                "reconstruction_parseability"
+            ) or {}
+            parseability_artifact = reconstruction.get("evidence", {})
+            expected_parseability = (
+                run_dir / info.metadata["batch_item"].parseability_path
+            ).resolve()
+            actual_parseability = (
+                Path(parseability_artifact["path"]).resolve()
+                if parseability_artifact.get("path")
+                else None
+            )
+            if result.execution_succeeded and actual_parseability != expected_parseability:
+                raise ValueError(
+                    f"Parseability evidence path mismatch for {info.resource_key}: "
+                    f"{actual_parseability}"
                 )
             if result.execution_succeeded:
                 if (
@@ -508,7 +583,6 @@ class PipelineCoordinator:
                     item.language,
                     payload_path=run_dir / item.output_path,
                     sidecar_path=run_dir / item.diagnostic_path,
-                    html_file_path=self.root / item.normalized_path,
                     version_key=item.version_key,
                 )
                 sidecar_status = result.sidecar["status"]["validation"]
@@ -685,6 +759,12 @@ class PipelineCoordinator:
                     self._set_item_failed(current, error)
             elif stage == "preflight":
                 if succeeded:
+                    parseability = (
+                        self.store.run_dir(batch_id) / item.parseability_path
+                    )
+                    current["artifacts"]["parseability"]["sha256"] = (
+                        sha256_file(parseability) if parseability.is_file() else None
+                    )
                     current["status"]["execution"] = "pending"
                     current["error"] = None
                 else:
@@ -845,8 +925,15 @@ class PipelineCoordinator:
         item["error"] = None
         if stage in ("normalize", "extract"):
             for artifact_name in (
-                ("normalized_input", "payload", "diagnostic", "validation")
-                if stage == "normalize" else ("payload", "diagnostic", "validation")
+                (
+                    "normalized_input",
+                    "payload",
+                    "diagnostic",
+                    "parseability",
+                    "validation",
+                )
+                if stage == "normalize"
+                else ("payload", "diagnostic", "parseability", "validation")
             ):
                 item["artifacts"][artifact_name]["sha256"] = None
 
@@ -1345,6 +1432,7 @@ class PipelineCoordinator:
         for name, relative in (
             ("payload", item.output_path),
             ("diagnostic", item.diagnostic_path),
+            ("parseability", item.parseability_path),
         ):
             path = run_dir / relative
             expected = current["artifacts"][name]["sha256"]
@@ -1365,6 +1453,28 @@ class PipelineCoordinator:
         return None
 
     # ---- generic helpers --------------------------------------------------------
+
+    def _write_planning_delta_candidate(
+        self, batch_id: str, proposals: list[dict[str, Any]]
+    ) -> Path:
+        """Persist proposals outside the immutable baseline without applying them."""
+        path = (
+            self.root
+            / "output"
+            / "planning-deltas"
+            / f"{batch_id}.candidate.json"
+        )
+        self._write_json_atomic(
+            path,
+            {
+                "schema_version": "1.0",
+                "artifact_kind": "planning_delta_candidate",
+                "baseline": self._validation_context.freeze()["planning"]["baseline"],
+                "proposals": proposals,
+                "applied": False,
+            },
+        )
+        return path
 
     @staticmethod
     def _write_json_atomic(path: Path, value: Mapping[str, Any]) -> None:
@@ -1446,6 +1556,7 @@ class PipelineCoordinator:
         pairs = [
             ("payload", item.output_path),
             ("diagnostic", item.diagnostic_path),
+            ("parseability", item.parseability_path),
         ]
         if include_validation:
             pairs.append(("validation", item.validation_path))

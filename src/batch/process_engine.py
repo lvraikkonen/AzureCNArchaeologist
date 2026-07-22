@@ -147,8 +147,7 @@ class BatchProcessEngine:
         result = coordinator.coordinate_extraction(
             info.product_key,
             info.language,
-            info.html_file_path,
-            info.version_key,
+            version_key=info.version_key,
             strategy=info.strategy,
         )
         actual_resource_key = result.sidecar["resource"]["resource_key"]
@@ -279,7 +278,9 @@ class BatchProcessEngine:
                 content_hash=records.calculate_file_hash(info.html_file_path),
             )
             record_id = records.create_record(record)
-            result = ExtractionCoordinator(info.output_dir).coordinate_extraction(info.product_key, info.language, info.html_file_path)
+            result = ExtractionCoordinator(info.output_dir).coordinate_extraction(
+                info.product_key, info.language
+            )
             status = result.sidecar["status"]
             execution = ExecutionStatus(status["execution"])
             validation = ValidationStatus(status["validation"])
