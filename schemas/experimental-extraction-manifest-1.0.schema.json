@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/experimental-extraction-manifest-1.0.schema.json",
+  "title": "Experimental Extraction Manifest 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "experiment_id",
+    "experiment_key",
+    "product_key",
+    "resource_key",
+    "language",
+    "page_model",
+    "generated_at",
+    "product_definition",
+    "exception_config",
+    "manifest_schema",
+    "reason",
+    "owning_team",
+    "strategy",
+    "source",
+    "candidate",
+    "limits",
+    "resource_usage",
+    "expiry",
+    "validation_scope",
+    "execution_status",
+    "trust_status",
+    "approval_eligible",
+    "publishable"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "experiment_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"},
+    "experiment_key": {"const": "v0.4-virtual-machines-bilingual-export"},
+    "product_key": {"const": "virtual-machines"},
+    "resource_key": {"const": "virtual-machines"},
+    "language": {"enum": ["zh-cn", "en-us"]},
+    "page_model": {"const": "FlexibleContentPage"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "product_definition": {"$ref": "#/$defs/artifact"},
+    "exception_config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "schema_path", "schema_sha256"],
+      "properties": {
+        "path": {"const": "data/configs/experimental-extraction-exceptions.json"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "schema_path": {"const": "schemas/experimental-extraction-exceptions-1.0.schema.json"},
+        "schema_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "manifest_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"const": "schemas/experimental-extraction-manifest-1.0.schema.json"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "reason": {"const": "v0.4_p0_bilingual_experimental_export"},
+    "owning_team": {"const": "AzureCNArchaeologist"},
+    "strategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selection_mode", "type", "processor", "auto_selection_used"],
+      "properties": {
+        "selection_mode": {"const": "forced"},
+        "type": {"const": "complex"},
+        "processor": {"const": "ComplexContentStrategy"},
+        "auto_selection_used": {"const": false}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "url", "bytes", "sha256", "strict_utf8"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^data/current_prod_html/(zh-cn|en-us)/pricing/details/virtual-machines/index\\.html$"},
+        "url": {"type": "string", "format": "uri"},
+        "bytes": {"type": "integer", "minimum": 1, "maximum": 8388608},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "strict_utf8": {"const": true}
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "bytes", "sha256", "json_type", "execution_safety_schema"],
+      "properties": {
+        "path": {"const": "virtual-machines.unvalidated.json"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "json_type": {"const": "object"},
+        "execution_safety_schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256"],
+          "properties": {
+            "path": {"const": "schemas/experimental-payload-candidate-1.0.schema.json"},
+            "sha256": {"$ref": "#/$defs/sha256"}
+          }
+        }
+      }
+    },
+    "limits": {"$ref": "#/$defs/limits"},
+    "resource_usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["wall_time_seconds", "peak_rss_bytes", "worker_exit_code", "monitored_process_tree"],
+      "properties": {
+        "wall_time_seconds": {"type": "number", "minimum": 0, "maximum": 900},
+        "peak_rss_bytes": {"type": "integer", "minimum": 0, "maximum": 2147483648},
+        "worker_exit_code": {"const": 0},
+        "monitored_process_tree": {"const": true}
+      }
+    },
+    "expiry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["on_source_identity_change", "project_version_at_least"],
+      "properties": {
+        "on_source_identity_change": {"const": true},
+        "project_version_at_least": {"const": "0.4.0"}
+      }
+    },
+    "validation_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cms_contract", "pricing_fidelity", "content_quality"],
+      "properties": {
+        "cms_contract": {"const": "not_run"},
+        "pricing_fidelity": {"const": "not_run"},
+        "content_quality": {"const": "not_run"}
+      }
+    },
+    "execution_status": {"const": "generated"},
+    "trust_status": {"const": "unvalidated"},
+    "approval_eligible": {"const": false},
+    "publishable": {"const": false}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"const": "data/configs/products/pricing/virtual-machines.json"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_source_bytes", "timeout_seconds", "max_peak_rss_bytes"],
+      "properties": {
+        "max_source_bytes": {"const": 8388608},
+        "timeout_seconds": {"const": 900},
+        "max_peak_rss_bytes": {"const": 2147483648}
+      }
+    }
+  }
+}

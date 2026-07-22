@@ -121,6 +121,32 @@ def extract_command(args: argparse.Namespace) -> int:
     return 1 if 1 in exit_codes else (2 if 2 in exit_codes else 0)
 
 
+def _experiment_id_argument(value: str) -> str:
+    from src.experimental.config import ExperimentalExtractionError, validate_experiment_id
+
+    try:
+        return validate_experiment_id(value)
+    except ExperimentalExtractionError as error:
+        raise argparse.ArgumentTypeError(str(error)) from error
+
+
+def experimental_extract_command(args: argparse.Namespace) -> int:
+    from src.experimental.runner import SUCCESS_MESSAGE, run_experimental_extraction
+
+    try:
+        run_experimental_extraction(
+            ROOT,
+            args.product_key,
+            args.language,
+            args.experiment_id,
+        )
+    except Exception:
+        print("FAIL: EXPERIMENTAL OUTPUT NOT GENERATED")
+        return 1
+    print(SUCCESS_MESSAGE)
+    return 0
+
+
 def contract_validate_command(args: argparse.Namespace) -> int:
     from src.core.contract_validator import ContractValidator
 
@@ -205,6 +231,15 @@ def create_parser() -> argparse.ArgumentParser:
     version_selection.add_argument("--all-versions", action="store_true", help="Extract the current page and every available historical SLA version")
     extract.add_argument("--output-dir", default="output")
     extract.set_defaults(func=extract_command)
+
+    experimental = subparsers.add_parser(
+        "experimental-extract",
+        help="Generate one quarantined, unvalidated experimental payload candidate",
+    )
+    experimental.add_argument("product_key", choices=["virtual-machines"])
+    experimental.add_argument("--language", choices=["zh-cn", "en-us"], required=True)
+    experimental.add_argument("--experiment-id", type=_experiment_id_argument, required=True)
+    experimental.set_defaults(func=experimental_extract_command)
 
     validate = subparsers.add_parser("contract-validate", help="Validate one CMS Business Payload")
     validate.add_argument("--input", required=True)
