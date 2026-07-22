@@ -1,0 +1,5 @@
+# Freeze v0.4 Accountability Against the v0.3 Runnable Baseline
+
+Status: Accepted
+
+The v0.4 Planning Baseline Manifest is seeded from the 379 language-level runnable Batch Items accepted in v0.3 and must account for all `379 / 379` before v0.4 completion. Before the v0.4 runnable set is frozen, automated preflight may propose that an item become planned non-runnable, but only an independently reviewed planning/capability delta recording prior and proposed states, reason, evidence, and the corresponding Product Definition decision may apply that change. After freeze, every runnable item receives an evidence-backed Machine Validation pass or fail; missing Applicability Evidence or evaluation capability is a failure rather than a denominator change. Reports show the v0.3 baseline, every delta, the frozen runnable count, 100% Reliable Adjudication Coverage for that set, and its separate pass rate. A dynamic denominator was rejected because silent preflight downgrades could manufacture complete coverage while shrinking actual capability.

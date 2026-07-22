@@ -20,7 +20,8 @@ AzureCNArchaeologist是一个Azure中国区定价数据挖掘和智能重构项�
 | `region_filter` | `RegionFilterStrategy` | FlexibleContent | 区域筛选定价页（api-management, azure-firewall）|
 | `complex` | `ComplexContentStrategy` | FlexibleContent | 复杂tab/多筛选定价页（cloud-services）|
 | `support_article` | `SupportArticleStrategy` | SupportArticlePage | SLA/ICP/法律/公安备案文章页 |
-| `large_file` | *(计划中)* | — | 超大文件内存优化 |
+
+文件大小是与语义策略正交的 Processing Mode 问题，不存在 `large_file` 内容策略。v0.4 仅允许已证明的 in-memory mode；streaming mode 计划在 v0.7 实现，并必须与相同语义策略的输出等价。
 
 ### 核心组件
 
@@ -152,7 +153,7 @@ Pricing 无论属于多少 catalog category 都只写入 `pricing/`，category �
   "contentGroups": [
     {
       "groupName": "中国东部",
-      "filterCriteriaJson": "[{\"filterKey\": \"region\", \"matchValues\": [\"east-china\"]}]",
+      "filterCriteriaJson": "[{\"filterKey\": \"region\", \"matchValues\": \"east-china\"}]",
       "content": "<div class=\"tab-content\">...</div>",
       "sortOrder": 1,
       "isActive": true
@@ -188,24 +189,11 @@ Pricing 无论属于多少 catalog category 都只写入 `pricing/`，category �
     "pageType": "RegionFilter",
     "enableFilters": true,
     "filtersJsonConfig": "{\"filterDefinitions\": [...]}"
-  },
-  "validation": {
-    "is_valid": true,
-    "errors": [],
-    "warnings": [],
-    "quality_score": 0.95
-  },
-  "extraction_metadata": {
-    "extractor_version": "enhanced_v3.0",
-    "extraction_timestamp": "2025-08-22T13:42:50.331547",
-    "strategy_used": "region_filter",
-    "processor_used": "RegionFilterProcessor",
-    "processing_mode": "strategy_coordinated",
-    "page_complexity_score": 2.6,
-    "strategy_features": ["区域检测", "区域内容提取", "区域筛选器配置", "地区内容组生成"]
   }
 }
 ```
+
+Business Payload 不包含 `validation`、`quality_score`、`extraction_metadata`、错误或来源信息；这些运行诊断和验证证据写入 sidecar、Machine Validation Report 及其子证据。
 
 ### 支持文章页：SupportArticlePage 格式
 适用策略：`support_article`（SLA/ICP/法律/公安备案）

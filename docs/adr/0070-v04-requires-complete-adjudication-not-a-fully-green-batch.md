@@ -1,0 +1,5 @@
+# v0.4 Requires Complete Adjudication, Not a Fully Green Batch
+
+Status: Accepted
+
+v0.4 completes when all 8 language-level Core Batch Items (4 products × 2 languages) pass unit, component, and end-to-end tests, all 379 v0.3 runnable baseline items are accounted for in the frozen v0.4 Planning Baseline Manifest, and the resulting frozen runnable set reaches 100% Reliable Adjudication Coverage. Schema-only passes, post-run skips, silent fallbacks, missing reports, and indeterminate outcomes are forbidden. Non-Core reconstruction failures remain failed and `approval_eligible=false`; repairing those failure clusters belongs to v0.6. A runtime failure cannot be relabeled `known_unsupported` merely to complete v0.4, and a preflight downgrade requires a separate reviewed planning/capability delta and auditable Product Definition decision. Requiring a fully green batch was rejected because it would collapse v0.6 into v0.4, while a mutable denominator was rejected because it could hide lost capability.
