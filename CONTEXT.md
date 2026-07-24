@@ -44,20 +44,72 @@ _Avoid_: Same URL, latest page, capture time alone
 A language-specific tuple of filter and tab values proven selectable in the source interaction model for a specific frozen Source Snapshot through explicit source markers or Snapshot-bound Interaction Evidence. A theoretical combination, or a state observed only on an unbound current Live Source Page, is not reachable for that snapshot.
 _Avoid_: Cartesian combination, default filter
 
+**Source-confirmed Empty Selection State**:
+A Reachable Selection State for which frozen Applicability Evidence proves that intentional source exclusions leave the full rendered state—its state-specific `content` plus any exact proven `sharedContent`—without an applicable price-bearing fragment. Price-bearing Region-Projected Shared Content means the state is not empty even when its Category-specific `content` is empty. Faithful reconstruction keeps one active, non-placeholder `contentGroup` containing any remaining source content, records a Source Quality Finding, and does not invent a price; an empty extractor result alone can never establish this state.
+_Avoid_: Empty fallback, placeholder state, inferred blank state
+
 **CMS Reachable State**:
-A complete tuple that the CMS UI can produce from `filtersJsonConfig`. Because the v0.4 contract has no dependency model, the CMS Reachable State set is the Cartesian product of every declared filter option and must equal the source Reachable Selection State set.
-_Avoid_: Source-only hidden state, assumed dependency, content-group fallback
+A complete tuple admitted by the frozen source-proven Reachability Relation and represented by exactly one Business Payload `contentGroup`, which the CMS import treats as its state authority. Independent domains may form a Cartesian product within one scope, but a child domain contributes only the options available under its selected parent; theoretical cross-branch combinations are not CMS Reachable States.
+_Avoid_: Global Cartesian combination, source-only hidden state, payload-inferred state
+
+**Conditional Filter Domain**:
+A filter option set whose membership, order, or default is scoped by an upstream selection such as the Category tabs belonging to one selected Software panel. Options from sibling parent branches are not interchangeable even when their localized labels look alike.
+_Avoid_: Global option union, label-based equivalence, independent filter axis
+
+**Page-Global Content**:
+A source-visible business fragment whose applicability does not vary with any Reachable Selection State. Any Flexible page may have or omit it; strategy and physical placement alone do not prove its scope.
+_Avoid_: Strategy-specific base content, Qa prefix, global `sharedContent`, repeated state content
+
+**Unproven Page-Global Boundary**:
+A source layout from which the exact Page-Global Content ownership boundary cannot be established without guessing. It is a blocking reconstruction condition, not evidence that `baseContent` is empty and not permission to sweep a broader page container.
+_Avoid_: Empty base content, whole-page fallback, best-effort main content
+
+**Content Ownership Overlap**:
+The same complete business fragment assigned to more than one CMS ownership field, such as both `baseContent` and a `commonSection` or state-scoped group. It is a reconstruction error even when each field is independently valid.
+_Avoid_: Shared applicability, harmless duplication, repeated wrapper
+
+**Post-selector Global Content Candidate**:
+A visible pricing fragment after the final formal selection control and before exact FAQ/SLA content that may be Page-Global Content only when frozen source evidence proves that scope.
+_Avoid_: Automatically global trailing content, selector suffix, inferred `baseContent`
+
+**Software-scoped Prefix Content**:
+A source-visible fragment located inside one Software panel immediately before its first concrete Category panel, inherited unchanged by every reachable descendant state of that Software scope. It is neither page-global nor Category-specific, and it does not vary with another active filter dimension.
+_Avoid_: Region-Projected Shared Content, common section, first-Category introduction, unclassified shared fragment
+
+**Region-Projected Shared Content**:
+A price-bearing ancestor fragment shared by descendant Category states whose exact form is selected by the active Region through frozen Applicability Evidence. Source table IDs used as applicability identity must be globally unique in the page, and an exact retained shared table identity may appear only in the applicable states' CMS `sharedContent`, never in `content`, `baseContent`, or `commonSections`. It is neither page-global nor Software-scoped Prefix Content: every applicable reachable state carries the exact region projection in its CMS shared-content field.
+_Avoid_: Legacy `sharedContent`, global shared content, unfiltered ancestor prefix, duplicated Category content
+
+**Reachability Relation**:
+The deterministic ordered set of complete selection tuples independently proven by a frozen Source Snapshot and its Applicability Evidence, then represented one-for-one by Business Payload `contentGroups` for CMS import. Source evidence is the reconstruction completeness authority; the resulting exact group relation, rather than an option-catalog product, is the CMS rendering authority.
+_Avoid_: Payload state list, theoretical product, best-effort mapping
+
+**Structured Content Group Name**:
+The localized CMS import key formed by joining a reachable state's same-language Localized Source Display Labels as `region - software - category`, omitting only dimensions absent from that state path. The exact ` - ` delimiter is structural, so a segment containing it is ambiguous and invalid.
+_Avoid_: Free-form group title, machine criteria replacement, raw hyphen split
+
+**Localized Source Display Label**:
+The human-readable label declared by the authoritative interaction control in one language-specific Source Snapshot for a stable machine filter identity. `zh-cn` and `en-us` labels may differ and name Payload options and content-group segments without changing the underlying machine value.
+_Avoid_: Machine value, cross-language copied label, translated fallback
+
+**Non-materialized Aggregate Tab**:
+A source Category option labeled `All` or `全部` whose declared target panel does not exist because the live interaction aggregates its sibling Category content. It is omitted from the Business Payload option catalog and Reachability Relation rather than synthesized, blanked, or treated as a missing concrete tab; the first remaining concrete sibling becomes the branch default.
+_Avoid_: Missing content placeholder, synthetic All group, product-specific missing-tab exception
 
 **Default CMS State**:
-The unique CMS Reachable State formed from the first declared option of every filter. Filter and option order is behavior-bearing source evidence, and the default tuple must match the proven source default and exactly one non-empty active `contentGroup`.
-_Avoid_: First content group, alphabetically sorted option, inferred fallback
+The unique CMS Reachable State reached by following the source-proven default through each active domain on that conditional path. A child default is evaluated within its selected parent branch, and the resulting tuple must match exactly one non-empty active `contentGroup`.
+_Avoid_: First content group, first option of a flattened union, inferred fallback
+
+**v0.4 Authoritative Filter Order**:
+The filter-option order established by the desktop interaction control in a frozen Source Snapshot and, for a Conditional Filter Domain, within its exact parent scope: the proven branch default is placed first and every other sibling retains its relative desktop order. The corresponding mobile control must expose the same scoped machine set and default but does not determine option order in v0.4.
+_Avoid_: Mobile select order, alphabetical order, cyclic rotation
 
 **Bilingual Filter Identity**:
-The expectation that a product's `zh-cn` and `en-us` payloads use the same ordered, non-empty and unique filter keys, option values, and Default CMS State while allowing localized display names, labels, and language-specific hrefs for the same machine states.
+The expectation that a product's `zh-cn` and `en-us` payloads use the same ordered filter keys, scoped option identities, parent-child topology, Reachability Relation, and Default CMS State while allowing localized display names and labels for the same machine states.
 _Avoid_: Translated machine value, label equality, independent generated ordering
 
 **Bilingual State Drift**:
-A Source Quality Finding raised when correctly captured `zh-cn` and `en-us` Source Snapshots expose different filter identities, option order, state spaces, or defaults. Faithful language-specific reconstruction may pass, but approval remains blocked pending disposition; extractor-created divergence is a blocking reconstruction error.
+A Source Quality Finding raised when correctly captured `zh-cn` and `en-us` Source Snapshots expose different filter identities, v0.4 Authoritative Filter Orders, state spaces, or defaults. Faithful language-specific reconstruction may pass, but approval remains blocked pending disposition; extractor-created divergence is a blocking reconstruction error.
 _Avoid_: Localization difference, Input Language Mapping Error, extraction mismatch
 
 **Source-declared SKU**:
@@ -129,19 +181,19 @@ A versioned, Batch Item-specific mapping that enumerates every Reachable Selecti
 _Avoid_: Strategy-wide assumption, representative-only coverage, current live state map
 
 **Exclusive Content Group Coverage**:
-The CMS filtering invariant that every Reachable Selection State on a filter-enabled pricing page matches exactly one active, price-bearing `contentGroup`. Zero matches mean missing reconstructed content and multiple matches mean ambiguous composition or leakage; shared content belongs in `baseContent` or `commonSections`.
+The CMS filtering invariant that every Reachable Selection State on a filter-enabled pricing page matches exactly one active, non-placeholder `contentGroup`, whose Structured Content Group Name and criteria describe the same ordered state. The group must be price-bearing unless the exact state is a Source-confirmed Empty Selection State; zero matches mean missing reconstructed content and multiple matches mean ambiguous composition or leakage.
 _Avoid_: First-match fallback, overlapping groups, implicit shared group
 
 **Complete Content Group Criteria**:
-The requirement that every active price-bearing `contentGroup` contains each active filter key exactly once and matches exactly one declared option value for that key. Omitted wildcard keys and encoded multi-values are forbidden, creating a one-to-one mapping between complete Reachable Selection States and content groups.
-_Avoid_: Partial criteria, wildcard group, comma-delimited values
+The requirement that every active `contentGroup` contains each filter key active on its Reachable Selection State path exactly once and matches one option admitted in that conditional scope. Omitting a path-active key as a wildcard or encoding multiple values remains forbidden, creating a one-to-one mapping between complete reachable tuples and content groups.
+_Avoid_: Partial path criteria, wildcard group, global-key assumption, comma-delimited values
 
 **Generated Active Content**:
 The rule that every `contentGroup` and `commonSection` emitted by reconstruction is active and belongs to publishable source content. Inactive drafts, placeholders, Orphan Pricing Evidence, and unreachable legacy fragments remain outside the Business Payload.
 _Avoid_: Hidden payload archive, inactive placeholder, imported orphan content
 
-**Contract-only Content Group Fields**:
-The output boundary that permits only `groupName`, `filterCriteriaJson`, `content`, `sortOrder`, and `isActive` in a generated `contentGroup`. Legacy `sharedContent` is removed; global, state-specific, and orphan fragments follow their respective content or evidence locations.
+**Evidence-bound Content Group Fields**:
+The output boundary that permits `groupName`, `filterCriteriaJson`, `content`, `sortOrder`, and `isActive` in every generated `contentGroup`, plus `sharedContent` only when the exact state has Region-Projected Shared Content evidence. `groupName` carries localized import identity, criteria carry machine identity, and unproven shared content remains forbidden.
 _Avoid_: Legacy field compatibility, producer-defined CMS extension, hidden shared fragment
 
 **Deterministic Sort Order**:
@@ -153,11 +205,11 @@ The deterministic string representation required for `filtersJsonConfig` and `fi
 _Avoid_: Parsed-only equivalence, pretty-printed nested JSON, alphabetic array sorting
 
 **Valid Filter Domain**:
-A filter definition with non-empty unique identity and display name, at least one option, non-empty option values and labels that are each unique within the filter, optional hrefs tied to Interaction Evidence, and every option participating in the CMS Reachable State set and an exclusive content group.
-_Avoid_: Empty option, duplicate UI label, unused option, unverified href
+A filter definition with non-empty identity and display name plus at least one source-proven option in every applicable scope. Machine identities are unambiguous, sibling values and labels are non-empty and unique within their Conditional Filter Domain, optional hrefs are tied to Interaction Evidence, and every option participates in at least one CMS Reachable State and exclusive content group.
+_Avoid_: Empty option, duplicate sibling identity, flattened label uniqueness, unused option, unverified href
 
 **Flexible Page State Machine**:
-The cross-field contract that binds `pageType`, `enableFilters`, filter topology, `contentGroups`, `baseContent`, and the confirmed extraction strategy. `Simple` has no filters or groups and non-empty base content; `RegionFilter` has only a region dropdown; `ComplexFilter` represents tab, software, or multidimensional filtering; unknown or contradictory states fail without fallback.
+The cross-field contract that binds `pageType`, `enableFilters`, filter topology, `contentGroups`, `baseContent`, and the confirmed extraction strategy. `Simple` has no filters or groups and therefore requires a non-empty business body; `RegionFilter` has only a region dropdown; `ComplexFilter` represents tab, software, or multidimensional filtering. Page-Global Content is independently evidence-driven for every Flexible strategy, and unknown or contradictory states fail without fallback.
 _Avoid_: Field-by-field validity, unknown-to-Simple fallback, page type by group count alone
 
 **Semantic Extraction Strategy**:
@@ -263,6 +315,22 @@ _Avoid_: Explained Orphan, validation failure, publishable content
 **Source Quality Finding**:
 A reproducible anomaly or internal inconsistency in frozen source evidence that is independent of reconstruction. In v0.4 it remains a warning and does not fail Pricing Fact Fidelity or Machine Validation.
 _Avoid_: Reconstruction error, Commercial Price Accuracy
+
+**Source HTML Structure Finding**:
+A finding backed by immutable source bytes and exact line/DOM evidence that page wrappers, section nesting, control boundaries, or emitted-fragment identities are internally inconsistent while remaining parseable. It may be advisory or blocking, and may carry a conservative upstream edit suggestion, but neither extraction nor validation applies that suggestion to the Source Snapshot.
+_Avoid_: Repaired input, parser guess, product-specific extraction exception
+
+**Blocking Source Structure Finding**:
+A Source HTML Structure Finding proving that no contract-valid Business Payload can faithfully preserve the affected source fragment without an unauthorized source repair or an unproven ownership guess. The runnable item fails before Payload generation while retaining its supported capability status and upstream evidence.
+_Avoid_: Source warning, known unsupported, extractor-side repair, skipped item
+
+**Unconditional ID-less Table**:
+A source table without a non-empty `id`. It is outside `soft-category.json` selector membership and therefore remains in every applicable projection of its owning source state. v0.4 freezes its physical table index, normalized HTML SHA-256, and ordered aggregate identity; projection must preserve it byte-semantically and must not invent an ID.
+_Avoid_: Missing configured table, orphan table, implicit soft-category member
+
+**soft-category Configuration Finding**:
+A deterministic defect in the frozen `soft-category.json`, including duplicate `(os, region)` entries or repeated normalized table IDs inside one entry. A repeated ID inside one row is semantically redundant and does not change the selector set, but the runtime does not silently repair it: a reachable state containing that ID fails before Payload generation, while an irrelevant duplicate remains report-only.
+_Avoid_: Source HTML defect, silent deduplication, selector-set difference
 
 **Source-aware Field Completeness**:
 The field rule that CMS-required values must be non-empty, source-present optional values must be faithfully reconstructed, and source-absent optional values remain Source Quality Findings rather than invented content. A required value missing in the source produces both Contract Validation failure and an upstream finding.

@@ -30,19 +30,32 @@ class _ArtifactSpec:
     schema_path: str
 
 
-ARTIFACT_SPECS = (
-    _ArtifactSpec(
-        "planning_baseline",
-        "baseline_id",
-        "data/baselines/v0.4/planning-baseline.json",
-        "schemas/planning-baseline-manifest-1.0.schema.json",
-    ),
-    _ArtifactSpec(
-        "validation_profile",
-        "profile_id",
-        "data/configs/validation-profiles/v0.4.json",
-        "schemas/validation-profile-1.0.schema.json",
-    ),
+P1_PLANNING_BASELINE_SPEC = _ArtifactSpec(
+    "planning_baseline",
+    "baseline_id",
+    "data/baselines/v0.4/planning-baseline.json",
+    "schemas/planning-baseline-manifest-1.0.schema.json",
+)
+P2_PLANNING_BASELINE_SPEC = _ArtifactSpec(
+    "planning_baseline",
+    "baseline_id",
+    "data/baselines/v0.4/p2-product-definition-identity-overlay.json",
+    "schemas/planning-baseline-identity-overlay-1.0.schema.json",
+)
+P1_VALIDATION_PROFILE_SPEC = _ArtifactSpec(
+    "validation_profile",
+    "profile_id",
+    "data/configs/validation-profiles/v0.4.json",
+    "schemas/validation-profile-1.0.schema.json",
+)
+P2_VALIDATION_PROFILE_SPEC = _ArtifactSpec(
+    "validation_profile",
+    "profile_id",
+    "data/configs/validation-profiles/v0.4-p2.json",
+    "schemas/validation-profile-1.1.schema.json",
+)
+CONTEXT_ARTIFACT_SPECS = (
+    P2_VALIDATION_PROFILE_SPEC,
     _ArtifactSpec(
         "applicability_map",
         "map_id",
@@ -62,7 +75,41 @@ ARTIFACT_SPECS = (
         "schemas/in-memory-capability-profile-1.0.schema.json",
     ),
 )
-SPECS_BY_KEY = {spec.key: spec for spec in ARTIFACT_SPECS}
+ARTIFACT_SPECS = (
+    P1_PLANNING_BASELINE_SPEC,
+    P2_PLANNING_BASELINE_SPEC,
+    P1_VALIDATION_PROFILE_SPEC,
+    *CONTEXT_ARTIFACT_SPECS,
+)
+SPECS_BY_KEY = {spec.key: spec for spec in CONTEXT_ARTIFACT_SPECS}
+SPECS_BY_KEY["planning_baseline"] = P2_PLANNING_BASELINE_SPEC
+
+P1_PLANNING_IDENTITY = (
+    "v0.4-from-v0.3",
+    "1.0",
+    P1_PLANNING_BASELINE_SPEC.relative_path,
+)
+P2_PLANNING_IDENTITY = (
+    "v0.4-p2-product-definition-identity-overlay",
+    "1.0",
+    P2_PLANNING_BASELINE_SPEC.relative_path,
+)
+P1_VALIDATION_PROFILE_IDENTITY = (
+    "v0.4-validation-p1",
+    "1.0",
+    P1_VALIDATION_PROFILE_SPEC.relative_path,
+)
+P2_VALIDATION_PROFILE_IDENTITY = (
+    "v0.4-validation-p2",
+    "1.1",
+    P2_VALIDATION_PROFILE_SPEC.relative_path,
+)
+P2_AMENDED_ITEM_IDS = (
+    "en-us/cloud-services",
+    "en-us/service-bus",
+    "zh-cn/cloud-services",
+    "zh-cn/service-bus",
+)
 
 
 class ValidationContextRegistry:
@@ -72,15 +119,21 @@ class ValidationContextRegistry:
         # schema bytes are unchanged.  Every access still hashes both files,
         # so a warm cache cannot conceal on-disk drift.
         self._documents: dict[
-            str, tuple[str, str, dict[str, Any]]
+            tuple[str, str], tuple[str, str, dict[str, Any]]
         ] = {}
 
     def freeze(self) -> dict[str, Any]:
-        identities = {spec.key: self._identity(spec) for spec in ARTIFACT_SPECS}
-        baseline = self.document("planning_baseline")
+        baseline_identity = self._identity(P2_PLANNING_BASELINE_SPEC)
+        baseline = self._effective_planning_baseline(
+            P2_PLANNING_BASELINE_SPEC
+        )
+        identities = {
+            spec.key: self._identity(spec)
+            for spec in CONTEXT_ARTIFACT_SPECS
+        }
         return {
             "planning": {
-                "baseline": identities.pop("planning_baseline"),
+                "baseline": baseline_identity,
                 "baseline_accounting": dict(baseline["accounting"]),
             },
             "validation_context": identities,
@@ -91,6 +144,10 @@ class ValidationContextRegistry:
         planning: Mapping[str, Any],
         validation_context: Mapping[str, Any],
     ) -> None:
+        if set(planning) != {"baseline", "baseline_accounting"}:
+            raise ValidationContextError(
+                f"Frozen planning keys differ: {sorted(planning)}"
+            )
         expected_keys = {
             "validation_profile",
             "applicability_map",
@@ -104,22 +161,37 @@ class ValidationContextRegistry:
         baseline_identity = planning.get("baseline")
         if not isinstance(baseline_identity, Mapping):
             raise ValidationContextError("Frozen planning baseline identity is missing")
-        baseline = self._verify_identity(
-            SPECS_BY_KEY["planning_baseline"], baseline_identity
+        baseline_spec = self._planning_spec_for_identity(baseline_identity)
+        baseline_document = self._verify_identity(
+            baseline_spec, baseline_identity
+        )
+        baseline = self._effective_planning_baseline(
+            baseline_spec, document=baseline_document
         )
         for key in sorted(expected_keys):
             identity = validation_context[key]
             if not isinstance(identity, Mapping):
                 raise ValidationContextError(f"Frozen identity is invalid: {key}")
-            self._verify_identity(SPECS_BY_KEY[key], identity)
+            context_spec = self._context_spec_for_identity(key, identity)
+            self._verify_identity(context_spec, identity)
         if dict(planning.get("baseline_accounting", {})) != baseline["accounting"]:
             raise ValidationContextError("Frozen baseline accounting does not match its artifact")
 
     def document(self, key: str) -> dict[str, Any]:
+        if key == "planning_baseline":
+            return self._effective_planning_baseline(
+                P2_PLANNING_BASELINE_SPEC
+            )
         if key not in SPECS_BY_KEY:
             raise ValidationContextError(f"Unknown validation context artifact: {key}")
         value, _ = self._validated_document(SPECS_BY_KEY[key])
         return copy.deepcopy(value)
+
+    def effective_planning_baseline(self) -> dict[str, Any]:
+        """Return the current approved baseline after applying its overlay."""
+        return self._effective_planning_baseline(
+            P2_PLANNING_BASELINE_SPEC
+        )
 
     @property
     def max_input_bytes(self) -> int:
@@ -279,6 +351,176 @@ class ValidationContextRegistry:
             raise ValidationContextError(f"Frozen {spec.key} schema version drifted")
         return value
 
+    @staticmethod
+    def _planning_spec_for_identity(
+        identity: Mapping[str, Any],
+    ) -> _ArtifactSpec:
+        if set(identity) != {"id", "schema_version", "path", "sha256"}:
+            raise ValidationContextError(
+                "Frozen planning_baseline identity is not closed-world"
+            )
+        discriminator = (
+            identity.get("id"),
+            identity.get("schema_version"),
+            identity.get("path"),
+        )
+        if discriminator == P1_PLANNING_IDENTITY:
+            return P1_PLANNING_BASELINE_SPEC
+        if discriminator == P2_PLANNING_IDENTITY:
+            return P2_PLANNING_BASELINE_SPEC
+        raise ValidationContextError(
+            "Frozen planning_baseline identity is not in the closed-world registry"
+        )
+
+    @staticmethod
+    def _context_spec_for_identity(
+        key: str,
+        identity: Mapping[str, Any],
+    ) -> _ArtifactSpec:
+        if key != "validation_profile":
+            return SPECS_BY_KEY[key]
+        if set(identity) != {"id", "schema_version", "path", "sha256"}:
+            raise ValidationContextError(
+                "Frozen validation_profile identity is not closed-world"
+            )
+        discriminator = (
+            identity.get("id"),
+            identity.get("schema_version"),
+            identity.get("path"),
+        )
+        if discriminator == P1_VALIDATION_PROFILE_IDENTITY:
+            return P1_VALIDATION_PROFILE_SPEC
+        if discriminator == P2_VALIDATION_PROFILE_IDENTITY:
+            return P2_VALIDATION_PROFILE_SPEC
+        raise ValidationContextError(
+            "Frozen validation_profile identity is not in the closed-world registry"
+        )
+
+    def _effective_planning_baseline(
+        self,
+        spec: _ArtifactSpec,
+        *,
+        document: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        raw = (
+            copy.deepcopy(dict(document))
+            if document is not None
+            else copy.deepcopy(self._validated_document(spec)[0])
+        )
+        if spec == P1_PLANNING_BASELINE_SPEC:
+            self._validate_baseline_semantics(raw)
+            return raw
+        if spec != P2_PLANNING_BASELINE_SPEC:
+            raise ValidationContextError(
+                "Unknown planning baseline authority"
+            )
+        return self._apply_product_definition_overlay(raw)
+
+    def _apply_product_definition_overlay(
+        self, overlay: Mapping[str, Any]
+    ) -> dict[str, Any]:
+        base_identity = overlay.get("base_baseline")
+        if not isinstance(base_identity, Mapping):
+            raise ValidationContextError(
+                "P2 Planning Baseline overlay has no base identity"
+            )
+        base_spec = self._planning_spec_for_identity(base_identity)
+        if base_spec != P1_PLANNING_BASELINE_SPEC:
+            raise ValidationContextError(
+                "P2 Planning Baseline overlay must directly bind the frozen P1 baseline"
+            )
+        base = copy.deepcopy(
+            self._verify_identity(base_spec, base_identity)
+        )
+        self._validate_baseline_semantics(base)
+
+        allowed = overlay.get("allowed_item_ids")
+        if (
+            not isinstance(allowed, list)
+            or tuple(allowed) != P2_AMENDED_ITEM_IDS
+        ):
+            raise ValidationContextError(
+                "P2 Planning Baseline allowed item set drifted"
+            )
+        amendments = overlay.get("amendments")
+        if not isinstance(amendments, list):
+            raise ValidationContextError(
+                "P2 Planning Baseline amendments are missing"
+            )
+        amendment_ids = [
+            amendment.get("item_id")
+            for amendment in amendments
+            if isinstance(amendment, Mapping)
+        ]
+        if (
+            len(amendment_ids) != len(amendments)
+            or tuple(amendment_ids) != P2_AMENDED_ITEM_IDS
+        ):
+            raise ValidationContextError(
+                "P2 Planning Baseline amendments must be the exact ordered four-item set"
+            )
+
+        indexed = {item["item_id"]: item for item in base["items"]}
+        changes_by_path: dict[str, set[tuple[str, str]]] = {}
+        amended_ids_by_path: dict[str, set[str]] = {}
+        for amendment in amendments:
+            item_id = amendment["item_id"]
+            frozen = indexed.get(item_id)
+            if frozen is None:
+                raise ValidationContextError(
+                    f"P2 Planning Baseline amendment is absent from P1: {item_id}"
+                )
+            transition = amendment["product_definition"]
+            expected = frozen["product_definition"]
+            prior = {
+                "path": transition["path"],
+                "sha256": transition["old_sha256"],
+            }
+            if prior != expected:
+                raise ValidationContextError(
+                    f"P2 Planning Baseline old Product Definition identity drifted: {item_id}"
+                )
+            if transition["new_sha256"] == transition["old_sha256"]:
+                raise ValidationContextError(
+                    f"P2 Planning Baseline transition is not a change: {item_id}"
+                )
+            path = transition["path"]
+            change = (
+                transition["old_sha256"],
+                transition["new_sha256"],
+            )
+            changes_by_path.setdefault(path, set()).add(change)
+            amended_ids_by_path.setdefault(path, set()).add(item_id)
+            frozen["product_definition"]["sha256"] = transition[
+                "new_sha256"
+            ]
+
+        for path, transitions in changes_by_path.items():
+            if len(transitions) != 1:
+                raise ValidationContextError(
+                    f"P2 bilingual Product Definition transition differs by language: {path}"
+                )
+            base_references = {
+                item["item_id"]
+                for item in base["items"]
+                if item["product_definition"]["path"] == path
+            }
+            if base_references != amended_ids_by_path[path]:
+                raise ValidationContextError(
+                    f"P2 Product Definition path has unamended baseline items: {path}"
+                )
+
+        if overlay.get("effective_summary") != base["summary"]:
+            raise ValidationContextError(
+                "P2 Planning Baseline effective summary differs from P1"
+            )
+        if overlay.get("accounting") != base["accounting"]:
+            raise ValidationContextError(
+                "P2 Planning Baseline accounting differs from P1"
+            )
+        self._validate_baseline_semantics(base)
+        return base
+
     def _validated_document(
         self,
         spec: _ArtifactSpec,
@@ -296,7 +538,8 @@ class ValidationContextRegistry:
 
         schema_path = self._safe_file(spec.schema_path)
         schema_sha256 = sha256_file(schema_path)
-        cached = self._documents.get(spec.key)
+        cache_key = (spec.key, spec.relative_path)
+        cached = self._documents.get(cache_key)
         if (
             cached is not None
             and cached[0] == artifact_sha256
@@ -321,9 +564,9 @@ class ValidationContextRegistry:
             raise ValidationContextError(
                 f"{spec.key} schema changed while it was being validated"
             )
-        if spec.key == "planning_baseline":
+        if spec == P1_PLANNING_BASELINE_SPEC:
             self._validate_baseline_semantics(value)
-        self._documents[spec.key] = (
+        self._documents[cache_key] = (
             artifact_sha256,
             schema_sha256,
             value,

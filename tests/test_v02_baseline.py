@@ -7,6 +7,7 @@ import shutil
 import sqlite3
 import tempfile
 import unittest
+from dataclasses import replace
 from pathlib import Path
 
 from bs4 import BeautifulSoup
@@ -17,10 +18,16 @@ from scripts.upload_to_blob import eligible_payloads
 from src.batch.models import ExecutionStatus, ValidationStatus
 from src.batch.process_engine import BatchProcessEngine, ProductProcessingInfo
 from src.batch.record_manager import BatchProcessRecordManager
+from src.core.canonical_input import CanonicalInputLoader
 from src.core.contract_validator import ContractValidator
 from src.core.extraction_coordinator import ExtractionCoordinator
 from src.core.product_catalog import CatalogError, ProductCatalog
 from src.core.product_manager import ProductManager
+from src.core.source_reachability import SourceReachabilityResolver
+from src.core.source_state_evidence import SourceStateEvidenceResolver
+from src.core.strict_soft_category_projection import (
+    StrictSoftCategoryProjector,
+)
 from src.strategies.support_article_strategy import SupportArticleStrategy
 
 
@@ -84,8 +91,12 @@ class ProductCatalogTests(unittest.TestCase):
         for product_key, record in records.items():
             with self.subTest(product_key=product_key):
                 self.assertEqual(record.definition["schema_version"], "1.1")
+                expected_extraction_fields = {"semantic_strategy"}
+                if product_key in {"cloud-services", "service-bus"}:
+                    expected_extraction_fields.add("page_global_content")
                 self.assertEqual(
-                    set(record.definition["extraction"]), {"semantic_strategy"}
+                    set(record.definition["extraction"]),
+                    expected_extraction_fields,
                 )
                 self.assertNotIn("quality", record.definition)
 
@@ -196,11 +207,60 @@ class ProductCatalogTests(unittest.TestCase):
 class ContractTests(unittest.TestCase):
     def setUp(self):
         self.validator = ContractValidator(ROOT)
+        self.manager = ProductManager(str(ROOT / "data" / "configs"))
+        self.input_loader = CanonicalInputLoader(ROOT, self.manager)
+        self.reachability = SourceReachabilityResolver()
+
+    def expected_reachability(self, product_key: str):
+        canonical = self.input_loader.load(product_key, "zh-cn")
+        return self.reachability.resolve(canonical).to_expected_reachability()
 
     def test_flexible_examples_and_nested_semantics(self):
         for key in ("service-bus", "dns", "api-management", "cloud-services"):
             payload = json.loads((FIXTURES / f"{key}.json").read_text(encoding="utf-8"))
-            result = self.validator.validate(payload, "FlexibleContentPage")
+            source_confirmed_empty_states = ()
+            if key == "cloud-services":
+                canonical = self.input_loader.load(key, "zh-cn")
+                source_reachability = self.reachability.resolve(canonical)
+                target = next(
+                    state
+                    for state in source_reachability.ordered_states
+                    if state.cms_state.criteria == (
+                        ("region", "north-china3"),
+                        ("category", "tabContent1-2"),
+                    )
+                )
+                projection = StrictSoftCategoryProjector(ROOT).project(
+                    BeautifulSoup(canonical.text, "html.parser"),
+                    source_panel_id="tabContent1-2",
+                    region_value="north-china3",
+                    software_value="Cloud Services",
+                )
+                target = replace(
+                    target,
+                    source_evidence=replace(
+                        target.source_evidence,
+                        strict_soft_category_projection=projection,
+                    ),
+                )
+                source_reachability = replace(
+                    source_reachability,
+                    ordered_states=(target,),
+                    default_state=target.cms_state,
+                )
+                source_confirmed_empty_states = SourceStateEvidenceResolver(
+                    ROOT
+                ).resolve_cms_states(
+                    canonical,
+                    source_reachability=source_reachability,
+                )
+                self.assertEqual(len(source_confirmed_empty_states), 1)
+            result = self.validator.validate(
+                payload,
+                "FlexibleContentPage",
+                expected_reachability=self.expected_reachability(key),
+                source_confirmed_empty_states=source_confirmed_empty_states,
+            )
             self.assertTrue(result.passed, result.to_dict())
             for group in payload["contentGroups"]:
                 for criterion in json.loads(group["filterCriteriaJson"]):
@@ -208,13 +268,29 @@ class ContractTests(unittest.TestCase):
 
     def test_flexible_extensions_allowed_but_diagnostics_forbidden(self):
         payload = json.loads((FIXTURES / "service-bus.json").read_text(encoding="utf-8"))
+        expected_reachability = self.expected_reachability("service-bus")
         payload["cmsBusinessExtension"] = {"enabled": True}
-        self.assertTrue(self.validator.validate(payload, "FlexibleContentPage").passed)
+        self.assertTrue(
+            self.validator.validate(
+                payload,
+                "FlexibleContentPage",
+                expected_reachability=expected_reachability,
+            ).passed
+        )
         payload["validation"] = {"is_valid": True}
-        result = self.validator.validate(payload, "FlexibleContentPage")
+        result = self.validator.validate(
+            payload,
+            "FlexibleContentPage",
+            expected_reachability=expected_reachability,
+        )
         self.assertFalse(result.passed)
         self.assertIn("diagnostic_field_in_payload", {issue.code for issue in result.errors})
-        mismatch = self.validator.validate(payload, "FlexibleContentPage", expected_ms_service="different-service")
+        mismatch = self.validator.validate(
+            payload,
+            "FlexibleContentPage",
+            expected_ms_service="different-service",
+            expected_reachability=expected_reachability,
+        )
         self.assertIn("ms_service_mismatch", {issue.code for issue in mismatch.errors})
 
     def test_all_four_support_types_and_optional_empty_values(self):
@@ -332,7 +408,7 @@ class ExtractionStateTests(unittest.TestCase):
             self.assertFalse(stale_event_grid.exists())
 
     def test_regression_payloads_are_deterministic_and_diagnostic_free(self):
-        keys = ("service-bus", "dns", "api-management", "cloud-services", "icp-faq", "legal-summary", "psr-summary", "sla-summary", "sla-cognitive-services")
+        keys = ("service-bus", "api-management", "icp-faq", "legal-summary", "psr-summary", "sla-summary", "sla-cognitive-services")
         with tempfile.TemporaryDirectory() as directory:
             coordinator = ExtractionCoordinator(directory)
             for key in keys:
@@ -341,12 +417,67 @@ class ExtractionStateTests(unittest.TestCase):
                 self.assertEqual(result.exit_code, 0, result.sidecar["validation"])
                 self.assertEqual(result.payload, expected)
                 self.assertFalse({"validation", "extraction_metadata", "error"}.intersection(result.payload))
-                if key in {"service-bus", "dns"}:
+                if key == "service-bus":
                     base_content = result.payload["baseContent"]
                     self.assertIn("technical-azure-selector", base_content)
                     self.assertNotIn("common-banner", base_content)
                     self.assertNotIn("more-detail", base_content)
                     self.assertNotIn("documentation-navigation", base_content)
+
+            cloud = coordinator.coordinate_extraction(
+                "cloud-services",
+                "zh-cn",
+            )
+            self.assertEqual(cloud.exit_code, 1)
+            self.assertIsNone(cloud.payload)
+            self.assertIsNone(cloud.payload_path)
+            self.assertEqual(
+                cloud.sidecar["error"]["code"],
+                "soft_category_duplicate_relevant_table_id",
+            )
+            self.assertEqual(
+                cloud.sidecar["strategy"][
+                    "strict_soft_category_projection_failure"
+                ]["phase"],
+                "attach",
+            )
+
+    def test_dns_remains_supported_but_duplicate_source_id_blocks_payload(self):
+        definition = ProductManager().get_product_config("dns")
+        self.assertEqual(definition["capability_status"], "supported")
+        self.assertEqual(
+            definition["extraction"]["semantic_strategy"],
+            "simple_static",
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            result = ExtractionCoordinator(directory).coordinate_extraction(
+                "dns",
+                "zh-cn",
+            )
+
+            self.assertEqual(result.exit_code, 1)
+            self.assertFalse(result.execution_succeeded)
+            self.assertIsNone(result.payload)
+            self.assertIsNone(result.payload_path)
+            self.assertIsNone(result.sidecar["payload"])
+            self.assertEqual(
+                result.sidecar["error"]["code"],
+                "SOURCE_HTML_STRUCTURE_BLOCKED",
+            )
+            self.assertIn(
+                "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT",
+                {
+                    issue["code"]
+                    for issue in result.sidecar["validation"]["errors"]
+                },
+            )
+            evidence_path = Path(
+                result.sidecar["input_assurance"]["source_html_structure"][
+                    "evidence"
+                ]["path"]
+            )
+            self.assertTrue(evidence_path.is_file())
 
 
 class UploadAndBatchTests(unittest.TestCase):

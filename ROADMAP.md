@@ -344,6 +344,7 @@ v0.4 不包含 GitHub Actions、required branch checks 或其他 external merge 
 - Normalized Input 必须与 Source Snapshot 字节级一致并校验 SHA-256，不转码、不换行归一化、不修复 HTML；
 - 仅接受严格 UTF-8，保留 BOM；非法字节阻断。可靠 charset 声明与实际字节不一致时记录 Source Quality Finding；
 - HTML 门禁采用 Reconstruction Parseability：独立解析和结构探测必须对关键内容达成可解释一致，普通 lint 问题本身不阻断，关键内容丢失或结构分歧阻断；
+- Reconstruction Parseability 后、正式提取前运行只读 Source HTML Structure Audit：仅对高置信度 wrapper、section nesting、control-boundary 和 emitted-fragment identity 异常输出源 SHA、精确行号、DOM 证据与上游修改建议；不得改写 canonical/normalized bytes、在内存中套用候选补丁、更新 Product Definition 或 baseline。普通可忠实复制的源异常保持 Source Quality Finding；若同一待发布片段内的重复 ID、归属歧义等问题无法在不修源或不猜测的前提下形成 contract-valid Payload，则作为 Blocking Source Structure Finding 在 Payload 生成前失败。只有 parser、可见文本、表格、脚本、控件、target 与 reachability 身份均保持不变时才可附带保守 patch candidate；
 - 每个 Batch Run 冻结完整 Validation Profile，包括契约、规则及严重度、事实解释规则、基线引用、Rendering Profile、InMemory Capability Profile，以及逐项 Applicability Map 的 schema、版本、路径和 SHA-256；input/batch manifest 与报告保留这些身份，`pipeline-validate` 必须按原 Profile 和 Map 重现结论；
 - 以 v0.3 已验收的 379 个语言级 runnable items 生成不可变 v0.4 Planning Baseline Manifest。自动 preflight 只能提出 planned non-runnable 建议；任何分母变化必须经独立审核，记录 prior/proposed state、原因、证据和 Product Definition capability decision 后，才能冻结 v0.4 runnable set；
 - 文件大小不再决定语义策略。删除未实现的 `LARGE_FILE` 语义选择路径及其 fallback；v0.4 的 in-memory 初始候选上限是 `5 × 1024 × 1024` bytes，只有在最大真实输入、近上限压力样例、峰值内存和耗时通过重复确定性测试后才能冻结，否则下调；
@@ -354,14 +355,18 @@ v0.4 不包含 GitHub Actions、required branch checks 或其他 external merge 
 - Contract Validation 与内容验证分别保留证据，但共同汇总为唯一 Machine Validation 结论；
 - FlexibleContent 与 SupportArticle 使用各自独立的 Local Machine Contract；删除旧字段验证和 `quality_score` 计算逻辑；
 - `filtersJsonConfig` 与 `filterCriteriaJson` 除了是合法 JSON 字符串，还必须满足完整嵌套语义契约，并采用 deterministic canonical serialization；`matchValues` 继续按单个字符串验证；
-- Filter domain 必须非空、机器值唯一且完全覆盖；首个 option 定义 Default CMS State，筛选器及 option 顺序是行为证据；
-- 当前 CMS 无依赖状态模型，因此 CMS state space 是所有 filter domains 的笛卡尔积，并必须等于已证明的源侧 Reachable Selection State 集合；
-- 每个可达状态恰好命中一个 active、非空、price-bearing `contentGroup`；零匹配或多匹配均阻断；
-- 每个 active group 必须包含全部 active filter keys，每个 key 恰好匹配一个已声明 option value；禁止 wildcard、缺 key 和多值编码；
-- 双语允许 label 本地化，但 filter keys、option values、Default CMS State 和机器状态顺序必须一致。真实源侧差异形成 Bilingual State Drift finding 并阻止批准，提取器制造的差异直接失败；
+- Filter domain 在每个适用 parent scope 内必须非空、机器身份无歧义且完全覆盖；Default CMS State 沿冻结源证明的默认条件路径形成。v0.4 以每个 scope 的 desktop interaction control 作为本语言 option label 与顺序事实源：branch default 移至该 scope 首位，其余 sibling 保持 desktop 相对顺序；对应 mobile control 必须具有相同 scoped machine set 与默认值，但不决定 v0.4 label 或顺序。Mobile label 漂移形成 Source Quality Finding，机器集合或默认值漂移仍阻断；
+- CMS state space 是由冻结 Source Snapshot 与 Applicability Evidence 独立证明的有序 Reachability Relation。彼此独立的 domain 只在同一 scope 内形成笛卡尔积；software-specific Category 等 Conditional Filter Domain 只与其 parent branch 组合，禁止把 sibling options 合并后生成理论 cross-branch states，也禁止由待验证 Payload 自行声明完整性；
+- Business Payload 以一条 active `contentGroup` 对应一条 Reachability Relation row；CMS 导入以这些 groups 为状态与渲染真源，不会从 `filterDefinitions` option catalog 自行生成额外组合。`groupName` 必须按状态路径中同语言 Desktop Localized Source Display Label 以精确 ` - ` 连接为 `region - software - category`（例如 `zh-cn` 使用 `中国东部 2`，`en-us` 使用 `China North 3`），缺失维度只允许因该路径无此 filter 而省略；segment 自身包含该 delimiter、名称与 criteria 不一致或段数漂移均阻断；
+- 对任意产品，Category 中 label 为 `All`/`全部` 且声明 target panel 不存在的选项统一视为 Non-materialized Aggregate Tab：从 option catalog 与 Reachability Relation 省略，不合成、不输出 placeholder、不复制 sibling 价格；该 scope 的首个剩余 concrete Category 成为默认。其他 missing target 仍为阻断错误；
+- 每个可达状态恰好命中一个 active、非空、非 placeholder 的 `contentGroup`，且通常必须 price-bearing；唯一窄例外是由冻结 Applicability Evidence 证明源配置有意排除了该状态全部适用价格片段的 Source-confirmed Empty Selection State。该例外必须保留剩余源内容、记录 Source Quality Finding，不能由空提取结果反推，也不能虚构价格；零匹配或多匹配仍阻断；
+- 每个 active group 必须包含其 Reachable Selection State 路径中全部 active filter keys，每个 key 恰好匹配该 conditional scope 已声明的一个 option value；禁止 wildcard、缺少 path-active key 和多值编码；
+- 双语允许 label 本地化，但 filter keys、scoped option identities、parent-child topology、Reachability Relation、Default CMS State 和机器状态顺序必须一致。真实源侧差异形成 Bilingual State Drift finding 并阻止批准，提取器制造的差异直接失败；
 - 生成 payload 不保留 inactive group、section、placeholder 或 stale 字段；`sortOrder` 在同一数组内必须为正整数、唯一且升序，允许间隔；
 - 严格验证 `pageType`、`enableFilters`、filter topology、`contentGroups` 与 `baseContent` 的 Flexible Page State Machine；删除未知策略、页面分析异常和未知 page type 到 `Simple` 的静默 fallback；
-- 删除遗留 `sharedContent` 生产和兼容逻辑：global 内容进入 `baseContent` 或 `commonSections`，state-specific 内容进入对应 group，orphan 只进入证据报告。
+- `baseContent` 表示不随任何 Reachable Selection State 变化且只输出一次的 Page-Global Content，与 `simple_static`、`region_filter`、`complex` 策略正交；期望值必须由 canonical source boundary 与冻结证据决定，禁止从策略推断为空。最后一个正式 selector 之后、精确 FAQ/SLA 之前的直接可见 pricing section 仅是候选；未声明候选、身份漂移、隐藏/交互内容、越过公共区块边界或向 group/Qa 重复均阻断。Simple 也不得回退到整个 `.pure-content`/`body`：无法证明精确业务主体时形成 Unproven Page-Global Boundary 并失败；`baseContent` 与任一完整 `commonSections.content`、`contentGroups.content` 或受控 `sharedContent` 的 Content Ownership Overlap 同样阻断；
+- 删除无证据的遗留 `sharedContent` 生产和兼容逻辑：global 内容进入 `baseContent` 或 `commonSections`，state-specific 内容进入对应 group，orphan 只进入证据报告。若源在一个 Software panel 内、首个 concrete Category panel 之前声明不随其他 active filter 改变的 Software-scoped Prefix Content，则以 panel、scope 和源 HTML 指纹证明其身份，并前置投影到该 software 下每个源证明可达状态的 `content`。唯一允许的 `sharedContent` 是 Region-Projected Shared Content：源 ancestor fragment 必须 price-bearing、由 active region 与冻结 `soft-category.json` 证明确切投影，并在每个适用 descendant state 上逐项绑定 source/config/projected hash；禁止无证据字段、跨 region 泄漏、提升为全页 common content或只归入首个 Category。
+- `soft-category.json` 只选择具有非空 `id` 的表；无 ID 表属于其源状态的无条件内容，必须原样保留，并冻结物理表序、规范化 HTML SHA 与聚合身份。重复 `(os, region)` 条目或单条目内重复 normalized table ID 都写入确定性上游配置报告；后者虽不改变 selector set，也不得在运行时静默去重。仅当重复 ID 与当前可达状态相关时在 Payload 前阻断，状态无关时保持 report-only。
 
 ##### P3：源驱动的内容与 Pricing Fact 对账
 
@@ -376,7 +381,7 @@ v0.4 不包含 GitHub Actions、required branch checks 或其他 external merge 
 - Expected Publishable Text 在只做实体解码、Unicode 和无意义空白归一化后要求 100% state-aware coverage；缺失、额外、篡改、重复超量或错误状态归属均阻断；
 - 表格、FAQ、区域和组合数量只作为 reconciliation 摘要，成败由逐项内容与状态匹配决定；重复和跨区域泄漏相对于源侧期望 multiplicity 与 Applicability 判定；
 - 只有证据明确证明某价格片段不属于任何 Reachable Selection State 时，它才是 Orphan Pricing Evidence；仅仅无法确定归属仍是 Pricing Fidelity Evaluation Failure。所有 proven orphan 都不进入 Expected Inventory 或 Payload，导入任何 orphan 都是重建失败；明确证明被刻意禁用、归档或废弃的是 Explained Orphan，只告警；不可达已证明但原因或责任不明的是 Unresolved Orphan，Machine Validation 可通过但 `approval_eligible=false`，等待 Source Finding Disposition；
-- 源自身异常不由提取器自动修正，也不使忠实重建失败；它作为 Source Quality Finding 写入 Upstream Verification Report。未处置 finding 不改变 Machine Validation pass，但阻止批准和发布。
+- 源自身异常不由提取器自动修正。能够原样形成 contract-valid Payload 的异常作为 Source Quality Finding 写入 Upstream Verification Report，不使忠实重建失败；无法在不修源或不猜测归属的情况下形成 contract-valid Payload 的 Blocking Source Structure Finding 则保留上游证据并使该 runnable item 明确 failed，而不是 skip、`known_unsupported` 或兼容性修复。Source-confirmed Empty Selection State 只有在冻结配置路径、哈希、精确状态及被排除片段均可复核时才适用；未处置的非阻断 finding 不改变 Machine Validation pass，但阻止批准和发布。
 
 ##### P4：报告、批准资格与复杂表格视觉门禁
 

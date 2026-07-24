@@ -165,7 +165,9 @@ def _extract(
 
     soup = preprocess_image_paths(BeautifulSoup(html, "html.parser"))
     strategy = ComplexContentStrategy(definition, str(source_path))
-    payload = strategy.extract_flexible_content(soup, source_definition.get("url", ""))
+    payload = strategy.extract_unvalidated_experimental_content(
+        soup, source_definition.get("url", "")
+    )
     if not isinstance(payload, dict) or not payload:
         raise ExperimentalExtractionError("Complex strategy did not produce a JSON object")
     for key in (

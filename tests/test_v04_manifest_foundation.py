@@ -12,9 +12,15 @@ from pathlib import Path
 
 import pytest
 
+import scripts.build_v04_p2_planning_overlay as overlay_builder
+import scripts.build_v04_p2_validation_profile as profile_builder
 from src.core.product_catalog import sha256_file
 from src.core.validation_context import (
     ARTIFACT_SPECS,
+    P1_PLANNING_BASELINE_SPEC,
+    P1_VALIDATION_PROFILE_SPEC,
+    P2_AMENDED_ITEM_IDS,
+    P2_VALIDATION_PROFILE_SPEC,
     ValidationContextError,
     ValidationContextRegistry,
 )
@@ -46,7 +52,12 @@ FROZEN_PROVENANCE = {
 @lru_cache(maxsize=1)
 def _manifest() -> InputManifest:
     registry = ValidationContextRegistry(ROOT)
-    plan = PipelinePlanner(ROOT).plan("all", language="zh-cn")
+    # Keep this state-store fixture independent of the intentionally edited
+    # Databricks/SSIS snapshots while still exercising an amended Product
+    # Definition through service-bus.
+    plan = PipelinePlanner(ROOT).plan(
+        "group", group="integration", language="zh-cn"
+    )
     registry.assert_plan_matches_baseline(plan)
     frozen = registry.freeze()
     return InputManifest.from_plan(
@@ -65,6 +76,21 @@ def _write_json(path: Path, value: dict[str, object]) -> None:
         json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+
+
+def _copy_registry_artifacts(root: Path) -> None:
+    copied: set[str] = set()
+    for specification in ARTIFACT_SPECS:
+        for relative_path in (
+            specification.relative_path,
+            specification.schema_path,
+        ):
+            if relative_path in copied:
+                continue
+            copied.add(relative_path)
+            target = root / relative_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / relative_path, target)
 
 
 def test_real_manifest_20_round_trip_replays_frozen_context() -> None:
@@ -86,10 +112,10 @@ def test_real_manifest_20_round_trip_replays_frozen_context() -> None:
             == input_manifest["validation_context"]
         )
         assert input_manifest["summary"] == {
-            "total": 217,
-            "runnable": 190,
-            "skipped": 27,
-            "known_unsupported": 27,
+            "total": 4,
+            "runnable": 2,
+            "skipped": 2,
+            "known_unsupported": 2,
             "source_unavailable": 0,
         }
 
@@ -162,15 +188,24 @@ def test_mixed_input_and_batch_manifest_versions_are_rejected() -> None:
             store.read_manifest(BATCH_ID)
 
 
-def test_frozen_context_identity_cannot_redirect_to_another_path() -> None:
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("id", "v0.4-validation-p1"),
+        ("schema_version", "1.0"),
+        ("path", "data/configs/validation-profiles/redirect.json"),
+    ),
+)
+def test_frozen_context_identity_rejects_unregistered_discriminator(
+    field: str,
+    value: str,
+) -> None:
     redirected = _manifest().to_dict()
-    redirected["validation_context"]["validation_profile"]["path"] = (
-        "data/configs/validation-profiles/redirect.json"
-    )
+    redirected["validation_context"]["validation_profile"][field] = value
 
     store = StateStore(ROOT)
     with pytest.raises(
-        ManifestValidationError, match="closed-world registry path"
+        ManifestValidationError, match="not in the closed-world registry"
     ):
         store.validate_document(redirected, "input")
 
@@ -187,18 +222,7 @@ def test_frozen_context_sha_drift_is_rejected() -> None:
 def test_warm_context_cache_cannot_conceal_artifact_drift() -> None:
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory)
-        copied: set[str] = set()
-        for specification in ARTIFACT_SPECS:
-            for relative_path in (
-                specification.relative_path,
-                specification.schema_path,
-            ):
-                if relative_path in copied:
-                    continue
-                copied.add(relative_path)
-                target = root / relative_path
-                target.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(ROOT / relative_path, target)
+        _copy_registry_artifacts(root)
 
         registry = ValidationContextRegistry(root)
         frozen = registry.freeze()
@@ -206,11 +230,7 @@ def test_warm_context_cache_cannot_conceal_artifact_drift() -> None:
             frozen["planning"], frozen["validation_context"]
         )
 
-        profile = root / next(
-            specification.relative_path
-            for specification in ARTIFACT_SPECS
-            if specification.key == "validation_profile"
-        )
+        profile = root / P2_VALIDATION_PROFILE_SPEC.relative_path
         profile.write_text(
             profile.read_text(encoding="utf-8") + " ", encoding="utf-8"
         )
@@ -239,7 +259,9 @@ def test_planning_baseline_rejects_a_silently_shrunken_plan() -> None:
 
 def test_planning_baseline_rejects_frozen_input_identity_drift() -> None:
     registry = ValidationContextRegistry(ROOT)
-    plan = PipelinePlanner(ROOT).plan()
+    plan = PipelinePlanner(ROOT).plan(
+        "group", group="integration", language="zh-cn"
+    )
     changed = replace(plan.items[0], source_sha256="0" * 64)
     drifted = PipelinePlan(
         scope=plan.scope,
@@ -252,3 +274,238 @@ def test_planning_baseline_rejects_frozen_input_identity_drift() -> None:
         match="source identity drifted",
     ):
         registry.assert_plan_matches_baseline(drifted)
+
+
+def test_p2_effective_baseline_changes_exactly_four_definition_hashes() -> None:
+    p1_path = ROOT / P1_PLANNING_BASELINE_SPEC.relative_path
+    assert sha256_file(p1_path) == (
+        "86e2f8836c94a9c0a063ce9a8da7efe445137c4e63d99f7b0cf0d9350b20d3d3"
+    )
+    p1 = json.loads(p1_path.read_text(encoding="utf-8"))
+    effective = ValidationContextRegistry(ROOT).effective_planning_baseline()
+    assert len(p1["items"]) == len(effective["items"]) == 434
+    assert effective["accounting"] == p1["accounting"] == {
+        "denominator": 379,
+        "retained_runnable": 379,
+        "reviewed_non_runnable": 0,
+        "accounted": 379,
+        "coverage": "379/379",
+    }
+
+    changed: list[str] = []
+    for before, after in zip(p1["items"], effective["items"], strict=True):
+        assert before["item_id"] == after["item_id"]
+        if before == after:
+            continue
+        changed.append(before["item_id"])
+        restored = copy.deepcopy(after)
+        restored["product_definition"]["sha256"] = before[
+            "product_definition"
+        ]["sha256"]
+        assert restored == before
+    assert tuple(changed) == P2_AMENDED_ITEM_IDS
+
+
+def test_freeze_defaults_to_p2_but_historical_p1_identity_replays() -> None:
+    registry = ValidationContextRegistry(ROOT)
+    frozen = registry.freeze()
+    assert frozen["planning"]["baseline"]["id"] == (
+        "v0.4-p2-product-definition-identity-overlay"
+    )
+    assert frozen["validation_context"]["validation_profile"] == {
+        "id": "v0.4-validation-p2",
+        "schema_version": "1.1",
+        "path": P2_VALIDATION_PROFILE_SPEC.relative_path,
+        "sha256": sha256_file(
+            ROOT / P2_VALIDATION_PROFILE_SPEC.relative_path
+        ),
+    }
+
+    p1 = json.loads(
+        (ROOT / P1_PLANNING_BASELINE_SPEC.relative_path).read_text(
+            encoding="utf-8"
+        )
+    )
+    historical_planning = {
+        "baseline": {
+            "id": p1["baseline_id"],
+            "schema_version": p1["schema_version"],
+            "path": P1_PLANNING_BASELINE_SPEC.relative_path,
+            "sha256": sha256_file(
+                ROOT / P1_PLANNING_BASELINE_SPEC.relative_path
+            ),
+        },
+        "baseline_accounting": p1["accounting"],
+    }
+    p1_profile = json.loads(
+        (ROOT / P1_VALIDATION_PROFILE_SPEC.relative_path).read_text(
+            encoding="utf-8"
+        )
+    )
+    assert sha256_file(
+        ROOT / P1_VALIDATION_PROFILE_SPEC.relative_path
+    ) == (
+        "dd66c001235ea9c5f488adbe4e61800ce7bbc7bfaf488cc44d7b3934f5e1191f"
+    )
+    historical_context = copy.deepcopy(frozen["validation_context"])
+    historical_context["validation_profile"] = {
+        "id": p1_profile["profile_id"],
+        "schema_version": p1_profile["schema_version"],
+        "path": P1_VALIDATION_PROFILE_SPEC.relative_path,
+        "sha256": sha256_file(
+            ROOT / P1_VALIDATION_PROFILE_SPEC.relative_path
+        ),
+    }
+    registry.verify_frozen(
+        historical_planning, historical_context
+    )
+    # Re-reading both P2 artifacts after both P1 artifacts proves that the
+    # document cache is scoped by artifact path, not merely logical key.
+    registry.verify_frozen(
+        frozen["planning"], frozen["validation_context"]
+    )
+
+
+def test_overlay_rejects_bilingual_transition_drift() -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        _copy_registry_artifacts(root)
+        overlay_path = (
+            root
+            / "data/baselines/v0.4/"
+            "p2-product-definition-identity-overlay.json"
+        )
+        overlay = json.loads(overlay_path.read_text(encoding="utf-8"))
+        overlay["amendments"][2]["product_definition"]["new_sha256"] = (
+            "0" * 64
+        )
+        _write_json(overlay_path, overlay)
+
+        with pytest.raises(
+            ValidationContextError,
+            match="differs by language",
+        ):
+            ValidationContextRegistry(root).effective_planning_baseline()
+
+
+def test_warm_overlay_cache_cannot_conceal_nested_p1_drift() -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        _copy_registry_artifacts(root)
+        registry = ValidationContextRegistry(root)
+        frozen = registry.freeze()
+        p1_path = root / P1_PLANNING_BASELINE_SPEC.relative_path
+        p1_path.write_text(
+            p1_path.read_text(encoding="utf-8") + " ",
+            encoding="utf-8",
+        )
+
+        with pytest.raises(ValidationContextError, match="SHA-256 drifted"):
+            registry.verify_frozen(
+                frozen["planning"], frozen["validation_context"]
+            )
+
+
+def test_warm_profile_cache_cannot_conceal_historical_p1_drift() -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        _copy_registry_artifacts(root)
+        registry = ValidationContextRegistry(root)
+        frozen = registry.freeze()
+        p1_profile_path = root / P1_VALIDATION_PROFILE_SPEC.relative_path
+        p1_profile = json.loads(
+            p1_profile_path.read_text(encoding="utf-8")
+        )
+        historical_context = copy.deepcopy(frozen["validation_context"])
+        historical_context["validation_profile"] = {
+            "id": p1_profile["profile_id"],
+            "schema_version": p1_profile["schema_version"],
+            "path": P1_VALIDATION_PROFILE_SPEC.relative_path,
+            "sha256": sha256_file(p1_profile_path),
+        }
+        registry.verify_frozen(
+            frozen["planning"], historical_context
+        )
+        p1_profile_path.write_text(
+            p1_profile_path.read_text(encoding="utf-8") + " ",
+            encoding="utf-8",
+        )
+
+        with pytest.raises(ValidationContextError, match="SHA-256 drifted"):
+            registry.verify_frozen(
+                frozen["planning"], historical_context
+            )
+
+
+def test_overlay_builder_is_check_only_unless_reviewed_write_is_explicit(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        for relative_path in (
+            overlay_builder.P1_BASELINE_PATH,
+            overlay_builder.OVERLAY_SCHEMA_PATH,
+            *overlay_builder.NEW_DEFINITION_SHA256,
+        ):
+            target = root / relative_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / relative_path, target)
+        monkeypatch.setattr(overlay_builder, "ROOT", root)
+        p1_before = sha256_file(root / overlay_builder.P1_BASELINE_PATH)
+
+        with pytest.raises(
+            overlay_builder.OverlayBuildError,
+            match="--write-reviewed",
+        ):
+            overlay_builder.build()
+        assert not (root / overlay_builder.OVERLAY_PATH).exists()
+
+        value = overlay_builder.build(write_reviewed=True)
+        assert len(value["amendments"]) == 4
+        assert sha256_file(root / overlay_builder.P1_BASELINE_PATH) == p1_before
+        overlay_builder.build()
+
+
+def test_validation_profile_builder_is_check_only_and_preserves_p1(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        for relative_path in (
+            profile_builder.P1_PROFILE_PATH,
+            profile_builder.P1_PROFILE_SCHEMA_PATH,
+            profile_builder.P2_PROFILE_SCHEMA_PATH,
+            *(
+                identity["path"]
+                for identity in profile_builder.CONTRACTS.values()
+            ),
+        ):
+            target = root / str(relative_path)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / str(relative_path), target)
+        monkeypatch.setattr(profile_builder, "ROOT", root)
+        p1_before = sha256_file(root / profile_builder.P1_PROFILE_PATH)
+        p1_schema_before = sha256_file(
+            root / profile_builder.P1_PROFILE_SCHEMA_PATH
+        )
+
+        with pytest.raises(
+            profile_builder.ValidationProfileBuildError,
+            match="--write-reviewed",
+        ):
+            profile_builder.build()
+        assert not (root / profile_builder.P2_PROFILE_PATH).exists()
+
+        value = profile_builder.build(write_reviewed=True)
+        assert value["profile_id"] == "v0.4-validation-p2"
+        assert value["contracts"]["diagnostic_sidecar"]["sha256"] == (
+            "6d73b4fd334b2d4b61cf5c6009384e870b6ae7873e148dbf1e162448835b97c4"
+        )
+        assert value["semantic_assurance"] == (
+            profile_builder.SEMANTIC_ASSURANCE
+        )
+        assert sha256_file(root / profile_builder.P1_PROFILE_PATH) == p1_before
+        assert sha256_file(
+            root / profile_builder.P1_PROFILE_SCHEMA_PATH
+        ) == p1_schema_before
+        profile_builder.build()

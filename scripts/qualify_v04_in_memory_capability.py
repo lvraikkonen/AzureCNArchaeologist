@@ -25,9 +25,12 @@ from loguru import logger
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from src.core.canonical_input import CanonicalHtmlInput, UTF8_BOM
+from src.core.data_models import StrategyType
 from src.core.extraction_coordinator import ExtractionCoordinator
 from src.core.product_manager import ProductManager
 from src.core.reconstruction_parseability import ReconstructionParseabilityValidator
+from src.core.source_reachability import SourceReachabilityResolver
 from src.core.strategy_manager import StrategyManager
 from src.strategies.strategy_factory import StrategyFactory
 from src.utils.media.image_processor import preprocess_image_paths
@@ -83,8 +86,33 @@ def _worker(path: Path) -> int:
             strategy, runtime_definition, str(path)
         )
         soup = preprocess_image_paths(parseability.production_soup)
+        canonical_input = CanonicalHtmlInput(
+            product_key=PRODUCT_KEY,
+            resource_key=PRODUCT_KEY,
+            language=LANGUAGE,
+            source_path=path.resolve(),
+            normalized_path=path.resolve(),
+            source_sha256=input_hash,
+            normalized_sha256=input_hash,
+            expected_sha256=input_hash,
+            raw_bytes=raw,
+            text=text,
+            has_utf8_bom=raw.startswith(UTF8_BOM),
+            source_findings=(),
+        )
+        reachability_resolver = SourceReachabilityResolver(ROOT)
+        source_reachability = reachability_resolver.resolve(canonical_input)
+        if strategy.strategy_type is StrategyType.COMPLEX:
+            source_reachability = (
+                reachability_resolver.attach_strict_soft_category_projections(
+                    canonical_input,
+                    source_reachability,
+                )
+            )
         payload = instance.extract_flexible_content(
-            soup, definition["sources"][LANGUAGE]["url"]
+            soup,
+            definition["sources"][LANGUAGE]["url"],
+            source_reachability=source_reachability,
         )
         ExtractionCoordinator._normalize_business_fields(
             payload, runtime_definition, LANGUAGE

@@ -10,22 +10,41 @@ import os
 import sys
 from pathlib import Path
 from typing import Dict, List, Any, Optional
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 # 添加项目根目录到Python路径
 project_root = Path(__file__).parent.parent.parent
 sys.path.append(str(project_root))
 
 from src.strategies.base_strategy import BaseStrategy
+from src.core.cms_state_contract import CmsState
+from src.core.region_projected_shared_content import (
+    RegionProjectedSharedContentError,
+    RegionProjectedSharedContentEvidence,
+    RegionProjectedSharedContentResolver,
+)
 from src.core.region_processor import RegionProcessor
+from src.core.scoped_source_content import (
+    ScopedSourceContentError,
+    extract_category_ancestor_fragment,
+    extract_software_scoped_prefix,
+    resolve_page_global_base_content,
+)
+from src.core.source_reachability import (
+    ReachableCmsState,
+    SourceReachability,
+)
+from src.core.strict_soft_category_projection import (
+    StrictSoftCategoryProjectionError,
+)
 from src.utils.content.content_extractor import ContentExtractor
 from src.utils.content.section_extractor import SectionExtractor
 from src.utils.content.flexible_builder import FlexibleBuilder
-from src.utils.data.extraction_validator import ExtractionValidator
 from src.detectors.filter_detector import FilterDetector
 from src.detectors.tab_detector import TabDetector
 from src.utils.content.content_utils import classify_pricing_section, filter_sections_by_type
 from src.utils.html.cleaner import clean_html_content
+from src.utils.media.image_processor import preprocess_image_paths
 from src.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -58,76 +77,252 @@ class ComplexContentStrategy(BaseStrategy):
         self.content_extractor = ContentExtractor()
         self.section_extractor = SectionExtractor()
         self.flexible_builder = FlexibleBuilder()
-        self.extraction_validator = ExtractionValidator()
         
         # 初始化检测器
         self.filter_detector = FilterDetector()
         self.tab_detector = TabDetector()
         
-        # 初始化区域处理器（用于表格筛选）
-        self.region_processor = RegionProcessor()
-        
+        # Legacy RegionProcessor belongs only to the quarantined experiment.
+        # Formal strategy construction must not initialize it.
+        self._unvalidated_experimental_region_processor: (
+            RegionProcessor | None
+        ) = None
+        self.region_projected_shared_content = (
+            RegionProjectedSharedContentResolver(project_root)
+        )
         logger.info(f"🔧 初始化复杂内容策略: {self._get_product_key()}")
 
-    def extract_flexible_content(self, soup: BeautifulSoup, url: str = "") -> Dict[str, Any]:
-        """
-        执行flexible JSON格式提取逻辑
-        
-        Args:
-            soup: BeautifulSoup解析的HTML对象
-            url: 源URL
-            
-        Returns:
-            flexible JSON格式的提取数据
-        """
-        logger.info("🔧 开始复杂内容策略提取（flexible JSON格式）...")
-        
-        # 1. 使用ContentExtractor提取基础元数据
-        base_metadata = self.content_extractor.extract_base_metadata(soup, url, self.html_file_path)
-        
-        # 2. 使用SectionExtractor提取commonSections
-        common_sections = self.section_extractor.extract_all_sections(soup)
-        
-        # 3. 分析筛选器和tab结构
-        filter_analysis = self.filter_detector.detect_filters(soup)
-        tab_analysis = self.tab_detector.detect_tabs(soup)
-        
-        # 3.1 获取按软件组分类的tabs（用于修复映射构建）
-        grouped_tabs = self.tab_detector.detect_grouped_tabs(soup)
-        
-        # 4. 提取复杂内容映射（传入按组分类的tabs）
-        content_mapping = self._extract_complex_content_mapping(soup, filter_analysis, tab_analysis, grouped_tabs)
-        
-        # 5. 使用FlexibleBuilder构建复杂内容组
-        content_groups = self.flexible_builder.build_complex_content_groups(
-            filter_analysis, tab_analysis, content_mapping
-        )
+    def extract_flexible_content(
+        self,
+        soup: BeautifulSoup,
+        url: str = "",
+        *,
+        source_reachability: SourceReachability,
+    ) -> Dict[str, Any]:
+        """Extract one formal ComplexFilter payload from source-proven states.
 
-        # 6. 构建策略特定内容，包含智能分类的baseContent
-        # 对于复杂策略，如果没有有效的内容组，可以提取baseContent作为fallback
-        base_content = ""
-        if not content_groups or len(content_groups) == 0:
-            logger.info("⚠ 未找到复杂内容组，尝试提取通用baseContent...")
-            base_content = self._extract_main_content(soup)
-        
+        Formal extraction never derives a state space from the payload or from
+        globally flattened filter options.  The independently resolved source
+        relation is mandatory and every content mapping is keyed by
+        :class:`CmsState`.
+        """
+
+        if not isinstance(source_reachability, SourceReachability):
+            raise TypeError(
+                "Formal complex extraction requires SourceReachability"
+            )
+        logger.info("🔧 开始复杂内容策略提取（source-proven relation）...")
+        base_metadata = self.content_extractor.extract_base_metadata(
+            soup, url, self.html_file_path
+        )
+        base_content = self._extract_page_global_base_content(
+            soup,
+            language=source_reachability.language,
+        )
+        common_sections = self.section_extractor.extract_all_sections(soup)
+        content_mapping = self._extract_reachable_content_mapping(
+            soup, source_reachability
+        )
+        content_groups = self.flexible_builder.build_complex_content_groups(
+            source_reachability, content_mapping
+        )
         strategy_content = {
-            "baseContent": base_content,  # 如果有内容组则为空，否则作为fallback
+            "baseContent": base_content,
             "contentGroups": content_groups,
             "strategy_type": "complex",
-            "filter_analysis": filter_analysis,  # 传递筛选器分析结果
-            "tab_analysis": tab_analysis  # 传递tab分析结果
+            "source_reachability": source_reachability,
         }
-        
-        # 7. 使用FlexibleBuilder构建完整的flexible JSON
         flexible_data = self.flexible_builder.build_flexible_page(
             base_metadata, common_sections, strategy_content
         )
-        
-        # 8. 验证flexible JSON结果
-        flexible_data = self.extraction_validator.validate_flexible_json(flexible_data)
-        
         logger.info("✅ 复杂内容策略提取完成（flexible JSON格式）")
         return flexible_data
+
+    def _extract_page_global_base_content(
+        self,
+        soup: BeautifulSoup,
+        *,
+        language: str,
+    ) -> str:
+        """Emit only Product-Definition-authorized page-global content."""
+
+        return resolve_page_global_base_content(
+            soup,
+            self.product_config,
+            language=language,
+        )
+
+    def extract_unvalidated_experimental_content(
+        self, soup: BeautifulSoup, url: str = ""
+    ) -> Dict[str, Any]:
+        """Preserve the frozen P0 experimental extraction behavior.
+
+        The quarantined VM experiment predates formal v0.4 source reachability.
+        It is intentionally isolated under an explicitly unvalidated method so
+        the formal extraction entry point cannot silently fall back to it.
+        """
+
+        logger.info("🔧 开始P0实验性复杂内容提取（unvalidated legacy）...")
+        base_metadata = self.content_extractor.extract_base_metadata(
+            soup, url, self.html_file_path
+        )
+        common_sections = self.section_extractor.extract_all_sections(soup)
+        filter_analysis = self._detect_unvalidated_experimental_filters(soup)
+        self._unvalidated_experimental_software_panels = {
+            str(option.get("value", "")): str(
+                option.get("href", "")
+            ).removeprefix("#")
+            for option in filter_analysis.get("software_options", [])
+            if option.get("value") and option.get("href")
+        }
+        tab_analysis = self.tab_detector.detect_tabs(soup)
+        grouped_tabs = self.tab_detector.detect_grouped_tabs(soup)
+        self._remove_missing_aggregate_tabs_for_unvalidated_experiment(
+            soup, tab_analysis, grouped_tabs
+        )
+        content_mapping = self._extract_complex_content_mapping(
+            soup, filter_analysis, tab_analysis, grouped_tabs
+        )
+        content_groups = (
+            self.flexible_builder
+            .build_unvalidated_experimental_complex_content_groups(
+                filter_analysis, tab_analysis, content_mapping
+            )
+        )
+        base_content = (
+            self._extract_main_content(soup) if not content_groups else ""
+        )
+        strategy_content = {
+            "baseContent": base_content,
+            "contentGroups": content_groups,
+            "strategy_type": "complex",
+            "filter_analysis": filter_analysis,
+            "tab_analysis": tab_analysis,
+            "unvalidated_experimental_legacy": True,
+        }
+        payload = self.flexible_builder.build_flexible_page(
+            base_metadata, common_sections, strategy_content
+        )
+        logger.info("✅ P0实验性复杂内容提取完成（unvalidated legacy）")
+        return payload
+
+    def _get_unvalidated_experimental_region_processor(
+        self,
+    ) -> RegionProcessor:
+        """Construct the legacy processor only inside the quarantined path."""
+
+        processor = self._unvalidated_experimental_region_processor
+        if processor is None:
+            processor = RegionProcessor()
+            self._unvalidated_experimental_region_processor = processor
+        return processor
+
+    @staticmethod
+    def _detect_unvalidated_experimental_filters(
+        soup: BeautifulSoup,
+    ) -> Dict[str, Any]:
+        """Use the frozen P0 mobile-select projection without v0.4 gates."""
+
+        def detect(
+            container_selector: str,
+            select_id: str,
+        ) -> Dict[str, Any]:
+            container = soup.select_one(container_selector)
+            if not isinstance(container, Tag):
+                return {
+                    "exists": False,
+                    "visible": False,
+                    "options": [],
+                }
+            style = str(container.get("style", ""))
+            compact_style = "".join(style.casefold().split())
+            select = soup.find("select", id=select_id)
+            options: list[dict[str, str]] = []
+            if isinstance(select, Tag):
+                for option in select.find_all("option"):
+                    value = str(option.get("value", "")).strip()
+                    href = str(option.get("data-href", "")).strip()
+                    label = option.get_text().strip()
+                    if (
+                        value
+                        and label
+                        and "加载中" not in label
+                        and "请选择" not in label
+                    ):
+                        options.append(
+                            {
+                                "value": value,
+                                "href": href,
+                                "label": label,
+                            }
+                        )
+            return {
+                "exists": True,
+                "visible": "display:none" not in compact_style,
+                "options": options,
+            }
+
+        software = detect(
+            "div.dropdown-container.software-kind-container",
+            "software-box",
+        )
+        region = detect(
+            "div.dropdown-container.region-container",
+            "region-box",
+        )
+        return {
+            "has_region": region["exists"],
+            "has_software": software["exists"],
+            "region_visible": region["visible"],
+            "software_visible": software["visible"],
+            "region_options": region["options"],
+            "software_options": software["options"],
+        }
+
+    def _remove_missing_aggregate_tabs_for_unvalidated_experiment(
+        self,
+        soup: BeautifulSoup,
+        tab_analysis: Dict[str, Any],
+        grouped_tabs: Dict[str, List[Dict[str, Any]]],
+    ) -> None:
+        """Suppress only non-materialized All/全部 tabs on the P0 legacy path.
+
+        Missing aggregate targets are a general source pattern.  Any other
+        missing target remains in the relation and therefore fails extraction.
+        """
+
+        def keep(tab: Dict[str, Any]) -> bool:
+            target_id = str(tab.get("href", "")).removeprefix("#")
+            label = " ".join(str(tab.get("label", "")).split()).casefold()
+            is_aggregate = label in {"all", "全部"}
+            target_missing = soup.find(id=target_id) is None
+            return not (is_aggregate and target_missing)
+
+        original = list(tab_analysis.get("category_tabs", []))
+        filtered = [tab for tab in original if keep(tab)]
+        if len(filtered) == len(original):
+            return
+        if filtered and not any(tab.get("is_default") for tab in filtered):
+            filtered[0]["is_default"] = True
+        tab_analysis["category_tabs"] = filtered
+        tab_analysis["total_category_tabs"] = len(filtered)
+        tab_analysis["has_tabs"] = bool(filtered)
+        tab_analysis["has_complex_tabs"] = bool(filtered)
+        tab_analysis["category_default_value"] = (
+            str(filtered[0].get("href", "")).removeprefix("#")
+            if filtered
+            else None
+        )
+
+        for group_id, tabs in list(grouped_tabs.items()):
+            kept = [tab for tab in tabs if keep(tab)]
+            if kept and not any(tab.get("is_default") for tab in kept):
+                kept[0]["is_default"] = True
+            if kept:
+                grouped_tabs[group_id] = kept
+            else:
+                grouped_tabs.pop(group_id)
+        logger.info("✓ 移除缺失target的All/全部 aggregate tab（P0 legacy）")
 
     def extract_common_sections(self, soup: BeautifulSoup) -> List[Dict[str, str]]:
         """
@@ -231,6 +426,348 @@ class ComplexContentStrategy(BaseStrategy):
             logger.info(f"⚠ 复杂页面主要内容提取失败: {e}")
             return ""
 
+    def _extract_reachable_content_mapping(
+        self,
+        soup: BeautifulSoup,
+        source_reachability: SourceReachability,
+    ) -> Dict[CmsState, Dict[str, str]]:
+        """Extract only the ordered states proven reachable by the source."""
+
+        if not source_reachability.ordered_states:
+            raise ValueError("Source reachability contains no CMS states")
+        category_panels_by_software: dict[str, list[str]] = {}
+        expected_shared_by_software: dict[
+            str, RegionProjectedSharedContentEvidence
+        ] = {}
+        for reachable_state in source_reachability.ordered_states:
+            evidence = reachable_state.source_evidence
+            if (
+                evidence.software_panel_id
+                and evidence.category_panel_id
+            ):
+                category_ids = category_panels_by_software.setdefault(
+                    evidence.software_panel_id, []
+                )
+                if evidence.category_panel_id not in category_ids:
+                    category_ids.append(evidence.category_panel_id)
+            shared = evidence.region_projected_shared_content
+            if shared is not None:
+                panel_id = evidence.software_panel_id
+                if not panel_id or panel_id != shared.software_panel_id:
+                    raise ValueError(
+                        "Region-Projected Shared Content has no exact "
+                        "software-panel scope"
+                    )
+                prior = expected_shared_by_software.setdefault(
+                    panel_id, shared
+                )
+                if prior != shared:
+                    raise ValueError(
+                        "Reachable states disagree on Region-Projected Shared "
+                        f"Content evidence for {panel_id!r}"
+                    )
+
+        resolved_shared_by_software: dict[
+            str, RegionProjectedSharedContentEvidence
+        ] = {}
+        for panel_id, expected in expected_shared_by_software.items():
+            category_panel_ids = tuple(
+                category_panels_by_software.get(panel_id, ())
+            )
+            if category_panel_ids != expected.category_panel_ids:
+                raise ValueError(
+                    "Region-Projected Shared Content Category scope differs "
+                    f"from the reachable relation for {panel_id!r}"
+                )
+            try:
+                fragment = extract_category_ancestor_fragment(
+                    soup,
+                    panel_id,
+                    expected_category_panel_ids=category_panel_ids,
+                )
+                if fragment is None:
+                    raise RegionProjectedSharedContentError(
+                        "Expected ancestor content is missing"
+                    )
+                resolved = self.region_projected_shared_content.resolve(
+                    fragment,
+                    internal_software_value=(
+                        expected.internal_software_value
+                    ),
+                    region_values=tuple(
+                        projection.region_value
+                        for projection in expected.projections
+                    ),
+                )
+            except (
+                ScopedSourceContentError,
+                RegionProjectedSharedContentError,
+            ) as error:
+                raise ValueError(
+                    "Unable to replay Region-Projected Shared Content: "
+                    f"{error}"
+                ) from error
+            if resolved != expected:
+                raise ValueError(
+                    "Region-Projected Shared Content replay differs from "
+                    f"SourceReachability for {panel_id!r}"
+                )
+            resolved_shared_by_software[panel_id] = resolved
+
+        content_mapping: Dict[CmsState, Dict[str, str]] = {}
+        for reachable_state in source_reachability.ordered_states:
+            if reachable_state.cms_state in content_mapping:
+                raise ValueError(
+                    "Source reachability contains duplicate CmsState "
+                    f"{reachable_state.cms_state.criteria!r}"
+                )
+            content_mapping[reachable_state.cms_state] = (
+                self._find_reachable_content(
+                    soup,
+                    reachable_state,
+                    expected_category_panel_ids=tuple(
+                        category_panels_by_software.get(
+                            (
+                                reachable_state.source_evidence
+                                .software_panel_id
+                                or ""
+                            ),
+                            (),
+                        )
+                    ),
+                    region_projected_shared_content_by_software=(
+                        resolved_shared_by_software
+                    ),
+                )
+            )
+        return content_mapping
+
+    def _find_reachable_content(
+        self,
+        soup: BeautifulSoup,
+        reachable_state: ReachableCmsState,
+        *,
+        expected_category_panel_ids: tuple[str, ...],
+        region_projected_shared_content_by_software: dict[
+            str, RegionProjectedSharedContentEvidence
+        ],
+    ) -> Dict[str, str]:
+        """Resolve one exact source locator without rereads or fallback panels."""
+
+        evidence = reachable_state.source_evidence
+        state_values = reachable_state.cms_state.to_dict()
+        evidence_values = {
+            "region": evidence.region_value,
+            "software": evidence.software_value,
+            "category": evidence.category_value,
+        }
+        for key, value in state_values.items():
+            if evidence_values.get(key) != value:
+                raise ValueError(
+                    "Reachable CmsState does not match its source evidence: "
+                    f"{reachable_state.cms_state.criteria!r}"
+                )
+        if len(reachable_state.state_label_segments) != len(
+            reachable_state.cms_state.criteria
+        ):
+            raise ValueError(
+                "Reachable state labels do not align with CMS criteria"
+            )
+
+        panel_id = (
+            evidence.category_panel_id or evidence.software_panel_id
+        )
+        if not panel_id:
+            raise ValueError(
+                "Reachable complex state has no exact source panel locator"
+            )
+        base_content = soup.find(id=panel_id)
+        if not isinstance(base_content, Tag):
+            raise ValueError(
+                f"Missing source-proven target panel {panel_id!r}"
+            )
+
+        software_scoped_prefix = ""
+        region_projected_shared_content = ""
+        if evidence.software_panel_id and evidence.category_panel_id:
+            expected_shared = (
+                evidence.region_projected_shared_content
+            )
+            if expected_shared is not None:
+                if evidence.software_scoped_prefix is not None:
+                    raise ValueError(
+                        "A state cannot use both Software-scoped Prefix "
+                        "Content and Region-Projected Shared Content"
+                    )
+                resolved_shared = (
+                    region_projected_shared_content_by_software.get(
+                        evidence.software_panel_id
+                    )
+                )
+                if (
+                    resolved_shared is None
+                    or resolved_shared != expected_shared
+                    or evidence.region_value is None
+                ):
+                    raise ValueError(
+                        "Region-Projected Shared Content is absent or differs "
+                        "from SourceReachability for "
+                        f"{reachable_state.cms_state.criteria!r}"
+                    )
+                region_projected_shared_content = (
+                    resolved_shared.projection_for(
+                        evidence.region_value
+                    ).projected_html
+                )
+            else:
+                try:
+                    prefix_fragment = extract_software_scoped_prefix(
+                        soup,
+                        evidence.software_panel_id,
+                        expected_category_panel_ids=(
+                            expected_category_panel_ids
+                        ),
+                    )
+                except ScopedSourceContentError as error:
+                    raise ValueError(
+                        "Unable to resolve source-proven software-scoped "
+                        f"prefix: {error}"
+                    ) from error
+
+                expected_prefix = evidence.software_scoped_prefix
+                if (prefix_fragment is None) != (expected_prefix is None):
+                    raise ValueError(
+                        "Software-scoped prefix presence differs from "
+                        "SourceReachability for "
+                        f"{reachable_state.cms_state.criteria!r}"
+                    )
+                if (
+                    prefix_fragment is not None
+                    and expected_prefix is not None
+                ):
+                    if (
+                        expected_prefix.software_value
+                        != evidence.software_value
+                        or expected_prefix.software_panel_id
+                        != evidence.software_panel_id
+                        or expected_prefix.category_panel_ids
+                        != expected_category_panel_ids
+                        or expected_prefix.fragment_count
+                        != prefix_fragment.fragment_count
+                        or expected_prefix.source_html_sha256
+                        != prefix_fragment.source_html_sha256
+                    ):
+                        raise ValueError(
+                            "Software-scoped prefix identity differs from "
+                            "SourceReachability for "
+                            f"{reachable_state.cms_state.criteria!r}"
+                        )
+                    software_scoped_prefix = prefix_fragment.source_html
+        elif (
+            evidence.software_scoped_prefix is not None
+            or evidence.region_projected_shared_content is not None
+        ):
+            raise ValueError(
+                "Ancestor-scoped content evidence requires both software and "
+                "Category panel identities"
+            )
+
+        region_value = evidence.region_value
+        internal_software_value = evidence.software_value
+        strict_projection = evidence.strict_soft_category_projection
+        if region_value and internal_software_value:
+            if strict_projection is None:
+                raise ValueError(
+                    "Reachable complex state has no frozen strict "
+                    "soft-category projection"
+                )
+            if (
+                strict_projection.region_value != region_value
+                or strict_projection.software_value
+                != internal_software_value
+                or strict_projection.source_panel_id != panel_id
+            ):
+                raise ValueError(
+                    "Strict soft-category projection scope differs from "
+                    f"SourceReachability for {reachable_state.cms_state.criteria!r}"
+                )
+            replay_error_evidence = {
+                "state_scope": {
+                    "region": region_value,
+                    "software": internal_software_value,
+                    "source_panel_id": panel_id,
+                },
+                "configuration": {
+                    "path": strict_projection.config_path,
+                    "sha256": strict_projection.config_sha256,
+                },
+                "source_inventory": {
+                    "source_panel_id": strict_projection.source_panel_id,
+                    "source_table_count": (
+                        strict_projection.source_table_count
+                    ),
+                    "source_idless_table_count": (
+                        strict_projection.source_idless_table_count
+                    ),
+                    "source_table_ids": list(
+                        strict_projection.source_table_ids
+                    ),
+                    "input_html_sha256": (
+                        strict_projection.input_html_sha256
+                    ),
+                },
+            }
+            # SourceReachability was resolved from the canonical input. Formal
+            # extraction receives the deterministic image-path projection of
+            # that input, so compare the same projection before emitting the
+            # frozen table projection.
+            expected_input_soup = BeautifulSoup(
+                strict_projection.input_html,
+                "html.parser",
+            )
+            preprocess_image_paths(expected_input_soup)
+            expected_input = expected_input_soup.find(id=panel_id)
+            if (
+                not isinstance(expected_input, Tag)
+                or str(expected_input) != str(base_content)
+            ):
+                raise StrictSoftCategoryProjectionError(
+                    "soft_category_projection_replay_mismatch",
+                    (
+                        "Extraction input differs from the frozen strict "
+                        f"projection source for panel {panel_id!r}"
+                    ),
+                    evidence=replay_error_evidence,
+                )
+            projected_soup = BeautifulSoup(
+                strict_projection.output_html,
+                "html.parser",
+            )
+            preprocess_image_paths(projected_soup)
+            projected_panel = projected_soup.find(id=panel_id)
+            if not isinstance(projected_panel, Tag):
+                raise StrictSoftCategoryProjectionError(
+                    "soft_category_projection_replay_mismatch",
+                    "Frozen projection output lost its source panel",
+                    evidence=replay_error_evidence,
+                )
+            final_content = str(projected_panel)
+        else:
+            if strict_projection is not None:
+                raise ValueError(
+                    "Strict soft-category projection exists outside an exact "
+                    "Region × Software × Category state"
+                )
+            final_content = str(base_content)
+
+        return {
+            "content": final_content,
+            "software_scoped_prefix": software_scoped_prefix,
+            "region_projected_shared_content": (
+                region_projected_shared_content
+            ),
+        }
+
     def _extract_complex_content_mapping(self, soup: BeautifulSoup,
                                        filter_analysis: Dict[str, Any],
                                        tab_analysis: Dict[str, Any],
@@ -253,7 +790,14 @@ class ComplexContentStrategy(BaseStrategy):
         
         try:
             # 获取用于区域筛选的所有OS名称（支持多软件选项）
-            all_os_names = self.region_processor.get_os_names_for_region_filtering(filter_analysis)
+            region_processor = (
+                self._get_unvalidated_experimental_region_processor()
+            )
+            all_os_names = (
+                region_processor.get_os_names_for_region_filtering(
+                    filter_analysis
+                )
+            )
 
             if not all_os_names:
                 logger.warning("⚠ 无法获取有效的OS名称，将跳过区域表格筛选")
@@ -373,10 +917,14 @@ class ComplexContentStrategy(BaseStrategy):
             return content_mapping
             
         except Exception as e:
-            logger.info(f"⚠ 内容映射提取失败: {e}")
-            return {}
+            logger.error(f"❌ 内容映射提取失败: {e}")
+            raise
 
-    def _extract_shared_content_for_tab_container(self, soup: BeautifulSoup, container_id: str) -> str:
+    def _extract_unvalidated_experimental_shared_content_for_tab_container(
+        self,
+        soup: BeautifulSoup,
+        container_id: str,
+    ) -> str:
         """
         提取指定Tab容器中的共享内容区域
         
@@ -475,30 +1023,17 @@ class ComplexContentStrategy(BaseStrategy):
         Returns:
             对应的tabContent ID（如'tabContent1', 'tabContent2'），如果未找到则返回None
         """
-        try:
-            # 重新检测筛选器以获取最新的软件选项信息
-            with open(self.html_file_path, 'r', encoding='utf-8') as f:
-                html_content = f.read()
-            soup = BeautifulSoup(html_content, 'html.parser')
-            filter_analysis = self.filter_detector.detect_filters(soup)
-
-            software_options = filter_analysis.get('software_options', [])
-            for option in software_options:
-                if option.get('value') == software_id:
-                    data_href = option.get('href', '')
-                    if data_href.startswith('#'):
-                        target_id = data_href[1:]  # 移除#号
-                        logger.info(f"🔗 软件'{software_id}'对应的tabContent ID: {target_id}")
-                        return target_id
-                    else:
-                        logger.warning(f"⚠ 软件'{software_id}'的data-href格式异常: {data_href}")
-
-            logger.warning(f"⚠ 未找到软件'{software_id}'对应的tabContent ID")
-            return None
-
-        except Exception as e:
-            logger.error(f"❌ 获取软件tabContent ID失败: {e}")
-            return None
+        panels = getattr(
+            self, "_unvalidated_experimental_software_panels", {}
+        )
+        target_id = panels.get(software_id)
+        if isinstance(target_id, str) and target_id:
+            logger.info(
+                f"🔗 软件'{software_id}'对应的tabContent ID: {target_id}"
+            )
+            return target_id
+        logger.warning(f"⚠ 未找到软件'{software_id}'对应的tabContent ID")
+        return None
 
     def _find_content_by_mapping(self, soup: BeautifulSoup,
                                region_id: Optional[str] = None,
@@ -532,12 +1067,7 @@ class ComplexContentStrategy(BaseStrategy):
                     if '-' in tab_id:
                         main_container_id = tab_id.split('-')[0]
                 else:
-                    # 当找不到对应的tab内容时，返回提示信息 (如：全部)
-                    logger.warning(f"⚠ 未找到tab内容: {tab_id}")
-                    return {
-                        "content": f"<div class='tab-content-missing'><p>未找到tab内容 (ID: {tab_id})</p></div>",
-                        "shared_content": ""
-                    }
+                    raise ValueError(f"Missing target panel for tab {tab_id!r}")
 
             # 2. 如果有software_id，根据软件选项的data-href查找对应的tabContent分组
             if not base_content and software_id:
@@ -580,7 +1110,12 @@ class ComplexContentStrategy(BaseStrategy):
             # 提取共享内容（如果有主容器ID）
             shared_content = ""
             if main_container_id and main_container_id != "technical-azure-selector":
-                shared_content = self._extract_shared_content_for_tab_container(soup, main_container_id)
+                shared_content = (
+                    self
+                    ._extract_unvalidated_experimental_shared_content_for_tab_container(
+                        soup, main_container_id
+                    )
+                )
 
             # 准备返回的具体内容
             final_content = ""
@@ -592,14 +1127,24 @@ class ComplexContentStrategy(BaseStrategy):
                 # 创建包含找到内容的临时soup
                 temp_soup = BeautifulSoup(str(base_content), 'html.parser')
                 # 应用区域筛选
-                filtered_soup = self.region_processor.apply_region_filtering(temp_soup, region_id, os_name)
+                filtered_soup = (
+                    self
+                    ._get_unvalidated_experimental_region_processor()
+                    .apply_region_filtering(temp_soup, region_id, os_name)
+                )
                 final_content = str(filtered_soup)
 
                 # 对共享内容也应用区域筛选
                 if shared_content:
                     logger.info(f"🔍 对共享内容应用区域筛选: region={region_id}, os={os_name}")
                     temp_shared_soup = BeautifulSoup(str(shared_content), 'html.parser')
-                    filtered_shared_soup = self.region_processor.apply_region_filtering(temp_shared_soup, region_id, os_name)
+                    filtered_shared_soup = (
+                        self
+                        ._get_unvalidated_experimental_region_processor()
+                        .apply_region_filtering(
+                            temp_shared_soup, region_id, os_name
+                        )
+                    )
                     final_shared_content = str(filtered_shared_soup)
                 else:
                     final_shared_content = shared_content
@@ -618,8 +1163,8 @@ class ComplexContentStrategy(BaseStrategy):
             }
             
         except Exception as e:
-            logger.info(f"⚠ 内容查找失败: {e}")
-            return {"content": "", "shared_content": ""}
+            logger.error(f"❌ 内容查找失败: {e}")
+            raise
 
     def _get_product_key(self) -> str:
         """获取产品键"""

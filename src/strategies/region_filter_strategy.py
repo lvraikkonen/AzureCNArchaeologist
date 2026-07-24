@@ -21,12 +21,12 @@ from src.core.region_processor import RegionProcessor
 from src.utils.content.content_extractor import ContentExtractor
 from src.utils.content.section_extractor import SectionExtractor
 from src.utils.content.flexible_builder import FlexibleBuilder
-from src.utils.data.extraction_validator import ExtractionValidator
 from src.detectors.filter_detector import FilterDetector
 from src.utils.content.content_utils import classify_pricing_section, filter_sections_by_type
 from src.utils.html.cleaner import clean_html_content
 
 from src.core.logging import get_logger
+from src.core.scoped_source_content import resolve_page_global_base_content
 
 logger = get_logger(__name__)
 
@@ -58,7 +58,6 @@ class RegionFilterStrategy(BaseStrategy):
         self.content_extractor = ContentExtractor()
         self.section_extractor = SectionExtractor()
         self.flexible_builder = FlexibleBuilder()
-        self.extraction_validator = ExtractionValidator()
         
         # 保持现有区域处理逻辑
         self.region_processor = RegionProcessor()
@@ -89,30 +88,26 @@ class RegionFilterStrategy(BaseStrategy):
         filter_analysis = self.filter_detector.detect_filters(soup)
         
         # 4. 使用RegionProcessor提取区域内容（传递筛选器信息和产品配置）
-        try:
-            region_content = self.region_processor.extract_region_contents(
-                soup, 
-                self.html_file_path,
-                filter_analysis=filter_analysis,
-                product_config=self.product_config
-            )
-            logger.info(f"✅ 区域内容提取完成: {len(region_content)} 个区域")
-        except Exception as e:
-            logger.warning(f"⚠ 区域内容提取失败: {e}")
-            region_content = {}
+        region_content = self.region_processor.extract_region_contents(
+            soup,
+            self.html_file_path,
+            filter_analysis=filter_analysis,
+            product_config=self.product_config,
+        )
+        logger.info(f"✅ 区域内容提取完成: {len(region_content)} 个区域")
         
         # 5. 使用FlexibleBuilder构建地区内容组
-        content_groups = self.flexible_builder.build_region_content_groups(region_content)
+        content_groups = self.flexible_builder.build_region_content_groups(
+            region_content, filter_analysis
+        )
         
-        # 6. 构建策略特定内容，包含所有必要的分析数据
-        # 对于区域筛选策略，如果没有有效的区域内容，可以提取baseContent作为fallback
-        base_content = ""
-        if not region_content or len(region_content) == 0:
-            logger.info("⚠ 未找到区域内容，尝试提取通用baseContent...")
-            base_content = self._extract_main_content(soup)
-        
+        # 6. RegionFilter必须由完整的region状态组承载，禁止退化为Simple。
         strategy_content = {
-            "baseContent": base_content,  # 如果有区域内容则为空，否则作为fallback
+            "baseContent": resolve_page_global_base_content(
+                soup,
+                self.product_config,
+                language=str(base_metadata.get("Language", "")),
+            ),
             "contentGroups": content_groups,
             "strategy_type": "region_filter",
             "filter_analysis": filter_analysis,  # 传递筛选器分析结果
@@ -123,9 +118,6 @@ class RegionFilterStrategy(BaseStrategy):
         flexible_data = self.flexible_builder.build_flexible_page(
             base_metadata, common_sections, strategy_content
         )
-        
-        # 8. 验证flexible JSON结果
-        flexible_data = self.extraction_validator.validate_flexible_json(flexible_data)
         
         logger.info("✅ 区域筛选策略提取完成（flexible JSON格式）")
         return flexible_data

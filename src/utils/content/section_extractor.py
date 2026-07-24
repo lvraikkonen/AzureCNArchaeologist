@@ -10,7 +10,7 @@ import copy
 import re
 from pathlib import Path
 from typing import Dict, List, Any, Optional
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 # 添加项目根目录到Python路径
 project_root = Path(__file__).parent.parent.parent.parent
@@ -22,8 +22,106 @@ from src.utils.html.cleaner import clean_html_content
 logger = get_logger(__name__)
 
 
+SLA_HEADING_PATTERN = re.compile(
+    r"(?:支持和服务级别协议|服务级别协议|service[\s-]+level agreement"
+    r"|\bsupport\s*(?:&|and)\s*sla\b|\bsla\b)",
+    re.IGNORECASE,
+)
+
+
+def owns_sla_heading(section: Tag) -> bool:
+    """Return whether an exact pricing section owns its SLA heading."""
+
+    if (
+        section.name != "div"
+        or "pricing-page-section" not in (section.get("class") or ())
+    ):
+        return False
+    for heading in section.find_all(
+        ["h1", "h2", "h3", "h4", "h5", "h6"]
+    ):
+        owner = heading.find_parent(
+            "div", class_="pricing-page-section"
+        )
+        if (
+            owner is section
+            and SLA_HEADING_PATTERN.search(
+                heading.get_text(" ", strip=True)
+            )
+        ):
+            return True
+    return False
+
+
+def contains_common_section_boundary(node: Tag) -> bool:
+    """Return whether a direct page child starts exact FAQ/SLA content."""
+
+    classes = set(node.get("class") or ())
+    if (
+        "more-detail" in classes
+        or node.select_one("div.more-detail") is not None
+    ):
+        return True
+    pricing_sections = [
+        node,
+        *node.select("div.pricing-page-section"),
+    ]
+    return any(owns_sla_heading(section) for section in pricing_sections)
+
+
+def is_exact_common_section_boundary(node: Tag) -> bool:
+    """Return whether a sibling contains only one exact FAQ/SLA section."""
+
+    classes = set(node.get("class") or ())
+    if "more-detail" in classes or owns_sla_heading(node):
+        return True
+    material_children = [
+        child
+        for child in node.children
+        if isinstance(child, Tag)
+        and (
+            child.get_text(" ", strip=True)
+            or child.find(
+                ["img", "video", "audio", "table", "iframe"]
+            )
+            is not None
+        )
+    ]
+    exact_children = [
+        child
+        for child in material_children
+        if (
+            "more-detail" in (child.get("class") or ())
+            or owns_sla_heading(child)
+        )
+    ]
+    return (
+        node.name == "div"
+        and "pricing-page-section" in classes
+        and len(material_children) == 1
+        and material_children == exact_children
+    )
+
+
+class CommonSectionBoundaryError(ValueError):
+    """A common-section candidate crosses the formal pricing-content boundary."""
+
+
 class SectionExtractor:
     """专门section提取器 - 提取Banner、Description、QA等特定section内容"""
+
+    _FORBIDDEN_COMMON_SECTION_CLASSES = frozenset(
+        {"technical-azure-selector", "pricing-detail-tab"}
+    )
+    _BANNER_SELECTORS = (
+        "div.common-banner",
+        "div.common-banner-image",
+        ".banner",
+        ".hero",
+        ".page-banner",
+        ".product-banner",
+    )
+    _SLA_HEADING_PATTERN = SLA_HEADING_PATTERN
 
     def __init__(self):
         """初始化section提取器"""
@@ -41,43 +139,137 @@ class SectionExtractor:
         """
         logger.info("🔍 提取所有commonSections...")
         
-        sections = []
-        
-        # 1. 提取Banner
+        anchored_sections: List[tuple[Tag, Dict[str, Any]]] = []
+
         banner_content = self.extract_banner(soup)
         if banner_content:
-            sections.append({
-                "sectionType": "Banner",
-                "sectionTitle": "",  # Banner通常无标题
-                "content": banner_content,
-                "sortOrder": 1,
-                "isActive": True
-            })
-        
-        # 2. 提取Description
+            anchored_sections.append(
+                (
+                    self._find_section_anchor(
+                        soup, "Banner", banner_content
+                    ),
+                    {
+                        "sectionType": "Banner",
+                        "sectionTitle": "",  # Banner通常无标题
+                        "content": banner_content,
+                        "isActive": True,
+                    },
+                )
+            )
+
         description_content = self.extract_description(soup)
         if description_content:
-            sections.append({
-                "sectionType": "ProductDescription",
-                "sectionTitle": "",  # Description通常无标题
-                "content": description_content,
-                "sortOrder": 1,
-                "isActive": True
-            })
-        
-        # 3. 提取QA
+            anchored_sections.append(
+                (
+                    self._find_section_anchor(
+                        soup,
+                        "ProductDescription",
+                        description_content,
+                    ),
+                    {
+                        "sectionType": "ProductDescription",
+                        "sectionTitle": "",  # Description通常无标题
+                        "content": description_content,
+                        "isActive": True,
+                    },
+                )
+            )
+
         qa_content = self.extract_qa(soup)
         if qa_content:
-            sections.append({
-                "sectionType": "Qa",
-                "sectionTitle": "",  # QA通常内嵌标题
-                "content": qa_content,
-                "sortOrder": 1,
-                "isActive": True
-            })
-        
+            anchored_sections.append(
+                (
+                    self._find_section_anchor(soup, "Qa", qa_content),
+                    {
+                        "sectionType": "Qa",
+                        "sectionTitle": "",  # QA通常内嵌标题
+                        "content": qa_content,
+                        "isActive": True,
+                    },
+                )
+            )
+
+        document_order = {
+            id(node): index
+            for index, node in enumerate(soup.find_all(True))
+        }
+        anchored_sections.sort(
+            key=lambda item: document_order[id(item[0])]
+        )
+        sections = []
+        for sort_order, (_, section) in enumerate(
+            anchored_sections, start=1
+        ):
+            section["sortOrder"] = sort_order
+            sections.append(section)
+
         logger.info(f"✓ 提取了 {len(sections)} 个完整commonSections")
         return sections
+
+    def _find_section_anchor(
+        self,
+        soup: BeautifulSoup,
+        section_type: str,
+        content: str,
+    ) -> Tag:
+        """Return the first source node represented by an emitted section."""
+
+        if section_type == "Banner":
+            candidates = [
+                banner
+                for selector in self._BANNER_SELECTORS
+                if (banner := soup.select_one(selector)) is not None
+            ]
+        elif section_type == "ProductDescription":
+            candidates = self._description_siblings(soup)
+        elif section_type == "Qa":
+            candidates = self._collect_structurally_safe_qa_candidates(
+                soup
+            )
+        else:
+            raise CommonSectionBoundaryError(
+                f"Unknown common section type: {section_type}"
+            )
+
+        for candidate in candidates:
+            candidate_content = clean_html_content(str(candidate))
+            if candidate_content and candidate_content in content:
+                return candidate
+
+        raise CommonSectionBoundaryError(
+            f"Unable to map emitted {section_type} content to a source "
+            "DOM node; refusing to invent a physical sort order."
+        )
+
+    def _description_siblings(self, soup: BeautifulSoup) -> List[Tag]:
+        """Return possible description siblings in source document order."""
+
+        banner = soup.find(
+            "div", {"class": ["common-banner", "col-top-banner"]}
+        )
+        if not banner:
+            return []
+
+        main_content_selector = soup.find(
+            "div", class_="technical-azure-selector"
+        )
+        candidates = []
+        current = banner
+        while current:
+            current = current.find_next_sibling()
+            if not current:
+                break
+            if main_content_selector and current == main_content_selector:
+                break
+            current_str = str(current)
+            if (
+                "technical-azure-selector" in current_str
+                and "pricing-detail-tab" in current_str
+            ):
+                break
+            if isinstance(current, Tag):
+                candidates.append(current)
+        return candidates
 
     def extract_banner(self, soup: BeautifulSoup) -> str:
         """
@@ -93,16 +285,7 @@ class SectionExtractor:
         
         try:
             # 寻找常见的banner选择器
-            banner_selectors = [
-                'div.common-banner',
-                'div.common-banner-image', 
-                '.banner',
-                '.hero',
-                '.page-banner',
-                '.product-banner'
-            ]
-            
-            for selector in banner_selectors:
+            for selector in self._BANNER_SELECTORS:
                 banner = soup.select_one(selector)
                 if banner:
                     # 图片路径已由ExtractionCoordinator中的preprocess_image_paths全局处理
@@ -247,9 +430,13 @@ class SectionExtractor:
 
     def extract_qa(self, soup: BeautifulSoup) -> str:
         """
-        提取Q&A内容以及支持和服务级别协议内容
-        technical-azure-selector容器之后的所有pricing-page-section或者没有pricing-page-section包围的内容，
-        包括额外信息、FAQ、SLA等，统一归类为QA内容
+        提取精确的Q&A和支持/服务级别协议内容。
+
+        ``technical-azure-selector`` / ``pricing-detail-tab`` 是正式定价
+        内容的硬边界，任何公共区块都不得包含或位于该子树内。上游页面可能
+        使用一个过度包装的 ``pricing-page-section`` 同时包住定价主体及
+        FAQ/SLA；因此这里只选择精确 ``more-detail`` 节点及拥有自身 SLA
+        标题的结构安全叶子 section，不按后代文本选择外层容器。
 
         Args:
             soup: BeautifulSoup对象
@@ -259,80 +446,28 @@ class SectionExtractor:
         """
         logger.info("❓ 提取Q&A内容...")
 
-        try:
-            qa_content = ""
-
-            # 1. 查找technical-azure-selector元素（主要内容区域）
-            main_content_selector = soup.find('div', class_='technical-azure-selector')
-
-            if not main_content_selector:
-                logger.info("⚠ 未找到technical-azure-selector元素，使用备用方法提取Q&A内容")
-                # 备用方法：直接查找FAQ和SLA相关内容
-                return self._extract_qa_fallback(soup)
-
-            # 2. 首先收集technical-azure-selector容器后，非FAQ、SLA的页面内容，作为"额外信息"
-            current = main_content_selector
-            additional_info_sections = 0
-
-            while current:
-                current = current.find_next_sibling()
-                if not current:
-                    break
-
-                current_str = str(current)
-                if 'pricing-page-section' in current_str:
-                    content_text = current.get_text().strip()
-                    # 检查是否是FAQ或SLA内容
-                    if not any(qa_indicator in content_text.lower() for qa_indicator in [
-                        'faq', '常见问题', '支持和服务级别协议', 'sla', 'more-detail'
-                    ]) and not 'more-detail' in current_str:
-                        qa_content += str(current)
-                        additional_info_sections += 1
-                        logger.info(f"✓ 收集第{additional_info_sections}个额外信息section")
-
-                # 收集其他有意义的非pricing-page-section内容
-                elif (hasattr(current, 'name') and hasattr(current, 'get_text') and
-                      len(current.get_text().strip()) > 5):
-                    content_text = current.get_text().strip()
-                    if not any(qa_indicator in content_text.lower() for qa_indicator in [
-                        'faq', '常见问题', '支持和服务级别协议', 'sla'
-                    ]):
-                        qa_content += str(current)
-                        additional_info_sections += 1
-                        logger.info(f"✓ 收集第{additional_info_sections}个额外信息内容")
-
-            # 3. 查找more-detail容器（FAQ内容）
-            more_detail_containers = soup.find_all('div', class_='more-detail')
-            faq_sections = 0
-            for container in more_detail_containers:
-                if container:
-                    qa_content += str(container)
-                    faq_sections += 1
-                    logger.info(f"✓ 找到第{faq_sections}个more-detail容器（FAQ）")
-
-            # 4. 查找pricing-page-section中的SLA内容
-            pricing_sections = soup.find_all('div', class_='pricing-page-section')
-            sla_sections = 0
-            for section in pricing_sections:
-                section_text = section.get_text().lower()
-                # 直接提取明确的支持和SLA部分
-                if '支持和服务级别协议' in section_text or 'sla' in section_text:
-                    qa_content += str(section)
-                    sla_sections += 1
-                    logger.info(f"✓ 找到第{sla_sections}个pricing-page-section支持/SLA内容")
-
-            # 5. 清理QA内容
-            if qa_content:
-                clean_qa = clean_html_content(qa_content)
-                logger.info(f"✓ 提取了Q&A内容：{additional_info_sections}个额外信息，{faq_sections}个FAQ，{sla_sections}个SLA，总长度: {len(clean_qa)}")
-                return clean_qa
-            else:
-                logger.info("⚠ 未找到Q&A内容")
-                return ""
-
-        except Exception as e:
-            logger.info(f"⚠ Q&A内容提取失败: {e}")
+        candidates = self._collect_structurally_safe_qa_candidates(soup)
+        if not candidates:
+            logger.info("⚠ 未找到Q&A内容")
             return ""
+
+        qa_content = "".join(str(candidate) for candidate in candidates)
+        clean_qa = clean_html_content(qa_content)
+        self._assert_no_pricing_subtree(
+            BeautifulSoup(clean_qa, "html.parser"),
+            "serialized Qa common section",
+        )
+        faq_sections = sum(
+            "more-detail" in (candidate.get("class") or [])
+            for candidate in candidates
+        )
+        sla_sections = len(candidates) - faq_sections
+        logger.info(
+            "✓ 提取了Q&A内容："
+            f"{faq_sections}个精确FAQ，{sla_sections}个结构安全SLA，"
+            f"总长度: {len(clean_qa)}"
+        )
+        return clean_qa
 
     def _extract_qa_fallback(self, soup: BeautifulSoup) -> str:
         """
@@ -344,34 +479,70 @@ class SectionExtractor:
         Returns:
             Q&A内容HTML字符串
         """
-        logger.info("📝 使用备用方法提取Q&A内容...")
+        return self.extract_qa(soup)
 
-        try:
-            qa_content = ""
+    def _collect_structurally_safe_qa_candidates(
+        self,
+        soup: BeautifulSoup,
+    ) -> List[Tag]:
+        """Return exact FAQ and owned-heading SLA nodes in document order."""
+        faq_candidates = list(soup.select("div.more-detail"))
+        for candidate in faq_candidates:
+            self._assert_no_pricing_subtree(candidate, "more-detail FAQ")
 
-            # 查找more-detail容器
-            more_detail_containers = soup.find_all('div', class_='more-detail')
-            for container in more_detail_containers:
-                if container:
-                    qa_content += str(container)
-                    logger.info(f"✓ 找到more-detail容器")
+        sla_candidates = [
+            section
+            for section in soup.select("div.pricing-page-section")
+            if self._owns_sla_heading(section)
+        ]
+        for candidate in sla_candidates:
+            self._assert_no_pricing_subtree(candidate, "SLA section")
 
-            # 查找pricing-page-section中的支持和SLA内容
-            pricing_sections = soup.find_all('div', class_='pricing-page-section')
-            for section in pricing_sections:
-                section_text = section.get_text().lower()
-                if '支持和服务级别协议' in section_text or 'sla' in section_text:
-                    qa_content += str(section)
-                    logger.info(f"✓ 找到pricing-page-section支持/SLA内容")
+        candidates = faq_candidates + sla_candidates
+        for index, candidate in enumerate(candidates):
+            for other in candidates[index + 1:]:
+                if candidate in other.parents or other in candidate.parents:
+                    raise CommonSectionBoundaryError(
+                        "Qa candidates overlap by ancestry; refusing to emit "
+                        "a duplicated or structurally ambiguous common section."
+                    )
 
-            if qa_content:
-                clean_qa = clean_html_content(qa_content)
-                logger.info(f"✓ 备用方法提取了 {len(clean_qa)} 字符的Q&A内容")
-                return clean_qa
-            else:
-                logger.info("⚠ 备用方法未找到Q&A内容")
-                return ""
+        candidate_ids = {id(candidate) for candidate in candidates}
+        return [
+            node
+            for node in soup.find_all(True)
+            if id(node) in candidate_ids
+        ]
 
-        except Exception as e:
-            logger.info(f"⚠ 备用Q&A内容提取失败: {e}")
-            return ""
+    def _owns_sla_heading(self, section: Tag) -> bool:
+        """True only when an SLA heading belongs to this exact section."""
+        return owns_sla_heading(section)
+
+    def _assert_no_pricing_subtree(
+        self,
+        candidate: Tag | BeautifulSoup,
+        candidate_name: str,
+    ) -> None:
+        """Fail closed if a common-section node crosses pricing boundaries."""
+        if isinstance(candidate, Tag):
+            classes = set(candidate.get("class") or [])
+            if classes & self._FORBIDDEN_COMMON_SECTION_CLASSES:
+                raise CommonSectionBoundaryError(
+                    f"{candidate_name} is itself a formal pricing subtree."
+                )
+            for ancestor in candidate.parents:
+                if not isinstance(ancestor, Tag):
+                    continue
+                ancestor_classes = set(ancestor.get("class") or [])
+                if ancestor_classes & self._FORBIDDEN_COMMON_SECTION_CLASSES:
+                    raise CommonSectionBoundaryError(
+                        f"{candidate_name} is nested inside a formal pricing "
+                        "subtree."
+                    )
+
+        for descendant in candidate.find_all(True):
+            descendant_classes = set(descendant.get("class") or [])
+            if descendant_classes & self._FORBIDDEN_COMMON_SECTION_CLASSES:
+                raise CommonSectionBoundaryError(
+                    f"{candidate_name} contains a formal pricing subtree."
+                )

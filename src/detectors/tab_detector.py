@@ -60,6 +60,14 @@ class TabDetector:
         
         # 检测所有category tabs（真实tab结构）
         category_tabs = self._detect_category_tabs(soup)
+        category_title = soup.select_one(
+            ".category-container .category-title"
+        )
+        category_display_name = (
+            category_title.get_text(" ", strip=True).rstrip(":：").strip()
+            if category_title is not None
+            else "Category"
+        ) or "Category"
         
         # 统计真实tab数量
         total_category_tabs = len(category_tabs)
@@ -79,6 +87,15 @@ class TabDetector:
                 "category_tabs_count": group["category_tabs_count"]
             } for group in content_groups],
             "category_tabs": category_tabs,
+            "category_display_name": category_display_name,
+            "category_default_value": next(
+                (
+                    tab["href"].removeprefix("#")
+                    for tab in category_tabs
+                    if tab.get("is_default")
+                ),
+                None,
+            ),
             "total_category_tabs": total_category_tabs,
             "has_complex_tabs": has_complex_tabs
         }
@@ -225,15 +242,78 @@ class TabDetector:
                 for link in links:
                     href = link.get('data-href', '')
                     link_id = link.get('id', '')
-                    label = link.get_text().strip()
+                    label = link.get_text(" ", strip=True)
                     
                     if href and label:
+                        target_id = href.removeprefix("#")
                         category_tabs.append({
                             "href": href,
                             "id": link_id,
-                            "label": label
+                            "label": label,
+                            "target_exists": group_element.find(
+                                id=target_id
+                            ) is not None,
+                            "selected": bool(
+                                link.find_parent("li")
+                                and {
+                                    "active",
+                                    "selected",
+                                    "selected-item",
+                                }.intersection(
+                                    link.find_parent("li").get("class", [])
+                                )
+                            ),
                         })
-        
+
+        selected_options = group_element.select(
+            "select.category-tabs option[selected]"
+        )
+        selected_hrefs = {
+            str(option.get("data-href", "")).strip()
+            for option in selected_options
+            if str(option.get("data-href", "")).strip()
+        }
+        selected_tabs = [
+            tab
+            for tab in category_tabs
+            if tab.pop("selected", False) or tab["href"] in selected_hrefs
+        ]
+        if len(selected_tabs) > 1:
+            raise ValueError("Category tabs declare more than one default")
+
+        default_href = selected_tabs[0]["href"] if selected_tabs else None
+        if default_href is None:
+            selected_item = group_element.select_one(
+                ".category-container .selected-item"
+            )
+            selected_label = (
+                selected_item.get_text(" ", strip=True) if selected_item else ""
+            )
+            matches = [
+                tab["href"]
+                for tab in category_tabs
+                if selected_label and tab["label"] == selected_label
+            ]
+            if len(matches) == 1:
+                default_href = matches[0]
+
+        if category_tabs and default_href is None:
+            raise ValueError("Category tab source does not establish a default")
+        default_index = next(
+            (
+                index
+                for index, tab in enumerate(category_tabs)
+                if tab["href"] == default_href
+            ),
+            0,
+        )
+        category_tabs = (
+            [category_tabs[default_index]]
+            + category_tabs[:default_index]
+            + category_tabs[default_index + 1:]
+        )
+        for tab in category_tabs:
+            tab["is_default"] = tab["href"] == default_href
         return category_tabs
     
     def detect_grouped_tabs(self, soup: BeautifulSoup) -> Dict[str, List[Dict[str, Any]]]:

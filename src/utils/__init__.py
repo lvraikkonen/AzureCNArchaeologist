@@ -30,11 +30,6 @@ from .content.content_utils import (
     extract_qa_content
 )
 
-# 数据验证工具
-from .data.validation_utils import (
-    validate_extracted_data
-)
-
 # 通用工具
 from .common.large_html_utils import (
     LargeHTMLProcessor
@@ -55,9 +50,6 @@ __all__ = [
     
     # FAQ处理
     'is_faq_item', 'process_faq_item', 'extract_qa_content',
-
-    # 数据验证
-    'validate_extracted_data',
 
     # 通用工具
     'LargeHTMLProcessor'

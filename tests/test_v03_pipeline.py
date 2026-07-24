@@ -343,6 +343,7 @@ class _Extractor:
                 "has_utf8_bom": False,
                 "source_normalized_byte_identical": True,
                 "source_findings": [],
+                "source_html_structure": None,
                 "reconstruction_parseability": {
                     "verdict": evidence["verdict"],
                     "input_sha256": evidence["input_sha256"],
@@ -579,6 +580,17 @@ class PipelineCoordinatorTests(unittest.TestCase):
             )
             self.assertFalse((outcome.run_dir / beta_item.output_path).exists())
             self.assertTrue((outcome.run_dir / beta_item.diagnostic_path).is_file())
+            self.assertIsNone(
+                beta["artifacts"]["payload"]["sha256"]
+            )
+            self.assertEqual(
+                beta["artifacts"]["diagnostic"]["sha256"],
+                sha256_file(outcome.run_dir / beta_item.diagnostic_path),
+            )
+            self.assertEqual(
+                beta["artifacts"]["parseability"]["sha256"],
+                sha256_file(outcome.run_dir / beta_item.parseability_path),
+            )
 
             events = [
                 json.loads(line)

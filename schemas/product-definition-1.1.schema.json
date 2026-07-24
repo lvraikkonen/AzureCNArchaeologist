@@ -51,6 +51,9 @@
       "properties": {
         "semantic_strategy": {
           "enum": ["simple_static", "region_filter", "complex", "support_article"]
+        },
+        "page_global_content": {
+          "$ref": "#/$defs/page_global_content"
         }
       }
     }
@@ -79,6 +82,7 @@
         "not": {"required": ["catalog_categories"]},
         "properties": {
           "extraction": {
+            "not": {"required": ["page_global_content"]},
             "properties": {"semantic_strategy": {"const": "support_article"}}
           }
         }
@@ -95,6 +99,48 @@
     }
   ],
   "$defs": {
+    "page_global_content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_boundary", "expected_by_language"],
+      "properties": {
+        "source_boundary": {
+          "enum": [
+            "sole_static_formal_selector_before_common_sections",
+            "after_final_formal_selector_before_common_sections"
+          ]
+        },
+        "expected_by_language": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["zh-cn", "en-us"],
+          "properties": {
+            "zh-cn": {"$ref": "#/$defs/page_global_content_identity"},
+            "en-us": {"$ref": "#/$defs/page_global_content_identity"}
+          }
+        }
+      }
+    },
+    "page_global_content_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fragment_count",
+        "source_html_sha256",
+        "wire_html_sha256"
+      ],
+      "properties": {
+        "fragment_count": {"type": "integer", "minimum": 1},
+        "source_html_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "wire_html_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
     "source": {
       "type": "object",
       "additionalProperties": false,

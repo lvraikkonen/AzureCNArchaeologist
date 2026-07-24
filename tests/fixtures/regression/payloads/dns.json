@@ -19,14 +19,14 @@
       "sectionType": "ProductDescription",
       "sectionTitle": "",
       "content": "<div class=\"pricing-page-section\"><p> 通过 Azure DNS，可以在 Azure 中托管 DNS 域，这样就能使用与其他 Azure 服务相同的凭据、计费方式和支持合同来管理 DNS。区域可以为公用，也可以为专用，但专用 DNS 区域只对虚拟网络中的 VM 可见。名称服务器的全球网络使用 Anycast 路由可提供卓越的性能和可用性。 </p></div>",
-      "sortOrder": 1,
+      "sortOrder": 2,
       "isActive": true
     },
     {
       "sectionType": "Qa",
       "sectionTitle": "",
       "content": "<div class=\"more-detail\"><h2> 常见问题 </h2><em> 全部展开 </em><ul><li><i class=\"icon icon-plus\"></i><div><a id=\"dns-que-q1\"> 什么是“DNS 区域”？它是否与 DNS 域相同？ </a><section><p> 域是域名系统中的唯一名称，例如“contoso.com”。 </p><p> DNS 区域用于托管某个特定域的 DNS 记录。例如，域“contoso.com”可能包含许多 DNS 记录，例如“mail.contoso.com”（用于邮件服务器）和“www.contoso.com”（用于网站）。 </p><p> 通过 Azure DNS，你可以托管 DNS 区域，从而管理 Azure 中域的 DNS 记录。 </p></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"dns-que-q2\"> 我是否需要购买 DNS 域名才能使用 Azure DNS？ </a><section><p> 不一定。 </p><p> 你无需购买域便可托管 Azure DNS 中的 DNS。即使没有域名称，你也可以随时创建 DNS 区域。 </p><p> 但是，如果想要将 DNS 域链接到全球 DNS 层级（此层级可从全球任意位置启用 DNS 查询以查找 DNS 区域和使用 DNS 记录回答），则需要购买域名。 </p></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"dns-que-q3\"> 我是否可以通过 Azure DNS 购买 DNS 域名？ </a><section><p> 不需要。Azure DNS 当前不支持购买域名。要购买域，必须使用第三方域名注册商，该注册商通常会收取少量的年费。 </p></section></div></li></ul></div><div class=\"pricing-page-section\"><h2> 支持和服务级别协议 </h2><p> 如有任何疑问或需要帮助，请访问 <a href=\"../../../support/plans/index.html\" id=\"dns-contact-page\"> Azure 支持 </a> 选择自助服务或者其他任何方式联系我们获得支持。 </p><p> 我们保证 DNS 查询至少在 99.99% 的时间将从至少其中一个 Azure DNS 名称服务器群集收到有效响应。若要了解有关我们的服务器级别协议的详细信息，请访问 <a href=\"../../../support/sla/dns/index.html\" id=\"pricing_dns_sla\"> 服务级别协议 </a> 页。 </p></div>",
-      "sortOrder": 1,
+      "sortOrder": 3,
       "isActive": true
     }
   ],
@@ -36,6 +36,6 @@
     "leftNavigationIdentifier": "dns",
     "pageType": "Simple",
     "enableFilters": false,
-    "filtersJsonConfig": "{\"filterDefinitions\": []}"
+    "filtersJsonConfig": "{\"filterDefinitions\":[]}"
   }
 }
