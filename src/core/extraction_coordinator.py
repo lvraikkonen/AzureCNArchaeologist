@@ -491,15 +491,15 @@ class ExtractionCoordinator:
                 "region_projected_shared_content_evidence",
                 None,
             )
+            strategy_metadata.pop(
+                "strict_soft_category_projection_evidence",
+                None,
+            )
             strict_error = unwrap_strict_soft_category_error(error)
             classified_error = strict_error or error
             if strict_error is not None:
                 strict_failure_phase = (
                     strict_projection_phase or "source_reachability"
-                )
-                strategy_metadata.pop(
-                    "strict_soft_category_projection_evidence",
-                    None,
                 )
                 strategy_metadata[
                     "strict_soft_category_projection_failure"

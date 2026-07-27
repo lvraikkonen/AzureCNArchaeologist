@@ -117,71 +117,7 @@
        </div>
        <tags ms.date="09/30/2015" ms.service="event-hubs" wacn.date="11/27/2015">
        </tags>
-       <style type="text/css">
-        .pricing-detail-tab .tab-nav {
-                    padding-left: 0 !important;
-                    margin-top: 5px;
-                    margin-bottom: 0;
-                    overflow: hidden;
-                }
 
-                .pricing-detail-tab .tab-nav li {
-                    list-style: none;
-                    float: left;
-                }
-
-                .pricing-detail-tab .tab-nav li.active a {
-                    border-bottom: 4px solid #00a3d9;
-                }
-
-                .pricing-detail-tab .tab-nav li.active a:hover {
-                    border-bottom: 4px solid #00a3d9;
-                }
-
-                .pricing-detail-tab .tab-content .tab-panel {
-                    display: none;
-                }
-
-                .pricing-detail-tab .tab-content .tab-panel.show-md {
-                    display: block;
-                }
-
-                .pricing-detail-tab .tab-content .tab-panel .tab-nav li a {
-                    padding-left: 5px;
-                    padding-right: 5px;
-                    color: #00a3d9;
-                    background-color: #FFF;
-                }
-
-                .pricing-detail-tab .tab-content .tab-panel .tab-nav li.active a {
-                    color: #FFF;
-                    background-color: #00a3d9;
-                }
-
-                .pricing-detail-tab .tab-content .tab-panel .tab-nav li a:hover {
-                    color: #FFF;
-                    background-color: #00a3d9;
-                }
-
-                .pure-content .technical-azure-selector p a,
-                .pure-content .technical-azure-selector table a {
-                    background: 0 0;
-                    padding: 0;
-                    margin: 0 6px;
-                    height: 21px;
-                    line-height: 22px;
-                    font-size: 16px;
-                    color: #00a3d9;
-                    float: none;
-                    display: inline;
-                }
-
-                .svg {
-                    width: 50px;
-                    float: left;
-                    margin-right: 10px;
-                }
-       </style>
        <!-- BEGIN: Product-Detail-TopBanner -->
        <div class="common-banner col-top-banner" data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'/Images/marketing-resource/css/event-hubs.png','imageHeight':'auto'}">
         <div class="common-banner-image">
@@ -200,8 +136,7 @@
         </div>
        </div>
        <!-- END: Product-Detail-TopBanner -->
-       <div class="pricing-page-section">
-       </div>
+
        <!-- BEGIN: TAB-CONTROL -->
        <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
         <div class="tab-container-container">
@@ -213,21 +148,21 @@
             </label>
             <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
              <span class="selected-item">
-              spring-cloud
+              event-hubs
              </span>
              <i class="icon">
              </i>
              <ol class="tab-items">
               <li class="active">
                <a data-href="#tabContent1" href="javascript:void(0)" id="home_spring-cloud">
-                spring-cloud
+                event-hubs
                </a>
               </li>
              </ol>
             </div>
             <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
              <option data-href="#tabContent1" selected="selected" value="spring-cloud">
-              spring-cloud
+              event-hubs
              </option>
             </select>
            </div>
@@ -278,7 +213,7 @@
                 <option data-href="#east-china3"  value="east-china3">
                     中国东部 3
                    </option>
-                   <option data-href="#north-china2"  value="north-china2">
+                   <option data-href="#north-china3"  value="north-china3">
                     中国北部 3
                    </option>
              <option data-href="#east-china2" selected="selected" value="east-china2">
@@ -301,7 +236,7 @@
          </div>
         </div>
         <!-- BEGIN: TAB-CONTAINER-1 -->
-        <div class="tab-control-container tab-active" id="tabContent1">
+        <div class="tab-control-container tab-active">
          <!-- BEGIN: Table1-Content-->
          <h2>
           定价详细信息
@@ -501,34 +436,38 @@
          </table>
          <!-- <p>基本级别的事件中心为每个 Service Bus 命名空间提供 100 个 Service Bus 中转连接，这些中转连接在整个 Service Bus 命名空间中共享。标准级别的事件中心为每个订阅提供 1,000 个 Service Bus 中转连接。</p> -->
          <!-- END: Table4-Content-->
+          <div class="tags-date">
+            <div class="ms-date">
+            <sup>
+            *
+            </sup>
+            要了解 CU 可以实现的程度，请参阅基准结果。使用量将按一小时增量收费，最少对四小时的使用量进行收费。有关此产品/服务的详细信息，请阅读事件中心专用层概述。有关其他问题，请联系配额增加支持，或请联系事件中心团队。
+            </div>
+            <br/>
+            <!-- <div class="ms-date"><sup>2</sup>若要请求将标准事件中心吞吐量单位增加到 20 个以上，请</span><a style="font-size: 12px; margin-left: 1px;margin-right: 0px;" href="https://support.azure.cn/zh-cn/support/contact">联系我们</a>。</div><br /> -->
+            <div class="ms-date">
+            <sup>
+            **
+            </sup>
+            超过包含的存储配额的消息保留将导致超额费用。
+            </div>
+            <br/>
+            <div class="ms-date">
+            <sup>
+            ***
+            </sup>
+            吞吐量单位提供 1 MB/s 的流入量和 2 MB/s 流出量。
+            </div>
         </div>
+
         <!-- END: TAB-CONTAINER-1 -->
        </div>
        <!-- END: TAB-CONTROL -->
-       <div class="tags-date">
-        <div class="ms-date">
-         <sup>
-          *
-         </sup>
-         要了解 CU 可以实现的程度，请参阅基准结果。使用量将按一小时增量收费，最少对四小时的使用量进行收费。有关此产品/服务的详细信息，请阅读事件中心专用层概述。有关其他问题，请联系配额增加支持，或请联系事件中心团队。
-        </div>
-        <br/>
-        <!-- <div class="ms-date"><sup>2</sup>若要请求将标准事件中心吞吐量单位增加到 20 个以上，请</span><a style="font-size: 12px; margin-left: 1px;margin-right: 0px;" href="https://support.azure.cn/zh-cn/support/contact">联系我们</a>。</div><br /> -->
-        <div class="ms-date">
-         <sup>
-          **
-         </sup>
-         超过包含的存储配额的消息保留将导致超额费用。
-        </div>
-        <br/>
-        <div class="ms-date">
-         <sup>
-          ***
-         </sup>
-         吞吐量单位提供 1 MB/s 的流入量和 2 MB/s 流出量。
-        </div>
-       </div>
-       <div class="pricing-page-section">
+       
+       
+
+      </div>
+      <div class="pricing-page-section">
         <div class="more-detail">
          <h2>
           常见问题
@@ -739,20 +678,7 @@
          </ul>
         </div>
        </div>
-       <!-- <div class="pricing-page-section">
-                <h2>上市地区</h2>
-                <p>Azure 事件中心在以下区域中提供：</p>
-                <table cellpadding="0" cellspacing="0" class="table-col6">
-                    <tr>
-                        <th align="left"><strong>地域</strong></th>
-                        <th align="left"><strong>区域</strong></th>
-                    </tr>
-                    <tr>
-                        <td>中国大陆</td>
-                        <td>中国东部数据中心 , 中国北部数据中心</td>
-                    </tr>
-                </table>
-                -->
+
        <div class="pricing-page-section">
         <h2>
          支持和服务级别协议
@@ -772,56 +698,7 @@
          页。
         </p>
        </div>
-       <!--BEGIN: Support and service code chunk-->
-       <!--
 
-            <h2>支持和服务级别协议</h2>
-            <p>Azure 支持功能：</p>
-            <p>我们免费向用户提供以下支持服务：</p>
-            <table cellpadding="0" cellspacing="0" class="table-col6">
-                <tr>
-                    <th align="left">&nbsp;</th>
-                    <th align="left"><strong>是否支持</strong></th>
-                </tr>
-                <tr>
-                    <td>计费和订阅管理</td>
-                    <td><i class="icon icon-tick"></i></td>
-                </tr>
-                <tr>
-                    <td>服务仪表板</td>
-                    <td><i class="icon icon-tick"></i></td>
-                </tr>
-                <tr>
-                    <td>Web事件提交</td>
-                    <td><i class="icon icon-tick"></i></td>
-                </tr>
-                <tr>
-                    <td>中断/修复不受限制</td>
-                    <td><i class="icon icon-tick"></i></td>
-                </tr>
-                <tr>
-                    <td>电话支持</td>
-                    <td><i class="icon icon-tick"></i></td>
-                </tr>
-                <tr>
-                    <td>ICP备案支持</td>
-                    <td><i class="icon icon-tick"></i></td>
-                </tr>
-            </table>
-            <p>您可以<a href="/support/support-ticket-form/?l=zh-cn" id="vm-sla-sup">在线申请支持</a>，也可以通过服务热线联系我们。</p>
-            <h2>服务热线：</h2>
-            <ul>
-                <li>400-089-0365</li>
-                <li>010-84563652</li>
-            </ul>
-            <p>社区帮助：<a href="https://social.msdn.microsoft.com/Forums/zh-cn/home?forum=windowsazurezhchs" id="pricing_vm_help">访问MSDN</a></p>
-            <p>更多支持信息，请访问<a href="/support/plans/" id="stor-sla-info">Azure 支持计划</a></p>
-              
-      -->
-       <!--END: Support and service code chunk-->
-       <!--BEGIN: Support and service code chunk-->
-       <!--END: Support and service code chunk-->
-      </div>
      </div>
     </div>
    </div>

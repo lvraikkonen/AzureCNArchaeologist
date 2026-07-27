@@ -37,40 +37,40 @@ _VMSS_PREFIX_EVIDENCE = {
         "SQL Server for Windows": (
             "tabContent3",
             1,
-            "70756b4678e72c59c03ba04961af9b05"
-            "dd03375ea038bdc3182a2a6207e3a1d4",
+            "b60c7beebcf08e1d5cb77dcf2f92857"
+            "d91172dc76a76693491f25a36028371b2",
         ),
         "SQL Server Ubuntu Linux": (
             "tabContent4",
             1,
-            "304eacd8b78a2d425550318aef654fcdf"
-            "c1ed9b38df9c603854ff5cc627b8448",
+            "8d70e9c744ee206023d22574d79da77a"
+            "2c71d1258f36ba3aac7ba3e72edfe82e",
         ),
         "Machine Learning Server": (
             "tabContent5",
             1,
-            "67560c473fe049461f924aaf50047f017"
-            "e92cf054a2ec6ab1d07b5ca3bc805e3",
+            "5e78bcf9ff182b7971c8ca9c5510aab2"
+            "c3af4579fe68be01dd5e848f62700d19",
         ),
     },
     "en-us": {
         "SQL Server for Windows": (
             "tabContent3",
             1,
-            "86fe49a747f0e2026c74d171737a5c44"
-            "263e28f6766fb695be08c36629b3a8c0",
+            "dd9f6ee0b101e9e73f4a794ab9012088"
+            "16c8570cd14cf274897720c475a73754",
         ),
         "SQL Server Ubuntu Linux": (
             "tabContent4",
             1,
-            "80180fe6df882f1556ec4de0433b26550"
-            "e09127af881371ff91786d188e2d5b6",
+            "760c4adfeba50dd11dbb0f886416a29b"
+            "be2959525f28e7acc0ea2155e0c1f17e",
         ),
         "Machine Learning Server": (
             "tabContent5",
             1,
-            "ddf1d5a1f856cf43dc1e588cd3b6ed4"
-            "13e71876ae47bf1ef1652e9850bc67e32",
+            "93c8bc3806ec55a1f8b954ea954cc63d"
+            "0314dbb70bb00c29ed0b9b0a64df678f",
         ),
     },
 }

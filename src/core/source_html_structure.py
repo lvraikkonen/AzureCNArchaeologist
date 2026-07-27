@@ -21,7 +21,7 @@ from src.utils.content.section_extractor import (
 
 SCHEMA_VERSION = "1.0"
 AUDITOR_VERSION = (
-    "exact-owned-boundaries-static-page-global-ids-and-post-selector-scope-v2"
+    "exact-owned-boundaries-static-page-global-ids-and-post-selector-scope-v4"
 )
 
 _BEGIN_TAB_CONTROL = re.compile(r"\bBEGIN\s*:\s*TAB-CONTROL\b", re.IGNORECASE)
@@ -508,7 +508,41 @@ class SourceHtmlStructureAuditor:
             )
             variant_checks = ("visible_content_outside_owned_faq",)
         else:
-            return []
+            material_children = tuple(
+                child
+                for child in candidate.children
+                if isinstance(child, Tag)
+                and (
+                    child.get_text(" ", strip=True)
+                    or child.find(
+                        ["img", "video", "audio", "table", "iframe"]
+                    )
+                    is not None
+                )
+            )
+            evidence_nodes.extend(
+                (
+                    child,
+                    "Additional material shares a non-exact boundary with "
+                    "FAQ/SLA content.",
+                )
+                for child in material_children
+            )
+            suggestion = SourceHtmlStructureSuggestion(
+                action="split_ambiguous_common_section_wrapper",
+                description=(
+                    "Split the wrapper into exact page-level common-section "
+                    "boundaries; keep arbitrary material outside FAQ/SLA and "
+                    "give it an independently provable ownership boundary."
+                ),
+                from_line=_line(candidate),
+                before_line=_line(
+                    more_details[0]
+                    if more_details
+                    else owned_sla_sections[0]
+                ),
+            )
+            variant_checks = ("mixed_common_section_content",)
 
         evidence = tuple(
             SourceHtmlStructureEvidence(
@@ -1033,7 +1067,6 @@ class SourceHtmlStructureAuditor:
                     "exact FAQ/SLA section following END: TAB-CONTROL."
                 ),
             )
-            blocking = suggestion is None
             evidence = (
                 SourceHtmlStructureEvidence(
                     selector_line,
@@ -1071,8 +1104,8 @@ class SourceHtmlStructureAuditor:
             findings.append(
                 SourceHtmlStructureFinding(
                     code="SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL",
-                    severity="error" if blocking else "warning",
-                    blocking=blocking,
+                    severity="error",
+                    blocking=True,
                     message=(
                         "A formal pricing selector remains open past END: "
                         "TAB-CONTROL and contains an exact FAQ/SLA section."

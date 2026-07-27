@@ -196,7 +196,7 @@
               "const": "1.0"
             },
             "auditor_version": {
-              "const": "exact-owned-boundaries-static-page-global-ids-and-post-selector-scope-v2"
+              "const": "exact-owned-boundaries-static-page-global-ids-and-post-selector-scope-v4"
             },
             "blocking_finding_disposition": {
               "const": "fail-extraction"

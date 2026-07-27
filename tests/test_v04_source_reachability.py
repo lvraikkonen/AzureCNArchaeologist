@@ -393,6 +393,47 @@ def test_desktop_display_label_wins_over_mobile_label_drift(
     ]
 
 
+def test_region_target_is_canonical_when_mobile_machine_value_drifts(
+    tmp_path: Path,
+) -> None:
+    region = _dropdown(
+        "region-container",
+        "region-box",
+        [
+            ("north-china3", "China East 3", "#east-china3"),
+            ("north-china3", "China North 3", "#north-china3"),
+        ],
+        default_href="#east-china3",
+        label="Region",
+    )
+    html = (
+        '<div class="technical-azure-selector pricing-detail-tab">'
+        f"{region}</div>"
+    )
+
+    result = SourceReachabilityResolver().resolve(
+        _canonical(tmp_path, html)
+    )
+
+    assert result.state_relation == (
+        CmsState((("region", "east-china3"),)),
+        CmsState((("region", "north-china3"),)),
+    )
+    assert [finding.to_dict() for finding in result.findings] == [{
+        "code": "filter_machine_value_target_drift",
+        "message": (
+            "region mobile machine value disagrees with its interaction "
+            "target; the target fragment is authoritative."
+        ),
+        "evidence": {
+            "filter_key": "region",
+            "href": "#east-china3",
+            "source_value": "north-china3",
+            "canonical_value": "east-china3",
+        },
+    }]
+
+
 def test_hidden_software_is_internal_scope_not_active_cms_dimension(
     tmp_path: Path,
 ) -> None:

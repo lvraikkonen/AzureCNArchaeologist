@@ -27,6 +27,11 @@ SLA_HEADING_PATTERN = re.compile(
     r"|\bsupport\s*(?:&|and)\s*sla\b|\bsla\b)",
     re.IGNORECASE,
 )
+FAQ_HEADING_PATTERN = re.compile(r"(?:常见问题|\bfaq\b)", re.IGNORECASE)
+FAQ_HREF_PATTERN = re.compile(
+    r"(?:^|[/_.-])faq(?:$|[/_.?#-])",
+    re.IGNORECASE,
+)
 
 
 def owns_sla_heading(section: Tag) -> bool:
@@ -69,13 +74,10 @@ def contains_common_section_boundary(node: Tag) -> bool:
     return any(owns_sla_heading(section) for section in pricing_sections)
 
 
-def is_exact_common_section_boundary(node: Tag) -> bool:
-    """Return whether a sibling contains only one exact FAQ/SLA section."""
+def _material_tag_children(node: Tag) -> list[Tag]:
+    """Return direct children that carry visible or embedded material."""
 
-    classes = set(node.get("class") or ())
-    if "more-detail" in classes or owns_sla_heading(node):
-        return True
-    material_children = [
+    return [
         child
         for child in node.children
         if isinstance(child, Tag)
@@ -87,6 +89,75 @@ def is_exact_common_section_boundary(node: Tag) -> bool:
             is not None
         )
     ]
+
+
+def _owned_faq_documentation_parts(
+    node: Tag,
+) -> tuple[Tag, Tag] | None:
+    """Prove one exact FAQ plus its immediately trailing documentation link."""
+
+    classes = set(node.get("class") or ())
+    if (
+        node.name != "div"
+        or classes != {"pricing-page-section"}
+        or node.select_one(
+            ".technical-azure-selector, .pricing-detail-tab, "
+            "style, script, template"
+        )
+        is not None
+    ):
+        return None
+
+    material_children = _material_tag_children(node)
+    if len(material_children) != 2:
+        return None
+    faq, paragraph = material_children
+    if (
+        faq.name != "div"
+        or set(faq.get("class") or ()) != {"more-detail"}
+        or paragraph.name != "p"
+    ):
+        return None
+
+    nested_faqs = node.select("div.more-detail")
+    if len(nested_faqs) != 1 or nested_faqs[0] is not faq:
+        return None
+    heading = faq.find(["h1", "h2", "h3", "h4", "h5", "h6"])
+    if heading is None or FAQ_HEADING_PATTERN.fullmatch(
+        heading.get_text(" ", strip=True).strip(" \t\r\n:：")
+    ) is None:
+        return None
+
+    links = paragraph.find_all("a", href=True)
+    if len(links) != 1 or paragraph.find_all(True) != links:
+        return None
+    link = links[0]
+    href = str(link.get("href", "")).strip()
+    paragraph_text = paragraph.get_text(" ", strip=True)
+    if (
+        not href
+        or FAQ_HREF_PATTERN.search(href) is None
+        or FAQ_HEADING_PATTERN.search(paragraph_text) is None
+    ):
+        return None
+    return faq, paragraph
+
+
+def is_exact_owned_faq_documentation_boundary(node: Tag) -> bool:
+    """Return whether one pricing wrapper owns only FAQ and its docs link."""
+
+    return _owned_faq_documentation_parts(node) is not None
+
+
+def is_exact_common_section_boundary(node: Tag) -> bool:
+    """Return whether a sibling contains only one exact FAQ/SLA section."""
+
+    classes = set(node.get("class") or ())
+    if "more-detail" in classes or owns_sla_heading(node):
+        return True
+    if is_exact_owned_faq_documentation_boundary(node):
+        return True
+    material_children = _material_tag_children(node)
     exact_children = [
         child
         for child in material_children
@@ -458,7 +529,10 @@ class SectionExtractor:
             "serialized Qa common section",
         )
         faq_sections = sum(
-            "more-detail" in (candidate.get("class") or [])
+            (
+                "more-detail" in (candidate.get("class") or [])
+                or is_exact_owned_faq_documentation_boundary(candidate)
+            )
             for candidate in candidates
         )
         sla_sections = len(candidates) - faq_sections
@@ -486,7 +560,24 @@ class SectionExtractor:
         soup: BeautifulSoup,
     ) -> List[Tag]:
         """Return exact FAQ and owned-heading SLA nodes in document order."""
-        faq_candidates = list(soup.select("div.more-detail"))
+        faq_documentation_wrappers = [
+            section
+            for section in soup.select("div.pricing-page-section")
+            if is_exact_owned_faq_documentation_boundary(section)
+        ]
+        wrapped_faq_ids = {
+            id(parts[0])
+            for wrapper in faq_documentation_wrappers
+            if (parts := _owned_faq_documentation_parts(wrapper)) is not None
+        }
+        faq_candidates = [
+            *faq_documentation_wrappers,
+            *(
+                faq
+                for faq in soup.select("div.more-detail")
+                if id(faq) not in wrapped_faq_ids
+            ),
+        ]
         for candidate in faq_candidates:
             self._assert_no_pricing_subtree(candidate, "more-detail FAQ")
 

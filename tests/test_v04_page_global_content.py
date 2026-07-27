@@ -28,7 +28,7 @@ EXPECTED_CLOUD = {
     "zh-cn": {
         "text": "IP 地址选项 为您的云服务部署保留公共 IP 地址。",
         "source_html_sha256": (
-            "e7060cdc0db79266d31d6e1483c0be93034edd19012ba9268c545c44df3612f4"
+            "722632961a14e2820de2dc94b396877eaa253c18a19d779c2461bf4f0332afee"
         ),
         "wire_html_sha256": (
             "6f33121990b29b5c3197790202be399bf2fde8e68b7f593bd552e6ccd8accb4e"
@@ -40,7 +40,7 @@ EXPECTED_CLOUD = {
             "Azure Cloud Services deployments."
         ),
         "source_html_sha256": (
-            "9fcc6950ff555229de40acaecf49934a368256b7cb472c221324210a764e560f"
+            "872768eb38de2257d1d56fd6aa2b9b895497885a3c17ebc22947f1b41fff6819"
         ),
         "wire_html_sha256": (
             "0ab769fa88a4d9d8578d73f612bd43b92cde53c39d0a3ffb8a8640384655c2fb"
@@ -50,7 +50,7 @@ EXPECTED_CLOUD = {
 EXPECTED_SERVICE_BUS = {
     "zh-cn": {
         "source_html_sha256": (
-            "78697bcd00dd22cca98a337a2fa36f9f8c20c5e50ddfbac9106081765e04b73a"
+            "95f29033d0c710e71260fdc926f96c885c124dabb16672939a5a832fd7b9ede5"
         ),
         "wire_html_sha256": (
             "9d9cce97d44e236e58d7461aa4c5425f061afabcdfbcacab8c65bae7ae725374"
@@ -58,10 +58,28 @@ EXPECTED_SERVICE_BUS = {
     },
     "en-us": {
         "source_html_sha256": (
-            "e0dcd84ea52a986e08e8c9f35c332656dd394326e9ac9ef5253c684aca980495"
+            "8f05d669c13e2daa02d968b50dcf5ec31f6f342f2c9e1d8f67131682637488ea"
         ),
         "wire_html_sha256": (
             "aa02090d85e9bac31e7c23e3f7d2863c2e6d39db78d7443f2d80d28f5b3e2cca"
+        ),
+    },
+}
+EXPECTED_VMSS = {
+    "zh-cn": {
+        "source_html_sha256": (
+            "04036263e4cbf1b248e4cea6b5cd74daaf6f343f3958ddd991e85611aa73fdc6"
+        ),
+        "wire_html_sha256": (
+            "b575343117569fd82ad5507c811407b8cb14ad7dff5838d500b722e6df1e8464"
+        ),
+    },
+    "en-us": {
+        "source_html_sha256": (
+            "b25cbaed9350dc78c6b4c28b8453da371f5d7d5dc48ae70201cfa47d5caabc5d"
+        ),
+        "wire_html_sha256": (
+            "d520cd0ddcd5eb83c0e629666aaae239ce0ee9c5a09705ffefe22da293d508f7"
         ),
     },
 }
@@ -290,7 +308,7 @@ def test_cloud_services_bilingual_fragment_is_exact_and_not_qa(
 
 @pytest.mark.parametrize(
     "product_key",
-    ["machine-learning", "virtual-machine-scale-sets"],
+    ["machine-learning"],
 )
 @pytest.mark.parametrize("language", ["zh-cn", "en-us"])
 def test_unconfirmed_similar_products_remain_unclassified(
@@ -314,6 +332,36 @@ def test_unconfirmed_similar_products_remain_unclassified(
             soup,
             language=language,
         )
+
+
+@pytest.mark.parametrize("language", ["zh-cn", "en-us"])
+def test_vmss_page_global_content_is_frozen(language: str) -> None:
+    manager = ProductManager()
+    definition = manager.get_product_config("virtual-machine-scale-sets")
+    source_path = manager.get_html_file_path(
+        "virtual-machine-scale-sets",
+        language,
+    )
+    assert source_path is not None
+    soup = BeautifulSoup(Path(source_path).read_bytes(), "html.parser")
+
+    fragment = extract_post_selector_page_global_content(soup)
+    assert fragment is not None
+    assert fragment.source_boundary == POST_SELECTOR_PAGE_GLOBAL_BOUNDARY
+    assert fragment.fragment_count == 1
+    assert (
+        fragment.source_html_sha256
+        == EXPECTED_VMSS[language]["source_html_sha256"]
+    )
+    wire_html = resolve_page_global_base_content(
+        soup,
+        definition,
+        language=language,
+    )
+    assert (
+        hashlib.sha256(wire_html.encode("utf-8")).hexdigest()
+        == EXPECTED_VMSS[language]["wire_html_sha256"]
+    )
 
 
 @pytest.mark.parametrize("language", ["zh-cn", "en-us"])
@@ -368,7 +416,7 @@ def test_api_management_current_page_global_content_is_empty(
 
 
 @pytest.mark.parametrize("language", ["zh-cn", "en-us"])
-def test_dns_static_page_global_content_rejects_duplicate_source_ids(
+def test_dns_static_page_global_content_has_globally_unique_source_ids(
     language: str,
 ) -> None:
     manager = ProductManager()
@@ -377,15 +425,15 @@ def test_dns_static_page_global_content_rejects_duplicate_source_ids(
     assert source_path is not None
     soup = BeautifulSoup(Path(source_path).read_bytes(), "html.parser")
 
-    with pytest.raises(
-        ScopedSourceContentError,
-        match="globally unique",
-    ):
-        resolve_page_global_base_content(
-            soup,
-            definition,
-            language=language,
-        )
+    identified = soup.select("[id]")
+    assert len(identified) == len(
+        {str(node.get("id", "")).strip() for node in identified}
+    )
+    assert resolve_page_global_base_content(
+        soup,
+        definition,
+        language=language,
+    )
 
 
 @pytest.mark.parametrize("product_key", ["advisor", "azure-policy"])

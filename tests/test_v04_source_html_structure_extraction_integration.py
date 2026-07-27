@@ -289,7 +289,7 @@ def test_blocking_structure_finding_stops_before_payload_generation(
         ("virtual-wan", "en-us"),
     ),
 )
-def test_real_static_base_content_duplicate_id_stops_before_payload_generation(
+def test_real_repaired_static_base_content_allows_payload_generation(
     tmp_path: Path,
     product: str,
     language: str,
@@ -302,18 +302,15 @@ def test_real_static_base_content_duplicate_id_stops_before_payload_generation(
         strategy="simple_static",
     )
 
-    assert not result.execution_succeeded
-    assert result.payload_path is None
-    assert result.sidecar["payload"] is None
-    assert result.sidecar["input_assurance"]["status"] == "failed"
-    assert result.sidecar["status"]["validation"] == "failed"
-    assert "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT" in {
+    assert result.execution_succeeded
+    assert result.payload is not None
+    assert result.payload_path is not None
+    assert result.payload_path.is_file()
+    assert result.sidecar["payload"] is not None
+    assert result.sidecar["input_assurance"]["status"] == "passed"
+    assert "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT" not in {
         issue["code"] for issue in result.sidecar["validation"]["errors"]
     }
-    assert result.sidecar["error"]["code"] == "SOURCE_HTML_STRUCTURE_BLOCKED"
-    assert not any(
-        path.name == f"{product}.json" for path in tmp_path.rglob("*.json")
-    )
 
     evidence_path = Path(
         result.sidecar["input_assurance"]["source_html_structure"][
@@ -321,15 +318,9 @@ def test_real_static_base_content_duplicate_id_stops_before_payload_generation(
         ]["path"]
     )
     evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
-    duplicate = next(
-        finding
-        for finding in evidence["findings"]
-        if finding["code"]
-        == "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT"
-    )
-    assert duplicate["blocking"] is True
-    assert "'tabContent1'" in duplicate["message"]
-    assert len(duplicate["evidence"]) == 2
+    assert "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT" not in {
+        finding["code"] for finding in evidence["findings"]
+    }
 
 
 @pytest.mark.parametrize(
@@ -341,34 +332,9 @@ def test_real_static_base_content_duplicate_id_stops_before_payload_generation(
             {"SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT"},
         ),
         (
-            "managed-instance",
-            "zh-cn",
-            {"SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT"},
-        ),
-        (
-            "managed-instance",
-            "en-us",
-            {"SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT"},
-        ),
-        (
-            "sql-database",
-            "zh-cn",
-            {"SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT"},
-        ),
-        (
-            "sql-database",
-            "en-us",
-            {"SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT"},
-        ),
-        (
             "event-hubs",
             "zh-cn",
-            {"SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION"},
-        ),
-        (
-            "event-hubs",
-            "en-us",
-            {"SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION"},
+            {"SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL"},
         ),
         (
             "storage-files",

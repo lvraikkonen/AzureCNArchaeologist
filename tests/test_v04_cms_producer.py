@@ -26,6 +26,7 @@ from src.strategies.complex_content_strategy import ComplexContentStrategy
 from src.utils.content.section_extractor import (
     CommonSectionBoundaryError,
     SectionExtractor,
+    is_exact_owned_faq_documentation_boundary,
 )
 from src.utils.content.flexible_builder import FlexibleBuilder
 
@@ -227,6 +228,50 @@ def test_filter_detector_uses_desktop_order_and_moves_default_first():
     assert [item["value"] for item in first["region_options"]] == expected_regions
     assert [item["value"] for item in second["region_options"]] == expected_regions
     assert first["region_options"][0]["is_default"] is True
+
+
+def test_filter_detector_ignores_stale_summary_when_explicit_defaults_agree():
+    analysis = FilterDetector().detect_filters(
+        _filter_html(
+            """
+            <option value="east-china2" data-href="#east-china2">China East 2</option>
+            <option selected value="north-china3" data-href="#north-china3">China North 3</option>
+            """,
+            """
+            <li><a id="east-china2" data-href="#east-china2">China East 2</a></li>
+            <li class="active"><a id="north-china3" data-href="#north-china3">China North 3</a></li>
+            """,
+        )
+    )
+
+    assert analysis["region_default_value"] == "north-china3"
+    assert analysis["region_options"][0] == {
+        "value": "north-china3",
+        "href": "#north-china3",
+        "label": "China North 3",
+        "is_default": True,
+    }
+
+
+def test_filter_detector_uses_region_target_as_canonical_machine_value():
+    analysis = FilterDetector().detect_filters(
+        _filter_html(
+            """
+            <option selected value="north-china3" data-href="#east-china3">China East 3</option>
+            <option value="north-china3" data-href="#north-china3">China North 3</option>
+            """,
+            """
+            <li class="active"><a id="east-china3" data-href="#east-china3">China East 3</a></li>
+            <li><a id="north-china3" data-href="#north-china3">China North 3</a></li>
+            """,
+        )
+    )
+
+    assert analysis["region_default_value"] == "east-china3"
+    assert [option["value"] for option in analysis["region_options"]] == [
+        "east-china3",
+        "north-china3",
+    ]
 
 
 def test_tab_detector_moves_active_tab_first_and_preserves_other_order():
@@ -721,6 +766,77 @@ def test_databricks_zh_source_uses_only_exact_safe_qa_nodes():
     )
     assert "databricks-data-analysis" not in qa_content
     assert "databricks-data-analysis-n3" not in qa_content
+
+
+def test_exact_faq_documentation_wrapper_is_emitted_whole() -> None:
+    soup = BeautifulSoup(
+        """
+        <div class="technical-azure-selector pricing-detail-tab">
+          <p>Main pricing</p>
+        </div>
+        <div class="pricing-page-section">
+          <div class="more-detail">
+            <h2>FAQ</h2>
+            <p>One answer.</p>
+          </div>
+          <p>See the <a href="/docs/product-faq/">product FAQ</a>.</p>
+        </div>
+        """,
+        "html.parser",
+    )
+    wrapper = soup.select_one("div.pricing-page-section")
+
+    assert wrapper is not None
+    assert is_exact_owned_faq_documentation_boundary(wrapper) is True
+
+    qa_content = SectionExtractor().extract_qa(soup)
+    qa_soup = BeautifulSoup(qa_content, "html.parser")
+    emitted_wrapper = qa_soup.select_one("div.pricing-page-section")
+    assert emitted_wrapper is not None
+    assert emitted_wrapper.select_one("div.more-detail") is not None
+    documentation_link = emitted_wrapper.select_one(
+        ":scope > p > a[href='/docs/product-faq/']"
+    )
+    assert documentation_link is not None
+    assert documentation_link.get_text(" ", strip=True) == "product FAQ"
+
+
+@pytest.mark.parametrize(
+    "product",
+    ("managed-instance", "sql-database"),
+)
+@pytest.mark.parametrize("language", ("zh-cn", "en-us"))
+def test_real_faq_documentation_link_is_preserved_in_qa(
+    product: str,
+    language: str,
+) -> None:
+    source_path = (
+        Path(__file__).parents[1]
+        / "data"
+        / "prod-html"
+        / language
+        / "pricing"
+        / f"{product}.html"
+    )
+    soup = BeautifulSoup(source_path.read_text(encoding="utf-8"), "html.parser")
+    wrappers = [
+        section
+        for section in soup.select("div.pricing-page-section")
+        if is_exact_owned_faq_documentation_boundary(section)
+    ]
+
+    assert len(wrappers) == 1
+    source_link = wrappers[0].select_one(":scope > p > a[href]")
+    assert source_link is not None
+    qa_soup = BeautifulSoup(SectionExtractor().extract_qa(soup), "html.parser")
+    emitted_link = qa_soup.find("a", href=source_link["href"])
+    assert emitted_link is not None
+    assert emitted_link.get_text(" ", strip=True) == source_link.get_text(
+        " ", strip=True
+    )
+    assert emitted_link.find_parent(
+        "div", class_="pricing-page-section"
+    ) is not None
 
 
 def test_qa_candidate_inside_pricing_subtree_fails_closed():

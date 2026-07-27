@@ -64,59 +64,28 @@ def _canonical_repo_source(
 
 
 @pytest.mark.parametrize(
-    ("product", "language", "expected_lines"),
+    ("product", "language"),
     (
-        ("dns", "zh-cn", (151, 196)),
-        ("dns", "en-us", (159, 205)),
-        ("service-fabric", "zh-cn", (143, 172)),
-        ("service-fabric", "en-us", (146, 182)),
-        ("virtual-wan", "zh-cn", (149, 351)),
-        ("virtual-wan", "en-us", (152, 367)),
+        ("dns", "zh-cn"),
+        ("dns", "en-us"),
+        ("service-fabric", "zh-cn"),
+        ("service-fabric", "en-us"),
+        ("virtual-wan", "zh-cn"),
+        ("virtual-wan", "en-us"),
     ),
 )
-def test_real_duplicate_id_in_static_page_global_content_is_blocking(
+def test_real_repaired_static_page_global_ids_are_no_longer_blocking(
     product: str,
     language: str,
-    expected_lines: tuple[int, int],
 ) -> None:
     result = SourceHtmlStructureAuditor(ROOT).audit(
         _canonical_repo_source(product, language)
     )
-    findings = tuple(
-        finding
-        for finding in result.findings
-        if finding.code == "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT"
-    )
 
-    assert result.passed is False
-    assert len(findings) == 1
-    finding = findings[0]
-    assert finding.blocking is True
-    assert "'tabContent1'" in finding.message
-    assert "2 elements" in finding.message
-    assert tuple(item.line for item in finding.evidence) == expected_lines
-    assert all(
-        "'tabContent1'" in item.description
-        and "of 2" in item.description
-        for item in finding.evidence
-    )
-    assert finding.upstream_suggestion is not None
-    assert (
-        finding.upstream_suggestion.action
-        == "remove_redundant_or_make_id_unique"
-    )
-    assert "remove redundant" in finding.upstream_suggestion.description
-    assert "assign a unique id" in finding.upstream_suggestion.description
-    assert "update all href" in finding.upstream_suggestion.description
-    assert finding.upstream_suggestion.before_line == expected_lines[0]
-    assert finding.upstream_suggestion.from_line == expected_lines[1]
-
-    schema = json.loads(
-        (ROOT / "schemas/source-html-structure-audit-1.0.schema.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    Draft202012Validator(schema).validate(result.to_dict())
+    assert result.passed is True
+    assert "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT" not in {
+        finding.code for finding in result.findings
+    }
 
 
 @pytest.mark.parametrize("product", ("route-server", "sql-edge"))
@@ -144,52 +113,7 @@ def test_unproven_simple_boundaries_are_not_misclassified_as_confirmed(
                 "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT": (
                     8167,
                     8168,
-                    8208,
-                ),
-            },
-        ),
-        (
-            "managed-instance",
-            "zh-cn",
-            {
-                "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT": (
-                    5893,
-                    5895,
-                    6704,
-                    6713,
-                ),
-            },
-        ),
-        (
-            "managed-instance",
-            "en-us",
-            {
-                "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT": (
-                    5367,
-                    5368,
-                    6216,
-                ),
-            },
-        ),
-        (
-            "sql-database",
-            "zh-cn",
-            {
-                "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT": (
-                    14729,
-                    14730,
-                    15475,
-                ),
-            },
-        ),
-        (
-            "sql-database",
-            "en-us",
-            {
-                "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT": (
-                    14655,
-                    14656,
-                    15492,
+                    8207,
                 ),
             },
         ),
@@ -197,17 +121,11 @@ def test_unproven_simple_boundaries_are_not_misclassified_as_confirmed(
             "event-hubs",
             "zh-cn",
             {
-                "SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION": (
-                    508,
-                ),
-            },
-        ),
-        (
-            "event-hubs",
-            "en-us",
-            {
-                "SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION": (
-                    497,
+                "SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL": (
+                    141,
+                    465,
+                    468,
+                    699,
                 ),
             },
         ),
@@ -292,6 +210,67 @@ def test_real_blocking_source_structure_findings_are_exact(
         )
     )
     Draft202012Validator(schema).validate(result.to_dict())
+
+
+def test_event_hubs_en_common_sections_are_outside_formal_selector() -> None:
+    result = SourceHtmlStructureAuditor(ROOT).audit(
+        _canonical_repo_source("event-hubs", "en-us")
+    )
+
+    assert result.passed is True
+    assert result.findings == ()
+
+
+@pytest.mark.parametrize(
+    "product",
+    ("managed-instance", "sql-database"),
+)
+@pytest.mark.parametrize("language", ("zh-cn", "en-us"))
+def test_real_faq_documentation_link_wrapper_is_exact(
+    product: str,
+    language: str,
+) -> None:
+    result = SourceHtmlStructureAuditor(ROOT).audit(
+        _canonical_repo_source(product, language)
+    )
+
+    assert result.passed is True
+    assert result.findings == ()
+
+
+@pytest.mark.parametrize(
+    "additional_material",
+    (
+        "<p>Arbitrary release notes outside the FAQ.</p>",
+        "<style>.more-detail { color: black; }</style>",
+        (
+            "<p>See the <a href='/docs/product-faq/'>product FAQ</a>.</p>"
+            "<div class='pricing-page-section'><h2>Support and SLA</h2>"
+            "<p>Support terms.</p></div>"
+        ),
+        (
+            "<p>See the <a href='/docs/notfaq/'>product FAQ</a>.</p>"
+        ),
+    ),
+)
+def test_faq_documentation_wrapper_lookalikes_fail_closed(
+    additional_material: str,
+    tmp_path: Path,
+) -> None:
+    html = f"""<html><body><div class="pure-content">
+<div class="technical-azure-selector"><div>Pricing</div></div>
+<div class="pricing-page-section">
+  <div class="more-detail"><h2>FAQ</h2><p>One answer.</p></div>
+  {additional_material}
+</div>
+</div></body></html>"""
+
+    result = _audit(tmp_path, html, "faq-wrapper-negative-control")
+
+    assert result.passed is False
+    assert "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT" in {
+        finding.code for finding in result.blocking_findings
+    }
 
 
 @pytest.mark.parametrize(

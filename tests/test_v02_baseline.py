@@ -92,7 +92,11 @@ class ProductCatalogTests(unittest.TestCase):
             with self.subTest(product_key=product_key):
                 self.assertEqual(record.definition["schema_version"], "1.1")
                 expected_extraction_fields = {"semantic_strategy"}
-                if product_key in {"cloud-services", "service-bus"}:
+                if product_key in {
+                    "cloud-services",
+                    "service-bus",
+                    "virtual-machine-scale-sets",
+                }:
                     expected_extraction_fields.add("page_global_content")
                 self.assertEqual(
                     set(record.definition["extraction"]),

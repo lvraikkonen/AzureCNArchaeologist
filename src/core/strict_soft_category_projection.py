@@ -118,7 +118,7 @@ class IdlessSourceTableEvidence:
 
 @dataclass(frozen=True)
 class SoftCategoryConfigurationFinding:
-    """One reportable upstream configuration defect."""
+    """One reportable blocking error or nonblocking redundancy."""
 
     code: str
     software_value: str
@@ -713,40 +713,6 @@ class StrictSoftCategoryProjector:
                 panel,
                 source_panel_id=source_panel_id,
             )
-            row_duplicate_finding = next(
-                (
-                    finding
-                    for finding in self._configuration_findings(config)
-                    if (
-                        finding.code
-                        == "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW"
-                        and finding.software_value == software_value
-                        and finding.region_value == region_value
-                    )
-                ),
-                None,
-            )
-            if row_duplicate_finding is not None:
-                relevant_duplicates = tuple(
-                    table_id
-                    for table_id
-                    in row_duplicate_finding.duplicate_table_ids
-                    if table_id in set(source_table_ids)
-                )
-                if relevant_duplicates:
-                    finding_evidence = row_duplicate_finding.to_dict()
-                    finding_evidence[
-                        "relevant_duplicate_table_ids"
-                    ] = list(relevant_duplicates)
-                    self._fail(
-                        "soft_category_duplicate_relevant_table_id",
-                        (
-                            "soft-category repeats table IDs relevant to the "
-                            f"current state {software_value!r}/"
-                            f"{region_value!r}: {relevant_duplicates!r}"
-                        ),
-                        evidence=finding_evidence,
-                    )
             source_table_set = set(source_table_ids)
             configured_relevant = tuple(
                 table_id
@@ -899,11 +865,13 @@ class StrictSoftCategoryProjector:
     def configuration_findings(
         self,
     ) -> tuple[SoftCategoryConfigurationFinding, ...]:
-        """Return every duplicate-pair/row-ID defect for upstream reporting.
+        """Return every duplicate-pair/row-ID finding for upstream reporting.
 
         This is deliberately broader than formal projection.  A reachable
-        state is blocked only by a defect in its exact Software/Region key,
-        while the report can still enumerate page-external defects.
+        state is blocked only by duplicate rows for its exact Software/Region
+        key.  Repeated table IDs inside one row remain a nonblocking hygiene
+        finding because runtime projection uses ordered unique IDs by physical
+        first occurrence.
         """
 
         try:

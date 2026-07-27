@@ -617,24 +617,53 @@ def test_duplicate_json_object_key_is_rejected_without_last_write_wins(
     assert caught.value.evidence["source_inventory"]["panel_match_count"] == 1
 
 
-def test_duplicate_row_table_id_blocks_only_when_relevant_to_state(
+def test_duplicate_row_table_id_is_normalized_without_changing_projection(
     tmp_path: Path,
 ) -> None:
     projector = _projector(
-        tmp_path,
+        tmp_path / "duplicate",
         [_row(["#repeat", "#repeat", "#external", "#external"])],
     )
-    with pytest.raises(StrictSoftCategoryProjectionError) as caught:
-        projector.project(
-            _soup('<table id="repeat"></table>'),
-            source_panel_id="state",
-            region_value="region-a",
-            software_value="Software",
-        )
-    assert caught.value.code == "soft_category_duplicate_relevant_table_id"
-    assert caught.value.evidence["relevant_duplicate_table_ids"] == [
-        "repeat"
-    ]
+    evidence = projector.project(
+        _soup('<table id="repeat"></table>'),
+        source_panel_id="state",
+        region_value="region-a",
+        software_value="Software",
+    )
+    deduplicated = _projector(
+        tmp_path / "deduplicated",
+        [_row(["#repeat", "#external"])],
+    ).project(
+        _soup('<table id="repeat"></table>'),
+        source_panel_id="state",
+        region_value="region-a",
+        software_value="Software",
+    )
+
+    assert evidence.matching_entries[0].table_ids == (
+        "repeat",
+        "external",
+    )
+    assert evidence.configured_union_table_ids == (
+        "repeat",
+        "external",
+    )
+    assert evidence.configured_relevant_table_ids == ("repeat",)
+    assert evidence.removed_table_ids == ("repeat",)
+    assert evidence.retained_table_ids == ()
+    assert evidence.output_html == deduplicated.output_html
+    assert evidence.output_html_sha256 == deduplicated.output_html_sha256
+    assert (
+        evidence.removal_ownership_units
+        == deduplicated.removal_ownership_units
+    )
+
+    findings = projector.configuration_findings()
+    assert len(findings) == 1
+    assert findings[0].code == "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW"
+    assert findings[0].entry_indices == (0,)
+    assert findings[0].duplicate_table_ids == ("repeat", "external")
+    assert findings[0].entry_table_ids == (("repeat", "external"),)
 
     external_only = projector.project(
         _soup('<table id="keep"></table>'),
@@ -956,70 +985,51 @@ def test_real_vmss_d15_v2_idless_table_is_unconditional(
 
 
 @pytest.mark.parametrize("language", ["zh-cn", "en-us"])
-def test_real_cloud_services_relevant_config_duplicate_fails_without_payload(
-    tmp_path: Path,
+def test_real_cloud_services_row_duplicate_is_nonblocking_and_reported(
     language: str,
 ) -> None:
-    result = ExtractionCoordinator(
-        str(tmp_path / language),
-        deferred_validation=True,
-    ).coordinate_extraction(
-        "cloud-services",
-        language,
-        strategy="complex",
+    source = (
+        ROOT
+        / "data"
+        / "prod-html"
+        / language
+        / "pricing"
+        / "cloud-services.html"
+    )
+    projector = StrictSoftCategoryProjector(ROOT)
+    evidence = projector.project(
+        BeautifulSoup(source.read_text(encoding="utf-8"), "html.parser"),
+        source_panel_id="tabContent1-3",
+        region_value="east-china2",
+        software_value="Cloud Services",
+    )
+    repeated_table_id = (
+        "cloudservice-table-optimizedcompute-memoryintensive-"
+        "E2v3-E64v3-east3"
     )
 
-    assert not result.execution_succeeded
-    assert result.payload is None
-    assert result.payload_path is None
-    assert result.sidecar["payload"] is None
-    assert result.sidecar["status"] == {
-        "execution": "failed",
-        "validation": "not_run",
-        "review": "not_requested",
-        "publication": "not_published",
-    }
-    assert result.sidecar["error"]["code"] == (
-        "soft_category_duplicate_relevant_table_id"
-    )
-    failure = result.sidecar["strategy"][
-        "strict_soft_category_projection_failure"
-    ]
-    assert failure["schema_version"] == "1.0"
-    assert failure["code"] == (
-        "soft_category_duplicate_relevant_table_id"
-    )
-    assert failure["phase"] == "attach"
-    assert failure["state_scope"]["region"] == "east-china2"
-    assert failure["state_scope"]["software"] == "Cloud Services"
-    assert failure["state_scope"]["source_panel_id"]
-    assert failure["configuration"] == {
-        "path": "data/configs/soft-category.json",
-        "sha256": hashlib.sha256(
-            (ROOT / "data/configs/soft-category.json").read_bytes()
-        ).hexdigest(),
-    }
-    inventory = failure["source_inventory"]
-    assert (
-        inventory["source_panel_id"]
-        == failure["state_scope"]["source_panel_id"]
-    )
-    assert inventory["source_table_count"] >= 1
-    assert inventory["source_idless_table_count"] == 0
-    assert inventory["source_table_ids"]
-    assert inventory["source_html_sha256"]
+    assert evidence.matching_entry_indices == (46,)
+    assert evidence.configured_union_table_ids.count(
+        repeated_table_id
+    ) == 1
+    assert repeated_table_id in evidence.source_table_ids
+    assert repeated_table_id in evidence.removed_table_ids
+    assert BeautifulSoup(
+        evidence.output_html,
+        "html.parser",
+    ).find(id=repeated_table_id) is None
 
-    evidence = failure["evidence"]
-    assert evidence["code"] == "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW"
-    assert evidence["software_value"] == "Cloud Services"
-    assert evidence["region_value"] == "east-china2"
-    assert evidence["entry_indices"] == [46]
-    assert evidence["relevant_duplicate_table_ids"] == [
-        (
-            "cloudservice-table-optimizedcompute-memoryintensive-"
-            "E2v3-E64v3-east3"
+    finding = next(
+        finding
+        for finding in projector.configuration_findings()
+        if (
+            finding.code == "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW"
+            and finding.entry_indices == (46,)
         )
-    ]
+    )
+    assert finding.software_value == "Cloud Services"
+    assert finding.region_value == "east-china2"
+    assert finding.duplicate_table_ids == (repeated_table_id,)
 
 
 def test_strategy_replay_preserves_strict_failure_code_and_evidence(
@@ -1057,6 +1067,54 @@ def test_strategy_replay_preserves_strict_failure_code_and_evidence(
     assert failure["code"] == strict_error.code
     assert failure["phase"] == "strategy_replay"
     assert failure["evidence"] == strict_error.evidence
+
+
+def test_late_non_strict_failure_discards_success_only_projection_evidence(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    late_error = RuntimeError("fixture late extraction failure")
+
+    class FailingStrategy:
+        @staticmethod
+        def extract_flexible_content(*args: object, **kwargs: object) -> None:
+            raise late_error
+
+    monkeypatch.setattr(
+        StrategyFactory,
+        "create_strategy",
+        staticmethod(lambda *args, **kwargs: FailingStrategy()),
+    )
+    result = ExtractionCoordinator(
+        str(tmp_path / "late-failure"),
+        deferred_validation=True,
+    ).coordinate_extraction(
+        "data-pipeline",
+        "zh-cn",
+        strategy="complex",
+    )
+
+    assert not result.execution_succeeded
+    assert result.payload is None
+    assert result.payload_path is None
+    assert result.sidecar["status"]["execution"] == "failed"
+    assert result.sidecar["error"] == {
+        "code": "RuntimeError",
+        "stage": "extraction",
+        "message": str(late_error),
+    }
+    assert (
+        "strict_soft_category_projection_evidence"
+        not in result.sidecar["strategy"]
+    )
+    assert (
+        "strict_soft_category_projection_failure"
+        not in result.sidecar["strategy"]
+    )
+    persisted = json.loads(
+        result.sidecar_path.read_text(encoding="utf-8")
+    )
+    assert persisted == result.sidecar
 
 
 def test_validation_replay_preserves_strict_failure_code_and_evidence(

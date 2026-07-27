@@ -14,7 +14,7 @@
   "properties": {
     "schema_version": {"const": "1.0"},
     "auditor_version": {
-      "const": "exact-owned-boundaries-static-page-global-ids-and-post-selector-scope-v2"
+      "const": "exact-owned-boundaries-static-page-global-ids-and-post-selector-scope-v4"
     },
     "source": {
       "type": "object",
@@ -387,10 +387,7 @@
             "required": ["code"],
             "properties": {
               "code": {
-                "enum": [
-                  "SOURCE_HTML_PRICING_SECTION_OVERWRAPS_SELECTOR_AND_QA",
-                  "SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL"
-                ]
+                "const": "SOURCE_HTML_PRICING_SECTION_OVERWRAPS_SELECTOR_AND_QA"
               }
             }
           },
@@ -409,6 +406,71 @@
               "properties": {
                 "severity": {"const": "warning"},
                 "upstream_suggestion": {"$ref": "#/$defs/suggestion"}
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["code"],
+            "properties": {
+              "code": {
+                "const": "SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "severity",
+              "blocking",
+              "upstream_suggestion",
+              "safety_checks"
+            ],
+            "properties": {
+              "severity": {"const": "error"},
+              "blocking": {"const": true}
+            },
+            "if": {
+              "properties": {
+                "upstream_suggestion": {"type": "object"}
+              }
+            },
+            "then": {
+              "properties": {
+                "upstream_suggestion": {
+                  "allOf": [
+                    {"$ref": "#/$defs/suggestion"},
+                    {
+                      "properties": {
+                        "action": {"const": "relocate_existing_closing_tag"}
+                      }
+                    }
+                  ]
+                },
+                "safety_checks": {
+                  "allOf": [
+                    {
+                      "contains": {
+                        "const": "raw_balanced_target_element"
+                      }
+                    },
+                    {
+                      "contains": {
+                        "const": "standalone_closing_tag_line"
+                      }
+                    },
+                    {
+                      "contains": {
+                        "const": "relocation_preserves_content_order"
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "upstream_suggestion": {"type": "null"}
               }
             }
           }

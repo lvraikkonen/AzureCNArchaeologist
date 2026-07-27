@@ -18,13 +18,6 @@ from scripts.build_v04_soft_category_findings import (
 
 ROOT = Path(__file__).resolve().parents[1]
 
-EXPECTED_DUPLICATE_PAIRS = {
-    ("Managed Instance", "east-china"): [48, 52],
-    ("Managed Instance", "north-china"): [49, 53],
-    ("Azure AI Search", "north-china"): [169, 173],
-}
-
-
 def _normalize(value: str) -> str:
     return value.strip().removeprefix("#").strip()
 
@@ -47,6 +40,9 @@ def test_report_is_deterministic_current_and_has_frozen_config_identity():
         "size_bytes": len(raw),
         "sha256": hashlib.sha256(raw).hexdigest(),
     }
+    assert generated["status"] == (
+        "nonblocking_configuration_hygiene_findings"
+    )
     assert generated["audit_policy"] == {
         "pair_identity": (
             "Exact JSON string values of (os, region); os is the "
@@ -62,75 +58,69 @@ def test_report_is_deterministic_current_and_has_frozen_config_identity():
         "runtime_scope": (
             "reachable_exact_pairs_and_state_relevant_table_ids_only"
         ),
-        "merge_policy": "never_silently_merge_or_deduplicate",
+        "duplicate_exact_pair_policy": {
+            "automatic_merge": "forbidden",
+            "runtime_disposition": (
+                "block_reachable_exact_pair_before_payload"
+            ),
+        },
+        "row_duplicate_policy": {
+            "blocking": False,
+            "runtime_disposition": (
+                "ordered_unique_by_first_physical_occurrence"
+            ),
+            "reporting": "nonblocking_configuration_hygiene",
+        },
         "runtime_detector": (
             "StrictSoftCategoryProjector.configuration_findings"
         ),
     }
 
 
-def test_duplicate_pair_inventory_preserves_every_entry_and_difference():
+def test_current_snapshot_has_no_duplicate_exact_pair():
     report = json.loads(REPORT_JSON.read_text(encoding="utf-8"))
-    findings = report["duplicate_software_region_findings"]
+    assert report["duplicate_software_region_findings"] == []
+    assert report["summary"]["duplicate_software_region_pairs"] == 0
+    assert report["summary"]["duplicate_pair_entries"] == 0
 
-    assert {
-        (item["software_value"], item["region_value"]):
-        item["entry_indices"]
-        for item in findings
-    } == EXPECTED_DUPLICATE_PAIRS
-    assert all(
-        item["finding_code"] == PAIR_FINDING_CODE
-        and item["status"] == "confirmed_configuration_error"
-        and item["runtime_disposition"][
-            "when_exact_pair_is_reachable"
-        ]
-        == "block_before_payload"
-        and item["upstream_suggestion"]["action"]
-        == "replace_duplicate_pair_with_one_authoritative_entry"
-        and item["safety_checks"]
-        for item in findings
+
+def test_duplicate_exact_pair_remains_blocking(tmp_path: Path) -> None:
+    config_path = tmp_path / CONFIG_RELATIVE_PATH
+    config_path.parent.mkdir(parents=True)
+    config_path.write_text(
+        json.dumps(
+            [
+                {
+                    "os": "Example Software",
+                    "region": "east",
+                    "tableIDs": ["#one", "#shared"],
+                },
+                {
+                    "os": "Example Software",
+                    "region": "east",
+                    "tableIDs": ["#shared", "#two"],
+                },
+            ]
+        ),
+        encoding="utf-8",
     )
 
-    config = json.loads(
-        (ROOT / CONFIG_RELATIVE_PATH).read_text(
-            encoding="utf-8-sig"
-        )
+    report = build_report(tmp_path)
+    assert report["status"] == "blocking_upstream_action_required"
+    assert len(report["duplicate_software_region_findings"]) == 1
+    finding = report["duplicate_software_region_findings"][0]
+    assert finding["finding_code"] == PAIR_FINDING_CODE
+    assert finding["status"] == "confirmed_configuration_error"
+    assert finding["blocking"] is True
+    assert finding["runtime_disposition"][
+        "when_exact_pair_is_reachable"
+    ] == "block_before_payload"
+    assert finding["upstream_suggestion"]["action"] == (
+        "replace_duplicate_pair_with_one_authoritative_entry"
     )
-    for finding in findings:
-        entries = finding["entries"]
-        assert [entry["entry_index"] for entry in entries] == (
-            finding["entry_indices"]
-        )
-        normalized_sets = []
-        for entry in entries:
-            source = config[entry["entry_index"]]
-            assert entry["table_ids"] == source["tableIDs"]
-            assert entry["table_id_count"] == len(source["tableIDs"])
-            normalized_sets.append(
-                {_normalize(value) for value in source["tableIDs"]}
-            )
-
-        frequencies: dict[str, int] = {}
-        for values in normalized_sets:
-            for value in values:
-                frequencies[value] = frequencies.get(value, 0) + 1
-        expected_duplicates = {
-            f"#{value}"
-            for value, count in frequencies.items()
-            if count > 1
-        }
-        assert set(finding["duplicate_table_ids"]) == (
-            expected_duplicates
-        )
-        for entry, values in zip(entries, normalized_sets):
-            assert set(entry["only_in_entry_table_ids"]) == {
-                f"#{value}"
-                for value in values
-                if frequencies[value] == 1
-            }
 
 
-def test_row_duplicate_table_ids_are_complete_and_never_silently_merged():
+def test_row_duplicate_table_ids_are_nonblocking_ordered_unique():
     report = json.loads(REPORT_JSON.read_text(encoding="utf-8"))
     findings = report["row_duplicate_table_id_findings"]
     config = json.loads(
@@ -140,25 +130,27 @@ def test_row_duplicate_table_ids_are_complete_and_never_silently_merged():
     )
 
     assert report["summary"] == {
-        "configuration_entries_surveyed": 328,
-        "duplicate_software_region_pairs": 3,
-        "duplicate_pair_entries": 6,
-        "row_duplicate_table_id_entries": 38,
-        "row_duplicate_distinct_table_ids": 310,
-        "row_duplicate_extra_occurrences": 321,
+        "configuration_entries_surveyed": 325,
+        "duplicate_software_region_pairs": 0,
+        "duplicate_pair_entries": 0,
+        "row_duplicate_table_id_entries": 37,
+        "row_duplicate_distinct_table_ids": 309,
+        "row_duplicate_extra_occurrences": 320,
     }
-    assert len(findings) == 38
+    assert len(findings) == 37
     assert all(
         finding["finding_code"] == ROW_FINDING_CODE
-        and finding["status"] == "confirmed_configuration_error"
-        and finding["runtime_disposition"][
-            "when_exact_pair_and_table_id_are_state_relevant"
-        ]
-        == "block_before_payload"
-        and finding["runtime_disposition"][
-            "when_table_id_is_not_state_relevant"
-        ]
-        == "report_configuration_finding_without_projection"
+        and finding["status"] == "nonblocking_redundancy"
+        and finding["blocking"] is False
+        and finding["runtime_disposition"] == {
+            "blocking": False,
+            "projection_policy": (
+                "ordered_unique_by_first_physical_occurrence"
+            ),
+            "reporting": (
+                "nonblocking_configuration_hygiene_finding"
+            ),
+        }
         and finding["upstream_suggestion"]["action"]
         == "remove_repeated_table_ids_from_configuration_entry"
         and finding["safety_checks"]

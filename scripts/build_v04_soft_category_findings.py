@@ -132,6 +132,7 @@ def _duplicate_pair_findings(
             {
                 "finding_code": PAIR_FINDING_CODE,
                 "status": "confirmed_configuration_error",
+                "blocking": True,
                 "software_value": group[0]["software_value"],
                 "region_value": group[0]["region_value"],
                 "entry_indices": [
@@ -164,8 +165,9 @@ def _duplicate_pair_findings(
                         "only_in_entry_table_ids difference recorded here."
                     ),
                     (
-                        "The surviving tableIDs contain no duplicate "
-                        "normalized table identity."
+                        "The surviving row's tableIDs use the runtime "
+                        "ordered-unique projection by physical first "
+                        "occurrence."
                     ),
                     (
                         "Every reachable exact pair is replayed through the "
@@ -214,7 +216,8 @@ def _row_duplicate_findings(
         findings.append(
             {
                 "finding_code": ROW_FINDING_CODE,
-                "status": "confirmed_configuration_error",
+                "status": "nonblocking_redundancy",
+                "blocking": False,
                 "entry_index": row["entry_index"],
                 "software_value": row["software_value"],
                 "region_value": row["region_value"],
@@ -225,33 +228,35 @@ def _row_duplicate_findings(
                         "remove_repeated_table_ids_from_configuration_entry"
                     ),
                     "description": (
-                        "Retain one reviewed occurrence of each duplicate "
-                        "normalized table identity at its intended physical "
-                        "position. Do not rely on the runtime projector to "
-                        "silently deduplicate the row."
+                        "The runtime already treats repeated normalized table "
+                        "identities as nonblocking redundancy and retains each "
+                        "identity at its first physical occurrence. Upstream "
+                        "may remove later occurrences for configuration "
+                        "hygiene, provided that ordered-unique sequence remains "
+                        "unchanged."
                     ),
                 },
                 "safety_checks": [
                     (
-                        "Each normalized table identity occurs exactly once "
-                        "inside this entry's tableIDs array."
+                        "The runtime projection equals the normalized tableIDs "
+                        "ordered by physical first occurrence."
                     ),
                     (
-                        "The relative order of all retained tableIDs is "
-                        "reviewed and remains intentional."
+                        "Any upstream cleanup removes only later duplicate "
+                        "occurrences and preserves the ordered-unique sequence."
                     ),
                     (
-                        "If this exact pair is reachable and a duplicated "
-                        "table identity occurs in the exact state panel, "
-                        "strict projection blocks before Payload generation."
+                        "The exact state is replayed after cleanup and produces "
+                        "the same projection and Payload content."
                     ),
                 ],
                 "runtime_disposition": {
-                    "when_exact_pair_and_table_id_are_state_relevant": (
-                        "block_before_payload"
+                    "blocking": False,
+                    "projection_policy": (
+                        "ordered_unique_by_first_physical_occurrence"
                     ),
-                    "when_table_id_is_not_state_relevant": (
-                        "report_configuration_finding_without_projection"
+                    "reporting": (
+                        "nonblocking_configuration_hygiene_finding"
                     ),
                 },
             }
@@ -381,8 +386,10 @@ def build_report(root: Path = ROOT) -> dict[str, Any]:
         "schema_version": "1.0",
         "report_id": "v0.4-soft-category-upstream-findings",
         "status": (
-            "upstream_action_required"
-            if pair_findings or row_findings
+            "blocking_upstream_action_required"
+            if pair_findings
+            else "nonblocking_configuration_hygiene_findings"
+            if row_findings
             else "no_configuration_findings"
         ),
         "configuration": config_identity,
@@ -401,7 +408,19 @@ def build_report(root: Path = ROOT) -> dict[str, Any]:
             "runtime_scope": (
                 "reachable_exact_pairs_and_state_relevant_table_ids_only"
             ),
-            "merge_policy": "never_silently_merge_or_deduplicate",
+            "duplicate_exact_pair_policy": {
+                "automatic_merge": "forbidden",
+                "runtime_disposition": (
+                    "block_reachable_exact_pair_before_payload"
+                ),
+            },
+            "row_duplicate_policy": {
+                "blocking": False,
+                "runtime_disposition": (
+                    "ordered_unique_by_first_physical_occurrence"
+                ),
+                "reporting": "nonblocking_configuration_hygiene",
+            },
             "runtime_detector": (
                 "StrictSoftCategoryProjector.configuration_findings"
             ),
@@ -428,14 +447,17 @@ def render_markdown(report: Mapping[str, Any]) -> str:
     config = report["configuration"]
     summary = report["summary"]
     lines = [
-        "# v0.4 soft-category 上游配置问题",
+        "# v0.4 soft-category 上游配置审计与建议",
         "",
-        "本报告只盘点配置缺陷，不修改或合并 `soft-category.json`。"
-        "只有来源页面证明可达的 exact `(software, region)` 才由严格"
-        " projector 在生成 Payload 前阻断；不可达配置仍保留在全量报告中。",
+        "本报告只盘点配置，不修改 `soft-category.json`。重复 exact "
+        "`(software, region)` 在来源页面证明可达时由严格 projector "
+        "在生成 Payload 前阻断，且禁止自动合并。单个 row 内重复 tableID "
+        "属于 nonblocking redundancy：运行时按物理首现顺序生成 "
+        "ordered-unique 投影，同时保留配置卫生 finding。",
         "",
         "## 配置身份",
         "",
+        f"- 报告状态：`{report['status']}`",
         f"- 路径：`{config['path']}`",
         f"- 大小：{config['size_bytes']} bytes",
         f"- SHA-256：`{config['sha256']}`",
@@ -446,13 +468,14 @@ def render_markdown(report: Mapping[str, Any]) -> str:
         (
             "- 重复 `(software, region)` pair："
             f"{summary['duplicate_software_region_pairs']}，涉及 "
-            f"{summary['duplicate_pair_entries']} 个 entry"
+            f"{summary['duplicate_pair_entries']} 个 entry（blocking）"
         ),
         (
             "- row 内重复 tableID："
             f"{summary['row_duplicate_table_id_entries']} 个 entry，"
             f"{summary['row_duplicate_distinct_table_ids']} 个不同重复 ID，"
             f"{summary['row_duplicate_extra_occurrences']} 个多余 occurrence"
+            "（nonblocking redundancy）"
         ),
         "",
         "## 重复 `(software, region)`",
@@ -569,8 +592,9 @@ def render_markdown(report: Mapping[str, Any]) -> str:
                 "",
                 (
                     "- Finding："
-                    f"`{finding['finding_code']}`；可达时 "
-                    "`block_before_payload`"
+                    f"`{finding['finding_code']}`；"
+                    "`nonblocking_redundancy`；运行时 "
+                    "`ordered_unique_by_first_physical_occurrence`"
                 ),
             ]
         )

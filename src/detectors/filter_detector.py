@@ -184,11 +184,12 @@ class FilterDetector:
             option_elements = region_select.find_all('option', recursive=False)
             
             for option in option_elements:
-                value = option.get('value', '').strip()
+                raw_value = option.get('value', '').strip()
                 href = option.get('data-href', '').strip()
                 label = option.get_text().strip()
+                value = href.removeprefix("#") if href else raw_value
                 
-                if value and href:
+                if raw_value and value and href:
                     options.append({
                         "value": value,
                         "href": href,
@@ -290,21 +291,27 @@ class FilterDetector:
                 by_value[value]["label"] = label
             options = [by_value[value] for value in desktop_values]
 
-        default_candidates = selected_values + desktop_defaults
-        selected_item = container.select_one(".selected-item")
-        selected_label = (
-            selected_item.get_text(" ", strip=True) if selected_item else ""
-        )
-        label_matches = [
-            option["value"]
-            for option in options
-            if selected_label
-            and " ".join(option["label"].split()) == selected_label
-        ]
-        if len(label_matches) == 1:
-            default_candidates.extend(label_matches)
-
-        distinct_defaults = list(dict.fromkeys(default_candidates))
+        explicit_defaults = list(dict.fromkeys(
+            selected_values + desktop_defaults
+        ))
+        if explicit_defaults:
+            distinct_defaults = explicit_defaults
+        else:
+            selected_item = container.select_one(".selected-item")
+            selected_label = (
+                selected_item.get_text(" ", strip=True)
+                if selected_item
+                else ""
+            )
+            label_matches = [
+                option["value"]
+                for option in options
+                if selected_label
+                and " ".join(option["label"].split()) == selected_label
+            ]
+            distinct_defaults = (
+                label_matches if len(label_matches) == 1 else []
+            )
         if len(distinct_defaults) > 1:
             raise ValueError(
                 "Desktop and mobile filter controls declare different defaults"

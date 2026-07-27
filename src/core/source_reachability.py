@@ -1106,13 +1106,33 @@ class SourceReachabilityResolver:
             "option", recursive=False
         )):
             href = self._fragment_href(option.get("data-href"), filter_key)
-            value = self._normalized_attribute(option.get("value"))
+            raw_value = self._normalized_attribute(option.get("value"))
             label = self._text(option)
-            if not value:
+            if not raw_value:
                 self._fail(
                     "invalid_filter_option",
                     f"{filter_key} mobile options require a machine value",
                 )
+            value = (
+                href.removeprefix("#")
+                if filter_key == "region"
+                else raw_value
+            )
+            if filter_key == "region" and raw_value != value:
+                findings.append(SourceReachabilityFinding(
+                    code="filter_machine_value_target_drift",
+                    message=(
+                        "region mobile machine value disagrees with its "
+                        "interaction target; the target fragment is "
+                        "authoritative."
+                    ),
+                    evidence={
+                        "filter_key": filter_key,
+                        "href": href,
+                        "source_value": raw_value,
+                        "canonical_value": value,
+                    },
+                ))
             mobile_rows.append(
                 (href, value, label, option.has_attr("selected"), index)
             )
