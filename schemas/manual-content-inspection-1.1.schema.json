@@ -1,0 +1,335 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/manual-content-inspection-1.1.schema.json",
+  "title": "Manual Content Inspection 1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "dataset_id",
+    "terminology",
+    "migration_source",
+    "products"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.1"
+    },
+    "dataset_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"
+    },
+    "terminology": {
+      "const": "manual_content_inspection"
+    },
+    "migration_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "recorded_at",
+        "limitations"
+      ],
+      "properties": {
+        "path": {
+          "const": "azure-product-list.md"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "recorded_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "limitations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "products": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/product"
+      }
+    }
+  },
+  "$defs": {
+    "sha256OrNull": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "textOrNull": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "area",
+        "summary",
+        "status"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z0-9][A-Z0-9_]*$"
+        },
+        "area": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "open",
+            "resolved"
+          ]
+        }
+      }
+    },
+    "languageInspection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binding_status",
+        "verdict",
+        "reviewer",
+        "reviewed_at",
+        "source_sha256",
+        "payload_sha256",
+        "notes",
+        "findings"
+      ],
+      "properties": {
+        "binding_status": {
+          "enum": [
+            "bound",
+            "legacy_unbound"
+          ]
+        },
+        "verdict": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed",
+            "findings"
+          ]
+        },
+        "reviewer": {
+          "$ref": "#/$defs/textOrNull"
+        },
+        "reviewed_at": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_sha256": {
+          "$ref": "#/$defs/sha256OrNull"
+        },
+        "payload_sha256": {
+          "$ref": "#/$defs/sha256OrNull"
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/finding"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "binding_status": {
+                "const": "bound"
+              }
+            },
+            "required": [
+              "binding_status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "verdict": {
+                "enum": [
+                  "passed",
+                  "failed",
+                  "findings"
+                ]
+              },
+              "reviewer": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reviewed_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "source_sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "payload_sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "rawLegacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manual_status_column",
+        "manual_evidence_column",
+        "misplaced_machine_note"
+      ],
+      "properties": {
+        "manual_status_column": {
+          "type": "string"
+        },
+        "manual_evidence_column": {
+          "type": "string"
+        },
+        "misplaced_machine_note": {
+          "type": "string"
+        }
+      }
+    },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product_key",
+        "languages",
+        "unscoped_findings",
+        "notes"
+      ],
+      "properties": {
+        "product_key": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "binding_status": {
+          "enum": [
+            "bound",
+            "legacy_unbound"
+          ]
+        },
+        "languages": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "zh-cn": {
+              "$ref": "#/$defs/languageInspection"
+            },
+            "en-us": {
+              "$ref": "#/$defs/languageInspection"
+            }
+          }
+        },
+        "unscoped_findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/finding"
+          }
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "raw_legacy": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/rawLegacy"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "anyOf": [
+            {
+              "required": [
+                "binding_status"
+              ]
+            },
+            {
+              "properties": {
+                "languages": {
+                  "minProperties": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "if": {
+            "properties": {
+              "binding_status": {
+                "const": "bound"
+              }
+            },
+            "required": [
+              "binding_status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "languages": {
+                "minProperties": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,704 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/capability-dashboard-projection-1.0.schema.json",
+  "title": "Capability Dashboard Projection 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "projection_id",
+    "generated_at",
+    "data_date",
+    "source",
+    "summary",
+    "attention",
+    "products"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "projection_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "data_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "source": {
+      "$ref": "#/$defs/source"
+    },
+    "summary": {
+      "$ref": "#/$defs/summary"
+    },
+    "attention": {
+      "$ref": "#/$defs/attention"
+    },
+    "products": {
+      "type": "array",
+      "minItems": 105,
+      "maxItems": 105,
+      "items": {
+        "$ref": "#/$defs/product"
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "sha256OrNull": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "textOrNull": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "machine_evidence",
+        "manual_inspection"
+      ],
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/artifact"
+        },
+        "machine_evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "schema_version",
+            "path",
+            "sha256",
+            "report_id",
+            "formal_batch_created"
+          ],
+          "properties": {
+            "kind": {
+              "const": "step3_probe"
+            },
+            "schema_version": {
+              "const": "1.0"
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "report_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "formal_batch_created": {
+              "type": "boolean"
+            }
+          }
+        },
+        "manual_inspection": {
+          "$ref": "#/$defs/artifact"
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "machine",
+        "manual",
+        "binding"
+      ],
+      "properties": {
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "total",
+            "supported",
+            "known_unsupported"
+          ],
+          "properties": {
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "supported": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "known_unsupported": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "machine": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "bilingual_pass",
+            "single_language_pass",
+            "bilingual_fail",
+            "zh_cn_pass",
+            "zh_cn_fail",
+            "en_us_pass",
+            "en_us_fail",
+            "passed_language_items"
+          ],
+          "properties": {
+            "bilingual_pass": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "single_language_pass": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "bilingual_fail": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "zh_cn_pass": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "zh_cn_fail": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "en_us_pass": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "en_us_fail": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "passed_language_items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "manual": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "reviewable_products",
+            "clear_conclusions",
+            "passed_products",
+            "failed_products",
+            "findings_products",
+            "pending_products"
+          ],
+          "properties": {
+            "reviewable_products": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "clear_conclusions": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "passed_products": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failed_products": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "findings_products": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "pending_products": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "bound",
+            "legacy_unbound",
+            "stale"
+          ],
+          "properties": {
+            "bound": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "legacy_unbound": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "stale": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "attention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "findings_product_keys",
+        "pending_product_keys",
+        "stale_product_keys"
+      ],
+      "properties": {
+        "findings_product_keys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pending_product_keys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stale_product_keys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "path",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "stage",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "area",
+        "summary",
+        "status"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "area": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "open",
+            "resolved"
+          ]
+        }
+      }
+    },
+    "machineLanguage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "execution",
+        "validation",
+        "source_path",
+        "source_sha256",
+        "payload_path",
+        "payload_sha256",
+        "content_group_count",
+        "error",
+        "validation_errors",
+        "validation_warnings"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pass",
+            "fail",
+            "not_applicable"
+          ]
+        },
+        "execution": {
+          "type": "string"
+        },
+        "validation": {
+          "type": "string"
+        },
+        "source_path": {
+          "$ref": "#/$defs/textOrNull"
+        },
+        "source_sha256": {
+          "$ref": "#/$defs/sha256OrNull"
+        },
+        "payload_path": {
+          "$ref": "#/$defs/textOrNull"
+        },
+        "payload_sha256": {
+          "$ref": "#/$defs/sha256OrNull"
+        },
+        "content_group_count": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "validation_errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/issue"
+          }
+        },
+        "validation_warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/issue"
+          }
+        }
+      }
+    },
+    "manualLanguage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "is_applicable",
+        "verdict",
+        "binding_status",
+        "reviewer",
+        "reviewed_at",
+        "source_sha256",
+        "payload_sha256",
+        "notes",
+        "findings"
+      ],
+      "properties": {
+        "is_applicable": {
+          "type": "boolean"
+        },
+        "verdict": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed",
+            "findings"
+          ]
+        },
+        "binding_status": {
+          "oneOf": [
+            {
+              "enum": [
+                "bound",
+                "legacy_unbound",
+                "stale"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reviewer": {
+          "$ref": "#/$defs/textOrNull"
+        },
+        "reviewed_at": {
+          "$ref": "#/$defs/textOrNull"
+        },
+        "source_sha256": {
+          "$ref": "#/$defs/sha256OrNull"
+        },
+        "payload_sha256": {
+          "$ref": "#/$defs/sha256OrNull"
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/finding"
+          }
+        }
+      }
+    },
+    "language": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "machine",
+        "manual"
+      ],
+      "properties": {
+        "machine": {
+          "$ref": "#/$defs/machineLanguage"
+        },
+        "manual": {
+          "$ref": "#/$defs/manualLanguage"
+        }
+      }
+    },
+    "rawLegacy": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "manual_status_column",
+            "manual_evidence_column",
+            "misplaced_machine_note"
+          ],
+          "properties": {
+            "manual_status_column": {
+              "type": "string"
+            },
+            "manual_evidence_column": {
+              "type": "string"
+            },
+            "misplaced_machine_note": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product_key",
+        "display_name",
+        "slug",
+        "catalog_categories",
+        "url",
+        "semantic_strategy",
+        "capability_status",
+        "unsupported_reason",
+        "machine_outcome",
+        "manual_outcome",
+        "binding_status",
+        "languages",
+        "unscoped_findings",
+        "manual_notes",
+        "raw_legacy"
+      ],
+      "properties": {
+        "product_key": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "catalog_categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "semantic_strategy": {
+          "oneOf": [
+            {
+              "enum": [
+                "simple_static",
+                "region_filter",
+                "complex"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "capability_status": {
+          "enum": [
+            "supported",
+            "known_unsupported"
+          ]
+        },
+        "unsupported_reason": {
+          "$ref": "#/$defs/textOrNull"
+        },
+        "machine_outcome": {
+          "enum": [
+            "bilingual_pass",
+            "single_language_pass",
+            "bilingual_fail",
+            "known_unsupported"
+          ]
+        },
+        "manual_outcome": {
+          "enum": [
+            "passed",
+            "failed",
+            "findings",
+            "pending",
+            "stale",
+            "not_applicable"
+          ]
+        },
+        "binding_status": {
+          "oneOf": [
+            {
+              "enum": [
+                "bound",
+                "legacy_unbound",
+                "stale"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "languages": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "zh-cn",
+            "en-us"
+          ],
+          "properties": {
+            "zh-cn": {
+              "$ref": "#/$defs/language"
+            },
+            "en-us": {
+              "$ref": "#/$defs/language"
+            }
+          }
+        },
+        "unscoped_findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/finding"
+          }
+        },
+        "manual_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "raw_legacy": {
+          "$ref": "#/$defs/rawLegacy"
+        }
+      }
+    }
+  }
+}

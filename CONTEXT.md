@@ -132,6 +132,14 @@ _Avoid_: Machine-validation exemption, large table
 A recorded human comparison of the frozen source rendering and Business Payload rendering for a Complex Pricing Table. It is mandatory after Machine Validation passes and before approval or publication, and it cannot override a Machine Validation failure.
 _Avoid_: Machine Validation, informal spot check, failure waiver
 
+**Manual Content Inspection（人工内容检查）**:
+A human check of extracted content for a specific Product Key and language. It is inspection evidence only and cannot change Machine Validation, Capability Status, Approval Eligibility, or an Approval Blocker.
+_Avoid_: 人工验证, Machine Validation, Complex Table Visual Review, Review Approval
+
+**Evidence Binding Status**:
+The categorical identity relationship between a Manual Content Inspection and the selected machine evidence: `bound` names matching source and payload identities, `legacy_unbound` preserves an inspection whose complete identities were never recorded, and `stale` means a previously bound identity no longer matches. Only `bound` inspection evidence is current.
+_Avoid_: Review status, validation verdict, latest evidence
+
 **v0.4 Complex Table Review Scope**:
 The delivery boundary in which v0.4 implements the real Complex Table Visual Review gate for every affected Business Payload and completes the end-to-end review for the bilingual `cloud-services` Core fixtures. Other complex-table items may pass Machine Validation but remain `approval_eligible=false` until their own required review is completed; v0.4 completion does not require all such reviews, while v0.5 expands the general human-review workflow across products and page types.
 _Avoid_: Core-only gate, full-batch manual completion, machine-pass approval
@@ -363,6 +371,10 @@ _Avoid_: Validation failure, Review approval
 **Machine Validation Report**:
 The Batch Item-specific evidence for its aggregate Machine Validation judgment, separating Contract Validation, Pricing Fact Fidelity, other Content Quality Rules and Source Quality Findings while recording the Validation Profile, Applicability Map and baseline identities and hashes. It also records derived `approval_eligible` and structured `approval_blockers[]`; the Review Queue is a projection of Machine-pass reports, not another verdict authority.
 _Avoid_: Business Payload, Diagnostic Sidecar, quality score
+
+**Capability Dashboard Projection**:
+A read-only presentation of the fixed product scope, explicitly selected machine evidence, and Manual Content Inspections. It is not an authority for those records and cannot perform validation, capability, review, approval, or publication transitions.
+_Avoid_: Tracking database, approval console, latest-run authority
 
 **Pricing Fidelity Evidence Bundle**:
 The generated, immutable Expected Pricing Fact Inventory, Observed Payload Fact Inventory, and itemized Pricing Fact Diff artifacts referenced and hashed by one Machine Validation Report. Each Inventory is a state-scoped multiset. These files contain evidence but never an independent pass or fail judgment, live under the Batch Run, and are excluded from Git.

@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "selection_id": "v0.4-step3-probe-20260727",
+  "selected_at": "2026-07-27T07:20:36.524116+00:00",
+  "selection_policy": "explicit_path_and_sha256",
+  "evidence": {
+    "kind": "step3_probe",
+    "schema_version": "1.0",
+    "schema_path": "schemas/step3-capability-probe-1.0.schema.json",
+    "schema_sha256": "59b6373187690cca2dcaf0d05ecef5484be2787e4563ef6da632c70f80db2e12",
+    "path": "reports/v0.4/step3-capability-probe-20260727.json",
+    "sha256": "6d64f21342250b33227395306aadc4544cc940005da4c23ba0dba422dad43984",
+    "report_id": "step3-current-source-capability-probe-20260727"
+  },
+  "notes": [
+    "This is a persisted non-Batch Step 3 probe, not publication or approval evidence.",
+    "A future Batch report must replace this pointer through an explicit reviewed path-and-SHA update; filesystem recency is never consulted."
+  ]
+}

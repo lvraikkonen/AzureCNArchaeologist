@@ -21,12 +21,6 @@
     },
     {
       "language": "zh-cn",
-      "snapshot_path": "pricing/details/managed-instance/index2.html",
-      "reason_code": "backup",
-      "reason": "Historical duplicate retained in the source dump."
-    },
-    {
-      "language": "zh-cn",
       "snapshot_path": "pricing/details/metrics-advisor/test.html",
       "reason_code": "test_fixture",
       "reason": "Source-system test page."

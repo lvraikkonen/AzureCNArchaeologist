@@ -32,7 +32,7 @@
     "source_html_structure_audit": {
       "schema_version": "1.0",
       "path": "schemas/source-html-structure-audit-1.0.schema.json",
-      "sha256": "45022abf83fe66c2a8c9ffffed6ab624a16cfc164417c34dac55e1569276d77d"
+      "sha256": "23432adcd1b7b5d3a528249b1c7ac9ec91f5885205c51b7dbf98a8cdc09bded3"
     }
   },
   "input_assurance": {
@@ -62,7 +62,7 @@
     },
     "source_html_structure_audit": {
       "schema_version": "1.0",
-      "auditor_version": "exact-owned-boundaries-static-page-global-ids-and-post-selector-scope-v2",
+      "auditor_version": "exact-owned-boundaries-static-page-global-ids-and-post-selector-scope-v4",
       "blocking_finding_disposition": "fail-extraction",
       "source_repair": "forbidden"
     }

@@ -118,7 +118,7 @@ v1.0 中需要清晰区分：
 | v0.1 | 当前基线 | 4 种策略和分散的三段式流程可运行 |
 | v0.2 | 事实与契约收口 | 产品全集、CMS 契约和状态边界统一 |
 | v0.3 | 批次工作流 | 一个入口完成标准化、解析、验证和报告 |
-| v0.4 | 可证明重建验证 | P0 隔离实验导出、Pricing Fidelity、批准阻断项和 CI-ready 可信测试体系 |
+| v0.4 | 可证明重建验证 | P0 隔离实验导出、Pricing Fidelity、批准阻断项、CI-ready 可信测试体系和非阻断 Capability Dashboard |
 | v0.5 | 通用人工核验闭环 | 将 v0.4 的复杂表格专项门禁扩展到全部页面类型 |
 | v0.6 | 覆盖率提升 | 按失败类型和页面结构簇扩大可靠支持范围 |
 | v0.7 | 稳定性与性能 | 正交 streaming Processing Mode、并发、恢复和幂等性达到批量运行要求 |
@@ -395,6 +395,14 @@ v0.4 不包含 GitHub Actions、required branch checks 或其他 external merge 
 - 每个包含复杂表格的可达状态必须属于一个 Visual Review Variant；只有源表、Payload 表、表头上下文和 Rendering Profile 指纹完全一致时才可共享或跨批次复用审核；
 - v0.4 Rendering Profile 固定 Desktop `1440 × 900` CSS pixels、100% zoom、device scale factor 1，并冻结 Chromium、字体、CMS template、CSS 与审核协议；明确声明 Mobile 未验证；
 - 视觉门禁对所有复杂表格产物生效，但 v0.4 完成只要求 `cloud-services` 中英文 Core 样例实际完成全链路审核；其他复杂产物可以 machine-pass，但在自身视觉审核完成前保持 `approval_eligible=false`。v0.5 再扩展通用人工审核闭环。
+
+##### 非阻断并行能力：Capability Dashboard
+
+- 提供本地只读 Capability Dashboard，以版本化 JSON 投影并列展示产品范围、策略、双语机器验证、人工内容检查、Source/Payload SHA、证据绑定状态、诊断和需要关注的问题；
+- Dashboard 是 Batch Manifest、Machine Validation Report、Review Queue、人工检查记录和能力追踪数据的派生观察面，不是任何生命周期、验证、批准或发布状态的事实来源，也不得直接修改这些状态；
+- 随 Step 4–5 的证据模型演进，Dashboard 应分别呈现 Contract、Pricing Fidelity、Reliable Adjudication、Review Queue membership、Approval Eligibility 和最终 Approval，禁止把它们压缩为单一“通过”状态；
+- Dashboard 必须显示所投影快照、Schema/Profile 或阶段身份，并显式区分正式 Batch 证据、非 Batch 探针、当前 SHA 绑定证据、`legacy_unbound` 与 stale 证据，不能把旧结论静默当作当前能力；
+- Dashboard 可以与 Step 4–7 并行迭代；其功能完整度、构建或展示可用性不改变 Pipeline 退出码、Machine Validation verdict、`approval_eligible`、人工 review decision 或 acceptance status，也不构成 v0.4 收口的前置条件。Dashboard 问题按非阻断可观测性事项独立追踪。
 
 ##### P5：可信、CI-ready 的测试体系
 

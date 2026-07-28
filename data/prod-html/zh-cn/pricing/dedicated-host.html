@@ -1,0 +1,3326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=2.0" name="viewport"/>
+  <meta content="获取 Azure 专用主机的定价。Azure 专用主机是一项服务，可提供专用物理服务器以托管适用于 Windows 和 Linux 的 Azure 虚拟机 (VM)。" name="description"/>
+  <title>
+   定价 - 专用主机虚拟机 | Microsoft Azure
+  </title>
+  <link href="../../../../Static/Favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+  <link href="../../../..//Static/Favicon/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+  <link href="../../../Static/Favicon/favicon.ico" rel="icon" type="image/x-icon"/>
+  <link href="../../../../Static/Favicon/manifest.json" rel="manifest"/>
+  <link color="#0078D4" href="../../../../Static/Favicon/safari-pinned-tab.svg" rel="mask-icon"/>
+  <meta content="/Static/Favicon/browserconfig.xml" name="msapplication-config"/>
+  <meta content="#ffffff" name="theme-color"/>
+  <link href="https://azure.microsoft.com/zh-cn/pricing/details/container-instances/" rel="canonical"/>
+  <!-- BEGIN: Azure UI Style -->
+  <link href="../../../../Static/CSS/azureui.min.css" rel="stylesheet"/>
+  <link href="../../../../Static/CSS/common.min.css" rel="stylesheet"/>
+  <!-- END: Azure UI Style -->
+  <!-- BEGIN: Page Style -->
+  <!-- END: Page Style -->
+  <!-- BEGIN: Minified Page Style -->
+  <link href="../../../../Static/CSS/a05a0e4e99489d7b3cb548e24414e01adf779d77.css" rel="stylesheet"/>
+  <!-- END: Minified Page Style -->
+  <link href="../../../../StaticService/css/service.min.css" rel="stylesheet"/>
+ </head>
+ <body class="zh-cn">
+  <script>
+   window.requireUrlArgs = "2019/6/24 6:51:27";
+        window.currentLocale = "zh-CN";
+        window.headerTimestamp = "2019/1/23 8:25:24";
+        window.footerTimestamp = "2019/1/8 8:07:06";
+        window.locFileTimestamp = "2018/11/29 7:49:17";
+
+        window.AcnHeaderFooter = {
+            IsEnableQrCode: true,
+            CurrentLang: window.currentLocale.toLowerCase(),
+        };
+  </script>
+  <style>
+   @media (min-width: 0) {
+            .acn-header-placeholder {
+                height: 48px;
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 980px) {
+            .acn-header-placeholder {
+                height: 89px;
+                width: 100%;
+            }
+        }
+
+        .acn-header-placeholder {
+            background-color: #1A1A1A;
+        }
+
+        .acn-header-service {
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+  </style>
+  <div class="hide-info" style="display:none;">
+   <div class="bg-box">
+    <div class="cover-bg">
+    </div>
+   </div>
+   <div class="msg-box">
+    <div class="pricing-unavailable-message">
+     所选区域不可用
+    </div>
+   </div>
+  </div>
+  <div class="acn-header-container">
+   <div class="acn-header-placeholder">
+   </div>
+   <div class="public_headerpage">
+   </div>
+  </div>
+  <!-- BEGIN: Documentation Content -->
+  <div class="content">
+   <div class="container">
+    <div class="row">
+     <div class="col-md-12">
+      <div class="bread-crumb hidden-sm hidden-xs">
+       <ul>
+        <li>
+         <span>
+         </span>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+    <div class="single-page">
+     <div class="row">
+      <div class="col-md-2">
+       <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+        <div class="loader">
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+        </div>
+       </div>
+      </div>
+      <div class="col-md-10 pure-content">
+       <div class="select left-navigation-select hidden-md hidden-lg">
+        <select>
+         <option selected="selected">
+          加载中...
+         </option>
+        </select>
+        <span class="icon icon-arrow-top">
+        </span>
+       </div>
+       <tags ms.date="09/30/2015" ms.service="virtual-machines-dedicated-host" wacn.date="11/27/2015">
+       </tags>
+       <div class="common-banner col-top-banner" data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'//wacnppe.blob.core.chinacloudapi.cn/marketing-resource/css/container-instances_banner.png','imageHeight':'auto'}">
+        <div class="common-banner-image">
+         <div class="common-banner-title">
+          <!-- <img
+                                        src="/Images/marketing-resource/css/azure-dedicated-host_icon@2x.svg" /> -->
+          <span style="    float: left;
+                                        margin-right: 10px;
+                                        margin-top: 5px;
+                                        width: 48px;">
+           <svg data-slug-id="virtual-machines" viewbox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+             <lineargradient gradientunits="userSpaceOnUse" id="virtual-machines:f34d9569-2bd0-4002-8f16-3d01d8106cb5-29d42845" x1="8.88" x2="8.88" y1="12.21" y2="0.21">
+              <stop offset="0" stop-color="#0078d4">
+              </stop>
+              <stop offset="0.82" stop-color="#5ea0ef">
+              </stop>
+             </lineargradient>
+             <lineargradient gradientunits="userSpaceOnUse" id="virtual-machines:bdb45a0b-eb58-4970-a60a-fb2ce314f866-d1c0c912" x1="8.88" x2="8.88" y1="16.84" y2="12.21">
+              <stop offset="0.15" stop-color="#ccc">
+              </stop>
+              <stop offset="1" stop-color="#707070">
+              </stop>
+             </lineargradient>
+            </defs>
+            <rect fill="url(#virtual-machines:f34d9569-2bd0-4002-8f16-3d01d8106cb5-29d42845)" height="12" rx="0.6" width="18" x="-0.12" y="0.21">
+            </rect>
+            <polygon fill="#50e6ff" points="11.88 4.46 11.88 7.95 8.88 9.71 8.88 6.21 11.88 4.46">
+            </polygon>
+            <polygon fill="#c3f1ff" points="11.88 4.46 8.88 6.22 5.88 4.46 8.88 2.71 11.88 4.46">
+            </polygon>
+            <polygon fill="#9cebff" points="8.88 6.22 8.88 9.71 5.88 7.95 5.88 4.46 8.88 6.22">
+            </polygon>
+            <polygon fill="#c3f1ff" points="5.88 7.95 8.88 6.21 8.88 9.71 5.88 7.95">
+            </polygon>
+            <polygon fill="#9cebff" points="11.88 7.95 8.88 6.21 8.88 9.71 11.88 7.95">
+            </polygon>
+            <path d="M12.49,15.84c-1.78-.28-1.85-1.56-1.85-3.63H7.11c0,2.07-.06,3.35-1.84,3.63a1,1,0,0,0-.89,1h9A1,1,0,0,0,12.49,15.84Z" fill="url(#virtual-machines:bdb45a0b-eb58-4970-a60a-fb2ce314f866-d1c0c912)">
+            </path>
+           </svg>
+          </span>
+          <h2>
+           Azure 专用主机
+           <span>
+            Azure Dedicated Host
+           </span>
+          </h2>
+          <h4>
+           用于托管适用于 Windows 和 Linux 的 Azure VM 的专用物理服务器
+          </h4>
+         </div>
+        </div>
+       </div>
+       <p>
+        Azure 专用主机是一项提供物理服务器的 Azure 服务，这些物理服务器可以托管一个或多个 Azure
+                            虚拟机，专用于你的组织和工作负荷。服务器容量不与其他客户共享。配置主机时，可以直接查看和控制基础 Azure 基础结构。
+       </p>
+       <h2>
+        Azure 专用主机定价详情
+       </h2>
+       <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
+        <div class="tab-container-container">
+         <div class="tab-container-box">
+          <div class="tab-container">
+           <div class="dropdown-container software-kind-container" style="display:none;">
+            <label>
+             OS/软件:
+            </label>
+            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+             <span class="selected-item">
+              Azure Dedicated Host
+             </span>
+             <i class="icon">
+             </i>
+             <ol class="tab-items">
+              <li class="active">
+               <a data-href="#tabContent1" href="javascript:void(0)" id="home_managed-disks">
+                Azure
+                                                            Dedicated Host
+               </a>
+              </li>
+             </ol>
+            </div>
+            <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
+             <option data-href="#tabContent1" selected="selected" value="Azure Dedicated Host">
+              Azure Dedicated Host
+             </option>
+            </select>
+           </div>
+           <div class="dropdown-container region-container">
+            <label>
+             地区:
+            </label>
+            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+             <span class="selected-item">
+              中国东部 2
+             </span>
+             <i class="icon">
+             </i>
+             <ol class="tab-items">
+              <li class="active"><a href="javascript:void(0)" data-href="#east-china3" id="east-china3">中国东部 3</a></li>
+              <li>
+               <a data-href="#north-china3" href="javascript:void(0)" id="north-china3">
+                中国北部 3
+               </a>
+              </li>
+              <li>
+               <a data-href="#east-china2" href="javascript:void(0)" id="east-china2">
+                中国东部 2
+               </a>
+              </li>
+              <li>
+               <a data-href="#north-china2" href="javascript:void(0)" id="north-china2">
+                中国北部 2
+               </a>
+              </li>
+              <li>
+               <a data-href="#east-china" href="javascript:void(0)" id="east-china">
+                中国东部
+               </a>
+              </li>
+              <li>
+               <a data-href="#north-china" href="javascript:void(0)" id="north-china">
+                中国北部
+               </a>
+              </li>
+             </ol>
+            </div>
+            <select class="dropdown-select region-box hidden-lg hidden-md" id="region-box">
+             <option selected="selected" data-href="#east-china3" value="east-china3">中国东部 3</option>
+             <option data-href="#north-china3" value="north-china3">
+              中国北部 3
+             </option>
+             <option data-href="#east-china2" value="east-china2">
+              中国东部 2
+             </option>
+             <option data-href="#north-china2" value="north-china2">
+              中国北部 2
+             </option>
+             <option data-href="#east-china" value="east-china">
+              中国东部
+             </option>
+             <option data-href="#north-china" value="north-china">
+              中国北部
+             </option>
+            </select>
+           </div>
+           <div class="clearfix">
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="tab-panel" id="tabContent1">
+         <div class="pricing-page-section" style="margin-top: 0px;">
+          <div class="scroll-table" style="display: block;">
+           <p>
+            专用主机按照主机级别进行收费。无论在主机上运行的 Azure VM 数量是多少，预配主机后即开始收费。
+           </p>
+           <table cellpadding="0" cellspacing="0" id="Azure-Dedicated-Host-1" width="100%">
+            <thead>
+             <tr>
+              <th align="left" width="30%">
+               <strong>
+                专用主机 SKU（VM 系列和主机类型）
+               </strong>
+              </th>
+              <th align="left" width="20%">
+               <strong>
+                可用的 VCPU
+               </strong>
+              </th>
+              <th align="left" width="20%">
+               <strong>
+                可用的 RAM
+               </strong>
+              </th>
+              <th align="left" width="20%">
+               <strong>
+                CPU
+               </strong>
+              </th>
+              <th align="left" width="10%">
+               <strong>
+                价格
+               </strong>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="left_align">
+               Dsv3_Type1
+              </td>
+              <td class="left_align">
+               64
+              </td>
+              <td class="left_align">
+               256 GiB
+              </td>
+              <td class="left_align">
+               2.3 GHz Intel® Xeon® E5-2673 v4 (Broadwell)
+              </td>
+              <td class="left_align">
+               ￥34.392/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Dsv3_Type2
+              </td>
+              <td class="left_align">
+               72
+              </td>
+              <td class="left_align">
+               504 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8171M (Skylake)
+              </td>
+              <td class="left_align">
+               ￥38.694/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Dsv4_Type1
+              </td>
+              <td class="left_align">
+               80
+              </td>
+              <td class="left_align">
+               504 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8272CL (Cascade Lake)
+              </td>
+              <td class="left_align">
+               ￥42.98/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Esv3_Type1
+              </td>
+              <td class="left_align">
+               64
+              </td>
+              <td class="left_align">
+               448 GiB
+              </td>
+              <td class="left_align">
+               2.3 GHz Intel® Xeon® E5-2673 v4 (Broadwell)
+              </td>
+              <td class="left_align">
+               ￥39.492/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Esv3_Type2
+              </td>
+              <td class="left_align">
+               72
+              </td>
+              <td class="left_align">
+               504 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8171M (Skylake)
+              </td>
+              <td class="left_align">
+               ￥43.782/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Fsv2_Type2
+              </td>
+              <td class="left_align">
+               72
+              </td>
+              <td class="left_align">
+               144 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8168 (Skylake)
+              </td>
+              <td class="left_align">
+               ￥34.254/小时
+              </td>
+             </tr>
+            </tbody>
+           </table>
+           <div class="tags-date">
+            <div class="ms-date">
+             提示：Azure 专用主机价格页面可用类型仅供参考。具体可以使用的机器类型，请以
+             <a href="https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Fportal.azure.cn%2F&amp;data=04%7C01%7Cv-duji%40microsoft.com%7C986927a5c500471ccf7308d8c68cb940%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C637477655293528079%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=PROHycpFbpVa7Rs76mLqNF8M9B5QY6cuzajvJejXsG0%3D&amp;reserved=0" style="float: none; display: inline;background-color: white; color: #0078D4; padding: 0px;margin: 0px; font-size: 12px;">
+              Azure
+                                                    Portal
+             </a>
+             Azure专用主机可用机型为准。
+            </div>
+           </div>
+          </div>
+          <!-- 北三 -->
+          <div class="scroll-table" style="display: block;">
+           <p>
+            专用主机按照主机级别进行收费。无论在主机上运行的 Azure VM 数量是多少，预配主机后即开始收费。
+           </p>
+           <table cellpadding="0" cellspacing="0" id="Azure-Dedicated-Host-1-north3" width="100%">
+            <thead>
+             <tr>
+              <th align="left" width="30%">
+               <strong>
+                专用主机 SKU（VM 系列和主机类型）
+               </strong>
+              </th>
+              <th align="left" width="20%">
+               <strong>
+                可用的 VCPU
+               </strong>
+              </th>
+              <th align="left" width="20%">
+               <strong>
+                可用的 RAM
+               </strong>
+              </th>
+              <th align="left" width="20%">
+               <strong>
+                CPU
+               </strong>
+              </th>
+              <th align="left" width="10%">
+               <strong>
+                价格
+               </strong>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="left_align">
+               Dsv3_Type1
+              </td>
+              <td class="left_align">
+               64
+              </td>
+              <td class="left_align">
+               256 GiB
+              </td>
+              <td class="left_align">
+               2.3 GHz Intel® Xeon® E5-2673 v4 (Broadwell)
+              </td>
+              <td class="left_align">
+               ￥25.296/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Dsv3_Type2
+              </td>
+              <td class="left_align">
+               72
+              </td>
+              <td class="left_align">
+               504 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8171M (Skylake)
+              </td>
+              <td class="left_align">
+               ￥28.458/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Dsv4_Type1
+              </td>
+              <td class="left_align">
+               80
+              </td>
+              <td class="left_align">
+               504 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8272CL (Cascade Lake)
+              </td>
+              <td class="left_align">
+               ￥31.62/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Esv3_Type1
+              </td>
+              <td class="left_align">
+               64
+              </td>
+              <td class="left_align">
+               448 GiB
+              </td>
+              <td class="left_align">
+               2.3 GHz Intel® Xeon® E5-2673 v4 (Broadwell)
+              </td>
+              <td class="left_align">
+               ￥32.946/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Esv3_Type2
+              </td>
+              <td class="left_align">
+               72
+              </td>
+              <td class="left_align">
+               504 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8171M (Skylake)
+              </td>
+              <td class="left_align">
+               ￥32.946/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+                Esv3-Type3
+              </td>
+              <td class="left_align">
+                80
+              </td>
+              <td class="left_align">
+                504 GiB
+              </td>
+              <td class="left_align">
+                Intel® Xeon® Platinum 8272CL (Cascade Lake)
+              </td>
+              <td class="left_align">
+                ￥32.946/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Esv4_Type1
+              </td>
+              <td class="left_align">
+               64
+              </td>
+              <td class="left_align">
+               504 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8272CL (Cascade Lake)
+              </td>
+              <td class="left_align">
+               ￥32.946/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Ddsv4_Type 1
+              </td>
+              <td class="left_align">
+               68
+              </td>
+              <td class="left_align">
+               504 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8272CL (Cascade Lake)
+              </td>
+              <td class="left_align">
+               ￥30.912/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Edsv4_Type 1
+              </td>
+              <td class="left_align">
+               64
+              </td>
+              <td class="left_align">
+               504 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8272CL (Cascade Lake)
+              </td>
+              <td class="left_align">
+               ￥38.562/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Fsv2_Type2
+              </td>
+              <td class="left_align">
+               72
+              </td>
+              <td class="left_align">
+               144 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8168 (Skylake)
+              </td>
+              <td class="left_align">
+               ￥20.694/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Fsv2_Type3
+              </td>
+              <td class="left_align">
+               86
+              </td>
+              <td class="left_align">
+               504 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8272CL (Cascade Lake)
+              </td>
+              <td class="left_align">
+               ￥24.144/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Lasv3-Type1
+              </td>
+              <td class="left_align">
+               112
+              </td>
+              <td class="left_align">
+               1,024 GiB
+              </td>
+              <td class="left_align">
+                第三代 AMD EPYC™ 7763v (Milan)
+              </td>
+              <td class="left_align">
+               ￥51.504/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Mdmsv2MedMem-Type1
+              </td>
+              <td class="left_align">
+               192
+              </td>
+              <td class="left_align">
+               4,096 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8280 (Cascade Lake)
+              </td>
+              <td class="left_align">
+               ￥203.02/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Mdsv2MedMem-Type1
+              </td>
+              <td class="left_align">
+               192
+              </td>
+              <td class="left_align">
+               2,048 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8280 (Cascade Lake)
+              </td>
+              <td class="left_align">
+               ￥101.57/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Msmv2-Type1
+              </td>
+              <td class="left_align">
+               416
+              </td>
+              <td class="left_align">
+               11,400 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8180M (Skylake)
+              </td>
+              <td class="left_align">
+               ￥778.02/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Msv2-Type1
+              </td>
+              <td class="left_align">
+               416
+              </td>
+              <td class="left_align">
+               5,700 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8180M (Skylake)
+              </td>
+              <td class="left_align">
+               ￥389.04/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Msv2MedMem-Type1
+              </td>
+              <td class="left_align">
+               192
+              </td>
+              <td class="left_align">
+               2,048 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8280 (Cascade Lake)
+              </td>
+              <td class="left_align">
+               ￥73.84/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Mmsv2MedMem-Type1
+              </td>
+              <td class="left_align">
+               192
+              </td>
+              <td class="left_align">
+               4,096 GiB
+              </td>
+              <td class="left_align">
+               Intel® Xeon® Platinum 8280 (Cascade Lake)
+              </td>
+              <td class="left_align">
+               ￥147.62/小时
+              </td>
+             </tr>
+            </tbody>
+           </table>
+           <div class="tags-date">
+            <div class="ms-date">
+             提示：Azure 专用主机价格页面可用类型仅供参考。具体可以使用的机器类型，请以
+             <a href="https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Fportal.azure.cn%2F&amp;data=04%7C01%7Cv-duji%40microsoft.com%7C986927a5c500471ccf7308d8c68cb940%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C637477655293528079%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=PROHycpFbpVa7Rs76mLqNF8M9B5QY6cuzajvJejXsG0%3D&amp;reserved=0" style="float: none; display: inline;background-color: white; color: #0078D4; padding: 0px;margin: 0px; font-size: 12px;">
+              Azure
+                                                    Portal
+             </a>
+             Azure专用主机可用机型为准。
+            </div>
+           </div>
+          </div>
+          <!-- 东三 -->
+          <div class="scroll-table" style="display: block;">
+           <p>
+            专用主机按照主机级别进行收费。无论在主机上运行的 Azure VM 数量是多少，预配主机后即开始收费。
+           </p>
+           <table cellpadding="0" cellspacing="0" id="Azure-Dedicated-Host-1-east3" width="100%">
+            <thead>
+             <tr>
+              <th align="left" width="30%">
+               <strong>
+                专用主机 SKU（VM 系列和主机类型）
+               </strong>
+              </th>
+              <th align="left" width="20%">
+               <strong>
+                可用的 VCPU
+               </strong>
+              </th>
+              <th align="left" width="20%">
+               <strong>
+                可用的 RAM
+               </strong>
+              </th>
+              <th align="left" width="20%">
+               <strong>
+                CPU
+               </strong>
+              </th>
+              <th align="left" width="10%">
+               <strong>
+                价格
+               </strong>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="left_align">
+                        Dsv3_Type1
+                    </td>
+                    <td class="left_align">
+                        64
+                    </td>
+                    <td class="left_align">
+                        256 GiB
+                    </td>
+                    <td class="left_align">
+                        2.3 GHz Intel® Xeon® E5-2673 v4 (Broadwell)
+                    </td>
+                    <td class="left_align">
+                        ￥25.296/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Dsv3_Type2
+                    </td>
+                    <td class="left_align">
+                        72
+                    </td>
+                    <td class="left_align">
+                        504 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8171M (Skylake)
+                    </td>
+                    <td class="left_align">
+                        ￥28.458/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Dsv4_Type1
+                    </td>
+                    <td class="left_align">
+                        80
+                    </td>
+                    <td class="left_align">
+                        504 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8272CL (Cascade Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥31.62/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Esv3_Type1
+                    </td>
+                    <td class="left_align">
+                        64
+                    </td>
+                    <td class="left_align">
+                        448 GiB
+                    </td>
+                    <td class="left_align">
+                        2.3 GHz Intel® Xeon® E5-2673 v4 (Broadwell)
+                    </td>
+                    <td class="left_align">
+                        ￥32.946/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Esv3_Type2
+                    </td>
+                    <td class="left_align">
+                        72
+                    </td>
+                    <td class="left_align">
+                        504 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8171M (Skylake)
+                    </td>
+                    <td class="left_align">
+                        ￥32.946/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Esv3-Type3
+                    </td>
+                    <td class="left_align">
+                        80
+                    </td>
+                    <td class="left_align">
+                        504 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8272CL (Cascade Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥32.946/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Esv4_Type1
+                    </td>
+                    <td class="left_align">
+                        64
+                    </td>
+                    <td class="left_align">
+                        504 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8272CL (Cascade Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥32.946/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Ddsv4_Type 1
+                    </td>
+                    <td class="left_align">
+                        68
+                    </td>
+                    <td class="left_align">
+                        504 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8272CL (Cascade Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥30.912/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Edsv4_Type 1
+                    </td>
+                    <td class="left_align">
+                        64
+                    </td>
+                    <td class="left_align">
+                        504 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8272CL (Cascade Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥38.562/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Fsv2_Type2
+                    </td>
+                    <td class="left_align">
+                        72
+                    </td>
+                    <td class="left_align">
+                        144 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8168 (Skylake)
+                    </td>
+                    <td class="left_align">
+                        ￥20.694/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Fsv2_Type3
+                    </td>
+                    <td class="left_align">
+                        86
+                    </td>
+                    <td class="left_align">
+                        504 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8272CL (Cascade Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥24.144/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Lasv3-Type1
+                    </td>
+                    <td class="left_align">
+                        112
+                    </td>
+                    <td class="left_align">
+                        1,024 GiB
+                    </td>
+                    <td class="left_align">
+                        第三代 AMD EPYC™ 7763v (Milan)
+                    </td>
+                    <td class="left_align">
+                        ￥51.504/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Mdmsv2MedMem-Type1
+                    </td>
+                    <td class="left_align">
+                        192
+                    </td>
+                    <td class="left_align">
+                        4,096 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8280 (Cascade Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥203.02/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Mdsv2MedMem-Type1
+                    </td>
+                    <td class="left_align">
+                        192
+                    </td>
+                    <td class="left_align">
+                        2,048 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8280 (Cascade Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥101.57/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Msmv2-Type1
+                    </td>
+                    <td class="left_align">
+                        416
+                    </td>
+                    <td class="left_align">
+                        11,400 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8180M (Skylake)
+                    </td>
+                    <td class="left_align">
+                        ￥778.02/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Msv2-Type1
+                    </td>
+                    <td class="left_align">
+                        416
+                    </td>
+                    <td class="left_align">
+                        5,700 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8180M (Skylake)
+                    </td>
+                    <td class="left_align">
+                        ￥389.04/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Msv2MedMem-Type1
+                    </td>
+                    <td class="left_align">
+                        192
+                    </td>
+                    <td class="left_align">
+                        2,048 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8280 (Cascade Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥73.84/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Mmsv2MedMem-Type1
+                    </td>
+                    <td class="left_align">
+                        192
+                    </td>
+                    <td class="left_align">
+                        4,096 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8280 (Cascade Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥147.62/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Dsv3_Type3
+                    </td>
+                    <td class="left_align">
+                        80
+                    </td>
+                    <td class="left_align">
+                        504 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8272CL (Cascade Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥33.5/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Dsv3_Type4
+                    </td>
+                    <td class="left_align">
+                        119
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8370C (Ice Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥38/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Dsv4_Type2
+                    </td>
+                    <td class="left_align">
+                        119
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8370C (Ice Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥38/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Dsv5_Type1
+                    </td>
+                    <td class="left_align">
+                        119
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8370C (Ice Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥4.31/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Fsv2_Type4
+                    </td>
+                    <td class="left_align">
+                        119
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8370C (Ice Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥27.594/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Esv3-Type4
+                    </td>
+                    <td class="left_align">
+                        119
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8370C (Ice Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥43.242/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Esv4-Type2
+                    </td>
+                    <td class="left_align">
+                        119
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8370C (Ice Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥43.242/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Edsv4-Type2
+                    </td>
+                    <td class="left_align">
+                        119
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8370C (Ice Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥48.552/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Ddsv5_Type1
+                    </td>
+                    <td class="left_align">
+                        119
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8370C (Ice Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥5.266/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Dasv5_Type1
+                    </td>
+                    <td class="left_align">
+                        112
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        第三代 AMD EPYC™ 7763v (Milan)
+                    </td>
+                    <td class="left_align">
+                        ￥37.548/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Dasv4_Type1
+                    </td>
+                    <td class="left_align">
+                        96
+                    </td>
+                    <td class="left_align">
+                        672 GiB
+                    </td>
+                    <td class="left_align">
+                        2.35 GHz AMD EPYC™ 7452
+                    </td>
+                    <td class="left_align">
+                        ￥37.29/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Dasv4_Type2
+                    </td>
+                    <td class="left_align">
+                        112
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        第三代 AMD EPYC™ 7763v (Milan)
+                    </td>
+                    <td class="left_align">
+                        ￥37.29/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Dadsv5_Type1
+                    </td>
+                    <td class="left_align">
+                        112
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        第三代 AMD EPYC™ 7763v (Milan)
+                    </td>
+                    <td class="left_align">
+                        ￥46.818/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Ddsv4_Type 1
+                    </td>
+                    <td class="left_align">
+                        96
+                    </td>
+                    <td class="left_align">
+                        672 GiB
+                    </td>
+                    <td class="left_align">
+                        2.35 GHz AMD EPYC™ 7452
+                    </td>
+                    <td class="left_align">
+                        ￥30.912/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Ddsv4_Type 2
+                    </td>
+                    <td class="left_align">
+                        112
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        第三代 AMD EPYC™ 7763v (Milan)
+                    </td>
+                    <td class="left_align">
+                        ￥36.708/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Lsv3-Type1
+                    </td>
+                    <td class="left_align">
+                        119
+                    </td>
+                    <td class="left_align">
+                        1,024 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8370C (Ice Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥57.486/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Lasv3-Type1
+                    </td>
+                    <td class="left_align">
+                        112
+                    </td>
+                    <td class="left_align">
+                        1,024 GiB
+                    </td>
+                    <td class="left_align">
+                        第三代 AMD EPYC™ 7763v (Milan)
+                    </td>
+                    <td class="left_align">
+                        ￥51.504/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Ebsv5-Type1
+                    </td>
+                    <td class="left_align">
+                        119
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8370C (Ice Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥36.96/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Ebdsv5-Type1
+                    </td>
+                    <td class="left_align">
+                        119
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        Intel® Xeon® Platinum 8370C (Ice Lake)
+                    </td>
+                    <td class="left_align">
+                        ￥42.24/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Easv4-Type2
+                    </td>
+                    <td class="left_align">
+                        112
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        第三代 AMD EPYC™ 7763v (Milan)
+                    </td>
+                    <td class="left_align">
+                        ￥46.57/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Easv4-Type1
+                    </td>
+                    <td class="left_align">
+                        96
+                    </td>
+                    <td class="left_align">
+                        672 GiB
+                    </td>
+                    <td class="left_align">
+                        2.35 GHz AMD EPYC™ 7452
+                    </td>
+                    <td class="left_align">
+                        ￥46.57/小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Easv5-Type1
+                    </td>
+                    <td class="left_align">
+                        112
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        第三代 AMD EPYC™ 7763v (Milan)
+                    </td>
+                    <td class="left_align">
+                        ￥41.82 /小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left_align">
+                        Eadsv5-Type1
+                    </td>
+                    <td class="left_align">
+                        112
+                    </td>
+                    <td class="left_align">
+                        768 GiB
+                    </td>
+                    <td class="left_align">
+                        第三代 AMD EPYC™ 7763v (Milan)
+                    </td>
+                    <td class="left_align">
+                        ￥49.1/小时
+                    </td>
+                </tr>
+            </tbody>
+           </table>
+           <div class="tags-date">
+            <div class="ms-date">
+             提示：Azure 专用主机价格页面可用类型仅供参考。具体可以使用的机器类型，请以
+             <a href="https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Fportal.azure.cn%2F&amp;data=04%7C01%7Cv-duji%40microsoft.com%7C986927a5c500471ccf7308d8c68cb940%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C637477655293528079%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=PROHycpFbpVa7Rs76mLqNF8M9B5QY6cuzajvJejXsG0%3D&amp;reserved=0" style="float: none; display: inline;background-color: white; color: #0078D4; padding: 0px;margin: 0px; font-size: 12px;">
+              Azure
+                                                    Portal
+             </a>
+             Azure专用主机可用机型为准。
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="pricing-page-section">
+          <div class="scroll-table" style="display: block;">
+           <h2>
+            软件许可证
+           </h2>
+           <p>
+            除计算资源外，软件许可证也在VM级别根据使用情况单独计费。
+           </p>
+           <h3>
+            SQL Server Web
+           </h3>
+           <div class="tags-date">
+            <div class="ms-date">
+             *以下价格均为含税价格。
+            </div>
+            <br/>
+            <div class="ms-date">
+             *每月价格估算基于每个月 31 天的使用量。
+            </div>
+           </div>
+           <table cellpadding="0" cellspacing="0" width="100%">
+            <thead>
+             <tr>
+              <th align="left" width="">
+               <strong>
+                许可证类型
+               </strong>
+              </th>
+              <th align="left" width="">
+               <strong>
+                价格
+               </strong>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="left_align">
+               1 - 4 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥0.20352/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              6 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥0.305/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               8 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥0.40704/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               12 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥0.611/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              16 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥0.81408/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               20 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥1.0176/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               24 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥1.221/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               32 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥1.79/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               40 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥2.035/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               44 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥2.23872/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               60 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥3.0528/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               64 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥3.256/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               72 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥3.663/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              80 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥4.0704/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               96 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥4.884/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               128 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥6.513/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              208 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥10.583/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               416 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥21.166/小时
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+          <div class="scroll-table" style="display: block;">
+           <h3>
+            SQL Server Standard
+           </h3>
+           <div class="tags-date">
+            <div class="ms-date">
+             *以下价格均为含税价格。
+            </div>
+            <br/>
+            <div class="ms-date">
+             *每月价格估算基于每个月 31 天的使用量。
+            </div>
+           </div>
+           <table cellpadding="0" cellspacing="0" width="100%">
+            <thead>
+             <tr>
+              <th align="left" width="50%">
+               <strong>
+                许可证类型
+               </strong>
+              </th>
+              <th align="left" width="50%">
+               <strong>
+                价格
+               </strong>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="left_align">
+               1 - 4 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥2.544/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              6 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥3.816/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               8 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥5.088/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               12 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥7.632/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              16 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥10.176/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               20 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥12.72/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               24 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥15.264/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               32 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥20.352/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               40 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥25.44/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               44 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥27.984/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               60 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥38.16/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               64 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥40.704/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               72 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥45.792/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              80 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥50.88/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               96 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥61.056/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               128 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥81.408/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              208 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥132.29/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               416 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥264.58/小时
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+          <div class="scroll-table" style="display: block;">
+           <h3>
+            SQL Server Enterprise
+           </h3>
+           <div class="tags-date">
+            <div class="ms-date">
+             *以下价格均为含税价格。
+            </div>
+            <br/>
+            <div class="ms-date">
+             *每月价格估算基于每个月 31 天的使用量。
+            </div>
+           </div>
+           <table cellpadding="0" cellspacing="0" width="100%">
+            <thead>
+             <tr>
+              <th align="left" width="50%">
+               <strong>
+                许可证类型
+               </strong>
+              </th>
+              <th align="left" width="50%">
+               <strong>
+                价格
+               </strong>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="left_align">
+               1 - 4 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥9.54/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              6 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥14.31/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               8 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥19.08/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               12 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥28.62/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              16 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥38.16/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               20 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥47.7小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               24 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥57.24/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               32 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥76.32/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               40 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥95.4/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               44 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥104.94/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               60 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥143.1/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               64 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥152.64/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               72 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥171.72/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              80 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥190.8/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               96 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥228.96/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               128 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥305.28/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              208 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥496.08/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               416 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥992.16/小时
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+          <div class="scroll-table" style="display: block;">
+           <h3>
+            SQL Server Linux Web
+           </h3>
+           <div class="tags-date">
+            <div class="ms-date">
+             *以下价格均为含税价格。
+            </div>
+            <br/>
+            <div class="ms-date">
+             *每月价格估算基于每个月 31 天的使用量。
+            </div>
+           </div>
+           <table cellpadding="0" cellspacing="0" width="100%">
+            <thead>
+             <tr>
+              <th align="left" width="50%">
+               <strong>
+                许可证类型
+               </strong>
+              </th>
+              <th align="left" width="50%">
+               <strong>
+                价格
+               </strong>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="left_align">
+               1 - 4 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥0.20352/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               6 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥0.305/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               8 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥0.40704/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               12 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥0.611/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              16 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥0.81408/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               20 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥1.0176小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               24 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥1.221/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               32 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥1.62816/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               40 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥2.035/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               44 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥2.23872/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               60 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥3.0528/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               64 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥3.256/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               72 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥3.663/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              80 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥4.0704/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               96 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥4.884/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               128 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥6.513/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              208 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥10.583/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               416 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥21.166/小时
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+          <div class="scroll-table" style="display: block;">
+           <h3>
+            SQL Server Linux Standard
+           </h3>
+           <div class="tags-date">
+            <div class="ms-date">
+             *以下价格均为含税价格。
+            </div>
+            <br/>
+            <div class="ms-date">
+             *每月价格估算基于每个月 31 天的使用量。
+            </div>
+           </div>
+           <table cellpadding="0" cellspacing="0" width="100%">
+            <thead>
+             <tr>
+              <th align="left" width="50%">
+               <strong>
+                许可证类型
+               </strong>
+              </th>
+              <th align="left" width="50%">
+               <strong>
+                价格
+               </strong>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="left_align">
+               1 - 4 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥2.544/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               6 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥3.816/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               8 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥5.088/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               12 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥7.632/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               16 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥10.176/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               20 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥12.72/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               24 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥15.264/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               32 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥20.352/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               40 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥25.44/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               44 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥27.984/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               60 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥38.16/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               64 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥40.704/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               72 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥45.792/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               80 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥50.88/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               96 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥61.056/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               128 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥81.408/小时
+              </td>
+             </tr>
+             <td class="left_align">
+              208 vCPU 许可证
+             </td>
+             <td class="left_align">
+              ￥132.29/小时
+             </td>
+             <tr>
+              <td class="left_align">
+               416 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥264.58/小时
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+          <div class="scroll-table" style="display: block;">
+           <h3>
+            SQL Server Linux Enterprise
+           </h3>
+           <div class="tags-date">
+            <div class="ms-date">
+             *以下价格均为含税价格。
+            </div>
+            <br/>
+            <div class="ms-date">
+             *每月价格估算基于每个月 31 天的使用量。
+            </div>
+           </div>
+           <table cellpadding="0" cellspacing="0" width="100%">
+            <thead>
+             <tr>
+              <th align="left" width="50%">
+               <strong>
+                许可证类型
+               </strong>
+              </th>
+              <th align="left" width="50%">
+               <strong>
+                价格
+               </strong>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="left_align">
+               1 - 4 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥9.54/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               6 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥14.31/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               8 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥19.08/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               12 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥28.62/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               16 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥38.16/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               20 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥47.7/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               24 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥57.24/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               32 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥76.32/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               40 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥95.4/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               44 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥104.94/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               60 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥143.1/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               64 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥152.64/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               72 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥171.72/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               80 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥190.8/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               96 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥228.96/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               128 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥305.28/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               208 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥496.08/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               416 vCPU 许可证
+              </td>
+              <td class="left_align">
+               ￥992.16/小时
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+          <div class="scroll-table" style="display: block;">
+           <h3>
+            SUSE Linux Enterprise Server Basic
+           </h3>
+           <div class="tags-date">
+            <div class="ms-date">
+             *以下价格均为含税价格。
+            </div>
+            <br/>
+            <div class="ms-date">
+             *每月价格估算基于每个月 31 天的使用量。
+            </div>
+           </div>
+           <table cellpadding="0" cellspacing="0" width="100%">
+            <thead>
+             <tr>
+              <th align="left" width="50%">
+               <strong>
+                许可证类型
+               </strong>
+              </th>
+              <th align="left" width="50%">
+               <strong>
+                价格
+               </strong>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="left_align">
+               1-2 vCPU 许可证
+              </td>
+              <td class="left_align">
+               Free
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               3-4 vCPU 许可证
+              </td>
+              <td class="left_align">
+               Free
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               5+ vCPU 许可证
+              </td>
+              <td class="left_align">
+               Free
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+          <div class="scroll-table" style="display: block;">
+           <h3>
+            SUSE Linux Enterprise Server for SAP Priority
+           </h3>
+           <div class="tags-date">
+            <div class="ms-date">
+             *以下价格均为含税价格。
+            </div>
+            <br/>
+            <div class="ms-date">
+             *每月价格估算基于每个月 31 天的使用量。
+            </div>
+           </div>
+           <table cellpadding="0" cellspacing="0" width="100%">
+            <thead>
+             <tr>
+              <th align="left" width="50%">
+               <strong>
+                许可证类型
+               </strong>
+              </th>
+              <th align="left" width="50%">
+               <strong>
+                价格
+               </strong>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="left_align">
+               1-2 vCPU 许可证
+              </td>
+              <td class="left_align">
+               1.081/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               3-4 vCPU 许可证
+              </td>
+              <td class="left_align">
+               2.162/小时
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               5+ vCPU 许可证
+              </td>
+              <td class="left_align">
+               2.608/小时
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+          <div class="scroll-table" style="display: block;">
+           <h3>
+            专用主机配置表
+           </h3>
+           <p>
+            一次只能在 Azure 专用主机上部署一个受支持的 Azure VM 系列。VM 系列和大小取决于 Azure 专用主机类型。例如，在类型 1 Azure
+                                            专用主机上，可以部署
+                                            Dsv3 系列任何大小的 VM - 从 D2s v3 到 D64s v3。下面的配置表提供了更多详细信息。
+           </p>
+           <table cellpadding="0" cellspacing="0" width="100%">
+            <thead>
+             <tr>
+              <th align="left" width="32%">
+               <strong>
+                专用主机 SKU（VM 系列和主机类型）
+               </strong>
+              </th>
+              <th align="left" width="16%">
+               <strong>
+                物理核心数
+               </strong>
+              </th>
+              <th align="left" width="12%">
+               <strong>
+                可用的 VCPU
+               </strong>
+              </th>
+              <th align="left" width="12%">
+               <strong>
+                可用的 RAM
+               </strong>
+              </th>
+              <th align="left" width="12%">
+               <strong>
+                VM 大小
+               </strong>
+              </th>
+              <th align="left" width="12%">
+               <strong>
+                VM 数量
+               </strong>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="left_align">
+               Dsv3_Type1
+              </td>
+              <td class="left_align">
+               40
+              </td>
+              <td class="left_align">
+               64
+              </td>
+              <td class="left_align">
+               256 GiB
+              </td>
+              <td class="left_align">
+               D2s v3
+               <br/>
+               D4s v3
+               <br/>
+               D8s v3
+               <br/>
+               D16s v3
+               <br/>
+               D32s v3
+               <br/>
+               D48s v3
+               <br/>
+               D64s v3
+              </td>
+              <td class="left_align">
+               32
+               <br/>
+               16
+               <br/>
+               8
+               <br/>
+               4
+               <br/>
+               2
+               <br/>
+               1
+               <br/>
+               1
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Dsv3_Type2
+              </td>
+              <td class="left_align">
+               48
+              </td>
+              <td class="left_align">
+               72
+              </td>
+              <td class="left_align">
+               504 GiB
+              </td>
+              <td class="left_align">
+               D2s v3
+               <br/>
+               D4s v3
+               <br/>
+               D8s v3
+               <br/>
+               D16s v3
+               <br/>
+               D32s v3
+               <br/>
+               D48s v3
+               <br/>
+               D64s v3
+              </td>
+              <td class="left_align">
+               32
+               <br/>
+               18
+               <br/>
+               9
+               <br/>
+               4
+               <br/>
+               2
+               <br/>
+               1
+               <br/>
+               1
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Dsv4_Type1
+              </td>
+              <td class="left_align">
+               52
+              </td>
+              <td class="left_align">
+               80
+              </td>
+              <td class="left_align">
+               504 GiB
+              </td>
+              <td class="left_align">
+               D2s v4
+               <br/>
+               D4s v4
+               <br/>
+               D8s v4
+               <br/>
+               D16s v4
+               <br/>
+               D32s v4
+               <br/>
+               D48s v4
+               <br/>
+               D64s v4
+              </td>
+              <td class="left_align">
+               32
+               <br/>
+               20
+               <br/>
+               10
+               <br/>
+               5
+               <br/>
+               2
+               <br/>
+               1
+               <br/>
+               1
+              </td>
+             </tr>
+             <!-- <tr>
+                                                <td class="left_align">Dasv4_Type1</td>
+                                                <td class="left_align">64</td>
+                                                <td class="left_align">96</td>
+                                                <td class="left_align">768 GiB</td>
+                                                <td class="left_align">
+                                                    D2as v4<br>
+                                                    D4as v4<br>
+                                                    D8as v4<br>
+                                                    D16as v4<br>
+                                                    D32as v4<br>
+                                                    D48as v4<br>
+                                                    D64as v4<br>
+                                                    D96as v4
+                                                </td>
+                                                <td class="left_align">32<br>
+                                                    19<br>
+                                                    9<br>
+                                                    4<br>
+                                                    2<br>
+                                                    1<br>
+                                                    1<br>
+                                                    1
+                                                </td>
+                                            </tr> -->
+             <tr>
+              <td class="left_align">
+               Esv3_Type1
+              </td>
+              <td class="left_align">
+               40
+              </td>
+              <td class="left_align">
+               64
+              </td>
+              <td class="left_align">
+               448 GiB
+              </td>
+              <td class="left_align">
+               E2s v3
+               <br/>
+               E4s v3
+               <br/>
+               E8s v3
+               <br/>
+               E16s v3
+               <br/>
+               E20s v3
+               <br/>
+               E32s v3
+               <br/>
+               E48s v3
+               <br/>
+               E64s v3
+              </td>
+              <td class="left_align">
+               28
+               <br/>
+               14
+               <br/>
+               7
+               <br/>
+               3
+               <br/>
+               2
+               <br/>
+               1
+               <br/>
+               1
+               <br/>
+               1
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Esv3_Type2
+              </td>
+              <td class="left_align">
+               48
+              </td>
+              <td class="left_align">
+               72
+              </td>
+              <td class="left_align">
+               504 GiB
+              </td>
+              <td class="left_align">
+               E2s v3
+               <br/>
+               E4s v3
+               <br/>
+               E8s v3
+               <br/>
+               E16s v3
+               <br/>
+               E20s v3
+               <br/>
+               E32s v3
+               <br/>
+               E48s v3
+               <br/>
+               E64s v3
+              </td>
+              <td class="left_align">
+               31
+               <br/>
+               15
+               <br/>
+               7
+               <br/>
+               3
+               <br/>
+               3
+               <br/>
+               1
+               <br/>
+               1
+               <br/>
+               1
+              </td>
+             </tr>
+             <!-- <tr>
+                                                <td class="left_align">Easv4_Type1</td>
+                                                <td class="left_align">64</td>
+                                                <td class="left_align">96</td>
+                                                <td class="left_align">768 GiB</td>
+                                                <td class="left_align">
+                                                    E2as v4<br>
+                                                    E4as v4<br>
+                                                    E8as v4<br>
+                                                    E16as v4<br>
+                                                    E20as v4<br>
+                                                    E32as v4<br>
+                                                    E48as v4<br>
+                                                    E64as v4<br>
+                                                    E96as v4<br>
+                                                </td>
+                                                <td class="left_align">
+                                                    32<br>
+                                                    19<br>
+                                                    9<br>
+                                                    4<br>
+                                                    3<br>
+                                                    2<br>
+                                                    1<br>
+                                                    1<br>
+                                                    1
+                                                </td>
+                                            </tr> -->
+             <tr>
+              <td class="left_align">
+               Fsv2_Type2
+              </td>
+              <td class="left_align">
+               48
+              </td>
+              <td class="left_align">
+               72
+              </td>
+              <td class="left_align">
+               144 GiB
+              </td>
+              <td class="left_align">
+               F2s v2
+               <br/>
+               F4s v2
+               <br/>
+               F8s v2
+               <br/>
+               F16s v2
+               <br/>
+               F32s v2
+               <br/>
+               F48s v2
+               <br/>
+               F64s v2
+               <br/>
+               F72s v2
+               <br/>
+              </td>
+              <td class="left_align">
+               32
+               <br/>
+               18
+               <br/>
+               9
+               <br/>
+               4
+               <br/>
+               2
+               <br/>
+               1
+               <br/>
+               1
+               <br/>
+               1
+              </td>
+             </tr>
+             <!-- <tr>
+                                                <td class="left_align">Lsv2_Type1</td>
+                                                <td class="left_align">64</td>
+                                                <td class="left_align">80</td>
+                                                <td class="left_align">640 GiB</td>
+                                                <td class="left_align">
+                                                    L8s v2<br>
+                                                    L16s v2<br>
+                                                    L32s v2<br>
+                                                    L48s v2<br>
+                                                    L64s v2<br>
+                                                    L80s v2<br>
+                                                </td>
+                                                <td class="left_align">
+                                                    10<br>
+                                                    5<br>
+                                                    2<br>
+                                                    1<br>
+                                                    1<br>
+                                                    1
+                                                </td>
+                                            </tr> -->
+             <!-- <tr>
+                                                <td class="left_align">Msv2_Type1</td>
+                                                <td class="left_align">224</td>
+                                                <td class="left_align">416</td>
+                                                <td class="left_align">5,700 GiB</td>
+                                                <td class="left_align">
+                                                    M208s v2<br>
+                                                    M416s v2<br>
+                                                </td>
+                                                <td class="left_align">
+                                                    2<br>
+                                                    1
+                                                </td>
+                                            </tr> -->
+             <!-- <tr>
+                                                <td class="left_align">Msmv2_Type1</td>
+                                                <td class="left_align">224</td>
+                                                <td class="left_align">416</td>
+                                                <td class="left_align">11,400 GiB</td>
+                                                <td class="left_align">
+                                                    M208s v2<br>
+                                                    M416s v2<br>
+                                                </td>
+                                                <td class="left_align">
+                                                    2<br>
+                                                    1
+                                                </td>
+                                            </tr> -->
+            </tbody>
+           </table>
+          </div>
+          <div class="scroll-table" style="display: block;">
+           <h3>
+            配置示例
+           </h3>
+           <p>
+            通过 Azure 专用主机，可以在主机的核心和内存容量限制内运行属于同一 VM 系列的任意数量的 Azure VM。例如，下列任何配置均可运行。
+           </p>
+           <table cellpadding="0" cellspacing="0" width="100%">
+            <thead>
+             <tr>
+              <th align="left" width="16%">
+               <strong>
+                专用主机 SKU
+               </strong>
+              </th>
+              <th align="left" width="16%">
+               <strong>
+                示例组合
+               </strong>
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="left_align">
+               Dsv3_Type1
+              </td>
+              <td class="left_align">
+               16 D2s v3 VM + 8 D4s v3 VM
+               <br/>
+               4 D2s v3 VM + 4 D4s v3 VM + 5 D8s v3 VM
+               <br/>
+               2 D16s v3 VM + 1 D32s v3 VM
+               <br/>
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Esv3_Type1
+              </td>
+              <td class="left_align">
+               20 E2s v3 VM + 2 E8s v3 VM
+               <br/>
+               6 E4s v3 VM + 2 E16s v3 VM
+               <br/>
+               12 E2s v3 VM + 1 E32s v3 VM
+               <br/>
+              </td>
+             </tr>
+             <tr>
+              <td class="left_align">
+               Fsv2_Type2
+              </td>
+              <td class="left_align">
+               28 F2s v2 VM + 4 F4s v2 VM
+               <br/>
+               4 F4s v2 VM + 8 F4s v2 VM + 1 F32s v2 VM
+               <br/>
+               4 F2s v2 VM + 1 E64s v2 VM
+               <br/>
+              </td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="pricing-page-section">
+        <div class="more-detail">
+         <h2>
+          常见问题
+         </h2>
+         <em>
+          全部展开
+         </em>
+         <h3>
+          常规
+         </h3>
+         <ul>
+          <li>
+           <i class="icon icon-plus">
+           </i>
+           <div>
+            <a id="vm-que-1">
+             Azure 专用主机如何计费？
+            </a>
+            <section>
+             <p>
+              配置主机后的每小时都会按即用即付费率计费，并且无论主机上运行的 VM
+                                                    实例数量是多少，你都将为整个主机付费。任何其他费用（例如软件许可证）都将单独计费。
+             </p>
+            </section>
+           </div>
+          </li>
+          <li>
+           <i class="icon icon-plus">
+           </i>
+           <div>
+            <a id="vm-que-2">
+             软件许可证如何计费？
+            </a>
+            <section>
+             <p>
+              软件许可证在 VM 级别根据使用情况单独计费。
+             </p>
+            </section>
+           </div>
+          </li>
+          <li>
+           <i class="icon icon-plus">
+           </i>
+           <div>
+            <a id="vm-que-q3">
+             将工作负荷转换到 Azure 专用主机时，可以使用现有 Windows Server 和 SQL Server
+                                                许可证吗？
+            </a>
+            <section>
+             <p>
+              由于硬件是专门为你提供的，因此适用于 2019 年 10 月 1 日之前获得的 Windows Server 和 SQL Server
+                                                    许可证的外包软件管理条款，它允许你将现有许可证分配给 Azure 专用主机，就像为自己的数据中心的服务器分配许可证一样。
+             </p>
+            </section>
+           </div>
+          </li>
+          <li>
+           <i class="icon icon-plus">
+           </i>
+           <div>
+            <a id="vm-que-q4">
+             可以在单个 Azure 专用主机上混合部署多种大小的实例吗？
+            </a>
+            <section>
+             <p>
+              是的，可以在单个主机上混合部署不同大小的 VM。例如，可在同一主机上部署 D2s v3 和 D16s v3 VM。不能混合部署不同 VM
+                                                    系列的 VM（例如 Dsv3 和 Esv3）。
+             </p>
+            </section>
+           </div>
+          </li>
+         </ul>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- END: Documentation Content -->
+  <!-- BEGIN: Footer -->
+  <div class="public_footerpage">
+  </div>
+  <!--END: Common sidebar-->
+  <link href="../../../../Static/CSS/Localization/zh-cn.css" rel="stylesheet"/>
+  <script type="text/javascript">
+   function getAntiForgeryToken() {
+            var token =
+                '<input name="__RequestVerificationToken" type="hidden" value="FtJS7EhZBT6rgbp0PkQRqZsvT4EkKorxier871BisK9SjwrzF-3NCsrqEl_VYuhENbkKwc9cRYh6MY_Z2AzDIMXeWXd32LE1Vl7rUDgXkV41" />';
+            token = $(token).val();
+            return token;
+        }
+
+        function setLocaleCookie(localeVal) {
+            var Days = 365 * 10; // Ten year expiration
+            var exp = new Date();
+
+            var hostName = window.location.hostname;
+            var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain +
+                "; path=/;expires=" + exp.toGMTString();
+        }
+
+        setLocaleCookie(window.currentLocale);
+  </script>
+  <script type="text/javascript">
+   var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+        var TECHNICAL_STORAGE = '/blob/tech-content/';
+        var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+        var EnablePricingSync = 'false';
+  </script>
+  <!-- BEGIN: Minified RequireJs -->
+  <script src="/Static/Scripts/global.config.js" type="text/javascript">
+  </script>
+  <script src="/Static/Scripts/require.js" type="text/javascript">
+  </script>
+  <script src=" /Static/Scripts/pricing-page-detail.js" type="text/javascript">
+  </script>
+  <script src="../../../../Static/Scripts/2c76879c65af503b3c0d969c85243b9f28fdb5c1.js" type="text/javascript">
+  </script>
+  <!-- END: Minified RequireJs -->
+  <!-- begin JSLL -->
+  <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js">
+  </script>
+  <script type="text/javascript">
+   (function () {
+            var config = {
+                cookiesToCollect: ["_mkto_trk"],
+                syncMuid: true,
+                ix: {
+                    a: true,
+                    g: true
+                },
+                coreData: {
+                    appId: 'AzureCN',
+                    market: 'zh-cn',
+                }
+            };
+            awa.init(config);
+        })();
+  </script>
+  <!-- end JSLL -->
+  <script src="/Static/Scripts/plugins/cookie/jquery.cookie.js" type="text/javascript">
+  </script>
+  <script src="/Static/Scripts/wacndatatracker.js" type="text/javascript">
+  </script>
+  <script src="/common/useCommon.js" type="text/javascript">
+  </script>
+ </body>
+</html>

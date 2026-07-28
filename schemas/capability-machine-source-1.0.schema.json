@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/capability-machine-source-1.0.schema.json",
+  "title": "Capability Machine Evidence Selection 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "selection_id",
+    "selected_at",
+    "selection_policy",
+    "evidence",
+    "notes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "selection_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"
+    },
+    "selected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "selection_policy": {
+      "const": "explicit_path_and_sha256"
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "schema_version",
+        "schema_path",
+        "schema_sha256",
+        "path",
+        "sha256",
+        "report_id"
+      ],
+      "properties": {
+        "kind": {
+          "const": "step3_probe"
+        },
+        "schema_version": {
+          "const": "1.0"
+        },
+        "schema_path": {
+          "const": "schemas/step3-capability-probe-1.0.schema.json"
+        },
+        "schema_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^reports/v0\\.4/[a-z0-9._-]+\\.json$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "report_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

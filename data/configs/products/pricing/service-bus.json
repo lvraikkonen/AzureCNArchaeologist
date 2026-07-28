@@ -27,12 +27,12 @@
       "expected_by_language": {
         "zh-cn": {
           "fragment_count": 1,
-          "source_html_sha256": "78697bcd00dd22cca98a337a2fa36f9f8c20c5e50ddfbac9106081765e04b73a",
+          "source_html_sha256": "95f29033d0c710e71260fdc926f96c885c124dabb16672939a5a832fd7b9ede5",
           "wire_html_sha256": "9d9cce97d44e236e58d7461aa4c5425f061afabcdfbcacab8c65bae7ae725374"
         },
         "en-us": {
           "fragment_count": 1,
-          "source_html_sha256": "e0dcd84ea52a986e08e8c9f35c332656dd394326e9ac9ef5253c684aca980495",
+          "source_html_sha256": "8f05d669c13e2daa02d968b50dcf5ec31f6f342f2c9e1d8f67131682637488ea",
           "wire_html_sha256": "aa02090d85e9bac31e7c23e3f7d2863c2e6d39db78d7443f2d80d28f5b3e2cca"
         }
       }

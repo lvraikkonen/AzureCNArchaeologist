@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0",
   "report_id": "v0.4-soft-category-upstream-findings",
-  "status": "upstream_action_required",
+  "status": "nonblocking_configuration_hygiene_findings",
   "configuration": {
     "path": "data/configs/soft-category.json",
-    "size_bytes": 338776,
-    "sha256": "a5b3ccebcbf11b561e0d6c03f72a3771235ae568621eba4fc1c8c46bc8667d12"
+    "size_bytes": 345664,
+    "sha256": "927831ddb8cd3add17a5e7ee259ff77256e2c3d7922d5e355683910f8980f1d3"
   },
   "audit_policy": {
     "pair_identity": "Exact JSON string values of (os, region); os is the software filter value.",
@@ -14,380 +14,31 @@
     "table_ids_index_base": 0,
     "inventory_scope": "all_configuration_entries",
     "runtime_scope": "reachable_exact_pairs_and_state_relevant_table_ids_only",
-    "merge_policy": "never_silently_merge_or_deduplicate",
+    "duplicate_exact_pair_policy": {
+      "automatic_merge": "forbidden",
+      "runtime_disposition": "block_reachable_exact_pair_before_payload"
+    },
+    "row_duplicate_policy": {
+      "blocking": false,
+      "runtime_disposition": "ordered_unique_by_first_physical_occurrence",
+      "reporting": "nonblocking_configuration_hygiene"
+    },
     "runtime_detector": "StrictSoftCategoryProjector.configuration_findings"
   },
   "summary": {
-    "configuration_entries_surveyed": 328,
-    "duplicate_software_region_pairs": 3,
-    "duplicate_pair_entries": 6,
-    "row_duplicate_table_id_entries": 38,
-    "row_duplicate_distinct_table_ids": 310,
-    "row_duplicate_extra_occurrences": 321
+    "configuration_entries_surveyed": 325,
+    "duplicate_software_region_pairs": 0,
+    "duplicate_pair_entries": 0,
+    "row_duplicate_table_id_entries": 37,
+    "row_duplicate_distinct_table_ids": 309,
+    "row_duplicate_extra_occurrences": 320
   },
-  "duplicate_software_region_findings": [
-    {
-      "finding_code": "SOFT_CATEGORY_DUPLICATE_EXACT_PAIR",
-      "status": "confirmed_configuration_error",
-      "software_value": "Managed Instance",
-      "region_value": "east-china",
-      "entry_indices": [
-        48,
-        52
-      ],
-      "entries": [
-        {
-          "entry_index": 48,
-          "table_id_count": 19,
-          "table_ids": [
-            "#T2-G-P",
-            "#T2-G-PM",
-            "#T3-G-P",
-            "#T3-G-PM",
-            "#T2-B-P",
-            "#T2-B-PM",
-            "#T3-B-P",
-            "#T3-B-PM",
-            "#sqldb-managed-instance-general-purpose-gen5",
-            "#sqldb-managed-instance-general-purpose-gen5-1",
-            "#sqldb-managed-instance-business-critical-gen5",
-            "#sqldb-managed-instance-business-premium-serries-2",
-            "#sqldb-managed-instance-business-premium-serries-2-yh",
-            "#Managed_Instance_area-5_General_Purpose-1",
-            "#Managed_Instance_area-5_General_Purpose-2",
-            "#Managed_Instance_area-5_General_Purpose-3",
-            "#Managed_Instance_area-5_Business_Critical-1",
-            "#Managed_Instance_area-5_Business_Critical-2",
-            "#Managed_Instance_area-5"
-          ],
-          "only_in_entry_table_ids": [
-            "#sqldb-managed-instance-business-premium-serries-2",
-            "#sqldb-managed-instance-business-premium-serries-2-yh"
-          ]
-        },
-        {
-          "entry_index": 52,
-          "table_id_count": 35,
-          "table_ids": [
-            "#T2-G-P",
-            "#T2-G-PM",
-            "#T3-G-P",
-            "#T3-G-PM",
-            "#T2-B-P",
-            "#T2-B-PM",
-            "#T3-B-P",
-            "#T3-B-PM",
-            "#sqldb-managed-instance-general-purpose-gen5",
-            "#sqldb-managed-instance-general-purpose-gen5-1",
-            "#sqldb-managed-instance-business-critical-gen5",
-            "#SQL_General_Gen5_11_N3",
-            "#SQL_General_Gen5_11_E3",
-            "#MI_General_Purpose_Storage_14_N3",
-            "#MI_General_Purpose_Storage_14_E3",
-            "#MI_2-1_Point_N3",
-            "#MI_2-1_Point_E3",
-            "#MI_2_Long_N3",
-            "#MI_2_Long_E3",
-            "#MI_Business_Critical_Gen5_16_N3",
-            "#MI_Business_Critical_Gen5_16_E3",
-            "#MI_Business_Critical_Storage_15_N3",
-            "#MI_Business_Critical_Storage_15_E3",
-            "#Additional_Memory_NE3",
-            "#Additional_Memory_N3",
-            "#MI_Business_Additional_Memory_15_N3",
-            "#MI_2-2_Point_N3",
-            "#MI_2-2_Point_E3",
-            "#Managed_Instance_Premium-series-2",
-            "#Managed_Instance_area-5_General_Purpose-1",
-            "#Managed_Instance_area-5_General_Purpose-2",
-            "#Managed_Instance_area-5_General_Purpose-3",
-            "#Managed_Instance_area-5_Business_Critical-1",
-            "#Managed_Instance_area-5_Business_Critical-2",
-            "#Managed_Instance_area-5"
-          ],
-          "only_in_entry_table_ids": [
-            "#SQL_General_Gen5_11_N3",
-            "#SQL_General_Gen5_11_E3",
-            "#MI_General_Purpose_Storage_14_N3",
-            "#MI_General_Purpose_Storage_14_E3",
-            "#MI_2-1_Point_N3",
-            "#MI_2-1_Point_E3",
-            "#MI_2_Long_N3",
-            "#MI_2_Long_E3",
-            "#MI_Business_Critical_Gen5_16_N3",
-            "#MI_Business_Critical_Gen5_16_E3",
-            "#MI_Business_Critical_Storage_15_N3",
-            "#MI_Business_Critical_Storage_15_E3",
-            "#Additional_Memory_NE3",
-            "#Additional_Memory_N3",
-            "#MI_Business_Additional_Memory_15_N3",
-            "#MI_2-2_Point_N3",
-            "#MI_2-2_Point_E3",
-            "#Managed_Instance_Premium-series-2"
-          ]
-        }
-      ],
-      "duplicate_table_ids": [
-        "#T2-G-P",
-        "#T2-G-PM",
-        "#T3-G-P",
-        "#T3-G-PM",
-        "#T2-B-P",
-        "#T2-B-PM",
-        "#T3-B-P",
-        "#T3-B-PM",
-        "#sqldb-managed-instance-general-purpose-gen5",
-        "#sqldb-managed-instance-general-purpose-gen5-1",
-        "#sqldb-managed-instance-business-critical-gen5",
-        "#Managed_Instance_area-5_General_Purpose-1",
-        "#Managed_Instance_area-5_General_Purpose-2",
-        "#Managed_Instance_area-5_General_Purpose-3",
-        "#Managed_Instance_area-5_Business_Critical-1",
-        "#Managed_Instance_area-5_Business_Critical-2",
-        "#Managed_Instance_area-5"
-      ],
-      "upstream_suggestion": {
-        "action": "replace_duplicate_pair_with_one_authoritative_entry",
-        "description": "Review the intent of every listed row, then replace the duplicate (software, region) rows with exactly one authoritative row. Do not resolve this by last-write-wins or an unreviewed union."
-      },
-      "safety_checks": [
-        "Exactly one configuration entry remains for the same software_value and region_value.",
-        "The surviving tableIDs are reviewed against every only_in_entry_table_ids difference recorded here.",
-        "The surviving tableIDs contain no duplicate normalized table identity.",
-        "Every reachable exact pair is replayed through the strict projector before Payload generation."
-      ],
-      "runtime_disposition": {
-        "when_exact_pair_is_reachable": "block_before_payload",
-        "when_pair_is_not_reachable": "report_configuration_finding_without_projection"
-      }
-    },
-    {
-      "finding_code": "SOFT_CATEGORY_DUPLICATE_EXACT_PAIR",
-      "status": "confirmed_configuration_error",
-      "software_value": "Managed Instance",
-      "region_value": "north-china",
-      "entry_indices": [
-        49,
-        53
-      ],
-      "entries": [
-        {
-          "entry_index": 49,
-          "table_id_count": 19,
-          "table_ids": [
-            "#T2-G-P",
-            "#T2-G-PM",
-            "#T3-G-P",
-            "#T3-G-PM",
-            "#T2-B-P",
-            "#T2-B-PM",
-            "#T3-B-P",
-            "#T3-B-PM",
-            "#sqldb-managed-instance-general-purpose-gen5",
-            "#sqldb-managed-instance-general-purpose-gen5-1",
-            "#sqldb-managed-instance-business-critical-gen5",
-            "#sqldb-managed-instance-business-premium-serries-2",
-            "#sqldb-managed-instance-business-premium-serries-2-yh",
-            "#Managed_Instance_area-5_General_Purpose-1",
-            "#Managed_Instance_area-5_General_Purpose-2",
-            "#Managed_Instance_area-5_General_Purpose-3",
-            "#Managed_Instance_area-5_Business_Critical-1",
-            "#Managed_Instance_area-5_Business_Critical-2",
-            "#Managed_Instance_area-5"
-          ],
-          "only_in_entry_table_ids": [
-            "#sqldb-managed-instance-business-premium-serries-2",
-            "#sqldb-managed-instance-business-premium-serries-2-yh"
-          ]
-        },
-        {
-          "entry_index": 53,
-          "table_id_count": 36,
-          "table_ids": [
-            "#T2-G-P",
-            "#T2-G-PM",
-            "#T3-G-P",
-            "#T3-G-PM",
-            "#T2-B-P",
-            "#T2-B-PM",
-            "#T3-B-P",
-            "#T3-B-PM",
-            "#sqldb-managed-instance-general-purpose-gen5",
-            "#sqldb-managed-instance-general-purpose-gen5-1",
-            "#sqldb-managed-instance-business-critical-gen5",
-            "#SQL_General_Gen5_11_N3",
-            "#SQL_General_Gen5_11_E3",
-            "#MI_General_Purpose_Storage_14_N3",
-            "#MI_General_Purpose_Storage_14_E3",
-            "#MI_2-1_Point_N3",
-            "#MI_2-1_Point_E3",
-            "#MI_2_Long_N3",
-            "#MI_2_Long_E3",
-            "#MI_Business_Critical_Gen5_16_N3",
-            "#MI_Business_Critical_Gen5_16_E3",
-            "#MI_Business_Critical_Storage_15_N3",
-            "#MI_Business_Critical_Storage_15_E3",
-            "#Additional_Memory_NE3",
-            "#Additional_Memory_N3",
-            "#MI_Business_Additional_Memory_15_N3",
-            "#Elastic_Database_NE3_5-east3",
-            "#MI_2-2_Point_N3",
-            "#MI_2-2_Point_E3",
-            "#Managed_Instance_Premium-series-2",
-            "#Managed_Instance_area-5_General_Purpose-1",
-            "#Managed_Instance_area-5_General_Purpose-2",
-            "#Managed_Instance_area-5_General_Purpose-3",
-            "#Managed_Instance_area-5_Business_Critical-1",
-            "#Managed_Instance_area-5_Business_Critical-2",
-            "#Managed_Instance_area-5"
-          ],
-          "only_in_entry_table_ids": [
-            "#SQL_General_Gen5_11_N3",
-            "#SQL_General_Gen5_11_E3",
-            "#MI_General_Purpose_Storage_14_N3",
-            "#MI_General_Purpose_Storage_14_E3",
-            "#MI_2-1_Point_N3",
-            "#MI_2-1_Point_E3",
-            "#MI_2_Long_N3",
-            "#MI_2_Long_E3",
-            "#MI_Business_Critical_Gen5_16_N3",
-            "#MI_Business_Critical_Gen5_16_E3",
-            "#MI_Business_Critical_Storage_15_N3",
-            "#MI_Business_Critical_Storage_15_E3",
-            "#Additional_Memory_NE3",
-            "#Additional_Memory_N3",
-            "#MI_Business_Additional_Memory_15_N3",
-            "#Elastic_Database_NE3_5-east3",
-            "#MI_2-2_Point_N3",
-            "#MI_2-2_Point_E3",
-            "#Managed_Instance_Premium-series-2"
-          ]
-        }
-      ],
-      "duplicate_table_ids": [
-        "#T2-G-P",
-        "#T2-G-PM",
-        "#T3-G-P",
-        "#T3-G-PM",
-        "#T2-B-P",
-        "#T2-B-PM",
-        "#T3-B-P",
-        "#T3-B-PM",
-        "#sqldb-managed-instance-general-purpose-gen5",
-        "#sqldb-managed-instance-general-purpose-gen5-1",
-        "#sqldb-managed-instance-business-critical-gen5",
-        "#Managed_Instance_area-5_General_Purpose-1",
-        "#Managed_Instance_area-5_General_Purpose-2",
-        "#Managed_Instance_area-5_General_Purpose-3",
-        "#Managed_Instance_area-5_Business_Critical-1",
-        "#Managed_Instance_area-5_Business_Critical-2",
-        "#Managed_Instance_area-5"
-      ],
-      "upstream_suggestion": {
-        "action": "replace_duplicate_pair_with_one_authoritative_entry",
-        "description": "Review the intent of every listed row, then replace the duplicate (software, region) rows with exactly one authoritative row. Do not resolve this by last-write-wins or an unreviewed union."
-      },
-      "safety_checks": [
-        "Exactly one configuration entry remains for the same software_value and region_value.",
-        "The surviving tableIDs are reviewed against every only_in_entry_table_ids difference recorded here.",
-        "The surviving tableIDs contain no duplicate normalized table identity.",
-        "Every reachable exact pair is replayed through the strict projector before Payload generation."
-      ],
-      "runtime_disposition": {
-        "when_exact_pair_is_reachable": "block_before_payload",
-        "when_pair_is_not_reachable": "report_configuration_finding_without_projection"
-      }
-    },
-    {
-      "finding_code": "SOFT_CATEGORY_DUPLICATE_EXACT_PAIR",
-      "status": "confirmed_configuration_error",
-      "software_value": "Azure AI Search",
-      "region_value": "north-china",
-      "entry_indices": [
-        169,
-        173
-      ],
-      "entries": [
-        {
-          "entry_index": 169,
-          "table_id_count": 3,
-          "table_ids": [
-            "#Azure-Cognitive-Search1",
-            "#Azure-Cognitive-Search2",
-            "#Azure-Cognitive-Search3"
-          ],
-          "only_in_entry_table_ids": [
-            "#Azure-Cognitive-Search3"
-          ]
-        },
-        {
-          "entry_index": 173,
-          "table_id_count": 2,
-          "table_ids": [
-            "#Azure-Cognitive-Search1",
-            "#Azure-Cognitive-Search2"
-          ],
-          "only_in_entry_table_ids": []
-        }
-      ],
-      "duplicate_table_ids": [
-        "#Azure-Cognitive-Search1",
-        "#Azure-Cognitive-Search2"
-      ],
-      "upstream_suggestion": {
-        "action": "replace_duplicate_pair_with_one_authoritative_entry",
-        "description": "Review the intent of every listed row, then replace the duplicate (software, region) rows with exactly one authoritative row. Do not resolve this by last-write-wins or an unreviewed union."
-      },
-      "safety_checks": [
-        "Exactly one configuration entry remains for the same software_value and region_value.",
-        "The surviving tableIDs are reviewed against every only_in_entry_table_ids difference recorded here.",
-        "The surviving tableIDs contain no duplicate normalized table identity.",
-        "Every reachable exact pair is replayed through the strict projector before Payload generation."
-      ],
-      "runtime_disposition": {
-        "when_exact_pair_is_reachable": "block_before_payload",
-        "when_pair_is_not_reachable": "report_configuration_finding_without_projection"
-      }
-    }
-  ],
+  "duplicate_software_region_findings": [],
   "row_duplicate_table_id_findings": [
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
-      "entry_index": 0,
-      "software_value": "Windows",
-      "region_value": "north-china2",
-      "table_id_count": 143,
-      "duplicate_table_ids": [
-        {
-          "table_id": "#vm-table1-r2-4",
-          "raw_values": [
-            "#vm-table1-r2-4"
-          ],
-          "occurrence_count": 2,
-          "table_ids_indices": [
-            83,
-            116
-          ]
-        }
-      ],
-      "upstream_suggestion": {
-        "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
-      },
-      "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
-      ],
-      "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
-      }
-    },
-    {
-      "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 1,
       "software_value": "Windows",
       "region_value": "north-china",
@@ -407,21 +58,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 4,
       "software_value": "Windows",
       "region_value": "north-china3",
@@ -441,21 +94,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 6,
       "software_value": "Linux",
       "region_value": "north-china2",
@@ -486,21 +141,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 7,
       "software_value": "Linux",
       "region_value": "north-china",
@@ -542,21 +199,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 8,
       "software_value": "Linux",
       "region_value": "east-china2",
@@ -587,21 +246,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 9,
       "software_value": "Linux",
       "region_value": "east-china",
@@ -699,21 +360,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 10,
       "software_value": "Linux",
       "region_value": "east-china3",
@@ -733,21 +396,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 11,
       "software_value": "Linux",
       "region_value": "north-china3",
@@ -767,21 +432,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 13,
       "software_value": "SQL Server for Windows",
       "region_value": "north-china",
@@ -801,21 +468,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 14,
       "software_value": "SQL Server for Windows",
       "region_value": "east-china2",
@@ -846,21 +515,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 15,
       "software_value": "SQL Server for Windows",
       "region_value": "east-china",
@@ -891,21 +562,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 16,
       "software_value": "SQL Server for Windows",
       "region_value": "east-china3",
@@ -1214,21 +887,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 17,
       "software_value": "SQL Server for Windows",
       "region_value": "north-china3",
@@ -1537,21 +1212,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 18,
       "software_value": "SQL Server Ubuntu Linux",
       "region_value": "north-china2",
@@ -1615,21 +1292,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 22,
       "software_value": "SQL Server Ubuntu Linux",
       "region_value": "north-china3",
@@ -1816,21 +1495,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 23,
       "software_value": "SQL Server Ubuntu Linux",
       "region_value": "east-china3",
@@ -2017,21 +1698,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 28,
       "software_value": "Machine Learning Server",
       "region_value": "east-china3",
@@ -2249,21 +1932,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 29,
       "software_value": "Machine Learning Server",
       "region_value": "north-china3",
@@ -2481,21 +2166,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 31,
       "software_value": "SUSE Linux Enterprise Basic",
       "region_value": "north-china",
@@ -2526,21 +2213,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 34,
       "software_value": "SUSE Linux Enterprise Basic",
       "region_value": "north-china3",
@@ -2879,21 +2568,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 35,
       "software_value": "SUSE Linux Enterprise Basic",
       "region_value": "east-china3",
@@ -3232,21 +2923,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 37,
       "software_value": "SUSE Linux Enterprise Server for SAP Priority",
       "region_value": "north-china",
@@ -3277,21 +2970,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 42,
       "software_value": "SUSE Linux Enterprise Server for SAP Priority",
       "region_value": "east-china3",
@@ -3619,21 +3314,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 43,
       "software_value": "SUSE Linux Enterprise Server for SAP Priority",
       "region_value": "north-china3",
@@ -3961,21 +3658,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 44,
       "software_value": "Cloud Services",
       "region_value": "north-china2",
@@ -3995,21 +3694,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 45,
       "software_value": "Cloud Services",
       "region_value": "north-china",
@@ -4029,21 +3730,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 46,
       "software_value": "Cloud Services",
       "region_value": "east-china2",
@@ -4063,21 +3766,23 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
+      "status": "nonblocking_redundancy",
+      "blocking": false,
       "entry_index": 47,
       "software_value": "Cloud Services",
       "region_value": "east-china",
@@ -4097,22 +3802,24 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
-      "entry_index": 54,
+      "status": "nonblocking_redundancy",
+      "blocking": false,
+      "entry_index": 52,
       "software_value": "Elastic Database",
       "region_value": "east-china",
       "table_id_count": 82,
@@ -4307,22 +4014,24 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
-      "entry_index": 55,
+      "status": "nonblocking_redundancy",
+      "blocking": false,
+      "entry_index": 53,
       "software_value": "Elastic Database",
       "region_value": "north-china",
       "table_id_count": 67,
@@ -4341,22 +4050,24 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
-      "entry_index": 60,
+      "status": "nonblocking_redundancy",
+      "blocking": false,
+      "entry_index": 58,
       "software_value": "Elastic Database",
       "region_value": "east-china2",
       "table_id_count": 62,
@@ -4375,22 +4086,24 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
-      "entry_index": 61,
+      "status": "nonblocking_redundancy",
+      "blocking": false,
+      "entry_index": 59,
       "software_value": "Elastic Database",
       "region_value": "north-china2",
       "table_id_count": 64,
@@ -4409,22 +4122,24 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
-      "entry_index": 115,
+      "status": "nonblocking_redundancy",
+      "blocking": false,
+      "entry_index": 113,
       "software_value": "Storage Blobs",
       "region_value": "north-china",
       "table_id_count": 54,
@@ -4465,22 +4180,24 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
-      "entry_index": 117,
+      "status": "nonblocking_redundancy",
+      "blocking": false,
+      "entry_index": 115,
       "software_value": "Storage Blobs",
       "region_value": "east-china2",
       "table_id_count": 46,
@@ -4499,22 +4216,24 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
-      "entry_index": 118,
+      "status": "nonblocking_redundancy",
+      "blocking": false,
+      "entry_index": 116,
       "software_value": "Storage Blobs",
       "region_value": "east-china",
       "table_id_count": 54,
@@ -4555,22 +4274,24 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
-      "entry_index": 290,
+      "status": "nonblocking_redundancy",
+      "blocking": false,
+      "entry_index": 287,
       "software_value": "Page Blobs",
       "region_value": "east-china3",
       "table_id_count": 20,
@@ -4589,22 +4310,24 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     },
     {
       "finding_code": "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW",
-      "status": "confirmed_configuration_error",
-      "entry_index": 291,
+      "status": "nonblocking_redundancy",
+      "blocking": false,
+      "entry_index": 288,
       "software_value": "Page Blobs",
       "region_value": "north-china3",
       "table_id_count": 21,
@@ -4634,16 +4357,17 @@
       ],
       "upstream_suggestion": {
         "action": "remove_repeated_table_ids_from_configuration_entry",
-        "description": "Retain one reviewed occurrence of each duplicate normalized table identity at its intended physical position. Do not rely on the runtime projector to silently deduplicate the row."
+        "description": "The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged."
       },
       "safety_checks": [
-        "Each normalized table identity occurs exactly once inside this entry's tableIDs array.",
-        "The relative order of all retained tableIDs is reviewed and remains intentional.",
-        "If this exact pair is reachable and a duplicated table identity occurs in the exact state panel, strict projection blocks before Payload generation."
+        "The runtime projection equals the normalized tableIDs ordered by physical first occurrence.",
+        "Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.",
+        "The exact state is replayed after cleanup and produces the same projection and Payload content."
       ],
       "runtime_disposition": {
-        "when_exact_pair_and_table_id_are_state_relevant": "block_before_payload",
-        "when_table_id_is_not_state_relevant": "report_configuration_finding_without_projection"
+        "blocking": false,
+        "projection_policy": "ordered_unique_by_first_physical_occurrence",
+        "reporting": "nonblocking_configuration_hygiene_finding"
       }
     }
   ]
