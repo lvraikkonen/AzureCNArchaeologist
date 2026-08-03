@@ -1,6 +1,6 @@
 # Capability Tracking Uses Read-Only Projections
 
-Status: Accepted
+Status: Superseded by ADR-0088
 
 The product capability Dashboard and `azure-product-list.md` are read-only projections, never workflow or evidence authorities. Their three data layers remain separate authorities for their own facts: the fixed 105-entry product scope, an explicitly selected and identity-checked machine-evidence snapshot, and Manual Content Inspections; “latest” is never inferred from file time or automatic discovery because changing evidence must be a deliberate review decision.
 

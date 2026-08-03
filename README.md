@@ -34,29 +34,261 @@ v0.3 全量验收结果为 434 项终态守恒（379 项通过、55 项预期跳
 - **服务关系知识图谱**: 基于图算法构建的Azure服务依赖和推荐关系网络
 
 #### 🔧 工程化解决方案
-- **容错性强的HTML解析**: 多编码支持、智能降级、异常恢复
+- **可追溯的HTML解析**: 严格 UTF-8、失败隔离、Source Finding 与可恢复批次；不静默降级策略
 - **大规模数据处理**: 批次清单、失败隔离、可恢复并行计算
-- **质量控制体系**: 0-100分量化评估、多重验证、置信度评估
+- **v0.4目标质量体系**: 全状态结构契约、可复现抽样内容验证、人工批准与哈希绑定证据；不使用 `quality_score`
 
 ## 🏗️ 技术架构
 
 ### 整体架构图
+
+下图是收敛后的 v0.4 目标流程。提交 `c9a6ee1` 已实现到抽取、现有机器验证、Review Queue 投影和只读 Dashboard；受控 approve/reject、抽样内容验证、不可变 Release 与正式 upload gate 尚待在新的实施 thread 中完成。
+
 ```mermaid
 flowchart LR
     A["1. Snapshot discovery"] --> B["2. Normalize"]
     B --> C["3. Preflight"]
     C --> D["4. Extract"]
     D --> E["5. Validate"]
-    E --> F["6. Review queue"]
-    F --> G["7. Report"]
+    E --> F["6. Dashboard review queue"]
+    F --> G["7. Human approve / reject"]
+    G --> Q["Append-only Review Decision"]
+    Q --> L["8. Immutable Release"]
+    L --> RM["Release Manifest"]
+    RM --> U["9. Blob upload"]
     H["Product Definitions / Source Snapshots"] --> A
     M["batch-manifest.json<br/>权威状态"] -. checkpoint .-> A
     M -. checkpoint .-> D
-    M -. checkpoint .-> G
+    M -. state gate .-> G
+    M -. state gate .-> L
     D --> O["outputs + diagnostics"]
     E --> V["validation 投影"]
-    F --> R["review/review-queue.json"]
+    F --> R["review queue + append-only decisions"]
+    L --> X["output/releases/{release_id}"]
 ```
+
+## v0.4 目标日常生产流程
+
+> 当前实现边界：提交 c9a6ee1 已提供 Step 3、现有 pipeline、Review Queue 投影和只读 Capability Dashboard。本节描述 Step 4 重做完成后的最终操作流程；尚不存在的 review、release 和 upload gate 命令不能在实现前当作可用能力。实施边界见 [v0.4 execution plan](plans/v0.4-execution-plan.md)，新 thread 的代码导航见 [handoff](handoff.md)。
+
+### 1. 接收上游 HTML 与配置
+
+人工从上游取得本轮文件并放到 canonical 路径：
+
+- HTML：data/current_prod_html/{language}/...
+- 配置：data/configs/soft-category.json
+
+这里的配置文件名是 soft-category.json，不使用 soft-catagory.json。
+
+Source Snapshot 是本批次内容权威。不能在抽取器中静默修复、格式化或猜测上游 HTML；上游文件变化后创建新 Batch，不改写历史批次。
+
+先检查 Product Definition、路由和快照闭环：
+
+~~~bash
+uv run cli.py catalog-build --check
+uv run cli.py catalog-audit --language both
+~~~
+
+输入缺失、语言路由错误、非法 UTF-8、配置歧义或 Source identity 漂移时停止，不生成可批准产物。
+
+### 2. 复制规范输入
+
+~~~bash
+uv run cli.py copy-from-prod --language both
+~~~
+
+目标位于 data/prod-html/{language}/...。复制只整理 canonical 路径：
+
+- Source 与 Normalized Input 字节必须相同；
+- SHA-256 必须相同；
+- 不转码、不修 HTML、不改换行；
+- 复制失败不应留下半成品。
+
+### 3. 创建 Batch、抽取并进行机器验证
+
+正式批次从 clean worktree 启动：
+
+~~~bash
+uv run cli.py pipeline-run --all --language both --parallel-jobs 6
+uv run cli.py pipeline-status --batch-id <batch-id>
+~~~
+
+中断后可在 frozen provenance 未漂移时恢复：
+
+~~~bash
+uv run cli.py pipeline-resume --batch-id <batch-id>
+~~~
+
+只重新验证已成功抽取且身份未变化的 Payload：
+
+~~~bash
+uv run cli.py pipeline-validate --batch-id <batch-id>
+~~~
+
+canonical Payload 保存在：
+
+~~~text
+runs/{batch_id}/outputs/{language}/pricing/{resource}.json
+runs/{batch_id}/outputs/{language}/SupportArticles/{articleType}/{resource}.json
+~~~
+
+这些文件是抽取产物，不等于人工批准或发布产物。
+
+机器验证分为两层：
+
+1. **全状态结构验证**
+   - 完整检查 CMS Contract、筛选器、默认状态和 Source-proven Reachability Relation；
+   - 每个可达状态必须恰好对应一个有效 contentGroup；
+   - missing、extra、duplicate、错误 criteria、placeholder 和错误状态归属都会失败；
+   - 这一层不抽样。
+2. **内容一致性验证**
+   - page-global、SimpleStatic 和 SupportArticle 主体完整比较；
+   - RegionFilter、Complex 按 frozen Content Sampling Profile 进行确定性分层抽样，并把本 item 的 universe、seed 和 exact selected states 固定为 Batch Item Sampling Plan；
+   - 比较冻结 Source HTML 与已经写盘的 Payload，而不是提取器内存中间结果；
+   - 比较可见文本、价格与单位文本、表格、片段顺序、重复次数和状态归属；
+   - 被选状态无法评估或内容不一致时 validation=failed，不能换一个样本重抽。
+
+Machine Validation 通过只表示：
+
+> 全部可达状态的结构契约成立，并且报告列出的内容样本与冻结 Source 一致。
+
+它不表示未抽中状态已经完成内容逐项对账。
+
+### 4. 目标：在 Dashboard 中进行人工审核（Step 4 待实现）
+
+完成 Step 4 后，Machine Validation 通过的 Batch Item 将自动进入 Review Queue，初始状态为 pending。审核单位是 Resource Key + Language，例如 api-management / zh-cn；中文批准不能替代英文批准。
+
+Dashboard 将作为本地审核工作台，提供：
+
+- 产品与产品语言项总览；
+- supported、extracted、machine-passed、pending、approved、rejected、release-ready、published 统计；
+- 按语言、类别、策略、风险、失败历史和证据绑定筛选；
+- 冻结 Source、persisted Payload 和机器抽样证据对照；
+- 人工选择 region、software、category、tab 等实际存在的状态组合；
+- 审核历史、失败原因、stale binding 和支持/批准数量增长趋势。
+
+人工选择应独立于机器样本，并优先检查机器未覆盖或风险较高的组合。Live Azure 页面只能辅助定位，最终裁决对象仍是该 Batch 冻结的 Source Snapshot。
+
+Dashboard 将可以发起批准和拒绝，但不能直接编辑投影 JSON 或 manifest。按钮必须调用与 CLI 共用的受控 review service；batch-manifest.json 仍是生命周期和 item 状态真源。
+
+### 5. 目标：人工批准或拒绝（Step 4 待实现）
+
+每次 Review Decision 都是 append-only，并记录：
+
+- Batch、Resource Key、Language；
+- reviewer 和时间；
+- Source、Payload、validation evidence SHA；
+- 人工实际检查的状态组合；
+- approved 或 rejected；
+- reason classification 和 notes；
+- 如果修正旧决定，记录被替代 decision identity。
+
+只有以下条件同时满足才允许 approved：
+
+~~~text
+execution = succeeded
+validation = passed
+approval_eligible = true
+review evidence binds current hashes
+inspected states belong to the frozen Reachability Relation
+~~~
+
+其中 Step 4 的 Approval Eligibility 要求：execution 和 validation 已通过、审核绑定当前 Source/Payload/validation hashes、记录的人工检查状态属于本 Batch Item 的 Reachability Relation，并且不存在未处置 Source Quality Finding。发现这类 finding 时保持 pending，或按实际原因 rejected；正式 disposition workflow 与复杂视觉 blocker 属于 Step 5。
+
+机器失败不能被人工覆盖。Source、Payload 或 validation evidence 改变后，旧审核自动成为 stale，必须重新审核。
+
+拒绝原因使用稳定分类：
+
+| 原因 | 含义与处理 |
+|---|---|
+| upstream_source | 上游 HTML 结构或内容问题；保留证据并反馈上游 |
+| product_config | Product Definition 或 soft-category 配置问题 |
+| extractor_defect | 抽取逻辑错误；修代码并增加回归测试 |
+| validator_defect | 机器验证漏报、误报或证据错误 |
+| needs_clarification | 当前无法安全判断；保持不可批准 |
+
+rejected item 不进入 Release。修复后通过新的 Batch 重新抽取、验证和审核。
+
+Review Decision 的 verdict 作用于整个语言级 Batch Item。人工实际检查的是该 item 中若干状态；批准不会把未检查状态描述成人工逐项验证通过。
+
+### 6. 目标：创建不可变 Release（Step 4 待实现）
+
+人工批准不会移动或覆盖 runs 下的 canonical Payload。一个 Release 只从一个 Batch Run 复制当前仍满足全部门禁的项目：
+
+~~~text
+output/releases/{release_id}/
+├── release-manifest.json
+└── payloads/
+    ├── zh-cn/...
+    └── en-us/...
+~~~
+
+release-manifest.json 固定唯一 Batch/Input Manifest identity、精确 item 集合、Payload/validation/review hashes、Content Sampling Profile、Batch Item Sampling Plans、sampled/total/untested coverage、保证范围和目标 Blob identity。
+
+Release 规则：
+
+- write-once，同一 release_id 不覆盖；
+- 只包含 execution succeeded、validation passed、approval eligible、review approved 且哈希匹配的项目；
+- 在临时目录完成复制与校验，最后 canonical serialize Release Manifest，并以 manifest SHA + 全 payload hashes 形成 seal 后原子 finalize；
+- seal 后任何文件或哈希变化都会使验证和 upload 拒绝；
+- pending、rejected、stale、machine-failed、known_unsupported 和 experimental artifact 一律拒绝；
+- Release staging 不等于 published。
+
+### 7. 目标：校验并上传 Blob（Step 4 待实现）
+
+正式 upload 只接受 sealed Release Manifest，不扫描任意 output 目录，也不把 sidecar 当批准权威。
+
+操作顺序：
+
+1. dry run 展示精确文件、哈希和 Blob prefix；
+2. 再次校验 Release seal、Batch、Payload、Validation、Sampling Plan 和 Review Decision；
+3. 上传同一不可变 Release；
+4. 全部成功并核对远端结果后写 publication receipt；
+5. 最后把权威 Publication 状态更新为 published。
+
+上传失败不修改 Release，publication 保持 not_published；修复连接、权限或远端问题后可以幂等重试同一 Release。
+
+### 8. 失败回路
+
+~~~text
+上游问题
+  → 人工 rejected: upstream_source
+  → 反馈上游修正
+  → 新 Source Snapshot / 新 Batch
+
+抽取逻辑问题
+  → validation failed 或人工 rejected: extractor_defect
+  → 修代码 + 回归测试
+  → 新 Batch
+
+验证器问题
+  → 人工 rejected: validator_defect
+  → 修验证规则 + 回归测试
+  → 新 Batch
+
+审核未完成或无法判断
+  → 保持 pending/rejected
+  → 不进入 Release
+~~~
+
+### 9. 可以与不能宣称的保证
+
+可以宣称：
+
+- Source 与 Normalized Input 的身份经过哈希验证；
+- CMS Contract 和完整 Source-proven 状态拓扑经过全量机器验证；
+- page-global、SimpleStatic 和 SupportArticle 主体经过完整内容比较；
+- 报告列出的 RegionFilter/Complex 样本与冻结 Source 内容一致；
+- Review Decision 与 Release 绑定精确 Source、Payload、Profile 和证据哈希。
+
+不能宣称：
+
+- 所有 Region、Software、Category 或 Tab 状态的内容都与源完全一致；
+- 全部价格事实已经逐项验证；
+- Source 中的价格具有外部 Commercial Price Accuracy；
+- 未抽中状态不存在内容错配；
+- Dashboard 展示、Review Queue membership 或 upload 成功本身等于人工批准；
+- 未按冻结 Rendering Profile 审核的视觉布局已经验证。
 
 ### 核心技术栈
 - **编程语言**: Python 3.11+

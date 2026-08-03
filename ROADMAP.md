@@ -91,14 +91,14 @@ flowchart LR
     C --> D[批次协调器]
     D --> E[并行策略提取]
     E --> F[Contract Validation]
-    F --> G[内容与 Pricing Fidelity]
+    F --> G[全状态结构与抽样内容一致性]
     G --> M[唯一 Machine Validation verdict]
     M -->|fail| X[失败分类与恢复]
-    M -->|pass| H[Review Queue 与批准阻断项]
-    H --> J[Chrome 对比验证]
+    M -->|pass| H[Dashboard Review Queue]
+    H --> J[冻结 Source 与 Payload 人工对照]
     J -->|拒绝| X
-    J -->|批准| K[可发布产物]
-    K --> L[回归基线与覆盖率矩阵]
+    J -->|批准| K[不可变 Release]
+    K --> L[Blob 交付与覆盖率追踪]
 ```
 
 v1.0 中需要清晰区分：
@@ -118,8 +118,8 @@ v1.0 中需要清晰区分：
 | v0.1 | 当前基线 | 4 种策略和分散的三段式流程可运行 |
 | v0.2 | 事实与契约收口 | 产品全集、CMS 契约和状态边界统一 |
 | v0.3 | 批次工作流 | 一个入口完成标准化、解析、验证和报告 |
-| v0.4 | 可证明重建验证 | P0 隔离实验导出、Pricing Fidelity、批准阻断项、CI-ready 可信测试体系和非阻断 Capability Dashboard |
-| v0.5 | 通用人工核验闭环 | 将 v0.4 的复杂表格专项门禁扩展到全部页面类型 |
+| v0.4 | 可追溯重建与最小交付闭环 | P0 隔离实验、全状态结构验证、可复现抽样内容验证、Dashboard 审核、不可变 Release 和 CI-ready 测试体系 |
+| v0.5 | 审核与质量治理深化 | 扩展 Report 2.0、Source Finding 处置、复杂表格视觉门禁和规模化审核治理 |
 | v0.6 | 覆盖率提升 | 按失败类型和页面结构簇扩大可靠支持范围 |
 | v0.7 | 稳定性与性能 | 正交 streaming Processing Mode、并发、恢复和幂等性达到批量运行要求 |
 | v0.8 | 架构清理 | 删除 stale 代码，收缩 CLI、依赖和重复职责 |
@@ -303,21 +303,23 @@ Pricing 始终写入 `{language}/pricing`；同一 Product Definition 即使属�
 - 42 个 `unittest` 回归测试全部通过，包含既有 17 个 v0.2 基线测试和 25 个 v0.3 测试。
 - 完整证据见 [`reports/v0.3/acceptance-status.md`](reports/v0.3/acceptance-status.md) 和机器可读摘要 [`reports/v0.3/full-run-summary.json`](reports/v0.3/full-run-summary.json)。
 
-### v0.4：建立可证明的内容重建验证与 CI-ready 测试体系
+### v0.4：建立可追溯内容验证与最小批准交付闭环
 
-> 状态：产品与验证边界已完成决策冻结，待实施。
+> 状态：Step 0–3 已完成；旧 Step 4 WIP 已回滚到 `c9a6ee1`，等待按 ADR-0087 与 ADR-0088 重新实施。
 
 #### 目标与保证边界
 
 将 `validation=passed` 从“成功生成且结构合法”升级为：
 
-> 在冻结的 Source Snapshot、Validation Profile 和可采信行为证据下，能够证明 Business Payload 满足由 CMS Contract Description 派生的 Local Machine Contract，并忠实重建所有应发布内容及可达筛选状态中的 Pricing Facts。
+> 在冻结的 Source Snapshot 和 Validation Profile 下，对全部 source-proven Reachable Selection States 证明 CMS 结构契约成立，并证明由 Batch Item Sampling Plan 选中的内容状态与 persisted Business Payload 一致。
 
-v0.4 保证 **Pricing Fact Fidelity**，即忠实重建冻结页面中的定价事实及其筛选归属；它不保证外部 **Commercial Price Accuracy**。只有源证据明确声明稳定标识时才称为 SKU，不能把表格行或推断组合擅自命名为 SKU。
+Page-global、SimpleStatic 和 SupportArticle 主体内容执行完整比较；RegionFilter 和 Complex 的 state-specific 内容执行确定性分层抽样比较。报告必须公开 `sampled / total`、未测试状态数、seed、exact state identities 和绑定哈希。通过结果不得被描述为未抽中状态的完整内容证明、完整 Pricing Fact Fidelity、视觉等价或外部 **Commercial Price Accuracy**。
 
-Frozen Source Snapshot 是批次内容权威。当前 live 页面只允许通过受控浏览器采集 non-authoritative Rendered Interaction Evidence；不采集 raw HTTP，不作为冻结批次的内容 Oracle，也不能自动改写 Source Snapshot、Expected Pricing Fact Inventory 或 Golden。
+Frozen Source Snapshot 仍是批次内容权威。当前 live 页面只作 non-authoritative interaction reference，不能自动改写 Source Snapshot、抽样计划、验证结论或 Golden。
 
-v0.4 不包含 GitHub Actions、required branch checks 或其他 external merge gate，不自动发布，不提供移动端视觉保证，也不要求在阶段结束前完成人工审核全部产品。它交付 runner-agnostic、可被未来自动化平台调用的 CI-ready 测试和报告能力。
+v0.4 Step 4 交付可日常使用的最小闭环：机器通过项进入 Dashboard Review Queue，实际被审核的产品语言项显式 approved 或 rejected，其余保持 pending；批准项生成不可变 Release，upload 只接受 sealed Release。Step 5 再深化 Report 2.0、Source Finding Disposition 和完整复杂表格视觉门禁。
+
+v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管、多用户权限或自动 CMS 发布；它交付 runner-agnostic、可被未来自动化平台调用的本地流程和 CI-ready 测试能力。
 
 #### 实施顺序
 
@@ -331,10 +333,10 @@ v0.4 不包含 GitHub Actions、required branch checks 或其他 external merge 
 - 实验上限固定为 8 MiB input、900 seconds wall time 和 2 GiB peak RSS，输出根固定为已被 Git 忽略的 `output/experiments/{experiment_id}/{language}/`；任何调整都必须经过 Specification review；
 - Specification 在任一源哈希变化或 v0.4 完成时到期，以较早者为准；任何产品、语言、策略、哈希或大小不匹配都在提取前失败；
 - `zh-cn` 优先满足当前离线研究请求；P0 只有在 `zh-cn` 与 `en-us` 都独立生成 Experimental Payload Candidate 与成功 Manifest 后才完成，任一语言资源或提取失败都使 P0 保持 blocked/failed，但不妨碍并行推进无依赖的 v0.4 基础工作；
-- 仅执行输入存在性、严格 UTF-8、SHA-256、资源限制、解析执行和 JSON 原子写入等 execution-safety checks，不执行 CMS Contract、Pricing Fidelity 或内容质量验证；
+- 仅执行输入存在性、严格 UTF-8、SHA-256、资源限制、解析执行和 JSON 原子写入等 execution-safety checks，不执行 CMS Contract、Sampled State Content Consistency 或其他内容质量验证；
 - 在隔离进程中执行并记录资源数据，输出到 gitignored 实验目录；成功必须完整生成 `{resource}.unvalidated.json` 和 `experiment-manifest.json`，失败时删除临时或部分 Candidate，只向内部执行日志写诊断，不生成失败形态的交付 JSON；
 - Manifest 固定标记 `trust_status=unvalidated`、`approval_eligible=false`、`publishable=false`，并记录强制策略、源哈希、原因和时间；
-- 实验产物不得进入 canonical Batch outputs、Review Queue、Golden、事实基线、正式 upload 或 publication；Product Definition 继续保持 `known_unsupported`；
+- 实验产物不得进入 canonical Batch outputs、Review Queue、Golden、Sampling Baseline、Release、正式 upload 或 publication；Product Definition 继续保持 `known_unsupported`；
 - 命令返回 `0` 只表示实验 JSON 与 Manifest 已生成，输出文案必须为 `EXPERIMENTAL OUTPUT GENERATED — UNVALIDATED` 而不是 `PASS`；策略、输入、资源或执行失败返回 `1`。
 
 ##### P1：配置、输入与运行能力边界
@@ -345,7 +347,7 @@ v0.4 不包含 GitHub Actions、required branch checks 或其他 external merge 
 - 仅接受严格 UTF-8，保留 BOM；非法字节阻断。可靠 charset 声明与实际字节不一致时记录 Source Quality Finding；
 - HTML 门禁采用 Reconstruction Parseability：独立解析和结构探测必须对关键内容达成可解释一致，普通 lint 问题本身不阻断，关键内容丢失或结构分歧阻断；
 - Reconstruction Parseability 后、正式提取前运行只读 Source HTML Structure Audit：仅对高置信度 wrapper、section nesting、control-boundary 和 emitted-fragment identity 异常输出源 SHA、精确行号、DOM 证据与上游修改建议；不得改写 canonical/normalized bytes、在内存中套用候选补丁、更新 Product Definition 或 baseline。普通可忠实复制的源异常保持 Source Quality Finding；若同一待发布片段内的重复 ID、归属歧义等问题无法在不修源或不猜测的前提下形成 contract-valid Payload，则作为 Blocking Source Structure Finding 在 Payload 生成前失败。只有 parser、可见文本、表格、脚本、控件、target 与 reachability 身份均保持不变时才可附带保守 patch candidate；
-- 每个 Batch Run 冻结完整 Validation Profile，包括契约、规则及严重度、事实解释规则、基线引用、Rendering Profile、InMemory Capability Profile，以及逐项 Applicability Map 的 schema、版本、路径和 SHA-256；input/batch manifest 与报告保留这些身份，`pipeline-validate` 必须按原 Profile 和 Map 重现结论；
+- 每个 Batch Run 冻结完整 Validation Profile，包括 Local Machine Contract、规则及严重度、Content Sampling Profile、基线引用和 InMemory Capability Profile；Source Reachability 确定后再为每个 Batch Item 冻结精确 Sampling Plan。input/batch manifest 与报告分别保留 Profile 与 Plan 身份，`pipeline-validate` 必须重放两者；Rendering Profile 仅在 Step 5 Profile 启用视觉门禁时加入；
 - 以 v0.3 已验收的 379 个语言级 runnable items 生成不可变 v0.4 Planning Baseline Manifest。自动 preflight 只能提出 planned non-runnable 建议；任何分母变化必须经独立审核，记录 prior/proposed state、原因、证据和 Product Definition capability decision 后，才能冻结 v0.4 runnable set；
 - 文件大小不再决定语义策略。删除未实现的 `LARGE_FILE` 语义选择路径及其 fallback；v0.4 的 in-memory 初始候选上限是 `5 × 1024 × 1024` bytes，只有在最大真实输入、近上限压力样例、峰值内存和耗时通过重复确定性测试后才能冻结，否则下调；
 - 超过冻结能力上限的正式输入在 planning/preflight 阶段标记 `non_runnable: input_exceeds_in_memory_profile`，不得提取、不得降级为 `Simple`、不得伪装成运行后 skip。P0 实验例外不改变正式边界。
@@ -356,94 +358,96 @@ v0.4 不包含 GitHub Actions、required branch checks 或其他 external merge 
 - FlexibleContent 与 SupportArticle 使用各自独立的 Local Machine Contract；删除旧字段验证和 `quality_score` 计算逻辑；
 - `filtersJsonConfig` 与 `filterCriteriaJson` 除了是合法 JSON 字符串，还必须满足完整嵌套语义契约，并采用 deterministic canonical serialization；`matchValues` 继续按单个字符串验证；
 - Filter domain 在每个适用 parent scope 内必须非空、机器身份无歧义且完全覆盖；Default CMS State 沿冻结源证明的默认条件路径形成。v0.4 以每个 scope 的 desktop interaction control 作为本语言 option label 与顺序事实源：branch default 移至该 scope 首位，其余 sibling 保持 desktop 相对顺序；对应 mobile control 必须具有相同 scoped machine set 与默认值，但不决定 v0.4 label 或顺序。Mobile label 漂移形成 Source Quality Finding，机器集合或默认值漂移仍阻断；
-- CMS state space 是由冻结 Source Snapshot 与 Applicability Evidence 独立证明的有序 Reachability Relation。彼此独立的 domain 只在同一 scope 内形成笛卡尔积；software-specific Category 等 Conditional Filter Domain 只与其 parent branch 组合，禁止把 sibling options 合并后生成理论 cross-branch states，也禁止由待验证 Payload 自行声明完整性；
+- CMS state space 是由冻结 Source Snapshot 与 Source Reachability Evidence 独立证明的有序 Reachability Relation。彼此独立的 domain 只在同一 scope 内形成笛卡尔积；software-specific Category 等 Conditional Filter Domain 只与其 parent branch 组合，禁止把 sibling options 合并后生成理论 cross-branch states，也禁止由待验证 Payload 自行声明完整性；
 - Business Payload 以一条 active `contentGroup` 对应一条 Reachability Relation row；CMS 导入以这些 groups 为状态与渲染真源，不会从 `filterDefinitions` option catalog 自行生成额外组合。`groupName` 必须按状态路径中同语言 Desktop Localized Source Display Label 以精确 ` - ` 连接为 `region - software - category`（例如 `zh-cn` 使用 `中国东部 2`，`en-us` 使用 `China North 3`），缺失维度只允许因该路径无此 filter 而省略；segment 自身包含该 delimiter、名称与 criteria 不一致或段数漂移均阻断；
 - 对任意产品，Category 中 label 为 `All`/`全部` 且声明 target panel 不存在的选项统一视为 Non-materialized Aggregate Tab：从 option catalog 与 Reachability Relation 省略，不合成、不输出 placeholder、不复制 sibling 价格；该 scope 的首个剩余 concrete Category 成为默认。其他 missing target 仍为阻断错误；
-- 每个可达状态恰好命中一个 active、非空、非 placeholder 的 `contentGroup`，且通常必须 price-bearing；唯一窄例外是由冻结 Applicability Evidence 证明源配置有意排除了该状态全部适用价格片段的 Source-confirmed Empty Selection State。该例外必须保留剩余源内容、记录 Source Quality Finding，不能由空提取结果反推，也不能虚构价格；零匹配或多匹配仍阻断；
+- 每个可达状态恰好命中一个 active、非空、非 placeholder 的 `contentGroup`，且通常必须 price-bearing；唯一窄例外是由冻结 Source Reachability/Configuration Evidence 证明源配置有意排除了该状态全部适用价格片段的 Source-confirmed Empty Selection State。该例外必须保留剩余源内容、记录 Source Quality Finding，不能由空提取结果反推，也不能虚构价格；零匹配或多匹配仍阻断；
 - 每个 active group 必须包含其 Reachable Selection State 路径中全部 active filter keys，每个 key 恰好匹配该 conditional scope 已声明的一个 option value；禁止 wildcard、缺少 path-active key 和多值编码；
 - 双语允许 label 本地化，但 filter keys、scoped option identities、parent-child topology、Reachability Relation、Default CMS State 和机器状态顺序必须一致。真实源侧差异形成 Bilingual State Drift finding 并阻止批准，提取器制造的差异直接失败；
 - 生成 payload 不保留 inactive group、section、placeholder 或 stale 字段；`sortOrder` 在同一数组内必须为正整数、唯一且升序，允许间隔；
 - 严格验证 `pageType`、`enableFilters`、filter topology、`contentGroups` 与 `baseContent` 的 Flexible Page State Machine；删除未知策略、页面分析异常和未知 page type 到 `Simple` 的静默 fallback；
 - `baseContent` 表示不随任何 Reachable Selection State 变化且只输出一次的 Page-Global Content，与 `simple_static`、`region_filter`、`complex` 策略正交；期望值必须由 canonical source boundary 与冻结证据决定，禁止从策略推断为空。最后一个正式 selector 之后、精确 FAQ/SLA 之前的直接可见 pricing section 仅是候选；未声明候选、身份漂移、隐藏/交互内容、越过公共区块边界或向 group/Qa 重复均阻断。Simple 也不得回退到整个 `.pure-content`/`body`：无法证明精确业务主体时形成 Unproven Page-Global Boundary 并失败；`baseContent` 与任一完整 `commonSections.content`、`contentGroups.content` 或受控 `sharedContent` 的 Content Ownership Overlap 同样阻断；
-- 删除无证据的遗留 `sharedContent` 生产和兼容逻辑：global 内容进入 `baseContent` 或 `commonSections`，state-specific 内容进入对应 group，orphan 只进入证据报告。若源在一个 Software panel 内、首个 concrete Category panel 之前声明不随其他 active filter 改变的 Software-scoped Prefix Content，则以 panel、scope 和源 HTML 指纹证明其身份，并前置投影到该 software 下每个源证明可达状态的 `content`。唯一允许的 `sharedContent` 是 Region-Projected Shared Content：源 ancestor fragment 必须 price-bearing、由 active region 与冻结 `soft-category.json` 证明确切投影，并在每个适用 descendant state 上逐项绑定 source/config/projected hash；禁止无证据字段、跨 region 泄漏、提升为全页 common content或只归入首个 Category。
+- 删除无证据的遗留 `sharedContent` 生产和兼容逻辑：global 内容进入 `baseContent` 或 `commonSections`，state-specific 内容进入对应 group，无法安全确定 ownership 的源片段形成 Source Finding。若源在一个 Software panel 内、首个 concrete Category panel 之前声明不随其他 active filter 改变的 Software-scoped Prefix Content，则以 panel、scope 和源 HTML 指纹证明其身份，并前置投影到该 software 下每个源证明可达状态的 `content`。唯一允许的 `sharedContent` 是 Region-Projected Shared Content：源 ancestor fragment 必须 price-bearing、由 active region 与冻结 `soft-category.json` 证明确切投影，并在每个适用 descendant state 上逐项绑定 source/config/projected hash；禁止无证据字段、跨 region 泄漏、提升为全页 common content或只归入首个 Category。
 - `soft-category.json` 只选择具有非空 `id` 的表；无 ID 表属于其源状态的无条件内容，必须原样保留，并冻结物理表序、规范化 HTML SHA 与聚合身份。重复 `(os, region)` 条目或单条目内重复 normalized table ID 都写入确定性上游配置报告；后者虽不改变 selector set，也不得在运行时静默去重。仅当重复 ID 与当前可达状态相关时在 Payload 前阻断，状态无关时保持 report-only。
 
-##### P3：源驱动的内容与 Pricing Fact 对账
+##### P3：全状态结构契约、抽样内容一致性与最小交付闭环
 
-- 源侧独立生成 Expected Pricing Fact Inventory，Payload 侧独立回读 Observed Payload Fact Inventory；两条路径不得复用生产提取器的表格选择、状态映射或 fallback，仅可共享有独立测试的事实模型和最小归一化原语；
-- 每个 runnable interactive pricing item 必须在 planning/preflight 解析版本化 Applicability Map，穷举 Reachable Selection States，并以明确 frozen-source markers 和 Product Definition 规则证明事实归属；
-- 静态证据不足时只能使用与精确 Source Snapshot 指纹绑定并经过审核的 Snapshot-bound Interaction Evidence。无法建立这种绑定的 live capture 仍只是当前页面参考；
-- 在 runnable set 冻结前，无法建立完整 Applicability Map 的项目只能形成 planned non-runnable 提案，并进入 Planning Baseline delta 审核，不能由 preflight 自动移出分母；一旦 classified runnable 并冻结，任何 Expected Inventory、状态归属或比较无法证明都是 validation failure，不能降为 warning、skip 或 denominator change；
-- 以 canonical Reachable Selection State 为分区比较多重集合，保留每个状态内的重复次数；同时比较最小归一化显示文本和数值、币种、单位、周期、区间、表头、label、限定、脚注和状态等意义 token；
-- Pricing Fact Applicability 与物理存储分离：global 事实可存一次并逻辑投影到全部状态，state-scoped 事实只投影到有证据的状态；DOM 位置、CSS visibility 或相同文本不能独立证明 global；
-- 所有价格表先展开 `rowspan`、`colspan` 和多级表头形成 Canonical Pricing Table；任一价格与层级表头、单位、区间、限定或脚注的关联无法确定时，Machine Validation 失败；
-- Title、Meta、Banner、Description 等字段采用 source-aware completeness：CMS 必填但源缺失时同时产生 Contract failure 和上游 finding；源存在的可选字段必须忠实保留；源不存在的可选字段不得虚构；
-- Expected Publishable Text 在只做实体解码、Unicode 和无意义空白归一化后要求 100% state-aware coverage；缺失、额外、篡改、重复超量或错误状态归属均阻断；
-- 表格、FAQ、区域和组合数量只作为 reconciliation 摘要，成败由逐项内容与状态匹配决定；重复和跨区域泄漏相对于源侧期望 multiplicity 与 Applicability 判定；
-- 只有证据明确证明某价格片段不属于任何 Reachable Selection State 时，它才是 Orphan Pricing Evidence；仅仅无法确定归属仍是 Pricing Fidelity Evaluation Failure。所有 proven orphan 都不进入 Expected Inventory 或 Payload，导入任何 orphan 都是重建失败；明确证明被刻意禁用、归档或废弃的是 Explained Orphan，只告警；不可达已证明但原因或责任不明的是 Unresolved Orphan，Machine Validation 可通过但 `approval_eligible=false`，等待 Source Finding Disposition；
-- 源自身异常不由提取器自动修正。能够原样形成 contract-valid Payload 的异常作为 Source Quality Finding 写入 Upstream Verification Report，不使忠实重建失败；无法在不修源或不猜测归属的情况下形成 contract-valid Payload 的 Blocking Source Structure Finding 则保留上游证据并使该 runnable item 明确 failed，而不是 skip、`known_unsupported` 或兼容性修复。Source-confirmed Empty Selection State 只有在冻结配置路径、哈希、精确状态及被排除片段均可复核时才适用；未处置的非阻断 finding 不改变 Machine Validation pass，但阻止批准和发布。
+- 复用 P2 的完整 Source-proven Reachability Relation；所有状态继续执行 filter topology、criteria、唯一 contentGroup、默认状态、missing/extra/duplicate、inactive/placeholder 和 ownership 结构验证，结构层不抽样；
+- page-global、SimpleStatic 和 SupportArticle 主体内容执行完整比较；RegionFilter 和 Complex 的 state-specific 内容按冻结 Content Sampling Profile 执行确定性分层抽样；
+- Content Sampling Profile 固定 mandatory default、strategy-specific strata、样本预算、seed derivation 和算法版本；Source Reachability 确定后，Batch Item Sampling Plan 冻结 universe identity、derived seed、strata instances 和 exact selected states。状态数不超过预算时全量比较；相同 Source/item/Profile 必须选择相同状态；
+- Payload hash 不进入 seed。被选状态无法建立 Source 对照、解析失败或发生 mismatch 时明确 validation failure，禁止丢弃失败样本后 replacement draw；
+- 每个 selected state 比较冻结 Source 与 persisted Payload 的完整展示内容、价格与单位文本、表格、片段顺序、multiplicity 和 state assignment；本阶段不解析逐项 Pricing Facts，不建立 Applicability Map、StateProjectionMap 或完整 Expected/Observed/Diff inventory；
+- validation projection 至少记录 Source/Payload/Profile/Sampling Plan hashes、全状态结构结果、coverage mode、universe/selected/untested counts、seed、strata、exact state identities、per-sample diff、Approval Eligibility 和 blockers；
+- Machine-pass Batch Items 全部进入 Review Queue，初始 `review=pending`。审批单位是 Resource Key + Language，未审核项目不因同批其他样本通过而隐式批准；
+- Dashboard 从只读能力账本扩展为本地审核工作台，分别呈现 Capability、Execution、Machine Validation、Review、Evidence Binding、Release 和 Publication；approve/reject 必须调用与 CLI 共用的受控服务，Dashboard 不直接编辑投影或 manifest；
+- Review Decision append-only，绑定 reviewer、时间、Source/Payload/validation hashes、人工检查状态、verdict、reason 和 notes。Step 4 Approval Eligibility 还要求无未处置 Source Quality Finding；否则保持 pending 或 rejected。机器失败不能人工覆盖，证据变化使旧决定 stale；
+- 只有 `execution=succeeded + validation=passed + approval_eligible=true + review=approved` 且全部哈希仍匹配的项目可以复制到 write-once `output/releases/{release_id}`；一个 Release 只绑定一个 Batch，并由 canonical Release Manifest SHA + 全 payload hashes 原子 seal；
+- upload 只接受 sealed Release，不扫描任意 output 目录。上传成功后才记录 publication receipt 和 `published`，失败可对同一 Release 幂等重试；
+- 报告和 UI 必须明确这是 Sampled State Content Consistency，不得声称未抽中状态、全部 Pricing Facts、Commercial Price Accuracy 或视觉等价已被证明。
 
-##### P4：报告、批准资格与复杂表格视觉门禁
+##### P3 核心能力：Dashboard 审核工作台
 
-- 每个 Batch Item 生成一份 Machine Validation Report 2.0，分区记录 Contract、Pricing Fidelity、其他规则和 Source Findings，并记录 Validation Profile、Applicability Map 与基线的身份和哈希、`approval_eligible` 及结构化 `approval_blockers[]`；该报告是每项验证判定明细，`batch-manifest.json` 仍是生命周期及 item state 权威；
-- Expected、Observed 和逐项 Diff 是不可变子证据，位于 gitignored `runs/`，由报告和 manifest 记录路径、Schema 版本、数量与 SHA-256；每个 Batch 由这些报告派生 Upstream Verification Report；
-- 使用 Categorical Validation Verdict：分区状态、稳定规则代码、逐项证据、reconciliation 计数和结构化 blockers 决定结果；Business Payload、报告、验收和批准流程均不得使用 `quality_score`；
-- Machine Validation 通过的项目均可进入 Review Queue；队列成员资格不等于批准。未处置源 finding 或未完成复杂表格视觉审核时记录 `approval_eligible=false` 和结构化 `approval_blockers[]`；
-- `source_finding_disposition_required` 只能由有效 Source Finding Disposition 清除，`complex_table_visual_review_required` 只能由对应视觉证据清除；存在任何 blocker 时状态转换必须拒绝 `approved`，人工不能强行绕过；
-- Complex Pricing Table 必须先通过 Machine Validation，再执行冻结源表格片段与 Payload 表格的 Desktop 视觉审核；人工不能覆盖机器失败；
-- 视觉审核判断 Visual Semantic Equivalence，而非像素一致，覆盖表头层级、merged-cell 边界、阅读顺序、价格到 label 的对应、限定、脚注、visibility 和可读性；
-- 每个包含复杂表格的可达状态必须属于一个 Visual Review Variant；只有源表、Payload 表、表头上下文和 Rendering Profile 指纹完全一致时才可共享或跨批次复用审核；
-- v0.4 Rendering Profile 固定 Desktop `1440 × 900` CSS pixels、100% zoom、device scale factor 1，并冻结 Chromium、字体、CMS template、CSS 与审核协议；明确声明 Mobile 未验证；
-- 视觉门禁对所有复杂表格产物生效，但 v0.4 完成只要求 `cloud-services` 中英文 Core 样例实际完成全链路审核；其他复杂产物可以 machine-pass，但在自身视觉审核完成前保持 `approval_eligible=false`。v0.5 再扩展通用人工审核闭环。
+- 保留现有 capability ledger、分类筛选、机器/人工证据分轨和 stale binding 能力，并新增正式 Batch、Review Queue、Release 和 Publication 投影；
+- 总览分别统计产品和产品语言项的 supported、extracted、machine-passed、pending、approved、rejected、release-ready 和 published，展示随 Batch/Release 的增长，不把它们压缩为一个“支持率”；
+- 审核工作区显示冻结 Source、persisted Payload、机器抽样覆盖和人工检查状态；人工样本优先覆盖机器未抽中的组合；
+- approve/reject 是受控命令入口，必须经后端 review domain service 写入 append-only decision 并更新 `batch-manifest.json`；前端投影本身仍非权威；
+- 拒绝原因至少区分 upstream_source、product_config、extractor_defect、validator_defect 和 needs_clarification；
+- Dashboard 必须显示显式 Batch/Release identity、Source/Payload/Profile hashes、`sampled / total`、当前绑定、legacy_unbound 和 stale，不能按文件时间静默选择“最新”结论；
+- Dashboard 不改变 Pipeline Machine Validation verdict，也不允许人工覆盖 machine failure；它是 Step 4 人工审核的必要工作面，但不是验证或生命周期真源。
 
-##### 非阻断并行能力：Capability Dashboard
+##### P4：Report 2.0、Finding 处置与复杂表格视觉门禁
 
-- 提供本地只读 Capability Dashboard，以版本化 JSON 投影并列展示产品范围、策略、双语机器验证、人工内容检查、Source/Payload SHA、证据绑定状态、诊断和需要关注的问题；
-- Dashboard 是 Batch Manifest、Machine Validation Report、Review Queue、人工检查记录和能力追踪数据的派生观察面，不是任何生命周期、验证、批准或发布状态的事实来源，也不得直接修改这些状态；
-- 随 Step 4–5 的证据模型演进，Dashboard 应分别呈现 Contract、Pricing Fidelity、Reliable Adjudication、Review Queue membership、Approval Eligibility 和最终 Approval，禁止把它们压缩为单一“通过”状态；
-- Dashboard 必须显示所投影快照、Schema/Profile 或阶段身份，并显式区分正式 Batch 证据、非 Batch 探针、当前 SHA 绑定证据、`legacy_unbound` 与 stale 证据，不能把旧结论静默当作当前能力；
-- Dashboard 可以与 Step 4–7 并行迭代；其功能完整度、构建或展示可用性不改变 Pipeline 退出码、Machine Validation verdict、`approval_eligible`、人工 review decision 或 acceptance status，也不构成 v0.4 收口的前置条件。Dashboard 问题按非阻断可观测性事项独立追踪。
+- Machine Validation Report 2.0 覆盖 normalize、preflight、extract 和 validate 的所有明确结果；每个报告记录 Contract、Sampling Coverage、Source Findings、Validation/Content Sampling Profile、Batch Item Sampling Plan、证据哈希和稳定 failure codes；
+- Report 2.0 和 Upstream Verification Report 是判定明细与上游交接证据，`batch-manifest.json` 仍是生命周期及 item state 权威；
+- 建立正式 Source Finding Disposition、结构化 `approval_blockers[]` 和可审计的 blocker 清除规则；人工不能绕过 Machine Validation failure 或未清除 blocker；
+- Complex Pricing Table 在新的 Step 5 Validation Profile 下要求冻结 Source 与 Payload 的 Desktop Visual Semantic Equivalence 审核；
+- Visual Review 覆盖表头层级、merged-cell 边界、阅读顺序、价格到 label 的对应、限定、脚注、visibility 和可读性，而不是像素一致；
+- 每个适用状态属于精确 Visual Review Variant；只有 Source、Payload、上下文、Rendering Profile 和协议指纹完全一致时才可复用；
+- Rendering Profile 固定 Desktop `1440 × 900` CSS pixels、100% zoom、device scale factor 1，并冻结 Chromium、字体、CMS template、CSS 与审核协议；明确声明 Mobile 未验证；
+- 以 `cloud-services` 双语 Core 样例证明完整视觉审核链路；新的 blocker 只作用于按 Step 5 Profile 创建的新 Batch，不反向重判已经冻结的旧批次；
+- Step 5 深化证据和批准治理，不重新引入逐项 Pricing Fact parser、完整 Applicability Map、State Projection Map 或全状态内容 inventory；
+- Business Payload、报告、验收和批准流程继续禁止 `quality_score`。
 
 ##### P5：可信、CI-ready 的测试体系
 
 - `uv run pytest` 是唯一正式测试入口；只收集 `tests/`，启用 strict config 与 strict markers；collection error、零测试、缺 fixture 和缺基线均失败；已有 `unittest.TestCase` 在迁移期由 pytest 兼容收集，打印式诊断不算测试；
 - 建立双语 Core Strategy Test Matrix：`service-bus/simple_static`、`api-management/region_filter`、`cloud-services/complex`、`icp-faq/support_article`，八个 Batch Items 均覆盖 unit、component、end-to-end；
 - Core Fixture Manifest 通过 Product Definition 解析并固定八个 canonical `data/prod-html` 路径和 SHA-256，不复制第二套 HTML fixtures；
-- 三个 pricing Core 产品同时保留完整 canonical Business Payload Golden 和 Curated Pricing Fact Baseline；前者捕获端到端 CMS 输出回归，后者独立校准 source/payload fact validators；`icp-faq` 保留文章内容和 CMS contract 基线；
-- Golden 和事实基线只是测试回归证据，不是运行时正确性 Oracle。普通测试只读，更新只能生成包含 old-to-new Diff、Source hash、Schema/Profile 版本和理由的 Baseline Candidate，再经人工审核晋升；
+- 三个 pricing Core 产品保留完整 canonical Business Payload Golden 和 Curated Sampling Baseline；前者捕获端到端 CMS 输出回归，后者校准 state universe、分层、deterministic selection 和 selected-state comparison；`icp-faq` 保留文章内容和 CMS contract 基线；
+- Golden 和抽样基线只是测试回归证据，不是冻结 Source 的替代内容 Oracle。普通测试只读，更新只能生成包含 old-to-new Diff、Source hash、Schema/Profile 版本和理由的 Baseline Candidate，再经人工审核晋升；
 - 建立默认离线 Deterministic Test Suite 和显式网络启用的 Live Interaction Reference Suite；后者只采集 rendered state mapping、visible fragment/table fingerprints、截图、最终 URL、时间和 Rendering Profile，不采集 raw HTTP，也不改变历史判定或基线；
-- 提交 `api-management`、`cloud-services` 双语 compact Interaction Baseline，记录 `source_snapshot_sha256`、`current_reference`/`snapshot_bound` binding status 及 binding evidence，并穷举每个已证明 UI Reachable Selection State；只有 snapshot-bound entries 可进入 Applicability Map，完整 live screenshots 与 DOM captures 留在 gitignored 运行证据中；
+- 提交 `api-management`、`cloud-services` 双语 compact Interaction Baseline，记录 `source_snapshot_sha256`、`current_reference`/`snapshot_bound` binding status 及 binding evidence，并穷举每个已证明 UI Reachable Selection State；这些证据校准 Reachability Relation、sampling strata 和人工参考，不进入 Applicability Map；
 - Core 与 Expanded Strategy Test Matrix 采用增量晋升；晋升要求双语、两个 clean deterministic runs、人工审核基线、适用 interaction/visual evidence 以及完整三层测试，不得临时移除产品来恢复绿色结果；
 - 测试系统只承诺 runner-agnostic 的命令、退出码和报告；v0.4 不添加 GitHub Actions、required checks 或外部 merge gate。
 
 #### 规则晋升原则
 
-- 确定性的契约、状态映射、事实对账和输入身份规则可以直接作为 blocking rule；
+- 确定性的输入身份、全状态结构契约和 selected-state 内容比较可以直接作为 blocking rule；
 - 启发式内容规则先以 observational warning 运行，记录准确率和 false positives，再通过显式 Rule Promotion 提升为 blocking；
 - v0.4 结束前必须已有实际参与 Machine Validation 的内容门禁，不能只交付观察报告；
 - warning、Machine Validation failure、Approval Blocker 和人工 rejection 是四类不同结果，不能压缩成分数或单一“失败”。
 
 #### 验收标准
 
-- P0 `virtual-machines` 双语实验导出遵守精确 allowlist、源哈希、隔离目录、原子输出、Manifest、退出码和 upload 拒绝规则；它仍为 `known_unsupported` 且产物明确 unvalidated；
-- 8 个语言级 Core Batch Items（4 个产品 × 2 种语言）的 unit、component 和 end-to-end 全部通过；三个 pricing 产品同时具有稳定 Golden Payload 与 Curated Pricing Fact Baseline；`cloud-services` 双语完成实际 Complex Table Visual Review；
-- v0.4 Planning Baseline Manifest 对 v0.3 的 379 个 runnable baseline items 达到 `baseline_accounting = 379 / 379`，并逐项列出所有 reviewed planning/capability delta；冻结后的全量双语 runnable set 达到 100% Reliable Adjudication Coverage，每项都有 evidence-backed `passed` 或 `failed`，不存在 schema-only pass、运行后 skip、silent fallback、缺报告或 indeterminate；
-- v0.4 不要求全量 Machine Validation 100% 通过。Non-Core 重建失败必须保持 failed 且不可批准，按页面结构簇进入 v0.6；不得为了完成版本而把运行后失败临时改成 `known_unsupported`；
-- 每个 runnable pricing item 都执行 Expected/Observed Pricing Fact Inventory 对账；每个 runnable interactive pricing item 都有完整 Applicability Map，无法证明时明确失败；
-- Product Definition、输入身份、strict UTF-8、Reconstruction Parseability、CMS contract、filter/state、publishable text、Pricing Fact 与确定性 drift 规则均实际参与 Machine Validation；启发式规则具有校准与晋升记录；
-- 每个被裁决项目都有 Machine Validation Report 2.0；定价项目的 Expected、Observed、Diff 证据可按哈希验证；批次可生成 Upstream Verification Report；
-- 至少有验收样例分别证明：重建错误阻断、源异常 warning 但阻断批准、Explained Orphan 仅告警、Unresolved Orphan 阻断批准、任何 orphan 被导入时验证失败；
-- `pipeline-validate` 按冻结 Validation Profile 重现原判定；同 Source/Profile 的 Business Payload 和事实证据具有确定性；
-- `api-management`、`cloud-services` 双语 Interaction Baseline 覆盖全部可达状态；Live Interaction Reference Suite 不充当历史 Oracle；
+- P0 `virtual-machines` 双语实验导出继续隔离，保持 `known_unsupported`、unvalidated 且不可进入 Review/Release/upload；
+- 8 个语言级 Core Batch Items（4 个产品 × 2 种语言）的 unit、component 和 end-to-end 全部通过；三个 pricing Core 具有稳定 Golden Payload 与 Curated Sampling Baseline；
+- RegionFilter/Complex 对全部 source-proven states 执行结构契约；内容比较按冻结 Profile 产生可重复的 sample set 和 evidence hashes；
+- sampled state 的文本、价格单位、表格顺序、multiplicity 或 state assignment 变化会使 Machine Validation 失败；无法评估 selected state 时不得 replacement draw；
+- Machine-pass item 进入 Review Queue；approve/reject 均产生 hash-bound append-only decision，证据变化后旧决定变 stale；
+- Dashboard 分别显示产品与语言项的 Capability、Execution、Machine Validation、Review、Release、Publication、`sampled / total` 和失败原因；
+- machine failure、approval blocker、review pending/rejected、stale binding、hash drift、known_unsupported 或 experimental artifact 均无法 promotion/upload；
+- approved item 能生成绑定单一 Batch 的 sealed Release，Release Manifest 与 payload hashes 可复核；上传可幂等重试且只有成功后才标记 published；
+- Step 5 的 Report 2.0、Source Finding Disposition 和 `cloud-services` 双语 Complex Table Visual Review 完成后，才能完成整个 v0.4 收口；
+- v0.4 Planning Baseline Manifest 继续保持完整 accounting；Non-Core failure 必须真实保留，不得通过缩小分母或改成 `known_unsupported` 伪造绿色；
 - 缺 fixture、缺 baseline、collection error、零测试和未经审核的 baseline overwrite 均使 Deterministic Test Suite 非零退出；
-- 旧字段验证、`quality_score`、`sharedContent` 生产、`LARGE_FILE` 语义选择及所有 unknown/error-to-Simple fallback 从正式路径移除；
-- 文档和报告明确声明：v0.4 无 Commercial Price Accuracy 保证、无 external CI gate、无 mobile guarantee、无全量人工审核完成承诺。
+- `quality_score`、`LARGE_FILE` 语义选择、unknown/error-to-Simple fallback 以及旧 Step 4 的 PricingFact、ApplicabilityMap、StateProjectionMap 和完整 inventory 工作流不进入正式路径；
+- 文档和报告明确声明：v0.4 只保证全状态结构与抽样状态内容一致，无 Commercial Price Accuracy、全状态内容 Fidelity、external CI gate 或 mobile guarantee。
 
-### v0.5：建立 Chrome 人工核验闭环
+### v0.5：深化 Dashboard 审核与质量治理
 
 #### 目标
 
-在 v0.4 已生效的 Complex Pricing Table Desktop 视觉门禁之上，为全部策略和页面类型建立可重复的通用人工审核方式。v0.5 不重新定义 Pricing Fidelity Oracle，也不能用人工判断覆盖 Machine Validation failure。
+在 v0.4 已可使用的逐 Batch Item Dashboard 审核、基础增长视图、不可变 Release 和 Step 5 视觉门禁之上，把审核协议扩展到完整目标支持集合，并增加任务分派、cohort/历史深度分析、重复审核与更细的治理能力。v0.5 不扩大 Machine Validation 的抽样保证，也不能用人工判断覆盖 Machine Validation failure。
 
 #### 对比对象
 
@@ -499,25 +503,25 @@ v0.4 不包含 GitHub Actions、required branch checks 或其他 external merge 
 - 审核时间；
 - 审核人；
 - 备注；
-- Machine Validation Report、Validation Profile 和适用 Visual Review Variant 引用；
+- Machine Validation Report、Content Sampling Profile、Batch Item Sampling Plan 和适用 Visual Review Variant 引用；
 - 审核前后的 `approval_blockers[]`；
 - 是否生成 Baseline Candidate；审核记录本身不能直接覆盖 Golden 或事实基线。
 
 #### 验收标准
 
-- 能从批次报告直接定位待审核产品。
-- 审核人员可以在 Chrome 中快速完成对比。
+- 能从 Dashboard 和批次报告直接定位、分派和追踪待审核产品。
+- 审核人员可以在 Dashboard 工作区中快速完成冻结 Source 与 Payload 对比。
 - 通用审核流程可以处理目标支持集合中所有 Machine-pass Batch Items，并对未完成项保留明确 `pending` 状态及 blocker；4 种策略均至少有一组已批准实证。
 - 人工拒绝结果不能被发布。
 - 未通过 Machine Validation 或仍有 Approval Blocker 的结果不能被人工强制批准。
-- 已批准结果只能生成后续批次的 Baseline Candidate，经过独立审核后才能晋升为回归基线。
-- UI、报告和状态机明确区分 Machine-pass、Review Queue membership、Approval Eligibility 与最终 Approval。
+- 已批准结果可以进入不可变 Release；若同时需要更新回归基线，仍必须生成独立 Baseline Candidate 并另行审核。
+- UI、报告和状态机明确区分 Machine-pass、Review Queue membership、Approval Eligibility、最终 Approval、Release membership 与 Publication。
 
 ### v0.6：提高产品解析覆盖率
 
 #### 目标
 
-修复 v0.4 全量可靠裁决所暴露的失败结构簇，提高正式支持集合的 Machine Validation pass、Approval Eligibility 和实际批准覆盖率。
+修复 v0.4 全状态结构检查、抽样内容比较和人工审核所暴露的失败结构簇，提高正式支持集合的 Machine Validation pass、Approval Eligibility 和实际批准覆盖率。
 
 #### 覆盖率定义
 
@@ -530,7 +534,7 @@ v0.4 不包含 GitHub Actions、required branch checks 或其他 external merge 
 | 路由覆盖率 | 页面能够选择明确且已实现的策略 |
 | 提取覆盖率 | 能够生成目标 JSON |
 | 可靠裁决覆盖率 | runnable 项具有完整证据和明确 Machine Validation pass/fail |
-| 验证通过率 | 通过 CMS Contract、内容完整性和适用 Pricing Fidelity 门禁 |
+| 验证通过率 | 通过 CMS Contract、全状态结构和适用抽样内容门禁 |
 | 批准资格率 | Machine-pass 且 `approval_blockers[]` 已清空 |
 | 人工批准率 | 已经完成必要人工核验并批准 |
 | 发布覆盖率 | 当前批次中允许并已完成正式发布 |
@@ -547,8 +551,8 @@ v0.4 不包含 GitHub Actions、required branch checks 或其他 external merge 
 区域内容映射失败
 复杂筛选组合失败
 Schema 验证失败
-Pricing Fidelity 失败
-Applicability Evidence 不足
+全状态结构契约失败
+抽样内容不一致或无法评估
 内容完整性失败
 Source Finding 待处置
 复杂表格视觉审核待完成或失败
@@ -561,7 +565,7 @@ Source Finding 待处置
 - 产品专用配置只能处理真实业务差异，不能掩盖通用解析缺陷。
 - 新增支持产品前必须补充自动化样例。
 - 通过双语证据校准的产品只能增量晋升到 Expanded Strategy Test Matrix，不能临时移除以隐藏回归。
-- “支持产品”必须表示通过当前质量门槛，而不是仅存在于索引中。
+- `supported` 只表示 Product Definition 已进入正式系统能力范围；它必须与当前 Batch 的提取、机器通过、人工批准和发布覆盖率分别统计，不能暗示这些结果已经完成。
 - Experimental Payload Candidate 不计入提取、验证、支持、批准或发布覆盖率。
 
 #### 验收标准
@@ -588,7 +592,7 @@ Source Finding 待处置
 
 - 实现与 `simple_static`、`region_filter`、`complex`、`support_article` 语义策略正交的 streaming Processing Mode，不新增 `large_file` 内容策略。
 - 扩展 InMemory Capability Profile 为可版本化的 Processing Capability Profile，并保持超过能力边界时 fail closed；v0.4 已删除的 `LARGE_FILE` 语义选择和 Simple fallback 不得恢复。
-- 对同一个冻结输入和同一个语义策略，证明 streaming 与 in-memory 生成 canonical-equivalent Business Payload、Expected/Observed Pricing Fact Inventories 和验证结论。
+- 对同一个冻结输入、语义策略和 Validation Profile，证明 streaming 与 in-memory 生成 canonical-equivalent Business Payload、Reachability Relation、selected state list、sample evidence 和验证结论。
 - 避免策略分析和正式提取重复读取、重复解析同一 HTML。
 - 复用批次级 `ProductManager`、配置缓存和解析上下文。
 - 对并发线程数、内存峰值和批次耗时建立基线。
@@ -598,7 +602,7 @@ Source Finding 待处置
   - 不通过重试掩盖确定性解析错误。
 - 处理进程中断、残留 `running` 状态和损坏产物。
 - 为超大 HTML 建立专门的性能、资源和输出等价性测试；`virtual-machines` 的 v0.4 实验导出只能作为性能探索证据，不能自动成为正式支持基线。
-- `virtual-machines` 若转为正式支持，必须另行完成 Capability Status 决策、Applicability Map、完整 Machine Validation 和适用人工审核；v0.4 Experimental Payload Candidate 不能直接晋升或成为 Golden。
+- `virtual-machines` 若转为正式支持，必须另行完成 Capability Status 决策、完整 Machine Validation、Sampling Profile 证据和适用人工审核；v0.4 Experimental Payload Candidate 不能直接晋升或成为 Golden。
 
 #### 验收标准
 
@@ -608,7 +612,7 @@ Source Finding 待处置
 - 相同输入和代码版本产生确定性等价输出。
 - 中断后的批次可以恢复，不会丢失已完成结果。
 - 并发处理不破坏权威 JSON manifest、结构化 JSONL 日志或输出文件；旧 SQLite API 仅作为内部兼容层，不参与 pipeline 状态判定。
-- 性能优化不得改变源驱动的 Pricing Fact Fidelity 结论；Golden Payload 只作为附加输出回归证据。
+- 性能优化不得改变全状态结构、deterministic sample selection、sampled content verdict 或 Release eligibility；Golden Payload 只作为附加输出回归证据。
 
 ### v0.8：架构清理与 stale 代码治理
 
