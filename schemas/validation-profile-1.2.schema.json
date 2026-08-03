@@ -1,0 +1,358 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/validation-profile-1.2.schema.json",
+  "title": "Validation Profile 1.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile_id",
+    "status",
+    "base_profile",
+    "content_sampling_profile",
+    "contracts",
+    "input_assurance",
+    "source_finding_severity",
+    "semantic_assurance",
+    "min_content_length_by_product"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.2"
+    },
+    "profile_id": {
+      "const": "v0.4-validation-p3"
+    },
+    "status": {
+      "const": "frozen"
+    },
+    "base_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "schema_version",
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "id": {
+          "const": "v0.4-validation-p2"
+        },
+        "schema_version": {
+          "const": "1.1"
+        },
+        "path": {
+          "const": "data/configs/validation-profiles/v0.4-p2.json"
+        },
+        "sha256": {
+          "const": "090565500134e970bd831785b7640d80f23ce49cb130e26858be8fa33d9c234c"
+        }
+      }
+    },
+    "content_sampling_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "schema_version",
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "id": {
+          "const": "v0.4-content-sampling-p3"
+        },
+        "schema_version": {
+          "const": "1.0"
+        },
+        "path": {
+          "const": "data/configs/content-sampling-profiles/v0.4-p3.json"
+        },
+        "sha256": {
+          "const": "2e2c33cd964ea73435a3f83c076dcdc114ee73c88e2d00c7c3c8cd4c6dd75cb0"
+        }
+      }
+    },
+    "contracts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product_definition",
+        "flexible_content",
+        "support_article",
+        "diagnostic_sidecar",
+        "source_html_structure_audit",
+        "content_sampling_profile",
+        "pipeline_validation",
+        "batch_item_sampling_plan",
+        "sampled_content_evidence"
+      ],
+      "properties": {
+        "product_definition": {
+          "$ref": "#/$defs/contract"
+        },
+        "flexible_content": {
+          "$ref": "#/$defs/contract"
+        },
+        "support_article": {
+          "$ref": "#/$defs/contract"
+        },
+        "diagnostic_sidecar": {
+          "$ref": "#/$defs/contract"
+        },
+        "source_html_structure_audit": {
+          "$ref": "#/$defs/contract"
+        },
+        "content_sampling_profile": {
+          "$ref": "#/$defs/contract"
+        },
+        "pipeline_validation": {
+          "$ref": "#/$defs/contract"
+        },
+        "batch_item_sampling_plan": {
+          "$ref": "#/$defs/contract"
+        },
+        "sampled_content_evidence": {
+          "$ref": "#/$defs/contract"
+        }
+      }
+    },
+    "input_assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "normalized_input_byte_identical",
+        "encoding",
+        "preserve_utf8_bom",
+        "reconstruction_parseability",
+        "material_difference_disposition"
+      ],
+      "properties": {
+        "normalized_input_byte_identical": {
+          "const": true
+        },
+        "encoding": {
+          "const": "utf-8-strict"
+        },
+        "preserve_utf8_bom": {
+          "const": true
+        },
+        "reconstruction_parseability": {
+          "const": "beautifulsoup-html.parser-vs-lxml.html"
+        },
+        "material_difference_disposition": {
+          "const": "blocking"
+        }
+      }
+    },
+    "source_finding_severity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "charset_declaration_not_utf8",
+        "charset_declarations_conflict",
+        "charset_bom_conflict"
+      ],
+      "properties": {
+        "charset_declaration_not_utf8": {
+          "const": "finding"
+        },
+        "charset_declarations_conflict": {
+          "const": "finding"
+        },
+        "charset_bom_conflict": {
+          "const": "finding"
+        }
+      }
+    },
+    "semantic_assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cms_state_reachability",
+        "strict_soft_category_projection",
+        "source_html_structure_audit",
+        "sampled_content_consistency"
+      ],
+      "properties": {
+        "cms_state_reachability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "authority",
+            "state_space"
+          ],
+          "properties": {
+            "authority": {
+              "const": "source-proven-reachable-condition-states"
+            },
+            "state_space": {
+              "const": "non-cartesian"
+            }
+          }
+        },
+        "strict_soft_category_projection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "algorithm",
+            "evidence_schema_version",
+            "lookup_key",
+            "duplicate_mapping_disposition",
+            "idless_table_policy",
+            "idless_table_replay"
+          ],
+          "properties": {
+            "algorithm": {
+              "const": "strict-soft-category-leaf-state-v1"
+            },
+            "evidence_schema_version": {
+              "const": "1.1"
+            },
+            "lookup_key": {
+              "const": "source-software-value-and-region-value"
+            },
+            "duplicate_mapping_disposition": {
+              "const": "report-and-fail-closed"
+            },
+            "idless_table_policy": {
+              "const": "unconditional-preserve"
+            },
+            "idless_table_replay": {
+              "const": "physical-order-and-normalized-html-sha256"
+            }
+          }
+        },
+        "source_html_structure_audit": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schema_version",
+            "auditor_version",
+            "blocking_finding_disposition",
+            "source_repair"
+          ],
+          "properties": {
+            "schema_version": {
+              "const": "1.0"
+            },
+            "auditor_version": {
+              "const": "exact-owned-boundaries-static-page-global-ids-and-post-selector-scope-v4"
+            },
+            "blocking_finding_disposition": {
+              "const": "fail-extraction"
+            },
+            "source_repair": {
+              "const": "forbidden"
+            }
+          }
+        },
+        "sampled_content_consistency": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "claim",
+            "structure_scope",
+            "full_content_strategies",
+            "sampled_content_strategies",
+            "target_budget",
+            "selected_state_failure",
+            "replacement_draw"
+          ],
+          "properties": {
+            "claim": {
+              "const": "sampled_state_content_consistency"
+            },
+            "structure_scope": {
+              "const": "all_source_proven_reachable_states"
+            },
+            "full_content_strategies": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "const": "simple_static"
+                },
+                {
+                  "const": "support_article"
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "sampled_content_strategies": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "const": "region_filter"
+                },
+                {
+                  "const": "complex"
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "target_budget": {
+              "const": 12
+            },
+            "selected_state_failure": {
+              "const": "fail_validation"
+            },
+            "replacement_draw": {
+              "const": "forbidden"
+            }
+          }
+        }
+      }
+    },
+    "min_content_length_by_product": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      },
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    }
+  },
+  "$defs": {
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "not": {
+            "anyOf": [
+              {
+                "pattern": "^/"
+              },
+              {
+                "pattern": "(^|/)\\.\\.(/|$)"
+              }
+            ]
+          }
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    }
+  }
+}

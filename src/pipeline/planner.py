@@ -77,7 +77,32 @@ class PipelinePlanner:
         scope_value: dict[str, Any] = {"kind": scope}
         if group is not None:
             scope_value["group"] = group
-        return PipelinePlan(scope=scope_value, languages=languages, items=tuple(items))
+        return PipelinePlan(
+            scope=scope_value,
+            languages=languages,
+            items=tuple(items),
+            frozen_inputs=self._frozen_repository_inputs(),
+        )
+
+    def _frozen_repository_inputs(self) -> dict[str, Any]:
+        """Freeze every repository input required by a newly planned Batch."""
+
+        relative = Path("data/configs/soft-category.json")
+        path = self.root / relative
+        if not path.exists():
+            raise PlanningError(
+                f"Canonical soft-category input is missing: {path}"
+            )
+        if path.is_symlink() or not path.is_file():
+            raise PlanningError(
+                f"Canonical soft-category input is not a regular file: {path}"
+            )
+        return {
+            "soft_category": {
+                "path": relative.as_posix(),
+                "sha256": sha256_file(path),
+            }
+        }
 
     @staticmethod
     def _languages(language: str) -> tuple[str, ...]:

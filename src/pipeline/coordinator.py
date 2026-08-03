@@ -167,7 +167,9 @@ class PipelineCoordinator:
         # directory or an input manifest.
         batch_id = self._batch_id_factory()
         with RepositoryLock(
-            self.root, batch_id=batch_id, command="pipeline-run"
+            self.store.lock_root,
+            batch_id=batch_id,
+            command="pipeline-run",
         ):
             frozen_provenance = self.provenance.capture(allow_dirty=allow_dirty)
             plan = self.planner.plan(scope, group=group, language=language)
@@ -217,7 +219,9 @@ class PipelineCoordinator:
         """Resume operationally failed or interrupted stages without redoing success."""
         self._validate_parallel_jobs(parallel_jobs)
         with RepositoryLock(
-            self.root, batch_id=batch_id, command="pipeline-resume"
+            self.store.lock_root,
+            batch_id=batch_id,
+            command="pipeline-resume",
         ):
             frozen = self.store.read_input_manifest(batch_id)
             self.provenance.verify(frozen["provenance"])
@@ -249,7 +253,9 @@ class PipelineCoordinator:
         """Revalidate existing successful extractions without invoking earlier stages."""
         self._validate_parallel_jobs(parallel_jobs)
         with RepositoryLock(
-            self.root, batch_id=batch_id, command="pipeline-validate"
+            self.store.lock_root,
+            batch_id=batch_id,
+            command="pipeline-validate",
         ):
             frozen = self.store.read_input_manifest(batch_id)
             self.provenance.verify(frozen["provenance"])
@@ -294,7 +300,8 @@ class PipelineCoordinator:
         display_status, resumable = derive_batch_availability(
             manifest,
             lock_is_held=RepositoryLock.is_locked(
-                self.root, batch_id=batch_id
+                self.store.lock_root,
+                batch_id=batch_id,
             ),
         )
         return {
@@ -683,7 +690,7 @@ class PipelineCoordinator:
                     item_checkpoint, "succeeded", now, now, None
                 )
 
-        self.store.update_manifest(batch_id, mutate)
+        self._update_manifest(batch_id, mutate)
         self._log_event(batch_id, "discovery", "succeeded")
 
     def _start_stage(self, batch_id: str, stage: str, items: Iterable[BatchItem]) -> None:
@@ -717,7 +724,7 @@ class PipelineCoordinator:
                                 "error": None,
                             })
 
-        self.store.update_manifest(batch_id, mutate)
+        self._update_manifest(batch_id, mutate)
         self._log_event(batch_id, stage, "running")
 
     def _finish_stage(self, batch_id: str, stage: str) -> None:
@@ -740,7 +747,7 @@ class PipelineCoordinator:
                 checkpoint, "succeeded", checkpoint.get("started_at") or now, now, error
             )
 
-        self.store.update_manifest(batch_id, mutate, changed_item_ids=())
+        self._update_manifest(batch_id, mutate, changed_item_ids=())
         self._log_event(batch_id, stage, "succeeded")
 
     def _commit_stage_result(
@@ -832,7 +839,7 @@ class PipelineCoordinator:
                     if diagnostic.is_file():
                         current["artifacts"]["diagnostic"]["sha256"] = sha256_file(diagnostic)
 
-        updated = self.store.update_manifest(
+        updated = self._update_manifest(
             batch_id, mutate, changed_item_ids=(item.item_id,)
         )
         self._log_item_event(batch_id, item, stage, status, result.strategy, error)
@@ -940,7 +947,7 @@ class PipelineCoordinator:
             for item_id, stage in resets.items():
                 self._reset_item_from(manifest["items"][item_id], stage)
 
-        self.store.update_manifest(
+        self._update_manifest(
             batch_id, mutate, changed_item_ids=resets.keys()
         )
 
@@ -1093,7 +1100,7 @@ class PipelineCoordinator:
                         None,
                     )
 
-            self.store.update_manifest(batch_id, mutate)
+            self._update_manifest(batch_id, mutate)
 
         self._sync_sidecar_statuses(batch_id, items)
         if stage_needed:
@@ -1166,7 +1173,7 @@ class PipelineCoordinator:
                 value["status"] = self._completed_status(current_summary)
                 value["summary"] = current_summary
 
-            self.store.update_manifest(batch_id, mutate)
+            self._update_manifest(batch_id, mutate)
             self._finish_stage(batch_id, "report")
         elif status_reconcile_needed:
             def reconcile_status(value: dict[str, Any]) -> None:
@@ -1174,7 +1181,7 @@ class PipelineCoordinator:
                 value["status"] = self._completed_status(current_summary)
                 value["summary"] = current_summary
 
-            self.store.update_manifest(
+            self._update_manifest(
                 batch_id, reconcile_status, changed_item_ids=()
             )
 
@@ -1288,9 +1295,20 @@ class PipelineCoordinator:
             sidecar = self._read_trusted_sidecar(path, expected_hash)
             if sidecar is None:
                 return False
-            if sidecar.get("status") != current["status"]:
+            if sidecar.get("status") != self._sidecar_status_projection(
+                current["status"]
+            ):
                 return False
         return True
+
+    @staticmethod
+    def _sidecar_status_projection(status: Mapping[str, Any]) -> dict[str, Any]:
+        """Project Manifest lifecycle state onto Diagnostic Sidecar 1.2."""
+
+        return {
+            key: status[key]
+            for key in ("execution", "validation", "review", "publication")
+        }
 
     def _sync_sidecar_statuses(
         self, batch_id: str, items: Iterable[BatchItem]
@@ -1328,8 +1346,11 @@ class PipelineCoordinator:
                         "warnings": [],
                     }
                     sidecar_changed = True
-            if sidecar["status"] != current["status"]:
-                sidecar["status"] = dict(current["status"])
+            projected_status = self._sidecar_status_projection(
+                current["status"]
+            )
+            if sidecar["status"] != projected_status:
+                sidecar["status"] = projected_status
                 sidecar_changed = True
             if sidecar_changed:
                 contract = self._contract_validator.validate_sidecar(sidecar)
@@ -1351,7 +1372,7 @@ class PipelineCoordinator:
             for item_id, digest in hashes.items():
                 value["items"][item_id]["artifacts"]["diagnostic"]["sha256"] = digest
 
-        self.store.update_manifest(
+        self._update_manifest(
             batch_id, mutate, changed_item_ids=hashes.keys()
         )
 
@@ -1778,7 +1799,7 @@ class PipelineCoordinator:
                     run_dir / item.diagnostic_path
                 )
 
-        updated = self.store.update_manifest(
+        updated = self._update_manifest(
             batch_id,
             mutate,
             changed_item_ids=(item.item_id for item in items),
@@ -1839,7 +1860,7 @@ class PipelineCoordinator:
                     "sha256"
                 ] = sha256_file(run_dir / item.diagnostic_path)
 
-        updated = self.store.update_manifest(
+        updated = self._update_manifest(
             batch_id,
             mutate,
             changed_item_ids=(item.item_id for item in items),
@@ -2129,7 +2150,7 @@ class PipelineCoordinator:
         def mutate(manifest: dict[str, Any]) -> None:
             manifest["items"][item.item_id]["artifacts"]["validation"]["sha256"] = digest
 
-        self.store.update_manifest(
+        self._update_manifest(
             batch_id, mutate, changed_item_ids=(item.item_id,)
         )
 
@@ -2279,11 +2300,31 @@ class PipelineCoordinator:
     def _status_summary(manifest: Mapping[str, Any]) -> dict[str, int]:
         return summarize_batch_manifest(manifest)
 
+    def _update_manifest(
+        self,
+        batch_id: str,
+        update: Callable[
+            [dict[str, Any]], Mapping[str, Any] | None
+        ]
+        | Mapping[str, Any],
+        *,
+        changed_item_ids: Iterable[str] | None = None,
+    ) -> dict[str, Any]:
+        """Commit one lock-serialized mutation with optimistic revision replay."""
+
+        revision = self.store.read_manifest(batch_id)["revision"]
+        return self.store.update_manifest(
+            batch_id,
+            update,
+            expected_revision=revision,
+            changed_item_ids=changed_item_ids,
+        )
+
     def _mark_batch_failed(
         self, batch_id: str, exc: Exception, *, stage: str
     ) -> None:
         try:
-            self.store.update_manifest(
+            self._update_manifest(
                 batch_id,
                 lambda manifest: manifest.update({"status": "failed"}),
                 changed_item_ids=(),

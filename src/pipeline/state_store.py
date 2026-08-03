@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import errno
+import hashlib
 import json
 import os
 import secrets
@@ -16,9 +17,26 @@ from typing import Any, IO
 
 from jsonschema import Draft202012Validator, FormatChecker
 
+from src.core.canonical_identity import (
+    CanonicalIdentityError,
+    derive_sampling_seed,
+    derive_state_id,
+    derive_universe_id,
+    document_identity_sha256,
+    validation_evidence_sha256,
+)
 from src.core.product_catalog import sha256_file
 from src.core.validation_context import ValidationContextError, ValidationContextRegistry
 from src.pipeline.models import BatchManifest, InputManifest, utc_now
+from src.release.contracts import (
+    ReleaseContractError,
+    validate_release_manifest_bindings,
+)
+from src.review.contracts import (
+    ReviewContractError,
+    machine_approval_preconditions,
+    source_approval_preconditions,
+)
 
 try:  # pragma: no cover - exercised on the platform that provides it
     import fcntl
@@ -40,6 +58,101 @@ class ImmutableManifestError(StateStoreError):
 
 class ManifestConflictError(StateStoreError):
     """The caller attempted to update a stale batch manifest revision."""
+
+
+def _serialized_json_payload(value: Mapping[str, Any]) -> str:
+    """Return the exact bytes-on-disk JSON representation used by the store."""
+
+    return json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+
+
+def _serialized_json_sha256(value: Mapping[str, Any]) -> str:
+    return hashlib.sha256(
+        _serialized_json_payload(value).encode("utf-8")
+    ).hexdigest()
+
+
+def _validate_coverage_counts(
+    coverage: Mapping[str, Any],
+    *,
+    context: str,
+    selected_state_ids: list[str] | None = None,
+) -> None:
+    """Validate coverage arithmetic that JSON Schema cannot express."""
+
+    universe_count = coverage["universe_count"]
+    selected_count = coverage["selected_count"]
+    untested_count = coverage["untested_count"]
+    if universe_count != selected_count + untested_count:
+        raise ManifestValidationError(
+            f"{context} universe_count must equal selected_count plus "
+            "untested_count"
+        )
+    if coverage["mode"] == "full" and (
+        selected_count != universe_count or untested_count != 0
+    ):
+        raise ManifestValidationError(
+            f"{context} full coverage must select the entire universe"
+        )
+    if (
+        selected_state_ids is not None
+        and coverage["mode"] == "stratified_sample"
+        and len(selected_state_ids) != selected_count
+    ):
+        raise ManifestValidationError(
+            f"{context} selected_count must equal selected_state_ids length"
+        )
+
+
+def _validate_structure_counts(
+    structure: Mapping[str, Any],
+    *,
+    coverage_universe_count: int,
+    total_field: str,
+    context: str,
+) -> None:
+    total_count = structure[total_field]
+    checked_count = structure["checked_count"]
+    if total_count != coverage_universe_count:
+        raise ManifestValidationError(
+            f"{context} total must equal content coverage universe_count"
+        )
+    if checked_count > total_count:
+        raise ManifestValidationError(
+            f"{context} checked_count cannot exceed its total"
+        )
+    if structure["status"] == "passed" and checked_count != total_count:
+        raise ManifestValidationError(
+            f"{context} passed status requires every reachable state checked"
+        )
+    if "errors" in structure:
+        errors = structure["errors"]
+        if structure["status"] == "passed" and errors:
+            raise ManifestValidationError(
+                f"{context} passed status cannot contain errors"
+            )
+        if structure["status"] == "failed" and not errors:
+            raise ManifestValidationError(
+                f"{context} failed status requires at least one error"
+            )
+
+
+def _validate_comparison_identity(
+    comparison: Mapping[str, Any],
+    *,
+    context: str,
+) -> None:
+    status = comparison["status"]
+    source = comparison["source_fingerprint"]
+    payload = comparison["payload_fingerprint"]
+    if status == "matched" and source != payload:
+        raise ManifestValidationError(
+            f"{context} matched status requires identical fingerprints"
+        )
+    if status == "mismatched" and source == payload:
+        raise ManifestValidationError(
+            f"{context} mismatched status requires different fingerprints"
+        )
 
 
 class ManifestValidationError(StateStoreError):
@@ -249,6 +362,30 @@ class RepositoryLock:
         finally:
             stream.close()
 
+    @classmethod
+    def is_owned_by_current_process(
+        cls,
+        root: str | Path = ".",
+        *,
+        batch_id: str,
+    ) -> bool:
+        """Return whether this process owns the live lock for ``batch_id``."""
+
+        repository_root = Path(root).resolve()
+        if not cls.is_locked(repository_root, batch_id=batch_id):
+            return False
+        path = repository_root / "runs" / ".pipeline.lock"
+        try:
+            metadata = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return False
+        return (
+            isinstance(metadata, dict)
+            and metadata.get("schema_version") == "1.0"
+            and metadata.get("pid") == os.getpid()
+            and metadata.get("batch_id") == batch_id
+        )
+
 
 class StateStore:
     """Persist immutable inputs, mutable truth, and rebuildable projections."""
@@ -262,15 +399,30 @@ class StateStore:
             "1.0": "pipeline-batch-manifest-1.0.schema.json",
             "2.0": "pipeline-batch-manifest-2.0.schema.json",
         },
-        "validation": {"1.0": "pipeline-validation-1.0.schema.json"},
+        "validation": {
+            "1.0": "pipeline-validation-1.0.schema.json",
+            "2.0": "pipeline-validation-2.0.schema.json",
+        },
         "review": {"1.0": "pipeline-review-queue-1.0.schema.json"},
         "report": {"1.0": "pipeline-batch-report-1.0.schema.json"},
+        "content_sampling_profile": {
+            "1.0": "content-sampling-profile-1.0.schema.json"
+        },
+        "sampling_plan": {
+            "1.0": "batch-item-sampling-plan-1.0.schema.json"
+        },
+        "sampled_content_evidence": {
+            "1.0": "sampled-content-evidence-1.0.schema.json"
+        },
+        "review_decision": {"1.0": "review-decision-1.0.schema.json"},
+        "release_manifest": {"1.0": "release-manifest-1.0.schema.json"},
     }
 
     def __init__(self, root: str | Path = ".", runs_dir: str | Path = "runs") -> None:
         self.root = Path(root).resolve()
         candidate = Path(runs_dir)
         self.runs_dir = candidate.resolve() if candidate.is_absolute() else (self.root / candidate).resolve()
+        self.lock_root = self.runs_dir.parent
         self.schema_dir = self.root / "schemas"
         self._validators: dict[
             tuple[str, str, str], Draft202012Validator
@@ -295,27 +447,59 @@ class StateStore:
         frozen = input_manifest.to_dict() if isinstance(input_manifest, InputManifest) else copy.deepcopy(dict(input_manifest))
         if frozen.get("schema_version") != "2.0":
             raise ImmutableManifestError("New pipeline runs require Input Manifest 2.0")
+        if "frozen_inputs" not in frozen:
+            raise ImmutableManifestError(
+                "New pipeline runs require frozen_inputs.soft_category; "
+                "legacy Manifest 2.0 documents remain read-only compatible"
+            )
         self._validate(frozen, "input")
+        active_validation_context = self._validation_context.freeze()[
+            "validation_context"
+        ]
+        if frozen.get("validation_context") != active_validation_context:
+            raise ImmutableManifestError(
+                "New pipeline runs must use the active P2 Validation Context; "
+                "P3 is registered for explicit replay only until Slice B"
+            )
         batch_id = frozen["batch_id"]
         directory = self.run_dir(batch_id)
         if directory.exists():
             raise StateStoreError(f"Batch already exists: {batch_id}")
-        for relative in ("outputs", "diagnostics", "validation", "review", "logs"):
-            (directory / relative).mkdir(parents=True, exist_ok=False)
 
-        self.write_input_manifest(batch_id, frozen)
+        input_reference = {
+            "path": "input-manifest.json",
+            "sha256": _serialized_json_sha256(frozen),
+        }
+        expected_new = BatchManifest.from_input_manifest(frozen).to_dict()
+        expected_new["input_manifest"] = copy.deepcopy(input_reference)
         mutable = (
-            BatchManifest.from_input_manifest(frozen).to_dict()
+            copy.deepcopy(expected_new)
             if batch_manifest is None
             else batch_manifest.to_dict() if isinstance(batch_manifest, BatchManifest)
             else copy.deepcopy(dict(batch_manifest))
         )
-        mutable["input_manifest"] = {
-            "path": "input-manifest.json",
-            "sha256": sha256_file(directory / "input-manifest.json"),
-        }
+        # The Input file reference is store-derived, not caller-controlled.
+        mutable["input_manifest"] = copy.deepcopy(input_reference)
         if mutable.get("schema_version") != "2.0":
             raise ImmutableManifestError("New pipeline runs require Batch Manifest 2.0")
+        if mutable != expected_new:
+            raise ImmutableManifestError(
+                "New Batch Manifest must exactly equal the canonical "
+                "Input-derived initialization"
+            )
+        # Validate both documents and their derived file binding before any
+        # directory is created.  A rejected custom Batch cannot strand a
+        # half-created run that prevents a corrected retry.
+        self._validate(mutable, "batch")
+
+        for relative in ("outputs", "diagnostics", "validation", "review", "logs"):
+            (directory / relative).mkdir(parents=True, exist_ok=False)
+
+        self.write_input_manifest(batch_id, frozen)
+        if sha256_file(directory / "input-manifest.json") != input_reference["sha256"]:
+            raise StateStoreError(
+                "Input Manifest file identity differs from its prevalidated binding"
+            )
         self._write_new(directory / "batch-manifest.json", mutable, "batch")
         return directory
 
@@ -372,6 +556,7 @@ class StateStore:
         if value.get("schema_version") == "2.0" and (
             value.get("planning") != frozen.get("planning")
             or value.get("validation_context") != frozen.get("validation_context")
+            or value.get("frozen_inputs") != frozen.get("frozen_inputs")
         ):
             raise ImmutableManifestError(
                 f"Batch Manifest frozen context differs from Input Manifest for {batch_id}"
@@ -387,6 +572,17 @@ class StateStore:
         expected_revision: int | None = None,
         changed_item_ids: Iterable[str] | None = None,
     ) -> dict[str, Any]:
+        if expected_revision is None:
+            raise ManifestConflictError(
+                "Mutable manifest updates require expected_revision"
+            )
+        if not RepositoryLock.is_owned_by_current_process(
+            self.lock_root,
+            batch_id=batch_id,
+        ):
+            raise RepositoryLockError(
+                f"Mutable manifest updates require the RepositoryLock for {batch_id}"
+            )
         path = self.run_dir(batch_id) / "batch-manifest.json"
         # The on-disk Batch/Input pair is authoritative.  Always replay it
         # before a mutation so a warm cache cannot conceal manifest tampering
@@ -396,7 +592,7 @@ class StateStore:
             raise ImmutableManifestError(
                 "Pipeline Manifest 1.x is read-only; new mutation requires a 2.0 run"
             )
-        if expected_revision is not None and current["revision"] != expected_revision:
+        if current["revision"] != expected_revision:
             raise ManifestConflictError(
                 f"Batch {batch_id} revision is {current['revision']}, expected {expected_revision}"
             )
@@ -415,11 +611,52 @@ class StateStore:
             "input_manifest",
             "planning",
             "validation_context",
+            "frozen_inputs",
         ):
             if candidate.get(immutable_key) != current.get(immutable_key):
                 raise ImmutableManifestError(f"Mutable manifest cannot change {immutable_key}")
         if set(candidate.get("items", {})) != set(current.get("items", {})):
             raise ImmutableManifestError("Mutable manifest cannot add or remove Batch Items")
+        optional_item_fields = {
+            "status": {
+                "evidence_binding",
+                "approval_eligibility",
+                "release",
+            },
+            "artifacts": {
+                "sampling_plan",
+                "sampled_content_evidence",
+                "current_review_decision",
+            },
+        }
+        for item_id, previous_item in current.get("items", {}).items():
+            proposed_item = candidate["items"][item_id]
+            for container, optional_fields in optional_item_fields.items():
+                previous_presence = optional_fields.intersection(
+                    previous_item[container]
+                )
+                proposed_presence = optional_fields.intersection(
+                    proposed_item[container]
+                )
+                if proposed_presence != previous_presence:
+                    raise ImmutableManifestError(
+                        "Mutable manifest cannot add or remove optional Step 4 "
+                        f"{container} fields for {item_id}"
+                    )
+        for append_only_key in ("release_manifests", "publication_receipts"):
+            if (append_only_key in candidate) != (append_only_key in current):
+                raise ImmutableManifestError(
+                    "Mutable manifest cannot add or remove optional Step 4 "
+                    f"field {append_only_key}"
+                )
+            if append_only_key not in current:
+                continue
+            previous = list(current.get(append_only_key, []))
+            proposed = list(candidate.get(append_only_key, []))
+            if proposed[: len(previous)] != previous:
+                raise ImmutableManifestError(
+                    f"Mutable manifest cannot rewrite append-only {append_only_key}"
+                )
         candidate["revision"] = current["revision"] + 1
         candidate["updated_at"] = utc_now()
         if changed_item_ids is None:
@@ -491,6 +728,31 @@ class StateStore:
     ) -> Path:
         if kind not in ("validation", "review", "report"):
             raise StateStoreError(f"Unknown projection kind: {kind}")
+        if kind == "validation" and value.get("schema_version") == "2.0":
+            raise StateStoreError(
+                "Validation 2.0 writes remain disabled until the P3 runtime "
+                "landing order is activated in Slice B"
+            )
+        if not RepositoryLock.is_owned_by_current_process(
+            self.lock_root,
+            batch_id=batch_id,
+        ):
+            raise RepositoryLockError(
+                f"Projection writes require the RepositoryLock for {batch_id}"
+            )
+        if kind == "validation":
+            manifest = self.read_manifest(batch_id)
+            profile_id = manifest["validation_context"]["validation_profile"][
+                "id"
+            ]
+            expected_version = (
+                "2.0" if profile_id == "v0.4-validation-p3" else "1.0"
+            )
+            if value.get("schema_version") != expected_version:
+                raise StateStoreError(
+                    "Validation projection schema_version does not match the "
+                    f"Batch Validation Profile {profile_id}"
+                )
         defaults = {
             "review": Path("review/review-queue.json"),
             "report": Path("batch-report.json"),
@@ -513,6 +775,41 @@ class StateStore:
         self._atomic_write(path, value)
         return path
 
+    def read_projection(
+        self,
+        batch_id: str,
+        kind: str,
+        *,
+        relative_path: str | Path | None = None,
+    ) -> dict[str, Any]:
+        """Read and validate a persisted projection without rewriting it."""
+
+        if kind not in ("validation", "review", "report"):
+            raise StateStoreError(f"Unknown projection kind: {kind}")
+        defaults = {
+            "review": Path("review/review-queue.json"),
+            "report": Path("batch-report.json"),
+        }
+        if relative_path is None:
+            if kind == "validation":
+                raise StateStoreError(
+                    "validation projections require an item-relative path"
+                )
+            relative = defaults[kind]
+        else:
+            relative = Path(relative_path)
+        if relative.is_absolute() or ".." in relative.parts:
+            raise StateStoreError(
+                "Projection path must remain inside the run directory: "
+                f"{relative}"
+            )
+        value = self._read(self.run_dir(batch_id) / relative, kind)
+        if value.get("batch_id") != batch_id:
+            raise ManifestValidationError(
+                "Projection batch_id does not match its run directory"
+            )
+        return value
+
     def validate_document(self, value: Mapping[str, Any], kind: str) -> None:
         self._validate(value, kind)
 
@@ -534,6 +831,7 @@ class StateStore:
             schema_sha256 = sha256_file(self._schema_path(kind, version))
             if cached[1] == schema_sha256:
                 value = copy.deepcopy(cached_value)
+                self._verify_step4_profile_bindings(value, kind)
                 if verify_context:
                     self._verify_frozen_context(value, kind)
                 return value
@@ -577,8 +875,52 @@ class StateStore:
         validator = self._validator(kind, version)
         self._raise_validation_errors(validator.iter_errors(value), kind)
         self._validate_semantics(value, kind)
+        self._verify_step4_profile_bindings(value, kind)
         if verify_context:
             self._verify_frozen_context(value, kind)
+
+    def _verify_step4_profile_bindings(
+        self,
+        value: Mapping[str, Any],
+        kind: str,
+    ) -> None:
+        identities: list[tuple[str, Mapping[str, Any]]] = []
+        if kind == "sampling_plan":
+            identities.append((
+                "content_sampling_profile",
+                value["content_sampling_profile"],
+            ))
+        elif kind == "sampled_content_evidence":
+            bindings = value["bindings"]
+            identities.extend((
+                ("validation_profile", bindings["validation_profile"]),
+                (
+                    "content_sampling_profile",
+                    bindings["content_sampling_profile"],
+                ),
+            ))
+        elif kind == "validation" and value.get("schema_version") == "2.0":
+            bindings = value["evidence"]["bindings"]
+            identities.extend((
+                ("validation_profile", bindings["validation_profile"]),
+                (
+                    "content_sampling_profile",
+                    bindings["content_sampling_profile"],
+                ),
+            ))
+        elif kind == "release_manifest":
+            identities.extend((
+                ("validation_profile", value["validation_profile"]),
+                (
+                    "content_sampling_profile",
+                    value["content_sampling_profile"],
+                ),
+            ))
+        for key, identity in identities:
+            try:
+                self._validation_context.document_for_identity(key, identity)
+            except ValidationContextError as error:
+                raise ManifestValidationError(str(error)) from error
 
     def _verify_frozen_context(
         self, value: Mapping[str, Any], kind: str
@@ -594,6 +936,39 @@ class StateStore:
             )
         except ValidationContextError as error:
             raise ManifestValidationError(str(error)) from error
+        self._verify_frozen_inputs(value)
+
+    def _verify_frozen_inputs(self, value: Mapping[str, Any]) -> None:
+        """Replay optional repository inputs without upgrading legacy 2.0 state."""
+
+        frozen_inputs = value.get("frozen_inputs")
+        if frozen_inputs is None:
+            return
+        soft_category = frozen_inputs["soft_category"]
+        relative = Path(soft_category["path"])
+        candidate = self.root / relative
+        try:
+            candidate.resolve().relative_to(self.root)
+        except (OSError, ValueError) as error:
+            raise ManifestValidationError(
+                "Frozen soft-category path escapes the repository"
+            ) from error
+
+        current = candidate
+        while current != self.root:
+            if current.is_symlink():
+                raise ManifestValidationError(
+                    "Frozen soft-category input must not traverse a symlink"
+                )
+            current = current.parent
+        if not candidate.is_file():
+            raise ManifestValidationError(
+                f"Frozen soft-category input is not a regular file: {relative.as_posix()}"
+            )
+        if sha256_file(candidate) != soft_category["sha256"]:
+            raise ManifestValidationError(
+                "Frozen soft-category input SHA-256 drifted"
+            )
 
     def _cache_validated_document(
         self,
@@ -675,6 +1050,319 @@ class StateStore:
                 expected = f"{item['identity']['language']}/{item['identity']['resource_key']}"
                 if key != item["item_id"] or key != expected:
                     raise ManifestValidationError(f"Batch item key does not match identity: {key}")
+        elif kind == "sampling_plan":
+            expected = document_identity_sha256(value, "plan_sha256")
+            if value["plan_sha256"] != expected:
+                raise ManifestValidationError(
+                    "Batch Item Sampling Plan identity does not match its canonical body"
+                )
+            try:
+                universe_states = value["state_universe"]["states"]
+                universe_state_ids: list[str] = []
+                universe_by_id: dict[str, Mapping[str, Any]] = {}
+                for index, state in enumerate(universe_states):
+                    state_id = derive_state_id(state["criteria"])
+                    if state["state_id"] != state_id:
+                        raise ManifestValidationError(
+                            "Batch Item Sampling Plan state_id does not match "
+                            f"state_universe.states[{index}].criteria"
+                        )
+                    if state_id in universe_by_id:
+                        raise ManifestValidationError(
+                            "Batch Item Sampling Plan state universe contains "
+                            "duplicate state identities"
+                        )
+                    universe_state_ids.append(state_id)
+                    universe_by_id[state_id] = state
+
+                expected_universe_id = derive_universe_id(
+                    universe_state_ids,
+                    value["state_universe"]["default_state_id"],
+                )
+                if value["state_universe"]["universe_id"] != expected_universe_id:
+                    raise ManifestValidationError(
+                        "Batch Item Sampling Plan universe_id does not match "
+                        "the Source-ordered state universe"
+                    )
+
+                selected_state_ids: list[str] = []
+                for index, state in enumerate(value["selected_states"]):
+                    state_id = derive_state_id(state["criteria"])
+                    if state["state_id"] != state_id:
+                        raise ManifestValidationError(
+                            "Batch Item Sampling Plan selected state_id does not "
+                            f"match selected_states[{index}].criteria"
+                        )
+                    if state_id not in universe_by_id or state != universe_by_id[state_id]:
+                        raise ManifestValidationError(
+                            "Batch Item Sampling Plan selected_states must be exact "
+                            "members of the state universe"
+                        )
+                    selected_state_ids.append(state_id)
+                if len(set(selected_state_ids)) != len(selected_state_ids):
+                    raise ManifestValidationError(
+                        "Batch Item Sampling Plan selected_states contain duplicates"
+                    )
+                selected_indexes = [
+                    universe_state_ids.index(state_id)
+                    for state_id in selected_state_ids
+                ]
+                if selected_indexes != sorted(selected_indexes):
+                    raise ManifestValidationError(
+                        "Batch Item Sampling Plan selected_states must preserve "
+                        "Source order"
+                    )
+                if (
+                    value["state_universe"]["default_state_id"]
+                    not in selected_state_ids
+                ):
+                    raise ManifestValidationError(
+                        "Batch Item Sampling Plan must select the default state"
+                    )
+
+                universe_id_set = set(universe_state_ids)
+                selected_id_set = set(selected_state_ids)
+                seen_stratum_ids: set[str] = set()
+                seen_stratum_criteria: set[
+                    tuple[tuple[str, str], ...]
+                ] = set()
+                state_membership = {
+                    state_id: 0 for state_id in universe_state_ids
+                }
+                source_first_indexes: list[int] = []
+                for index, stratum in enumerate(value["strata"]):
+                    member_id_list = stratum["state_ids"]
+                    member_ids = set(member_id_list)
+                    if not member_ids <= universe_id_set:
+                        raise ManifestValidationError(
+                            "Batch Item Sampling Plan strata may reference only "
+                            "state universe identities"
+                        )
+                    if member_id_list != sorted(
+                        member_id_list,
+                        key=universe_state_ids.index,
+                    ):
+                        raise ManifestValidationError(
+                            "Batch Item Sampling Plan stratum state_ids must "
+                            "preserve Source order"
+                        )
+                    if not member_ids & selected_id_set:
+                        raise ManifestValidationError(
+                            "Batch Item Sampling Plan must select at least one "
+                            f"state from strata[{index}]"
+                        )
+                    stratum_id = stratum["stratum_id"]
+                    if stratum_id in seen_stratum_ids:
+                        raise ManifestValidationError(
+                            "Batch Item Sampling Plan stratum_id values must be unique"
+                        )
+                    seen_stratum_ids.add(stratum_id)
+                    criteria_key = tuple(
+                        (criterion[0], criterion[1])
+                        for criterion in stratum["criteria"]
+                    )
+                    if criteria_key in seen_stratum_criteria:
+                        raise ManifestValidationError(
+                            "Batch Item Sampling Plan stratum criteria must be unique"
+                        )
+                    seen_stratum_criteria.add(criteria_key)
+
+                    for state_id in member_ids:
+                        state_membership[state_id] += 1
+                        state_criteria = universe_by_id[state_id]["criteria"]
+                        if value["strategy"] == "region_filter":
+                            if (
+                                len(stratum["criteria"]) != 1
+                                or stratum["criteria"][0][0] != "region"
+                                or stratum["criteria"][0] not in state_criteria
+                            ):
+                                raise ManifestValidationError(
+                                    "RegionFilter strata must match each member's "
+                                    "source-proven region criterion"
+                                )
+                        elif state_criteria[:-1] != stratum["criteria"]:
+                            raise ManifestValidationError(
+                                "Complex strata criteria must equal each member's "
+                                "ordered criteria[:-1] parent branch"
+                            )
+                    source_first_indexes.append(min(
+                        universe_state_ids.index(state_id)
+                        for state_id in member_ids
+                    ))
+                if any(count != 1 for count in state_membership.values()):
+                    raise ManifestValidationError(
+                        "Batch Item Sampling Plan strata must partition the exact "
+                        "state universe with one membership per state"
+                    )
+                if source_first_indexes != sorted(source_first_indexes):
+                    raise ManifestValidationError(
+                        "Batch Item Sampling Plan strata must preserve Source "
+                        "first-appearance order"
+                    )
+
+                expected_seed = derive_sampling_seed(
+                    algorithm_version=value["algorithm_version"],
+                    source_sha256=value["source_sha256"],
+                    item_id=value["item_id"],
+                    profile_sha256=value["content_sampling_profile"]["sha256"],
+                )
+            except CanonicalIdentityError as error:
+                raise ManifestValidationError(
+                    f"Invalid Batch Item Sampling Plan identity: {error}"
+                ) from error
+            if value["seed"] != expected_seed:
+                raise ManifestValidationError(
+                    "Batch Item Sampling Plan seed does not match its frozen inputs"
+                )
+
+            coverage = value["coverage"]
+            _validate_coverage_counts(
+                coverage,
+                context="Batch Item Sampling Plan coverage",
+            )
+            if coverage["universe_count"] != len(universe_state_ids):
+                raise ManifestValidationError(
+                    "Batch Item Sampling Plan universe_count must equal "
+                    "state_universe.states length"
+                )
+            if coverage["selected_count"] != len(selected_state_ids):
+                raise ManifestValidationError(
+                    "Batch Item Sampling Plan selected_count must equal "
+                    "selected_states length"
+                )
+            if value["effective_budget"] < value["target_budget"]:
+                raise ManifestValidationError(
+                    "Batch Item Sampling Plan effective_budget cannot be below "
+                    "target_budget"
+                )
+            if coverage["selected_count"] > value["effective_budget"]:
+                raise ManifestValidationError(
+                    "Batch Item Sampling Plan selected_count cannot exceed "
+                    "effective_budget"
+                )
+            if coverage["selected_count"] != min(
+                coverage["universe_count"], value["effective_budget"]
+            ):
+                raise ManifestValidationError(
+                    "Batch Item Sampling Plan must fill its effective budget or "
+                    "select the entire smaller universe"
+                )
+        elif kind == "sampled_content_evidence":
+            expected = document_identity_sha256(value, "evidence_sha256")
+            if value["evidence_sha256"] != expected:
+                raise ManifestValidationError(
+                    "Sampled Content Evidence identity does not match its canonical body"
+                )
+            coverage = value["coverage"]
+            selected_state_ids = coverage["selected_state_ids"]
+            _validate_coverage_counts(
+                coverage,
+                context="Sampled Content Evidence coverage",
+                selected_state_ids=selected_state_ids,
+            )
+            _validate_structure_counts(
+                value["structure_validation"],
+                coverage_universe_count=coverage["universe_count"],
+                total_field="universe_count",
+                context="Sampled Content Evidence structure validation",
+            )
+            _validate_comparison_identity(
+                value["page_global_comparison"],
+                context="Sampled Content Evidence page-global comparison",
+            )
+            if value["full_content_comparison"] is not None:
+                _validate_comparison_identity(
+                    value["full_content_comparison"],
+                    context="Sampled Content Evidence full-content comparison",
+                )
+            sample_state_ids: list[str] = []
+            try:
+                for index, sample in enumerate(value["samples"]):
+                    state = sample["state"]
+                    state_id = derive_state_id(state["criteria"])
+                    if state["state_id"] != state_id:
+                        raise ManifestValidationError(
+                            "Sampled Content Evidence sample state_id does not "
+                            f"match samples[{index}].state.criteria"
+                        )
+                    sample_state_ids.append(state_id)
+                    _validate_comparison_identity(
+                        sample,
+                        context=f"Sampled Content Evidence samples[{index}]",
+                    )
+            except CanonicalIdentityError as error:
+                raise ManifestValidationError(
+                    f"Invalid Sampled Content Evidence state identity: {error}"
+                ) from error
+            if value["mode"] == "stratified_sample" and (
+                sample_state_ids != selected_state_ids
+            ):
+                raise ManifestValidationError(
+                    "Sampled Content Evidence samples must exactly follow "
+                    "coverage.selected_state_ids"
+                )
+        elif kind == "review_decision":
+            expected = document_identity_sha256(value, "decision_id")
+            if value["decision_id"] != expected:
+                raise ManifestValidationError(
+                    "Review Decision identity does not match its canonical body"
+                )
+            expected_item_id = f"{value['language']}/{value['resource_key']}"
+            if value["item_id"] != expected_item_id:
+                raise ManifestValidationError(
+                    "Review Decision item_id must equal language/resource_key"
+                )
+        elif kind == "validation" and value.get("schema_version") == "2.0":
+            if value["status"] != value["evidence"]["verdict"]:
+                raise ManifestValidationError(
+                    "Validation 2.0 envelope status differs from its evidence verdict"
+                )
+            expected = validation_evidence_sha256(value)
+            if value["evidence_sha256"] != expected:
+                raise ManifestValidationError(
+                    "Validation 2.0 evidence identity does not match its canonical body"
+                )
+            coverage = value["evidence"]["content_validation"]["coverage"]
+            _validate_coverage_counts(
+                coverage,
+                context="Validation 2.0 content coverage",
+                selected_state_ids=coverage["selected_state_ids"],
+            )
+            _validate_structure_counts(
+                value["evidence"]["structure_validation"],
+                coverage_universe_count=coverage["universe_count"],
+                total_field="total_count",
+                context="Validation 2.0 structure validation",
+            )
+            try:
+                expected_machine = machine_approval_preconditions(
+                    "succeeded",
+                    value["status"],
+                ).to_dict()
+                expected_source = source_approval_preconditions(
+                    value["evidence"]["source_quality_findings"]
+                ).to_dict()
+            except ReviewContractError as error:
+                raise ManifestValidationError(
+                    f"Invalid Validation 2.0 approval preconditions: {error}"
+                ) from error
+            preconditions = value["evidence"]["approval_preconditions"]
+            if preconditions["machine"] != expected_machine:
+                raise ManifestValidationError(
+                    "Validation 2.0 machine approval preconditions are not canonical"
+                )
+            if preconditions["source"] != expected_source:
+                raise ManifestValidationError(
+                    "Validation 2.0 Source approval preconditions do not match "
+                    "all unresolved Source Quality Findings"
+                )
+        elif kind == "release_manifest":
+            try:
+                validate_release_manifest_bindings(value)
+            except ReleaseContractError as error:
+                raise ManifestValidationError(
+                    f"Invalid Release Manifest binding ({error.code}): {error}"
+                ) from error
 
     def _validator(self, kind: str, version: str) -> Draft202012Validator:
         path = self._schema_path(kind, version)
@@ -704,7 +1392,7 @@ class StateStore:
     @staticmethod
     def _atomic_write(path: Path, value: Mapping[str, Any]) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
-        payload = json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+        payload = _serialized_json_payload(value)
         descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
         temporary = Path(temporary_name)
         try:

@@ -29,6 +29,7 @@ from src.pipeline.planner import PipelinePlanner
 from src.pipeline.state_store import (
     ImmutableManifestError,
     ManifestValidationError,
+    RepositoryLock,
     StateStore,
 )
 
@@ -131,10 +132,17 @@ def test_warm_manifest_cache_cannot_conceal_input_tampering() -> None:
             input_path.read_text(encoding="utf-8") + " ", encoding="utf-8"
         )
 
-        with pytest.raises(ImmutableManifestError, match="hash mismatch"):
-            store.update_manifest(
-                BATCH_ID, lambda value: value.update({"status": "running"})
-            )
+        with RepositoryLock(
+            store.lock_root,
+            batch_id=BATCH_ID,
+            command="manifest-foundation-test",
+        ):
+            with pytest.raises(ImmutableManifestError, match="hash mismatch"):
+                store.update_manifest(
+                    BATCH_ID,
+                    lambda value: value.update({"status": "running"}),
+                    expected_revision=0,
+                )
 
 
 def test_warm_reads_skip_full_schema_revalidation(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -165,6 +173,7 @@ def test_mixed_input_and_batch_manifest_versions_are_rejected() -> None:
     input_v1["schema_version"] = "1.0"
     input_v1.pop("planning")
     input_v1.pop("validation_context")
+    input_v1.pop("frozen_inputs", None)
     for item in input_v1["items"]:
         item["artifacts"].pop("parseability")
 

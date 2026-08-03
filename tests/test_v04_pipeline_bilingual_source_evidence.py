@@ -173,7 +173,10 @@ class _Store:
     def __init__(self, root: Path, items: tuple[BatchItem, ...]) -> None:
         self.root = root
         self._frozen = {"items": [item.to_dict() for item in items]}
-        self._manifest = {"items": {item.item_id: {} for item in items}}
+        self._manifest = {
+            "revision": 0,
+            "items": {item.item_id: {} for item in items},
+        }
 
     def read_input_manifest(self, batch_id: str) -> dict[str, object]:
         return self._frozen
@@ -189,9 +192,12 @@ class _Store:
         batch_id: str,
         mutate: object,
         *,
+        expected_revision: int,
         changed_item_ids: object = (),
     ) -> dict[str, object]:
+        assert expected_revision == self._manifest["revision"]
         mutate(self._manifest)  # type: ignore[operator]
+        self._manifest["revision"] += 1  # type: ignore[operator]
         return self._manifest
 
     def write_projection(

@@ -163,6 +163,9 @@
           "$ref": "#/$defs/frozen_identity"
         }
       }
+    },
+    "frozen_inputs": {
+      "$ref": "#/$defs/frozen_inputs"
     }
   },
   "$defs": {
@@ -559,6 +562,31 @@
               }
             }
           ]
+        }
+      }
+    },
+    "frozen_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "soft_category"
+      ],
+      "properties": {
+        "soft_category": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "const": "data/configs/soft-category.json"
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
         }
       }
     },

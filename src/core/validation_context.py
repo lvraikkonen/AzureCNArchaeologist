@@ -30,6 +30,13 @@ class _ArtifactSpec:
     schema_path: str
 
 
+@dataclass(frozen=True)
+class _ContractArtifactSpec:
+    name: str
+    schema_version: str
+    relative_path: str
+
+
 P1_PLANNING_BASELINE_SPEC = _ArtifactSpec(
     "planning_baseline",
     "baseline_id",
@@ -54,8 +61,20 @@ P2_VALIDATION_PROFILE_SPEC = _ArtifactSpec(
     "data/configs/validation-profiles/v0.4-p2.json",
     "schemas/validation-profile-1.1.schema.json",
 )
-CONTEXT_ARTIFACT_SPECS = (
-    P2_VALIDATION_PROFILE_SPEC,
+CONTENT_SAMPLING_PROFILE_SPEC = _ArtifactSpec(
+    "content_sampling_profile",
+    "profile_id",
+    "data/configs/content-sampling-profiles/v0.4-p3.json",
+    "schemas/content-sampling-profile-1.0.schema.json",
+)
+P3_VALIDATION_PROFILE_SPEC = _ArtifactSpec(
+    "validation_profile",
+    "profile_id",
+    "data/configs/validation-profiles/v0.4-p3.json",
+    "schemas/validation-profile-1.2.schema.json",
+)
+ACTIVE_VALIDATION_PROFILE_SPEC = P2_VALIDATION_PROFILE_SPEC
+NON_PROFILE_CONTEXT_ARTIFACT_SPECS = (
     _ArtifactSpec(
         "applicability_map",
         "map_id",
@@ -75,14 +94,22 @@ CONTEXT_ARTIFACT_SPECS = (
         "schemas/in-memory-capability-profile-1.0.schema.json",
     ),
 )
+CONTEXT_ARTIFACT_SPECS = (
+    ACTIVE_VALIDATION_PROFILE_SPEC,
+    *NON_PROFILE_CONTEXT_ARTIFACT_SPECS,
+)
 ARTIFACT_SPECS = (
     P1_PLANNING_BASELINE_SPEC,
     P2_PLANNING_BASELINE_SPEC,
     P1_VALIDATION_PROFILE_SPEC,
-    *CONTEXT_ARTIFACT_SPECS,
+    P2_VALIDATION_PROFILE_SPEC,
+    P3_VALIDATION_PROFILE_SPEC,
+    CONTENT_SAMPLING_PROFILE_SPEC,
+    *NON_PROFILE_CONTEXT_ARTIFACT_SPECS,
 )
 SPECS_BY_KEY = {spec.key: spec for spec in CONTEXT_ARTIFACT_SPECS}
 SPECS_BY_KEY["planning_baseline"] = P2_PLANNING_BASELINE_SPEC
+SPECS_BY_KEY["content_sampling_profile"] = CONTENT_SAMPLING_PROFILE_SPEC
 
 P1_PLANNING_IDENTITY = (
     "v0.4-from-v0.3",
@@ -104,6 +131,63 @@ P2_VALIDATION_PROFILE_IDENTITY = (
     "1.1",
     P2_VALIDATION_PROFILE_SPEC.relative_path,
 )
+P3_VALIDATION_PROFILE_IDENTITY = (
+    "v0.4-validation-p3",
+    "1.2",
+    P3_VALIDATION_PROFILE_SPEC.relative_path,
+)
+CONTENT_SAMPLING_PROFILE_IDENTITY = (
+    "v0.4-content-sampling-p3",
+    "1.0",
+    CONTENT_SAMPLING_PROFILE_SPEC.relative_path,
+)
+P3_VALIDATION_CONTRACT_SPECS = (
+    _ContractArtifactSpec(
+        "product_definition",
+        "1.1",
+        "schemas/product-definition-1.1.schema.json",
+    ),
+    _ContractArtifactSpec(
+        "flexible_content",
+        "1.1",
+        "schemas/flexible-content-page-1.1.schema.json",
+    ),
+    _ContractArtifactSpec(
+        "support_article",
+        "1.0",
+        "schemas/support-article-page-1.0.schema.json",
+    ),
+    _ContractArtifactSpec(
+        "diagnostic_sidecar",
+        "1.2",
+        "schemas/diagnostic-sidecar-1.2.schema.json",
+    ),
+    _ContractArtifactSpec(
+        "source_html_structure_audit",
+        "1.0",
+        "schemas/source-html-structure-audit-1.0.schema.json",
+    ),
+    _ContractArtifactSpec(
+        "content_sampling_profile",
+        "1.0",
+        "schemas/content-sampling-profile-1.0.schema.json",
+    ),
+    _ContractArtifactSpec(
+        "pipeline_validation",
+        "2.0",
+        "schemas/pipeline-validation-2.0.schema.json",
+    ),
+    _ContractArtifactSpec(
+        "batch_item_sampling_plan",
+        "1.0",
+        "schemas/batch-item-sampling-plan-1.0.schema.json",
+    ),
+    _ContractArtifactSpec(
+        "sampled_content_evidence",
+        "1.0",
+        "schemas/sampled-content-evidence-1.0.schema.json",
+    ),
+)
 P2_AMENDED_ITEM_IDS = (
     "en-us/cloud-services",
     "en-us/service-bus",
@@ -122,15 +206,38 @@ class ValidationContextRegistry:
             tuple[str, str], tuple[str, str, dict[str, Any]]
         ] = {}
 
-    def freeze(self) -> dict[str, Any]:
+    def freeze(
+        self,
+        *,
+        validation_profile_id: str | None = None,
+    ) -> dict[str, Any]:
+        """Freeze the active context, or an explicitly requested profile.
+
+        P3 is intentionally registered but is not the active profile until the
+        sampled-content runtime lands in Slice B.  The explicit selector exists
+        so schema and identity replay can be tested without mislabelling a P2
+        validation run as P3.
+        """
+
         baseline_identity = self._identity(P2_PLANNING_BASELINE_SPEC)
         baseline = self._effective_planning_baseline(
             P2_PLANNING_BASELINE_SPEC
         )
+        validation_profile_spec = self._validation_profile_spec_for_id(
+            validation_profile_id
+        )
+        context_specs = (
+            validation_profile_spec,
+            *NON_PROFILE_CONTEXT_ARTIFACT_SPECS,
+        )
         identities = {
             spec.key: self._identity(spec)
-            for spec in CONTEXT_ARTIFACT_SPECS
+            for spec in context_specs
         }
+        if validation_profile_spec == P3_VALIDATION_PROFILE_SPEC:
+            self._verify_p3_sampling_profile(
+                self._validated_document(validation_profile_spec)[0]
+            )
         return {
             "planning": {
                 "baseline": baseline_identity,
@@ -173,7 +280,9 @@ class ValidationContextRegistry:
             if not isinstance(identity, Mapping):
                 raise ValidationContextError(f"Frozen identity is invalid: {key}")
             context_spec = self._context_spec_for_identity(key, identity)
-            self._verify_identity(context_spec, identity)
+            document = self._verify_identity(context_spec, identity)
+            if context_spec == P3_VALIDATION_PROFILE_SPEC:
+                self._verify_p3_sampling_profile(document)
         if dict(planning.get("baseline_accounting", {})) != baseline["accounting"]:
             raise ValidationContextError("Frozen baseline accounting does not match its artifact")
 
@@ -186,6 +295,33 @@ class ValidationContextRegistry:
             raise ValidationContextError(f"Unknown validation context artifact: {key}")
         value, _ = self._validated_document(SPECS_BY_KEY[key])
         return copy.deepcopy(value)
+
+    def document_for_identity(
+        self,
+        key: str,
+        identity: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        """Resolve one registered frozen artifact without using active defaults."""
+
+        spec = self._context_spec_for_identity(key, identity)
+        value = self._verify_identity(spec, identity)
+        if spec == P3_VALIDATION_PROFILE_SPEC:
+            self._verify_p3_sampling_profile(value)
+        return copy.deepcopy(value)
+
+    def content_sampling_profile_for(
+        self,
+        validation_profile_identity: Mapping[str, Any],
+    ) -> dict[str, Any] | None:
+        """Return P3's nested sampling profile; P1/P2 have no such contract."""
+
+        spec = self._context_spec_for_identity(
+            "validation_profile", validation_profile_identity
+        )
+        profile = self._verify_identity(spec, validation_profile_identity)
+        if spec != P3_VALIDATION_PROFILE_SPEC:
+            return None
+        return copy.deepcopy(self._verify_p3_sampling_profile(profile))
 
     def effective_planning_baseline(self) -> dict[str, Any]:
         """Return the current approved baseline after applying its overlay."""
@@ -392,9 +528,112 @@ class ValidationContextRegistry:
             return P1_VALIDATION_PROFILE_SPEC
         if discriminator == P2_VALIDATION_PROFILE_IDENTITY:
             return P2_VALIDATION_PROFILE_SPEC
+        if discriminator == P3_VALIDATION_PROFILE_IDENTITY:
+            return P3_VALIDATION_PROFILE_SPEC
         raise ValidationContextError(
             "Frozen validation_profile identity is not in the closed-world registry"
         )
+
+    @staticmethod
+    def _validation_profile_spec_for_id(
+        profile_id: str | None,
+    ) -> _ArtifactSpec:
+        if profile_id is None:
+            return ACTIVE_VALIDATION_PROFILE_SPEC
+        specifications = {
+            P1_VALIDATION_PROFILE_IDENTITY[0]: P1_VALIDATION_PROFILE_SPEC,
+            P2_VALIDATION_PROFILE_IDENTITY[0]: P2_VALIDATION_PROFILE_SPEC,
+            P3_VALIDATION_PROFILE_IDENTITY[0]: P3_VALIDATION_PROFILE_SPEC,
+        }
+        try:
+            return specifications[profile_id]
+        except KeyError as error:
+            raise ValidationContextError(
+                f"Unknown Validation Profile id: {profile_id}"
+            ) from error
+
+    def _verify_p3_sampling_profile(
+        self,
+        validation_profile: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        base_identity = validation_profile.get("base_profile")
+        if not isinstance(base_identity, Mapping):
+            raise ValidationContextError(
+                "P3 Validation Profile has no P2 base identity"
+            )
+        base_spec = self._context_spec_for_identity(
+            "validation_profile", base_identity
+        )
+        if base_spec != P2_VALIDATION_PROFILE_SPEC:
+            raise ValidationContextError(
+                "P3 Validation Profile must directly bind the frozen P2 profile"
+            )
+        self._verify_identity(base_spec, base_identity)
+        self._verify_p3_contract_artifacts(validation_profile)
+
+        identity = validation_profile.get("content_sampling_profile")
+        if not isinstance(identity, Mapping):
+            raise ValidationContextError(
+                "P3 Validation Profile has no Content Sampling Profile identity"
+            )
+        discriminator = (
+            identity.get("id"),
+            identity.get("schema_version"),
+            identity.get("path"),
+        )
+        if discriminator != CONTENT_SAMPLING_PROFILE_IDENTITY:
+            raise ValidationContextError(
+                "P3 Content Sampling Profile identity is not in the closed-world registry"
+            )
+        return self._verify_identity(CONTENT_SAMPLING_PROFILE_SPEC, identity)
+
+    def _verify_p3_contract_artifacts(
+        self,
+        validation_profile: Mapping[str, Any],
+    ) -> None:
+        contracts = validation_profile.get("contracts")
+        if not isinstance(contracts, Mapping):
+            raise ValidationContextError(
+                "P3 Validation Profile contracts are invalid"
+            )
+        expected_names = {
+            specification.name
+            for specification in P3_VALIDATION_CONTRACT_SPECS
+        }
+        if set(contracts) != expected_names:
+            raise ValidationContextError(
+                "P3 Validation Profile contracts are not closed-world"
+            )
+
+        for specification in P3_VALIDATION_CONTRACT_SPECS:
+            identity = contracts.get(specification.name)
+            if not isinstance(identity, Mapping) or set(identity) != {
+                "schema_version",
+                "path",
+                "sha256",
+            }:
+                raise ValidationContextError(
+                    f"P3 contract {specification.name} identity is not closed-world"
+                )
+            if identity.get("schema_version") != specification.schema_version:
+                raise ValidationContextError(
+                    f"P3 contract {specification.name} schema version drifted"
+                )
+            if identity.get("path") != specification.relative_path:
+                raise ValidationContextError(
+                    f"P3 contract {specification.name} path drifted"
+                )
+
+            path = self._safe_file(specification.relative_path)
+            artifact_sha256 = sha256_file(path)
+            if artifact_sha256 != identity.get("sha256"):
+                raise ValidationContextError(
+                    f"P3 contract {specification.name} SHA-256 drifted"
+                )
+            if sha256_file(path) != artifact_sha256:
+                raise ValidationContextError(
+                    f"P3 contract {specification.name} changed while it was replayed"
+                )
 
     def _effective_planning_baseline(
         self,

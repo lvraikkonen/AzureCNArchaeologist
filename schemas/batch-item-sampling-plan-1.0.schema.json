@@ -1,0 +1,299 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/batch-item-sampling-plan-1.0.schema.json",
+  "title": "Batch Item Sampling Plan 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "plan_sha256",
+    "item_id",
+    "strategy",
+    "source_sha256",
+    "content_sampling_profile",
+    "algorithm_version",
+    "state_universe",
+    "strata",
+    "seed",
+    "target_budget",
+    "effective_budget",
+    "selected_states",
+    "coverage"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "plan_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "item_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "strategy": {
+      "enum": [
+        "region_filter",
+        "complex"
+      ]
+    },
+    "source_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "content_sampling_profile": {
+      "$ref": "#/$defs/profile_identity"
+    },
+    "algorithm_version": {
+      "const": "source-ordered-stratified-sampling-v1"
+    },
+    "state_universe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "universe_id",
+        "default_state_id",
+        "states"
+      ],
+      "properties": {
+        "universe_id": {
+          "$ref": "#/$defs/sha256"
+        },
+        "default_state_id": {
+          "$ref": "#/$defs/sha256"
+        },
+        "states": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/state"
+          }
+        }
+      }
+    },
+    "strata": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/stratum"
+      }
+    },
+    "seed": {
+      "$ref": "#/$defs/sha256"
+    },
+    "target_budget": {
+      "const": 12
+    },
+    "effective_budget": {
+      "type": "integer",
+      "minimum": 12
+    },
+    "selected_states": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/state"
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "universe_count",
+        "selected_count",
+        "untested_count",
+        "assurance"
+      ],
+      "properties": {
+        "mode": {
+          "const": "stratified_sample"
+        },
+        "universe_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "selected_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "untested_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "assurance": {
+          "const": "sampled_state_content_consistency"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "strategy": {
+            "const": "region_filter"
+          }
+        },
+        "required": [
+          "strategy"
+        ]
+      },
+      "then": {
+        "properties": {
+          "strata": {
+            "items": {
+              "properties": {
+                "kind": {
+                  "const": "source_proven_region"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "strategy": {
+            "const": "complex"
+          }
+        },
+        "required": [
+          "strategy"
+        ]
+      },
+      "then": {
+        "properties": {
+          "strata": {
+            "items": {
+              "properties": {
+                "kind": {
+                  "const": "actual_parent_branch"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "anyOf": [
+          {
+            "pattern": "^/"
+          },
+          {
+            "pattern": "(^|/)\\.\\.(/|$)"
+          }
+        ]
+      }
+    },
+    "profile_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "schema_version",
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "id": {
+          "const": "v0.4-content-sampling-p3"
+        },
+        "schema_version": {
+          "const": "1.0"
+        },
+        "path": {
+          "const": "data/configs/content-sampling-profiles/v0.4-p3.json"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "criterion": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "criteria": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/criterion"
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state_id",
+        "criteria"
+      ],
+      "properties": {
+        "state_id": {
+          "$ref": "#/$defs/sha256"
+        },
+        "criteria": {
+          "$ref": "#/$defs/criteria"
+        }
+      }
+    },
+    "stratum": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stratum_id",
+        "kind",
+        "criteria",
+        "state_ids"
+      ],
+      "properties": {
+        "stratum_id": {
+          "$ref": "#/$defs/sha256"
+        },
+        "kind": {
+          "enum": [
+            "source_proven_region",
+            "actual_parent_branch"
+          ]
+        },
+        "criteria": {
+          "$ref": "#/$defs/criteria"
+        },
+        "state_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/sha256"
+          }
+        }
+      }
+    }
+  }
+}

@@ -371,7 +371,17 @@ class _Harness:
         shutil.copytree(ROOT / "schemas", root / "schemas")
         self.items = tuple(self._make_item(product) for product in products)
         self.plan = PipelinePlan(
-            scope={"kind": "all"}, languages=("zh-cn",), items=self.items
+            scope={"kind": "all"},
+            languages=("zh-cn",),
+            items=self.items,
+            frozen_inputs={
+                "soft_category": {
+                    "path": "data/configs/soft-category.json",
+                    "sha256": sha256_file(
+                        ROOT / "data/configs/soft-category.json"
+                    ),
+                }
+            },
         )
         self.planner = _Planner(self.plan)
         self.provenance = _Provenance()
@@ -483,6 +493,9 @@ class PipelineCoordinatorTests(unittest.TestCase):
                         "validation": "passed",
                         "review": "pending",
                         "publication": "not_published",
+                        "evidence_binding": "not_applicable",
+                        "approval_eligibility": "blocked",
+                        "release": "not_released",
                     },
                 )
                 for relative in (
@@ -495,7 +508,18 @@ class PipelineCoordinatorTests(unittest.TestCase):
                 sidecar = json.loads(
                     (outcome.run_dir / item.diagnostic_path).read_text(encoding="utf-8")
                 )
-                self.assertEqual(sidecar["status"], state["status"])
+                self.assertEqual(
+                    sidecar["status"],
+                    {
+                        key: state["status"][key]
+                        for key in (
+                            "execution",
+                            "validation",
+                            "review",
+                            "publication",
+                        )
+                    },
+                )
                 self.assertEqual(
                     sha256_file(outcome.run_dir / item.diagnostic_path),
                     state["artifacts"]["diagnostic"]["sha256"],

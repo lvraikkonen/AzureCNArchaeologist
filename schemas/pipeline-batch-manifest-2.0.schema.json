@@ -138,6 +138,21 @@
           "$ref": "#/$defs/frozen_identity"
         }
       }
+    },
+    "frozen_inputs": {
+      "$ref": "#/$defs/frozen_inputs"
+    },
+    "release_manifests": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/bound_artifact"
+      }
+    },
+    "publication_receipts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/bound_artifact"
+      }
     }
   },
   "$defs": {
@@ -196,6 +211,23 @@
         },
         "sha256": {
           "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "bound_artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relative_path"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         }
       }
     },
@@ -506,6 +538,25 @@
                 "not_published",
                 "published"
               ]
+            },
+            "evidence_binding": {
+              "enum": [
+                "not_applicable",
+                "bound",
+                "stale"
+              ]
+            },
+            "approval_eligibility": {
+              "enum": [
+                "blocked",
+                "eligible"
+              ]
+            },
+            "release": {
+              "enum": [
+                "not_released",
+                "released"
+              ]
             }
           }
         },
@@ -537,11 +588,68 @@
             },
             "parseability": {
               "$ref": "#/$defs/artifact"
+            },
+            "sampling_plan": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/$defs/artifact"
+                }
+              ]
+            },
+            "sampled_content_evidence": {
+              "description": "Planned full-mode or sampled-state evidence reference; null only when no evidence can be produced.",
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/$defs/artifact"
+                }
+              ]
+            },
+            "current_review_decision": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/$defs/bound_artifact"
+                }
+              ]
             }
           }
         },
         "error": {
           "$ref": "#/$defs/error"
+        }
+      }
+    },
+    "frozen_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "soft_category"
+      ],
+      "properties": {
+        "soft_category": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "const": "data/configs/soft-category.json"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
         }
       }
     },

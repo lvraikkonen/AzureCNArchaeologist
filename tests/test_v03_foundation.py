@@ -176,6 +176,11 @@ def _mini_definitions() -> dict[str, tuple[str, dict[str, Any]]]:
 
 
 def _build_mini_planner(root: Path) -> PipelinePlanner:
+    soft_category = root / "data/configs/soft-category.json"
+    soft_category.parent.mkdir(parents=True, exist_ok=True)
+    soft_category.write_bytes(
+        (ROOT / "data/configs/soft-category.json").read_bytes()
+    )
     records: dict[str, ProductDefinitionRecord] = {}
     for product_key, (relative_path, definition) in _mini_definitions().items():
         config_path = root / "data" / "configs" / relative_path
@@ -364,26 +369,31 @@ class PipelineStateFoundationTests(unittest.TestCase):
             with self.assertRaises(ImmutableManifestError):
                 store.write_input_manifest(FIXED_BATCH_ID, frozen)
 
-            updated = store.update_manifest(
-                FIXED_BATCH_ID,
-                lambda value: value.update({"status": "running"}),
-                expected_revision=0,
-            )
-            self.assertEqual(updated["revision"], 1)
-            self.assertEqual(updated["status"], "running")
-            with self.assertRaises(ManifestConflictError):
-                store.update_manifest(
+            with RepositoryLock(
+                store.lock_root,
+                batch_id=FIXED_BATCH_ID,
+                command="foundation-test",
+            ):
+                updated = store.update_manifest(
                     FIXED_BATCH_ID,
-                    lambda value: value.update({"status": "completed"}),
+                    lambda value: value.update({"status": "running"}),
                     expected_revision=0,
                 )
+                self.assertEqual(updated["revision"], 1)
+                self.assertEqual(updated["status"], "running")
+                with self.assertRaises(ManifestConflictError):
+                    store.update_manifest(
+                        FIXED_BATCH_ID,
+                        lambda value: value.update({"status": "completed"}),
+                        expected_revision=0,
+                    )
 
-            with self.assertRaises(ManifestValidationError):
-                store.update_manifest(
-                    FIXED_BATCH_ID,
-                    lambda value: value.update({"status": "invalid-state"}),
-                    expected_revision=1,
-                )
+                with self.assertRaises(ManifestValidationError):
+                    store.update_manifest(
+                        FIXED_BATCH_ID,
+                        lambda value: value.update({"status": "invalid-state"}),
+                        expected_revision=1,
+                    )
             self.assertEqual(store.read_manifest(FIXED_BATCH_ID)["revision"], 1)
             with self.assertRaises(ManifestValidationError):
                 store.validate_document({"schema_version": "1.0"}, "input")
@@ -497,34 +507,43 @@ class PipelineStateFoundationTests(unittest.TestCase):
             store.create_run(frozen)
             item_id = next(item.item_id for item in plan.items if item.runnable)
 
-            updated = store.update_manifest(
-                FIXED_BATCH_ID,
-                lambda value: value["items"][item_id].update(
-                    {"strategy": "simple_static"}
-                ),
-                changed_item_ids=(item_id,),
-            )
-            self.assertEqual(updated["revision"], 1)
-
-            with self.assertRaisesRegex(
-                ManifestValidationError, "undeclared Batch Items"
+            with RepositoryLock(
+                store.lock_root,
+                batch_id=FIXED_BATCH_ID,
+                command="foundation-incremental-test",
             ):
-                store.update_manifest(
+                updated = store.update_manifest(
                     FIXED_BATCH_ID,
                     lambda value: value["items"][item_id].update(
-                        {"strategy": "complex"}
+                        {"strategy": "simple_static"}
                     ),
-                    changed_item_ids=(),
-                )
-
-            with self.assertRaises(ManifestValidationError):
-                store.update_manifest(
-                    FIXED_BATCH_ID,
-                    lambda value: value["items"][item_id]["status"].update(
-                        {"execution": "invalid"}
-                    ),
+                    expected_revision=0,
                     changed_item_ids=(item_id,),
                 )
+                self.assertEqual(updated["revision"], 1)
+
+                with self.assertRaisesRegex(
+                    ManifestValidationError,
+                    "undeclared Batch Items",
+                ):
+                    store.update_manifest(
+                        FIXED_BATCH_ID,
+                        lambda value: value["items"][item_id].update(
+                            {"strategy": "complex"}
+                        ),
+                        expected_revision=1,
+                        changed_item_ids=(),
+                    )
+
+                with self.assertRaises(ManifestValidationError):
+                    store.update_manifest(
+                        FIXED_BATCH_ID,
+                        lambda value: value["items"][item_id]["status"].update(
+                            {"execution": "invalid"}
+                        ),
+                        expected_revision=1,
+                        changed_item_ids=(item_id,),
+                    )
             self.assertEqual(store.read_manifest(FIXED_BATCH_ID)["revision"], 1)
 
 
