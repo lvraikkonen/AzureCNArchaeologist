@@ -66,6 +66,7 @@ from src.pipeline.state_store import (
     StateStoreError,
     generate_batch_id,
 )
+from src.review.service import ReviewService
 from src.strategies.strategy_factory import StrategyFactory
 
 
@@ -149,6 +150,11 @@ class PipelineCoordinator:
         )
         self._source_state_evidence = SourceStateEvidenceResolver(self.root)
         self._source_reachability = SourceReachabilityResolver(self.root)
+        self._review_service = ReviewService(
+            self.root,
+            state_store=self.store,
+            now=self._now,
+        )
         self._active_stage: str | None = None
 
     def run(
@@ -816,7 +822,16 @@ class PipelineCoordinator:
                     item["error"] = None
                 elif stage == "validate":
                     item["status"]["validation"] = "not_run"
-                    item["status"]["review"] = "not_requested"
+                    if "evidence_binding" not in item["status"]:
+                        item["status"]["review"] = "not_requested"
+                    elif item["artifacts"].get("current_review_decision") is None:
+                        item["status"]["review"] = "not_requested"
+                        item["status"]["evidence_binding"] = "not_applicable"
+                        item["status"]["approval_eligibility"] = "blocked"
+                    else:
+                        item["status"]["review"] = "pending"
+                        item["status"]["evidence_binding"] = "stale"
+                        item["status"]["approval_eligibility"] = "blocked"
                     item["error"] = None
                     item["artifacts"]["validation"]["sha256"] = None
                     for downstream in ("review", "report"):
@@ -919,7 +934,16 @@ class PipelineCoordinator:
                 if succeeded and result.extraction_result is not None:
                     current["status"]["execution"] = "succeeded"
                     current["status"]["validation"] = "not_run"
-                    current["status"]["review"] = "not_requested"
+                    if "evidence_binding" in current["status"]:
+                        if current["artifacts"].get("current_review_decision") is None:
+                            current["status"]["review"] = "not_requested"
+                            current["status"]["evidence_binding"] = "not_applicable"
+                        else:
+                            current["status"]["review"] = "pending"
+                            current["status"]["evidence_binding"] = "stale"
+                        current["status"]["approval_eligibility"] = "blocked"
+                    else:
+                        current["status"]["review"] = "not_requested"
                     current["error"] = None
                     self._capture_run_artifact_hashes(batch_id, current, item, include_validation=False)
                 else:
@@ -1010,9 +1034,6 @@ class PipelineCoordinator:
             )
             current["status"]["execution"] = "succeeded"
             current["status"]["validation"] = prepared.status
-            current["status"]["review"] = "not_requested"
-            current["status"]["evidence_binding"] = "not_applicable"
-            current["status"]["approval_eligibility"] = "blocked"
             current["status"]["release"] = "not_released"
             current["error"] = dict(error) if error else None
             if prepared.sampling_plan is not None:
@@ -1025,7 +1046,19 @@ class PipelineCoordinator:
             current["artifacts"]["validation"]["sha256"] = (
                 prepared.validation_artifact_sha256
             )
-            current["artifacts"]["current_review_decision"] = None
+            lifecycle = self._review_service.lifecycle_after_validation(
+                batch_id=batch_id,
+                item=item,
+                manifest_item=current,
+                validation_projection=prepared.validation_projection,
+            )
+            current["status"]["review"] = lifecycle["review"]
+            current["status"]["evidence_binding"] = lifecycle[
+                "evidence_binding"
+            ]
+            current["status"]["approval_eligibility"] = lifecycle[
+                "approval_eligibility"
+            ]
             for downstream in ("review", "report"):
                 downstream_checkpoint = current["checkpoints"][downstream]
                 if downstream_checkpoint["status"] != "skipped":
@@ -1056,7 +1089,16 @@ class PipelineCoordinator:
     def _set_item_failed(item: dict[str, Any], error: Mapping[str, Any] | None) -> None:
         item["status"]["execution"] = "failed"
         item["status"]["validation"] = "not_run"
-        item["status"]["review"] = "not_requested"
+        if "evidence_binding" in item["status"]:
+            if item["artifacts"].get("current_review_decision") is None:
+                item["status"]["review"] = "not_requested"
+                item["status"]["evidence_binding"] = "not_applicable"
+            else:
+                item["status"]["review"] = "pending"
+                item["status"]["evidence_binding"] = "stale"
+            item["status"]["approval_eligibility"] = "blocked"
+        else:
+            item["status"]["review"] = "not_requested"
         item["error"] = dict(error) if error else None
 
     @staticmethod
@@ -1174,9 +1216,18 @@ class PipelineCoordinator:
         item["status"].update({
             "execution": "pending",
             "validation": "not_run",
-            "review": "not_requested",
             "publication": "not_published",
         })
+        if "evidence_binding" in item["status"]:
+            if item["artifacts"].get("current_review_decision") is None:
+                item["status"]["review"] = "not_requested"
+                item["status"]["evidence_binding"] = "not_applicable"
+            else:
+                item["status"]["review"] = "pending"
+                item["status"]["evidence_binding"] = "stale"
+            item["status"]["approval_eligibility"] = "blocked"
+        else:
+            item["status"]["review"] = "not_requested"
         item["error"] = None
         if stage in ("normalize", "extract"):
             for artifact_name in (
@@ -1270,6 +1321,45 @@ class PipelineCoordinator:
     def _rebuild_review(self, batch_id: str, items: Iterable[BatchItem]) -> None:
         items = tuple(items)
         manifest = self.store.read_manifest(batch_id)
+        profile_id = manifest["validation_context"]["validation_profile"]["id"]
+        if profile_id == "v0.4-validation-p3":
+            checkpoints_complete = (
+                manifest["checkpoints"]["review"]["status"] == "succeeded"
+                and all(
+                    manifest["items"][item.item_id]["checkpoints"]["review"]["status"]
+                    == "succeeded"
+                    for item in items
+                    if item.runnable
+                )
+            )
+            if not checkpoints_complete:
+                self._start_stage(
+                    batch_id, "review", [item for item in items if item.runnable]
+                )
+                completed_at = self._now()
+
+                def mutate(value: dict[str, Any]) -> None:
+                    for item in items:
+                        current = value["items"][item.item_id]
+                        if current["status"]["execution"] == "skipped":
+                            continue
+                        checkpoint = current["checkpoints"]["review"]
+                        self._complete_checkpoint(
+                            checkpoint,
+                            "succeeded",
+                            checkpoint.get("started_at") or completed_at,
+                            completed_at,
+                            None,
+                        )
+
+                self._update_manifest(batch_id, mutate)
+
+            self._sync_sidecar_statuses(batch_id, items)
+            if not checkpoints_complete:
+                self._finish_stage(batch_id, "review")
+            self._review_service.rebuild_queue(batch_id)
+            return
+
         target = self.store.run_dir(batch_id) / "review" / "review-queue.json"
         checkpoints_complete = (
             manifest["checkpoints"]["review"]["status"] == "succeeded"

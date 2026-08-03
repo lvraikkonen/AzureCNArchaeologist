@@ -5,6 +5,8 @@
 > 代码基线：c9a6ee1d0d0f99961d3fa8ada2351e69e763df7c
 > 当前任务只完成回滚与文档收敛，没有开始 Step 4 代码实现。
 
+> 2026-08-03 更新：后续实现已完成 Step 4 Slice A-C。当前代码已包含 P3 Profile、可复现抽样内容验证、Review Queue 2.0、append-only Review Decision service 与 `pipeline-review-list` / `pipeline-review-decide` CLI。Dashboard 审核工作台、不可变 Release、upload gate 和 publication receipt 仍未实现；本文中关于 Slice A-C “待实现”的内容仅作历史上下文参考。
+
 ## 1. 新 thread 的任务
 
 从 c9a6ee1 基线实现收敛后的 Step 4：

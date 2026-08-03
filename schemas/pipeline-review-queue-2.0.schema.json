@@ -1,0 +1,546 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/pipeline-review-queue-2.0.schema.json",
+  "title": "Pipeline Review Queue 2.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "batch_id",
+    "manifest_revision",
+    "generated_at",
+    "summary",
+    "items"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.0"
+    },
+    "batch_id": {
+      "type": "string",
+      "pattern": "^[0-9]{8}T[0-9]{6}Z-[a-f0-9]{8}$"
+    },
+    "manifest_revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total",
+        "reviewable",
+        "pending",
+        "approved",
+        "rejected",
+        "evidence_bound",
+        "evidence_stale",
+        "evidence_not_applicable",
+        "approval_eligible",
+        "approval_blocked",
+        "source_blocked"
+      ],
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reviewable": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pending": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "approved": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rejected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evidence_bound": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evidence_stale": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evidence_not_applicable": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "approval_eligible": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "approval_blocked": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_blocked": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nullable_sha256": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/sha256"
+        }
+      ]
+    },
+    "relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "anyOf": [
+          {
+            "pattern": "^/"
+          },
+          {
+            "pattern": "(^|/)\\.\\.(/|$)"
+          }
+        ]
+      }
+    },
+    "artifact": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/relative_path"
+            },
+            "sha256": {
+              "$ref": "#/$defs/nullable_sha256"
+            }
+          }
+        }
+      ]
+    },
+    "bound_artifact": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/relative_path"
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        }
+      ]
+    },
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message",
+        "path"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_sha256",
+        "payload_sha256",
+        "validation_artifact_sha256",
+        "validation_evidence_sha256",
+        "sampling_plan_sha256"
+      ],
+      "properties": {
+        "source_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "payload_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "validation_artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "validation_evidence_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "sampling_plan_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "universe_count",
+        "selected_count",
+        "untested_count",
+        "selected_state_ids"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "full",
+            "stratified_sample"
+          ]
+        },
+        "universe_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "selected_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "untested_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "selected_state_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/sha256"
+          }
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state_id",
+        "criteria"
+      ],
+      "properties": {
+        "state_id": {
+          "$ref": "#/$defs/sha256"
+        },
+        "criteria": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2
+          }
+        }
+      }
+    },
+    "decision_summary": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "decision_id",
+            "path",
+            "sha256",
+            "reviewer",
+            "decided_at",
+            "verdict",
+            "reason",
+            "supersedes_decision_id"
+          ],
+          "properties": {
+            "decision_id": {
+              "$ref": "#/$defs/sha256"
+            },
+            "path": {
+              "$ref": "#/$defs/relative_path"
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "reviewer": {
+              "type": "string",
+              "minLength": 1
+            },
+            "decided_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "verdict": {
+              "enum": [
+                "approved",
+                "rejected"
+              ]
+            },
+            "reason": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "enum": [
+                    "upstream_source",
+                    "product_config",
+                    "extractor_defect",
+                    "validator_defect",
+                    "needs_clarification"
+                  ]
+                }
+              ]
+            },
+            "supersedes_decision_id": {
+              "$ref": "#/$defs/nullable_sha256"
+            }
+          }
+        }
+      ]
+    },
+    "status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "execution",
+        "validation",
+        "review",
+        "publication",
+        "evidence_binding",
+        "approval_eligibility",
+        "release"
+      ],
+      "properties": {
+        "execution": {
+          "const": "succeeded"
+        },
+        "validation": {
+          "const": "passed"
+        },
+        "review": {
+          "enum": [
+            "pending",
+            "approved",
+            "rejected"
+          ]
+        },
+        "publication": {
+          "enum": [
+            "not_published",
+            "published"
+          ]
+        },
+        "evidence_binding": {
+          "enum": [
+            "not_applicable",
+            "bound",
+            "stale"
+          ]
+        },
+        "approval_eligibility": {
+          "enum": [
+            "blocked",
+            "eligible"
+          ]
+        },
+        "release": {
+          "enum": [
+            "not_released",
+            "released"
+          ]
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "product_key",
+        "resource_key",
+        "language",
+        "page_model",
+        "strategy",
+        "status",
+        "artifacts",
+        "bindings",
+        "coverage",
+        "inspection",
+        "source_quality_findings",
+        "approval_blockers",
+        "current_decision"
+      ],
+      "properties": {
+        "item_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "product_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resource_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "language": {
+          "enum": [
+            "zh-cn",
+            "en-us"
+          ]
+        },
+        "page_model": {
+          "enum": [
+            "FlexibleContentPage",
+            "SupportArticlePage"
+          ]
+        },
+        "strategy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "artifacts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "payload",
+            "diagnostic",
+            "validation",
+            "sampling_plan",
+            "sampled_content_evidence",
+            "current_review_decision"
+          ],
+          "properties": {
+            "payload": {
+              "$ref": "#/$defs/artifact"
+            },
+            "diagnostic": {
+              "$ref": "#/$defs/artifact"
+            },
+            "validation": {
+              "$ref": "#/$defs/artifact"
+            },
+            "sampling_plan": {
+              "$ref": "#/$defs/artifact"
+            },
+            "sampled_content_evidence": {
+              "$ref": "#/$defs/artifact"
+            },
+            "current_review_decision": {
+              "$ref": "#/$defs/bound_artifact"
+            }
+          }
+        },
+        "bindings": {
+          "$ref": "#/$defs/bindings"
+        },
+        "coverage": {
+          "$ref": "#/$defs/coverage"
+        },
+        "inspection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mode",
+            "state_universe",
+            "full_content_scope"
+          ],
+          "properties": {
+            "mode": {
+              "enum": [
+                "interactive",
+                "full"
+              ]
+            },
+            "state_universe": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/state"
+              }
+            },
+            "full_content_scope": {
+              "type": "boolean"
+            }
+          }
+        },
+        "source_quality_findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/issue"
+          }
+        },
+        "approval_blockers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/issue"
+          }
+        },
+        "current_decision": {
+          "$ref": "#/$defs/decision_summary"
+        }
+      }
+    }
+  }
+}

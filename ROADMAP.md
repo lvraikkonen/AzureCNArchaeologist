@@ -305,7 +305,7 @@ Pricing 始终写入 `{language}/pricing`；同一 Product Definition 即使属�
 
 ### v0.4：建立可追溯内容验证与最小批准交付闭环
 
-> 状态：Step 0–3 已完成；旧 Step 4 WIP 已回滚到 `c9a6ee1`，等待按 ADR-0087 与 ADR-0088 重新实施。
+> 状态：Step 0–3 已完成；Step 4 Slice A-C 已完成 P3 Profile、可复现抽样内容验证、Review Queue 2.0、append-only Review Decision service 与 CLI。Dashboard 审核工作台、不可变 Release 和 upload gate 仍在后续切片。
 
 #### 目标与保证边界
 
@@ -378,11 +378,12 @@ v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管�
 - Payload hash 不进入 seed。被选状态无法建立 Source 对照、解析失败或发生 mismatch 时明确 validation failure，禁止丢弃失败样本后 replacement draw；
 - 每个 selected state 比较冻结 Source 与 persisted Payload 的完整展示内容、价格与单位文本、表格、片段顺序、multiplicity 和 state assignment；本阶段不解析逐项 Pricing Facts，不建立 Applicability Map、StateProjectionMap 或完整 Expected/Observed/Diff inventory；
 - validation projection 至少记录 Source/Payload/Profile/Sampling Plan hashes、全状态结构结果、coverage mode、universe/selected/untested counts、seed、strata、exact state identities、per-sample diff、Approval Eligibility 和 blockers；
-- Machine-pass Batch Items 全部进入 Review Queue，初始 `review=pending`。审批单位是 Resource Key + Language，未审核项目不因同批其他样本通过而隐式批准；
-- Dashboard 从只读能力账本扩展为本地审核工作台，分别呈现 Capability、Execution、Machine Validation、Review、Evidence Binding、Release 和 Publication；approve/reject 必须调用与 CLI 共用的受控服务，Dashboard 不直接编辑投影或 manifest；
-- Review Decision append-only，绑定 reviewer、时间、Source/Payload/validation hashes、人工检查状态、verdict、reason 和 notes。Step 4 Approval Eligibility 还要求无未处置 Source Quality Finding；否则保持 pending 或 rejected。机器失败不能人工覆盖，证据变化使旧决定 stale；
-- 只有 `execution=succeeded + validation=passed + approval_eligible=true + review=approved` 且全部哈希仍匹配的项目可以复制到 write-once `output/releases/{release_id}`；一个 Release 只绑定一个 Batch，并由 canonical Release Manifest SHA + 全 payload hashes 原子 seal；
-- upload 只接受 sealed Release，不扫描任意 output 目录。上传成功后才记录 publication receipt 和 `published`，失败可对同一 Release 幂等重试；
+- Machine-pass P3 Batch Items 全部进入 Review Queue 2.0，初始 `review=pending`。审批单位是 Resource Key + Language，未审核项目不因同批其他样本通过而隐式批准；
+- 当前 CLI 已提供 `pipeline-review-list` 与 `pipeline-review-decide`，并通过与 Dashboard 后续共用的受控 service 写入 append-only decision、更新 `batch-manifest.json` current reference、binding 和 approval eligibility；
+- Dashboard 后续从只读能力账本扩展为本地审核工作台，分别呈现 Capability、Execution、Machine Validation、Review、Evidence Binding、Release 和 Publication；approve/reject 必须调用与 CLI 共用的受控服务，Dashboard 不直接编辑投影或 manifest；
+- Review Decision append-only，绑定 reviewer、时间、Source/Payload/validation hashes、Sampling Plan、人工检查状态、verdict、reason 和 notes。Step 4 Approval Eligibility 还要求无未处置 Source Quality Finding；否则保持 pending 或 rejected。机器失败不能人工覆盖，证据变化使旧决定 stale；
+- 后续 Slice 只有 `execution=succeeded + validation=passed + approval_eligible=true + review=approved` 且全部哈希仍匹配的项目可以复制到 write-once `output/releases/{release_id}`；一个 Release 只绑定一个 Batch，并由 canonical Release Manifest SHA + 全 payload hashes 原子 seal；
+- 后续 upload gate 只接受 sealed Release，不扫描任意 output 目录。上传成功后才记录 publication receipt 和 `published`，失败可对同一 Release 幂等重试；
 - 报告和 UI 必须明确这是 Sampled State Content Consistency，不得声称未抽中状态、全部 Pricing Facts、Commercial Price Accuracy 或视觉等价已被证明。
 
 ##### P3 核心能力：Dashboard 审核工作台

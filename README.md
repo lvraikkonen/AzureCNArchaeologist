@@ -17,9 +17,9 @@ Azure中国定价网站 (https://www.azure.cn/pricing/) 原维护团队已解散
 - 🏗️ **深度建模**: ✅ 构建策略化提取器架构，支持3+1策略自动识别
 - 🤖 **统一批次工作流**: ✅ v0.3 已完成；七阶段 pipeline 支持1-8并发、严格恢复和可追溯状态
 - 📦 **CMS就绪**: ✅ 输出兼容 CMS 业务契约与 Diagnostic Sidecar 1.1 的 JSON；379 个可运行批次项通过当前本地契约验证
-- 🔄 **可追溯工作流**: ✅ 从快照发现到审核队列和批次报告已通过全量双语验收；发布保持为独立流程
+- 🔄 **可追溯工作流**: ✅ 从快照发现到 P3 抽样内容验证、Review Queue 2.0、append-only Review Decision 和批次报告已通过本地回归；Dashboard 写操作、不可变 Release 与正式 upload gate 仍在后续切片
 
-v0.3 全量验收结果为 434 项终态守恒（379 项通过、55 项预期跳过）；详见 [`reports/v0.3/acceptance-status.md`](reports/v0.3/acceptance-status.md)。379 项仍处于 `review=pending`，本版本没有执行发布。
+v0.3 全量验收结果为 434 项终态守恒（379 项通过、55 项预期跳过）；详见 [`reports/v0.3/acceptance-status.md`](reports/v0.3/acceptance-status.md)。v0.4 当前已在 P3 Profile 下生成抽样验证证据，并支持 CLI 记录 hash-bound 审核决定；本版本仍没有执行发布。
 
 ### 🌟 核心特性
 
@@ -42,7 +42,7 @@ v0.3 全量验收结果为 434 项终态守恒（379 项通过、55 项预期跳
 
 ### 整体架构图
 
-下图是收敛后的 v0.4 目标流程。提交 `c9a6ee1` 已实现到抽取、现有机器验证、Review Queue 投影和只读 Dashboard；受控 approve/reject、抽样内容验证、不可变 Release 与正式 upload gate 尚待在新的实施 thread 中完成。
+下图是收敛后的 v0.4 目标流程。当前已实现到抽取、P3 抽样机器验证、Review Queue 2.0 和 CLI 受控 approve/reject；Dashboard 审核工作台、不可变 Release 与正式 upload gate 尚待后续切片完成。
 
 ```mermaid
 flowchart LR
@@ -69,7 +69,7 @@ flowchart LR
 
 ## v0.4 目标日常生产流程
 
-> 当前实现边界：提交 c9a6ee1 已提供 Step 3、现有 pipeline、Review Queue 投影和只读 Capability Dashboard。本节描述 Step 4 重做完成后的最终操作流程；尚不存在的 review、release 和 upload gate 命令不能在实现前当作可用能力。实施边界见 [v0.4 execution plan](plans/v0.4-execution-plan.md)，新 thread 的代码导航见 [handoff](handoff.md)。
+> 当前实现边界：Step 4 Slice A-C 已提供 P3 sampled validation runtime、Review Queue 2.0、append-only Review Decision service 和 `pipeline-review-list` / `pipeline-review-decide` CLI。Dashboard 仍只读，Release 与 upload gate 尚未实现。实施边界见 [v0.4 execution plan](plans/v0.4-execution-plan.md)，代码导航见 [handoff](handoff.md)。
 
 ### 1. 接收上游 HTML 与配置
 
@@ -154,11 +154,18 @@ Machine Validation 通过只表示：
 
 它不表示未抽中状态已经完成内容逐项对账。
 
-### 4. 目标：在 Dashboard 中进行人工审核（Step 4 待实现）
+### 4. 查看 Review Queue 并准备人工审核
 
-完成 Step 4 后，Machine Validation 通过的 Batch Item 将自动进入 Review Queue，初始状态为 pending。审核单位是 Resource Key + Language，例如 api-management / zh-cn；中文批准不能替代英文批准。
+Machine Validation 通过的 P3 Batch Item 会进入 Review Queue 2.0，初始状态为 pending。审核单位是 Resource Key + Language，例如 api-management / zh-cn；中文批准不能替代英文批准。
 
-Dashboard 将作为本地审核工作台，提供：
+当前可用 CLI：
+
+~~~bash
+uv run cli.py pipeline-review-list --batch-id <batch-id>
+uv run cli.py pipeline-review-list --batch-id <batch-id> --status all --json
+~~~
+
+Slice D 会把 Dashboard 扩展为本地审核工作台，提供：
 
 - 产品与产品语言项总览；
 - supported、extracted、machine-passed、pending、approved、rejected、release-ready、published 统计；
@@ -169,9 +176,9 @@ Dashboard 将作为本地审核工作台，提供：
 
 人工选择应独立于机器样本，并优先检查机器未覆盖或风险较高的组合。Live Azure 页面只能辅助定位，最终裁决对象仍是该 Batch 冻结的 Source Snapshot。
 
-Dashboard 将可以发起批准和拒绝，但不能直接编辑投影 JSON 或 manifest。按钮必须调用与 CLI 共用的受控 review service；batch-manifest.json 仍是生命周期和 item 状态真源。
+Dashboard 后续可以发起批准和拒绝，但不能直接编辑投影 JSON 或 manifest。按钮必须调用与 CLI 共用的受控 review service；batch-manifest.json 仍是生命周期和 item 状态真源。
 
-### 5. 目标：人工批准或拒绝（Step 4 待实现）
+### 5. 人工批准或拒绝
 
 每次 Review Decision 都是 append-only，并记录：
 
@@ -182,6 +189,26 @@ Dashboard 将可以发起批准和拒绝，但不能直接编辑投影 JSON 或 
 - approved 或 rejected；
 - reason classification 和 notes；
 - 如果修正旧决定，记录被替代 decision identity。
+
+当前可用 CLI：
+
+~~~bash
+uv run cli.py pipeline-review-decide --batch-id <batch-id> \
+  --item-id zh-cn/api-management \
+  --expected-revision <current-revision> \
+  --reviewer reviewer@example.com \
+  --verdict approved \
+  --inspect-page-global \
+  --inspect-state <reachable-state-id>
+
+uv run cli.py pipeline-review-decide --batch-id <batch-id> \
+  --item-id zh-cn/api-management \
+  --expected-revision <current-revision> \
+  --reviewer reviewer@example.com \
+  --verdict rejected \
+  --reason validator_defect \
+  --inspect-state <reachable-state-id>
+~~~
 
 只有以下条件同时满足才允许 approved：
 
@@ -211,7 +238,7 @@ rejected item 不进入 Release。修复后通过新的 Batch 重新抽取、验
 
 Review Decision 的 verdict 作用于整个语言级 Batch Item。人工实际检查的是该 item 中若干状态；批准不会把未检查状态描述成人工逐项验证通过。
 
-### 6. 目标：创建不可变 Release（Step 4 待实现）
+### 6. 目标：创建不可变 Release（后续 Slice）
 
 人工批准不会移动或覆盖 runs 下的 canonical Payload。一个 Release 只从一个 Batch Run 复制当前仍满足全部门禁的项目：
 
@@ -234,7 +261,7 @@ Release 规则：
 - pending、rejected、stale、machine-failed、known_unsupported 和 experimental artifact 一律拒绝；
 - Release staging 不等于 published。
 
-### 7. 目标：校验并上传 Blob（Step 4 待实现）
+### 7. 目标：校验并上传 Blob（后续 Slice）
 
 正式 upload 只接受 sealed Release Manifest，不扫描任意 output 目录，也不把 sidecar 当批准权威。
 
@@ -413,8 +440,17 @@ uv run cli.py pipeline-resume --batch-id <batch-id>
 # 只重新验证已有、提取成功的 payload
 uv run cli.py pipeline-validate --batch-id <batch-id>
 
+# 查看和记录受控人工审核决定
+uv run cli.py pipeline-review-list --batch-id <batch-id> --status pending
+uv run cli.py pipeline-review-decide --batch-id <batch-id> \
+  --item-id zh-cn/api-management \
+  --expected-revision <current-revision> \
+  --reviewer reviewer@example.com \
+  --verdict approved \
+  --inspect-state <reachable-state-id>
+
 # 通过 validation 的业务 payload 位于 runs/<batch-id>/outputs；
-# pipeline 本身不会审核、上传或发布它们
+# pipeline 本身不会上传或发布它们
 
 # 如需脱离 Batch Run 单独准备规范输入，可手动复制
 uv run cli.py copy-from-prod --language both

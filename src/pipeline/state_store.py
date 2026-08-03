@@ -404,7 +404,10 @@ class StateStore:
             "1.0": "pipeline-validation-1.0.schema.json",
             "2.0": "pipeline-validation-2.0.schema.json",
         },
-        "review": {"1.0": "pipeline-review-queue-1.0.schema.json"},
+        "review": {
+            "1.0": "pipeline-review-queue-1.0.schema.json",
+            "2.0": "pipeline-review-queue-2.0.schema.json",
+        },
         "report": {"1.0": "pipeline-batch-report-1.0.schema.json"},
         "content_sampling_profile": {
             "1.0": "content-sampling-profile-1.0.schema.json"
@@ -748,6 +751,19 @@ class StateStore:
                     "Validation projection schema_version does not match the "
                     f"Batch Validation Profile {profile_id}"
                 )
+        if kind == "review":
+            manifest = self.read_manifest(batch_id)
+            profile_id = manifest["validation_context"]["validation_profile"][
+                "id"
+            ]
+            expected_version = (
+                "2.0" if profile_id == "v0.4-validation-p3" else "1.0"
+            )
+            if value.get("schema_version") != expected_version:
+                raise StateStoreError(
+                    "Review Queue schema_version does not match the "
+                    f"Batch Validation Profile {profile_id}"
+                )
         defaults = {
             "review": Path("review/review-queue.json"),
             "report": Path("batch-report.json"),
@@ -799,6 +815,77 @@ class StateStore:
         path = self.run_dir(batch_id) / relative
         self._write_json_once(path, value, kind)
         return path
+
+    def read_step4_artifact(
+        self,
+        batch_id: str,
+        kind: str,
+        *,
+        relative_path: str | Path,
+    ) -> dict[str, Any]:
+        if kind not in ("sampling_plan", "sampled_content_evidence"):
+            raise StateStoreError(f"Unknown Step 4 artifact kind: {kind}")
+        relative = Path(relative_path)
+        if relative.is_absolute() or ".." in relative.parts:
+            raise StateStoreError(
+                f"Step 4 artifact path must remain inside the run directory: {relative}"
+            )
+        return self._read(self.run_dir(batch_id) / relative, kind)
+
+    def write_review_decision(
+        self,
+        batch_id: str,
+        value: Mapping[str, Any],
+        *,
+        relative_path: str | Path,
+    ) -> Path:
+        if not RepositoryLock.is_owned_by_current_process(
+            self.lock_root,
+            batch_id=batch_id,
+        ):
+            raise RepositoryLockError(
+                f"Review Decision writes require the RepositoryLock for {batch_id}"
+            )
+        relative = Path(relative_path)
+        if relative.is_absolute() or ".." in relative.parts:
+            raise StateStoreError(
+                "Review Decision path must remain inside the run directory: "
+                f"{relative}"
+            )
+        expected = Path(
+            "review",
+            "decisions",
+            str(value["language"]),
+            str(value["resource_key"]),
+            f"{value['decision_id']}.json",
+        )
+        if relative != expected:
+            raise StateStoreError(
+                "Review Decision path must be canonical: "
+                f"{expected.as_posix()}"
+            )
+        self._validate(value, "review_decision")
+        path = self.run_dir(batch_id) / relative
+        self._write_json_once(path, value, "review_decision")
+        return path
+
+    def read_review_decision(
+        self,
+        batch_id: str,
+        *,
+        relative_path: str | Path,
+    ) -> dict[str, Any]:
+        relative = Path(relative_path)
+        if relative.is_absolute() or ".." in relative.parts:
+            raise StateStoreError(
+                "Review Decision path must remain inside the run directory: "
+                f"{relative}"
+            )
+        if relative.parts[:2] != ("review", "decisions"):
+            raise StateStoreError(
+                f"Review Decision path is outside review/decisions: {relative}"
+            )
+        return self._read(self.run_dir(batch_id) / relative, "review_decision")
 
     def write_json_artifact_once(
         self,
@@ -1360,6 +1447,75 @@ class StateStore:
                 raise ManifestValidationError(
                     "Review Decision item_id must equal language/resource_key"
                 )
+        elif kind == "review" and value.get("schema_version") == "2.0":
+            items = list(value["items"])
+            expected_summary = {
+                "total": len(items),
+                "reviewable": sum(
+                    item["status"]["evidence_binding"] != "stale"
+                    for item in items
+                ),
+                "pending": sum(
+                    item["status"]["review"] == "pending" for item in items
+                ),
+                "approved": sum(
+                    item["status"]["review"] == "approved" for item in items
+                ),
+                "rejected": sum(
+                    item["status"]["review"] == "rejected" for item in items
+                ),
+                "evidence_bound": sum(
+                    item["status"]["evidence_binding"] == "bound"
+                    for item in items
+                ),
+                "evidence_stale": sum(
+                    item["status"]["evidence_binding"] == "stale"
+                    for item in items
+                ),
+                "evidence_not_applicable": sum(
+                    item["status"]["evidence_binding"] == "not_applicable"
+                    for item in items
+                ),
+                "approval_eligible": sum(
+                    item["status"]["approval_eligibility"] == "eligible"
+                    for item in items
+                ),
+                "approval_blocked": sum(
+                    item["status"]["approval_eligibility"] == "blocked"
+                    for item in items
+                ),
+                "source_blocked": sum(
+                    bool(item["source_quality_findings"]) for item in items
+                ),
+            }
+            if value["summary"] != expected_summary:
+                raise ManifestValidationError(
+                    f"Review Queue 2.0 summary does not match items: expected {expected_summary}"
+                )
+            for item in items:
+                expected_item_id = f"{item['language']}/{item['resource_key']}"
+                if item["item_id"] != expected_item_id:
+                    raise ManifestValidationError(
+                        "Review Queue 2.0 item_id must equal language/resource_key"
+                    )
+                if item["inspection"]["mode"] == "interactive":
+                    if item["artifacts"]["sampling_plan"] is None:
+                        raise ManifestValidationError(
+                            "Interactive Review Queue items require a Sampling Plan"
+                        )
+                    if not item["inspection"]["state_universe"]:
+                        raise ManifestValidationError(
+                            "Interactive Review Queue items require state_universe"
+                        )
+                else:
+                    if item["artifacts"]["sampling_plan"] is not None:
+                        raise ManifestValidationError(
+                            "Full Review Queue items must not reference a Sampling Plan"
+                        )
+                    if item["inspection"]["state_universe"]:
+                        raise ManifestValidationError(
+                            "Full Review Queue items must not expose interactive states"
+                        )
         elif kind == "validation" and value.get("schema_version") == "2.0":
             if value["status"] != value["evidence"]["verdict"]:
                 raise ManifestValidationError(
