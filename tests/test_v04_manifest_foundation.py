@@ -21,6 +21,8 @@ from src.core.validation_context import (
     P1_VALIDATION_PROFILE_SPEC,
     P2_AMENDED_ITEM_IDS,
     P2_VALIDATION_PROFILE_SPEC,
+    P3_VALIDATION_CONTRACT_SPECS,
+    P3_VALIDATION_PROFILE_SPEC,
     ValidationContextError,
     ValidationContextRegistry,
 )
@@ -92,6 +94,14 @@ def _copy_registry_artifacts(root: Path) -> None:
             target = root / relative_path
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / relative_path, target)
+    for specification in P3_VALIDATION_CONTRACT_SPECS:
+        relative_path = specification.relative_path
+        if relative_path in copied:
+            continue
+        copied.add(relative_path)
+        target = root / relative_path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / relative_path, target)
 
 
 def test_real_manifest_20_round_trip_replays_frozen_context() -> None:
@@ -315,18 +325,18 @@ def test_p2_effective_baseline_changes_exactly_four_definition_hashes() -> None:
     assert tuple(changed) == P2_AMENDED_ITEM_IDS
 
 
-def test_freeze_defaults_to_p2_but_historical_p1_identity_replays() -> None:
+def test_freeze_defaults_to_p3_but_historical_p1_identity_replays() -> None:
     registry = ValidationContextRegistry(ROOT)
     frozen = registry.freeze()
     assert frozen["planning"]["baseline"]["id"] == (
         "v0.4-p2-product-definition-identity-overlay"
     )
     assert frozen["validation_context"]["validation_profile"] == {
-        "id": "v0.4-validation-p2",
-        "schema_version": "1.1",
-        "path": P2_VALIDATION_PROFILE_SPEC.relative_path,
+        "id": "v0.4-validation-p3",
+        "schema_version": "1.2",
+        "path": P3_VALIDATION_PROFILE_SPEC.relative_path,
         "sha256": sha256_file(
-            ROOT / P2_VALIDATION_PROFILE_SPEC.relative_path
+            ROOT / P3_VALIDATION_PROFILE_SPEC.relative_path
         ),
     }
 
@@ -368,7 +378,7 @@ def test_freeze_defaults_to_p2_but_historical_p1_identity_replays() -> None:
     registry.verify_frozen(
         historical_planning, historical_context
     )
-    # Re-reading both P2 artifacts after both P1 artifacts proves that the
+    # Re-reading both active artifacts after both P1 artifacts proves that the
     # document cache is scoped by artifact path, not merely logical key.
     registry.verify_frozen(
         frozen["planning"], frozen["validation_context"]

@@ -73,7 +73,7 @@ P3_VALIDATION_PROFILE_SPEC = _ArtifactSpec(
     "data/configs/validation-profiles/v0.4-p3.json",
     "schemas/validation-profile-1.2.schema.json",
 )
-ACTIVE_VALIDATION_PROFILE_SPEC = P2_VALIDATION_PROFILE_SPEC
+ACTIVE_VALIDATION_PROFILE_SPEC = P3_VALIDATION_PROFILE_SPEC
 NON_PROFILE_CONTEXT_ARTIFACT_SPECS = (
     _ArtifactSpec(
         "applicability_map",
@@ -213,10 +213,8 @@ class ValidationContextRegistry:
     ) -> dict[str, Any]:
         """Freeze the active context, or an explicitly requested profile.
 
-        P3 is intentionally registered but is not the active profile until the
-        sampled-content runtime lands in Slice B.  The explicit selector exists
-        so schema and identity replay can be tested without mislabelling a P2
-        validation run as P3.
+        Historical P1/P2 replay remains available by explicit selector even
+        after the active default advances to P3.
         """
 
         baseline_identity = self._identity(P2_PLANNING_BASELINE_SPEC)

@@ -154,7 +154,24 @@ class _FixtureValidationContext:
         return []
 
     def freeze(self) -> dict[str, object]:
-        return self._registry.freeze()
+        return self._registry.freeze(validation_profile_id="v0.4-validation-p2")
+
+    def verify_frozen(
+        self,
+        planning: object,
+        validation_context: object,
+    ) -> None:
+        self._registry.verify_frozen(planning, validation_context)  # type: ignore[arg-type]
+
+    def document_for_identity(
+        self,
+        key: str,
+        identity: object,
+    ) -> dict[str, object]:
+        return self._registry.document_for_identity(key, identity)  # type: ignore[arg-type]
+
+    def content_sampling_profile_for(self, validation_profile_identity: object) -> None:
+        return None
 
 
 class _FixtureInputLoader:
@@ -388,9 +405,10 @@ class _Harness:
         self.copier = _Copier(root, self.items)
         self.strategy_manager = _StrategyManager()
         self.extractor: _Extractor | None = None
-        # Manifest 2.0 identities replay against the repository's frozen P1
-        # context while run artifacts remain isolated in this temporary root.
+        # These legacy pipeline fixtures exercise the P2/Validation1 sidecar
+        # path while run artifacts remain isolated in this temporary root.
         self.store = StateStore(ROOT, runs_dir=root / "runs")
+        self.store._validation_context = _FixtureValidationContext()
         self.clock = _Clock()
         with patch(
             "src.pipeline.coordinator.ValidationContextRegistry",

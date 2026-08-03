@@ -27,6 +27,7 @@ from src.core.canonical_identity import (
 )
 from src.core.product_catalog import sha256_file
 from src.core.validation_context import ValidationContextError, ValidationContextRegistry
+from src.content_sampling.artifacts import artifact_json_sha256, artifact_json_text
 from src.pipeline.models import BatchManifest, InputManifest, utc_now
 from src.release.contracts import (
     ReleaseContractError,
@@ -458,8 +459,7 @@ class StateStore:
         ]
         if frozen.get("validation_context") != active_validation_context:
             raise ImmutableManifestError(
-                "New pipeline runs must use the active P2 Validation Context; "
-                "P3 is registered for explicit replay only until Slice B"
+                "New pipeline runs must use the active Validation Context"
             )
         batch_id = frozen["batch_id"]
         directory = self.run_dir(batch_id)
@@ -728,11 +728,6 @@ class StateStore:
     ) -> Path:
         if kind not in ("validation", "review", "report"):
             raise StateStoreError(f"Unknown projection kind: {kind}")
-        if kind == "validation" and value.get("schema_version") == "2.0":
-            raise StateStoreError(
-                "Validation 2.0 writes remain disabled until the P3 runtime "
-                "landing order is activated in Slice B"
-            )
         if not RepositoryLock.is_owned_by_current_process(
             self.lock_root,
             batch_id=batch_id,
@@ -771,8 +766,61 @@ class StateStore:
         if value.get("batch_id") != batch_id:
             raise ManifestValidationError("Projection batch_id does not match its run directory")
         self._validate(value, kind)
+        if kind == "validation" and value.get("schema_version") == "2.0":
+            self._write_json_once(path, value, kind)
+            return path
         path.parent.mkdir(parents=True, exist_ok=True)
         self._atomic_write(path, value)
+        return path
+
+    def write_step4_artifact(
+        self,
+        batch_id: str,
+        kind: str,
+        value: Mapping[str, Any],
+        *,
+        relative_path: str | Path,
+    ) -> Path:
+        if kind not in ("sampling_plan", "sampled_content_evidence"):
+            raise StateStoreError(f"Unknown Step 4 artifact kind: {kind}")
+        if not RepositoryLock.is_owned_by_current_process(
+            self.lock_root,
+            batch_id=batch_id,
+        ):
+            raise RepositoryLockError(
+                f"Step 4 artifact writes require the RepositoryLock for {batch_id}"
+            )
+        relative = Path(relative_path)
+        if relative.is_absolute() or ".." in relative.parts:
+            raise StateStoreError(
+                f"Step 4 artifact path must remain inside the run directory: {relative}"
+            )
+        self._validate(value, kind)
+        path = self.run_dir(batch_id) / relative
+        self._write_json_once(path, value, kind)
+        return path
+
+    def write_json_artifact_once(
+        self,
+        batch_id: str,
+        value: Mapping[str, Any],
+        *,
+        relative_path: str | Path,
+    ) -> Path:
+        if not RepositoryLock.is_owned_by_current_process(
+            self.lock_root,
+            batch_id=batch_id,
+        ):
+            raise RepositoryLockError(
+                f"Artifact writes require the RepositoryLock for {batch_id}"
+            )
+        relative = Path(relative_path)
+        if relative.is_absolute() or ".." in relative.parts:
+            raise StateStoreError(
+                f"Artifact path must remain inside the run directory: {relative}"
+            )
+        path = self.run_dir(batch_id) / relative
+        self._write_json_once(path, value, "artifact")
         return path
 
     def read_projection(
@@ -1412,6 +1460,56 @@ class StateStore:
             except FileNotFoundError:
                 pass
             raise
+
+    def _write_json_once(
+        self,
+        path: Path,
+        value: Mapping[str, Any],
+        kind: str,
+    ) -> None:
+        try:
+            relative_to_runs = path.resolve().relative_to(self.runs_dir)
+        except ValueError as error:
+            raise StateStoreError(
+                f"Step 4 artifact path escapes the runs directory: {path}"
+            ) from error
+        if not relative_to_runs.parts:
+            raise StateStoreError(f"Invalid Step 4 artifact path: {path}")
+        batch_id = relative_to_runs.parts[0]
+        self._validate_batch_id(batch_id)
+        if not (self.runs_dir / batch_id).is_dir():
+            raise UnknownBatchError(f"Unknown batch for artifact path: {path}")
+        if path.is_symlink():
+            raise StateStoreError(f"Step 4 artifact path is a symlink: {path}")
+        current = path.parent
+        while current != self.runs_dir and current != current.parent:
+            if current.exists() and current.is_symlink():
+                raise StateStoreError(
+                    f"Step 4 artifact parent traverses a symlink: {current}"
+                )
+            current = current.parent
+        payload = artifact_json_text(value)
+        if path.exists():
+            if not path.is_file():
+                raise StateStoreError(f"Step 4 artifact target is not a file: {path}")
+            try:
+                existing = path.read_text(encoding="utf-8")
+            except OSError as error:
+                raise StateStoreError(f"Unable to read existing artifact {path}: {error}") from error
+            if existing != payload:
+                raise StateStoreError(
+                    f"Existing {kind} artifact differs from deterministic replay: {path}"
+                )
+            if kind in self.SCHEMAS:
+                cached = json.loads(existing)
+                self._cache_validated_document(path, cached, kind)
+            return
+        path.parent.mkdir(parents=True, exist_ok=True)
+        self._atomic_write(path, value)
+        if sha256_file(path) != artifact_json_sha256(value):
+            raise StateStoreError(f"Artifact hash changed while writing: {path}")
+        if kind in self.SCHEMAS:
+            self._cache_validated_document(path, value, kind)
 
     @staticmethod
     def _validate_batch_id(batch_id: str) -> None:

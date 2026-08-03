@@ -55,6 +55,7 @@ class ResourceProcessingResult:
     extraction_result: ExtractionResult | None = None
     error_code: str | None = None
     error_message: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def product_key(self) -> str:

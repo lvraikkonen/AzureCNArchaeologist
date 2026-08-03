@@ -68,12 +68,12 @@ def _write_json(path: Path, value: object) -> None:
     )
 
 
-def test_p3_is_registered_but_p2_remains_the_active_default() -> None:
+def test_p3_is_registered_and_active_after_slice_b() -> None:
     registry = ValidationContextRegistry(ROOT)
 
     active = registry.freeze()
     assert active["validation_context"]["validation_profile"]["id"] == (
-        "v0.4-validation-p2"
+        "v0.4-validation-p3"
     )
 
     p3 = registry.freeze(validation_profile_id="v0.4-validation-p3")
@@ -86,7 +86,7 @@ def test_p3_is_registered_but_p2_remains_the_active_default() -> None:
     assert sampling["profile_id"] == "v0.4-content-sampling-p3"
     assert registry.content_sampling_profile_for(
         active["validation_context"]["validation_profile"]
-    ) is None
+    )["profile_id"] == "v0.4-content-sampling-p3"
 
 
 def test_explicit_profile_selection_is_closed_world() -> None:

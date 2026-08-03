@@ -17,6 +17,10 @@ from src.batch.process_engine import (
     ResourceProcessingInfo,
     ResourceProcessingResult,
 )
+from src.content_sampling.runtime import (
+    PreparedSampledValidation,
+    SampledValidationRuntime,
+)
 from src.core.contract_validator import ContractValidator
 from src.core.canonical_input import CanonicalInputLoader, InputAssuranceError
 from src.core.data_models import ExtractionStrategy
@@ -583,10 +587,19 @@ class PipelineCoordinator:
     ) -> None:
         if not items and self._batch_stage_complete(batch_id, "validate"):
             return
+        manifest = self.store.read_manifest(batch_id)
+        profile_id = manifest["validation_context"]["validation_profile"]["id"]
+        if profile_id == "v0.4-validation-p3":
+            self._run_p3_validation_stage(
+                batch_id,
+                items,
+                parallel_jobs,
+                explicit=explicit,
+            )
+            return
         self._start_stage(batch_id, "validate", items)
         run_dir = self.store.run_dir(batch_id)
         extractor = self._extraction_factory(run_dir)
-        manifest = self.store.read_manifest(batch_id)
         completed_results: dict[str, ResourceProcessingResult] = {}
         infos = []
         for item in items:
@@ -656,6 +669,99 @@ class PipelineCoordinator:
             batch_id,
             selected_item_ids={item.item_id for item in items},
             completed_results=completed_results,
+        )
+        self._finish_stage(batch_id, "validate")
+        self._log_event(
+            batch_id,
+            "validate",
+            "succeeded",
+            error_code=None,
+            explicit=explicit,
+        )
+
+    def _run_p3_validation_stage(
+        self,
+        batch_id: str,
+        items: list[BatchItem],
+        parallel_jobs: int,
+        *,
+        explicit: bool,
+    ) -> None:
+        self._start_stage(batch_id, "validate", items)
+        run_dir = self.store.run_dir(batch_id)
+        manifest = self.store.read_manifest(batch_id)
+        infos = []
+        for item in items:
+            info = self._resource_info(batch_id, item)
+            info.metadata["manifest_item"] = manifest["items"][item.item_id]
+            infos.append(info)
+
+        def worker(info: ResourceProcessingInfo) -> ResourceProcessingResult:
+            started = time.perf_counter()
+            item = info.metadata["batch_item"]
+            state = info.metadata["manifest_item"]
+            try:
+                integrity_error = self._validate_frozen_extraction_artifacts_from_state(
+                    batch_id, item, state
+                )
+                if integrity_error is not None:
+                    return ResourceProcessingResult(
+                        info,
+                        "succeeded",
+                        "failed",
+                        strategy=state["strategy"],
+                        processing_time_ms=_elapsed_ms(started),
+                        error_code=integrity_error["code"],
+                        error_message=integrity_error["message"],
+                    )
+                prepared = SampledValidationRuntime(self.root).prepare(
+                    batch_id=batch_id,
+                    run_dir=run_dir,
+                    item=item,
+                    manifest=manifest,
+                    manifest_item=state,
+                )
+                return ResourceProcessingResult(
+                    info,
+                    "succeeded",
+                    prepared.status,
+                    strategy=state["strategy"],
+                    processing_time_ms=_elapsed_ms(started),
+                    error_code=(
+                        prepared.error["code"] if prepared.error else None
+                    ),
+                    error_message=(
+                        prepared.error["message"] if prepared.error else None
+                    ),
+                    metadata={"prepared_sampled_validation": prepared},
+                )
+            except Exception as exc:
+                return ResourceProcessingResult(
+                    info,
+                    "succeeded",
+                    "failed",
+                    strategy=state["strategy"],
+                    processing_time_ms=_elapsed_ms(started),
+                    error_code="VALIDATION_FAILED",
+                    error_message=str(exc),
+                )
+
+        def callback(result: ResourceProcessingResult, completed: int, total: int) -> None:
+            prepared = result.metadata.get("prepared_sampled_validation")
+            if isinstance(prepared, PreparedSampledValidation):
+                self._land_p3_validation_result(
+                    batch_id,
+                    result.item.metadata["batch_item"],
+                    result,
+                    prepared,
+                )
+            else:
+                self._commit_stage_result(batch_id, "validate", result)
+
+        self._engine_factory(parallel_jobs).process_resource_items(
+            infos,
+            worker=worker,
+            result_callback=callback,
         )
         self._finish_stage(batch_id, "validate")
         self._log_event(
@@ -845,6 +951,107 @@ class PipelineCoordinator:
         self._log_item_event(batch_id, item, stage, status, result.strategy, error)
         return updated["items"][item.item_id]
 
+    def _land_p3_validation_result(
+        self,
+        batch_id: str,
+        item: BatchItem,
+        result: ResourceProcessingResult,
+        prepared: PreparedSampledValidation,
+    ) -> dict[str, Any]:
+        if prepared.sampling_plan is not None:
+            if prepared.sampling_plan_path is None:
+                raise PipelineError(
+                    f"P3 Sampling Plan has no target path for {item.item_id}"
+                )
+            self.store.write_step4_artifact(
+                batch_id,
+                "sampling_plan",
+                prepared.sampling_plan,
+                relative_path=prepared.sampling_plan_path,
+            )
+        for artifact in prepared.diff_artifacts:
+            self.store.write_json_artifact_once(
+                batch_id,
+                artifact.value,
+                relative_path=artifact.relative_path,
+            )
+            written = self.store.run_dir(batch_id) / artifact.relative_path
+            if sha256_file(written) != artifact.sha256:
+                raise PipelineError(
+                    f"P3 diff artifact hash changed for {item.item_id}: {artifact.relative_path}"
+                )
+        self.store.write_step4_artifact(
+            batch_id,
+            "sampled_content_evidence",
+            prepared.sampled_content_evidence,
+            relative_path=prepared.sampled_content_evidence_path,
+        )
+        self.store.write_projection(
+            batch_id,
+            "validation",
+            prepared.validation_projection,
+            relative_path=prepared.validation_path,
+        )
+        completed_at = self._now()
+        status = "succeeded" if prepared.status == "passed" else "failed"
+        error = prepared.error
+
+        def mutate(manifest: dict[str, Any]) -> None:
+            current = manifest["items"][item.item_id]
+            checkpoint = current["checkpoints"]["validate"]
+            started_at = checkpoint.get("started_at") or completed_at
+            self._complete_checkpoint(
+                checkpoint,
+                status,
+                started_at,
+                completed_at,
+                error,
+                duration_ms=result.processing_time_ms,
+            )
+            current["status"]["execution"] = "succeeded"
+            current["status"]["validation"] = prepared.status
+            current["status"]["review"] = "not_requested"
+            current["status"]["evidence_binding"] = "not_applicable"
+            current["status"]["approval_eligibility"] = "blocked"
+            current["status"]["release"] = "not_released"
+            current["error"] = dict(error) if error else None
+            if prepared.sampling_plan is not None:
+                current["artifacts"]["sampling_plan"]["sha256"] = (
+                    prepared.sampling_plan_artifact_sha256
+                )
+            current["artifacts"]["sampled_content_evidence"]["sha256"] = (
+                prepared.sampled_content_evidence_artifact_sha256
+            )
+            current["artifacts"]["validation"]["sha256"] = (
+                prepared.validation_artifact_sha256
+            )
+            current["artifacts"]["current_review_decision"] = None
+            for downstream in ("review", "report"):
+                downstream_checkpoint = current["checkpoints"][downstream]
+                if downstream_checkpoint["status"] != "skipped":
+                    downstream_checkpoint.update({
+                        "status": "pending",
+                        "started_at": None,
+                        "completed_at": None,
+                        "duration_ms": None,
+                        "error": None,
+                    })
+
+        updated = self._update_manifest(
+            batch_id,
+            mutate,
+            changed_item_ids=(item.item_id,),
+        )
+        self._log_item_event(
+            batch_id,
+            item,
+            "validate",
+            status,
+            result.strategy,
+            error,
+        )
+        return updated["items"][item.item_id]
+
     @staticmethod
     def _set_item_failed(item: dict[str, Any], error: Mapping[str, Any] | None) -> None:
         item["status"]["execution"] = "failed"
@@ -990,6 +1197,14 @@ class PipelineCoordinator:
     ) -> None:
         run_dir = self.store.run_dir(batch_id)
         manifest = self.store.read_manifest(batch_id)
+        validation_context = manifest.get("validation_context", {})
+        validation_profile = (
+            validation_context.get("validation_profile", {})
+            if isinstance(validation_context, dict)
+            else {}
+        )
+        if validation_profile.get("id") == "v0.4-validation-p3":
+            return
         for item in items:
             current = manifest["items"][item.item_id]
             validation_status = current["status"]["validation"]

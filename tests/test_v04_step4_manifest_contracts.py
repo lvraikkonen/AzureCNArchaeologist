@@ -356,18 +356,18 @@ def test_custom_new_batch_cannot_override_any_canonical_initial_state(
     assert not store.run_dir(BATCH_ID).exists()
 
 
-def test_new_run_cannot_activate_registered_p3_before_slice_b(
+def test_new_run_uses_active_p3_after_slice_b(
     tmp_path: Path,
 ) -> None:
     frozen = _input_manifest().to_dict()
-    frozen["validation_context"] = ValidationContextRegistry(ROOT).freeze(
-        validation_profile_id="v0.4-validation-p3"
-    )["validation_context"]
     store = StateStore(ROOT, runs_dir=tmp_path / "runs")
 
-    with pytest.raises(ImmutableManifestError, match="active P2"):
-        store.create_run(frozen)
-    assert not store.run_dir(BATCH_ID).exists()
+    store.create_run(frozen)
+
+    batch = store.read_manifest(BATCH_ID)
+    assert batch["validation_context"]["validation_profile"]["id"] == (
+        "v0.4-validation-p3"
+    )
 
 
 def test_p3_batch_cannot_write_a_validation_1_projection(
@@ -498,12 +498,12 @@ def test_manifest_status_projects_to_legacy_sidecar_contract() -> None:
         status_validator.validate(status)
 
 
-def test_slice_a_cannot_write_a_p3_runtime_validation(
+def test_p3_runtime_validation_write_requires_repository_lock(
     tmp_path: Path,
 ) -> None:
     store, _ = _create_run(tmp_path)
 
-    with pytest.raises(StateStoreError, match="Slice B"):
+    with pytest.raises(RepositoryLockError, match="RepositoryLock"):
         store.write_projection(
             BATCH_ID,
             "validation",
