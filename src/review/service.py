@@ -424,7 +424,17 @@ class ReviewService:
 
     @staticmethod
     def _profile_id(manifest: Mapping[str, Any]) -> str:
-        return str(manifest["validation_context"]["validation_profile"]["id"])
+        validation_context = manifest.get("validation_context")
+        if isinstance(validation_context, Mapping):
+            validation_profile = validation_context.get("validation_profile")
+            if (
+                isinstance(validation_profile, Mapping)
+                and isinstance(validation_profile.get("id"), str)
+            ):
+                return str(validation_profile["id"])
+        if isinstance(manifest.get("validation_profile_id"), str):
+            return str(manifest["validation_profile_id"])
+        return "legacy-profile-unrecorded"
 
     def _snapshot(
         self,

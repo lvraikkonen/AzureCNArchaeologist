@@ -17,9 +17,9 @@ Azure中国定价网站 (https://www.azure.cn/pricing/) 原维护团队已解散
 - 🏗️ **深度建模**: ✅ 构建策略化提取器架构，支持3+1策略自动识别
 - 🤖 **统一批次工作流**: ✅ v0.3 已完成；七阶段 pipeline 支持1-8并发、严格恢复和可追溯状态
 - 📦 **CMS就绪**: ✅ 输出兼容 CMS 业务契约与 Diagnostic Sidecar 1.1 的 JSON；379 个可运行批次项通过当前本地契约验证
-- 🔄 **可追溯工作流**: ✅ 从快照发现到 P3 抽样内容验证、Review Queue 2.0、append-only Review Decision 和批次报告已通过本地回归；Dashboard 写操作、不可变 Release 与正式 upload gate 仍在后续切片
+- 🔄 **可追溯工作流**: ✅ 从快照发现到 P3 抽样内容验证、Review Queue 2.0、append-only Review Decision、本地 Dashboard Review Workbench 和批次报告已通过本地回归；不可变 Release 与正式 upload gate 仍在后续切片
 
-v0.3 全量验收结果为 434 项终态守恒（379 项通过、55 项预期跳过）；详见 [`reports/v0.3/acceptance-status.md`](reports/v0.3/acceptance-status.md)。v0.4 当前已在 P3 Profile 下生成抽样验证证据，并支持 CLI 记录 hash-bound 审核决定；本版本仍没有执行发布。
+v0.3 全量验收结果为 434 项终态守恒（379 项通过、55 项预期跳过）；详见 [`reports/v0.3/acceptance-status.md`](reports/v0.3/acceptance-status.md)。v0.4 当前已在 P3 Profile 下生成抽样验证证据，并支持 CLI 与本地 Dashboard Workbench 记录 hash-bound 审核决定；本版本仍没有执行发布。
 
 ### 🌟 核心特性
 
@@ -42,7 +42,7 @@ v0.3 全量验收结果为 434 项终态守恒（379 项通过、55 项预期跳
 
 ### 整体架构图
 
-下图是收敛后的 v0.4 目标流程。当前已实现到抽取、P3 抽样机器验证、Review Queue 2.0 和 CLI 受控 approve/reject；Dashboard 审核工作台、不可变 Release 与正式 upload gate 尚待后续切片完成。
+下图是收敛后的 v0.4 目标流程。当前已实现到抽取、P3 抽样机器验证、Review Queue 2.0、CLI 受控 approve/reject 和本地 Dashboard 审核工作台；不可变 Release 与正式 upload gate 尚待后续切片完成。
 
 ```mermaid
 flowchart LR
@@ -69,7 +69,7 @@ flowchart LR
 
 ## v0.4 目标日常生产流程
 
-> 当前实现边界：Step 4 Slice A-C 已提供 P3 sampled validation runtime、Review Queue 2.0、append-only Review Decision service 和 `pipeline-review-list` / `pipeline-review-decide` CLI。Dashboard 仍只读，Release 与 upload gate 尚未实现。实施边界见 [v0.4 execution plan](plans/v0.4-execution-plan.md)，代码导航见 [handoff](handoff.md)。
+> 当前实现边界：Step 4 Slice A-D 已提供 P3 sampled validation runtime、Review Queue 2.0、append-only Review Decision service、`pipeline-review-list` / `pipeline-review-decide` CLI，以及本地 `/review` Dashboard Workbench。Release 与 upload gate 尚未实现。实施边界见 [v0.4 execution plan](plans/v0.4-execution-plan.md)，代码导航见 [handoff](handoff.md)。
 
 ### 1. 接收上游 HTML 与配置
 
@@ -165,18 +165,30 @@ uv run cli.py pipeline-review-list --batch-id <batch-id>
 uv run cli.py pipeline-review-list --batch-id <batch-id> --status all --json
 ~~~
 
-Slice D 会把 Dashboard 扩展为本地审核工作台，提供：
+本地 Dashboard Workbench 已可用于正式 P3 Batch Item 审核。先启动只绑定 loopback 的 Python bridge，再启动 Dashboard：
+
+~~~bash
+uv run cli.py pipeline-review-serve --batch-id <batch-id> \
+  --dashboard-origin http://127.0.0.1:3000
+
+cd dashboard
+npm run dev
+~~~
+
+`pipeline-review-serve` 会输出形如 `http://127.0.0.1:3000/review#bridge=...&token=...` 的 Dashboard URL。token 只存在于 URL fragment，页面读取后会移除 fragment 并仅保存在内存中；bridge 校验 Host、Origin、Bearer token、Batch allowlist、Content-Type 和 manifest revision。没有 token 时 `/review` 只显示未连接状态，不读取或写入 Batch。
+
+Workbench 提供：
 
 - 产品与产品语言项总览；
-- supported、extracted、machine-passed、pending、approved、rejected、release-ready、published 统计；
+- runnable、pending、approved、rejected、source-blocked、release-ready 语言项统计，以及产品级 attention/ready 统计；
 - 按语言、类别、策略、风险、失败历史和证据绑定筛选；
 - 冻结 Source、persisted Payload 和机器抽样证据对照；
 - 人工选择 region、software、category、tab 等实际存在的状态组合；
-- 审核历史、失败原因、stale binding 和支持/批准数量增长趋势。
+- 审核历史、失败原因、stale binding、Release/Publication 只读引用和显式 history index。
 
 人工选择应独立于机器样本，并优先检查机器未覆盖或风险较高的组合。Live Azure 页面只能辅助定位，最终裁决对象仍是该 Batch 冻结的 Source Snapshot。
 
-Dashboard 后续可以发起批准和拒绝，但不能直接编辑投影 JSON 或 manifest。按钮必须调用与 CLI 共用的受控 review service；batch-manifest.json 仍是生命周期和 item 状态真源。
+Dashboard 可以发起批准和拒绝，但不能直接编辑投影 JSON 或 manifest。按钮只调用与 CLI 共用的受控 review service；状态成功落盘并重建投影后才刷新显示。batch-manifest.json 仍是生命周期和 item 状态真源。
 
 ### 5. 人工批准或拒绝
 
@@ -442,6 +454,8 @@ uv run cli.py pipeline-validate --batch-id <batch-id>
 
 # 查看和记录受控人工审核决定
 uv run cli.py pipeline-review-list --batch-id <batch-id> --status pending
+uv run cli.py pipeline-review-serve --batch-id <batch-id> \
+  --dashboard-origin http://127.0.0.1:3000
 uv run cli.py pipeline-review-decide --batch-id <batch-id> \
   --item-id zh-cn/api-management \
   --expected-revision <current-revision> \

@@ -274,6 +274,26 @@ def pipeline_review_decide_command(args: argparse.Namespace) -> int:
     return 0
 
 
+def pipeline_review_serve_command(args: argparse.Namespace) -> int:
+    try:
+        from src.review.workbench_server import (
+            config_from_args,
+            serve_review_workbench,
+        )
+
+        serve_review_workbench(config_from_args(args, root=ROOT))
+    except KeyboardInterrupt:
+        print("INTERRUPTED: pipeline review workbench stopped by user", file=sys.stderr)
+        return 130
+    except Exception as error:
+        print(
+            f"FAIL: {getattr(error, 'code', 'review_workbench_failed')}: {error}",
+            file=sys.stderr,
+        )
+        return 1
+    return 0
+
+
 def add_pipeline_commands(subparsers: argparse._SubParsersAction) -> None:
     run = subparsers.add_parser(
         "pipeline-run",
@@ -343,6 +363,21 @@ def add_pipeline_commands(subparsers: argparse._SubParsersAction) -> None:
     review_decide.add_argument("--json", action="store_true")
     review_decide.set_defaults(func=pipeline_review_decide_command)
 
+    review_serve = subparsers.add_parser(
+        "pipeline-review-serve",
+        help="Serve the local Dashboard Review Workbench bridge",
+    )
+    review_serve.add_argument("--batch-id", action="append", required=True)
+    review_serve.add_argument("--history-index")
+    review_serve.add_argument("--runs-dir", default="runs")
+    review_serve.add_argument("--host", default="127.0.0.1")
+    review_serve.add_argument("--port", type=int, default=8765)
+    review_serve.add_argument(
+        "--dashboard-origin",
+        default="http://127.0.0.1:3000",
+    )
+    review_serve.set_defaults(func=pipeline_review_serve_command)
+
 
 __all__ = [
     "add_pipeline_commands",
@@ -352,4 +387,5 @@ __all__ = [
     "pipeline_validate_command",
     "pipeline_review_decide_command",
     "pipeline_review_list_command",
+    "pipeline_review_serve_command",
 ]

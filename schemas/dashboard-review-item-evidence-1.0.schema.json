@@ -1,0 +1,631 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/dashboard-review-item-evidence-1.0.schema.json",
+  "title": "Dashboard Review Item Evidence 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "batch_id",
+    "item_id",
+    "manifest_revision",
+    "item",
+    "status",
+    "artifacts",
+    "bindings",
+    "coverage",
+    "validation_summary",
+    "source_quality_findings",
+    "machine_evidence",
+    "inspection",
+    "manual_preview",
+    "decisions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "batch_id": {
+      "$ref": "#/$defs/batch_id"
+    },
+    "item_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "manifest_revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "language",
+        "resource_key",
+        "product_key",
+        "page_model",
+        "strategy",
+        "slug",
+        "source_url"
+      ],
+      "properties": {
+        "language": {
+          "enum": [
+            "zh-cn",
+            "en-us"
+          ]
+        },
+        "resource_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "product_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "page_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "strategy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_url": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "string" }
+          ]
+        }
+      }
+    },
+    "status": {
+      "$ref": "#/$defs/status"
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "payload",
+        "validation",
+        "sampling_plan",
+        "sampled_content_evidence",
+        "current_review_decision"
+      ],
+      "properties": {
+        "payload": { "$ref": "#/$defs/artifact" },
+        "validation": { "$ref": "#/$defs/artifact" },
+        "sampling_plan": { "$ref": "#/$defs/artifact" },
+        "sampled_content_evidence": { "$ref": "#/$defs/artifact" },
+        "current_review_decision": { "$ref": "#/$defs/artifact" }
+      }
+    },
+    "bindings": {
+      "$ref": "#/$defs/bindings"
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "validation_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "evidence_sha256",
+        "errors",
+        "warnings",
+        "approval_preconditions"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "passed",
+            "failed"
+          ]
+        },
+        "evidence_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "errors": {
+          "type": "array"
+        },
+        "warnings": {
+          "type": "array"
+        },
+        "approval_preconditions": {
+          "type": "object"
+        }
+      }
+    },
+    "source_quality_findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "machine_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page_global_comparison",
+        "full_content_comparison",
+        "samples"
+      ],
+      "properties": {
+        "page_global_comparison": {
+          "$ref": "#/$defs/machine_comparison"
+        },
+        "full_content_comparison": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/machine_comparison" }
+          ]
+        },
+        "samples": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "inspection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "allowed_state_ids",
+        "state_universe"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "interactive",
+            "full"
+          ]
+        },
+        "allowed_state_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sha256" }
+        },
+        "state_universe": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/state" }
+        }
+      }
+    },
+    "manual_preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "error",
+        "page_global",
+        "full_content",
+        "states"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "available",
+            "unavailable"
+          ]
+        },
+        "error": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/issue" }
+          ]
+        },
+        "page_global": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/manual_comparison" }
+          ]
+        },
+        "full_content": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/manual_comparison" }
+          ]
+        },
+        "states": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "state_id",
+              "criteria",
+              "machine_selected",
+              "comparison"
+            ],
+            "properties": {
+              "state_id": { "$ref": "#/$defs/sha256" },
+              "criteria": { "$ref": "#/$defs/criteria" },
+              "machine_selected": { "type": "boolean" },
+              "comparison": { "$ref": "#/$defs/manual_comparison" }
+            }
+          }
+        }
+      }
+    },
+    "decisions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current",
+        "history"
+      ],
+      "properties": {
+        "current": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/decision_summary" }
+          ]
+        },
+        "history": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/decision_history" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "batch_id": {
+      "type": "string",
+      "pattern": "^[0-9]{8}T[0-9]{6}Z-[a-f0-9]{8}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nullable_sha256": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/sha256" }
+      ]
+    },
+    "relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "anyOf": [
+          { "pattern": "^/" },
+          { "pattern": "(^|/)\\.\\.(/|$)" }
+        ]
+      }
+    },
+    "artifact": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": { "$ref": "#/$defs/relative_path" },
+            "sha256": { "$ref": "#/$defs/nullable_sha256" }
+          }
+        }
+      ]
+    },
+    "status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "execution",
+        "validation",
+        "review",
+        "publication",
+        "evidence_binding",
+        "approval_eligibility",
+        "release"
+      ],
+      "properties": {
+        "execution": {
+          "enum": [
+            "pending",
+            "running",
+            "succeeded",
+            "failed",
+            "skipped"
+          ]
+        },
+        "validation": {
+          "enum": [
+            "not_run",
+            "passed",
+            "failed"
+          ]
+        },
+        "review": {
+          "enum": [
+            "not_requested",
+            "pending",
+            "approved",
+            "rejected"
+          ]
+        },
+        "publication": { "type": "string", "minLength": 1 },
+        "evidence_binding": {
+          "enum": [
+            "not_applicable",
+            "bound",
+            "stale"
+          ]
+        },
+        "approval_eligibility": {
+          "enum": [
+            "blocked",
+            "eligible"
+          ]
+        },
+        "release": { "type": "string", "minLength": 1 }
+      }
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_sha256",
+        "payload_sha256",
+        "validation_artifact_sha256",
+        "validation_evidence_sha256",
+        "sampling_plan_sha256"
+      ],
+      "properties": {
+        "source_sha256": { "$ref": "#/$defs/sha256" },
+        "payload_sha256": { "$ref": "#/$defs/sha256" },
+        "validation_artifact_sha256": { "$ref": "#/$defs/sha256" },
+        "validation_evidence_sha256": { "$ref": "#/$defs/sha256" },
+        "sampling_plan_sha256": { "$ref": "#/$defs/nullable_sha256" }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "universe_count",
+        "selected_count",
+        "untested_count",
+        "seed",
+        "strata",
+        "selected_state_ids",
+        "assurance"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "full",
+            "stratified_sample"
+          ]
+        },
+        "universe_count": { "type": "integer", "minimum": 0 },
+        "selected_count": { "type": "integer", "minimum": 0 },
+        "untested_count": { "type": "integer", "minimum": 0 },
+        "seed": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/sha256" }
+          ]
+        },
+        "strata": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "selected_state_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sha256" }
+        },
+        "assurance": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "criteria": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "prefixItems": [
+          { "type": "string", "minLength": 1 },
+          { "type": "string", "minLength": 1 }
+        ],
+        "items": false,
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state_id",
+        "criteria"
+      ],
+      "properties": {
+        "state_id": { "$ref": "#/$defs/sha256" },
+        "criteria": { "$ref": "#/$defs/criteria" }
+      }
+    },
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 },
+        "path": { "type": "string" }
+      }
+    },
+    "machine_comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "source_fingerprint",
+        "payload_fingerprint",
+        "diff_reference"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "matched",
+            "mismatched",
+            "not_applicable"
+          ]
+        },
+        "source_fingerprint": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/sha256" }
+          ]
+        },
+        "payload_fingerprint": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/sha256" }
+          ]
+        },
+        "diff_reference": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "string" }
+          ]
+        }
+      }
+    },
+    "manual_comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "source_fingerprint",
+        "payload_fingerprint",
+        "source",
+        "payload",
+        "diff"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "matched",
+            "mismatched"
+          ]
+        },
+        "source_fingerprint": { "$ref": "#/$defs/sha256" },
+        "payload_fingerprint": { "$ref": "#/$defs/sha256" },
+        "source": {},
+        "payload": {},
+        "diff": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "object" }
+          ]
+        }
+      }
+    },
+    "decision_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "path",
+        "sha256",
+        "reviewer",
+        "decided_at",
+        "verdict",
+        "reason",
+        "supersedes_decision_id"
+      ],
+      "properties": {
+        "decision_id": { "$ref": "#/$defs/sha256" },
+        "path": { "$ref": "#/$defs/relative_path" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "reviewer": { "type": "string", "minLength": 1 },
+        "decided_at": { "type": "string", "format": "date-time" },
+        "verdict": {
+          "enum": [
+            "approved",
+            "rejected"
+          ]
+        },
+        "reason": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "string", "minLength": 1 }
+          ]
+        },
+        "supersedes_decision_id": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/sha256" }
+          ]
+        }
+      }
+    },
+    "decision_history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "path",
+        "sha256",
+        "reviewer",
+        "decided_at",
+        "verdict",
+        "reason",
+        "notes",
+        "inspected_states",
+        "supersedes_decision_id"
+      ],
+      "properties": {
+        "decision_id": { "$ref": "#/$defs/sha256" },
+        "path": { "$ref": "#/$defs/relative_path" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "reviewer": { "type": "string", "minLength": 1 },
+        "decided_at": { "type": "string", "format": "date-time" },
+        "verdict": {
+          "enum": [
+            "approved",
+            "rejected"
+          ]
+        },
+        "reason": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "string", "minLength": 1 }
+          ]
+        },
+        "notes": { "type": "string" },
+        "inspected_states": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "supersedes_decision_id": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/sha256" }
+          ]
+        }
+      }
+    }
+  }
+}

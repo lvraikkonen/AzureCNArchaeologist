@@ -1,0 +1,532 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/dashboard-review-workbench-projection-1.0.schema.json",
+  "title": "Dashboard Review Workbench Projection 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "projection_id",
+    "generated_at",
+    "batch",
+    "summary",
+    "history",
+    "release",
+    "items"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "projection_id": {
+      "$ref": "#/$defs/sha256"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "batch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "batch_id",
+        "manifest_revision",
+        "status",
+        "validation_profile_id",
+        "run_dir"
+      ],
+      "properties": {
+        "batch_id": {
+          "$ref": "#/$defs/batch_id"
+        },
+        "manifest_revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status": {
+          "enum": [
+            "planned",
+            "running",
+            "completed",
+            "completed_with_failures",
+            "failed",
+            "interrupted"
+          ]
+        },
+        "validation_profile_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "run_dir": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "items",
+        "products"
+      ],
+      "properties": {
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "total",
+            "reviewable",
+            "pending",
+            "approved",
+            "rejected",
+            "evidence_bound",
+            "evidence_stale",
+            "evidence_not_applicable",
+            "approval_eligible",
+            "approval_blocked",
+            "source_blocked",
+            "runnable",
+            "release_ready"
+          ],
+          "properties": {
+            "total": { "$ref": "#/$defs/count" },
+            "reviewable": { "$ref": "#/$defs/count" },
+            "pending": { "$ref": "#/$defs/count" },
+            "approved": { "$ref": "#/$defs/count" },
+            "rejected": { "$ref": "#/$defs/count" },
+            "evidence_bound": { "$ref": "#/$defs/count" },
+            "evidence_stale": { "$ref": "#/$defs/count" },
+            "evidence_not_applicable": { "$ref": "#/$defs/count" },
+            "approval_eligible": { "$ref": "#/$defs/count" },
+            "approval_blocked": { "$ref": "#/$defs/count" },
+            "source_blocked": { "$ref": "#/$defs/count" },
+            "runnable": { "$ref": "#/$defs/count" },
+            "release_ready": { "$ref": "#/$defs/count" }
+          }
+        },
+        "products": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "total",
+            "release_ready",
+            "pending_attention",
+            "rejected_attention",
+            "source_blocked"
+          ],
+          "properties": {
+            "total": { "$ref": "#/$defs/count" },
+            "release_ready": { "$ref": "#/$defs/count" },
+            "pending_attention": { "$ref": "#/$defs/count" },
+            "rejected_attention": { "$ref": "#/$defs/count" },
+            "source_blocked": { "$ref": "#/$defs/count" }
+          }
+        }
+      }
+    },
+    "history": {
+      "$ref": "#/$defs/history"
+    },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release_manifests",
+        "publication_receipts"
+      ],
+      "properties": {
+        "release_manifests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        },
+        "publication_receipts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    }
+  },
+  "$defs": {
+    "batch_id": {
+      "type": "string",
+      "pattern": "^[0-9]{8}T[0-9]{6}Z-[a-f0-9]{8}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nullable_sha256": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/sha256" }
+      ]
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "anyOf": [
+          { "pattern": "^/" },
+          { "pattern": "(^|/)\\.\\.(/|$)" }
+        ]
+      }
+    },
+    "artifact": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": { "$ref": "#/$defs/relative_path" },
+            "sha256": { "$ref": "#/$defs/nullable_sha256" }
+          }
+        }
+      ]
+    },
+    "history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "configured",
+        "batches"
+      ],
+      "properties": {
+        "configured": {
+          "type": "boolean"
+        },
+        "batches": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "batch_id"
+            ],
+            "properties": {
+              "batch_id": { "$ref": "#/$defs/batch_id" },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_sha256",
+        "payload_sha256",
+        "validation_artifact_sha256",
+        "validation_evidence_sha256",
+        "sampling_plan_sha256"
+      ],
+      "properties": {
+        "source_sha256": { "$ref": "#/$defs/sha256" },
+        "payload_sha256": { "$ref": "#/$defs/sha256" },
+        "validation_artifact_sha256": { "$ref": "#/$defs/sha256" },
+        "validation_evidence_sha256": { "$ref": "#/$defs/sha256" },
+        "sampling_plan_sha256": { "$ref": "#/$defs/nullable_sha256" }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 },
+        "path": { "type": "string" }
+      }
+    },
+    "release_eligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eligible",
+        "blockers"
+      ],
+      "properties": {
+        "eligible": { "type": "boolean" },
+        "blockers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/blocker" }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "universe_count",
+        "selected_count",
+        "untested_count",
+        "selected_state_ids"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "full",
+            "stratified_sample"
+          ]
+        },
+        "universe_count": { "$ref": "#/$defs/count" },
+        "selected_count": { "$ref": "#/$defs/count" },
+        "untested_count": { "$ref": "#/$defs/count" },
+        "selected_state_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sha256" }
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state_id",
+        "criteria"
+      ],
+      "properties": {
+        "state_id": { "$ref": "#/$defs/sha256" },
+        "criteria": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              { "type": "string", "minLength": 1 },
+              { "type": "string", "minLength": 1 }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2
+          }
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "product_key",
+        "resource_key",
+        "language",
+        "page_model",
+        "strategy",
+        "status",
+        "artifacts",
+        "bindings",
+        "coverage",
+        "inspection",
+        "source_quality_findings",
+        "approval_blockers",
+        "current_decision",
+        "release_eligibility",
+        "release_ready"
+      ],
+      "properties": {
+        "item_id": { "type": "string", "minLength": 1 },
+        "product_key": { "type": "string", "minLength": 1 },
+        "resource_key": { "type": "string", "minLength": 1 },
+        "language": {
+          "enum": [
+            "zh-cn",
+            "en-us"
+          ]
+        },
+        "page_model": { "type": "string", "minLength": 1 },
+        "strategy": { "type": "string", "minLength": 1 },
+        "status": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "execution",
+            "validation",
+            "review",
+            "publication",
+            "evidence_binding",
+            "approval_eligibility",
+            "release"
+          ],
+          "properties": {
+            "execution": {
+              "enum": [
+                "pending",
+                "running",
+                "succeeded",
+                "failed",
+                "skipped"
+              ]
+            },
+            "validation": {
+              "enum": [
+                "not_run",
+                "passed",
+                "failed"
+              ]
+            },
+            "review": {
+              "enum": [
+                "not_requested",
+                "pending",
+                "approved",
+                "rejected"
+              ]
+            },
+            "publication": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evidence_binding": {
+              "enum": [
+                "not_applicable",
+                "bound",
+                "stale"
+              ]
+            },
+            "approval_eligibility": {
+              "enum": [
+                "blocked",
+                "eligible"
+              ]
+            },
+            "release": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "artifacts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "payload",
+            "diagnostic",
+            "validation",
+            "sampling_plan",
+            "sampled_content_evidence",
+            "current_review_decision"
+          ],
+          "properties": {
+            "payload": { "$ref": "#/$defs/artifact" },
+            "diagnostic": { "$ref": "#/$defs/artifact" },
+            "validation": { "$ref": "#/$defs/artifact" },
+            "sampling_plan": { "$ref": "#/$defs/artifact" },
+            "sampled_content_evidence": { "$ref": "#/$defs/artifact" },
+            "current_review_decision": { "$ref": "#/$defs/artifact" }
+          }
+        },
+        "bindings": { "$ref": "#/$defs/bindings" },
+        "coverage": { "$ref": "#/$defs/coverage" },
+        "inspection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mode",
+            "state_universe",
+            "full_content_scope"
+          ],
+          "properties": {
+            "mode": {
+              "enum": [
+                "interactive",
+                "full"
+              ]
+            },
+            "state_universe": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/state" }
+            },
+            "full_content_scope": {
+              "type": "boolean"
+            }
+          }
+        },
+        "source_quality_findings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/blocker" }
+        },
+        "approval_blockers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/blocker" }
+        },
+        "current_decision": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "decision_id",
+                "path",
+                "sha256",
+                "reviewer",
+                "decided_at",
+                "verdict",
+                "reason",
+                "supersedes_decision_id"
+              ],
+              "properties": {
+                "decision_id": { "$ref": "#/$defs/sha256" },
+                "path": { "$ref": "#/$defs/relative_path" },
+                "sha256": { "$ref": "#/$defs/sha256" },
+                "reviewer": { "type": "string", "minLength": 1 },
+                "decided_at": { "type": "string", "format": "date-time" },
+                "verdict": {
+                  "enum": [
+                    "approved",
+                    "rejected"
+                  ]
+                },
+                "reason": {
+                  "oneOf": [
+                    { "type": "null" },
+                    { "type": "string", "minLength": 1 }
+                  ]
+                },
+                "supersedes_decision_id": {
+                  "oneOf": [
+                    { "type": "null" },
+                    { "$ref": "#/$defs/sha256" }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "release_eligibility": {
+          "$ref": "#/$defs/release_eligibility"
+        },
+        "release_ready": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

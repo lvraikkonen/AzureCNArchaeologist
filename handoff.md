@@ -5,7 +5,7 @@
 > 代码基线：c9a6ee1d0d0f99961d3fa8ada2351e69e763df7c
 > 当前任务只完成回滚与文档收敛，没有开始 Step 4 代码实现。
 
-> 2026-08-03 更新：后续实现已完成 Step 4 Slice A-C。当前代码已包含 P3 Profile、可复现抽样内容验证、Review Queue 2.0、append-only Review Decision service 与 `pipeline-review-list` / `pipeline-review-decide` CLI。Dashboard 审核工作台、不可变 Release、upload gate 和 publication receipt 仍未实现；本文中关于 Slice A-C “待实现”的内容仅作历史上下文参考。
+> 2026-08-03 更新：后续实现已完成 Step 4 Slice A-D。当前代码已包含 P3 Profile、可复现抽样内容验证、Review Queue 2.0、append-only Review Decision service、`pipeline-review-list` / `pipeline-review-decide` CLI，以及本地 `/review` Dashboard Review Workbench 与 `pipeline-review-serve` loopback bridge。不可变 Release、upload gate 和 publication receipt 仍未实现；本文中关于 Slice A-D “待实现”的内容仅作历史上下文参考。
 
 ## 1. 新 thread 的任务
 
@@ -96,10 +96,10 @@ runs/{batch_id}/logs/pipeline.jsonl
 
 - dashboard/app/Dashboard.tsx 已有 capability ledger、产品筛选、机器/人工证据分轨、关注项、产品详情和 Evidence Binding 展示。
 - scripts/build_capability_dashboard.py 生成当前 projection。
-- 当前 UI 明确“本地只读”，主要读取固定 scope、显式机器证据和历史人工检查；它还不是正式 Batch Review Workbench。
-- 当前 Dashboard 不写 Review Decision，不读取正式 Release/Publication，也没有 approve/reject 操作。
+- `/` 仍明确为本地只读 Capability Ledger，主要读取固定 scope、显式机器证据和历史人工检查。
+- `/review` 是本地 Batch Review Workbench，通过 `pipeline-review-serve` 的 loopback bridge 调用 Slice C review service，可写 append-only Review Decision，并在投影重建后刷新状态。
 - 当前 Next 页面构建期静态 import `dashboard/app/generated/capability-dashboard.json`，builder 没有 Batch 参数；浏览器不能直接调用 Python domain service，必须显式设计 local-only bridge。
-- 仓库包含 `.openai/hosting.json`；任何有写能力的 review route 都必须保持 local-only，不能随托管构建暴露。
+- 仓库包含 `.openai/hosting.json`；当前实现没有 Next API route、server action、D1 或 R2。任何有写能力的 review route 都必须保持 local-only，不能随托管构建暴露。
 
 ### Upload
 
@@ -108,23 +108,13 @@ runs/{batch_id}/logs/pipeline.jsonl
 - 它上传后也没有完整的 authoritative Publication transition。
 - Blob uploader 当前允许 overwrite，且没有满足 sealed Release 所需的远端 identity/ETag 校验。
 
-## 5. 当前明确缺失
+## 5. 当前明确缺失（Slice D 后）
 
-- Content Sampling Profile schema 与 frozen identity。
-- Source Reachability 确定后生成的 per-item Batch Item Sampling Plan。
-- deterministic stratified state sampler。
-- page-global、SimpleStatic、SupportArticle 的 full-mode Source/Payload projectors 与 comparator。
-- 独立的 Source selected-state projection。
-- 独立的 persisted Payload selected-state projection。
-- selected-state comparator 与最小 sampled evidence。
-- closed-world Validation Projection 2.0，以及 sampled/total、seed、state identities 和 per-sample diff。
-- hash-bound append-only Review Decision。
-- 受控 approve/reject CLI/domain service。
-- Dashboard 正式 Batch/Review/Release projection。
-- Dashboard 调用受控 review service 的本地接口。
-- stale review invalidation。
-- immutable Release builder 与 Release Manifest。
+- immutable Release builder、Release Manifest staging、seal 与 verify。
 - upload 的 Release-only gate、publication receipt 和 Batch Manifest publication update。
+- Release dry-run、upload retry、远端 Blob identity / ETag 校验。
+- 正式 Source Finding Disposition、Report 2.0 和复杂表格视觉门禁；这些属于 Step 5。
+- Dashboard 公共托管写入口、多用户权限、任务分派、评论协作；这些不属于 v0.4。
 
 ## 6. 本轮记录的基线测试结果
 
@@ -316,7 +306,18 @@ feat: add controlled review decisions
 
 ### Slice D：Dashboard Review Workbench
 
-不要把正式 Batch 字段硬塞进现有 capability projection 1.0。优先新增版本化 Dashboard projection 或明确的 Batch/Release submodel。先冻结本地桥接方式：推荐 localhost Python API，或受控 Next server route 调用 CLI；浏览器端不得直接写文件或假装复用 Python service。任何写 route 必须强制 local-only，并从托管构建排除。
+状态：已完成。实现保留 `/` 的 capability projection 1.0，只新增独立 Workbench read model/schema 和本地 bridge。主要入口：
+
+- `src/review/workbench.py`
+- `src/review/workbench_server.py`
+- `schemas/dashboard-review-workbench-projection-1.0.schema.json`
+- `schemas/dashboard-review-item-evidence-1.0.schema.json`
+- `schemas/dashboard-review-history-index-1.0.schema.json`
+- `dashboard/app/review/page.tsx`
+- `dashboard/app/review/ReviewWorkbench.tsx`
+- `dashboard/app/review-model.ts`
+
+不要把正式 Batch 字段硬塞进现有 capability projection 1.0。当前桥接方式已冻结为 localhost Python API；浏览器端不得直接写文件或假装复用 Python service。任何写 route 必须强制 local-only，并从托管构建排除。
 
 MVP：
 
@@ -331,9 +332,9 @@ MVP：
 - Release membership 和 Publication。
 - 支持、机器通过、人工批准、发布数量趋势。
 
-前端动作只调用 Slice C service，并提交 current manifest revision；状态成功落盘并由新 projection 重建后才显示结果。现有 Node 测试明确禁止 approval 文案，Slice D 必须有意版本化并更新该测试，而不是绕开。
+前端动作只调用 Slice C service，并提交 current manifest revision；状态成功落盘并由新 projection 重建后才显示结果。Node 测试仍禁止旧 Capability Ledger 出现 approval 文案，正式 approval 语言只允许出现在 `/review` Workbench。
 
-完成后建议提交：
+建议提交信息：
 
 ~~~text
 feat: turn dashboard into a controlled review workbench
@@ -461,10 +462,10 @@ feat: add immutable release promotion and upload gate
 
 1. 确认 HEAD、工作树和安全 stash；不要恢复 stash。
 2. 完整阅读 ADR-0087、ADR-0088、execution plan 和本 handoff。
-3. 使用 CodeGraph 检查 Pipeline state、validation projection、Dashboard builder 和 uploader。
-4. 运行当前 c9 基线测试，记录真实结果。
-5. 建立实施 plan，只把 Slice A 标为 in progress。
-6. 先完成 schema/domain tests，再实现 sampler。
-7. Slice A 完成后暂停汇报；不要直接连续推进到 Dashboard 或 upload。
+3. 使用 CodeGraph 检查 Release contracts、Pipeline state、Review Workbench 和 uploader。
+4. 运行 Step 4 A-D 的目标测试，记录真实结果。
+5. 建立 Slice E 实施 plan，只把不可变 Release 与 upload gate 标为 in progress。
+6. 先完成 Release Manifest / seal / upload gate schema 与 domain tests，再实现文件 staging。
+7. Slice E 完成后暂停汇报；不要直接连续推进到 Step 5。
 
 如果实现中发现 Step 3 的 state universe 不能稳定支持采样，先报告具体证据；不要通过恢复旧 Applicability/State Projection WIP、扩大 Product Definition 特例或改用 Payload 自报 states 来绕过。
