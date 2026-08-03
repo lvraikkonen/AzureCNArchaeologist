@@ -332,11 +332,6 @@ def test_real_repaired_static_base_content_allows_payload_generation(
             {"SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT"},
         ),
         (
-            "event-hubs",
-            "zh-cn",
-            {"SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL"},
-        ),
-        (
             "storage-files",
             "zh-cn",
             {"SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION"},
@@ -401,6 +396,27 @@ def test_real_blocking_structure_finding_exits_without_payload(
         for finding in evidence["findings"]
         if finding["code"] in expected_codes
     )
+
+
+def test_event_hubs_current_source_reachability_blocks_payload(
+    tmp_path: Path,
+) -> None:
+    coordinator = _coordinator(tmp_path)
+
+    result = coordinator.coordinate_extraction("event-hubs", "zh-cn")
+
+    assert not result.execution_succeeded
+    assert result.exit_code == 1
+    assert result.payload is None
+    assert result.payload_path is None
+    assert result.sidecar["payload"] is None
+    assert result.sidecar["input_assurance"]["status"] == "passed"
+    assert result.sidecar["status"]["validation"] == "not_run"
+    assert result.sidecar["error"] == {
+        "code": "duplicate_filter_target",
+        "stage": "source_reachability",
+        "message": "region desktop href values must be unique",
+    }
 
 
 def test_persisted_replay_cannot_bypass_a_new_blocking_finding(

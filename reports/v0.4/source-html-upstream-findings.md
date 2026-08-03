@@ -6,7 +6,7 @@
 
 - Product Index：`sha256:bc359ef4a5faf011a44dab05696073528e6ac3d1d9de10fe2976380a93bda875`
 - 已调查 canonical 双语源：368；其中 Simple：62
-- 源身份集合 SHA-256：`c9b0a9ffa1afe627062e1bc3a5c93fa0d6c0b2562f6b78269729af3281ba3d0d`
+- 源身份集合 SHA-256：`5f974a63918b21fc50b46bfe9e63bc195f432d3ef4b36c829be4640f0a81b710`
 - 跨 region/software/category 状态面板的重复 ID 不按静态 `baseContent` 重复处理。
 
 ## 已确认阻断：静态 baseContent 重复 ID
@@ -25,7 +25,6 @@
 | `container-apps` (Container Apps) | `zh-cn` | `SOURCE_HTML_CONTENT_WITHOUT_EXACT_COMMON_BOUNDARY` | 214, 294, 319, 329, 390, 398, 434, 444 | `5296720badc6e9cd1e9b763b558b94d9a04897d4a640642bd42aec00cad89ba1` |
 | `container-apps` (Container Apps) | `zh-cn` | `SOURCE_HTML_PRICING_TABLE_SECTION_WITHOUT_OWN_HEADING` | 319, 329, 390, 398, 434, 444 | `5296720badc6e9cd1e9b763b558b94d9a04897d4a640642bd42aec00cad89ba1` |
 | `data-lake-storage` (Data Lake Storage) | `zh-cn` | `SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT` | 8167, 8168, 8207 | `c43dddf726af711bf18206e83b518f87fec8527d048aee8ab64410434feea7c3` |
-| `event-hubs` (Event Hubs) | `zh-cn` | `SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL` | 141, 465, 468, 699 | `61c2bf1d6ec0b2d0ad566fc30c2f0eab786c12f163802d51b235595b5fffe97a` |
 | `sql-edge` (Azure SQL Edge) | `en-us` | `SOURCE_HTML_POST_SELECTOR_SUPPORT_SECTION_UNCLASSIFIED` | 364, 370, 371, 376 | `aae88635761e3629a91616f29daa07a7a604190f650664b17cbfd4bf570b6dd5` |
 | `storage-files` (Storage Files) | `zh-cn` | `SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION` | 499, 521, 522, 541, 542, 562 | `8d53204c4c84485f3edc26155380830216fef973371fc578d07a446800fb80c1` |
 
@@ -69,16 +68,6 @@ Route Server 的重复 ID 位于含隐藏筛选控件的单个 selector 内，�
 - 阻断 Payload：是
 - 建议动作：`separate_embedded_style_from_common_section`
 - 建议：Move the embedded stylesheet out of the business-content pricing-page-section and into the page stylesheet or an explicit non-business template scope, leaving div.more-detail as an exact common-section boundary.
-
-### event-hubs / zh-cn
-
-- 源路径：`data/prod-html/zh-cn/pricing/event-hubs.html`
-- 源大小：30552 bytes
-- Finding：`SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL`
-- 证据：第 141 行：Formal pricing selector starts here.；第 465 行：END: TAB-CONTROL occurs while the selector is still open.；第 468 行：Exact div.more-detail FAQ is nested across the expected boundary.；第 699 行：Observed selector closing boundary.
-- 阻断 Payload：是
-- 建议动作：`relocate_existing_closing_tag`
-- 建议：Move the selector's existing closing </div> before the first exact FAQ/SLA section following END: TAB-CONTROL.
 
 ### sql-edge / en-us
 

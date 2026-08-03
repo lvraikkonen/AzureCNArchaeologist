@@ -118,22 +118,22 @@
       "sectionType": "Banner",
       "sectionTitle": "",
       "content": "<div class=\"common-banner col-top-banner\" data-config=\"{'backgroundColor':'#e3f4ff', 'backgroundImage':'{base_url}/Images/marketing-resource/css/cloud_services.png','imageHeight':'auto'}\"><div class=\"common-banner-image\"><div class=\"common-banner-title\"><img src=\"{base_url}/Images/marketing-resource/css/cloud-services@2x.png\"/><h2> 云服务 <span> Cloud Services </span></h2><h4> 创建高度可用且可无限缩放的云应用程序和 API </h4></div></div></div>",
-      "sortOrder": 1,
-      "isActive": true
+      "isActive": true,
+      "sortOrder": 1
     },
     {
       "sectionType": "ProductDescription",
       "sectionTitle": "",
       "content": "<ul class=\"ex_ul_container\"><li><h2> 创建高度可用且可无限缩放的云应用程序和 API </h2></li><li><ul id=\"in_ul_container\"><li> Azure 云服务是一种平台即服务 (PaaS) 技术，设计用于部署可缩放、可靠且运营费用低的应用程序。借助云服务，你可以专注于应用程序而非底层云基础结构。 </li><li> 收取标准 <a href=\"/pricing/details/bandwidth/index.html\"> 出口 </a> 费用。 <a href=\"https://docs.azure.cn/zh-cn/cloud-services-extended-support/\"> 云服务（外延支持） </a> 使用 Azure Key Vault 和基本 (ARM) 公共 IP 地址。需要证书的客户需要使用 <a href=\"/pricing/details/key-vault/index.html\"> Azure Key Vault </a> 进行证书管理。云服务（外延支持）的每个 <a href=\"/pricing/details/ip-addresses/index.html\"> 公共 IP 地址 </a> 将单独收费。 </li></ul></li></ul>",
-      "sortOrder": 2,
-      "isActive": true
+      "isActive": true,
+      "sortOrder": 2
     },
     {
       "sectionType": "Qa",
       "sectionTitle": "",
       "content": "<div class=\"more-detail\"><h2> 常见问题 </h2><em> 全部展开 </em><ul><li><i class=\"icon icon-plus\"></i><div><a id=\"vm-que-pro\"> 如果我的已部署实例处于“已停止”状态，是否仍向我计费？ </a><section><p> 仍会计费，已停止实例仍占用对该实例提供支持的计算资源，因此仍会计费。为了停止计费，您需要删除您的部署。 </p></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"vm-que-down\"> 如果我的 Web 或辅助角色部署了不到一小时，将会向我收费多少？ </a><section><p> 基于您的服务部署了多长时间对云服务进行计费。如果您的实例部署不到 1 小时，或者是几小时加上不到 1 小时的分钟数，将仅对该持续时间收费。Azure不将不到 1 小时的时间向上舍入为完整的 1 小时来进行计费，您只需为您的云服务实例处于“正在运行”状态的实际时间付费。 </p></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"vm-que-isbuy\"> 如何对不同的实例大小计费？ </a><section><p> 如下表中所述，在显示给您的帐单上，所有标准云服务小时数均转换为小型 (A1) 实例小时数。例如，在显示给您的帐单上，一小时中型 (A2) 云服务实例将显示为两小时小型 (A1) 云服务实例。 </p><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr><th align=\"left\"><strong> 云服务实例 </strong></th><th align=\"left\"><strong> 小时 </strong></th><th align=\"left\"><strong> 小型实例小时 </strong></th></tr><tr><td> 特小型 (A0) </td><td> 1 </td><td> 1/4 小时 </td></tr><tr><td> 小型 (A1) </td><td> 1 </td><td> 1小时 </td></tr><tr><td> 中型 (A2) </td><td> 1 </td><td> 2小时 </td></tr><tr><td> 大型 (A3) </td><td> 1 </td><td> 4小时 </td></tr><tr><td> 特大型 (A4) </td><td> 1 </td><td> 8小时 </td></tr></table></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"vm-que-con\"> 以上价格是否含税？ </a><section><p> 是，所列价格均含税 </p></section></div></li></ul></div><div class=\"pricing-page-section\"><h2> 支持和服务级别协议 </h2><p> 如有任何疑问或需要帮助，请访问 <a href=\"https://support.azure.cn/zh-cn/support/contact\" id=\"cloud-contact-page\"> Azure 支持 </a> 选择自助服务或者其他任何方式联系我们获得支持。 </p><p> 对于云服务，我们保证，当您在不同的故障域和升级域中部署两个或更多角色实例时，面向 Internet 的角色将至少在 99.95% 的时间内能够建立外部连接。若要了解有关我们的服务级别协议的详细信息，请访问 <a href=\"../../../support/sla/cloud-services/index.html\" id=\"prricing_cloud_sla\" style=\"color: #00a8d9;\"> 服务级别协议 </a> 页。 </p></div>",
-      "sortOrder": 3,
-      "isActive": true
+      "isActive": true,
+      "sortOrder": 3
     }
   ],
   "pageConfig": {

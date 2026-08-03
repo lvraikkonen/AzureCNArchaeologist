@@ -412,7 +412,7 @@ class ExtractionStateTests(unittest.TestCase):
             self.assertFalse(stale_event_grid.exists())
 
     def test_regression_payloads_are_deterministic_and_diagnostic_free(self):
-        keys = ("service-bus", "api-management", "icp-faq", "legal-summary", "psr-summary", "sla-summary", "sla-cognitive-services")
+        keys = ("service-bus", "api-management", "cloud-services", "icp-faq", "legal-summary", "psr-summary", "sla-summary", "sla-cognitive-services")
         with tempfile.TemporaryDirectory() as directory:
             coordinator = ExtractionCoordinator(directory)
             for key in keys:
@@ -427,26 +427,10 @@ class ExtractionStateTests(unittest.TestCase):
                     self.assertNotIn("common-banner", base_content)
                     self.assertNotIn("more-detail", base_content)
                     self.assertNotIn("documentation-navigation", base_content)
+                if key == "cloud-services":
+                    self.assertEqual(len(result.payload["contentGroups"]), 15)
 
-            cloud = coordinator.coordinate_extraction(
-                "cloud-services",
-                "zh-cn",
-            )
-            self.assertEqual(cloud.exit_code, 1)
-            self.assertIsNone(cloud.payload)
-            self.assertIsNone(cloud.payload_path)
-            self.assertEqual(
-                cloud.sidecar["error"]["code"],
-                "soft_category_duplicate_relevant_table_id",
-            )
-            self.assertEqual(
-                cloud.sidecar["strategy"][
-                    "strict_soft_category_projection_failure"
-                ]["phase"],
-                "attach",
-            )
-
-    def test_dns_remains_supported_but_duplicate_source_id_blocks_payload(self):
+    def test_dns_remains_supported_and_current_source_extracts(self):
         definition = ProductManager().get_product_config("dns")
         self.assertEqual(definition["capability_status"], "supported")
         self.assertEqual(
@@ -460,28 +444,13 @@ class ExtractionStateTests(unittest.TestCase):
                 "zh-cn",
             )
 
-            self.assertEqual(result.exit_code, 1)
-            self.assertFalse(result.execution_succeeded)
-            self.assertIsNone(result.payload)
-            self.assertIsNone(result.payload_path)
-            self.assertIsNone(result.sidecar["payload"])
-            self.assertEqual(
-                result.sidecar["error"]["code"],
-                "SOURCE_HTML_STRUCTURE_BLOCKED",
-            )
-            self.assertIn(
-                "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT",
-                {
-                    issue["code"]
-                    for issue in result.sidecar["validation"]["errors"]
-                },
-            )
-            evidence_path = Path(
-                result.sidecar["input_assurance"]["source_html_structure"][
-                    "evidence"
-                ]["path"]
-            )
-            self.assertTrue(evidence_path.is_file())
+            self.assertEqual(result.exit_code, 0)
+            self.assertTrue(result.execution_succeeded)
+            self.assertIsNotNone(result.payload)
+            self.assertIsNotNone(result.payload_path)
+            self.assertTrue(result.payload_path.is_file())
+            self.assertEqual(result.sidecar["status"]["validation"], "passed")
+            self.assertEqual(result.sidecar["input_assurance"]["status"], "passed")
 
 
 class UploadAndBatchTests(unittest.TestCase):

@@ -6,7 +6,7 @@
     "product_definition": {
       "schema_version": "1.1",
       "path": "schemas/product-definition-1.1.schema.json",
-      "sha256": "641972a3238ddcfbbae840e0922003d31a494a80fa3ab111a68aa21b607fafb8"
+      "sha256": "57a1fa0c49c07d021da2fed1f0b777fbb7f9534d68076ee35d496a2d2c2e42e4"
     },
     "flexible_content": {
       "schema_version": "1.1",
@@ -21,7 +21,7 @@
     "diagnostic_sidecar": {
       "schema_version": "1.2",
       "path": "schemas/diagnostic-sidecar-1.2.schema.json",
-      "sha256": "4536e26d5f259da769a927ef0c72d8dc294723dc13ec2953c73e3f982cce1ee0"
+      "sha256": "6d73b4fd334b2d4b61cf5c6009384e870b6ae7873e148dbf1e162448835b97c4"
     }
   },
   "input_assurance": {

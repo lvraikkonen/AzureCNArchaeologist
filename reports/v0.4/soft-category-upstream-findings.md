@@ -6,14 +6,14 @@
 
 - 报告状态：`nonblocking_configuration_hygiene_findings`
 - 路径：`data/configs/soft-category.json`
-- 大小：345664 bytes
-- SHA-256：`927831ddb8cd3add17a5e7ee259ff77256e2c3d7922d5e355683910f8980f1d3`
+- 大小：345348 bytes
+- SHA-256：`246ff13a504281d0b0cc23a581d8bd30582e6c1c242b57e3f2848e05e0c6d218`
 - 配置 entry：325
 
 ## 汇总
 
 - 重复 `(software, region)` pair：0，涉及 0 个 entry（blocking）
-- row 内重复 tableID：37 个 entry，309 个不同重复 ID，320 个多余 occurrence（nonblocking redundancy）
+- row 内重复 tableID：32 个 entry，300 个不同重复 ID，311 个多余 occurrence（nonblocking redundancy）
 
 ## 重复 `(software, region)`
 
@@ -24,11 +24,6 @@
 
 | Entry | Software | Region | 重复 ID 数 | 多余 occurrence |
 | ---: | --- | --- | ---: | ---: |
-| 1 | `Windows` | `north-china` | 1 | 1 |
-| 4 | `Windows` | `north-china3` | 1 | 1 |
-| 6 | `Linux` | `north-china2` | 2 | 2 |
-| 7 | `Linux` | `north-china` | 3 | 3 |
-| 8 | `Linux` | `east-china2` | 2 | 2 |
 | 9 | `Linux` | `east-china` | 8 | 9 |
 | 10 | `Linux` | `east-china3` | 1 | 1 |
 | 11 | `Linux` | `north-china3` | 1 | 1 |
@@ -61,60 +56,6 @@
 | 116 | `Storage Blobs` | `east-china` | 3 | 3 |
 | 287 | `Page Blobs` | `east-china3` | 1 | 1 |
 | 288 | `Page Blobs` | `north-china3` | 2 | 2 |
-
-### Entry 1: Windows / north-china
-
-- Finding：`SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW`；`nonblocking_redundancy`；运行时 `ordered_unique_by_first_physical_occurrence`
-- `#vms-table1-3-1`：2 次，tableIDs indexes = 125, 128
-- 上游动作：The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged.
-- 修复后检查：
-  - The runtime projection equals the normalized tableIDs ordered by physical first occurrence.
-  - Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.
-  - The exact state is replayed after cleanup and produces the same projection and Payload content.
-
-### Entry 4: Windows / north-china3
-
-- Finding：`SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW`；`nonblocking_redundancy`；运行时 `ordered_unique_by_first_physical_occurrence`
-- `#vm-table1-r2-1`：2 次，tableIDs indexes = 25, 35
-- 上游动作：The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged.
-- 修复后检查：
-  - The runtime projection equals the normalized tableIDs ordered by physical first occurrence.
-  - Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.
-  - The exact state is replayed after cleanup and produces the same projection and Payload content.
-
-### Entry 6: Linux / north-china2
-
-- Finding：`SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW`；`nonblocking_redundancy`；运行时 `ordered_unique_by_first_physical_occurrence`
-- `#vm-table1-linux-r2-4-north3`：2 次，tableIDs indexes = 42, 61
-- `#vm-table1-linux-r2-4-east3`：2 次，tableIDs indexes = 69, 88
-- 上游动作：The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged.
-- 修复后检查：
-  - The runtime projection equals the normalized tableIDs ordered by physical first occurrence.
-  - Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.
-  - The exact state is replayed after cleanup and produces the same projection and Payload content.
-
-### Entry 7: Linux / north-china
-
-- Finding：`SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW`；`nonblocking_redundancy`；运行时 `ordered_unique_by_first_physical_occurrence`
-- `#vm-table1-linux-r2-4-north3`：2 次，tableIDs indexes = 68, 87
-- `#vm-table1-linux-r2-4-east3`：2 次，tableIDs indexes = 95, 114
-- `#vm-table-mdsv2-l-n3-1`：2 次，tableIDs indexes = 54, 242
-- 上游动作：The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged.
-- 修复后检查：
-  - The runtime projection equals the normalized tableIDs ordered by physical first occurrence.
-  - Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.
-  - The exact state is replayed after cleanup and produces the same projection and Payload content.
-
-### Entry 8: Linux / east-china2
-
-- Finding：`SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW`；`nonblocking_redundancy`；运行时 `ordered_unique_by_first_physical_occurrence`
-- `#vm-table1-linux-r2-4-north3`：2 次，tableIDs indexes = 37, 59
-- `#vm-table1-linux-r2-4-east3`：2 次，tableIDs indexes = 67, 86
-- 上游动作：The runtime already treats repeated normalized table identities as nonblocking redundancy and retains each identity at its first physical occurrence. Upstream may remove later occurrences for configuration hygiene, provided that ordered-unique sequence remains unchanged.
-- 修复后检查：
-  - The runtime projection equals the normalized tableIDs ordered by physical first occurrence.
-  - Any upstream cleanup removes only later duplicate occurrences and preserves the ordered-unique sequence.
-  - The exact state is replayed after cleanup and produces the same projection and Payload content.
 
 ### Entry 9: Linux / east-china
 

@@ -118,18 +118,6 @@ def test_unproven_simple_boundaries_are_not_misclassified_as_confirmed(
             },
         ),
         (
-            "event-hubs",
-            "zh-cn",
-            {
-                "SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL": (
-                    141,
-                    465,
-                    468,
-                    699,
-                ),
-            },
-        ),
-        (
             "storage-files",
             "zh-cn",
             {

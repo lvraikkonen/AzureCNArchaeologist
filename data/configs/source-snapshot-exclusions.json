@@ -27,12 +27,6 @@
     },
     {
       "language": "zh-cn",
-      "snapshot_path": "pricing/details/sql-database/index_bak.html",
-      "reason_code": "backup",
-      "reason": "Source-system backup page."
-    },
-    {
-      "language": "zh-cn",
       "snapshot_path": "pricing/details/virtual-machines/v-mtest/index.html",
       "reason_code": "test_fixture",
       "reason": "Source-system virtual-machine test route."

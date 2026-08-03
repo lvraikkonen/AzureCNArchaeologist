@@ -6,7 +6,7 @@
     "id": "v0.4-from-v0.3",
     "schema_version": "1.0",
     "path": "data/baselines/v0.4/planning-baseline.json",
-    "sha256": "86e2f8836c94a9c0a063ce9a8da7efe445137c4e63d99f7b0cf0d9350b20d3d3"
+    "sha256": "47e721642df8bdbab16eb62643dcb64aff0578fa8685bd8ab4b8070d1f25f8c8"
   },
   "change_policy": {
     "mutable_field": "product_definition.sha256",
@@ -25,7 +25,7 @@
       "product_definition": {
         "path": "data/configs/products/pricing/cloud-services.json",
         "old_sha256": "75b26a5b392ca865ebef261b0cead4ceac31b8f43bde8a47d5d70628d37710e5",
-        "new_sha256": "3ff681615ef5a65b426b4cf9648ff9ddd6ad11d8090adec544ed2754e8bc094b"
+        "new_sha256": "51bc6cc2d0e49c047026d63efcaf1d50f1725cc50508ce6f13c3708c3ab09872"
       },
       "reason_code": "approved_p2_page_global_content_identity"
     },
@@ -34,7 +34,7 @@
       "product_definition": {
         "path": "data/configs/products/pricing/service-bus.json",
         "old_sha256": "894d5f4ba1830ad75fd9ce756393982e978ad9d19958a82ce6363d64b7a5ed47",
-        "new_sha256": "28a1cbbff20a82abf675721bb8bf4ba6c4261c9100817d0db6efbb4af4bfbca2"
+        "new_sha256": "7dad4a1ba650a9394c6fb099cd3883ef1e4761e920329a706053c53ae48a7989"
       },
       "reason_code": "approved_p2_page_global_content_identity"
     },
@@ -43,7 +43,7 @@
       "product_definition": {
         "path": "data/configs/products/pricing/cloud-services.json",
         "old_sha256": "75b26a5b392ca865ebef261b0cead4ceac31b8f43bde8a47d5d70628d37710e5",
-        "new_sha256": "3ff681615ef5a65b426b4cf9648ff9ddd6ad11d8090adec544ed2754e8bc094b"
+        "new_sha256": "51bc6cc2d0e49c047026d63efcaf1d50f1725cc50508ce6f13c3708c3ab09872"
       },
       "reason_code": "approved_p2_page_global_content_identity"
     },
@@ -52,7 +52,7 @@
       "product_definition": {
         "path": "data/configs/products/pricing/service-bus.json",
         "old_sha256": "894d5f4ba1830ad75fd9ce756393982e978ad9d19958a82ce6363d64b7a5ed47",
-        "new_sha256": "28a1cbbff20a82abf675721bb8bf4ba6c4261c9100817d0db6efbb4af4bfbca2"
+        "new_sha256": "7dad4a1ba650a9394c6fb099cd3883ef1e4761e920329a706053c53ae48a7989"
       },
       "reason_code": "approved_p2_page_global_content_identity"
     }

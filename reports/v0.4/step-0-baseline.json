@@ -18,14 +18,14 @@
     {
       "language": "zh-cn",
       "path": "data/current_prod_html/zh-cn/pricing/details/virtual-machines/index.html",
-      "bytes": 7952161,
-      "sha256": "c2dcc7f54cd78fbaa3052934e1b174b234d594431a7f0ea56ce7eb6b48749bfe"
+      "bytes": 8064052,
+      "sha256": "b1eedddb9020c94399063f95cc746609c1c86ec658fba5457d8d84197a2ea19f"
     },
     {
       "language": "en-us",
       "path": "data/current_prod_html/en-us/pricing/details/virtual-machines/index.html",
-      "bytes": 7120359,
-      "sha256": "9cc3063549a3a44430bde949a816f16dd398291a859248c7513381ad69ed418c"
+      "bytes": 7239577,
+      "sha256": "8d0167fe4aa7e196b1879941d6830b3ef30f7e448501e53706823d736e827ea1"
     }
   ],
   "regression_baseline": {

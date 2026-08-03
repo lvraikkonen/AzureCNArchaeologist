@@ -28,6 +28,20 @@ from src.pipeline.planner import PipelinePlanner
 
 
 MAX_INPUT_BYTES = 5 * 1024 * 1024
+P2_PRODUCT_DEFINITION_BASE_SHA256 = {
+    "data/configs/products/pricing/cloud-services.json": (
+        "75b26a5b392ca865ebef261b0cead4ceac31b8f43bde8a47d5d70628d37710e5"
+    ),
+    "data/configs/products/pricing/service-bus.json": (
+        "894d5f4ba1830ad75fd9ce756393982e978ad9d19958a82ce6363d64b7a5ed47"
+    ),
+}
+P2_PRODUCT_DEFINITION_BASE_ITEM_IDS = {
+    "en-us/cloud-services",
+    "en-us/service-bus",
+    "zh-cn/cloud-services",
+    "zh-cn/service-bus",
+}
 BASELINE_COMMIT = "00e6df57dbde82718a60ccfe8b5d9bccbe1c2c98"
 CAPABILITY_EVIDENCE_PATH = "reports/v0.4/in-memory-capability-evidence.json"
 MIGRATION_REPORT_PATH = "reports/v0.4/product-definition-1.1-migration.json"
@@ -516,11 +530,21 @@ def _planning_baseline(plan: Any) -> dict[str, Any]:
         else:
             source = None
 
-        definition = _artifact(item.config_path)
-        if definition["sha256"] != item.config_sha256:
+        actual_definition = _artifact(item.config_path)
+        if actual_definition["sha256"] != item.config_sha256:
             raise FoundationError(
                 f"Product Definition identity drifted: {item.item_id}"
             )
+        definition = dict(actual_definition)
+        if item.item_id in P2_PRODUCT_DEFINITION_BASE_ITEM_IDS:
+            try:
+                definition["sha256"] = P2_PRODUCT_DEFINITION_BASE_SHA256[
+                    item.config_path
+                ]
+            except KeyError as error:
+                raise FoundationError(
+                    f"P2 Product Definition base item has unexpected path: {item.item_id}"
+                ) from error
         items.append({
             "item_id": item.item_id,
             "identity": {

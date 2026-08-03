@@ -238,8 +238,8 @@ class ExperimentalConfigurationTests(unittest.TestCase):
         loaded = load_exception(ROOT)
         self.assertEqual(set(loaded.value["sources"]), {"zh-cn", "en-us"})
         expected = {
-            "zh-cn": (7952161, "c2dcc7f54cd78fbaa3052934e1b174b234d594431a7f0ea56ce7eb6b48749bfe"),
-            "en-us": (7120359, "9cc3063549a3a44430bde949a816f16dd398291a859248c7513381ad69ed418c"),
+            "zh-cn": (8064052, "b1eedddb9020c94399063f95cc746609c1c86ec658fba5457d8d84197a2ea19f"),
+            "en-us": (7239577, "8d0167fe4aa7e196b1879941d6830b3ef30f7e448501e53706823d736e827ea1"),
         }
         for language, identity in expected.items():
             with self.subTest(language=language):

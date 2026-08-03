@@ -298,7 +298,7 @@ def test_planning_baseline_rejects_frozen_input_identity_drift() -> None:
 def test_p2_effective_baseline_changes_exactly_four_definition_hashes() -> None:
     p1_path = ROOT / P1_PLANNING_BASELINE_SPEC.relative_path
     assert sha256_file(p1_path) == (
-        "86e2f8836c94a9c0a063ce9a8da7efe445137c4e63d99f7b0cf0d9350b20d3d3"
+        "47e721642df8bdbab16eb62643dcb64aff0578fa8685bd8ab4b8070d1f25f8c8"
     )
     p1 = json.loads(p1_path.read_text(encoding="utf-8"))
     effective = ValidationContextRegistry(ROOT).effective_planning_baseline()
@@ -364,7 +364,7 @@ def test_freeze_defaults_to_p3_but_historical_p1_identity_replays() -> None:
     assert sha256_file(
         ROOT / P1_VALIDATION_PROFILE_SPEC.relative_path
     ) == (
-        "dd66c001235ea9c5f488adbe4e61800ce7bbc7bfaf488cc44d7b3934f5e1191f"
+        "e314a973d7ed9eafd442ed34db1ec47452ad6c364dd092af608ba8cd71c6e602"
     )
     historical_context = copy.deepcopy(frozen["validation_context"])
     historical_context["validation_profile"] = {

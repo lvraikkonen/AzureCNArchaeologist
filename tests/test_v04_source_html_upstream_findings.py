@@ -17,7 +17,6 @@ ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_BLOCKING_STRUCTURE_LANGUAGE_ITEMS = {
     ("container-apps", "zh-cn"),
     ("data-lake-storage", "zh-cn"),
-    ("event-hubs", "zh-cn"),
     ("sql-edge", "en-us"),
     ("storage-files", "zh-cn"),
 }
@@ -28,7 +27,6 @@ EXPECTED_BLOCKING_STRUCTURE_COUNTS = {
     "SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION": 1,
     "SOURCE_HTML_POST_SELECTOR_SUPPORT_SECTION_UNCLASSIFIED": 1,
     "SOURCE_HTML_PRICING_TABLE_SECTION_WITHOUT_OWN_HEADING": 1,
-    "SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL": 1,
 }
 
 
@@ -55,12 +53,11 @@ def test_confirmed_and_review_only_products_remain_separate() -> None:
         "blocking_structure_product_keys": [
             "container-apps",
             "data-lake-storage",
-            "event-hubs",
             "sql-edge",
             "storage-files",
         ],
-        "blocking_structure_language_items": 5,
-        "blocking_structure_findings": 6,
+        "blocking_structure_language_items": 4,
+        "blocking_structure_findings": 5,
         "blocking_structure_findings_by_code": (
             EXPECTED_BLOCKING_STRUCTURE_COUNTS
         ),
@@ -78,7 +75,7 @@ def test_confirmed_and_review_only_products_remain_separate() -> None:
     )
 
     blocking_structure = report["blocking_source_structure_findings"]
-    assert len(blocking_structure) == 6
+    assert len(blocking_structure) == 5
     assert {
         (item["product_key"], item["language"])
         for item in blocking_structure

@@ -29,7 +29,7 @@ from src.core.product_catalog import sha256_file
 
 P2_PROFILE_PATH = "data/configs/validation-profiles/v0.4-p2.json"
 P2_PROFILE_SHA256 = (
-    "090565500134e970bd831785b7640d80f23ce49cb130e26858be8fa33d9c234c"
+    "5a6baaea51f4c6fa2a5cb61b50af53c266455fe32475050309a9bef1a08b855a"
 )
 CONTENT_SAMPLING_PROFILE_PATH = (
     "data/configs/content-sampling-profiles/v0.4-p3.json"

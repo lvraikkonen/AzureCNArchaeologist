@@ -26,7 +26,7 @@ from src.core.product_catalog import sha256_file
 
 P1_BASELINE_PATH = "data/baselines/v0.4/planning-baseline.json"
 P1_BASELINE_SHA256 = (
-    "86e2f8836c94a9c0a063ce9a8da7efe445137c4e63d99f7b0cf0d9350b20d3d3"
+    "47e721642df8bdbab16eb62643dcb64aff0578fa8685bd8ab4b8070d1f25f8c8"
 )
 OVERLAY_PATH = (
     "data/baselines/v0.4/p2-product-definition-identity-overlay.json"
@@ -42,10 +42,10 @@ ALLOWED_ITEM_IDS = (
 )
 NEW_DEFINITION_SHA256 = {
     "data/configs/products/pricing/cloud-services.json": (
-        "3ff681615ef5a65b426b4cf9648ff9ddd6ad11d8090adec544ed2754e8bc094b"
+        "51bc6cc2d0e49c047026d63efcaf1d50f1725cc50508ce6f13c3708c3ab09872"
     ),
     "data/configs/products/pricing/service-bus.json": (
-        "28a1cbbff20a82abf675721bb8bf4ba6c4261c9100817d0db6efbb4af4bfbca2"
+        "7dad4a1ba650a9394c6fb099cd3883ef1e4761e920329a706053c53ae48a7989"
     ),
 }
 

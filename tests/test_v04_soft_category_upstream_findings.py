@@ -133,11 +133,11 @@ def test_row_duplicate_table_ids_are_nonblocking_ordered_unique():
         "configuration_entries_surveyed": 325,
         "duplicate_software_region_pairs": 0,
         "duplicate_pair_entries": 0,
-        "row_duplicate_table_id_entries": 37,
-        "row_duplicate_distinct_table_ids": 309,
-        "row_duplicate_extra_occurrences": 320,
+        "row_duplicate_table_id_entries": 32,
+        "row_duplicate_distinct_table_ids": 300,
+        "row_duplicate_extra_occurrences": 311,
     }
-    assert len(findings) == 37
+    assert len(findings) == 32
     assert all(
         finding["finding_code"] == ROW_FINDING_CODE
         and finding["status"] == "nonblocking_redundancy"

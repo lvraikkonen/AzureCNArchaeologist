@@ -28,7 +28,7 @@ from src.core.product_catalog import sha256_file
 P1_PROFILE_PATH = "data/configs/validation-profiles/v0.4.json"
 P1_PROFILE_SCHEMA_PATH = "schemas/validation-profile-1.0.schema.json"
 P1_PROFILE_SHA256 = (
-    "dd66c001235ea9c5f488adbe4e61800ce7bbc7bfaf488cc44d7b3934f5e1191f"
+    "e314a973d7ed9eafd442ed34db1ec47452ad6c364dd092af608ba8cd71c6e602"
 )
 P2_PROFILE_PATH = "data/configs/validation-profiles/v0.4-p2.json"
 P2_PROFILE_SCHEMA_PATH = "schemas/validation-profile-1.1.schema.json"

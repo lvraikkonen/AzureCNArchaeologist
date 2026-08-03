@@ -12,15 +12,14 @@
     ],
     "canonical_sources_surveyed": 368,
     "simple_static_sources_surveyed": 62,
-    "source_inventory_sha256": "c9b0a9ffa1afe627062e1bc3a5c93fa0d6c0b2562f6b78269729af3281ba3d0d",
+    "source_inventory_sha256": "5f974a63918b21fc50b46bfe9e63bc195f432d3ef4b36c829be4640f0a81b710",
     "all_auditor_findings_by_code": {
       "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT": 1,
       "SOURCE_HTML_CONTENT_WITHOUT_EXACT_COMMON_BOUNDARY": 1,
       "SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION": 1,
       "SOURCE_HTML_POST_SELECTOR_SUPPORT_SECTION_UNCLASSIFIED": 1,
       "SOURCE_HTML_PRICING_SECTION_OVERWRAPS_SELECTOR_AND_QA": 11,
-      "SOURCE_HTML_PRICING_TABLE_SECTION_WITHOUT_OWN_HEADING": 1,
-      "SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL": 1
+      "SOURCE_HTML_PRICING_TABLE_SECTION_WITHOUT_OWN_HEADING": 1
     },
     "cross_state_duplicate_ids_are_not_treated_as_page_global_duplicates": true
   },
@@ -218,61 +217,6 @@
         "description": "Move the embedded stylesheet out of the business-content pricing-page-section and into the page stylesheet or an explicit non-business template scope, leaving div.more-detail as an exact common-section boundary.",
         "from_line": 8168,
         "before_line": 8207
-      },
-      "payload_generation_allowed": false
-    },
-    {
-      "status": "confirmed_blocking",
-      "product_key": "event-hubs",
-      "display_name": "Event Hubs",
-      "language": "zh-cn",
-      "source": {
-        "path": "data/prod-html/zh-cn/pricing/event-hubs.html",
-        "sha256": "61c2bf1d6ec0b2d0ad566fc30c2f0eab786c12f163802d51b235595b5fffe97a",
-        "size_bytes": 30552
-      },
-      "finding_code": "SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL",
-      "message": "A formal pricing selector remains open past END: TAB-CONTROL and contains an exact FAQ/SLA section.",
-      "evidence": [
-        {
-          "line": 141,
-          "dom_path": "html > body.zh-cn > div.content:nth-of-type(2) > div.container:nth-of-type(1) > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div.pricing-detail-tab.tab-dropdown.technical-azure-selector:nth-of-type(3)",
-          "description": "Formal pricing selector starts here."
-        },
-        {
-          "line": 465,
-          "dom_path": "html > body.zh-cn > div.content:nth-of-type(2) > div.container:nth-of-type(1) > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div.pricing-detail-tab.tab-dropdown.technical-azure-selector:nth-of-type(3)",
-          "description": "END: TAB-CONTROL occurs while the selector is still open."
-        },
-        {
-          "line": 468,
-          "dom_path": "html > body.zh-cn > div.content:nth-of-type(2) > div.container:nth-of-type(1) > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div.pricing-detail-tab.tab-dropdown.technical-azure-selector:nth-of-type(3) > div.pricing-page-section:nth-of-type(3) > div.more-detail",
-          "description": "Exact div.more-detail FAQ is nested across the expected boundary."
-        },
-        {
-          "line": 699,
-          "dom_path": "html > body.zh-cn > div.content:nth-of-type(2) > div.container:nth-of-type(1) > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div.pricing-detail-tab.tab-dropdown.technical-azure-selector:nth-of-type(3)",
-          "description": "Observed selector closing boundary."
-        }
-      ],
-      "lines": [
-        141,
-        465,
-        468,
-        699
-      ],
-      "safety_checks": [
-        "dom_exact_qa_or_owned_sla",
-        "tab_control_boundary_comment",
-        "raw_balanced_target_element",
-        "standalone_closing_tag_line",
-        "relocation_preserves_content_order"
-      ],
-      "upstream_suggestion": {
-        "action": "relocate_existing_closing_tag",
-        "description": "Move the selector's existing closing </div> before the first exact FAQ/SLA section following END: TAB-CONTROL.",
-        "from_line": 699,
-        "before_line": 467
       },
       "payload_generation_allowed": false
     },
@@ -505,19 +449,17 @@
     "blocking_structure_product_keys": [
       "container-apps",
       "data-lake-storage",
-      "event-hubs",
       "sql-edge",
       "storage-files"
     ],
-    "blocking_structure_language_items": 5,
-    "blocking_structure_findings": 6,
+    "blocking_structure_language_items": 4,
+    "blocking_structure_findings": 5,
     "blocking_structure_findings_by_code": {
       "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT": 1,
       "SOURCE_HTML_CONTENT_WITHOUT_EXACT_COMMON_BOUNDARY": 1,
       "SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION": 1,
       "SOURCE_HTML_POST_SELECTOR_SUPPORT_SECTION_UNCLASSIFIED": 1,
-      "SOURCE_HTML_PRICING_TABLE_SECTION_WITHOUT_OWN_HEADING": 1,
-      "SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL": 1
+      "SOURCE_HTML_PRICING_TABLE_SECTION_WITHOUT_OWN_HEADING": 1
     },
     "needs_review_product_keys": [
       "route-server",

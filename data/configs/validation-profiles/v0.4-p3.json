@@ -6,7 +6,7 @@
     "id": "v0.4-validation-p2",
     "schema_version": "1.1",
     "path": "data/configs/validation-profiles/v0.4-p2.json",
-    "sha256": "090565500134e970bd831785b7640d80f23ce49cb130e26858be8fa33d9c234c"
+    "sha256": "5a6baaea51f4c6fa2a5cb61b50af53c266455fe32475050309a9bef1a08b855a"
   },
   "content_sampling_profile": {
     "id": "v0.4-content-sampling-p3",

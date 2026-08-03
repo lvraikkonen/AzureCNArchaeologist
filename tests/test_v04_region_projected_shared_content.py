@@ -54,8 +54,8 @@ _CATEGORY_PANEL_IDS = (
 )
 _REGION_VALUES = ("north-china3", "east-china2", "north-china2")
 _SOFT_CATEGORY_SHA256 = (
-    "a5b3ccebcbf11b561e0d6c03f72a377"
-    "1235ae568621eba4fc1c8c46bc8667d12"
+    "246ff13a504281d0b0cc23a581d8bd30"
+    "582e6c1c242b57e3f2848e05e0c6d218"
 )
 _BASE_TABLE = "databricks-data-analysis"
 _NORTH_3_TABLE = "databricks-data-analysis-n3"
@@ -63,35 +63,35 @@ _NORTH_3_TABLE = "databricks-data-analysis-n3"
 _DATABRICKS_EVIDENCE: dict[str, dict[str, Any]] = {
     "zh-cn": {
         "source_sha256": (
-            "786de258c5cb2d0e73e77f079b847871"
-            "067227be16f8bee12ef717aaf4dfa380"
+            "cbef235d09d2b8cc530efcc65d44f98e"
+            "31fe258c44b880e9c6f161f85e0022fe"
         ),
         "fragment_count": 2,
         "source_html_sha256": (
-            "4b0632acee99aa03b753a079e20b87df"
-            "d5a3a5b0f08d32d391fbb3bc9317f631"
+            "796abd16ef04f4947fa24b90b756543c"
+            "d6a989b7ee76cb22c7e8246e4dc9d346"
         ),
         "source_table_ids": (_NORTH_3_TABLE, _BASE_TABLE),
         "evidence_sha256": (
-            "3077a472a9cfd2b59e8d207078f7ce66"
-            "8e1345c71f690b7ad15e513ccec10efc"
+            "090c7cb3ff78cf3c2d126c16dd181502"
+            "6fb9586ccf29110897d7bfeed59b5d08"
         ),
         "aggregate_sha256": (
-            "63023b552029a69fecbc6810667870ed6"
-            "92093a5bbcc3ac6cef90d9b759d7662"
+            "be572f6a710f9d27154a8dd17e7412b7"
+            "d5391e41018fc796aac6912af1130f50"
         ),
         "projection_sha256": {
             "north-china3": (
-                "a239b814d5aebf998b2f7ca71a46723"
-                "b7438a63cef55b38b7b10cf3635d1d896"
+                "113932a89025b78bcafb6ae17266b7b4"
+                "219bad244a0c06b93944f1509be0d0a6"
             ),
             "east-china2": (
-                "a980674d92309b5257e603ad7ac6d84"
-                "d4059f64aa992d60043dc3f8e197951dc"
+                "6920fb85d3bfd4bd3293d0c2644b625"
+                "6f8c5223795367ad6740509049606dc77"
             ),
             "north-china2": (
-                "a980674d92309b5257e603ad7ac6d84"
-                "d4059f64aa992d60043dc3f8e197951dc"
+                "6920fb85d3bfd4bd3293d0c2644b625"
+                "6f8c5223795367ad6740509049606dc77"
             ),
         },
         "wire_sha256": {
@@ -111,35 +111,35 @@ _DATABRICKS_EVIDENCE: dict[str, dict[str, Any]] = {
     },
     "en-us": {
         "source_sha256": (
-            "118295568dcbd2551e23a492b4d94929"
-            "a84b72cd95716601d710444c8dcbb7a2"
+            "f893b335f25c53f70209f37b8f141d91"
+            "6aff76af0c86e55742e667b1be308e2b"
         ),
         "fragment_count": 6,
         "source_html_sha256": (
-            "2a43c80085fc1c94cf2851247e901144"
-            "be36c11c9bb7c4dff2aaf77fa0554b08"
+            "3e969e5ebaf202d30b81d152fb308445"
+            "6087786ed7a1a7064f5b88ac80d52e1b"
         ),
         "source_table_ids": (_BASE_TABLE, _NORTH_3_TABLE),
         "evidence_sha256": (
-            "16a8fe8521c3c0d96249153db5624352"
-            "8ee681d8b3fe4c066898b17464c7c447"
+            "6a07c85cda94db90eaa5b12fe82da8ca"
+            "4e415f07cb8eb194a4bcd975d46d7b93"
         ),
         "aggregate_sha256": (
-            "f289093344c04873ea87e6441708c394"
-            "2c946d7535a5888d5e183a33e6112e26"
+            "9cef048d0434bf8f7c96de0a7b4979e7"
+            "d080623e70f57efa1eb118c26145ddf3"
         ),
         "projection_sha256": {
             "north-china3": (
-                "67a2560d20d53e0ecbf872fb3e61a227"
-                "412f014950477e2cfdbe82682a4bff48"
+                "817bfba2e3cb984eef7ba17e51417247"
+                "c13103f568a5ce2f883f79273652edea"
             ),
             "east-china2": (
-                "71097346ffa00d8740ac661cea62c6816"
-                "05d8be633f734cca76f8c1db55a09a3"
+                "893fc5bfabd561c13f783407a6f6ebeb"
+                "d1e29717b0409c0910c874610df17411"
             ),
             "north-china2": (
-                "71097346ffa00d8740ac661cea62c6816"
-                "05d8be633f734cca76f8c1db55a09a3"
+                "893fc5bfabd561c13f783407a6f6ebeb"
+                "d1e29717b0409c0910c874610df17411"
             ),
         },
         "wire_sha256": {
@@ -160,9 +160,9 @@ _DATABRICKS_EVIDENCE: dict[str, dict[str, Any]] = {
 }
 
 _CONFIG_ENTRY_INDEX = {
-    "north-china3": 259,
-    "east-china2": 258,
-    "north-china2": 257,
+    "north-china3": 256,
+    "east-china2": 255,
+    "north-china2": 254,
 }
 _CONFIG_RULE_TABLE_IDS = {
     "north-china3": (_BASE_TABLE,),
@@ -368,9 +368,8 @@ def test_databricks_bilingual_machine_scope_ignores_localized_html_identity(
     )
 
 
-def test_persisted_validation_replays_databricks_shared_evidence(
+def test_current_databricks_duplicate_table_id_blocks_payload(
     tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     coordinator = ExtractionCoordinator(
         str(tmp_path),
@@ -381,103 +380,15 @@ def test_persisted_validation_replays_databricks_shared_evidence(
         "zh-cn",
         strategy="complex",
     )
-    assert extracted.execution_succeeded
-    assert extracted.sidecar["status"]["validation"] == "not_run"
-    frozen_summary = extracted.sidecar["strategy"][
-        "region_projected_shared_content_evidence"
-    ]
-    assert frozen_summary == {
-        "schema_version": "1.0",
-        "projection_algorithms": [PROJECTION_ALGORITHM],
-        "applicability_configs": [
-            {
-                "path": "data/configs/soft-category.json",
-                "sha256": _SOFT_CATEGORY_SHA256,
-            }
-        ],
-        "evidence_sha256s": [
-            _DATABRICKS_EVIDENCE["zh-cn"]["evidence_sha256"]
-        ],
-        "aggregate_sha256": _DATABRICKS_EVIDENCE["zh-cn"][
-            "aggregate_sha256"
-        ],
-    }
-    # The sidecar freezes identities only; source/config replay remains the
-    # authority and no HTML body can be supplied by this diagnostic object.
-    assert "<" not in json.dumps(frozen_summary, ensure_ascii=False)
-
-    replayed_summaries: list[dict[str, Any] | None] = []
-    original_resolve = coordinator.source_reachability.resolve
-
-    def recording_resolve(canonical_input: Any) -> SourceReachability:
-        replayed = original_resolve(canonical_input)
-        replayed_summaries.append(
-            replayed.region_projected_shared_content_summary
-        )
-        return replayed
-
-    monkeypatch.setattr(
-        coordinator.source_reachability,
-        "resolve",
-        recording_resolve,
+    assert not extracted.execution_succeeded
+    assert extracted.exit_code == 1
+    assert extracted.payload is None
+    assert extracted.payload_path is None
+    assert extracted.sidecar["payload"] is None
+    assert extracted.sidecar["error"]["code"] == (
+        "soft_category_duplicate_source_table_id"
     )
-
-    validated = coordinator.validate_persisted_payload(extracted)
-    assert validated.succeeded
-    assert replayed_summaries == [frozen_summary]
-    valid_sidecar = copy.deepcopy(validated.sidecar)
-
-    removed = copy.deepcopy(valid_sidecar)
-    removed["strategy"].pop(
-        "region_projected_shared_content_evidence"
-    )
-    extracted.sidecar_path.write_text(
-        json.dumps(removed, ensure_ascii=False),
-        encoding="utf-8",
-    )
-    removed_result = coordinator.validate_persisted_payload(
-        "databricks",
-        "zh-cn",
-        payload_path=extracted.payload_path,
-        sidecar_path=extracted.sidecar_path,
-    )
-    assert removed_result.exit_code == 2
-    assert removed_result.sidecar["status"]["validation"] == "failed"
-    assert {
-        issue["code"]
-        for issue in removed_result.sidecar["validation"]["errors"]
-    } == {
-        "region_projected_shared_content_evidence_replay_mismatch"
-    }
-    assert replayed_summaries[-1] == frozen_summary
-
-    tampered = copy.deepcopy(valid_sidecar)
-    tampered["strategy"][
-        "region_projected_shared_content_evidence"
-    ]["aggregate_sha256"] = "0" * 64
-    extracted.sidecar_path.write_text(
-        json.dumps(tampered, ensure_ascii=False),
-        encoding="utf-8",
-    )
-    tampered_result = coordinator.validate_persisted_payload(
-        "databricks",
-        "zh-cn",
-        payload_path=extracted.payload_path,
-        sidecar_path=extracted.sidecar_path,
-    )
-    assert tampered_result.exit_code == 2
-    assert tampered_result.sidecar["status"]["validation"] == "failed"
-    assert {
-        issue["code"]
-        for issue in tampered_result.sidecar["validation"]["errors"]
-    } == {
-        "region_projected_shared_content_evidence_replay_mismatch"
-    }
-    assert replayed_summaries == [
-        frozen_summary,
-        frozen_summary,
-        frozen_summary,
-    ]
+    assert extracted.sidecar["error"]["stage"] == "source_reachability"
 
 
 _SYNTHETIC_SOURCE_HTML = """

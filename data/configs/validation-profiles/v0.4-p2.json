@@ -6,7 +6,7 @@
     "id": "v0.4-validation-p1",
     "schema_version": "1.0",
     "path": "data/configs/validation-profiles/v0.4.json",
-    "sha256": "dd66c001235ea9c5f488adbe4e61800ce7bbc7bfaf488cc44d7b3934f5e1191f"
+    "sha256": "e314a973d7ed9eafd442ed34db1ec47452ad6c364dd092af608ba8cd71c6e602"
   },
   "contracts": {
     "product_definition": {
