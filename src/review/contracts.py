@@ -31,6 +31,26 @@ REJECTION_REASONS = (
 )
 INSPECTION_SCOPES = ("interactive_state", "page_global", "full_content")
 INSPECTION_MODES = ("interactive", "full")
+FINDING_CLASSIFICATIONS = ("advisory", "approval_blocking", "unknown")
+LEGACY_P3_PROFILE_IDENTITY = {
+    "id": "v0.4-validation-p3",
+    "schema_version": "1.2",
+    "path": "data/configs/validation-profiles/v0.4-p3.json",
+    "sha256": "fbbfa8bd937779748e86f48f738af5c561f164bf2e10615efe2515d45ba3ae1b",
+}
+SUCCESSOR_P3_PROFILE_IDENTITY = {
+    "id": "v0.4-validation-p3-successor",
+    "schema_version": "1.3",
+    "path": "data/configs/validation-profiles/v0.4-p3-successor.json",
+    "sha256": "e45ad2ba22c1a9ee91d735f18177f3e0824b01806793573112e8f15f26f94d82",
+}
+FINDING_CODE_POLICY_IDENTITY = {
+    "id": "v0.4-finding-code-policy-p4",
+    "schema_version": "1.0",
+    "path": "data/configs/finding-code-policies/v0.4-p4.json",
+    "sha256": "bed3c18a753a7e3d7a3c00ec6d690a953e3794e1f43472508290637f9266a06b",
+}
+LEGACY_FINDING_POLICY_ID = "legacy-all-source-findings-block-v1"
 
 
 class ReviewContractError(ValueError):
@@ -316,6 +336,148 @@ def source_approval_preconditions(
 
 
 derive_source_approval_preconditions = source_approval_preconditions
+
+
+def resolve_finding_policy(
+    *,
+    validation_profile_identity: Mapping[str, Any],
+    finding_code_policy_identity: Mapping[str, Any] | None,
+) -> str:
+    """Resolve the only legal profile/policy combinations.
+
+    Legacy P3 2.0 has no policy artifact and keeps the blanket blocker rule.
+    Successor P3 2.1 must bind the exact frozen policy identity.
+    """
+
+    profile = dict(validation_profile_identity)
+    policy = (
+        None
+        if finding_code_policy_identity is None
+        else dict(finding_code_policy_identity)
+    )
+    if profile == LEGACY_P3_PROFILE_IDENTITY and policy is None:
+        return LEGACY_FINDING_POLICY_ID
+    if profile == SUCCESSOR_P3_PROFILE_IDENTITY and policy == FINDING_CODE_POLICY_IDENTITY:
+        return str(FINDING_CODE_POLICY_IDENTITY["id"])
+    _contract_error(
+        "finding_policy_identity_invalid",
+        "Validation Profile and Finding Code Policy identity are not a legal pair",
+    )
+
+
+def _policy_classifications(policy: Mapping[str, Any]) -> Mapping[str, Any]:
+    value = _closed_mapping(
+        policy,
+        required=frozenset({
+            "schema_version",
+            "policy_id",
+            "status",
+            "unknown_code_disposition",
+            "classifications",
+        }),
+        context="Finding Code Policy",
+    )
+    if value["schema_version"] != "1.0" or value["policy_id"] != "v0.4-finding-code-policy-p4":
+        _contract_error(
+            "invalid_finding_code_policy",
+            "Finding Code Policy identity is not supported",
+        )
+    if value["status"] != "frozen" or value["unknown_code_disposition"] != "fail_closed":
+        _contract_error(
+            "invalid_finding_code_policy",
+            "Finding Code Policy must be frozen and fail closed for unknown codes",
+        )
+    classifications = value["classifications"]
+    if not isinstance(classifications, Mapping):
+        _contract_error(
+            "invalid_finding_code_policy",
+            "Finding Code Policy classifications must be an object",
+        )
+    for code, classification in classifications.items():
+        if not isinstance(code, str) or not code:
+            _contract_error(
+                "invalid_finding_code_policy",
+                "Finding Code Policy codes must be non-empty strings",
+            )
+        _enum(classification, FINDING_CLASSIFICATIONS[:2], field=f"classifications.{code}")
+    return classifications
+
+
+def classify_source_quality_findings(
+    source_quality_findings: Sequence[Any],
+    finding_code_policy: Mapping[str, Any],
+) -> list[dict[str, str]]:
+    """Attach the frozen policy classification to every Source Quality Finding."""
+
+    if isinstance(source_quality_findings, (str, bytes, Mapping)) or not isinstance(
+        source_quality_findings, Sequence
+    ):
+        _contract_error(
+            "invalid_source_findings",
+            "source_quality_findings must be an ordered array",
+        )
+    classifications = _policy_classifications(finding_code_policy)
+    result: list[dict[str, str]] = []
+    for index, finding in enumerate(source_quality_findings):
+        value = _closed_mapping(
+            finding,
+            required=frozenset({
+                "code",
+                "message",
+                "path",
+                "severity",
+                "disposition",
+            }),
+            optional=frozenset({"classification"}),
+            context=f"source_quality_findings[{index}]",
+        )
+        code = value["code"]
+        if not isinstance(code, str) or not code:
+            _contract_error(
+                "invalid_source_finding",
+                f"source_quality_findings[{index}].code is required",
+            )
+        classification = str(classifications.get(code, "unknown"))
+        result.append({
+            "code": code,
+            "message": str(value["message"]),
+            "path": str(value["path"]),
+            "severity": str(value["severity"]),
+            "disposition": str(value["disposition"]),
+            "classification": classification,
+        })
+    return result
+
+
+def evaluate_source_findings(
+    source_quality_findings: Sequence[Any],
+    finding_code_policy: Mapping[str, Any],
+) -> PreconditionResult:
+    """Derive source approval blockers from the frozen Finding Code Policy."""
+
+    blockers: list[ApprovalBlocker] = []
+    for index, finding in enumerate(
+        classify_source_quality_findings(
+            source_quality_findings,
+            finding_code_policy,
+        )
+    ):
+        code = finding["code"]
+        classification = finding["classification"]
+        path = f"$.source_quality_findings[{index}]"
+        if classification == "approval_blocking":
+            blockers.append(ApprovalBlocker(
+                code="approval_blocking_source_quality_finding",
+                message=f"Approval-blocking Source Quality Finding: {code}",
+                path=path,
+            ))
+        elif classification == "unknown":
+            blockers.append(ApprovalBlocker(
+                code="unknown_source_quality_finding_code",
+                message=f"Unknown Source Quality Finding code: {code}",
+                path=path,
+            ))
+    return PreconditionResult(not blockers, tuple(blockers))
 
 
 @dataclass(frozen=True)
@@ -821,9 +983,13 @@ __all__ = [
     "ApprovalEligibility",
     "EVIDENCE_BINDINGS",
     "EvidenceBindings",
+    "FINDING_CLASSIFICATIONS",
+    "FINDING_CODE_POLICY_IDENTITY",
     "INSPECTION_MODES",
     "INSPECTION_SCOPES",
     "InspectedState",
+    "LEGACY_FINDING_POLICY_ID",
+    "LEGACY_P3_PROFILE_IDENTITY",
     "PreconditionResult",
     "REJECTION_REASONS",
     "REVIEW_STATUSES",
@@ -831,17 +997,21 @@ __all__ = [
     "ReviewContractError",
     "ReviewLifecycleState",
     "ReviewTransitionResult",
+    "SUCCESSOR_P3_PROFILE_IDENTITY",
     "apply_stale_review_state",
     "apply_stale_state",
     "apply_stale_batch_item",
+    "classify_source_quality_findings",
     "derive_approval_eligibility",
     "derive_evidence_binding",
     "derive_final_approval_eligibility",
     "derive_machine_approval_preconditions",
     "derive_review_decision_id",
     "derive_source_approval_preconditions",
+    "evaluate_source_findings",
     "machine_approval_preconditions",
     "mark_review_state_stale",
+    "resolve_finding_policy",
     "source_approval_preconditions",
     "validate_inspected_states",
     "validate_review_transition",

@@ -36,6 +36,9 @@ from src.release.contracts import (
 )
 from src.review.contracts import (
     ReviewContractError,
+    evaluate_source_findings,
+    resolve_finding_policy,
+    classify_source_quality_findings,
     machine_approval_preconditions,
     source_approval_preconditions,
 )
@@ -404,6 +407,7 @@ class StateStore:
         "validation": {
             "1.0": "pipeline-validation-1.0.schema.json",
             "2.0": "pipeline-validation-2.0.schema.json",
+            "2.1": "pipeline-validation-2.1.schema.json",
         },
         "review": {
             "1.0": "pipeline-review-queue-1.0.schema.json",
@@ -459,13 +463,22 @@ class StateStore:
                 "legacy Manifest 2.0 documents remain read-only compatible"
             )
         self._validate(frozen, "input")
+        validation_context = frozen.get("validation_context")
         active_validation_context = self._validation_context.freeze()[
             "validation_context"
         ]
-        if frozen.get("validation_context") != active_validation_context:
-            raise ImmutableManifestError(
-                "New pipeline runs must use the active Validation Context"
-            )
+        if validation_context != active_validation_context:
+            try:
+                successor_validation_context = self._validation_context.freeze(
+                    validation_profile_id="v0.4-validation-p3-successor"
+                )["validation_context"]
+            except TypeError:
+                successor_validation_context = None
+            if validation_context != successor_validation_context:
+                raise ImmutableManifestError(
+                    "New pipeline runs must use the active Validation Context "
+                    "or the explicit Slice 5A successor context"
+                )
         batch_id = frozen["batch_id"]
         directory = self.run_dir(batch_id)
         if directory.exists():
@@ -745,9 +758,12 @@ class StateStore:
             profile_id = manifest["validation_context"]["validation_profile"][
                 "id"
             ]
-            expected_version = (
-                "2.0" if profile_id == "v0.4-validation-p3" else "1.0"
-            )
+            if profile_id == "v0.4-validation-p3-successor":
+                expected_version = "2.1"
+            elif profile_id == "v0.4-validation-p3":
+                expected_version = "2.0"
+            else:
+                expected_version = "1.0"
             if value.get("schema_version") != expected_version:
                 raise StateStoreError(
                     "Validation projection schema_version does not match the "
@@ -759,7 +775,12 @@ class StateStore:
                 "id"
             ]
             expected_version = (
-                "2.0" if profile_id == "v0.4-validation-p3" else "1.0"
+                "2.0"
+                if profile_id in (
+                    "v0.4-validation-p3",
+                    "v0.4-validation-p3-successor",
+                )
+                else "1.0"
             )
             if value.get("schema_version") != expected_version:
                 raise StateStoreError(
@@ -784,7 +805,7 @@ class StateStore:
         if value.get("batch_id") != batch_id:
             raise ManifestValidationError("Projection batch_id does not match its run directory")
         self._validate(value, kind)
-        if kind == "validation" and value.get("schema_version") == "2.0":
+        if kind == "validation" and value.get("schema_version") in ("2.0", "2.1"):
             self._write_json_once(path, value, kind)
             return path
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -1096,7 +1117,7 @@ class StateStore:
                     bindings["content_sampling_profile"],
                 ),
             ))
-        elif kind == "validation" and value.get("schema_version") == "2.0":
+        elif kind == "validation" and value.get("schema_version") in ("2.0", "2.1"):
             bindings = value["evidence"]["bindings"]
             identities.extend((
                 ("validation_profile", bindings["validation_profile"]),
@@ -1105,6 +1126,11 @@ class StateStore:
                     bindings["content_sampling_profile"],
                 ),
             ))
+            if value.get("schema_version") == "2.1":
+                identities.append((
+                    "finding_code_policy",
+                    bindings["finding_code_policy_identity"],
+                ))
         elif kind == "release_manifest":
             identities.extend((
                 ("validation_profile", value["validation_profile"]),
@@ -1118,6 +1144,17 @@ class StateStore:
                 self._validation_context.document_for_identity(key, identity)
             except ValidationContextError as error:
                 raise ManifestValidationError(str(error)) from error
+        if kind == "validation" and value.get("schema_version") == "2.1":
+            bindings = value["evidence"]["bindings"]
+            profile_identity = bindings["validation_profile"]
+            expected_policy = self._validation_context.finding_code_policy_identity_for(
+                profile_identity
+            )
+            if expected_policy != bindings["finding_code_policy_identity"]:
+                raise ManifestValidationError(
+                    "Validation 2.1 Finding Code Policy identity does not match "
+                    "the frozen successor profile"
+                )
 
     def _verify_frozen_context(
         self, value: Mapping[str, Any], kind: str
@@ -1210,8 +1247,7 @@ class StateStore:
             )
         return self._batch_item_validators[cache_key]
 
-    @staticmethod
-    def _validate_semantics(value: Mapping[str, Any], kind: str) -> None:
+    def _validate_semantics(self, value: Mapping[str, Any], kind: str) -> None:
         if kind == "input":
             items = value["items"]
             item_ids = [item["item_id"] for item in items]
@@ -1578,49 +1614,88 @@ class StateStore:
                         raise ManifestValidationError(
                             "Full Review Queue items must not expose interactive states"
                         )
-        elif kind == "validation" and value.get("schema_version") == "2.0":
+        elif kind == "validation" and value.get("schema_version") in ("2.0", "2.1"):
+            version = str(value.get("schema_version"))
             if value["status"] != value["evidence"]["verdict"]:
                 raise ManifestValidationError(
-                    "Validation 2.0 envelope status differs from its evidence verdict"
+                    f"Validation {version} envelope status differs from its evidence verdict"
                 )
             expected = validation_evidence_sha256(value)
             if value["evidence_sha256"] != expected:
                 raise ManifestValidationError(
-                    "Validation 2.0 evidence identity does not match its canonical body"
+                    f"Validation {version} evidence identity does not match its canonical body"
                 )
             coverage = value["evidence"]["content_validation"]["coverage"]
             _validate_coverage_counts(
                 coverage,
-                context="Validation 2.0 content coverage",
+                context=f"Validation {version} content coverage",
                 selected_state_ids=coverage["selected_state_ids"],
             )
             _validate_structure_counts(
                 value["evidence"]["structure_validation"],
                 coverage_universe_count=coverage["universe_count"],
                 total_field="total_count",
-                context="Validation 2.0 structure validation",
+                context=f"Validation {version} structure validation",
             )
             try:
                 expected_machine = machine_approval_preconditions(
                     "succeeded",
                     value["status"],
                 ).to_dict()
-                expected_source = source_approval_preconditions(
-                    value["evidence"]["source_quality_findings"]
-                ).to_dict()
+                source_findings = value["evidence"]["source_quality_findings"]
+                bindings = value["evidence"]["bindings"]
+                if version == "2.1":
+                    resolve_finding_policy(
+                        validation_profile_identity=bindings["validation_profile"],
+                        finding_code_policy_identity=bindings[
+                            "finding_code_policy_identity"
+                        ],
+                    )
+                    finding_policy = self._validation_context.finding_code_policy_for(
+                        bindings["validation_profile"]
+                    )
+                    if finding_policy is None:
+                        raise ManifestValidationError(
+                            "Validation 2.1 has no frozen Finding Code Policy"
+                        )
+                    expected_findings = classify_source_quality_findings(
+                        source_findings,
+                        finding_policy,
+                    )
+                    if source_findings != expected_findings:
+                        raise ManifestValidationError(
+                            "Validation 2.1 Source Quality Finding classifications "
+                            "are not canonical"
+                        )
+                    expected_source = evaluate_source_findings(
+                        source_findings,
+                        finding_policy,
+                    ).to_dict()
+                else:
+                    resolve_finding_policy(
+                        validation_profile_identity=bindings["validation_profile"],
+                        finding_code_policy_identity=None,
+                    )
+                    expected_source = source_approval_preconditions(
+                        source_findings
+                    ).to_dict()
             except ReviewContractError as error:
                 raise ManifestValidationError(
-                    f"Invalid Validation 2.0 approval preconditions: {error}"
+                    f"Invalid Validation {version} approval preconditions: {error}"
                 ) from error
             preconditions = value["evidence"]["approval_preconditions"]
             if preconditions["machine"] != expected_machine:
                 raise ManifestValidationError(
-                    "Validation 2.0 machine approval preconditions are not canonical"
+                    f"Validation {version} machine approval preconditions are not canonical"
                 )
             if preconditions["source"] != expected_source:
+                if version == "2.0":
+                    raise ManifestValidationError(
+                        "Validation 2.0 Source approval preconditions do not match "
+                        "all unresolved Source Quality Findings"
+                    )
                 raise ManifestValidationError(
-                    "Validation 2.0 Source approval preconditions do not match "
-                    "all unresolved Source Quality Findings"
+                    "Validation 2.1 Source approval preconditions are not canonical"
                 )
         elif kind == "release_manifest":
             try:

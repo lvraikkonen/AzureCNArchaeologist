@@ -52,6 +52,8 @@ from src.core.validation_context import (
 )
 from src.pipeline.models import BatchItem
 from src.review.contracts import (
+    classify_source_quality_findings,
+    evaluate_source_findings,
     machine_approval_preconditions,
     source_approval_preconditions,
 )
@@ -139,14 +141,17 @@ def _artifact(path: str, sha256: str) -> dict[str, str]:
 def _profile_identity(
     registry: ValidationContextRegistry,
     manifest: Mapping[str, Any],
-) -> tuple[dict[str, Any], dict[str, Any]]:
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any] | None]:
     validation_profile = dict(manifest["validation_context"]["validation_profile"])
     sampling_identity = registry.content_sampling_profile_identity_for(
         validation_profile
     )
     if sampling_identity is None:
         raise ValueError("P3 sampled validation requires a content sampling profile")
-    return validation_profile, sampling_identity
+    finding_policy_identity = registry.finding_code_policy_identity_for(
+        validation_profile
+    )
+    return validation_profile, sampling_identity, finding_policy_identity
 
 
 class SampledValidationRuntime:
@@ -174,9 +179,14 @@ class SampledValidationRuntime:
         manifest: Mapping[str, Any],
         manifest_item: Mapping[str, Any],
     ) -> PreparedSampledValidation:
-        validation_profile, sampling_profile = _profile_identity(
+        validation_profile, sampling_profile, finding_policy_identity = _profile_identity(
             self.validation_context,
             manifest,
+        )
+        finding_policy = (
+            self.validation_context.finding_code_policy_for(validation_profile)
+            if finding_policy_identity is not None
+            else None
         )
         sampling_plan: dict[str, Any] | None = None
         sampling_plan_path: str | None = None
@@ -197,6 +207,14 @@ class SampledValidationRuntime:
                 item.language,
                 version_key=item.version_key,
                 expected_sha256=item.normalized_sha256,
+            )
+            source_findings.extend(
+                {
+                    "code": finding.code,
+                    "path": f"$.input_assurance.source_findings[{index}]",
+                    "message": finding.message,
+                }
+                for index, finding in enumerate(canonical_input.source_findings)
             )
             parseability = self.parseability_validator.validate(canonical_input)
             parseability_contract = (
@@ -346,7 +364,7 @@ class SampledValidationRuntime:
             if sampling_plan is not None
             else None
         )
-        bindings = {
+        sampled_bindings = {
             "source": _artifact(str(item.source_path), str(item.source_sha256)),
             "normalized_input": _artifact(
                 item.normalized_path,
@@ -358,6 +376,11 @@ class SampledValidationRuntime:
             "content_sampling_profile": sampling_profile,
             "sampling_plan": plan_binding,
         }
+        validation_bindings = copy.deepcopy(sampled_bindings)
+        if finding_policy_identity is not None:
+            validation_bindings["finding_code_policy_identity"] = (
+                finding_policy_identity
+            )
 
         coverage = (
             _coverage_from_plan(sampling_plan)
@@ -382,7 +405,7 @@ class SampledValidationRuntime:
             "evidence_sha256": "0" * 64,
             "item_id": item.item_id,
             "mode": coverage["mode"],
-            "bindings": bindings,
+            "bindings": sampled_bindings,
             "coverage": coverage,
             "structure_validation": {
                 "status": structure_status,
@@ -402,20 +425,34 @@ class SampledValidationRuntime:
         evidence_path = manifest_item["artifacts"]["sampled_content_evidence"]["path"]
         evidence_artifact_sha256 = artifact_json_sha256(evidence)
         source_quality_findings = self._source_quality_findings(source_findings)
+        source_preconditions = source_approval_preconditions(
+            source_quality_findings
+        )
+        validation_schema_version = "2.0"
+        if finding_policy is not None:
+            source_quality_findings = classify_source_quality_findings(
+                source_quality_findings,
+                finding_policy,
+            )
+            source_preconditions = evaluate_source_findings(
+                source_quality_findings,
+                finding_policy,
+            )
+            validation_schema_version = "2.1"
         validation_status = (
             "failed"
             if structure_status == "failed" or content_status == "failed"
             else "passed"
         )
         validation = {
-            "schema_version": "2.0",
+            "schema_version": validation_schema_version,
             "batch_id": batch_id,
             "item_id": item.item_id,
             "status": validation_status,
             "evidence_sha256": "0" * 64,
             "evidence": {
                 "verdict": validation_status,
-                "bindings": bindings,
+                "bindings": validation_bindings,
                 "structure_validation": {
                     "status": structure_status,
                     "checked_count": (
@@ -439,9 +476,7 @@ class SampledValidationRuntime:
                         "succeeded",
                         validation_status,
                     ).to_dict(),
-                    "source": source_approval_preconditions(
-                        source_quality_findings
-                    ).to_dict(),
+                    "source": source_preconditions.to_dict(),
                 },
                 "errors": evidence_errors,
                 "warnings": warnings,

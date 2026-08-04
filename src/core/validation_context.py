@@ -73,6 +73,18 @@ P3_VALIDATION_PROFILE_SPEC = _ArtifactSpec(
     "data/configs/validation-profiles/v0.4-p3.json",
     "schemas/validation-profile-1.2.schema.json",
 )
+P3_SUCCESSOR_VALIDATION_PROFILE_SPEC = _ArtifactSpec(
+    "validation_profile",
+    "profile_id",
+    "data/configs/validation-profiles/v0.4-p3-successor.json",
+    "schemas/validation-profile-1.3.schema.json",
+)
+FINDING_CODE_POLICY_SPEC = _ArtifactSpec(
+    "finding_code_policy",
+    "policy_id",
+    "data/configs/finding-code-policies/v0.4-p4.json",
+    "schemas/finding-code-policy-1.0.schema.json",
+)
 ACTIVE_VALIDATION_PROFILE_SPEC = P3_VALIDATION_PROFILE_SPEC
 NON_PROFILE_CONTEXT_ARTIFACT_SPECS = (
     _ArtifactSpec(
@@ -104,12 +116,15 @@ ARTIFACT_SPECS = (
     P1_VALIDATION_PROFILE_SPEC,
     P2_VALIDATION_PROFILE_SPEC,
     P3_VALIDATION_PROFILE_SPEC,
+    P3_SUCCESSOR_VALIDATION_PROFILE_SPEC,
     CONTENT_SAMPLING_PROFILE_SPEC,
+    FINDING_CODE_POLICY_SPEC,
     *NON_PROFILE_CONTEXT_ARTIFACT_SPECS,
 )
 SPECS_BY_KEY = {spec.key: spec for spec in CONTEXT_ARTIFACT_SPECS}
 SPECS_BY_KEY["planning_baseline"] = P2_PLANNING_BASELINE_SPEC
 SPECS_BY_KEY["content_sampling_profile"] = CONTENT_SAMPLING_PROFILE_SPEC
+SPECS_BY_KEY["finding_code_policy"] = FINDING_CODE_POLICY_SPEC
 
 P1_PLANNING_IDENTITY = (
     "v0.4-from-v0.3",
@@ -136,10 +151,20 @@ P3_VALIDATION_PROFILE_IDENTITY = (
     "1.2",
     P3_VALIDATION_PROFILE_SPEC.relative_path,
 )
+P3_SUCCESSOR_VALIDATION_PROFILE_IDENTITY = (
+    "v0.4-validation-p3-successor",
+    "1.3",
+    P3_SUCCESSOR_VALIDATION_PROFILE_SPEC.relative_path,
+)
 CONTENT_SAMPLING_PROFILE_IDENTITY = (
     "v0.4-content-sampling-p3",
     "1.0",
     CONTENT_SAMPLING_PROFILE_SPEC.relative_path,
+)
+FINDING_CODE_POLICY_IDENTITY = (
+    "v0.4-finding-code-policy-p4",
+    "1.0",
+    FINDING_CODE_POLICY_SPEC.relative_path,
 )
 P3_VALIDATION_CONTRACT_SPECS = (
     _ContractArtifactSpec(
@@ -188,6 +213,23 @@ P3_VALIDATION_CONTRACT_SPECS = (
         "schemas/sampled-content-evidence-1.0.schema.json",
     ),
 )
+P3_SUCCESSOR_VALIDATION_CONTRACT_SPECS = (
+    *tuple(
+        _ContractArtifactSpec(
+            specification.name,
+            "2.1" if specification.name == "pipeline_validation" else specification.schema_version,
+            "schemas/pipeline-validation-2.1.schema.json"
+            if specification.name == "pipeline_validation"
+            else specification.relative_path,
+        )
+        for specification in P3_VALIDATION_CONTRACT_SPECS
+    ),
+    _ContractArtifactSpec(
+        "finding_code_policy",
+        "1.0",
+        "schemas/finding-code-policy-1.0.schema.json",
+    ),
+)
 P2_AMENDED_ITEM_IDS = (
     "en-us/cloud-services",
     "en-us/service-bus",
@@ -232,8 +274,11 @@ class ValidationContextRegistry:
             spec.key: self._identity(spec)
             for spec in context_specs
         }
-        if validation_profile_spec == P3_VALIDATION_PROFILE_SPEC:
-            self._verify_p3_sampling_profile(
+        if validation_profile_spec in (
+            P3_VALIDATION_PROFILE_SPEC,
+            P3_SUCCESSOR_VALIDATION_PROFILE_SPEC,
+        ):
+            self._verify_p3_family_profile(
                 self._validated_document(validation_profile_spec)[0]
             )
         return {
@@ -279,8 +324,11 @@ class ValidationContextRegistry:
                 raise ValidationContextError(f"Frozen identity is invalid: {key}")
             context_spec = self._context_spec_for_identity(key, identity)
             document = self._verify_identity(context_spec, identity)
-            if context_spec == P3_VALIDATION_PROFILE_SPEC:
-                self._verify_p3_sampling_profile(document)
+            if context_spec in (
+                P3_VALIDATION_PROFILE_SPEC,
+                P3_SUCCESSOR_VALIDATION_PROFILE_SPEC,
+            ):
+                self._verify_p3_family_profile(document)
         if dict(planning.get("baseline_accounting", {})) != baseline["accounting"]:
             raise ValidationContextError("Frozen baseline accounting does not match its artifact")
 
@@ -303,8 +351,11 @@ class ValidationContextRegistry:
 
         spec = self._context_spec_for_identity(key, identity)
         value = self._verify_identity(spec, identity)
-        if spec == P3_VALIDATION_PROFILE_SPEC:
-            self._verify_p3_sampling_profile(value)
+        if spec in (
+            P3_VALIDATION_PROFILE_SPEC,
+            P3_SUCCESSOR_VALIDATION_PROFILE_SPEC,
+        ):
+            self._verify_p3_family_profile(value)
         return copy.deepcopy(value)
 
     def content_sampling_profile_for(
@@ -317,9 +368,12 @@ class ValidationContextRegistry:
             "validation_profile", validation_profile_identity
         )
         profile = self._verify_identity(spec, validation_profile_identity)
-        if spec != P3_VALIDATION_PROFILE_SPEC:
+        if spec not in (
+            P3_VALIDATION_PROFILE_SPEC,
+            P3_SUCCESSOR_VALIDATION_PROFILE_SPEC,
+        ):
             return None
-        return copy.deepcopy(self._verify_p3_sampling_profile(profile))
+        return copy.deepcopy(self._verify_p3_family_profile(profile))
 
     def content_sampling_profile_identity_for(
         self,
@@ -335,6 +389,38 @@ class ValidationContextRegistry:
             "schema_version": str(profile["schema_version"]),
             "path": CONTENT_SAMPLING_PROFILE_SPEC.relative_path,
             "sha256": str(self._identity(CONTENT_SAMPLING_PROFILE_SPEC)["sha256"]),
+        }
+
+    def finding_code_policy_for(
+        self,
+        validation_profile_identity: Mapping[str, Any],
+    ) -> dict[str, Any] | None:
+        """Return the successor profile's frozen Finding Code Policy."""
+
+        spec = self._context_spec_for_identity(
+            "validation_profile", validation_profile_identity
+        )
+        profile = self._verify_identity(spec, validation_profile_identity)
+        if spec != P3_SUCCESSOR_VALIDATION_PROFILE_SPEC:
+            return None
+        self._verify_p3_family_profile(profile)
+        identity = profile["finding_code_policy_identity"]
+        return copy.deepcopy(self._verify_identity(FINDING_CODE_POLICY_SPEC, identity))
+
+    def finding_code_policy_identity_for(
+        self,
+        validation_profile_identity: Mapping[str, Any],
+    ) -> dict[str, str] | None:
+        """Return the frozen Finding Code Policy identity for successor P3."""
+
+        policy = self.finding_code_policy_for(validation_profile_identity)
+        if policy is None:
+            return None
+        return {
+            "id": str(policy["policy_id"]),
+            "schema_version": str(policy["schema_version"]),
+            "path": FINDING_CODE_POLICY_SPEC.relative_path,
+            "sha256": str(self._identity(FINDING_CODE_POLICY_SPEC)["sha256"]),
         }
 
     def effective_planning_baseline(self) -> dict[str, Any]:
@@ -544,6 +630,8 @@ class ValidationContextRegistry:
             return P2_VALIDATION_PROFILE_SPEC
         if discriminator == P3_VALIDATION_PROFILE_IDENTITY:
             return P3_VALIDATION_PROFILE_SPEC
+        if discriminator == P3_SUCCESSOR_VALIDATION_PROFILE_IDENTITY:
+            return P3_SUCCESSOR_VALIDATION_PROFILE_SPEC
         raise ValidationContextError(
             "Frozen validation_profile identity is not in the closed-world registry"
         )
@@ -558,6 +646,9 @@ class ValidationContextRegistry:
             P1_VALIDATION_PROFILE_IDENTITY[0]: P1_VALIDATION_PROFILE_SPEC,
             P2_VALIDATION_PROFILE_IDENTITY[0]: P2_VALIDATION_PROFILE_SPEC,
             P3_VALIDATION_PROFILE_IDENTITY[0]: P3_VALIDATION_PROFILE_SPEC,
+            P3_SUCCESSOR_VALIDATION_PROFILE_IDENTITY[0]: (
+                P3_SUCCESSOR_VALIDATION_PROFILE_SPEC
+            ),
         }
         try:
             return specifications[profile_id]
@@ -566,10 +657,12 @@ class ValidationContextRegistry:
                 f"Unknown Validation Profile id: {profile_id}"
             ) from error
 
-    def _verify_p3_sampling_profile(
+    def _verify_p3_family_profile(
         self,
         validation_profile: Mapping[str, Any],
     ) -> dict[str, Any]:
+        if validation_profile.get("profile_id") == P3_SUCCESSOR_VALIDATION_PROFILE_IDENTITY[0]:
+            return self._verify_p3_successor_profile(validation_profile)
         base_identity = validation_profile.get("base_profile")
         if not isinstance(base_identity, Mapping):
             raise ValidationContextError(
@@ -601,9 +694,67 @@ class ValidationContextRegistry:
             )
         return self._verify_identity(CONTENT_SAMPLING_PROFILE_SPEC, identity)
 
+    def _verify_p3_successor_profile(
+        self,
+        validation_profile: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        base_identity = validation_profile.get("base_profile")
+        if not isinstance(base_identity, Mapping):
+            raise ValidationContextError(
+                "Successor P3 Validation Profile has no P3 base identity"
+            )
+        base_spec = self._context_spec_for_identity(
+            "validation_profile", base_identity
+        )
+        if base_spec != P3_VALIDATION_PROFILE_SPEC:
+            raise ValidationContextError(
+                "Successor P3 Validation Profile must directly bind frozen P3"
+            )
+        base_profile = self._verify_identity(base_spec, base_identity)
+        self._verify_p3_family_profile(base_profile)
+
+        self._verify_p3_contract_artifacts(
+            validation_profile,
+            contract_specs=P3_SUCCESSOR_VALIDATION_CONTRACT_SPECS,
+        )
+
+        policy_identity = validation_profile.get("finding_code_policy_identity")
+        if not isinstance(policy_identity, Mapping):
+            raise ValidationContextError(
+                "Successor P3 Validation Profile has no Finding Code Policy identity"
+            )
+        discriminator = (
+            policy_identity.get("id"),
+            policy_identity.get("schema_version"),
+            policy_identity.get("path"),
+        )
+        if discriminator != FINDING_CODE_POLICY_IDENTITY:
+            raise ValidationContextError(
+                "Successor Finding Code Policy identity is not in the closed-world registry"
+            )
+        self._verify_identity(FINDING_CODE_POLICY_SPEC, policy_identity)
+
+        identity = validation_profile.get("content_sampling_profile")
+        if not isinstance(identity, Mapping):
+            raise ValidationContextError(
+                "Successor P3 Validation Profile has no Content Sampling Profile identity"
+            )
+        discriminator = (
+            identity.get("id"),
+            identity.get("schema_version"),
+            identity.get("path"),
+        )
+        if discriminator != CONTENT_SAMPLING_PROFILE_IDENTITY:
+            raise ValidationContextError(
+                "Successor Content Sampling Profile identity is not in the closed-world registry"
+            )
+        return self._verify_identity(CONTENT_SAMPLING_PROFILE_SPEC, identity)
+
     def _verify_p3_contract_artifacts(
         self,
         validation_profile: Mapping[str, Any],
+        *,
+        contract_specs: tuple[_ContractArtifactSpec, ...] = P3_VALIDATION_CONTRACT_SPECS,
     ) -> None:
         contracts = validation_profile.get("contracts")
         if not isinstance(contracts, Mapping):
@@ -612,14 +763,14 @@ class ValidationContextRegistry:
             )
         expected_names = {
             specification.name
-            for specification in P3_VALIDATION_CONTRACT_SPECS
+            for specification in contract_specs
         }
         if set(contracts) != expected_names:
             raise ValidationContextError(
                 "P3 Validation Profile contracts are not closed-world"
             )
 
-        for specification in P3_VALIDATION_CONTRACT_SPECS:
+        for specification in contract_specs:
             identity = contracts.get(specification.name)
             if not isinstance(identity, Mapping) or set(identity) != {
                 "schema_version",

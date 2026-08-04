@@ -595,7 +595,7 @@ class PipelineCoordinator:
             return
         manifest = self.store.read_manifest(batch_id)
         profile_id = manifest["validation_context"]["validation_profile"]["id"]
-        if profile_id == "v0.4-validation-p3":
+        if profile_id in ("v0.4-validation-p3", "v0.4-validation-p3-successor"):
             self._run_p3_validation_stage(
                 batch_id,
                 items,
@@ -1254,7 +1254,10 @@ class PipelineCoordinator:
             if isinstance(validation_context, dict)
             else {}
         )
-        if validation_profile.get("id") == "v0.4-validation-p3":
+        if validation_profile.get("id") in (
+            "v0.4-validation-p3",
+            "v0.4-validation-p3-successor",
+        ):
             return
         for item in items:
             current = manifest["items"][item.item_id]
@@ -1322,7 +1325,7 @@ class PipelineCoordinator:
         items = tuple(items)
         manifest = self.store.read_manifest(batch_id)
         profile_id = manifest["validation_context"]["validation_profile"]["id"]
-        if profile_id == "v0.4-validation-p3":
+        if profile_id in ("v0.4-validation-p3", "v0.4-validation-p3-successor"):
             checkpoints_complete = (
                 manifest["checkpoints"]["review"]["status"] == "succeeded"
                 and all(
