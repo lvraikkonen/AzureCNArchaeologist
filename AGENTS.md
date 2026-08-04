@@ -74,13 +74,18 @@ uv run cli.py extract mysql --language zh-cn --output-dir output
 uv run cli.py extract api-management --language en-us --output-dir output
 ```
 
-### HTML文件管理 & 上传
+### HTML文件管理、Release 与上传
 ```bash
 uv run cli.py copy-from-prod --language both
-uv run cli.py upload --output-dir output --prefix cms
+uv run cli.py release-build --batch-id <batch-id> --release-id <release-id> --item-id <language>/<resource-key> --expected-revision <revision> --account-url <account-url> --container <container> [--prefix <prefix>]
+uv run cli.py release-verify --release-manifest output/releases/<release-id>/release-manifest.json --require-batch-reference
+uv run cli.py upload --release-manifest output/releases/<release-id>/release-manifest.json --dry-run
+uv run cli.py upload --release-manifest output/releases/<release-id>/release-manifest.json --expected-revision <revision>
 uv run cli.py list-products
 uv run cli.py status
 ```
+
+正式 `upload` 只接受 sealed Release Manifest，不扫描任意 output 目录。旧目录扫描上传逻辑仅允许作为明确 legacy/internal 工具使用，不是 Review、Release 或 Publication 权威。
 
 ## 支持的产品类别（20个类别）
 
