@@ -366,7 +366,7 @@ def test_new_run_uses_active_p3_after_slice_b(
 
     batch = store.read_manifest(BATCH_ID)
     assert batch["validation_context"]["validation_profile"]["id"] == (
-        "v0.4-validation-p3"
+        "v0.4-validation-p3-successor"
     )
 
 

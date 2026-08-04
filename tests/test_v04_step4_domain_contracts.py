@@ -25,6 +25,7 @@ from src.release.contracts import (
     validate_release_manifest_bindings,
 )
 from src.review.contracts import (
+    LEGACY_P3_PROFILE_IDENTITY,
     REJECTION_REASONS,
     ReviewContractError,
     apply_stale_batch_item,
@@ -59,7 +60,7 @@ def _release_hashes() -> dict[str, str | None]:
         "validation_artifact_sha256": _sha("validation-file"),
         "validation_evidence_sha256": _sha("validation-evidence"),
         "review_decision_sha256": _sha("review-decision"),
-        "validation_profile_sha256": _sha("profile"),
+        "validation_profile_sha256": LEGACY_P3_PROFILE_IDENTITY["sha256"],
         "sampling_plan_sha256": _sha("sampling-plan"),
     }
 
@@ -69,12 +70,7 @@ def _release_manifest() -> dict[str, object]:
         "path": "runs/batch/input-manifest.json",
         "sha256": _sha("manifest-artifact"),
     }
-    profile = {
-        "id": "v0.4-validation-p3",
-        "schema_version": "1.2",
-        "path": "data/configs/validation-profiles/v0.4-p3.json",
-        "sha256": _sha("profile"),
-    }
+    profile = dict(LEGACY_P3_PROFILE_IDENTITY)
     sampling_profile = {
         "id": "v0.4-content-sampling-p3",
         "schema_version": "1.0",
@@ -352,25 +348,23 @@ def test_machine_and_source_preconditions_remain_separate() -> None:
     )
 
 
-def test_final_eligibility_requires_machine_source_binding_and_inspection() -> None:
+def test_final_eligibility_requires_only_machine_and_source_preconditions() -> None:
     machine = machine_approval_preconditions("succeeded", "passed")
     source = source_approval_preconditions([])
     assert derive_approval_eligibility(
         machine=machine,
         source=source,
-        evidence_binding="bound",
-        inspected_states_valid=True,
     ).status == "eligible"
+    source_blocked = source_approval_preconditions([
+        {"code": "SOURCE_DEFECT"},
+    ])
     blocked = derive_approval_eligibility(
         machine=machine,
-        source=source,
-        evidence_binding="stale",
-        inspected_states_valid=False,
+        source=source_blocked,
     )
     assert blocked.status == "blocked"
     assert [item.code for item in blocked.blockers] == [
-        "review_evidence_not_bound",
-        "invalid_inspected_states",
+        "unresolved_source_quality_finding",
     ]
 
 
@@ -595,7 +589,7 @@ def test_stale_state_reset_is_pure_and_retains_append_only_reference() -> None:
         **original,
         "review": "pending",
         "evidence_binding": "stale",
-        "approval_eligibility": "blocked",
+        "approval_eligibility": "eligible",
     }
     assert original["review"] == "approved"
     assert reset["current_review_decision"] == original["current_review_decision"]
@@ -647,7 +641,7 @@ def test_stale_batch_item_reset_uses_manifest_locations_and_is_pure() -> None:
         **item["status"],
         "review": "pending",
         "evidence_binding": "stale",
-        "approval_eligibility": "blocked",
+        "approval_eligibility": "eligible",
     }
     assert stale["artifacts"]["current_review_decision"] == reference
     assert stale["artifacts"] is not item["artifacts"]

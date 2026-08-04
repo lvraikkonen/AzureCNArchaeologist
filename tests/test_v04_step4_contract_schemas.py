@@ -40,6 +40,7 @@ SCHEMA_PATHS = {
     "validation": "schemas/pipeline-validation-2.0.schema.json",
     "review": "schemas/review-decision-1.0.schema.json",
     "release": "schemas/release-manifest-1.0.schema.json",
+    "release_11": "schemas/release-manifest-1.1.schema.json",
     "publication_receipt": "schemas/publication-receipt-1.0.schema.json",
     "validation_profile": "schemas/validation-profile-1.2.schema.json",
 }
@@ -86,6 +87,28 @@ def _validation_profile_identity() -> dict[str, str]:
         "path": "data/configs/validation-profiles/v0.4-p3.json",
         "sha256": sha256_file(
             ROOT / "data/configs/validation-profiles/v0.4-p3.json"
+        ),
+    }
+
+
+def _successor_validation_profile_identity() -> dict[str, str]:
+    return {
+        "id": "v0.4-validation-p3-successor",
+        "schema_version": "1.3",
+        "path": "data/configs/validation-profiles/v0.4-p3-successor.json",
+        "sha256": sha256_file(
+            ROOT / "data/configs/validation-profiles/v0.4-p3-successor.json"
+        ),
+    }
+
+
+def _finding_code_policy_identity() -> dict[str, str]:
+    return {
+        "id": "v0.4-finding-code-policy-p4",
+        "schema_version": "1.0",
+        "path": "data/configs/finding-code-policies/v0.4-p4.json",
+        "sha256": sha256_file(
+            ROOT / "data/configs/finding-code-policies/v0.4-p4.json"
         ),
     }
 
@@ -362,6 +385,18 @@ def _release_manifest() -> dict[str, Any]:
     }
 
 
+def _release_manifest_11() -> dict[str, Any]:
+    manifest = _release_manifest()
+    validation_profile = _successor_validation_profile_identity()
+    manifest["schema_version"] = "1.1"
+    manifest["validation_profile"] = validation_profile
+    manifest["finding_code_policy_identity"] = _finding_code_policy_identity()
+    manifest["items"][0]["bindings"]["validation_profile_sha256"] = (
+        validation_profile["sha256"]
+    )
+    return manifest
+
+
 def _publication_receipt() -> dict[str, Any]:
     receipt = {
         "schema_version": "1.0",
@@ -423,6 +458,7 @@ def _documents() -> dict[str, dict[str, Any]]:
         "validation": _validation(),
         "review": _review_decision(),
         "release": _release_manifest(),
+        "release_11": _release_manifest_11(),
         "publication_receipt": _publication_receipt(),
         "validation_profile": _read_json(
             "data/configs/validation-profiles/v0.4-p3.json"
@@ -1367,6 +1403,26 @@ def test_release_manifest_forbids_an_embedded_seal() -> None:
     manifest["seal"] = _sha("seal")
     with pytest.raises(Exception, match="Additional properties"):
         _validator("release").validate(manifest)
+
+
+def test_release_manifest_11_requires_successor_profile_and_policy() -> None:
+    manifest = _release_manifest_11()
+
+    _validator("release_11").validate(manifest)
+    StateStore(ROOT).validate_document(manifest, "release_manifest")
+
+    legacy_profile = copy.deepcopy(manifest)
+    legacy_profile["validation_profile"] = _validation_profile_identity()
+    legacy_profile["items"][0]["bindings"]["validation_profile_sha256"] = (
+        legacy_profile["validation_profile"]["sha256"]
+    )
+    with pytest.raises(Exception):
+        _validator("release_11").validate(legacy_profile)
+
+    missing_policy = copy.deepcopy(manifest)
+    missing_policy.pop("finding_code_policy_identity")
+    with pytest.raises(Exception):
+        _validator("release_11").validate(missing_policy)
 
 
 def test_release_coverage_mode_controls_sampling_plan_binding() -> None:

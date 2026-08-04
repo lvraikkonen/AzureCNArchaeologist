@@ -34,7 +34,16 @@ from src.release.contracts import (
     evaluate_release_item,
     validate_release_manifest_bindings,
 )
-from src.review.contracts import ReviewContractError, derive_evidence_binding
+from src.review.contracts import (
+    FINDING_CODE_POLICY_IDENTITY,
+    LEGACY_P3_PROFILE_IDENTITY,
+    ReviewContractError,
+    SUCCESSOR_P3_PROFILE_IDENTITY,
+    derive_approval_eligibility,
+    derive_evidence_binding,
+    machine_approval_preconditions,
+    precondition_result_from_mapping,
+)
 from src.review.service import ReviewService
 
 
@@ -325,7 +334,7 @@ class ReleaseService:
                     f"Batch {batch_id} revision is {manifest['revision']}, "
                     f"expected {expected_revision}"
                 )
-            if self._profile_id(manifest) != "v0.4-validation-p3":
+            if not self._is_supported_release_profile(manifest):
                 raise _error(
                     "unsupported_release_profile",
                     "Release build requires Validation Profile P3",
@@ -462,6 +471,7 @@ class ReleaseService:
 
         batch_id = str(manifest["batch_id"])
         current_manifest = self.store.read_manifest(batch_id)
+        self._verify_manifest_profile_binding(manifest, current_manifest)
         release_rel = self._root_relative(path)
         manifest_sha256 = sha256_file(path)
         registered = self._release_reference_is_current(
@@ -641,8 +651,9 @@ class ReleaseService:
                     "missing_content_sampling_profile",
                     "Release build requires the P3 Content Sampling Profile",
                 )
+            successor = validation_profile == SUCCESSOR_P3_PROFILE_IDENTITY
             release_manifest = {
-                "schema_version": "1.0",
+                "schema_version": "1.1" if successor else "1.0",
                 "release_id": release_id,
                 "created_at": self._now(),
                 "batch_id": batch_id,
@@ -673,6 +684,18 @@ class ReleaseService:
                 },
                 "items": release_items,
             }
+            if successor:
+                policy_identity = (
+                    self.validation_context.finding_code_policy_identity_for(
+                        validation_profile
+                    )
+                )
+                if policy_identity is None:
+                    raise _error(
+                        "missing_finding_code_policy",
+                        "Release Manifest 1.1 requires the successor Finding Code Policy",
+                    )
+                release_manifest["finding_code_policy_identity"] = policy_identity
             self.store.validate_document(release_manifest, "release_manifest")
             _write_canonical_json(staging / "release-manifest.json", release_manifest)
             if release_dir.exists():
@@ -705,6 +728,7 @@ class ReleaseService:
             item_id,
             manifest=manifest,
         )
+        self._verify_validation_policy_binding(snapshot, manifest)
         release_hashes = self._release_hashes(snapshot, manifest)
         self._assert_release_eligible(snapshot, release_hashes, manifest)
         manifest_item = snapshot.manifest_item
@@ -864,6 +888,7 @@ class ReleaseService:
             item_id,
             manifest=current_manifest,
         )
+        self._verify_validation_policy_binding(snapshot, current_manifest)
         current_hashes = self._release_hashes(snapshot, current_manifest)
         candidate_hashes = ReleaseHashBindings.from_mapping(
             release_item["bindings"]
@@ -973,6 +998,25 @@ class ReleaseService:
             )
         current_hashes = self._release_hashes(snapshot, manifest)
         try:
+            machine = machine_approval_preconditions(
+                str(status["execution"]),
+                str(status["validation"]),
+            )
+            source = precondition_result_from_mapping(
+                snapshot.source_preconditions
+            )
+            canonical_eligibility = derive_approval_eligibility(
+                machine=machine,
+                source=source,
+            )
+        except ReviewContractError as error:
+            raise _error(error.code, str(error)) from error
+        if canonical_eligibility.status != status["approval_eligibility"]:
+            raise _error(
+                "approval_eligibility_mismatch",
+                f"Batch Item approval eligibility is not canonical for {snapshot.item.item_id}",
+            )
+        try:
             eligibility = evaluate_release_item(
                 execution_status=status["execution"],
                 validation_status=status["validation"],
@@ -1015,6 +1059,82 @@ class ReleaseService:
             ]["sha256"],
             sampling_plan_sha256=snapshot.current_bindings.sampling_plan_sha256,
         )
+
+    @staticmethod
+    def _verify_validation_policy_binding(
+        snapshot: Any,
+        manifest: Mapping[str, Any],
+    ) -> None:
+        profile = dict(manifest["validation_context"]["validation_profile"])
+        version = snapshot.validation["schema_version"]
+        bindings = snapshot.validation["evidence"]["bindings"]
+        if profile == LEGACY_P3_PROFILE_IDENTITY:
+            if version != "2.0" or "finding_code_policy_identity" in bindings:
+                raise _error(
+                    "release_validation_profile_binding_mismatch",
+                    "Legacy Release items must bind Validation 2.0 without a Finding Policy",
+                )
+            return
+        if profile == SUCCESSOR_P3_PROFILE_IDENTITY:
+            if version != "2.1":
+                raise _error(
+                    "release_validation_profile_binding_mismatch",
+                    "Successor Release items must bind Validation 2.1",
+                )
+            if dict(bindings["finding_code_policy_identity"]) != FINDING_CODE_POLICY_IDENTITY:
+                raise _error(
+                    "release_finding_policy_binding_mismatch",
+                    "Successor Release items must bind the frozen Finding Code Policy",
+                )
+            return
+        raise _error(
+            "unsupported_release_profile",
+            "Release item uses an unsupported Validation Profile",
+        )
+
+    @staticmethod
+    def _is_supported_release_profile(manifest: Mapping[str, Any]) -> bool:
+        try:
+            profile = dict(manifest["validation_context"]["validation_profile"])
+        except (KeyError, TypeError, ValueError):
+            return False
+        return profile in (
+            LEGACY_P3_PROFILE_IDENTITY,
+            SUCCESSOR_P3_PROFILE_IDENTITY,
+        )
+
+    @staticmethod
+    def _verify_manifest_profile_binding(
+        release_manifest: Mapping[str, Any],
+        batch_manifest: Mapping[str, Any],
+    ) -> None:
+        batch_profile = dict(batch_manifest["validation_context"]["validation_profile"])
+        release_profile = dict(release_manifest["validation_profile"])
+        if release_profile != batch_profile:
+            raise _error(
+                "release_validation_profile_binding_mismatch",
+                "Release Manifest profile identity differs from the current Batch",
+            )
+        version = release_manifest["schema_version"]
+        if version == "1.0" and batch_profile != LEGACY_P3_PROFILE_IDENTITY:
+            raise _error(
+                "release_validation_profile_binding_mismatch",
+                "Release Manifest 1.0 can only verify legacy P3 Batches",
+            )
+        if version == "1.1":
+            if batch_profile != SUCCESSOR_P3_PROFILE_IDENTITY:
+                raise _error(
+                    "release_validation_profile_binding_mismatch",
+                    "Release Manifest 1.1 can only verify successor P3 Batches",
+                )
+            if (
+                dict(release_manifest["finding_code_policy_identity"])
+                != FINDING_CODE_POLICY_IDENTITY
+            ):
+                raise _error(
+                    "release_finding_policy_binding_mismatch",
+                    "Release Manifest Finding Code Policy differs from successor policy",
+                )
 
     def _register_release(
         self,

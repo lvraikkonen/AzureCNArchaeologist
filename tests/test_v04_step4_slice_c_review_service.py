@@ -17,7 +17,11 @@ from src.pipeline.cli_commands import (
 )
 from src.pipeline.models import BatchItem, summarize_batch_manifest
 from src.pipeline.state_store import ManifestConflictError, RepositoryLock
-from src.review.contracts import source_approval_preconditions
+from src.review.contracts import (
+    classify_source_quality_findings,
+    evaluate_source_findings,
+    source_approval_preconditions,
+)
 from src.review.service import (
     ReviewDecisionRequest,
     ReviewService,
@@ -48,15 +52,30 @@ def _source_finding() -> dict[str, str]:
     }
 
 
+def _finding_policy() -> dict[str, object]:
+    return json.loads(
+        (ROOT / "data/configs/finding-code-policies/v0.4-p4.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+
 def _with_source_findings(
     validation: dict[str, Any],
     findings: list[dict[str, str]],
 ) -> dict[str, Any]:
     result = copy.deepcopy(validation)
-    result["evidence"]["source_quality_findings"] = findings
-    result["evidence"]["approval_preconditions"]["source"] = (
-        source_approval_preconditions(findings).to_dict()
-    )
+    if result["schema_version"] == "2.1":
+        classified = classify_source_quality_findings(findings, _finding_policy())
+        result["evidence"]["source_quality_findings"] = classified
+        result["evidence"]["approval_preconditions"]["source"] = (
+            evaluate_source_findings(classified, _finding_policy()).to_dict()
+        )
+    else:
+        result["evidence"]["source_quality_findings"] = findings
+        result["evidence"]["approval_preconditions"]["source"] = (
+            source_approval_preconditions(findings).to_dict()
+        )
     result["evidence_sha256"] = validation_evidence_sha256(result)
     return result
 
@@ -65,8 +84,12 @@ def _reviewable_run(
     tmp_path: Path,
     *,
     source_findings: list[dict[str, str]] | None = None,
+    validation_profile_id: str = "v0.4-validation-p3",
 ) -> tuple[ReviewService, Any, BatchItem, dict[str, Any]]:
-    store, frozen = _state_store_with_run(tmp_path)
+    store, frozen = _state_store_with_run(
+        tmp_path,
+        validation_profile_id=validation_profile_id,
+    )
     item = _item()
     criteria = [[("region", f"region-{index}")] for index in range(18)]
     from tests.test_v04_step4_slice_b_runtime import _sampling_profile_identity
@@ -114,6 +137,9 @@ def _reviewable_run(
         )
         if source_findings:
             validation = _with_source_findings(validation, source_findings)
+        source_preconditions = validation["evidence"]["approval_preconditions"][
+            "source"
+        ]
         store.write_projection(
             BATCH_ID,
             "validation",
@@ -131,7 +157,11 @@ def _reviewable_run(
                 "validation": "passed",
                 "review": "pending",
                 "evidence_binding": "not_applicable",
-                "approval_eligibility": "blocked",
+                "approval_eligibility": (
+                    "eligible"
+                    if source_preconditions["eligible"]
+                    else "blocked"
+                ),
             })
             current["artifacts"]["payload"]["sha256"] = HEX["payload"]
             current["artifacts"]["sampling_plan"]["sha256"] = plan_sha
@@ -286,6 +316,44 @@ def test_source_findings_block_approval_but_allow_rejection(tmp_path: Path) -> N
     )
 
 
+def test_successor_advisory_finding_is_eligible_before_and_after_review(
+    tmp_path: Path,
+) -> None:
+    service, store, item, plan = _reviewable_run(
+        tmp_path,
+        validation_profile_id="v0.4-validation-p3-successor",
+        source_findings=[{
+            "code": "SOURCE_CHARSET_DECLARATION_NOT_UTF8",
+            "message": "Source charset declaration is advisory.",
+            "path": "$.fixture",
+            "severity": "finding",
+            "disposition": "unresolved",
+        }],
+    )
+
+    queue = service.list_items(BATCH_ID, status="all")
+    assert queue["items"][0]["status"]["approval_eligibility"] == "eligible"
+    assert queue["items"][0]["approval_blockers"] == []
+    assert queue["items"][0]["source_quality_findings"][0]["code"] == (
+        "SOURCE_CHARSET_DECLARATION_NOT_UTF8"
+    )
+
+    result = service.decide(
+        _approve_request(store, item, _review_state_id(plan))
+    )
+
+    assert result.review == "approved"
+    assert result.approval_eligibility == "eligible"
+    decision = store.read_review_decision(
+        BATCH_ID,
+        relative_path=result.decision_path,
+    )
+    validation_ref = service.evidence_snapshot(BATCH_ID, item.item_id).validation
+    assert decision["bindings"]["validation_evidence_sha256"] == (
+        validation_ref["evidence_sha256"]
+    )
+
+
 def test_lifecycle_after_validation_preserves_exact_and_marks_drift_stale(
     tmp_path: Path,
 ) -> None:
@@ -322,7 +390,7 @@ def test_lifecycle_after_validation_preserves_exact_and_marks_drift_stale(
     assert stale == {
         "review": "pending",
         "evidence_binding": "stale",
-        "approval_eligibility": "blocked",
+        "approval_eligibility": "eligible",
     }
 
 

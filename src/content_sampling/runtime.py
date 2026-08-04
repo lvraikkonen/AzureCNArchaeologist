@@ -364,6 +364,11 @@ class SampledValidationRuntime:
             if sampling_plan is not None
             else None
         )
+        sampled_validation_profile = validation_profile
+        if finding_policy_identity is not None:
+            sampled_validation_profile = self.validation_context.freeze(
+                validation_profile_id="v0.4-validation-p3"
+            )["validation_context"]["validation_profile"]
         sampled_bindings = {
             "source": _artifact(str(item.source_path), str(item.source_sha256)),
             "normalized_input": _artifact(
@@ -372,11 +377,12 @@ class SampledValidationRuntime:
             ),
             "payload": dict(manifest_item["artifacts"]["payload"]),
             "soft_category": dict(manifest["frozen_inputs"]["soft_category"]),
-            "validation_profile": validation_profile,
+            "validation_profile": sampled_validation_profile,
             "content_sampling_profile": sampling_profile,
             "sampling_plan": plan_binding,
         }
         validation_bindings = copy.deepcopy(sampled_bindings)
+        validation_bindings["validation_profile"] = validation_profile
         if finding_policy_identity is not None:
             validation_bindings["finding_code_policy_identity"] = (
                 finding_policy_identity

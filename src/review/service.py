@@ -24,11 +24,15 @@ from src.pipeline.state_store import (
 from src.review.contracts import (
     ApprovalBlocker,
     EvidenceBindings,
+    LEGACY_P3_PROFILE_IDENTITY,
     ReviewContractError,
+    SUCCESSOR_P3_PROFILE_IDENTITY,
+    derive_approval_eligibility,
     derive_evidence_binding,
     derive_review_decision_id,
     machine_approval_preconditions,
-    source_approval_preconditions,
+    precondition_result_from_mapping,
+    validate_inspected_states,
     validate_review_transition,
 )
 
@@ -99,6 +103,7 @@ class ReviewEvidenceSnapshot:
     current_bindings: EvidenceBindings
     coverage: Mapping[str, Any]
     source_quality_findings: tuple[Mapping[str, Any], ...]
+    source_preconditions: Mapping[str, Any]
     allowed_state_ids: tuple[str, ...]
     state_universe: tuple[Mapping[str, Any], ...]
     current_decision: Mapping[str, Any] | None
@@ -162,7 +167,7 @@ class ReviewService:
     ) -> dict[str, Any]:
         frozen = self.store.read_input_manifest(batch_id)
         manifest = self.store.read_manifest(batch_id)
-        if self._profile_id(manifest) != "v0.4-validation-p3":
+        if not self._is_supported_review_profile(manifest):
             raise _error(
                 "unsupported_review_profile",
                 "Review evidence snapshots require Validation Profile P3",
@@ -233,7 +238,7 @@ class ReviewService:
                     f"Batch {request.batch_id} revision is {manifest['revision']}, "
                     f"expected {request.expected_revision}"
                 )
-            if self._profile_id(manifest) != "v0.4-validation-p3":
+            if not self._is_supported_review_profile(manifest):
                 raise _error(
                     "unsupported_review_profile",
                     "Review Decisions require Validation Profile P3",
@@ -266,6 +271,7 @@ class ReviewService:
                     current_bindings=snapshot.current_bindings,
                     decision_bindings=snapshot.current_bindings,
                     source_quality_findings=snapshot.source_quality_findings,
+                    source_preconditions=snapshot.source_preconditions,
                     inspection_mode=snapshot.inspection_mode,
                     inspected_states=inspected,
                     allowed_state_ids=snapshot.allowed_state_ids,
@@ -357,7 +363,7 @@ class ReviewService:
 
     def build_queue(self, batch_id: str) -> dict[str, Any]:
         manifest = self.store.read_manifest(batch_id)
-        if self._profile_id(manifest) != "v0.4-validation-p3":
+        if not self._is_supported_review_profile(manifest):
             return self.store.read_projection(batch_id, "review")
         frozen = self.store.read_input_manifest(batch_id)
         items = items_from_dicts(frozen["items"])
@@ -394,6 +400,21 @@ class ReviewService:
     ) -> dict[str, Any]:
         """Derive post-validation review state without mutating artifacts."""
 
+        machine = machine_approval_preconditions(
+            str(manifest_item["status"]["execution"]),
+            str(manifest_item["status"]["validation"]),
+        )
+        try:
+            source = precondition_result_from_mapping(
+                validation_projection["evidence"]["approval_preconditions"]["source"]
+            )
+            eligibility = derive_approval_eligibility(
+                machine=machine,
+                source=source,
+            )
+        except ReviewContractError as error:
+            raise _error(error.code, str(error)) from error
+
         reference = manifest_item["artifacts"].get("current_review_decision")
         if reference is None:
             return {
@@ -403,14 +424,14 @@ class ReviewService:
                     else "not_requested"
                 ),
                 "evidence_binding": "not_applicable",
-                "approval_eligibility": "blocked",
+                "approval_eligibility": eligibility.status,
             }
         decision = self._read_current_decision(batch_id, item, reference)
         if validation_projection.get("status") != "passed":
             return {
                 "review": "pending",
                 "evidence_binding": "stale",
-                "approval_eligibility": "blocked",
+                "approval_eligibility": eligibility.status,
             }
         bindings = self._bindings_from_validation(
             validation_projection,
@@ -423,24 +444,45 @@ class ReviewService:
             return {
                 "review": "pending",
                 "evidence_binding": "stale",
-                "approval_eligibility": "blocked",
+                "approval_eligibility": eligibility.status,
             }
-        source = source_approval_preconditions(
-            validation_projection["evidence"]["source_quality_findings"]
+        inspection_mode = (
+            "interactive" if bindings.sampling_plan_sha256 is not None else "full"
         )
-        machine = machine_approval_preconditions("succeeded", "passed")
-        if decision["verdict"] == "approved" and (not source.eligible):
+        allowed_state_ids: tuple[str, ...] = ()
+        if inspection_mode == "interactive":
+            plan_ref = manifest_item["artifacts"].get("sampling_plan")
+            if plan_ref is None or plan_ref.get("sha256") is None:
+                return {
+                    "review": "pending",
+                    "evidence_binding": "bound",
+                    "approval_eligibility": eligibility.status,
+                }
+            plan = self.store.read_step4_artifact(
+                batch_id,
+                "sampling_plan",
+                relative_path=plan_ref["path"],
+            )
+            allowed_state_ids = tuple(
+                str(state["state_id"])
+                for state in plan["state_universe"]["states"]
+            )
+        try:
+            validate_inspected_states(
+                decision["inspected_states"],
+                inspection_mode=inspection_mode,
+                allowed_state_ids=allowed_state_ids,
+            )
+        except ReviewContractError:
             return {
                 "review": "pending",
-                "evidence_binding": "stale",
-                "approval_eligibility": "blocked",
+                "evidence_binding": "bound",
+                "approval_eligibility": eligibility.status,
             }
         return {
             "review": str(decision["verdict"]),
             "evidence_binding": "bound",
-            "approval_eligibility": (
-                "eligible" if machine.eligible and source.eligible else "blocked"
-            ),
+            "approval_eligibility": eligibility.status,
         }
 
     @staticmethod
@@ -456,6 +498,25 @@ class ReviewService:
         if isinstance(manifest.get("validation_profile_id"), str):
             return str(manifest["validation_profile_id"])
         return "legacy-profile-unrecorded"
+
+    @staticmethod
+    def _profile_identity(manifest: Mapping[str, Any]) -> Mapping[str, Any] | None:
+        validation_context = manifest.get("validation_context")
+        if isinstance(validation_context, Mapping):
+            validation_profile = validation_context.get("validation_profile")
+            if isinstance(validation_profile, Mapping):
+                return validation_profile
+        return None
+
+    @classmethod
+    def _is_supported_review_profile(cls, manifest: Mapping[str, Any]) -> bool:
+        profile = cls._profile_identity(manifest)
+        if profile is None:
+            return False
+        return dict(profile) in (
+            LEGACY_P3_PROFILE_IDENTITY,
+            SUCCESSOR_P3_PROFILE_IDENTITY,
+        )
 
     def _snapshot(
         self,
@@ -483,10 +544,17 @@ class ReviewService:
             "validation",
             relative_path=validation_path,
         )
-        if validation.get("schema_version") != "2.0":
+        if validation.get("schema_version") not in ("2.0", "2.1"):
             raise _error(
                 "unsupported_validation_projection",
-                "Review Decisions require Validation Projection 2.0",
+                "Review Decisions require Validation Projection 2.0 or 2.1",
+            )
+        manifest_profile = self._profile_identity(manifest)
+        validation_profile = validation["evidence"]["bindings"]["validation_profile"]
+        if manifest_profile is None or dict(manifest_profile) != dict(validation_profile):
+            raise _error(
+                "validation_profile_mismatch",
+                "Validation Projection profile identity differs from the Batch",
             )
         if validation.get("item_id") != item.item_id:
             raise _error(
@@ -592,6 +660,9 @@ class ReviewService:
                 copy.deepcopy(dict(finding))
                 for finding in validation["evidence"]["source_quality_findings"]
             ),
+            source_preconditions=copy.deepcopy(dict(
+                validation["evidence"]["approval_preconditions"]["source"]
+            )),
             allowed_state_ids=allowed_state_ids,
             state_universe=state_universe,
             current_decision=decision,
@@ -669,14 +740,8 @@ class ReviewService:
             status["execution"],
             status["validation"],
         )
-        source = source_approval_preconditions(snapshot.source_quality_findings)
+        source = precondition_result_from_mapping(snapshot.source_preconditions)
         blockers: list[ApprovalBlocker] = [*machine.blockers, *source.blockers]
-        if status["evidence_binding"] != "bound":
-            blockers.append(ApprovalBlocker(
-                code="review_evidence_not_bound",
-                message="Review evidence does not bind all current hashes",
-                path="$.status.evidence_binding",
-            ))
         return {
             "item_id": snapshot.item.item_id,
             "product_key": snapshot.item.product_key,

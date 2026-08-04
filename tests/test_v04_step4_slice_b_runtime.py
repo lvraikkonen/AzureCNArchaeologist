@@ -143,9 +143,13 @@ def _item(strategy: str = "region_filter") -> BatchItem:
     )
 
 
-def _state_store_with_run(root: Path) -> tuple[StateStore, dict[str, object]]:
+def _state_store_with_run(
+    root: Path,
+    *,
+    validation_profile_id: str = "v0.4-validation-p3",
+) -> tuple[StateStore, dict[str, object]]:
     registry = ValidationContextRegistry(ROOT)
-    frozen = registry.freeze()
+    frozen = registry.freeze(validation_profile_id=validation_profile_id)
     item = _item()
     plan = PipelinePlan(
         scope={"kind": "group", "group": "fixture"},
@@ -202,6 +206,11 @@ def _evidence(
     plan_path = manifest_item["artifacts"]["sampling_plan"]["path"]  # type: ignore[index]
     plan_artifact_sha256 = artifact_json_sha256(sampling_plan)
     coverage = _coverage_from_plan(sampling_plan)
+    sampled_validation_profile = frozen["validation_context"]["validation_profile"]  # type: ignore[index]
+    if sampled_validation_profile["id"] == "v0.4-validation-p3-successor":  # type: ignore[index]
+        sampled_validation_profile = ValidationContextRegistry(ROOT).freeze(
+            validation_profile_id="v0.4-validation-p3"
+        )["validation_context"]["validation_profile"]
     bindings = {
         "source": {"path": _item().source_path, "sha256": HEX["source"]},
         "normalized_input": {
@@ -216,7 +225,7 @@ def _evidence(
             "path": "data/configs/soft-category.json",
             "sha256": sha256_file(ROOT / "data/configs/soft-category.json"),
         },
-        "validation_profile": frozen["validation_context"]["validation_profile"],  # type: ignore[index]
+        "validation_profile": sampled_validation_profile,
         "content_sampling_profile": _sampling_profile_identity(),
         "sampling_plan": {
             "path": plan_path,
@@ -262,9 +271,24 @@ def _validation_projection(
 ) -> dict[str, object]:
     coverage = evidence["coverage"]
     evidence_artifact_sha256 = artifact_json_sha256(evidence)
+    schema_version = "2.0"
+    profile = evidence["bindings"]["validation_profile"]  # type: ignore[index]
+    validation_profile = frozen["validation_context"]["validation_profile"]  # type: ignore[index]
+    if validation_profile["id"] == "v0.4-validation-p3-successor":  # type: ignore[index]
+        schema_version = "2.1"
+        profile = validation_profile
+        validation_bindings = copy.deepcopy(evidence["bindings"])  # type: ignore[arg-type]
+        validation_bindings["validation_profile"] = validation_profile
+        validation_bindings["finding_code_policy_identity"] = (
+            ValidationContextRegistry(ROOT).finding_code_policy_identity_for(
+                validation_profile
+            )
+        )
+    else:
+        validation_bindings = evidence["bindings"]
     body = {
         "verdict": "passed",
-        "bindings": evidence["bindings"],
+        "bindings": validation_bindings,
         "structure_validation": {
             "status": "passed",
             "checked_count": coverage["universe_count"],  # type: ignore[index]
@@ -289,7 +313,7 @@ def _validation_projection(
         "warnings": [],
     }
     projection = {
-        "schema_version": "2.0",
+        "schema_version": schema_version,
         "batch_id": BATCH_ID,
         "item_id": "zh-cn/fixture",
         "status": "passed",

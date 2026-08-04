@@ -144,13 +144,17 @@ def _validation_21(source_findings: list[dict[str, str]]) -> dict[str, object]:
     return validation
 
 
-def test_successor_profile_is_explicitly_registered_but_not_active() -> None:
+def test_successor_profile_is_active_and_legacy_p3_remains_explicit() -> None:
     registry = ValidationContextRegistry(ROOT)
 
     active = registry.freeze()
+    legacy = registry.freeze(validation_profile_id="v0.4-validation-p3")
     successor = registry.freeze(validation_profile_id="v0.4-validation-p3-successor")
 
     assert active["validation_context"]["validation_profile"]["id"] == (
+        "v0.4-validation-p3-successor"
+    )
+    assert legacy["validation_context"]["validation_profile"]["id"] == (
         "v0.4-validation-p3"
     )
     assert successor["validation_context"]["validation_profile"]["id"] == (
@@ -193,6 +197,7 @@ def test_legacy_blanket_source_rule_remains_unchanged() -> None:
 def test_finding_policy_identity_matrix_is_closed_world() -> None:
     assert (
         resolve_finding_policy(
+            validation_schema_version="2.0",
             validation_profile_identity=LEGACY_P3_PROFILE_IDENTITY,
             finding_code_policy_identity=None,
         )
@@ -200,6 +205,7 @@ def test_finding_policy_identity_matrix_is_closed_world() -> None:
     )
     assert (
         resolve_finding_policy(
+            validation_schema_version="2.1",
             validation_profile_identity=SUCCESSOR_P3_PROFILE_IDENTITY,
             finding_code_policy_identity=FINDING_CODE_POLICY_IDENTITY,
         )
@@ -207,13 +213,16 @@ def test_finding_policy_identity_matrix_is_closed_world() -> None:
     )
 
     illegal_pairs = (
-        (LEGACY_P3_PROFILE_IDENTITY, FINDING_CODE_POLICY_IDENTITY),
-        (SUCCESSOR_P3_PROFILE_IDENTITY, None),
-        ({**SUCCESSOR_P3_PROFILE_IDENTITY, "sha256": _sha("bad")}, FINDING_CODE_POLICY_IDENTITY),
+        ("2.0", LEGACY_P3_PROFILE_IDENTITY, FINDING_CODE_POLICY_IDENTITY),
+        ("2.1", LEGACY_P3_PROFILE_IDENTITY, None),
+        ("2.0", SUCCESSOR_P3_PROFILE_IDENTITY, FINDING_CODE_POLICY_IDENTITY),
+        ("2.1", SUCCESSOR_P3_PROFILE_IDENTITY, None),
+        ("2.1", {**SUCCESSOR_P3_PROFILE_IDENTITY, "sha256": _sha("bad")}, FINDING_CODE_POLICY_IDENTITY),
     )
-    for profile, policy in illegal_pairs:
+    for version, profile, policy in illegal_pairs:
         with pytest.raises(ReviewContractError) as caught:
             resolve_finding_policy(
+                validation_schema_version=version,
                 validation_profile_identity=profile,
                 finding_code_policy_identity=policy,
             )

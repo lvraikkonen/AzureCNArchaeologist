@@ -12,7 +12,8 @@ import pytest
 
 from cli import release_build_command, release_verify_command, upload_command
 from src.core.product_catalog import sha256_file
-from src.pipeline.state_store import ManifestConflictError
+from src.pipeline.models import summarize_batch_manifest
+from src.pipeline.state_store import ManifestConflictError, RepositoryLock
 from src.release.contracts import (
     derive_publication_receipt_id,
     derive_release_content_sha256,
@@ -22,12 +23,14 @@ from src.release.service import (
     ReleaseServiceError,
     RemoteBlobIdentity,
 )
+from src.review.contracts import derive_review_decision_id
 from tests import test_v04_step4_slice_b_runtime as slice_b
 from tests.test_v04_step4_slice_b_runtime import BATCH_ID, ROOT
 from tests.test_v04_step4_slice_c_review_service import (
     _approve_request,
     _review_state_id,
     _reviewable_run,
+    _source_finding,
 )
 
 
@@ -88,6 +91,7 @@ def _releaseable_run(
     tmp_path: Path,
     *,
     release_id: str,
+    validation_profile_id: str = "v0.4-validation-p3",
 ) -> tuple[ReleaseService, Any, Any, str]:
     payload_bytes = b'{"title":"Release fixture"}\n'
     payload_sha256 = hashlib.sha256(payload_bytes).hexdigest()
@@ -95,13 +99,96 @@ def _releaseable_run(
     original_payload_sha = slice_b.HEX["payload"]
     slice_b.HEX["payload"] = payload_sha256
     try:
-        review, store, item, plan = _reviewable_run(runs_root)
+        review, store, item, plan = _reviewable_run(
+            runs_root,
+            validation_profile_id=validation_profile_id,
+        )
     finally:
         slice_b.HEX["payload"] = original_payload_sha
     payload_path = store.run_dir(BATCH_ID) / item.output_path
     payload_path.parent.mkdir(parents=True, exist_ok=True)
     payload_path.write_bytes(payload_bytes)
     review.decide(_approve_request(store, item, _review_state_id(plan)))
+    service = ReleaseService(
+        ROOT,
+        runs_dir=store.runs_dir,
+        state_store=store,
+        review_service=review,
+        now=lambda: FIXED_RELEASE_NOW,
+    )
+    return service, store, item, release_id
+
+
+def _source_blocked_run_with_forged_approval(
+    release_id: str,
+) -> tuple[ReleaseService, Any, Any, str]:
+    payload_bytes = b'{"title":"Release fixture"}\n'
+    payload_sha256 = hashlib.sha256(payload_bytes).hexdigest()
+    runs_root = ROOT / "output" / "pytest-runs" / release_id
+    original_payload_sha = slice_b.HEX["payload"]
+    slice_b.HEX["payload"] = payload_sha256
+    try:
+        review, store, item, plan = _reviewable_run(
+            runs_root,
+            source_findings=[_source_finding()],
+        )
+    finally:
+        slice_b.HEX["payload"] = original_payload_sha
+    payload_path = store.run_dir(BATCH_ID) / item.output_path
+    payload_path.parent.mkdir(parents=True, exist_ok=True)
+    payload_path.write_bytes(payload_bytes)
+    snapshot = review.evidence_snapshot(BATCH_ID, item.item_id)
+    inspected_state = _review_state_id(plan)
+    decision_body: dict[str, Any] = {
+        "schema_version": "1.0",
+        "decision_id": "0" * 64,
+        "batch_id": BATCH_ID,
+        "item_id": item.item_id,
+        "resource_key": item.resource_key,
+        "language": item.language,
+        "reviewer": "forged@example.com",
+        "decided_at": FIXED_RELEASE_NOW,
+        "verdict": "approved",
+        "reason": None,
+        "notes": "Forged legacy approval for release gate regression.",
+        "bindings": snapshot.current_bindings.to_dict(),
+        "inspected_states": [
+            {"scope": "page_global"},
+            {"scope": "interactive_state", "state_id": inspected_state},
+        ],
+        "supersedes_decision_id": None,
+    }
+    decision_body["decision_id"] = derive_review_decision_id(decision_body)
+    decision_path = (
+        Path("review", "decisions", item.language, item.resource_key)
+        / f"{decision_body['decision_id']}.json"
+    ).as_posix()
+    with RepositoryLock(store.lock_root, batch_id=BATCH_ID, command="forge-review"):
+        path = store.write_review_decision(
+            BATCH_ID,
+            decision_body,
+            relative_path=decision_path,
+        )
+        decision_sha256 = sha256_file(path)
+        manifest = store.read_manifest(BATCH_ID)
+
+        def forge(value: dict[str, Any]) -> None:
+            current = value["items"][item.item_id]
+            current["artifacts"]["current_review_decision"] = {
+                "path": decision_path,
+                "sha256": decision_sha256,
+            }
+            current["status"]["review"] = "approved"
+            current["status"]["evidence_binding"] = "bound"
+            current["status"]["approval_eligibility"] = "eligible"
+            value["summary"] = summarize_batch_manifest(value)
+
+        store.update_manifest(
+            BATCH_ID,
+            forge,
+            expected_revision=manifest["revision"],
+            changed_item_ids=(item.item_id,),
+        )
     service = ReleaseService(
         ROOT,
         runs_dir=store.runs_dir,
@@ -139,6 +226,7 @@ def test_release_build_seals_registered_manifest_and_payload(release_id: str, tm
 
     manifest_path = ROOT / result.release_manifest_path
     release_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert release_manifest["schema_version"] == "1.0"
     assert manifest_path.read_bytes() == json.dumps(
         release_manifest,
         ensure_ascii=False,
@@ -157,6 +245,48 @@ def test_release_build_seals_registered_manifest_and_payload(release_id: str, tm
     verified = service.verify_release(result.release_manifest_path)
     assert verified.release_seal == result.release_seal
     assert verified.registered
+
+
+def test_successor_release_builds_manifest_11_and_upload_dry_run(
+    release_id: str,
+    tmp_path: Path,
+) -> None:
+    service, store, item, release_id = _releaseable_run(
+        tmp_path,
+        release_id=release_id,
+        validation_profile_id="v0.4-validation-p3-successor",
+    )
+
+    result = _build_release(service, store, item, release_id)
+
+    manifest = json.loads(
+        (ROOT / result.release_manifest_path).read_text(encoding="utf-8")
+    )
+    assert manifest["schema_version"] == "1.1"
+    assert manifest["validation_profile"]["id"] == (
+        "v0.4-validation-p3-successor"
+    )
+    assert manifest["finding_code_policy_identity"]["id"] == (
+        "v0.4-finding-code-policy-p4"
+    )
+    assert service.verify_release(result.release_manifest_path).registered
+
+    uploaded = service.upload_release(result.release_manifest_path, dry_run=True)
+    assert uploaded.dry_run
+
+
+def test_release_rejects_legacy_approved_item_with_source_findings(
+    release_id: str,
+    tmp_path: Path,
+) -> None:
+    service, store, item, release_id = _source_blocked_run_with_forged_approval(
+        release_id
+    )
+
+    with pytest.raises(ReleaseServiceError) as caught:
+        _build_release(service, store, item, release_id)
+
+    assert caught.value.code == "approval_eligibility_mismatch"
 
 
 def test_release_build_rejects_pending_review_item(release_id: str, tmp_path: Path) -> None:

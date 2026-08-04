@@ -11,6 +11,11 @@ from src.core.canonical_identity import (
     document_identity_sha256,
     require_sha256,
 )
+from src.review.contracts import (
+    FINDING_CODE_POLICY_IDENTITY,
+    LEGACY_P3_PROFILE_IDENTITY,
+    SUCCESSOR_P3_PROFILE_IDENTITY,
+)
 
 
 class ReleaseContractError(ValueError):
@@ -316,35 +321,41 @@ def _coverage_count(value: Any, *, field: str, minimum: int) -> int:
 
 
 def validate_release_manifest_bindings(manifest: Mapping[str, Any]) -> bool:
-    """Fail closed on cross-field identities in a Release Manifest 1.0.
+    """Fail closed on cross-field identities in a Release Manifest 1.0/1.1.
 
     JSON Schema owns wire-shape validation.  This pure semantic pass repeats
     the closed-world boundaries it consumes and proves that each Release item
     is internally bound to the single profile and Blob target at the envelope.
     """
 
-    document = _closed_mapping(
-        manifest,
-        fields=frozenset({
-            "schema_version",
-            "release_id",
-            "created_at",
-            "batch_id",
-            "batch_manifest",
-            "input_manifest",
-            "validation_profile",
-            "content_sampling_profile",
-            "target",
-            "assurance",
-            "items",
-        }),
-        context="Release Manifest",
-    )
-    if document["schema_version"] != "1.0":
+    if not isinstance(manifest, Mapping):
+        _contract_error("invalid_object", "Release Manifest must be an object")
+    schema_version = manifest.get("schema_version")
+    if schema_version not in ("1.0", "1.1"):
         _contract_error(
             "invalid_schema_version",
-            "Release Manifest schema_version must be 1.0",
+            "Release Manifest schema_version must be 1.0 or 1.1",
         )
+    envelope_fields = {
+        "schema_version",
+        "release_id",
+        "created_at",
+        "batch_id",
+        "batch_manifest",
+        "input_manifest",
+        "validation_profile",
+        "content_sampling_profile",
+        "target",
+        "assurance",
+        "items",
+    }
+    if schema_version == "1.1":
+        envelope_fields.add("finding_code_policy_identity")
+    document = _closed_mapping(
+        manifest,
+        fields=frozenset(envelope_fields),
+        context="Release Manifest",
+    )
     for field in ("release_id", "created_at", "batch_id"):
         _non_empty_string(document[field], field=field)
     _artifact(document["batch_manifest"], field="batch_manifest")
@@ -353,6 +364,27 @@ def validate_release_manifest_bindings(manifest: Mapping[str, Any]) -> bool:
         document["validation_profile"],
         field="validation_profile",
     )
+    if schema_version == "1.0":
+        if dict(validation_profile) != LEGACY_P3_PROFILE_IDENTITY:
+            _contract_error(
+                "release_validation_profile_binding_mismatch",
+                "Release Manifest 1.0 must bind the exact legacy P3 profile",
+            )
+    else:
+        if dict(validation_profile) != SUCCESSOR_P3_PROFILE_IDENTITY:
+            _contract_error(
+                "release_validation_profile_binding_mismatch",
+                "Release Manifest 1.1 must bind the exact successor P3 profile",
+            )
+        finding_policy = _profile_identity(
+            document["finding_code_policy_identity"],
+            field="finding_code_policy_identity",
+        )
+        if dict(finding_policy) != FINDING_CODE_POLICY_IDENTITY:
+            _contract_error(
+                "release_finding_policy_binding_mismatch",
+                "Release Manifest 1.1 must bind the exact Finding Code Policy",
+            )
     _profile_identity(
         document["content_sampling_profile"],
         field="content_sampling_profile",

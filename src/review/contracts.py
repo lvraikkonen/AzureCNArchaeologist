@@ -267,6 +267,45 @@ class PreconditionResult:
         }
 
 
+def precondition_result_from_mapping(value: Mapping[str, Any]) -> PreconditionResult:
+    """Parse a canonical Machine/Source precondition result."""
+
+    parsed = _closed_mapping(
+        value,
+        required=frozenset({"eligible", "blockers"}),
+        context="approval preconditions",
+    )
+    if not isinstance(parsed["eligible"], bool):
+        _contract_error(
+            "invalid_precondition_result",
+            "approval preconditions eligible must be boolean",
+        )
+    blockers = parsed["blockers"]
+    if isinstance(blockers, (str, bytes, Mapping)) or not isinstance(
+        blockers,
+        Sequence,
+    ):
+        _contract_error(
+            "invalid_precondition_result",
+            "approval preconditions blockers must be an ordered array",
+        )
+    return PreconditionResult(
+        bool(parsed["eligible"]),
+        tuple(
+            ApprovalBlocker(
+                code=_closed_mapping(
+                    blocker,
+                    required=frozenset({"code", "message", "path"}),
+                    context=f"approval preconditions blockers[{index}]",
+                )["code"],
+                message=blocker["message"],
+                path=blocker["path"],
+            )
+            for index, blocker in enumerate(blockers)
+        ),
+    )
+
+
 def machine_approval_preconditions(
     execution_status: str,
     validation_status: str,
@@ -340,6 +379,7 @@ derive_source_approval_preconditions = source_approval_preconditions
 
 def resolve_finding_policy(
     *,
+    validation_schema_version: str,
     validation_profile_identity: Mapping[str, Any],
     finding_code_policy_identity: Mapping[str, Any] | None,
 ) -> str:
@@ -349,19 +389,28 @@ def resolve_finding_policy(
     Successor P3 2.1 must bind the exact frozen policy identity.
     """
 
+    version = _enum(
+        validation_schema_version,
+        ("2.0", "2.1"),
+        field="validation_schema_version",
+    )
     profile = dict(validation_profile_identity)
     policy = (
         None
         if finding_code_policy_identity is None
         else dict(finding_code_policy_identity)
     )
-    if profile == LEGACY_P3_PROFILE_IDENTITY and policy is None:
+    if version == "2.0" and profile == LEGACY_P3_PROFILE_IDENTITY and policy is None:
         return LEGACY_FINDING_POLICY_ID
-    if profile == SUCCESSOR_P3_PROFILE_IDENTITY and policy == FINDING_CODE_POLICY_IDENTITY:
+    if (
+        version == "2.1"
+        and profile == SUCCESSOR_P3_PROFILE_IDENTITY
+        and policy == FINDING_CODE_POLICY_IDENTITY
+    ):
         return str(FINDING_CODE_POLICY_IDENTITY["id"])
     _contract_error(
         "finding_policy_identity_invalid",
-        "Validation Profile and Finding Code Policy identity are not a legal pair",
+        "Validation schema, Profile, and Finding Code Policy identity are not a legal pair",
     )
 
 
@@ -512,34 +561,10 @@ def derive_approval_eligibility(
     *,
     machine: PreconditionResult,
     source: PreconditionResult,
-    evidence_binding: str,
-    inspected_states_valid: bool,
 ) -> ApprovalEligibility:
-    """Combine machine, Source, binding, and inspection preconditions."""
+    """Combine only machine and Source preconditions."""
 
-    binding = _enum(
-        evidence_binding,
-        EVIDENCE_BINDINGS,
-        field="evidence_binding",
-    )
-    if not isinstance(inspected_states_valid, bool):
-        _contract_error(
-            "invalid_inspection_result",
-            "inspected_states_valid must be boolean",
-        )
     blockers = [*machine.blockers, *source.blockers]
-    if binding != "bound":
-        blockers.append(ApprovalBlocker(
-            code="review_evidence_not_bound",
-            message="Review evidence does not bind all current hashes",
-            path="$.evidence_binding",
-        ))
-    if not inspected_states_valid:
-        blockers.append(ApprovalBlocker(
-            code="invalid_inspected_states",
-            message="Inspected states are not valid for this Batch Item",
-            path="$.inspected_states",
-        ))
     return ApprovalEligibility(
         status="blocked" if blockers else "eligible",
         blockers=tuple(blockers),
@@ -706,7 +731,8 @@ def validate_review_transition(
     validation_status: str,
     current_bindings: EvidenceBindings | Mapping[str, Any],
     decision_bindings: EvidenceBindings | Mapping[str, Any],
-    source_quality_findings: Sequence[Any],
+    source_quality_findings: Sequence[Any] = (),
+    source_preconditions: PreconditionResult | Mapping[str, Any] | None = None,
     inspection_mode: str,
     inspected_states: Sequence[InspectedState | Mapping[str, Any]],
     allowed_state_ids: Sequence[str] = (),
@@ -743,12 +769,16 @@ def validate_review_transition(
         allowed_state_ids=allowed_state_ids,
     )
     normalized_verdict = _enum(verdict, REVIEW_VERDICTS, field="verdict")
-    source = source_approval_preconditions(source_quality_findings)
+    source = (
+        source_preconditions
+        if isinstance(source_preconditions, PreconditionResult)
+        else precondition_result_from_mapping(source_preconditions)
+        if source_preconditions is not None
+        else source_approval_preconditions(source_quality_findings)
+    )
     eligibility = derive_approval_eligibility(
         machine=machine,
         source=source,
-        evidence_binding=binding,
-        inspected_states_valid=True,
     )
 
     if current_decision_id is None:
@@ -872,7 +902,6 @@ def mark_review_state_stale(state: ReviewLifecycleState) -> ReviewLifecycleState
         state,
         review="pending",
         evidence_binding="stale",
-        approval_eligibility="blocked",
     )
 
 
@@ -1010,6 +1039,7 @@ __all__ = [
     "derive_source_approval_preconditions",
     "evaluate_source_findings",
     "machine_approval_preconditions",
+    "precondition_result_from_mapping",
     "mark_review_state_stale",
     "resolve_finding_policy",
     "source_approval_preconditions",

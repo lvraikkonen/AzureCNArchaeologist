@@ -1,4 +1,4 @@
-"""Registry integration tests for the inactive v0.4 P3 contracts."""
+"""Registry integration tests for the v0.4 P3 contracts."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ from src.core.validation_context import (
     ARTIFACT_SPECS,
     CONTENT_SAMPLING_PROFILE_SPEC,
     P2_VALIDATION_PROFILE_SPEC,
+    P3_SUCCESSOR_VALIDATION_PROFILE_SPEC,
     P3_VALIDATION_PROFILE_SPEC,
     P3_VALIDATION_CONTRACT_SPECS,
     ValidationContextError,
@@ -73,7 +74,10 @@ def test_p3_is_registered_and_active_after_slice_b() -> None:
 
     active = registry.freeze()
     assert active["validation_context"]["validation_profile"]["id"] == (
-        "v0.4-validation-p3"
+        "v0.4-validation-p3-successor"
+    )
+    assert active["validation_context"]["validation_profile"] == registry._identity(
+        P3_SUCCESSOR_VALIDATION_PROFILE_SPEC
     )
 
     p3 = registry.freeze(validation_profile_id="v0.4-validation-p3")

@@ -20,6 +20,8 @@ from src.core.validation_context import (
     P1_PLANNING_BASELINE_SPEC,
     P1_VALIDATION_PROFILE_SPEC,
     P2_AMENDED_ITEM_IDS,
+    P3_SUCCESSOR_VALIDATION_PROFILE_SPEC,
+    P3_SUCCESSOR_VALIDATION_CONTRACT_SPECS,
     P2_VALIDATION_PROFILE_SPEC,
     P3_VALIDATION_CONTRACT_SPECS,
     P3_VALIDATION_PROFILE_SPEC,
@@ -94,7 +96,10 @@ def _copy_registry_artifacts(root: Path) -> None:
             target = root / relative_path
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / relative_path, target)
-    for specification in P3_VALIDATION_CONTRACT_SPECS:
+    for specification in (
+        *P3_VALIDATION_CONTRACT_SPECS,
+        *P3_SUCCESSOR_VALIDATION_CONTRACT_SPECS,
+    ):
         relative_path = specification.relative_path
         if relative_path in copied:
             continue
@@ -325,18 +330,18 @@ def test_p2_effective_baseline_changes_exactly_four_definition_hashes() -> None:
     assert tuple(changed) == P2_AMENDED_ITEM_IDS
 
 
-def test_freeze_defaults_to_p3_but_historical_p1_identity_replays() -> None:
+def test_freeze_defaults_to_successor_but_historical_p1_identity_replays() -> None:
     registry = ValidationContextRegistry(ROOT)
     frozen = registry.freeze()
     assert frozen["planning"]["baseline"]["id"] == (
         "v0.4-p2-product-definition-identity-overlay"
     )
     assert frozen["validation_context"]["validation_profile"] == {
-        "id": "v0.4-validation-p3",
-        "schema_version": "1.2",
-        "path": P3_VALIDATION_PROFILE_SPEC.relative_path,
+        "id": "v0.4-validation-p3-successor",
+        "schema_version": "1.3",
+        "path": P3_SUCCESSOR_VALIDATION_PROFILE_SPEC.relative_path,
         "sha256": sha256_file(
-            ROOT / P3_VALIDATION_PROFILE_SPEC.relative_path
+            ROOT / P3_SUCCESSOR_VALIDATION_PROFILE_SPEC.relative_path
         ),
     }
 

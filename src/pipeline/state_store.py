@@ -35,7 +35,9 @@ from src.release.contracts import (
     validate_release_manifest_bindings,
 )
 from src.review.contracts import (
+    LEGACY_P3_PROFILE_IDENTITY,
     ReviewContractError,
+    SUCCESSOR_P3_PROFILE_IDENTITY,
     evaluate_source_findings,
     resolve_finding_policy,
     classify_source_quality_findings,
@@ -424,7 +426,10 @@ class StateStore:
             "1.0": "sampled-content-evidence-1.0.schema.json"
         },
         "review_decision": {"1.0": "review-decision-1.0.schema.json"},
-        "release_manifest": {"1.0": "release-manifest-1.0.schema.json"},
+        "release_manifest": {
+            "1.0": "release-manifest-1.0.schema.json",
+            "1.1": "release-manifest-1.1.schema.json",
+        },
         "publication_receipt": {"1.0": "publication-receipt-1.0.schema.json"},
     }
 
@@ -469,15 +474,15 @@ class StateStore:
         ]
         if validation_context != active_validation_context:
             try:
-                successor_validation_context = self._validation_context.freeze(
-                    validation_profile_id="v0.4-validation-p3-successor"
+                legacy_p3_validation_context = self._validation_context.freeze(
+                    validation_profile_id="v0.4-validation-p3"
                 )["validation_context"]
             except TypeError:
-                successor_validation_context = None
-            if validation_context != successor_validation_context:
+                legacy_p3_validation_context = None
+            if validation_context != legacy_p3_validation_context:
                 raise ImmutableManifestError(
                     "New pipeline runs must use the active Validation Context "
-                    "or the explicit Slice 5A successor context"
+                    "or the explicit legacy P3 replay context"
                 )
         batch_id = frozen["batch_id"]
         directory = self.run_dir(batch_id)
@@ -755,19 +760,17 @@ class StateStore:
             )
         if kind == "validation":
             manifest = self.read_manifest(batch_id)
-            profile_id = manifest["validation_context"]["validation_profile"][
-                "id"
-            ]
-            if profile_id == "v0.4-validation-p3-successor":
+            profile = dict(manifest["validation_context"]["validation_profile"])
+            if profile == SUCCESSOR_P3_PROFILE_IDENTITY:
                 expected_version = "2.1"
-            elif profile_id == "v0.4-validation-p3":
+            elif profile == LEGACY_P3_PROFILE_IDENTITY:
                 expected_version = "2.0"
             else:
                 expected_version = "1.0"
             if value.get("schema_version") != expected_version:
                 raise StateStoreError(
                     "Validation projection schema_version does not match the "
-                    f"Batch Validation Profile {profile_id}"
+                    f"Batch Validation Profile {profile.get('id', '<missing>')}"
                 )
         if kind == "review":
             manifest = self.read_manifest(batch_id)
@@ -1139,6 +1142,11 @@ class StateStore:
                     value["content_sampling_profile"],
                 ),
             ))
+            if value.get("schema_version") == "1.1":
+                identities.append((
+                    "finding_code_policy",
+                    value["finding_code_policy_identity"],
+                ))
         for key, identity in identities:
             try:
                 self._validation_context.document_for_identity(key, identity)
@@ -1646,6 +1654,7 @@ class StateStore:
                 bindings = value["evidence"]["bindings"]
                 if version == "2.1":
                     resolve_finding_policy(
+                        validation_schema_version=version,
                         validation_profile_identity=bindings["validation_profile"],
                         finding_code_policy_identity=bindings[
                             "finding_code_policy_identity"
@@ -1673,6 +1682,7 @@ class StateStore:
                     ).to_dict()
                 else:
                     resolve_finding_policy(
+                        validation_schema_version=version,
                         validation_profile_identity=bindings["validation_profile"],
                         finding_code_policy_identity=None,
                     )

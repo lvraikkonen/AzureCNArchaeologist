@@ -85,7 +85,7 @@ FINDING_CODE_POLICY_SPEC = _ArtifactSpec(
     "data/configs/finding-code-policies/v0.4-p4.json",
     "schemas/finding-code-policy-1.0.schema.json",
 )
-ACTIVE_VALIDATION_PROFILE_SPEC = P3_VALIDATION_PROFILE_SPEC
+ACTIVE_VALIDATION_PROFILE_SPEC = P3_SUCCESSOR_VALIDATION_PROFILE_SPEC
 NON_PROFILE_CONTEXT_ARTIFACT_SPECS = (
     _ArtifactSpec(
         "applicability_map",
