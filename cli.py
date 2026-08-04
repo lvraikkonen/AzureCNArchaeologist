@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import subprocess
 import sys
 from pathlib import Path
 
@@ -158,13 +157,117 @@ def contract_validate_command(args: argparse.Namespace) -> int:
     return 0 if result.passed else 2
 
 
+def _expected_revision(value: str | None) -> int | None:
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(
+            "expected-revision must be an integer"
+        ) from error
+
+
+def release_build_command(args: argparse.Namespace) -> int:
+    from src.release.service import ReleaseService
+
+    try:
+        result = ReleaseService(ROOT, args.runs_dir).build_release(
+            batch_id=args.batch_id,
+            release_id=args.release_id,
+            item_ids=tuple(args.item_id),
+            expected_revision=int(args.expected_revision),
+            account_url=args.account_url,
+            container=args.container,
+            prefix=args.prefix or "",
+        )
+    except Exception as error:
+        print(
+            f"FAIL: {getattr(error, 'code', 'release_build_failed')}: {error}",
+            file=sys.stderr,
+        )
+        return 1
+    if args.json:
+        print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2, sort_keys=True))
+    else:
+        print(
+            f"release_id={result.release_id} batch_id={result.batch_id} "
+            f"items={len(result.item_ids)} seal={result.release_seal}"
+        )
+        print(
+            f"manifest: {result.release_manifest_path} "
+            f"sha256={result.release_manifest_sha256}"
+        )
+        print(f"revision={result.committed_revision}")
+    return 0
+
+
+def release_verify_command(args: argparse.Namespace) -> int:
+    from src.release.service import ReleaseService
+
+    try:
+        result = ReleaseService(ROOT, args.runs_dir).verify_release(
+            args.release_manifest,
+            require_batch_reference=args.require_batch_reference,
+        )
+    except Exception as error:
+        print(
+            f"FAIL: {getattr(error, 'code', 'release_verify_failed')}: {error}",
+            file=sys.stderr,
+        )
+        return 1
+    if args.json:
+        print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2, sort_keys=True))
+    else:
+        print(
+            f"release_id={result.release_id} batch_id={result.batch_id} "
+            f"items={len(result.item_ids)} registered={str(result.registered).lower()}"
+        )
+        print(
+            f"manifest: {result.release_manifest_path} "
+            f"sha256={result.release_manifest_sha256}"
+        )
+        print(f"seal={result.release_seal}")
+    return 0
+
+
 def upload_command(args: argparse.Namespace) -> int:
-    command = [sys.executable, str(ROOT / "scripts" / "upload_to_blob.py"), "upload", "--output-dir", args.output_dir]
-    if args.prefix:
-        command.extend(["--prefix", args.prefix])
-    if args.dry_run:
-        command.append("--dry-run")
-    return subprocess.run(command, cwd=ROOT).returncode
+    from src.release.service import ReleaseService
+
+    try:
+        result = ReleaseService(ROOT, args.runs_dir).upload_release(
+            args.release_manifest,
+            expected_revision=_expected_revision(args.expected_revision),
+            dry_run=args.dry_run,
+        )
+    except argparse.ArgumentTypeError as error:
+        print(f"ARGUMENT_ERROR: {error}", file=sys.stderr)
+        return 2
+    except Exception as error:
+        print(
+            f"FAIL: {getattr(error, 'code', 'release_upload_failed')}: {error}",
+            file=sys.stderr,
+        )
+        return 1
+    if args.json:
+        print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2, sort_keys=True))
+    else:
+        verb = "DRY-RUN" if result.dry_run else "PUBLISHED"
+        print(
+            f"{verb} release_id={result.release_id} batch_id={result.batch_id} "
+            f"items={len(result.item_ids)}"
+        )
+        if result.publication_receipt_path:
+            print(
+                f"receipt: {result.publication_receipt_path} "
+                f"sha256={result.publication_receipt_sha256}"
+            )
+        if result.committed_revision is not None:
+            print(f"revision={result.committed_revision}")
+    return 0
+
+
+release_upload_command = upload_command
 
 
 def list_products_command(args: argparse.Namespace) -> int:
@@ -242,11 +345,52 @@ def create_parser() -> argparse.ArgumentParser:
     validate.add_argument("--page-model", choices=["FlexibleContentPage", "SupportArticlePage"], required=True)
     validate.set_defaults(func=contract_validate_command)
 
-    upload = subparsers.add_parser("upload", help="Upload validation-passed Business Payloads")
-    upload.add_argument("--output-dir", default="output/payloads")
-    upload.add_argument("--prefix")
+    release_build = subparsers.add_parser(
+        "release-build",
+        help="Create an immutable Release from approved Batch Items",
+    )
+    release_build.add_argument("--batch-id", required=True)
+    release_build.add_argument("--release-id", required=True)
+    release_build.add_argument("--item-id", action="append", required=True)
+    release_build.add_argument("--expected-revision", required=True)
+    release_build.add_argument("--account-url", required=True)
+    release_build.add_argument("--container", required=True)
+    release_build.add_argument("--prefix", default="")
+    release_build.add_argument("--runs-dir", default="runs")
+    release_build.add_argument("--json", action="store_true")
+    release_build.set_defaults(func=release_build_command)
+
+    release_verify = subparsers.add_parser(
+        "release-verify",
+        help="Verify a sealed Release Manifest and current Batch bindings",
+    )
+    release_verify.add_argument("--release-manifest", required=True)
+    release_verify.add_argument("--runs-dir", default="runs")
+    release_verify.add_argument("--require-batch-reference", action="store_true")
+    release_verify.add_argument("--json", action="store_true")
+    release_verify.set_defaults(func=release_verify_command)
+
+    upload = subparsers.add_parser(
+        "upload",
+        help="Upload a sealed Release Manifest",
+    )
+    upload.add_argument("--release-manifest", required=True)
+    upload.add_argument("--expected-revision")
     upload.add_argument("--dry-run", action="store_true")
+    upload.add_argument("--runs-dir", default="runs")
+    upload.add_argument("--json", action="store_true")
     upload.set_defaults(func=upload_command)
+
+    release_upload = subparsers.add_parser(
+        "release-upload",
+        help="Alias for upload --release-manifest",
+    )
+    release_upload.add_argument("--release-manifest", required=True)
+    release_upload.add_argument("--expected-revision")
+    release_upload.add_argument("--dry-run", action="store_true")
+    release_upload.add_argument("--runs-dir", default="runs")
+    release_upload.add_argument("--json", action="store_true")
+    release_upload.set_defaults(func=release_upload_command)
 
     products = subparsers.add_parser("list-products")
     products.set_defaults(func=list_products_command)

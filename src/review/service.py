@@ -192,6 +192,27 @@ class ReviewService:
             "inspection_mode": snapshot.inspection_mode,
         }
 
+    def evidence_snapshot(
+        self,
+        batch_id: str,
+        item_id: str,
+        *,
+        manifest: Mapping[str, Any] | None = None,
+    ) -> ReviewEvidenceSnapshot:
+        """Return the authoritative current evidence snapshot for one item."""
+
+        current_manifest = (
+            copy.deepcopy(dict(manifest))
+            if manifest is not None
+            else self.store.read_manifest(batch_id)
+        )
+        frozen = self.store.read_input_manifest(batch_id)
+        items = {item.item_id: item for item in items_from_dicts(frozen["items"])}
+        item = items.get(item_id)
+        if item is None:
+            raise _error("unknown_item", f"Unknown Batch Item: {item_id}")
+        return self._snapshot(batch_id, current_manifest, item)
+
     def decide(self, request: ReviewDecisionRequest) -> ReviewDecisionResult:
         reviewer = request.reviewer.strip()
         if not reviewer:

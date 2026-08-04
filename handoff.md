@@ -5,7 +5,7 @@
 > 代码基线：c9a6ee1d0d0f99961d3fa8ada2351e69e763df7c
 > 当前任务只完成回滚与文档收敛，没有开始 Step 4 代码实现。
 
-> 2026-08-03 更新：后续实现已完成 Step 4 Slice A-D。当前代码已包含 P3 Profile、可复现抽样内容验证、Review Queue 2.0、append-only Review Decision service、`pipeline-review-list` / `pipeline-review-decide` CLI，以及本地 `/review` Dashboard Review Workbench 与 `pipeline-review-serve` loopback bridge。不可变 Release、upload gate 和 publication receipt 仍未实现；本文中关于 Slice A-D “待实现”的内容仅作历史上下文参考。
+> 2026-08-03 更新：后续实现已完成 Step 4 Slice A-E。当前代码已包含 P3 Profile、可复现抽样内容验证、Review Queue 2.0、append-only Review Decision service、`pipeline-review-list` / `pipeline-review-decide` CLI、本地 `/review` Dashboard Review Workbench 与 `pipeline-review-serve` loopback bridge、不可变 Release、Release-only upload gate 和 publication receipt。本文中关于 Slice A-E “待实现”的内容仅作历史上下文参考。
 
 ## 1. 新 thread 的任务
 
@@ -101,18 +101,16 @@ runs/{batch_id}/logs/pipeline.jsonl
 - 当前 Next 页面构建期静态 import `dashboard/app/generated/capability-dashboard.json`，builder 没有 Batch 参数；浏览器不能直接调用 Python domain service，必须显式设计 local-only bridge。
 - 仓库包含 `.openai/hosting.json`；当前实现没有 Next API route、server action、D1 或 R2。任何有写能力的 review route 都必须保持 local-only，不能随托管构建暴露。
 
-### Upload
+### Release 与 Upload
 
-- 现有 scripts/upload_to_blob.py 仍是 legacy 路径。
-- 它主要信任 sidecar execution/validation 与 Payload hash；尚未强制检查 Batch Manifest、current Review Decision 或 sealed Release。
-- 它上传后也没有完整的 authoritative Publication transition。
-- Blob uploader 当前允许 overwrite，且没有满足 sealed Release 所需的远端 identity/ETag 校验。
+- `release-build` 从同一个 Batch 中显式选择当前 approved、eligible、bound 且哈希匹配的 items，在临时目录复制 payload 和 evidence snapshot，写 canonical `release-manifest.json` 后原子 finalize 到 `output/releases/{release_id}`，再用 expected revision 更新 Batch Manifest 的 Release 状态和 append-only reference。
+- `release-verify` 只接受 `output/releases/{release_id}/release-manifest.json`，重放 manifest canonical bytes、payload/source/validation/review/sampling hashes、current Batch bindings 和 Release seal。
+- 正式 `cli.py upload` 只接受 `--release-manifest`；dry-run 不构造 Blob client，不写状态。
+- 非 dry-run upload 使用 conditional create；远端已有 Blob 只有在下载后 SHA 与 Release payload 完全一致时才视为幂等成功。全部远端校验成功后写 `runs/{batch_id}/publication/receipts/{release_id}.publication-receipt.json`，再用 expected revision append receipt reference 并将 included items 标记为 `published`。
+- `scripts/upload_to_blob.py` 保留为 `legacy-upload` 隔离测试工具，不再是正式发布入口；它不能作为 approval、Release 或 publication 权威。
 
-## 5. 当前明确缺失（Slice D 后）
+## 5. 当前明确缺失（Slice E 后）
 
-- immutable Release builder、Release Manifest staging、seal 与 verify。
-- upload 的 Release-only gate、publication receipt 和 Batch Manifest publication update。
-- Release dry-run、upload retry、远端 Blob identity / ETag 校验。
 - 正式 Source Finding Disposition、Report 2.0 和复杂表格视觉门禁；这些属于 Step 5。
 - Dashboard 公共托管写入口、多用户权限、任务分派、评论协作；这些不属于 v0.4。
 
@@ -342,20 +340,26 @@ feat: turn dashboard into a controlled review workbench
 
 ### Slice E：不可变 Release 与 upload gate
 
-新增 Release service；以下只是建议接口，名称在实现时冻结：
+状态：已完成。正式入口已冻结为 `release-build`、`release-verify`、`upload --release-manifest` / `release-upload`；legacy 目录扫描仅保留为 `scripts/upload_to_blob.py legacy-upload` 测试工具。
+
+已新增 Release service；实际冻结接口：
 
 ~~~text
 release-build
 release-verify
-release-upload --dry-run
-release-upload
+upload --release-manifest --dry-run
+upload --release-manifest --expected-revision <revision>
+release-upload  # upload 的显式别名
 ~~~
 
-建议路径：
+实际路径：
 
 ~~~text
 output/releases/{release_id}/
 ├── release-manifest.json
+├── evidence/
+│   ├── batch-manifest.json
+│   └── input-manifest.json
 └── payloads/{language}/...
 ~~~
 

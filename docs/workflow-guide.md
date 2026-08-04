@@ -194,22 +194,41 @@ warning 和预期 `skipped` 不会触发退出码 `2`。
 
 pipeline 不调用 Blob 上传。发布操作必须在人工审核和组织自己的发布门禁完成后显式执行。
 
-如果现有部署流程继续使用 `upload`，应明确指定已经批准的 Batch Run 输出目录和独立前缀，例如：
+v0.4 正式发布不扫描任意输出目录。先把当前 approved、eligible 且哈希匹配的
+Batch Items 晋升为不可变 Release，再用 sealed Release Manifest 上传：
 
 ```bash
+uv run cli.py release-build \
+  --batch-id <batch-id> \
+  --release-id <release-id> \
+  --item-id zh-cn/<resource-key> \
+  --expected-revision <revision> \
+  --account-url <account-url> \
+  --container <container> \
+  --prefix cms/<release-id>
+
+uv run cli.py release-verify \
+  --release-manifest output/releases/<release-id>/release-manifest.json \
+  --require-batch-reference
+
 uv run cli.py upload \
-  --output-dir runs/<batch-id>/outputs \
-  --prefix cms/<approved-release>
+  --release-manifest output/releases/<release-id>/release-manifest.json \
+  --dry-run
+
+uv run cli.py upload \
+  --release-manifest output/releases/<release-id>/release-manifest.json \
+  --expected-revision <revision>
 ```
 
 执行前至少确认：
 
 - `batch-report.json` 与 `batch-manifest.json` 计数一致；
 - 待发布 item 的 execution 与 validation 均成功；
-- Review Queue 已由外部人工流程完成批准；
-- 上传目标和前缀不会覆盖错误版本。
+- Review Decision 当前为 approved，且 evidence binding 与 approval eligibility 仍满足；
+- Release Manifest、payload、Validation、Sampling Plan 和 Review Decision hashes 均通过 `release-verify`；
+- 上传目标和前缀与 Release Manifest 的 frozen target 一致。
 
-上传不会反向修改 v0.3 Batch Run 的 publication 状态；该状态的正式发布工作流留给后续版本。
+上传成功并远端复核后才写 Publication Receipt，并把 Batch Manifest 中的 included items 标记为 `published`。上传失败不修改 Release，publication 保持 `not_published`，可对同一 Release 幂等重试。
 
 ## 自动化建议
 

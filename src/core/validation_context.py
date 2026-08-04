@@ -321,6 +321,22 @@ class ValidationContextRegistry:
             return None
         return copy.deepcopy(self._verify_p3_sampling_profile(profile))
 
+    def content_sampling_profile_identity_for(
+        self,
+        validation_profile_identity: Mapping[str, Any],
+    ) -> dict[str, str] | None:
+        """Return the frozen Content Sampling Profile identity for P3."""
+
+        profile = self.content_sampling_profile_for(validation_profile_identity)
+        if profile is None:
+            return None
+        return {
+            "id": str(profile["profile_id"]),
+            "schema_version": str(profile["schema_version"]),
+            "path": CONTENT_SAMPLING_PROFILE_SPEC.relative_path,
+            "sha256": str(self._identity(CONTENT_SAMPLING_PROFILE_SPEC)["sha256"]),
+        }
+
     def effective_planning_baseline(self) -> dict[str, Any]:
         """Return the current approved baseline after applying its overlay."""
         return self._effective_planning_baseline(

@@ -31,6 +31,7 @@ from src.content_sampling.artifacts import artifact_json_sha256, artifact_json_t
 from src.pipeline.models import BatchManifest, InputManifest, utc_now
 from src.release.contracts import (
     ReleaseContractError,
+    validate_publication_receipt_bindings,
     validate_release_manifest_bindings,
 )
 from src.review.contracts import (
@@ -420,6 +421,7 @@ class StateStore:
         },
         "review_decision": {"1.0": "review-decision-1.0.schema.json"},
         "release_manifest": {"1.0": "release-manifest-1.0.schema.json"},
+        "publication_receipt": {"1.0": "publication-receipt-1.0.schema.json"},
     }
 
     def __init__(self, root: str | Path = ".", runs_dir: str | Path = "runs") -> None:
@@ -886,6 +888,66 @@ class StateStore:
                 f"Review Decision path is outside review/decisions: {relative}"
             )
         return self._read(self.run_dir(batch_id) / relative, "review_decision")
+
+    def write_publication_receipt(
+        self,
+        batch_id: str,
+        value: Mapping[str, Any],
+        *,
+        relative_path: str | Path,
+    ) -> Path:
+        if not RepositoryLock.is_owned_by_current_process(
+            self.lock_root,
+            batch_id=batch_id,
+        ):
+            raise RepositoryLockError(
+                f"Publication Receipt writes require the RepositoryLock for {batch_id}"
+            )
+        relative = Path(relative_path)
+        if relative.is_absolute() or ".." in relative.parts:
+            raise StateStoreError(
+                "Publication Receipt path must remain inside the run directory: "
+                f"{relative}"
+            )
+        expected = Path(
+            "publication",
+            "receipts",
+            f"{value['release_id']}.publication-receipt.json",
+        )
+        if relative != expected:
+            raise StateStoreError(
+                "Publication Receipt path must be canonical: "
+                f"{expected.as_posix()}"
+            )
+        if value.get("batch_id") != batch_id:
+            raise ManifestValidationError(
+                "Publication Receipt batch_id does not match its run directory"
+            )
+        self._validate(value, "publication_receipt")
+        path = self.run_dir(batch_id) / relative
+        self._write_json_once(path, value, "publication_receipt")
+        return path
+
+    def read_publication_receipt(
+        self,
+        batch_id: str,
+        *,
+        relative_path: str | Path,
+    ) -> dict[str, Any]:
+        relative = Path(relative_path)
+        if relative.is_absolute() or ".." in relative.parts:
+            raise StateStoreError(
+                "Publication Receipt path must remain inside the run directory: "
+                f"{relative}"
+            )
+        if relative.parts[:2] != ("publication", "receipts"):
+            raise StateStoreError(
+                f"Publication Receipt path is outside publication/receipts: {relative}"
+            )
+        return self._read(
+            self.run_dir(batch_id) / relative,
+            "publication_receipt",
+        )
 
     def write_json_artifact_once(
         self,
@@ -1566,6 +1628,13 @@ class StateStore:
             except ReleaseContractError as error:
                 raise ManifestValidationError(
                     f"Invalid Release Manifest binding ({error.code}): {error}"
+                ) from error
+        elif kind == "publication_receipt":
+            try:
+                validate_publication_receipt_bindings(value)
+            except ReleaseContractError as error:
+                raise ManifestValidationError(
+                    f"Invalid Publication Receipt binding ({error.code}): {error}"
                 ) from error
 
     def _validator(self, kind: str, version: str) -> Draft202012Validator:

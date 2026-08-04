@@ -59,8 +59,8 @@ class ExperimentalUploadIsolationTests(unittest.TestCase):
         return subprocess.run(
             [
                 sys.executable,
-                str(ROOT / "cli.py"),
-                "upload",
+                str(ROOT / "scripts" / "upload_to_blob.py"),
+                "legacy-upload",
                 "--output-dir",
                 str(output_dir),
                 "--dry-run",

@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Upload only validated CMS Business Payloads and update publication state."""
+"""Legacy directory-scanning uploader kept for quarantine policy tests.
+
+Formal publication uses ``cli.py upload --release-manifest`` and the Release
+service.  This script must not be treated as an approval or publication
+authority.
+"""
 
 from __future__ import annotations
 
@@ -155,7 +160,7 @@ def upload_output_directory(output_dir: str = "output/payloads", blob_prefix: st
 def main() -> int:
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
-    upload = subparsers.add_parser("upload")
+    upload = subparsers.add_parser("legacy-upload")
     upload.add_argument("--output-dir", default="output/payloads")
     upload.add_argument("--prefix")
     upload.add_argument("--dry-run", action="store_true")

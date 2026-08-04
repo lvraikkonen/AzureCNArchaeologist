@@ -305,7 +305,7 @@ Pricing 始终写入 `{language}/pricing`；同一 Product Definition 即使属�
 
 ### v0.4：建立可追溯内容验证与最小批准交付闭环
 
-> 状态：Step 0–3 已完成；Step 4 Slice A-D 已完成 P3 Profile、可复现抽样内容验证、Review Queue 2.0、append-only Review Decision service 与 CLI，以及本地 Dashboard Review Workbench。不可变 Release 和 upload gate 仍在后续切片。
+> 状态：Step 0–3 已完成；Step 4 Slice A-E 已完成 P3 Profile、可复现抽样内容验证、Review Queue 2.0、append-only Review Decision service 与 CLI、本地 Dashboard Review Workbench、不可变 Release 和 Release-only upload gate。
 
 #### 目标与保证边界
 
@@ -382,8 +382,8 @@ v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管�
 - 当前 CLI 已提供 `pipeline-review-list`、`pipeline-review-decide` 与本地 `pipeline-review-serve`，并通过 CLI 和 Dashboard 共用的受控 service 写入 append-only decision、更新 `batch-manifest.json` current reference、binding 和 approval eligibility；
 - Dashboard 已保留 `/` 只读能力账本，并新增 `/review` 本地审核工作台，分别呈现 Batch、Machine Validation、Review、Evidence Binding、Release-ready 只读派生值、Release reference 和 Publication reference；approve/reject 必须调用与 CLI 共用的受控服务，Dashboard 不直接编辑投影或 manifest；
 - Review Decision append-only，绑定 reviewer、时间、Source/Payload/validation hashes、Sampling Plan、人工检查状态、verdict、reason 和 notes。Step 4 Approval Eligibility 还要求无未处置 Source Quality Finding；否则保持 pending 或 rejected。机器失败不能人工覆盖，证据变化使旧决定 stale；
-- 后续 Slice 只有 `execution=succeeded + validation=passed + approval_eligible=true + review=approved` 且全部哈希仍匹配的项目可以复制到 write-once `output/releases/{release_id}`；一个 Release 只绑定一个 Batch，并由 canonical Release Manifest SHA + 全 payload hashes 原子 seal；
-- 后续 upload gate 只接受 sealed Release，不扫描任意 output 目录。上传成功后才记录 publication receipt 和 `published`，失败可对同一 Release 幂等重试；
+- 只有 `execution=succeeded + validation=passed + approval_eligible=true + review=approved` 且全部哈希仍匹配的项目可以复制到 write-once `output/releases/{release_id}`；一个 Release 只绑定一个 Batch，并由 canonical Release Manifest SHA + 全 payload hashes 原子 seal；
+- upload gate 只接受 sealed Release Manifest，不扫描任意 output 目录。上传成功后才记录 publication receipt 和 `published`，失败可对同一 Release 幂等重试；
 - 报告和 UI 必须明确这是 Sampled State Content Consistency，不得声称未抽中状态、全部 Pricing Facts、Commercial Price Accuracy 或视觉等价已被证明。
 
 ##### P3 核心能力：Dashboard 审核工作台

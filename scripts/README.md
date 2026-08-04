@@ -32,17 +32,27 @@ uv run scripts/auto_copy_html.py --language en-us --support-type ICP
 
 ## Payload 上传
 
-`upload_to_blob.py` 默认仅扫描 `output/payloads`。每个 payload 必须有镜像路径的 sidecar，且：
+正式发布入口是 `cli.py upload --release-manifest`，只接受已经由
+`release-build` 生成并通过 `release-verify` 校验的 sealed Release。
+
+```bash
+uv run cli.py release-build --batch-id <batch-id> --release-id <release-id> --item-id zh-cn/<resource-key> --expected-revision <revision> --account-url <account-url> --container <container> --prefix cms/<release-id>
+uv run cli.py release-verify --release-manifest output/releases/<release-id>/release-manifest.json --require-batch-reference
+uv run cli.py upload --release-manifest output/releases/<release-id>/release-manifest.json --dry-run
+uv run cli.py upload --release-manifest output/releases/<release-id>/release-manifest.json --expected-revision <revision>
+```
+
+`upload_to_blob.py legacy-upload` 仅保留为旧目录扫描隔离测试工具。它扫描
+`output/payloads`，每个 payload 必须有镜像路径的 sidecar，且：
 
 - `execution=succeeded`
 - `validation=passed`
 - sidecar 中的 payload SHA-256 与文件一致
 
-`output/diagnostics` 和验证失败的候选 payload 不会上传。
+`output/diagnostics` 和验证失败的候选 payload 不会上传。该脚本不检查
+Batch Manifest、Review Decision、Release Manifest 或 Publication Receipt，
+不得作为正式发布入口。
 
 ```bash
-uv run cli.py upload --output-dir output/payloads --prefix cms --dry-run
-uv run cli.py upload --output-dir output/payloads --prefix cms
+uv run scripts/upload_to_blob.py legacy-upload --output-dir output/payloads --prefix cms --dry-run
 ```
-
-外部存储交付成功后，脚本将对应 sidecar 的 `publication` 更新为 `published`。

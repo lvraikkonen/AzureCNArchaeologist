@@ -48,7 +48,6 @@ from src.core.source_state_evidence import (
 )
 from src.core.strict_soft_category_projection import StrictSoftCategoryProjectionError
 from src.core.validation_context import (
-    CONTENT_SAMPLING_PROFILE_SPEC,
     ValidationContextRegistry,
 )
 from src.pipeline.models import BatchItem
@@ -142,19 +141,12 @@ def _profile_identity(
     manifest: Mapping[str, Any],
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     validation_profile = dict(manifest["validation_context"]["validation_profile"])
-    sampling = registry.content_sampling_profile_for(validation_profile)
-    if sampling is None:
+    sampling_identity = registry.content_sampling_profile_identity_for(
+        validation_profile
+    )
+    if sampling_identity is None:
         raise ValueError("P3 sampled validation requires a content sampling profile")
-    return validation_profile, {
-        "id": str(sampling["profile_id"]),
-        "schema_version": str(sampling["schema_version"]),
-        "path": CONTENT_SAMPLING_PROFILE_SPEC.relative_path,
-        "sha256": str(
-            registry._identity(  # type: ignore[attr-defined]
-                CONTENT_SAMPLING_PROFILE_SPEC
-            )["sha256"]
-        ),
-    }
+    return validation_profile, sampling_identity
 
 
 class SampledValidationRuntime:

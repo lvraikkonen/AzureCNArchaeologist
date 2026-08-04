@@ -17,7 +17,7 @@ Azure中国定价网站 (https://www.azure.cn/pricing/) 原维护团队已解散
 - 🏗️ **深度建模**: ✅ 构建策略化提取器架构，支持3+1策略自动识别
 - 🤖 **统一批次工作流**: ✅ v0.3 已完成；七阶段 pipeline 支持1-8并发、严格恢复和可追溯状态
 - 📦 **CMS就绪**: ✅ 输出兼容 CMS 业务契约与 Diagnostic Sidecar 1.1 的 JSON；379 个可运行批次项通过当前本地契约验证
-- 🔄 **可追溯工作流**: ✅ 从快照发现到 P3 抽样内容验证、Review Queue 2.0、append-only Review Decision、本地 Dashboard Review Workbench 和批次报告已通过本地回归；不可变 Release 与正式 upload gate 仍在后续切片
+- 🔄 **可追溯工作流**: ✅ 从快照发现到 P3 抽样内容验证、Review Queue 2.0、append-only Review Decision、本地 Dashboard Review Workbench、不可变 Release、Release-only upload gate 和批次报告已通过本地回归
 
 v0.3 全量验收结果为 434 项终态守恒（379 项通过、55 项预期跳过）；详见 [`reports/v0.3/acceptance-status.md`](reports/v0.3/acceptance-status.md)。v0.4 当前已在 P3 Profile 下生成抽样验证证据，并支持 CLI 与本地 Dashboard Workbench 记录 hash-bound 审核决定；本版本仍没有执行发布。
 
@@ -42,7 +42,7 @@ v0.3 全量验收结果为 434 项终态守恒（379 项通过、55 项预期跳
 
 ### 整体架构图
 
-下图是收敛后的 v0.4 目标流程。当前已实现到抽取、P3 抽样机器验证、Review Queue 2.0、CLI 受控 approve/reject 和本地 Dashboard 审核工作台；不可变 Release 与正式 upload gate 尚待后续切片完成。
+下图是收敛后的 v0.4 目标流程。当前已实现抽取、P3 抽样机器验证、Review Queue 2.0、CLI 受控 approve/reject、本地 Dashboard 审核工作台、不可变 Release 和 Release-only upload gate。
 
 ```mermaid
 flowchart LR
@@ -69,7 +69,7 @@ flowchart LR
 
 ## v0.4 目标日常生产流程
 
-> 当前实现边界：Step 4 Slice A-D 已提供 P3 sampled validation runtime、Review Queue 2.0、append-only Review Decision service、`pipeline-review-list` / `pipeline-review-decide` CLI，以及本地 `/review` Dashboard Workbench。Release 与 upload gate 尚未实现。实施边界见 [v0.4 execution plan](plans/v0.4-execution-plan.md)，代码导航见 [handoff](handoff.md)。
+> 当前实现边界：Step 4 Slice A-E 已提供 P3 sampled validation runtime、Review Queue 2.0、append-only Review Decision service、`pipeline-review-list` / `pipeline-review-decide` CLI、本地 `/review` Dashboard Workbench、`release-build` / `release-verify` 和 `upload --release-manifest`。实施边界见 [v0.4 execution plan](plans/v0.4-execution-plan.md)，代码导航见 [handoff](handoff.md)。
 
 ### 1. 接收上游 HTML 与配置
 
@@ -250,7 +250,7 @@ rejected item 不进入 Release。修复后通过新的 Batch 重新抽取、验
 
 Review Decision 的 verdict 作用于整个语言级 Batch Item。人工实际检查的是该 item 中若干状态；批准不会把未检查状态描述成人工逐项验证通过。
 
-### 6. 目标：创建不可变 Release（后续 Slice）
+### 6. 创建不可变 Release
 
 人工批准不会移动或覆盖 runs 下的 canonical Payload。一个 Release 只从一个 Batch Run 复制当前仍满足全部门禁的项目：
 
@@ -273,7 +273,24 @@ Release 规则：
 - pending、rejected、stale、machine-failed、known_unsupported 和 experimental artifact 一律拒绝；
 - Release staging 不等于 published。
 
-### 7. 目标：校验并上传 Blob（后续 Slice）
+示例：
+
+~~~bash
+uv run cli.py release-build \
+  --batch-id <batch-id> \
+  --release-id <release-id> \
+  --item-id zh-cn/<resource-key> \
+  --expected-revision <manifest-revision> \
+  --account-url https://<account>.blob.core.chinacloudapi.cn \
+  --container cms \
+  --prefix releases/<release-id>
+
+uv run cli.py release-verify \
+  --release-manifest output/releases/<release-id>/release-manifest.json \
+  --require-batch-reference
+~~~
+
+### 7. 校验并上传 Blob
 
 正式 upload 只接受 sealed Release Manifest，不扫描任意 output 目录，也不把 sidecar 当批准权威。
 
@@ -286,6 +303,18 @@ Release 规则：
 5. 最后把权威 Publication 状态更新为 published。
 
 上传失败不修改 Release，publication 保持 not_published；修复连接、权限或远端问题后可以幂等重试同一 Release。
+
+示例：
+
+~~~bash
+uv run cli.py upload \
+  --release-manifest output/releases/<release-id>/release-manifest.json \
+  --dry-run
+
+uv run cli.py upload \
+  --release-manifest output/releases/<release-id>/release-manifest.json \
+  --expected-revision <manifest-revision>
+~~~
 
 ### 8. 失败回路
 

@@ -6,7 +6,11 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 
-from src.core.canonical_identity import canonical_sha256, require_sha256
+from src.core.canonical_identity import (
+    canonical_sha256,
+    document_identity_sha256,
+    require_sha256,
+)
 
 
 class ReleaseContractError(ValueError):
@@ -585,6 +589,225 @@ def validate_release_manifest_bindings(manifest: Mapping[str, Any]) -> bool:
     return True
 
 
+def derive_release_content_sha256(manifest: Mapping[str, Any]) -> str:
+    """Hash the Batch-bound payload identities independent of target/time."""
+
+    validate_release_manifest_bindings(manifest)
+    return canonical_sha256({
+        "batch_id": manifest["batch_id"],
+        "payloads": [
+            {
+                "item_id": item["item_id"],
+                "payload_sha256": item["payload"]["sha256"],
+            }
+            for item in sorted(manifest["items"], key=lambda value: value["item_id"])
+        ],
+    })
+
+
+def validate_publication_receipt_bindings(receipt: Mapping[str, Any]) -> bool:
+    """Fail closed on Publication Receipt 1.0 identities."""
+
+    document = _closed_mapping(
+        receipt,
+        fields=frozenset({
+            "schema_version",
+            "receipt_id",
+            "published_at",
+            "batch_id",
+            "release_id",
+            "release_manifest",
+            "release_seal",
+            "target",
+            "items",
+        }),
+        context="Publication Receipt",
+    )
+    if document["schema_version"] != "1.0":
+        _contract_error(
+            "invalid_schema_version",
+            "Publication Receipt schema_version must be 1.0",
+        )
+    for field in ("receipt_id", "published_at", "batch_id", "release_id"):
+        _non_empty_string(document[field], field=field)
+    try:
+        require_sha256(document["receipt_id"], field="receipt_id")
+        require_sha256(document["release_seal"], field="release_seal")
+    except ValueError as error:
+        _contract_error("invalid_sha256", str(error))
+    _artifact(document["release_manifest"], field="release_manifest")
+    target = _closed_mapping(
+        document["target"],
+        fields=frozenset({"account_url", "container", "prefix"}),
+        context="target",
+    )
+    _non_empty_string(target["account_url"], field="target.account_url")
+    target_container = _non_empty_string(
+        target["container"],
+        field="target.container",
+    )
+    if not isinstance(target["prefix"], str):
+        _contract_error(
+            "invalid_string",
+            "target.prefix must be a string",
+        )
+    if target["prefix"].startswith("/") or ".." in target["prefix"].split("/"):
+        _contract_error(
+            "invalid_relative_path",
+            "target.prefix must not be absolute or contain '..'",
+        )
+
+    items = document["items"]
+    if isinstance(items, (str, bytes, Mapping)) or not isinstance(
+        items, Sequence
+    ):
+        _contract_error("invalid_receipt_items", "items must be an array")
+    if not items:
+        _contract_error(
+            "empty_receipt_items",
+            "Publication Receipt items cannot be empty",
+        )
+    item_fields = frozenset({
+        "item_id",
+        "resource_key",
+        "language",
+        "payload",
+        "target_blob",
+        "remote",
+    })
+    parsed_items = tuple(
+        _closed_mapping(
+            item,
+            fields=item_fields,
+            context=f"items[{index}]",
+        )
+        for index, item in enumerate(items)
+    )
+    item_ids: list[str] = []
+    remote_blobs: list[tuple[str, str]] = []
+    for index, item in enumerate(parsed_items):
+        resource_key = _non_empty_string(
+            item["resource_key"],
+            field=f"items[{index}].resource_key",
+        )
+        language = _enum(
+            item["language"],
+            ("zh-cn", "en-us"),
+            field=f"items[{index}].language",
+        )
+        item_id = _non_empty_string(
+            item["item_id"],
+            field=f"items[{index}].item_id",
+        )
+        if item_id != f"{language}/{resource_key}":
+            _contract_error(
+                "receipt_item_identity_mismatch",
+                "Publication Receipt item_id must equal language/resource_key",
+            )
+        item_ids.append(item_id)
+        payload = _closed_mapping(
+            item["payload"],
+            fields=frozenset({"release_path", "sha256"}),
+            context=f"items[{index}].payload",
+        )
+        _relative_path(
+            payload["release_path"],
+            field=f"items[{index}].payload.release_path",
+        )
+        try:
+            payload_sha256 = require_sha256(
+                payload["sha256"],
+                field=f"items[{index}].payload.sha256",
+            )
+        except ValueError as error:
+            _contract_error("invalid_sha256", str(error))
+        target_blob = _closed_mapping(
+            item["target_blob"],
+            fields=frozenset({"container", "name"}),
+            context=f"items[{index}].target_blob",
+        )
+        blob_container = _non_empty_string(
+            target_blob["container"],
+            field=f"items[{index}].target_blob.container",
+        )
+        blob_name = _relative_path(
+            target_blob["name"],
+            field=f"items[{index}].target_blob.name",
+        )
+        if blob_container != target_container:
+            _contract_error(
+                "receipt_target_container_mismatch",
+                "Receipt target Blob container must equal the envelope target",
+            )
+        remote = _closed_mapping(
+            item["remote"],
+            fields=frozenset({
+                "account_url",
+                "container",
+                "name",
+                "sha256",
+                "content_length",
+                "etag",
+            }),
+            context=f"items[{index}].remote",
+        )
+        if remote["account_url"] != target["account_url"]:
+            _contract_error(
+                "receipt_remote_account_mismatch",
+                "Remote account URL must equal the frozen target",
+            )
+        if remote["container"] != blob_container or remote["name"] != blob_name:
+            _contract_error(
+                "receipt_remote_blob_mismatch",
+                "Remote Blob identity must equal target_blob",
+            )
+        try:
+            remote_sha256 = require_sha256(
+                remote["sha256"],
+                field=f"items[{index}].remote.sha256",
+            )
+        except ValueError as error:
+            _contract_error("invalid_sha256", str(error))
+        if remote_sha256 != payload_sha256:
+            _contract_error(
+                "receipt_remote_payload_mismatch",
+                "Remote SHA-256 must equal payload SHA-256",
+            )
+        if (
+            isinstance(remote["content_length"], bool)
+            or not isinstance(remote["content_length"], int)
+            or remote["content_length"] < 0
+        ):
+            _contract_error(
+                "invalid_content_length",
+                "remote.content_length must be a non-negative integer",
+            )
+        _non_empty_string(remote["etag"], field=f"items[{index}].remote.etag")
+        remote_blobs.append((blob_container, blob_name))
+    if len(set(item_ids)) != len(item_ids):
+        _contract_error(
+            "duplicate_receipt_item_id",
+            "Publication Receipt item_id values must be unique",
+        )
+    if len(set(remote_blobs)) != len(remote_blobs):
+        _contract_error(
+            "duplicate_receipt_blob_identity",
+            "Publication Receipt remote Blob identities must be unique",
+        )
+    if document["receipt_id"] != derive_publication_receipt_id(document):
+        _contract_error(
+            "receipt_identity_mismatch",
+            "Publication Receipt identity does not match its canonical body",
+        )
+    return True
+
+
+def derive_publication_receipt_id(receipt: Mapping[str, Any]) -> str:
+    """Hash a Publication Receipt while excluding its self identity."""
+
+    return document_identity_sha256(receipt, "receipt_id")
+
+
 def derive_release_seal(
     manifest_sha256: str,
     payload_hashes_by_item: Mapping[str, str],
@@ -645,10 +868,13 @@ __all__ = [
     "ReleaseContractError",
     "ReleaseEligibility",
     "ReleaseHashBindings",
+    "derive_publication_receipt_id",
+    "derive_release_content_sha256",
     "derive_release_seal",
     "evaluate_release_item",
     "is_release_item_eligible",
     "release_item_predicate",
     "release_seal",
+    "validate_publication_receipt_bindings",
     "validate_release_manifest_bindings",
 ]

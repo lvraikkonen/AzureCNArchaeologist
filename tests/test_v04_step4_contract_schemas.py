@@ -24,6 +24,7 @@ from src.core.canonical_identity import (
 from src.core.product_catalog import sha256_file
 from src.core.validation_context import ValidationContextError
 from src.pipeline.state_store import ManifestValidationError, StateStore
+from src.release.contracts import derive_publication_receipt_id
 from src.review.contracts import source_approval_preconditions
 
 
@@ -39,6 +40,7 @@ SCHEMA_PATHS = {
     "validation": "schemas/pipeline-validation-2.0.schema.json",
     "review": "schemas/review-decision-1.0.schema.json",
     "release": "schemas/release-manifest-1.0.schema.json",
+    "publication_receipt": "schemas/publication-receipt-1.0.schema.json",
     "validation_profile": "schemas/validation-profile-1.2.schema.json",
 }
 
@@ -360,6 +362,57 @@ def _release_manifest() -> dict[str, Any]:
     }
 
 
+def _publication_receipt() -> dict[str, Any]:
+    receipt = {
+        "schema_version": "1.0",
+        "receipt_id": _sha("receipt"),
+        "published_at": "2026-08-03T13:30:00Z",
+        "batch_id": BATCH_ID,
+        "release_id": "release-20260803-01",
+        "release_manifest": _artifact("release-manifest"),
+        "release_seal": _sha("release-seal"),
+        "target": {
+            "account_url": "https://example.blob.core.chinacloudapi.cn",
+            "container": "cms",
+            "prefix": "releases/release-20260803-01",
+        },
+        "items": [
+            {
+                "item_id": "zh-cn/api-management",
+                "resource_key": "api-management",
+                "language": "zh-cn",
+                "payload": {
+                    "release_path": (
+                        "output/releases/release-20260803-01/payloads/"
+                        "zh-cn/pricing/api-management.json"
+                    ),
+                    "sha256": _sha("payload"),
+                },
+                "target_blob": {
+                    "container": "cms",
+                    "name": (
+                        "releases/release-20260803-01/zh-cn/pricing/"
+                        "api-management.json"
+                    ),
+                },
+                "remote": {
+                    "account_url": "https://example.blob.core.chinacloudapi.cn",
+                    "container": "cms",
+                    "name": (
+                        "releases/release-20260803-01/zh-cn/pricing/"
+                        "api-management.json"
+                    ),
+                    "sha256": _sha("payload"),
+                    "content_length": 123,
+                    "etag": "0xABC",
+                },
+            }
+        ],
+    }
+    receipt["receipt_id"] = derive_publication_receipt_id(receipt)
+    return receipt
+
+
 def _documents() -> dict[str, dict[str, Any]]:
     return {
         "content_sampling_profile": _read_json(
@@ -370,6 +423,7 @@ def _documents() -> dict[str, dict[str, Any]]:
         "validation": _validation(),
         "review": _review_decision(),
         "release": _release_manifest(),
+        "publication_receipt": _publication_receipt(),
         "validation_profile": _read_json(
             "data/configs/validation-profiles/v0.4-p3.json"
         ),
@@ -406,6 +460,7 @@ def test_step4_contract_rejects_missing_required_field(name: str) -> None:
         ("validation", ("evidence", "approval_preconditions")),
         ("review", ("bindings",)),
         ("release", ("items", 0, "bindings")),
+        ("publication_receipt", ("items", 0, "remote")),
         ("validation_profile", ("content_sampling_profile",)),
     ),
 )
@@ -442,6 +497,7 @@ def _documents_with_replacement(
         ("validation", ("evidence_sha256",)),
         ("review", ("decision_id",)),
         ("release", ("items", 0, "bindings", "payload_sha256")),
+        ("publication_receipt", ("release_seal",)),
     ),
 )
 def test_step4_contract_rejects_noncanonical_sha256(
@@ -460,6 +516,7 @@ def test_step4_contract_rejects_noncanonical_sha256(
         ("sampled_evidence", ("bindings", "source", "path"), "../source"),
         ("validation", ("evidence", "bindings", "payload", "path"), "/tmp/payload"),
         ("release", ("items", 0, "payload", "release_path"), "../../payload"),
+        ("publication_receipt", ("items", 0, "payload", "release_path"), "../payload"),
     ),
 )
 def test_step4_contract_rejects_unsafe_relative_path(
