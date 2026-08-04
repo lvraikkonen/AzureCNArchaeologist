@@ -1,13 +1,14 @@
 # AzureCNArchaeologist v0.1 → v1.0 路线图
 
 > 文档状态：当前项目路线图  
-> 当前版本：v0.3
-> 基线日期：2026-07-21
+> 最新稳定版本：v0.3.0
+> 当前开发版本：v0.4
+> 基线日期：2026-08-04
 > 适用范围：Azure 中国区产品 HTML 标准化、策略化解析、CMS JSON 导出与质量验证
 
 ## 1. 路线图目的
 
-AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流。后续版本仍需补齐深度内容质量验证、人工核验与发布门禁，才能达到稳定生产版本目标。
+AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流。v0.4 Step 4 已完成抽样内容验证、受控人工审核、不可变 Release 和 Release-only upload gate 的能力实现；剩余 Step 5–7 只收敛 Finding 门禁、可信回归基线和版本验收，不再扩建新的质量治理子系统。
 
 从 v0.1 到 v1.0 的核心目标不是继续堆叠功能，而是把现有能力收敛为一套：
 
@@ -118,10 +119,10 @@ v1.0 中需要清晰区分：
 | v0.1 | 当前基线 | 4 种策略和分散的三段式流程可运行 |
 | v0.2 | 事实与契约收口 | 产品全集、CMS 契约和状态边界统一 |
 | v0.3 | 批次工作流 | 一个入口完成标准化、解析、验证和报告 |
-| v0.4 | 可追溯重建与最小交付闭环 | P0 隔离实验、全状态结构验证、可复现抽样内容验证、Dashboard 审核、不可变 Release 和 CI-ready 测试体系 |
-| v0.5 | 审核与质量治理深化 | 扩展 Report 2.0、Source Finding 处置、复杂表格视觉门禁和规模化审核治理 |
-| v0.6 | 覆盖率提升 | 按失败类型和页面结构簇扩大可靠支持范围 |
-| v0.7 | 稳定性与性能 | 正交 streaming Processing Mode、并发、恢复和幂等性达到批量运行要求 |
+| v0.4 | 可信、可审核、可发布的最小完整版本 | 全状态结构验证、可复现抽样内容验证、Finding 分级、Dashboard 审核、不可变 Release 和可信回归基线 |
+| v0.5 | 暂定候选：审核治理或覆盖率提升 | 主题、顺序和范围必须通过 Post-v0.4 Roadmap Re-baseline Gate 冻结；当前优先假设是先提高真实产品覆盖率 |
+| v0.6 | 暂定候选：覆盖率或必要治理的后续阶段 | 承接 re-baseline 后未进入 v0.5 的高价值工作，不自动继承旧路线图承诺 |
+| v0.7 | 暂定候选：稳定性与性能 | 以真实超限输入和运行数据证明需求后，再建设正交 streaming Processing Mode、并发和恢复优化 |
 | v0.8 | 架构清理 | 删除 stale 代码，收缩 CLI、依赖和重复职责 |
 | v0.9 | 发布候选 | 全量演练、缺陷收敛、文档重建和发布冻结 |
 | v1.0 | 稳定版 | 可重复、可验证、可审核、可安全发布 |
@@ -305,7 +306,7 @@ Pricing 始终写入 `{language}/pricing`；同一 Product Definition 即使属�
 
 ### v0.4：建立可追溯内容验证与最小批准交付闭环
 
-> 状态：Step 0–3 已完成；Step 4 Slice A-E 已完成 P3 Profile、可复现抽样内容验证、Review Queue 2.0、append-only Review Decision service 与 CLI、本地 Dashboard Review Workbench、不可变 Release 和 Release-only upload gate。
+> 状态：Step 0–3 已完成；Step 4 Slice A-E 的能力实现已完成，包括 P3 Profile、可复现抽样内容验证、Review Queue 2.0、append-only Review Decision service 与 CLI、本地 Dashboard Review Workbench、不可变 Release 和 Release-only upload gate。真实双语 Core Matrix、最终全量 Batch 与代表 Release 验收仍属于 Step 6/7。
 
 #### 目标与保证边界
 
@@ -317,7 +318,7 @@ Page-global、SimpleStatic 和 SupportArticle 主体内容执行完整比较；R
 
 Frozen Source Snapshot 仍是批次内容权威。当前 live 页面只作 non-authoritative interaction reference，不能自动改写 Source Snapshot、抽样计划、验证结论或 Golden。
 
-v0.4 Step 4 交付可日常使用的最小闭环：机器通过项进入 Dashboard Review Queue，实际被审核的产品语言项显式 approved 或 rejected，其余保持 pending；批准项生成不可变 Release，upload 只接受 sealed Release。Step 5 再深化 Report 2.0、Source Finding Disposition 和完整复杂表格视觉门禁。
+v0.4 Step 4 已实现可日常使用的最小闭环能力：机器通过项进入 Dashboard Review Queue，实际被审核的产品语言项显式 approved 或 rejected，其余保持 pending；批准项生成不可变 Release，upload 只接受 sealed Release。Step 5 只收敛 Source Finding 分类与 Approval Gate，Step 6 建立可信回归和最终全量证据，Step 7 完成真实产品演练、release-readiness 验收与 v0.4.0 基线冻结。
 
 v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管、多用户权限或自动 CMS 发布；它交付 runner-agnostic、可被未来自动化平台调用的本地流程和 CI-ready 测试能力。
 
@@ -347,7 +348,7 @@ v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管�
 - 仅接受严格 UTF-8，保留 BOM；非法字节阻断。可靠 charset 声明与实际字节不一致时记录 Source Quality Finding；
 - HTML 门禁采用 Reconstruction Parseability：独立解析和结构探测必须对关键内容达成可解释一致，普通 lint 问题本身不阻断，关键内容丢失或结构分歧阻断；
 - Reconstruction Parseability 后、正式提取前运行只读 Source HTML Structure Audit：仅对高置信度 wrapper、section nesting、control-boundary 和 emitted-fragment identity 异常输出源 SHA、精确行号、DOM 证据与上游修改建议；不得改写 canonical/normalized bytes、在内存中套用候选补丁、更新 Product Definition 或 baseline。普通可忠实复制的源异常保持 Source Quality Finding；若同一待发布片段内的重复 ID、归属歧义等问题无法在不修源或不猜测的前提下形成 contract-valid Payload，则作为 Blocking Source Structure Finding 在 Payload 生成前失败。只有 parser、可见文本、表格、脚本、控件、target 与 reachability 身份均保持不变时才可附带保守 patch candidate；
-- 每个 Batch Run 冻结完整 Validation Profile，包括 Local Machine Contract、规则及严重度、Content Sampling Profile、基线引用和 InMemory Capability Profile；Source Reachability 确定后再为每个 Batch Item 冻结精确 Sampling Plan。input/batch manifest 与报告分别保留 Profile 与 Plan 身份，`pipeline-validate` 必须重放两者；Rendering Profile 仅在 Step 5 Profile 启用视觉门禁时加入；
+- 每个 Batch Run 冻结完整 Validation Profile，包括 Local Machine Contract、规则及严重度、Content Sampling Profile、基线引用和 InMemory Capability Profile；Source Reachability 确定后再为每个 Batch Item 冻结精确 Sampling Plan。input/batch manifest 与报告分别保留 Profile 与 Plan 身份，`pipeline-validate` 必须重放两者；现有 `v0.4-desktop-p1` 继续冻结 Desktop Interaction Authority，v0.4 只是不再新增用于 Complex Table Visual Review 的 Chromium/font/CMS/CSS Rendering Profile 与 Variant 门禁；
 - 以 v0.3 已验收的 379 个语言级 runnable items 生成不可变 v0.4 Planning Baseline Manifest。自动 preflight 只能提出 planned non-runnable 建议；任何分母变化必须经独立审核，记录 prior/proposed state、原因、证据和 Product Definition capability decision 后，才能冻结 v0.4 runnable set；
 - 文件大小不再决定语义策略。删除未实现的 `LARGE_FILE` 语义选择路径及其 fallback；v0.4 的 in-memory 初始候选上限是 `5 × 1024 × 1024` bytes，只有在最大真实输入、近上限压力样例、峰值内存和耗时通过重复确定性测试后才能冻结，否则下调；
 - 超过冻结能力上限的正式输入在 planning/preflight 阶段标记 `non_runnable: input_exceeds_in_memory_profile`，不得提取、不得降级为 `Simple`、不得伪装成运行后 skip。P0 实验例外不改变正式边界。
@@ -379,10 +380,10 @@ v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管�
 - 每个 selected state 比较冻结 Source 与 persisted Payload 的完整展示内容、价格与单位文本、表格、片段顺序、multiplicity 和 state assignment；本阶段不解析逐项 Pricing Facts，不建立 Applicability Map、StateProjectionMap 或完整 Expected/Observed/Diff inventory；
 - validation projection 至少记录 Source/Payload/Profile/Sampling Plan hashes、全状态结构结果、coverage mode、universe/selected/untested counts、seed、strata、exact state identities、per-sample diff、Approval Eligibility 和 blockers；
 - Machine-pass P3 Batch Items 全部进入 Review Queue 2.0，初始 `review=pending`。审批单位是 Resource Key + Language，未审核项目不因同批其他样本通过而隐式批准；
-- 当前 CLI 已提供 `pipeline-review-list`、`pipeline-review-decide` 与本地 `pipeline-review-serve`，并通过 CLI 和 Dashboard 共用的受控 service 写入 append-only decision、更新 `batch-manifest.json` current reference、binding 和 approval eligibility；
+- 当前 CLI 已提供 `pipeline-review-list`、`pipeline-review-decide` 与本地 `pipeline-review-serve`，并通过 CLI 和 Dashboard 共用的受控 service 写入 append-only decision、更新 `batch-manifest.json` current decision reference 和 binding。`approval_eligible` 必须由 execution、validation 与当前 Approval Blockers 独立派生，不能由 approve/reject verdict 或 decision binding 赋值；
 - Dashboard 已保留 `/` 只读能力账本，并新增 `/review` 本地审核工作台，分别呈现 Batch、Machine Validation、Review、Evidence Binding、Release-ready 只读派生值、Release reference 和 Publication reference；approve/reject 必须调用与 CLI 共用的受控服务，Dashboard 不直接编辑投影或 manifest；
-- Review Decision append-only，绑定 reviewer、时间、Source/Payload/validation hashes、Sampling Plan、人工检查状态、verdict、reason 和 notes。Step 4 Approval Eligibility 还要求无未处置 Source Quality Finding；否则保持 pending 或 rejected。机器失败不能人工覆盖，证据变化使旧决定 stale；
-- 只有 `execution=succeeded + validation=passed + approval_eligible=true + review=approved` 且全部哈希仍匹配的项目可以复制到 write-once `output/releases/{release_id}`；一个 Release 只绑定一个 Batch，并由 canonical Release Manifest SHA + 全 payload hashes 原子 seal；
+- Review Decision append-only，绑定 reviewer、时间、Source/Payload/validation hashes、Sampling Plan、人工检查状态、verdict、reason 和 notes。Step 5 将 Source Quality Finding 按冻结 code policy 分为 advisory 与 approval-blocking：advisory 不再自动生成 blocker，approval-blocking 仍保持不可批准；机器失败不能人工覆盖，证据变化使旧决定 stale。Approval Eligibility 只表示 Machine Validation 与 Finding Policy 的批准前置条件，合法 current-hash-bound Review Decision 独立产生 `review=approved`；两者不得压缩为同一状态；
+- 只有 `execution=succeeded + validation=passed + approval_eligible=true + review=approved + evidence_binding=bound` 且 decision 绑定全部当前哈希的项目可以复制到 write-once `output/releases/{release_id}`；Release build/verify 还必须重放 bound Validation Profile、Finding Policy 与 canonical preconditions，异常的 legacy `approved + finding` 不得 grandfather。一个 Release 只绑定一个 Batch，并由 canonical Release Manifest SHA + 全 payload hashes 原子 seal；
 - upload gate 只接受 sealed Release Manifest，不扫描任意 output 目录。上传成功后才记录 publication receipt 和 `published`，失败可对同一 Release 幂等重试；
 - 报告和 UI 必须明确这是 Sampled State Content Consistency，不得声称未抽中状态、全部 Pricing Facts、Commercial Price Accuracy 或视觉等价已被证明。
 
@@ -390,25 +391,31 @@ v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管�
 
 - 已保留现有 `/` capability ledger、分类筛选、机器/人工证据分轨和 stale binding 能力，并新增本地 `/review` Batch Workbench；
 - Workbench 通过 `pipeline-review-serve` 的 loopback bridge 显式选择 Batch，不按磁盘时间自动选最新；bridge 校验 Host、Origin、Bearer token、Batch allowlist、请求形状、Content-Type 和 manifest revision；
-- 总览分别统计产品和产品语言项的 runnable、pending、approved、rejected、source-blocked 和 release-ready，不把它们压缩为一个“支持率”；
+- 总览分别统计产品和产品语言项的 runnable、pending、approved、rejected、Source Warning、Approval Blocked、Machine Failed 和 Release Ready，不把 warning 与 blocker 压缩成 `source-blocked`，也不把这些状态压缩为一个“支持率”。机器可读 JSON/schema 使用 `source_warning`、`approval_blocked`、`machine_failed`，计数字段为 `source_warning_count`、`approval_blocked_count`、`machine_failed_count` 和 `release_ready_count`；
+- 上述统计是独立维度：`source_warning_count` 统计至少含一个 advisory finding 的 item，可与 `approval_blocked_count` 重叠；`approval_blocked_count` 统计 `validation=passed` 且至少含一个 Approval Blocker 的 item；`machine_failed_count` 统计 `validation=failed` 的 item，在最终 verdict 下与 approval blocked 互斥；`release_ready_count` 只统计 execution succeeded、validation passed、eligible、approved、bound 且 decision 绑定当前 hashes 的 item，可与 source warning 重叠。这四个 count 不是总数可相加的互斥分区；
 - 审核工作区显示冻结 Source、persisted Payload、机器抽样覆盖、人工检查状态、decision history、stale binding 和 Release/Publication 只读引用；人工样本优先覆盖机器未抽中的组合；
 - approve/reject 是受控命令入口，必须经后端 review domain service 写入 append-only decision 并更新 `batch-manifest.json`；前端投影本身仍非权威，状态落盘并重建投影后才刷新显示；
 - 拒绝原因至少区分 upstream_source、product_config、extractor_defect、validator_defect 和 needs_clarification；
 - Dashboard 必须显示显式 Batch/Release identity、Source/Payload/Profile hashes、`sampled / total`、当前绑定、legacy_unbound 和 stale，不能按文件时间静默选择“最新”结论；
 - Dashboard 不改变 Pipeline Machine Validation verdict，也不允许人工覆盖 machine failure；它是 Step 4 人工审核的必要工作面，但不是验证或生命周期真源。
 
-##### P4：Report 2.0、Finding 处置与复杂表格视觉门禁
+##### P4 / Step 5：Source Finding 分级与批准门禁收敛
 
-- Machine Validation Report 2.0 覆盖 normalize、preflight、extract 和 validate 的所有明确结果；每个报告记录 Contract、Sampling Coverage、Source Findings、Validation/Content Sampling Profile、Batch Item Sampling Plan、证据哈希和稳定 failure codes；
-- Report 2.0 和 Upstream Verification Report 是判定明细与上游交接证据，`batch-manifest.json` 仍是生命周期及 item state 权威；
-- 建立正式 Source Finding Disposition、结构化 `approval_blockers[]` 和可审计的 blocker 清除规则；人工不能绕过 Machine Validation failure 或未清除 blocker；
-- Complex Pricing Table 在新的 Step 5 Validation Profile 下要求冻结 Source 与 Payload 的 Desktop Visual Semantic Equivalence 审核；
-- Visual Review 覆盖表头层级、merged-cell 边界、阅读顺序、价格到 label 的对应、限定、脚注、visibility 和可读性，而不是像素一致；
-- 每个适用状态属于精确 Visual Review Variant；只有 Source、Payload、上下文、Rendering Profile 和协议指纹完全一致时才可复用；
-- Rendering Profile 固定 Desktop `1440 × 900` CSS pixels、100% zoom、device scale factor 1，并冻结 Chromium、字体、CMS template、CSS 与审核协议；明确声明 Mobile 未验证；
-- 以 `cloud-services` 双语 Core 样例证明完整视觉审核链路；新的 blocker 只作用于按 Step 5 Profile 创建的新 Batch，不反向重判已经冻结的旧批次；
-- Step 5 深化证据和批准治理，不重新引入逐项 Pricing Fact parser、完整 Applicability Map、State Projection Map 或全状态内容 inventory；
-- Business Payload、报告、验收和批准流程继续禁止 `quality_score`。
+- 冻结一个小型、静态、closed-world 的 Finding Code Policy；每个当前会进入 `source_quality_findings[]` 的 code 必须显式分类为 `advisory` 或 `approval_blocking`，未识别 code 默认 fail closed 并阻止批准，直到通过正式决策补充分类；
+- 只有已经由冻结源证据证明不会造成状态、ownership、target、criteria 或内容歧义的 Finding 才能列为 advisory。初始 advisory 范围只包含严格 UTF-8 已通过时的 charset 声明问题，以及 desktop 仍为权威时的 mobile label 漂移；source-confirmed empty selection state 按 ADR-0074 继续 approval-blocking，双语 source-proven state/reachability 漂移同样继续 approval-blocking；
+- 结构、ownership、target、criteria、state mapping、sampled content mismatch 和其他现有 Machine Validation failure 继续直接失败，不得降级为 Finding 或由人工覆盖；
+- advisory 完整保留在 Validation Evidence，并由 CLI/Dashboard 显著展示；它不生成 Approval Blocker。审核人在看到当前 warning 后作出的 Review Decision 继续绑定包含这些 Finding 的 validation evidence hash，v0.4 不新增 acknowledgment 字段、Disposition schema、override 或 exception 状态机；
+- Finding Code Policy 的 version/hash 通过 Batch code provenance 与 validation identity 冻结，并参与 Validation Evidence identity。冻结的 P3 Profile 1.2 / Pipeline Validation 2.0 保持字节与 blanket-blocker 语义不变；新 Batch 使用最小的 Validation Profile 1.3 P3-successor identity 与 Pipeline Validation 2.1。Profile 1.3 显式继承 exact P3 1.2 tuple，保持 Content Sampling Profile、Sampled Content Evidence 1.0 与其他 P3 identities 不变，canonical 地拥有 `finding_code_policy_identity`；Validation 2.1 evidence 投影同一 identity 并要求逐字段相等，在 evidence 内按该冻结 policy 生成 source preconditions。Step 6 semantic identities 只写入独立 comparator record，不回填或修改 Sampled Content Evidence 1.0。该 successor 只解决版本兼容与可审计 policy identity，不增加 P4 内容或视觉保证；successor exact id/path/hash 由新 ADR 冻结；
+- Sampled Evidence 1.0 继续绑定 exact base P3 1.2，runtime 将其 bindings 与 Validation 2.1 bindings 分开构造；Validation 2.1 再绑定 successor、policy 与原始 Sampled Evidence。StateStore、ReviewService 和 Workbench 必须 closed-world 路由 2.1，并保留 write-once、自身份与 profile-policy replay，不能落入 Validation 1.0 或 mutable generic writer；
+- 为新 acceptance Batch 新增最小 Release Manifest 1.1，绑定 Profile 1.3、Validation 2.1 与 policy；Release Manifest 1.0 保持只读可验证，Publication Receipt 1.0 继续绑定已验证 Release artifact；
+- legacy fallback 白名单只包含 `(id=v0.4-validation-p3, schema_version=1.2, path=data/configs/validation-profiles/v0.4-p3.json, sha256=fbbfa8bd937779748e86f48f738af5c561f164bf2e10615efe2515d45ba3ae1b)`。该 exact tuple 缺少 policy identity 时固定使用 `legacy-all-source-findings-block-v1`：无 finding item 在满足其他门禁时仍可审核/Release，任一 Source Finding 都阻止 approve 但允许 reject。只有 `exact old P3 + policy absent` 与 `exact successor + Profile/evidence policy valid and equal` 合法；P1/P2、未知/漂移 profile、旧 P3 意外携带 policy、successor 缺失或 mismatch 全部 fail closed。不调用当前 registry 重分类，不向旧 Batch 回填 identity；需要使用新 policy 时创建新 Batch；
+- policy evaluation 必须按 profile/validation version dispatch：2.0 永远使用 legacy blanket evaluator，2.1 只使用 frozen successor policy，Review 复核 evidence 内 canonical preconditions 而不重新分类 raw findings。新 Batch 创建时 identity 无效则拒绝创建；冻结后 replay mismatch 产生稳定 `finding_policy_identity_invalid` Machine Validation failure/诊断并禁止 Review/Release，不记作 Approval Blocked；
+- approval-blocking Finding 保持 `approval_eligible=false`；审核人可保持 pending，或以 `upstream_source` 等现有 reason 拒绝。修复 Source 或配置后创建新 Batch，不就地清除旧 Batch blocker；
+- v0.4 有意接受部分 machine-pass item 因 approval-blocking finding 无法进入 Release；这不是 incomplete adjudication，也不能通过人工 override、临时 reclassification 或未冻结例外绕过。新 ADR 的 Consequences 必须明确记录这一点；
+- Dashboard 和批次统计按上述独立维度拆分 Source Warning、Approval Blocked 与 Machine Failed；旧 Batch 不自动重算、不按新 policy 改写历史证据；
+- Step 5 只完成 policy、runtime/Review Gate、Dashboard/CLI 展示和针对性回归测试，不建立第二份 lifecycle authority；Business Payload、报告和批准流程继续禁止 `quality_score`；
+- Machine Validation Report 2.0、正式 Source Finding Disposition、Upstream Verification Report、新的 Complex Table Visual Review Rendering Profile、Visual Review Variant、完整 Complex Table Visual Review 以及扩张内容保证的 P4 Validation Profile 全部移出 v0.4，作为 Post-v0.4 re-baseline 的候选能力，而不是 v0.5 的自动承诺；为保持旧 P3/Validation 2.0 不变而新增的最小 P3-successor compatibility identity 不属于该延后项。
+- Step 5 开始编码前必须新增正式 ADR：局部 supersede ADR-0012、ADR-0029、ADR-0030、ADR-0064 和 ADR-0088 的冲突范围；明确 ADR-0024、ADR-0025、ADR-0067 继续保持被 ADR-0088 supersede，不因再次调整 ADR-0088 而恢复；保留 ADR-0070/0073 的 379/379 Reliable Adjudication、ADR-0074 的 empty-state blocker、ADR-0075 的 Desktop Authority，以及 ADR-0088 的 Review/Release/upload 安全不变量；冻结上述唯一 legacy tuple、两种合法 identity 组合与其他组合 fail-closed 的 presence/mismatch matrix。
 
 ##### P5：可信、CI-ready 的测试体系
 
@@ -417,10 +424,21 @@ v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管�
 - Core Fixture Manifest 通过 Product Definition 解析并固定八个 canonical `data/prod-html` 路径和 SHA-256，不复制第二套 HTML fixtures；
 - 三个 pricing Core 产品保留完整 canonical Business Payload Golden 和 Curated Sampling Baseline；前者捕获端到端 CMS 输出回归，后者校准 state universe、分层、deterministic selection 和 selected-state comparison；`icp-faq` 保留文章内容和 CMS contract 基线；
 - Golden 和抽样基线只是测试回归证据，不是冻结 Source 的替代内容 Oracle。普通测试只读，更新只能生成包含 old-to-new Diff、Source hash、Schema/Profile 版本和理由的 Baseline Candidate，再经人工审核晋升；
-- 建立默认离线 Deterministic Test Suite 和显式网络启用的 Live Interaction Reference Suite；后者只采集 rendered state mapping、visible fragment/table fingerprints、截图、最终 URL、时间和 Rendering Profile，不采集 raw HTTP，也不改变历史判定或基线；
-- 提交 `api-management`、`cloud-services` 双语 compact Interaction Baseline，记录 `source_snapshot_sha256`、`current_reference`/`snapshot_bound` binding status 及 binding evidence，并穷举每个已证明 UI Reachable Selection State；这些证据校准 Reachability Relation、sampling strata 和人工参考，不进入 Applicability Map；
-- Core 与 Expanded Strategy Test Matrix 采用增量晋升；晋升要求双语、两个 clean deterministic runs、人工审核基线、适用 interaction/visual evidence 以及完整三层测试，不得临时移除产品来恢复绿色结果；
+- 默认 Deterministic Test Suite 完全离线；对 8 个 Core Batch Items 执行两次 clean deterministic run，由不承担 lifecycle authority 的 `core-determinism-comparator-v1` acceptance record 比较 Business Payload artifact SHA、Sampling Plan `plan_sha256`、`sampled_content_semantic_sha256`、`validation_semantic_identity` 与规范化 promotion inputs。comparator 先硬校验 clean code provenance（git commit + immutable fingerprint）和每 item Product Definition、Source、Normalized Input、soft-category、Profile/Policy hashes 相同；sampled semantic object 覆盖 mode/coverage、structure、page-global、适用时 full-content、universe/default/ordered/selected identities、plan 与 per-state fingerprints/verdict，无 plan/full-content 时使用显式 null/N/A；validation semantic object 引用 sampled identity，再覆盖 finding classification、canonical preconditions、verdict 与稳定 codes。left/right `batch_id` 仅作 provenance，不进入 digest，并排除 `generated_at`、Manifest revision、attempt identity、artifact storage path 和包含运行路径的 message。Business Payload SHA 是唯一直接跨 Batch 比较的业务 artifact SHA；Plan/Sampled/Validation 外层 artifact SHA 与现有 evidence hashes 只在每个 Batch 内验证完整性/current binding，完整 Review/Promotion binding object 或 Release Manifest SHA 也不跨 Batch 比较；实际 Review Decision 和 Release build/verify 留在 Step 7；
+- 在最终代码和 Finding policy 上执行一次 clean full bilingual Batch，按冻结 Planning Baseline 的 434 planned / 379 retained runnable / 54 `known_unsupported` / 1 `SOURCE_UNAVAILABLE` 分母对账，并保留 execution、validation、`source_warning_count`、`approval_blocked_count`、`machine_failed_count`、`release_ready_count` 和 pending accounting；该冻结输入的 Batch Run 随后作为 Step 7 唯一的 full acceptance Batch，不与两次 Core deterministic runs 混用；任何经审核的分母变化必须单独解释，不得通过删除 Non-Core 产品或改成 `known_unsupported` 恢复绿色；
+- 冻结 runnable set 的每个 item 都必须有 evidence-backed Machine Validation `passed` 或 `failed`；更早阶段的 execution failure 也必须形成稳定 failure evidence 和 failed adjudication，不能残留无法解释的 `not_run`、missing report 或 unknown outcome。Non-Core 不要求全部通过或批准；
+- Core 与 Expanded Strategy Test Matrix 采用增量晋升；v0.4 只冻结 Core Matrix。Live Interaction Reference Suite、rendered screenshot/table fingerprint、compact Interaction Baseline 和 visual evidence 晋升条件均延后为候选，不阻止 v0.4.0；
 - 测试系统只承诺 runner-agnostic 的命令、退出码和报告；v0.4 不添加 GitHub Actions、required checks 或外部 merge gate。
+
+##### Step 7：v0.4 验收、Release-readiness Review 与基线冻结
+
+- 执行最终 pytest、schema tests、Dashboard tests/build、Core deterministic comparison、full-batch accounting、版本/文档一致性和 `git diff --check`；此时只做 pre-freeze 检查，最终 clean-tree gate 在 acceptance artifacts 与 version bump 提交之后；
+- 在最终 full bilingual acceptance Batch 内人工审核 8 个 Core Batch Items，覆盖四种策略和双语；其他全量 Batch Items 可以合法保持 pending；
+- 以真实 reviewer 演练一条 advisory approve 和一条 `upstream_source` reject。优先使用最终 acceptance Batch 中自然存在的适用 item；若没有，则使用单独标识、不得进入产品覆盖率或代表 Release 的 controlled exercise Batch。自动化 fixture 只能算 Step 5 回归，不能替代这项人工操作证据；
+- 从同一个最终 full bilingual acceptance Batch 的 current approved + eligible + bound items 建立代表性 sealed Release；至少包含一个 `simple_static` 或 `region_filter` Pricing item、一个 `complex` item 和一个 `support_article` item，整个 included set 同时覆盖 zh-cn/en-us。included items 不要求全部属于 8-item Core Matrix；额外 Non-Core item 也必须在该 acceptance Batch 内完成 current、eligible、approved、bound 的人工批准，不得用未经审核的 item 凑齐覆盖。执行 `release-build → release-verify → upload --dry-run`；不得跨 Batch 拼接。v0.4 验收不要求真实写入外部 Blob 或 CMS，dry-run 成功且 Publication 保持 `not_published` 是合法结果；
+- 生成 `reports/v0.4/acceptance-status.{json,md}`，分别报告 Capability、Execution、Machine Validation、Source Warning、Approval Blocked、Human Review、Release 和 Publication；JSON 使用冻结的 `source_warning_count`、`approval_blocked_count`、`machine_failed_count`、`release_ready_count` 并声明 overlap/互斥规则，同时明确列出所有延后项与保证边界；
+- 做一次范围受控的 Release-readiness Review，只判断冻结的 v0.4 验收标准与 severity P0/P1 的正确性、数据安全或不可恢复状态。severity P0/P1 缺陷在 v0.4 内修复；一般缺陷进入 v0.4.1 或后续版本；新功能、治理深化和体验优化不得重新打开 v0.4 scope；
+- 验收通过后升级为 `0.4.0`，提交 acceptance artifacts 与 version bump，再执行最终 clean-tree check；只有该提交后工作树干净时才冻结 v0.4.0 baseline/tag。整体 Post-Implementation Review 在此后进行，是 v0.5 的进入门禁，不是 v0.4 的退出门禁。
 
 #### 规则晋升原则
 
@@ -436,20 +454,60 @@ v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管�
 - RegionFilter/Complex 对全部 source-proven states 执行结构契约；内容比较按冻结 Profile 产生可重复的 sample set 和 evidence hashes；
 - sampled state 的文本、价格单位、表格顺序、multiplicity 或 state assignment 变化会使 Machine Validation 失败；无法评估 selected state 时不得 replacement draw；
 - Machine-pass item 进入 Review Queue；approve/reject 均产生 hash-bound append-only decision，证据变化后旧决定变 stale；
-- Dashboard 分别显示产品与语言项的 Capability、Execution、Machine Validation、Review、Release、Publication、`sampled / total` 和失败原因；
+- Dashboard 分别显示产品与语言项的 Capability、Execution、Machine Validation、Source Warning、Approval Blocked、Review、Release Ready、Release、Publication、`sampled / total` 和失败原因；machine-readable accounting 使用冻结的 snake_case fields，并证明 Source Warning 可与 Approval Blocked 重叠、Machine Failed 与 Approval Blocked 在最终 verdict 下互斥；
 - machine failure、approval blocker、review pending/rejected、stale binding、hash drift、known_unsupported 或 experimental artifact 均无法 promotion/upload；
 - approved item 能生成绑定单一 Batch 的 sealed Release，Release Manifest 与 payload hashes 可复核；上传可幂等重试且只有成功后才标记 published；
-- Step 5 的 Report 2.0、Source Finding Disposition 和 `cloud-services` 双语 Complex Table Visual Review 完成后，才能完成整个 v0.4 收口；
+- Finding Code Policy 对当前 emitted codes 完整枚举；advisory + machine-pass + 无其他 blocker 独立得到 `approval_eligible=true`，current-hash-bound 人工决定独立得到 `review=approved`，只有 eligible + approved + bound 才能进入 Release；approval-blocking、unknown finding code 和 Machine Validation failure 均不能批准，validation evidence 漂移继续使旧决定 stale；
+- 正交状态矩阵证明：无 decision/binding not_applicable 不改变 eligible，eligible+rejected 与 blocked+rejected 保持各自 eligibility，stale binding/invalid inspected states 只影响 decision/binding 与权威 review；machine failure decision attempt 被拒绝且不生成人工 rejected decision；
+- 上述 exact P3 1.2 tuple 缺少 policy identity 时固定采用 `legacy-all-source-findings-block-v1`，继续 blanket-block，且不被 current registry 重分类或回填 identity；old/successor presence/mismatch matrix 的其他组合全部 fail closed；参数化测试必须证明 registry 变化不改变该历史结果；
+- 8 个 Core Batch Items 的两次 clean run 产生通过的 `core-determinism-comparator-v1` record，逐项具有相同 `sampled_content_semantic_sha256` 与 `validation_semantic_identity`，运行级 metadata 不参与 semantic digest，两个 Batch 各自 artifact/evidence SHA 与 current binding 有效；最终代码上完成一次 clean full bilingual Batch，并保留完整、可解释的 Planning Baseline accounting；
+- 最终 full bilingual acceptance Batch 中的 8 个 Core Batch Items 完成人工审核，并由真实 reviewer 至少演练 advisory approve 与 upstream_source reject；若使用单独 controlled exercise Batch，该证据不计入真实产品覆盖或代表 Release，未审核 Non-Core items 可保持 pending；
+- 代表性 sealed Release 通过 `release-verify` 和 upload dry-run；如包含 Non-Core item，该 item 也已在同一个 acceptance Batch 内 current、eligible、approved、bound；v0.4 不以外部实际发布作为验收条件；
+- Report 2.0、正式 Finding Disposition、Upstream Verification Report、Complex Visual Review、Live Interaction/visual baseline 和未完成的 Non-Core 产品覆盖均在 acceptance report 中显式标记 deferred，不得伪装为已完成；
 - v0.4 Planning Baseline Manifest 继续保持完整 accounting；Non-Core failure 必须真实保留，不得通过缩小分母或改成 `known_unsupported` 伪造绿色；
 - 缺 fixture、缺 baseline、collection error、零测试和未经审核的 baseline overwrite 均使 Deterministic Test Suite 非零退出；
 - `quality_score`、`LARGE_FILE` 语义选择、unknown/error-to-Simple fallback 以及旧 Step 4 的 PricingFact、ApplicabilityMap、StateProjectionMap 和完整 inventory 工作流不进入正式路径；
 - 文档和报告明确声明：v0.4 只保证全状态结构与抽样状态内容一致，无 Commercial Price Accuracy、全状态内容 Fidelity、external CI gate 或 mobile guarantee。
 
-### v0.5：深化 Dashboard 审核与质量治理
+### Post-v0.4 Roadmap Re-baseline Gate
+
+v0.4.0 验收和基线冻结后、任何 v0.5 Spec 或 execution plan 冻结前，必须完成一次整体 Post-Implementation Review。它不重新判定 v0.4 是否完成，而是基于真实运行证据重新校准 v0.5–v0.7 的近期主题、顺序和范围；v0.8 架构清理、v0.9 Release Candidate 与 v1.0 稳定版的长期方向不在这次门禁中重新打开。
+
+Review 至少使用：
+
+- 最终全量双语 Batch 的 Planning、runnable/non-runnable、execution、Machine Validation、Source Warning、Approval Blocked 和 pending accounting；
+- 四种策略的人工审核工作量、warning 注意度、拒绝原因和 release-ready item 分布；
+- 失败最集中的页面结构簇，以及 extractor/state mapping/content ownership 问题所占比例；
+- Dashboard、现有 validation projection、batch report、Release/upload 流程是否足以定位和处理问题；
+- Core Matrix、Golden、Sampling Baseline、deterministic run 的保护效果及真实全量失败未被测试提前发现的缺口；
+- 状态/Schema 重复、架构复杂度、文档一致性和维护成本。
+
+产出至少包括：
+
+- `reports/post-v0.4/v0.4-post-implementation-review.md`：交付能力、证据、正确性、运营、测试、架构和文档发现；
+- `reports/post-v0.4/roadmap-rebaseline.md`：按真实问题证据、价值、成本和风险降低评估候选工作，并明确 v0.5–v0.7 的新安排；
+- 同步更新后的 `ROADMAP.md`、对应 ADR、v0.5 Spec 和 execution plan。
+
+`reports/post-v0.4/` 是基线冻结后的 append-only 项目评审输出，不属于已经冻结的 `reports/v0.4/acceptance-status.*` 或 v0.4.0 acceptance baseline。
+
+当前工作假设是：
+
+```text
+真实产品覆盖率提升
+> 必要的轻量审核效率优化
+> 报告与 Finding 治理深化
+> 复杂视觉审核平台
+```
+
+如果全量证据表明主要瓶颈位于 extractor、state mapping 或 content ownership，应把当前 v0.6 的覆盖率工作前移到 v0.5；如果大量 machine-pass item 的人工审核才是主要瓶颈，再保留或缩小审核治理主题。Report 2.0、正式 Disposition 和 Complex Visual Review 只有在真实证据证明现有流程不足时才能进入已承诺范围。
+
+### v0.5（暂定候选）：深化 Dashboard 审核与质量治理
+
+> 本节是进入 re-baseline 的候选能力清单，不是已经冻结的 v0.5 承诺。Post-v0.4 Review 可以缩小、换序或取消本节；当前优先假设是覆盖率提升可能前移。
 
 #### 目标
 
-在 v0.4 已可使用的逐 Batch Item Dashboard 审核、基础增长视图、不可变 Release 和 Step 5 视觉门禁之上，把审核协议扩展到完整目标支持集合，并增加任务分派、cohort/历史深度分析、重复审核与更细的治理能力。v0.5 不扩大 Machine Validation 的抽样保证，也不能用人工判断覆盖 Machine Validation failure。
+若 Post-v0.4 Review 证明人工审核而非解析覆盖是主要瓶颈，则在 v0.4 已可使用的逐 Batch Item Dashboard、基础增长视图和不可变 Release 之上，只增加有真实运营证据支持的任务分派、cohort/历史分析、重复审核或必要治理能力。该候选不扩大 Machine Validation 的抽样保证，也不能用人工判断覆盖 Machine Validation failure；Report 2.0、Disposition 和视觉门禁均需单独证明价值，不能整包自动进入 v0.5。
 
 #### 对比对象
 
@@ -505,7 +563,7 @@ v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管�
 - 审核时间；
 - 审核人；
 - 备注；
-- Machine Validation Report、Content Sampling Profile、Batch Item Sampling Plan 和适用 Visual Review Variant 引用；
+- 当前 Validation Evidence、Content Sampling Profile、Batch Item Sampling Plan，以及 re-baseline 后确实启用的任何新增证据引用；
 - 审核前后的 `approval_blockers[]`；
 - 是否生成 Baseline Candidate；审核记录本身不能直接覆盖 Golden 或事实基线。
 
@@ -519,7 +577,9 @@ v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管�
 - 已批准结果可以进入不可变 Release；若同时需要更新回归基线，仍必须生成独立 Baseline Candidate 并另行审核。
 - UI、报告和状态机明确区分 Machine-pass、Review Queue membership、Approval Eligibility、最终 Approval、Release membership 与 Publication。
 
-### v0.6：提高产品解析覆盖率
+### v0.6（暂定候选）：提高产品解析覆盖率
+
+> 本节是当前优先级最高的后续候选。Post-v0.4 Review 若证明主要瓶颈是实际解析覆盖，应将其整体或按高价值结构簇前移到 v0.5。
 
 #### 目标
 
@@ -556,8 +616,8 @@ Schema 验证失败
 全状态结构契约失败
 抽样内容不一致或无法评估
 内容完整性失败
-Source Finding 待处置
-复杂表格视觉审核待完成或失败
+approval-blocking 或 unknown Source Finding
+复杂表格视觉审核待完成或失败（仅在 re-baseline 已明确启用该门禁时适用）
 人工审核失败
 ```
 
@@ -584,7 +644,9 @@ Source Finding 待处置
 
 上述百分比是最低质量门槛；如果后续基线表明目标过低，应提高而不是降低。
 
-### v0.7：稳定性、性能与大文件处理
+### v0.7（暂定候选）：稳定性、性能与大文件处理
+
+> 本节只有在最终全量运行证明存在真实的大文件、资源或恢复瓶颈后才冻结范围；不得仅因旧路线图顺序自动进入实施。
 
 #### 目标
 
@@ -753,7 +815,7 @@ v1.0 不表示所有 Azure 页面都已经被完美解析，而表示项目对�
   - 端到端测试；
   - 人工批准样例；
   - 明确的适用范围和已知限制。
-- v1.0 支持集合达到 v0.6 定义的覆盖率门槛。
+- v1.0 支持集合达到 Post-v0.4 Roadmap Re-baseline 后正式冻结的覆盖率门槛。
 - 高风险或发生显著变化的结果进入人工审核。
 
 ##### 可靠性
@@ -829,7 +891,10 @@ v1.0 不表示所有 Azure 页面都已经被完美解析，而表示项目对�
 → 批次工作流
 → 自动化验证
 → 人工核验
-→ 覆盖率提升
+→ v0.4.0 基线冻结
+→ Post-Implementation Review
+→ Roadmap Re-baseline
+→ 覆盖率提升或经证据证明的必要审核治理
 → 性能与稳定性
 → stale 代码清理
 → 文档重建
@@ -846,7 +911,7 @@ v1.0 不表示所有 Azure 页面都已经被完美解析，而表示项目对�
 - 每个版本结束时生成一次基线报告并记录已知限制。
 - 新发现的严重数据准确性问题优先于功能开发。
 - 如果某个目标无法在当前版本安全完成，应显式延后，不能通过静默回退宣布完成。
-- 修改 v1.0 范围时，应同步更新本路线图、验收标准和 README。
+- 任何版本主题、顺序或验收范围变化都应同步更新本路线图、对应 ADR、execution plan、handoff 和必要的 README；不得只修改其中一份文档。
 
 ---
 
