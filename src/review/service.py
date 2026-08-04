@@ -21,6 +21,12 @@ from src.pipeline.state_store import (
     RepositoryLock,
     StateStore,
 )
+from src.review.accounting import (
+    finding_summary,
+    item_accounting,
+    legacy_review_summary,
+    summarize_review_items,
+)
 from src.review.contracts import (
     ApprovalBlocker,
     EvidenceBindings,
@@ -73,6 +79,7 @@ class ReviewDecisionResult:
     evidence_binding: str
     approval_eligibility: str
     projection_status: str
+    source_warnings: tuple[Mapping[str, str], ...] = ()
     warnings: tuple[str, ...] = ()
 
     def to_dict(self) -> dict[str, Any]:
@@ -88,6 +95,7 @@ class ReviewDecisionResult:
             "evidence_binding": self.evidence_binding,
             "approval_eligibility": self.approval_eligibility,
             "projection_status": self.projection_status,
+            "source_warnings": [dict(warning) for warning in self.source_warnings],
             "warnings": list(self.warnings),
         }
 
@@ -339,6 +347,11 @@ class ReviewService:
                 warnings.append(str(error))
                 current_manifest = updated
             current_item = current_manifest["items"][item.item_id]
+            source_warnings = tuple(
+                finding_summary(finding)
+                for finding in snapshot.source_quality_findings
+                if finding.get("classification") == "advisory"
+            )
             return ReviewDecisionResult(
                 batch_id=request.batch_id,
                 item_id=item.item_id,
@@ -353,6 +366,7 @@ class ReviewService:
                     current_item["status"]["approval_eligibility"]
                 ),
                 projection_status=projection_status,
+                source_warnings=source_warnings,
                 warnings=tuple(warnings),
             )
 
@@ -388,6 +402,24 @@ class ReviewService:
             ),
             "summary": summary,
             "items": queue_items,
+        }
+
+    def batch_accounting(self, batch_id: str) -> dict[str, int]:
+        manifest = self.store.read_manifest(batch_id)
+        summary: Mapping[str, Any] = {}
+        if self._is_supported_review_profile(manifest):
+            queue = self.build_queue(batch_id)
+            summary = queue.get("summary", {})
+        return {
+            "source_warning_count": int(summary.get("source_warning_count", 0)),
+            "approval_blocked_count": int(
+                summary.get("approval_blocked_count", summary.get("approval_blocked", 0))
+            ),
+            "machine_failed_count": sum(
+                item["status"]["validation"] == "failed"
+                for item in manifest["items"].values()
+            ),
+            "release_ready_count": int(summary.get("release_ready_count", 0)),
         }
 
     def lifecycle_after_validation(
@@ -742,7 +774,12 @@ class ReviewService:
         )
         source = precondition_result_from_mapping(snapshot.source_preconditions)
         blockers: list[ApprovalBlocker] = [*machine.blockers, *source.blockers]
-        return {
+        source_findings = [
+            finding_summary(finding)
+            for finding in snapshot.source_quality_findings
+        ]
+        approval_blockers = [blocker.to_dict() for blocker in blockers]
+        result = {
             "item_id": snapshot.item.item_id,
             "product_key": snapshot.item.product_key,
             "resource_key": snapshot.item.resource_key,
@@ -787,19 +824,24 @@ class ReviewService:
                 ],
                 "full_content_scope": snapshot.inspection_mode == "full",
             },
-            "source_quality_findings": [
-                {
-                    "code": str(finding["code"]),
-                    "message": str(finding["message"]),
-                    "path": str(finding["path"]),
-                }
-                for finding in snapshot.source_quality_findings
-            ],
-            "approval_blockers": [
-                blocker.to_dict() for blocker in blockers
-            ],
+            "source_quality_findings": source_findings,
+            "approval_blockers": approval_blockers,
             "current_decision": self._decision_summary(snapshot),
         }
+        result.update(
+            item_accounting(
+                status=result["status"],
+                source_quality_findings=source_findings,
+                approval_blockers=approval_blockers,
+                release_ready=(
+                    result["status"]["review"] == "approved"
+                    and result["status"]["evidence_binding"] == "bound"
+                    and result["status"]["approval_eligibility"] == "eligible"
+                    and result["current_decision"] is not None
+                ),
+            )
+        )
+        return result
 
     @staticmethod
     def _decision_summary(
@@ -821,45 +863,7 @@ class ReviewService:
 
     @staticmethod
     def _queue_summary(queue_items: Sequence[Mapping[str, Any]]) -> dict[str, int]:
-        return {
-            "total": len(queue_items),
-            "reviewable": sum(
-                item["status"]["evidence_binding"] != "stale"
-                for item in queue_items
-            ),
-            "pending": sum(
-                item["status"]["review"] == "pending" for item in queue_items
-            ),
-            "approved": sum(
-                item["status"]["review"] == "approved" for item in queue_items
-            ),
-            "rejected": sum(
-                item["status"]["review"] == "rejected" for item in queue_items
-            ),
-            "evidence_bound": sum(
-                item["status"]["evidence_binding"] == "bound"
-                for item in queue_items
-            ),
-            "evidence_stale": sum(
-                item["status"]["evidence_binding"] == "stale"
-                for item in queue_items
-            ),
-            "evidence_not_applicable": sum(
-                item["status"]["evidence_binding"] == "not_applicable"
-                for item in queue_items
-            ),
-            "approval_eligible": sum(
-                item["status"]["approval_eligibility"] == "eligible"
-                for item in queue_items
-            ),
-            "approval_blocked": sum(
-                item["status"]["approval_eligibility"] == "blocked"
-                for item in queue_items
-            ),
-            "source_blocked": sum(
-                bool(item["source_quality_findings"]) for item in queue_items
-            ),
-        }
+        return summarize_review_items(queue_items)
 
     @classmethod
     def _filtered_queue(
@@ -887,7 +891,11 @@ class ReviewService:
         result = copy.deepcopy(dict(queue))
         result["items"] = items
         if queue.get("schema_version") == "2.0":
-            result["summary"] = cls._queue_summary(items)
+            summary = queue.get("summary", {})
+            if isinstance(summary, Mapping) and "source_blocked" in summary:
+                result["summary"] = legacy_review_summary(items)
+            else:
+                result["summary"] = cls._queue_summary(items)
         else:
             result["summary"] = {"pending": len(items)}
         return result

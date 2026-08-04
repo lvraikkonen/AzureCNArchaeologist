@@ -358,8 +358,12 @@ export default function ReviewWorkbench() {
       evidence &&
       reviewer.trim() &&
       (evidence.inspection.mode === "full" || selectedStates.length > 0) &&
-      (verdict === "approved" || reason),
+      (verdict === "approved" || reason) &&
+      !(verdict === "approved" && selectedItem.approval_blocked),
   );
+  const selectedSourceWarnings = selectedItem?.source_quality_findings.filter(
+    (finding) => finding.classification === "advisory",
+  ) ?? [];
 
   return (
     <main className="review-workbench">
@@ -381,11 +385,11 @@ export default function ReviewWorkbench() {
 
       <section className="review-shell review-hero">
         <div>
-          <p className="eyebrow">Step 4 · Slice D</p>
+          <p className="eyebrow">Step 5 · Slice C</p>
           <h1>受控 Review 工作台</h1>
           <p>
             明确选择 Batch，逐项查看 Source/Payload/Validation/Sampled Evidence，
-            并通过 Slice C 服务写入 append-only Review Decision。
+            并通过受控服务写入 append-only Review Decision。
           </p>
         </div>
         <div className="review-batch-picker">
@@ -421,8 +425,10 @@ export default function ReviewWorkbench() {
           <section className="review-shell review-metrics" aria-label="Review overview">
             <Metric label="语言项" value={projection.summary.items.total} detail={`${projection.summary.items.pending} pending`} />
             <Metric label="产品" value={projection.summary.products.total} detail={`${projection.summary.products.pending_attention} 需处理`} />
-            <Metric label="可发布项" value={projection.summary.items.release_ready} detail={`${projection.summary.products.release_ready} 个产品`} />
-            <Metric label="Source blocker" value={projection.summary.items.source_blocked} detail="未处置 Source Finding" />
+            <Metric label="Release Ready" value={projection.summary.items.release_ready_count} detail={`${projection.summary.products.release_ready_count} 个产品`} />
+            <Metric label="Source Warning" value={projection.summary.items.source_warning_count} detail={`${projection.summary.products.source_warning_count} 个产品`} />
+            <Metric label="Approval Blocked" value={projection.summary.items.approval_blocked_count} detail={`${projection.summary.products.approval_blocked_count} 个产品`} />
+            <Metric label="Machine Failed" value={projection.summary.items.machine_failed_count} detail={`${projection.summary.products.machine_failed_count} 个产品`} />
           </section>
 
           <section className="review-shell review-layout">
@@ -483,7 +489,8 @@ export default function ReviewWorkbench() {
                   value={filters.source}
                   options={[
                     ["all", "全部"],
-                    ["blocked", "blocked"],
+                    ["warning", "warning"],
+                    ["approval_blocked", "approval blocked"],
                     ["clear", "clear"],
                   ]}
                   onChange={(value) => updateFilter("source", value as ReviewFilters["source"])}
@@ -513,9 +520,37 @@ export default function ReviewWorkbench() {
                     <div className="review-status-row">
                       <Pill label={decisionLabel(selectedItem.status.review)} tone={statusTone(selectedItem.status.review)} />
                       <Pill label={bindingLabel(selectedItem.status.evidence_binding)} tone={statusTone(selectedItem.status.evidence_binding)} />
+                      {selectedItem.source_warning ? <Pill label="Source Warning" tone="amber" /> : null}
+                      {selectedItem.approval_blocked ? <Pill label="Approval Blocked" tone="coral" /> : null}
                       <Pill label={selectedItem.release_ready ? "release ready" : "release blocked"} tone={selectedItem.release_ready ? "emerald" : "slate"} />
                     </div>
                   </header>
+
+                  {selectedSourceWarnings.length ? (
+                    <section className="review-warning-panel">
+                      <h3>Source Warning</h3>
+                      {selectedSourceWarnings.map((finding) => (
+                        <article key={`${finding.code}:${finding.path ?? "$"}`}>
+                          <strong>{finding.code}</strong>
+                          <span>{finding.message}</span>
+                          <code>{finding.path ?? "$"}</code>
+                        </article>
+                      ))}
+                    </section>
+                  ) : null}
+
+                  {selectedItem.approval_blockers.length ? (
+                    <section className="review-warning-panel blocked">
+                      <h3>Approval Blocked</h3>
+                      {selectedItem.approval_blockers.map((blocker) => (
+                        <article key={`${blocker.code}:${blocker.path ?? "$"}`}>
+                          <strong>{blocker.code}</strong>
+                          <span>{blocker.message}</span>
+                          <code>{blocker.path ?? "$"}</code>
+                        </article>
+                      ))}
+                    </section>
+                  ) : null}
 
                   {evidence?.manual_preview.status === "available" && evidence.manual_preview.page_global ? (
                     <EvidenceBlock
@@ -669,6 +704,14 @@ export default function ReviewWorkbench() {
               <dt>Scopes</dt>
               <dd>{evidence?.inspection.mode === "full" ? "full_content" : `${pageGlobal ? "page_global " : ""}${selectedStates.length} states`}</dd>
             </dl>
+            {selectedSourceWarnings.length ? (
+              <div className="review-modal-warning">
+                <strong>Source Warning</strong>
+                {selectedSourceWarnings.map((finding) => (
+                  <p key={`${finding.code}:${finding.path ?? "$"}`}>{finding.code}: {finding.message}</p>
+                ))}
+              </div>
+            ) : null}
             <div className="review-modal-actions">
               <button type="button" className="secondary-action" onClick={() => setConfirming(false)}>
                 取消

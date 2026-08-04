@@ -29,67 +29,10 @@
       "format": "date-time"
     },
     "summary": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "total",
-        "reviewable",
-        "pending",
-        "approved",
-        "rejected",
-        "evidence_bound",
-        "evidence_stale",
-        "evidence_not_applicable",
-        "approval_eligible",
-        "approval_blocked",
-        "source_blocked"
-      ],
-      "properties": {
-        "total": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "reviewable": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "pending": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "approved": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "rejected": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "evidence_bound": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "evidence_stale": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "evidence_not_applicable": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "approval_eligible": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "approval_blocked": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "source_blocked": {
-          "type": "integer",
-          "minimum": 0
-        }
-      }
+      "oneOf": [
+        { "$ref": "#/$defs/legacy_summary" },
+        { "$ref": "#/$defs/current_summary" }
+      ]
     },
     "items": {
       "type": "array",
@@ -99,6 +42,98 @@
     }
   },
   "$defs": {
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "base_summary": {
+      "type": "object",
+      "properties": {
+        "total": { "$ref": "#/$defs/count" },
+        "reviewable": { "$ref": "#/$defs/count" },
+        "pending": { "$ref": "#/$defs/count" },
+        "approved": { "$ref": "#/$defs/count" },
+        "rejected": { "$ref": "#/$defs/count" },
+        "evidence_bound": { "$ref": "#/$defs/count" },
+        "evidence_stale": { "$ref": "#/$defs/count" },
+        "evidence_not_applicable": { "$ref": "#/$defs/count" },
+        "approval_eligible": { "$ref": "#/$defs/count" }
+      }
+    },
+    "legacy_summary": {
+      "allOf": [
+        { "$ref": "#/$defs/base_summary" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "total",
+            "reviewable",
+            "pending",
+            "approved",
+            "rejected",
+            "evidence_bound",
+            "evidence_stale",
+            "evidence_not_applicable",
+            "approval_eligible",
+            "approval_blocked",
+            "source_blocked"
+          ],
+          "properties": {
+            "total": { "$ref": "#/$defs/count" },
+            "reviewable": { "$ref": "#/$defs/count" },
+            "pending": { "$ref": "#/$defs/count" },
+            "approved": { "$ref": "#/$defs/count" },
+            "rejected": { "$ref": "#/$defs/count" },
+            "evidence_bound": { "$ref": "#/$defs/count" },
+            "evidence_stale": { "$ref": "#/$defs/count" },
+            "evidence_not_applicable": { "$ref": "#/$defs/count" },
+            "approval_eligible": { "$ref": "#/$defs/count" },
+            "approval_blocked": { "$ref": "#/$defs/count" },
+            "source_blocked": { "$ref": "#/$defs/count" }
+          }
+        }
+      ]
+    },
+    "current_summary": {
+      "allOf": [
+        { "$ref": "#/$defs/base_summary" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "total",
+            "reviewable",
+            "pending",
+            "approved",
+            "rejected",
+            "evidence_bound",
+            "evidence_stale",
+            "evidence_not_applicable",
+            "approval_eligible",
+            "approval_blocked_count",
+            "source_warning_count",
+            "machine_failed_count",
+            "release_ready_count"
+          ],
+          "properties": {
+            "total": { "$ref": "#/$defs/count" },
+            "reviewable": { "$ref": "#/$defs/count" },
+            "pending": { "$ref": "#/$defs/count" },
+            "approved": { "$ref": "#/$defs/count" },
+            "rejected": { "$ref": "#/$defs/count" },
+            "evidence_bound": { "$ref": "#/$defs/count" },
+            "evidence_stale": { "$ref": "#/$defs/count" },
+            "evidence_not_applicable": { "$ref": "#/$defs/count" },
+            "approval_eligible": { "$ref": "#/$defs/count" },
+            "approval_blocked_count": { "$ref": "#/$defs/count" },
+            "source_warning_count": { "$ref": "#/$defs/count" },
+            "machine_failed_count": { "$ref": "#/$defs/count" },
+            "release_ready_count": { "$ref": "#/$defs/count" }
+          }
+        }
+      ]
+    },
     "sha256": {
       "type": "string",
       "pattern": "^[a-f0-9]{64}$"
@@ -192,6 +227,13 @@
         },
         "path": {
           "type": "string"
+        },
+        "classification": {
+          "enum": [
+            "advisory",
+            "approval_blocking",
+            "unknown"
+          ]
         }
       }
     },
@@ -539,6 +581,18 @@
         },
         "current_decision": {
           "$ref": "#/$defs/decision_summary"
+        },
+        "source_warning": {
+          "type": "boolean"
+        },
+        "approval_blocked": {
+          "type": "boolean"
+        },
+        "machine_failed": {
+          "type": "boolean"
+        },
+        "release_ready": {
+          "type": "boolean"
         }
       }
     }

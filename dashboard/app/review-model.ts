@@ -20,6 +20,10 @@ export interface ReviewBlocker {
   path?: string;
 }
 
+export interface ReviewFinding extends ReviewBlocker {
+  classification?: "advisory" | "approval_blocking" | "unknown";
+}
+
 export interface ReviewDecisionSummary {
   decision_id: string;
   path: string;
@@ -80,13 +84,16 @@ export interface ReviewQueueItem {
     state_universe: ReviewState[];
     full_content_scope: boolean;
   };
-  source_quality_findings: ReviewBlocker[];
+  source_quality_findings: ReviewFinding[];
   approval_blockers: ReviewBlocker[];
   current_decision: ReviewDecisionSummary | null;
   release_eligibility: {
     eligible: boolean;
     blockers: ReviewBlocker[];
   };
+  source_warning: boolean;
+  approval_blocked: boolean;
+  machine_failed: boolean;
   release_ready: boolean;
 }
 
@@ -105,10 +112,12 @@ export interface WorkbenchProjection {
     items: Record<string, number>;
     products: {
       total: number;
-      release_ready: number;
+      release_ready_count: number;
       pending_attention: number;
       rejected_attention: number;
-      source_blocked: number;
+      source_warning_count: number;
+      approval_blocked_count: number;
+      machine_failed_count: number;
     };
   };
   history: {
@@ -164,7 +173,7 @@ export interface ItemEvidence {
     warnings: unknown[];
     approval_preconditions: Record<string, unknown>;
   };
-  source_quality_findings: ReviewBlocker[];
+  source_quality_findings: ReviewFinding[];
   machine_evidence: {
     page_global_comparison: Record<string, unknown>;
     full_content_comparison: Record<string, unknown> | null;
@@ -199,7 +208,7 @@ export interface ReviewFilters {
   review: "all" | ReviewStatus;
   binding: "all" | EvidenceBinding;
   coverage: "all" | "full" | "stratified_sample";
-  source: "all" | "blocked" | "clear";
+  source: "all" | "warning" | "approval_blocked" | "clear";
   release: "all" | "ready" | "blocked";
 }
 
@@ -298,6 +307,17 @@ function blocker(value: unknown, path: string): void {
   if ("path" in item) stringValue(item.path, `${path}.path`);
 }
 
+function finding(value: unknown, path: string): void {
+  const item = record(value, path);
+  for (const key of Object.keys(item)) {
+    if (!["code", "message", "path", "classification"].includes(key)) fail(`${path}.${key}`, "is not allowed");
+  }
+  stringValue(item.code, `${path}.code`, true);
+  stringValue(item.message, `${path}.message`, true);
+  if ("path" in item) stringValue(item.path, `${path}.path`);
+  if ("classification" in item) enumValue(item.classification, ["advisory", "approval_blocking", "unknown"], `${path}.classification`);
+}
+
 function state(value: unknown, path: string): void {
   const item = record(value, path);
   exact(item, ["state_id", "criteria"], path);
@@ -394,6 +414,9 @@ function queueItem(value: unknown, path: string): void {
       "approval_blockers",
       "current_decision",
       "release_eligibility",
+      "source_warning",
+      "approval_blocked",
+      "machine_failed",
       "release_ready",
     ],
     path,
@@ -429,13 +452,16 @@ function queueItem(value: unknown, path: string): void {
   enumValue(inspection.mode, ["interactive", "full"], `${path}.inspection.mode`);
   arrayValue(inspection.state_universe, `${path}.inspection.state_universe`).forEach((value, index) => state(value, `${path}.inspection.state_universe[${index}]`));
   booleanValue(inspection.full_content_scope, `${path}.inspection.full_content_scope`);
-  arrayValue(item.source_quality_findings, `${path}.source_quality_findings`).forEach((value, index) => blocker(value, `${path}.source_quality_findings[${index}]`));
+  arrayValue(item.source_quality_findings, `${path}.source_quality_findings`).forEach((value, index) => finding(value, `${path}.source_quality_findings[${index}]`));
   arrayValue(item.approval_blockers, `${path}.approval_blockers`).forEach((value, index) => blocker(value, `${path}.approval_blockers[${index}]`));
   decisionSummary(item.current_decision, `${path}.current_decision`);
   const release = record(item.release_eligibility, `${path}.release_eligibility`);
   exact(release, ["eligible", "blockers"], `${path}.release_eligibility`);
   booleanValue(release.eligible, `${path}.release_eligibility.eligible`);
   arrayValue(release.blockers, `${path}.release_eligibility.blockers`).forEach((value, index) => blocker(value, `${path}.release_eligibility.blockers[${index}]`));
+  booleanValue(item.source_warning, `${path}.source_warning`);
+  booleanValue(item.approval_blocked, `${path}.approval_blocked`);
+  booleanValue(item.machine_failed, `${path}.machine_failed`);
   booleanValue(item.release_ready, `${path}.release_ready`);
 }
 
@@ -456,7 +482,7 @@ export function assertWorkbenchProjection(value: unknown): asserts value is Work
   exact(summary, ["items", "products"], "$.summary");
   Object.entries(record(summary.items, "$.summary.items")).forEach(([key, value]) => numberValue(value, `$.summary.items.${key}`));
   const products = record(summary.products, "$.summary.products");
-  exact(products, ["total", "release_ready", "pending_attention", "rejected_attention", "source_blocked"], "$.summary.products");
+  exact(products, ["total", "release_ready_count", "pending_attention", "rejected_attention", "source_warning_count", "approval_blocked_count", "machine_failed_count"], "$.summary.products");
   Object.entries(products).forEach(([key, value]) => numberValue(value, `$.summary.products.${key}`));
   const history = record(root.history, "$.history");
   exact(history, ["configured", "batches"], "$.history");
@@ -528,6 +554,9 @@ export function assertItemEvidence(value: unknown): asserts value is ItemEvidenc
       approval_blockers: [],
       current_decision: record(root.decisions, "$.decisions").current,
       release_eligibility: { eligible: false, blockers: [] },
+      source_warning: arrayValue(root.source_quality_findings, "$.source_quality_findings").some((findingValue) => record(findingValue, "$.source_quality_findings[]").classification === "advisory"),
+      approval_blocked: false,
+      machine_failed: false,
       release_ready: false,
     },
     "$",
@@ -565,8 +594,9 @@ export function filterReviewItems(
     if (filters.review !== "all" && item.status.review !== filters.review) return false;
     if (filters.binding !== "all" && item.status.evidence_binding !== filters.binding) return false;
     if (filters.coverage !== "all" && item.coverage.mode !== filters.coverage) return false;
-    if (filters.source === "blocked" && item.source_quality_findings.length === 0) return false;
-    if (filters.source === "clear" && item.source_quality_findings.length > 0) return false;
+    if (filters.source === "warning" && !item.source_warning) return false;
+    if (filters.source === "approval_blocked" && !item.approval_blocked) return false;
+    if (filters.source === "clear" && (item.source_warning || item.approval_blocked)) return false;
     if (filters.release === "ready" && !item.release_ready) return false;
     if (filters.release === "blocked" && item.release_ready) return false;
     return true;

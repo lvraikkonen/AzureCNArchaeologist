@@ -2,16 +2,16 @@
 
 > 更新日期：2026-08-04
 > 当前分支：`codex/v0.4`
-> 当前状态：Step 0–3 已完成；Step 4 Slice A-E 已完成并提交。Step 5–7 已重新收窄，下一步只实现 Finding 分级与 Approval Gate 收敛。
+> 当前状态：Step 0–5 已完成；Step 6–7 已重新收窄，下一步进入 Core Matrix、golden baseline 与最终验收证据。
 > 最近 Step 4 收口提交：`0d84039 feat: add immutable release promotion and upload gate`；随后 `83d3f02 docs: update agent upload workflow` 已同步 `AGENTS.md`。
 
-本文不再保存 Step 4 Slice A-E 的历史实施计划。需要追溯旧交接内容时使用 Git 历史查看本文件早期版本；新的实现线程应把本文作为修改后 Step 5 的干净入口，不得继续执行旧 handoff 中的 Report 2.0 / Disposition / Visual Review 五个 Slice。
+本文不再保存 Step 4 Slice A-E 的历史实施计划。需要追溯旧交接内容时使用 Git 历史查看本文件早期版本；新的实现线程应把本文作为 Step 6 的入口，不得继续执行旧 handoff 中的 Report 2.0 / Disposition / Visual Review 五个 Slice。
 
 ## 1. 当前任务边界
 
-下一阶段目标是实现 `plans/v0.4-execution-plan.md` 中的 **Step 5 / P4：Source Finding 分级与 Approval Gate 收敛**。
+Step 5 / P4：Source Finding 分级与 Approval Gate 收敛已经完成。下一阶段目标是实现 `plans/v0.4-execution-plan.md` 中的 **Step 6 / P5：可信回归基线与确定性验证**。
 
-Step 5 只解决一个已经在当前实现中确认的问题：`source_approval_preconditions()` 把每个 `source_quality_findings[]` 元素都转换成同一个 `unresolved_source_quality_finding` blocker，导致已证明不影响忠实重建的轻微源侧 warning 也无法批准。
+Step 5 已解决此前确认的问题：`source_approval_preconditions()` 曾把每个 `source_quality_findings[]` 元素都转换成同一个 `unresolved_source_quality_finding` blocker，导致已证明不影响忠实重建的轻微源侧 warning 也无法批准。
 
 Step 5 必须建立在已完成的 Step 4 闭环上：
 
@@ -71,7 +71,7 @@ ADR-0087/0088 仍是 Step 4 闭环的权威，但旧 Finding/视觉/测试排期
 - 旧 decision 在 Source/Payload/validation evidence/hash 漂移后变为 stale，权威 review 回到 pending。
 - 本地 Dashboard 保留 `/` Capability Ledger，并新增 `/review` Workbench。
 - `pipeline-review-serve` 提供 loopback bridge；前端只通过与 CLI 共用的 review service 写状态，不直接改 projection、decision 文件或 manifest。
-- 当前实现仍把所有 Source Quality Finding 视为 blocker，并在 summary 中使用 `source-blocked` 聚合；这是 Step 5 要替换的已知行为，不是最终 v0.4 policy。
+- Step 5 已将 Source Quality Finding 分为 advisory、approval-blocking 与 unknown，并在 summary/filter/status 中使用 Source Warning、Approval Blocked、Machine Failed、Release Ready 的独立 accounting；旧 `source-blocked` 仅作为 legacy Review Queue 只读兼容字段存在。
 
 ### Release 与 Upload
 
@@ -242,10 +242,10 @@ v0.4 不提供正式 Disposition/override 路径。因此 source-confirmed empty
 
 ### Slice 5C：Dashboard、accounting 与文档
 
-- Workbench 显著展示 warnings，并按 snake_case machine fields、Title Case UI labels 以及既定 overlap/互斥规则拆分 summary/filter/status language。
-- 更新必要的 projection schema/tests、Node tests 和 capability dashboard builder；不扩建协作 UI。
-- 同步 ROADMAP、execution plan、handoff、新 ADR、必要的 README/CONTEXT。
-- Step 5 目标测试、Dashboard tests/build 和 `git diff --check` 全部通过后暂停汇报；不要自动开始 full batch。
+- 已完成 Workbench warning/blocker 显示，并按 snake_case machine fields、Title Case UI labels 以及既定 overlap/互斥规则拆分 summary/filter/status language。
+- 已更新 projection schema/tests、Node tests 和 capability dashboard builder 边界；未扩建协作 UI。
+- 已同步 ROADMAP、execution plan、handoff、ADR-0089、README/CONTEXT。
+- Step 5 到此收口；下一步是 Step 6 / P5 Core Matrix、golden baseline 与确定性验证。不要自动开始 full batch。
 
 ## 8. Step 6 / P5 和 Step 7 的后续位置
 
@@ -309,10 +309,10 @@ v0.4 不提供正式 Disposition/override 路径。因此 source-confirmed empty
 
 ### Step 5 主要代码接触面
 
-- `src/review/contracts.py`：`source_approval_preconditions()` 当前把每个 finding 转为 blocker，`derive_approval_eligibility()` 当前还把 review evidence binding/inspected states 混入 eligibility；优先在单一领域入口实现 policy，并保持 eligibility、Human Review 与 Evidence Binding 的领域语义正交。
+- `src/review/contracts.py`：保留 legacy `source_approval_preconditions()`，successor path 使用 frozen policy evaluator；eligibility、Human Review 与 Evidence Binding 保持领域语义正交。
 - `src/content_sampling/runtime.py`：`_source_quality_findings()` 生成当前 finding evidence；保持 code/message/path 与 hash-bound evidence。
 - `src/review/service.py`：snapshot、eligibility、decision 与 release-ready binding；不得复制第二套分类规则。
-- `src/review/workbench.py`、`src/pipeline/state_store.py`：projection、`source-blocked` accounting，以及 Profile→Validation Projection 2.1 closed-world routing；不得把 successor 当 Validation 1.0。
+- `src/review/workbench.py`、`src/pipeline/state_store.py`：projection、Source Warning / Approval Blocked / Machine Failed / Release Ready accounting，以及 Profile→Validation Projection 2.1 closed-world routing；不得把 successor 当 Validation 1.0。
 - `src/core/validation_context.py`、profile/provenance contracts：让 Profile 1.3 canonical ownership、Validation 2.1 projection 与 exact legacy resolver 遵守两种合法组合矩阵；旧 P3 Profile 1.2 与 Validation 2.0 保持字节不变，不回填旧 artifact。
 - `dashboard/app/review-model.ts`、`dashboard/app/review/ReviewWorkbench.tsx`：warning 展示、filters 和 summary language。
 - 新增 `schemas/pipeline-validation-2.1.schema.json` 与 profile 1.3 contract；`schemas/pipeline-review-queue-2.0.schema.json`、`schemas/dashboard-review-*.schema.json` 仅做表达 policy identity/分拆统计所需的最小 additive evolution。禁止修改旧 `pipeline-validation-2.0` 的冻结 bytes/hash。

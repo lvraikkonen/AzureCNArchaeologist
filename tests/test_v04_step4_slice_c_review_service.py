@@ -310,10 +310,12 @@ def test_source_findings_block_approval_but_allow_rejection(tmp_path: Path) -> N
     )
     assert rejected.review == "rejected"
     queue = service.list_items(BATCH_ID, status="all")
-    assert queue["summary"]["source_blocked"] == 1
+    assert queue["summary"]["approval_blocked_count"] == 1
+    assert queue["summary"]["source_warning_count"] == 0
     assert queue["items"][0]["approval_blockers"][0]["code"] == (
         "unresolved_source_quality_finding"
     )
+    assert queue["items"][0]["approval_blocked"] is True
 
 
 def test_successor_advisory_finding_is_eligible_before_and_after_review(
@@ -334,8 +336,14 @@ def test_successor_advisory_finding_is_eligible_before_and_after_review(
     queue = service.list_items(BATCH_ID, status="all")
     assert queue["items"][0]["status"]["approval_eligibility"] == "eligible"
     assert queue["items"][0]["approval_blockers"] == []
+    assert queue["summary"]["source_warning_count"] == 1
+    assert queue["summary"]["approval_blocked_count"] == 0
+    assert queue["items"][0]["source_warning"] is True
     assert queue["items"][0]["source_quality_findings"][0]["code"] == (
         "SOURCE_CHARSET_DECLARATION_NOT_UTF8"
+    )
+    assert queue["items"][0]["source_quality_findings"][0]["classification"] == (
+        "advisory"
     )
 
     result = service.decide(
@@ -344,6 +352,7 @@ def test_successor_advisory_finding_is_eligible_before_and_after_review(
 
     assert result.review == "approved"
     assert result.approval_eligibility == "eligible"
+    assert result.source_warnings[0]["code"] == "SOURCE_CHARSET_DECLARATION_NOT_UTF8"
     decision = store.read_review_decision(
         BATCH_ID,
         relative_path=result.decision_path,

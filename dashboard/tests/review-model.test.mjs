@@ -64,6 +64,9 @@ function item(overrides = {}) {
     approval_blockers: [],
     current_decision: null,
     release_eligibility: { eligible: false, blockers: [{ code: "review_not_approved", message: "pending" }] },
+    source_warning: false,
+    approval_blocked: false,
+    machine_failed: false,
     release_ready: false,
     ...overrides,
   };
@@ -92,17 +95,20 @@ function projection(overrides = {}) {
         evidence_stale: 0,
         evidence_not_applicable: 0,
         approval_eligible: 1,
-        approval_blocked: 0,
-        source_blocked: 0,
+        approval_blocked_count: 0,
+        source_warning_count: 0,
+        machine_failed_count: 0,
         runnable: 1,
-        release_ready: 0,
+        release_ready_count: 0,
       },
       products: {
         total: 1,
-        release_ready: 0,
+        release_ready_count: 0,
         pending_attention: 1,
         rejected_attention: 0,
-        source_blocked: 0,
+        source_warning_count: 0,
+        approval_blocked_count: 0,
+        machine_failed_count: 0,
       },
     },
     history: { configured: false, batches: [] },
@@ -226,6 +232,9 @@ test("review filters keep formal approval separate from capability dashboard fil
   const approved = item({
     status: { ...item().status, review: "approved" },
     release_ready: true,
+    source_warning: false,
+    approval_blocked: false,
+    machine_failed: false,
     release_eligibility: { eligible: true, blockers: [] },
   });
   const rejected = item({
@@ -241,6 +250,40 @@ test("review filters keep formal approval separate from capability dashboard fil
   });
 
   assert.deepEqual(result, [approved]);
+});
+
+test("source filters distinguish warning, approval blocked, and clear", () => {
+  const warning = item({
+    source_warning: true,
+    source_quality_findings: [{
+      code: "SOURCE_CHARSET_DECLARATION_NOT_UTF8",
+      message: "advisory",
+      path: "$.meta",
+      classification: "advisory",
+    }],
+  });
+  const blocked = item({
+    item_id: "en-us/blocked",
+    language: "en-us",
+    approval_blocked: true,
+    approval_blockers: [{ code: "approval_blocking_source_quality_finding", message: "blocked" }],
+  });
+
+  assert.deepEqual(filterReviewItems([item(), warning, blocked], {
+    ...defaultReviewFilters,
+    review: "all",
+    source: "warning",
+  }), [warning]);
+  assert.deepEqual(filterReviewItems([item(), warning, blocked], {
+    ...defaultReviewFilters,
+    review: "all",
+    source: "approval_blocked",
+  }), [blocked]);
+  assert.deepEqual(filterReviewItems([item(), warning, blocked], {
+    ...defaultReviewFilters,
+    review: "all",
+    source: "clear",
+  }), [item()]);
 });
 
 test("capability ledger remains static and local workbench adds no API routes", async () => {

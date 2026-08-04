@@ -84,10 +84,11 @@
             "evidence_stale",
             "evidence_not_applicable",
             "approval_eligible",
-            "approval_blocked",
-            "source_blocked",
+            "approval_blocked_count",
+            "source_warning_count",
+            "machine_failed_count",
             "runnable",
-            "release_ready"
+            "release_ready_count"
           ],
           "properties": {
             "total": { "$ref": "#/$defs/count" },
@@ -99,10 +100,11 @@
             "evidence_stale": { "$ref": "#/$defs/count" },
             "evidence_not_applicable": { "$ref": "#/$defs/count" },
             "approval_eligible": { "$ref": "#/$defs/count" },
-            "approval_blocked": { "$ref": "#/$defs/count" },
-            "source_blocked": { "$ref": "#/$defs/count" },
+            "approval_blocked_count": { "$ref": "#/$defs/count" },
+            "source_warning_count": { "$ref": "#/$defs/count" },
+            "machine_failed_count": { "$ref": "#/$defs/count" },
             "runnable": { "$ref": "#/$defs/count" },
-            "release_ready": { "$ref": "#/$defs/count" }
+            "release_ready_count": { "$ref": "#/$defs/count" }
           }
         },
         "products": {
@@ -110,17 +112,21 @@
           "additionalProperties": false,
           "required": [
             "total",
-            "release_ready",
+            "release_ready_count",
             "pending_attention",
             "rejected_attention",
-            "source_blocked"
+            "source_warning_count",
+            "approval_blocked_count",
+            "machine_failed_count"
           ],
           "properties": {
             "total": { "$ref": "#/$defs/count" },
-            "release_ready": { "$ref": "#/$defs/count" },
+            "release_ready_count": { "$ref": "#/$defs/count" },
             "pending_attention": { "$ref": "#/$defs/count" },
             "rejected_attention": { "$ref": "#/$defs/count" },
-            "source_blocked": { "$ref": "#/$defs/count" }
+            "source_warning_count": { "$ref": "#/$defs/count" },
+            "approval_blocked_count": { "$ref": "#/$defs/count" },
+            "machine_failed_count": { "$ref": "#/$defs/count" }
           }
         }
       }
@@ -261,7 +267,14 @@
       "properties": {
         "code": { "type": "string", "minLength": 1 },
         "message": { "type": "string", "minLength": 1 },
-        "path": { "type": "string" }
+        "path": { "type": "string" },
+        "classification": {
+          "enum": [
+            "advisory",
+            "approval_blocking",
+            "unknown"
+          ]
+        }
       }
     },
     "release_eligibility": {
@@ -348,6 +361,9 @@
         "approval_blockers",
         "current_decision",
         "release_eligibility",
+        "source_warning",
+        "approval_blocked",
+        "machine_failed",
         "release_ready"
       ],
       "properties": {
@@ -522,6 +538,15 @@
         },
         "release_eligibility": {
           "$ref": "#/$defs/release_eligibility"
+        },
+        "source_warning": {
+          "type": "boolean"
+        },
+        "approval_blocked": {
+          "type": "boolean"
+        },
+        "machine_failed": {
+          "type": "boolean"
         },
         "release_ready": {
           "type": "boolean"

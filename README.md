@@ -69,7 +69,7 @@ flowchart LR
 
 ## v0.4 目标日常生产流程
 
-> 当前实现边界：Step 4 Slice A-E 已提供 P3 sampled validation runtime、Review Queue 2.0、append-only Review Decision service、`pipeline-review-list` / `pipeline-review-decide` CLI、本地 `/review` Dashboard Workbench、`release-build` / `release-verify` 和 `upload --release-manifest`。实施边界见 [v0.4 execution plan](plans/v0.4-execution-plan.md)，代码导航见 [handoff](handoff.md)。
+> 当前实现边界：Step 5 已完成 Finding Code Policy、Validation 2.1 successor、Release Manifest 1.1、Review Queue 2.0 accounting、`pipeline-review-list` / `pipeline-review-decide` CLI、本地 `/review` Dashboard Workbench、`release-build` / `release-verify` 和 `upload --release-manifest`。实施边界见 [v0.4 execution plan](plans/v0.4-execution-plan.md)，代码导航见 [handoff](handoff.md)。
 
 ### 1. 接收上游 HTML 与配置
 
@@ -180,7 +180,7 @@ npm run dev
 Workbench 提供：
 
 - 产品与产品语言项总览；
-- runnable、pending、approved、rejected、source-blocked、release-ready 语言项统计，以及产品级 attention/ready 统计；
+- runnable、pending、approved、rejected、Source Warning、Approval Blocked、Machine Failed、Release Ready 语言项统计，以及产品级 attention/ready 统计；
 - 按语言、类别、策略、风险、失败历史和证据绑定筛选；
 - 冻结 Source、persisted Payload 和机器抽样证据对照；
 - 人工选择 region、software、category、tab 等实际存在的状态组合；
@@ -232,7 +232,7 @@ review evidence binds current hashes
 inspected states belong to the frozen Reachability Relation
 ~~~
 
-其中 Step 4 的 Approval Eligibility 要求：execution 和 validation 已通过、审核绑定当前 Source/Payload/validation hashes、记录的人工检查状态属于本 Batch Item 的 Reachability Relation，并且不存在未处置 Source Quality Finding。发现这类 finding 时保持 pending，或按实际原因 rejected；正式 disposition workflow 与复杂视觉 blocker 属于 Step 5。
+其中 Step 5 的 Approval Eligibility 只由 machine preconditions 与当前 Finding Policy 派生：execution 和 validation 已通过，并且没有 Approval Blocker。Review Decision、evidence binding 和人工 inspected states 是独立 lifecycle 状态；advisory Source Warning 会显著展示并绑定进 validation evidence hash，但不阻止 approve/release，approval-blocking 或 unknown finding 仍阻止批准。Disposition workflow、UVR、Report 2.0 与复杂视觉 review 仍为后续范围。
 
 机器失败不能被人工覆盖。Source、Payload 或 validation evidence 改变后，旧审核自动成为 stale，必须重新审核。
 

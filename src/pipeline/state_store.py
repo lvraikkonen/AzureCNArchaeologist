@@ -34,6 +34,7 @@ from src.release.contracts import (
     validate_publication_receipt_bindings,
     validate_release_manifest_bindings,
 )
+from src.review.accounting import legacy_review_summary, summarize_review_items
 from src.review.contracts import (
     LEGACY_P3_PROFILE_IDENTITY,
     ReviewContractError,
@@ -1555,45 +1556,25 @@ class StateStore:
                 )
         elif kind == "review" and value.get("schema_version") == "2.0":
             items = list(value["items"])
-            expected_summary = {
-                "total": len(items),
-                "reviewable": sum(
-                    item["status"]["evidence_binding"] != "stale"
-                    for item in items
-                ),
-                "pending": sum(
-                    item["status"]["review"] == "pending" for item in items
-                ),
-                "approved": sum(
-                    item["status"]["review"] == "approved" for item in items
-                ),
-                "rejected": sum(
-                    item["status"]["review"] == "rejected" for item in items
-                ),
-                "evidence_bound": sum(
-                    item["status"]["evidence_binding"] == "bound"
-                    for item in items
-                ),
-                "evidence_stale": sum(
-                    item["status"]["evidence_binding"] == "stale"
-                    for item in items
-                ),
-                "evidence_not_applicable": sum(
-                    item["status"]["evidence_binding"] == "not_applicable"
-                    for item in items
-                ),
-                "approval_eligible": sum(
-                    item["status"]["approval_eligibility"] == "eligible"
-                    for item in items
-                ),
-                "approval_blocked": sum(
-                    item["status"]["approval_eligibility"] == "blocked"
-                    for item in items
-                ),
-                "source_blocked": sum(
-                    bool(item["source_quality_findings"]) for item in items
-                ),
+            summary = value["summary"]
+            legacy_keys = {"approval_blocked", "source_blocked"}
+            current_keys = {
+                "approval_blocked_count",
+                "source_warning_count",
+                "machine_failed_count",
+                "release_ready_count",
             }
+            has_legacy = bool(legacy_keys & set(summary))
+            has_current = bool(current_keys & set(summary))
+            if has_legacy and has_current:
+                raise ManifestValidationError(
+                    "Review Queue 2.0 summary cannot mix legacy and current accounting fields"
+                )
+            expected_summary = (
+                legacy_review_summary(items)
+                if has_legacy
+                else summarize_review_items(items)
+            )
             if value["summary"] != expected_summary:
                 raise ManifestValidationError(
                     f"Review Queue 2.0 summary does not match items: expected {expected_summary}"

@@ -103,6 +103,9 @@ def pipeline_status_command(args: argparse.Namespace) -> int:
         store = StateStore(ROOT, args.runs_dir)
         manifest = store.read_manifest(args.batch_id)
         summary = summarize_batch_manifest(manifest)
+        review_accounting = ReviewService(ROOT, args.runs_dir).batch_accounting(
+            args.batch_id
+        )
         display_status, resumable = derive_batch_availability(
             manifest,
             lock_is_held=RepositoryLock.is_locked(
@@ -116,6 +119,7 @@ def pipeline_status_command(args: argparse.Namespace) -> int:
             "revision": manifest["revision"],
             "resumable": resumable,
             "summary": summary,
+            "review_accounting": review_accounting,
             "run_dir": store.run_dir(args.batch_id).as_posix(),
         }
     except Exception as error:
@@ -136,6 +140,13 @@ def pipeline_status_command(args: argparse.Namespace) -> int:
             f"validation_passed={summary['validation_passed']} "
             f"validation_failed={summary['validation_failed']} "
             f"review_pending={summary['review_pending']}"
+        )
+        accounting = value["review_accounting"]
+        print(
+            f"source_warning_count={accounting['source_warning_count']} "
+            f"approval_blocked_count={accounting['approval_blocked_count']} "
+            f"machine_failed_count={accounting['machine_failed_count']} "
+            f"release_ready_count={accounting['release_ready_count']}"
         )
     return 0
 
@@ -194,10 +205,29 @@ def pipeline_review_list_command(args: argparse.Namespace) -> int:
             if isinstance(artifacts, dict)
             else item["validation"]
         )
+        flags = []
+        if item.get("source_warning"):
+            flags.append("Source Warning")
+        if item.get("approval_blocked"):
+            flags.append("Approval Blocked")
+        if item.get("machine_failed"):
+            flags.append("Machine Failed")
+        flag_text = ",".join(flags) if flags else "Clear"
         print(
-            f"{item['item_id']}\t{review}\t{item['strategy']}\t"
+            f"{item['item_id']}\t{review}\t{flag_text}\t{item['strategy']}\t"
             f"{validation['path']}"
         )
+        for finding in item.get("source_quality_findings", []):
+            if finding.get("classification") == "advisory":
+                print(
+                    f"  Source Warning: {finding['code']} "
+                    f"{finding['message']} path={finding.get('path', '$')}"
+                )
+        for blocker in item.get("approval_blockers", []):
+            print(
+                f"  Approval Blocked: {blocker['code']} "
+                f"{blocker['message']} path={blocker.get('path', '$')}"
+            )
     return 0
 
 
@@ -269,6 +299,11 @@ def pipeline_review_decide_command(args: argparse.Namespace) -> int:
         f"current_revision={result.current_revision} "
         f"projection={result.projection_status}"
     )
+    for source_warning in result.source_warnings:
+        print(
+            f"Source Warning: {source_warning['code']} "
+            f"{source_warning['message']} path={source_warning.get('path', '$')}"
+        )
     for warning in result.warnings:
         print(f"WARN: {warning}")
     return 0

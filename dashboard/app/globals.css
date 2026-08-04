@@ -2279,6 +2279,7 @@ summary:focus-visible {
 .review-evidence-block,
 .review-inspection,
 .review-decision-panel,
+.review-warning-panel,
 .review-history,
 .review-empty.inline {
   margin-top: 18px;
@@ -2290,10 +2291,36 @@ summary:focus-visible {
 
 .review-evidence-block h4,
 .review-inspection h3,
+.review-warning-panel h3,
 .review-decision-panel h3,
 .review-history h3 {
   margin: 0 0 12px;
   font-size: 15px;
+}
+
+.review-warning-panel {
+  border-color: var(--amber-500);
+}
+
+.review-warning-panel.blocked {
+  border-color: var(--coral-500);
+}
+
+.review-warning-panel article {
+  display: grid;
+  gap: 4px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.review-warning-panel article:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.review-warning-panel code {
+  color: var(--ink-faint);
+  overflow-wrap: anywhere;
 }
 
 .review-compare-grid {
@@ -2436,6 +2463,20 @@ summary:focus-visible {
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr);
   gap: 8px 12px;
+}
+
+.review-modal-warning {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid var(--amber-500);
+  border-radius: 8px;
+  background: var(--amber-100);
+}
+
+.review-modal-warning p {
+  margin: 6px 0 0;
+  color: var(--ink-faint);
+  overflow-wrap: anywhere;
 }
 
 .review-modal dt {

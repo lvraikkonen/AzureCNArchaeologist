@@ -8,7 +8,7 @@
 
 ## 1. 路线图目的
 
-AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流。v0.4 Step 4 已完成抽样内容验证、受控人工审核、不可变 Release 和 Release-only upload gate 的能力实现；剩余 Step 5–7 只收敛 Finding 门禁、可信回归基线和版本验收，不再扩建新的质量治理子系统。
+AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流。v0.4 Step 4 已完成抽样内容验证、受控人工审核、不可变 Release 和 Release-only upload gate；Step 5 已完成 Finding 门禁、successor Validation/Release routing、Dashboard/CLI accounting 与文档收口；剩余 Step 6–7 只建立可信回归基线和版本验收，不再扩建新的质量治理子系统。
 
 从 v0.1 到 v1.0 的核心目标不是继续堆叠功能，而是把现有能力收敛为一套：
 
@@ -306,7 +306,7 @@ Pricing 始终写入 `{language}/pricing`；同一 Product Definition 即使属�
 
 ### v0.4：建立可追溯内容验证与最小批准交付闭环
 
-> 状态：Step 0–3 已完成；Step 4 Slice A-E 的能力实现已完成，包括 P3 Profile、可复现抽样内容验证、Review Queue 2.0、append-only Review Decision service 与 CLI、本地 Dashboard Review Workbench、不可变 Release 和 Release-only upload gate。真实双语 Core Matrix、最终全量 Batch 与代表 Release 验收仍属于 Step 6/7。
+> 状态：Step 0–5 已完成；Step 4 Slice A-E 的能力实现已完成，Step 5 已完成 Finding Policy successor、Review/Release routing、Dashboard/CLI accounting 与文档同步。真实双语 Core Matrix、最终全量 Batch 与代表 Release 验收仍属于 Step 6/7。
 
 #### 目标与保证边界
 
@@ -318,7 +318,7 @@ Page-global、SimpleStatic 和 SupportArticle 主体内容执行完整比较；R
 
 Frozen Source Snapshot 仍是批次内容权威。当前 live 页面只作 non-authoritative interaction reference，不能自动改写 Source Snapshot、抽样计划、验证结论或 Golden。
 
-v0.4 Step 4 已实现可日常使用的最小闭环能力：机器通过项进入 Dashboard Review Queue，实际被审核的产品语言项显式 approved 或 rejected，其余保持 pending；批准项生成不可变 Release，upload 只接受 sealed Release。Step 5 只收敛 Source Finding 分类与 Approval Gate，Step 6 建立可信回归和最终全量证据，Step 7 完成真实产品演练、release-readiness 验收与 v0.4.0 基线冻结。
+v0.4 Step 5 已实现可日常使用的最小闭环能力：机器通过项进入 Dashboard Review Queue，Source Warning、Approval Blocked、Machine Failed 与 Release Ready 独立 accounting，实际被审核的产品语言项显式 approved 或 rejected，其余保持 pending；批准项生成不可变 Release，upload 只接受 sealed Release。Step 6 建立可信回归和最终全量证据，Step 7 完成真实产品演练、release-readiness 验收与 v0.4.0 基线冻结。
 
 v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管、多用户权限或自动 CMS 发布；它交付 runner-agnostic、可被未来自动化平台调用的本地流程和 CI-ready 测试能力。
 

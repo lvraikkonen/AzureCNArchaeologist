@@ -55,7 +55,7 @@ def test_workbench_projection_is_closed_world_and_derives_release_readiness(
     pending = workbench.build_projection(BATCH_ID)
     _validator("projection").validate(pending)
     assert pending["summary"]["items"]["pending"] == 1
-    assert pending["summary"]["items"]["release_ready"] == 0
+    assert pending["summary"]["items"]["release_ready_count"] == 0
     assert pending["items"][0]["release_ready"] is False
 
     before = store.read_manifest(BATCH_ID)
@@ -66,8 +66,8 @@ def test_workbench_projection_is_closed_world_and_derives_release_readiness(
     approved = workbench.build_projection(BATCH_ID)
     _validator("projection").validate(approved)
     assert approved["summary"]["items"]["approved"] == 1
-    assert approved["summary"]["items"]["release_ready"] == 1
-    assert approved["summary"]["products"]["release_ready"] == 1
+    assert approved["summary"]["items"]["release_ready_count"] == 1
+    assert approved["summary"]["products"]["release_ready_count"] == 1
     after = store.read_manifest(BATCH_ID)
     assert after["release_manifests"] == []
     assert after["publication_receipts"] == []
@@ -75,6 +75,37 @@ def test_workbench_projection_is_closed_world_and_derives_release_readiness(
     approved["unexpected"] = True
     with pytest.raises(Exception, match="Additional properties"):
         _validator("projection").validate(approved)
+
+
+def test_workbench_projection_exposes_source_warning_accounting(
+    tmp_path: Path,
+) -> None:
+    review, store, item, _ = _reviewable_run(
+        tmp_path,
+        validation_profile_id="v0.4-validation-p3-successor",
+        source_findings=[{
+            "code": "SOURCE_CHARSET_DECLARATION_NOT_UTF8",
+            "message": "Source charset declaration is advisory.",
+            "path": "$.fixture",
+            "severity": "finding",
+            "disposition": "unresolved",
+        }],
+    )
+    workbench = ReviewWorkbenchService(ROOT, review_service=review, now=lambda: FIXED_NOW)
+
+    projection = workbench.build_projection(BATCH_ID)
+    _validator("projection").validate(projection)
+    assert projection["summary"]["items"]["source_warning_count"] == 1
+    assert projection["summary"]["items"]["approval_blocked_count"] == 0
+    assert projection["items"][0]["source_warning"] is True
+
+    evidence = workbench.get_item_evidence(
+        BATCH_ID,
+        language=item.language,
+        resource_key=item.resource_key,
+    )
+    _validator("evidence").validate(evidence)
+    assert evidence["source_quality_findings"][0]["classification"] == "advisory"
 
 
 def test_item_evidence_exposes_supersession_history_without_scanning(

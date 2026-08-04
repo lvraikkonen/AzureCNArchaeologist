@@ -24,11 +24,15 @@ approval-blocking.  Any unrecognized finding code is classified as `unknown`
 and fails closed with `unknown_source_quality_finding_code` until a later ADR
 updates the policy.
 
-The successor is registered and replayable in Slice 5A, but it is not the
-active default profile.  New ordinary pipeline runs still freeze the active P3
-1.2 context until Slice 5B connects Review, Release, Workbench, and operator
-activation to the successor.  Controlled Slice 5A tests may explicitly freeze
-the successor profile to prove Validation 2.1 generation and StateStore replay.
+Slice 5B made the successor the active default for new ordinary pipeline runs
+and connected Review, Release, Workbench, and operator activation to Validation
+2.1.  Slice 5C completed the operator-facing accounting vocabulary:
+`source_warning`, `approval_blocked`, `machine_failed`, and `release_ready`
+are projected as independent dimensions, with counts exposed as
+`source_warning_count`, `approval_blocked_count`, `machine_failed_count`, and
+`release_ready_count`.  Legacy P3 1.2 / Validation 2.0 artifacts remain
+read-only valid under the blanket policy and are not reclassified by the
+current registry.
 
 This decision partially supersedes ADR-0012, ADR-0029, ADR-0030, ADR-0064, and
 ADR-0088 where they treated all source findings as immediate approval blockers.

@@ -405,12 +405,16 @@ The batch-specific collection of Batch Items whose reconstructed Business Payloa
 _Avoid_: Approval queue, publication queue
 
 **Approval Eligibility**:
-The machine-enforced derived state indicating whether a Machine-validated Review Queue item has current matching evidence, valid inspected states, and no unresolved approval conditions. Step 4 treats an unresolved Source Quality Finding as blocking; Step 5 may add formal disposition and visual-review blockers. It never changes the Machine Validation verdict and prevents transition to `approved` while false.
+The machine-enforced derived state indicating whether execution and Machine Validation passed and the current Finding Policy produced no Approval Blocker. It is independent of Review Decision verdict, evidence binding, and inspected-state validity; those states can make a decision stale or non-releasable without changing Approval Eligibility. Advisory Source Warnings remain visible evidence but do not make this state false.
 _Avoid_: Machine Validation pass, reviewer preference, publication status
 
 **Approval Blocker**:
-A structured, auditable unmet condition that prevents an approved Review Decision or Release membership. Step 4 includes minimum machine/hash blockers; Step 5 may add Source Finding disposition and Complex Table visual-review blockers. Human review cannot bypass one.
+A structured, auditable unmet condition that prevents an approved Review Decision or Release membership. In Step 5 this includes approval-blocking or unknown Source Quality Finding codes under the frozen policy; Machine Validation failure remains a machine failure, not an Approval Blocker. Human review cannot bypass one.
 _Avoid_: Warning text, validation error, manual override flag
+
+**Source Warning**:
+An advisory Source Quality Finding classified by the frozen Finding Code Policy. It is preserved in Validation Evidence and shown by CLI/Dashboard before review, but it does not block Approval Eligibility or Release when all other gates pass.
+_Avoid_: Approval Blocker, Machine Validation failure, hidden note
 
 **Review Decision**:
 An append-only, hash-bound human decision for one Batch Item with verdict `approved` or `rejected`, reviewer, time, inspected states, reason, notes, and Source/Payload/validation identities. A newer decision may supersede but never erase an older one; changed bound evidence makes it stale.

@@ -29,6 +29,7 @@ from src.core.strict_soft_category_projection import (
 from src.pipeline.models import BatchItem, items_from_dicts, utc_now
 from src.pipeline.state_store import StateStore
 from src.release.contracts import ReleaseContractError, evaluate_release_item
+from src.review.accounting import finding_summary, merge_item_accounting, summarize_review_items
 from src.review.service import ReviewService, ReviewServiceError
 
 
@@ -218,7 +219,10 @@ class ReviewWorkbenchService:
             item = copy.deepcopy(dict(raw_item))
             release_eligibility = self._release_eligibility(manifest, item)
             item["release_eligibility"] = release_eligibility
-            item["release_ready"] = bool(release_eligibility["eligible"])
+            item = merge_item_accounting(
+                item,
+                release_ready=bool(release_eligibility["eligible"]),
+            )
             release_ready_by_item[item["item_id"]] = item["release_ready"]
             enriched_items.append(item)
 
@@ -236,11 +240,28 @@ class ReviewWorkbenchService:
             for item in enriched_items
             if item["status"]["review"] == "rejected"
         }
-        product_source_blocked = {
+        product_source_warning = {
             item["product_key"]
             for item in enriched_items
-            if item["source_quality_findings"]
+            if item.get("source_warning")
         }
+        product_approval_blocked = {
+            item["product_key"]
+            for item in enriched_items
+            if item.get("approval_blocked")
+        }
+        product_machine_failed = {
+            current["product_key"]
+            for current in manifest["items"].values()
+            if current["status"]["validation"] == "failed"
+        }
+        machine_failed_items = sum(
+            current["status"]["validation"] == "failed"
+            for current in manifest["items"].values()
+        )
+        item_summary = summarize_review_items(enriched_items)
+        item_summary["runnable"] = len(runnable_item_ids)
+        item_summary["machine_failed_count"] = machine_failed_items
         release_manifests = list(manifest.get("release_manifests", []))
         publication_receipts = list(manifest.get("publication_receipts", []))
         projection = {
@@ -255,17 +276,15 @@ class ReviewWorkbenchService:
                 "run_dir": self.store.run_dir(batch_id).as_posix(),
             },
             "summary": {
-                "items": {
-                    **queue["summary"],
-                    "runnable": len(runnable_item_ids),
-                    "release_ready": sum(release_ready_by_item.values()),
-                },
+                "items": item_summary,
                 "products": {
                     "total": len(product_items),
-                    "release_ready": product_ready,
+                    "release_ready_count": product_ready,
                     "pending_attention": len(product_pending_attention),
                     "rejected_attention": len(product_rejected_attention),
-                    "source_blocked": len(product_source_blocked),
+                    "source_warning_count": len(product_source_warning),
+                    "approval_blocked_count": len(product_approval_blocked),
+                    "machine_failed_count": len(product_machine_failed),
                 },
             },
             "history": self._history_summary(history_index),
@@ -347,7 +366,7 @@ class ReviewWorkbenchService:
                 ),
             },
             "source_quality_findings": [
-                _issue_summary(finding)
+                finding_summary(finding)
                 for finding in snapshot["source_quality_findings"]
             ],
             "machine_evidence": {
