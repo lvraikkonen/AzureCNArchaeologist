@@ -6,11 +6,11 @@
 >
 > Step 5 完成锚点：`6ecdd27 feat: complete step5 slice c review accounting`
 >
-> 当前阶段：Step 0–6A 已完成；下一项是 Step 6B，不是直接运行全量 Batch
+> 当前阶段：Step 0–6B 已完成；下一项是 Step 6C，创建最终 full bilingual acceptance Batch
 >
 > 最终目标：完成 Step 6/7 证据闭环，将项目升级并冻结为 `0.4.0`
 
-本文取代此前面向 Step 5 Slice A/B/C 的 handoff。旧交接只通过 Git 历史追溯，不再作为待办清单。接手者应从 Step 6B 开始，不能重新执行 Step 5/6A，也不能恢复已经移出 v0.4 的 Report 2.0、Finding Disposition、Upstream Verification Report 或 Complex Visual Review。
+本文取代此前面向 Step 5 Slice A/B/C 的 handoff。旧交接只通过 Git 历史追溯，不再作为待办清单。接手者应从 Step 6C 开始，不能重新执行 Step 5/6A/6B，也不能恢复已经移出 v0.4 的 Report 2.0、Finding Disposition、Upstream Verification Report 或 Complex Visual Review。
 
 ## 1. 一句话任务与强制顺序
 
@@ -34,7 +34,7 @@ Step 7D  acceptance-status.json/md、短 readiness review、0.4.0、提交、cle
 
 不得跳序：
 
-- 现在不能直接跑 full batch；Step 6A 已完成并提交，下一步在同一 clean commit 上完成 Step 6B。
+- 现在可以进入 Step 6C；Step 6A/6B 已完成并提交，下一步是在最新 clean commit 上创建唯一 full bilingual acceptance Batch。
 - Core Run A/B 只证明确定性，不做人工作决定，也不作为 Release 来源。
 - Step 7 的 Review Decision 和代表 Release 必须来自 Step 6C 冻结的同一个 `ACCEPTANCE_BATCH_ID`。
 - 如果修复代码、Source、Product Definition、Profile 或 Policy 后重跑全量，旧 Batch 立即失去“最终 acceptance Batch”资格；只能指定新的唯一 Batch。
@@ -90,8 +90,7 @@ git diff --check
 以下尚未实现或尚未生成，不能把已有相似物当作完成：
 
 - `tests/fixtures/regression/payloads/*.json` 是 v0.2 留下的中文回归 Payload；Step 6A 已建立新的双语 Core baseline，旧 fixture 仍只作历史参考。
-- 当前没有 `core-determinism-comparator-v1` 实现、schema、命令或 acceptance record。
-- 尚未创建 Core Run A、Core Run B 或最终 full bilingual acceptance Batch。
+- 尚未创建最终 full bilingual acceptance Batch。
 - 尚未在 v0.4 acceptance Batch 内产生 8 个真实 Review Decisions。
 - 尚无代表性 v0.4 sealed Release、dry-run 证据或 `reports/v0.4/acceptance-status.{json,md}`。
 - 根项目 `pyproject.toml` 仍为 `0.3.0`；这是 Step 7D 前的预期状态。Dashboard 已是 `0.4.0`，最终要做版本/文档一致性复核。
@@ -164,9 +163,20 @@ Core Fixture Manifest 必须通过 Product Definition 解析并冻结这 8 个 i
 - 受控 candidate：`output/v0.4-core-baseline-candidates/20260805T094417Z-d1b25bff-931509f01108`，用户已批准 `candidate_sha256=8b9024f9a205e7bb9a48b013f99148e684b13d6c61ab7484c7a7162adf3852a8` 后晋升。
 - 建立 baseline 的 Core batch：`20260805T094417Z-d1b25bff`，8/8 execution succeeded、8/8 validation passed，provenance 绑定 `97b7e3e7dd277a655e31fec9a2b876a6f34f55b8` 且 dirty=false。
 - `en-us/icp-faq` 与 `zh-cn/icp-faq` 继续明确记录同一中文 source snapshot 复用；这是独立语言 Batch Item 的路由 workaround，不是英文翻译验证。
-- 下一步 Step 6B 不复用 baseline-establishment batch 作为 Run A/B；必须在 Step 6A baseline commit 后重新 clean gate，再创建独立 Core Run A/B。
+- Step 6B 已按要求未复用 baseline-establishment batch；已在后续 clean commit 上重新执行 input sync gate，并创建独立 Core Run A/B。
 
 ## 7. Step 6B：两次 clean Core run 与确定性比较
+
+Step 6B 已落地：
+
+- Comparator/schema/测试实现提交：`eeaa262 feat: add step6 core determinism comparator`；schema 修复提交：`5836db5 fix: accept git commit identity in determinism record`。
+- 实现入口：`uv run scripts/v04_core.py determinism-compare|determinism-verify`；record schema：`schemas/step6-core-determinism-record-1.0.schema.json`；实现模块：`src/regression/determinism.py`。
+- 最新 Step 6B clean commit：`5836db5a790d2eb5bfb0100af9c8eb2837656fa1`。
+- 在该 commit 上已重新执行 `uv run cli.py copy-from-prod --language both`，结果 `zh-cn: copied=184 files=190 skipped=0 failed=0`、`en-us: copied=184 files=189 skipped=0 failed=0`，随后 `git status --short` 为空。
+- Core Run A：`20260805T142020Z-79177932`；Core Run B：`20260805T142115Z-f3474c54`。两者均为 completed，8/8 runnable，`execution_failed=0`，`validation_failed=0`。
+- Acceptance record：`reports/v0.4/core-determinism-comparison.json`，`record_sha256=b6156a386c8e2b7e4dc9477572295b46b911301bdd187be432a8fcb8b1ce8d94`。
+- `uv run scripts/v04_core.py determinism-verify --record reports/v0.4/core-determinism-comparison.json --runs-dir runs` 已通过，record 重放绑定上述 A/B batch IDs。
+- Step 6B 不产生 Review Decision、Release Manifest 或 Publication Receipt；A/B 只作为 determinism provenance，不作为 Step 7 Release 来源。
 
 ### 7.1 Comparator 实现边界
 
@@ -294,8 +304,8 @@ npm test
 npm run build
 cd ..
 
-# 使用 Step 6 实际落地的命令重放：
-<core-determinism-compare/verify command>
+# 使用 Step 6B 实际落地的命令重放：
+uv run scripts/v04_core.py determinism-verify --record reports/v0.4/core-determinism-comparison.json --runs-dir runs
 <full-batch-accounting verify command>
 
 git diff --check
