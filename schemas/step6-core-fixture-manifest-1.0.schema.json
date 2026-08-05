@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azurecnarchaeologist.local/schemas/step6-core-fixture-manifest-1.0.schema.json",
+  "title": "Step 6 Core Fixture Manifest 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "manifest_id",
+    "matrix_id",
+    "description",
+    "languages",
+    "expected_item_ids",
+    "items",
+    "frozen_inputs",
+    "notes"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "manifest_id": { "const": "v0.4-step6-core-fixture" },
+    "matrix_id": { "const": "v0.4-core-strategy-matrix" },
+    "description": { "type": "string", "minLength": 1 },
+    "languages": {
+      "type": "array",
+      "prefixItems": [{ "const": "zh-cn" }, { "const": "en-us" }],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "expected_item_ids": {
+      "type": "array",
+      "prefixItems": [
+        { "const": "zh-cn/api-management" },
+        { "const": "en-us/api-management" },
+        { "const": "zh-cn/cloud-services" },
+        { "const": "en-us/cloud-services" },
+        { "const": "zh-cn/service-bus" },
+        { "const": "en-us/service-bus" },
+        { "const": "zh-cn/icp-faq" },
+        { "const": "en-us/icp-faq" }
+      ],
+      "minItems": 8,
+      "maxItems": 8
+    },
+    "items": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": { "$ref": "#/$defs/item" }
+    },
+    "frozen_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "soft_category",
+        "planning_baseline",
+        "validation_profile",
+        "content_sampling_profile",
+        "finding_code_policy"
+      ],
+      "properties": {
+        "soft_category": { "$ref": "#/$defs/pathSha" },
+        "planning_baseline": { "$ref": "#/$defs/identity" },
+        "validation_profile": { "$ref": "#/$defs/identity" },
+        "content_sampling_profile": { "$ref": "#/$defs/identity" },
+        "finding_code_policy": { "$ref": "#/$defs/identity" }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": { "pattern": "^/" }
+    },
+    "pathSha": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/relativePath" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "schema_version", "path", "sha256"],
+      "properties": {
+        "id": { "type": ["string", "null"] },
+        "schema_version": { "type": "string", "minLength": 1 },
+        "path": { "$ref": "#/$defs/relativePath" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "language",
+        "resource_key",
+        "product_key",
+        "resource_kind",
+        "strategy",
+        "page_model",
+        "capability_status",
+        "slug",
+        "catalog_categories",
+        "support_article_type",
+        "config",
+        "source",
+        "normalized_input",
+        "artifacts"
+      ],
+      "properties": {
+        "item_id": { "type": "string", "pattern": "^(zh-cn|en-us)/.+" },
+        "language": { "enum": ["zh-cn", "en-us"] },
+        "resource_key": { "enum": ["api-management", "cloud-services", "service-bus", "icp-faq"] },
+        "product_key": { "enum": ["api-management", "cloud-services", "service-bus", "icp-faq"] },
+        "resource_kind": { "const": "current" },
+        "strategy": { "enum": ["region_filter", "complex", "simple_static", "support_article"] },
+        "page_model": { "enum": ["FlexibleContentPage", "SupportArticlePage"] },
+        "capability_status": { "const": "supported" },
+        "slug": { "type": "string", "minLength": 1 },
+        "catalog_categories": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "support_article_type": { "type": ["string", "null"] },
+        "config": { "$ref": "#/$defs/pathSha" },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["availability", "path", "sha256", "url", "cms_path"],
+          "properties": {
+            "availability": { "const": "available" },
+            "path": { "$ref": "#/$defs/relativePath" },
+            "sha256": { "$ref": "#/$defs/sha256" },
+            "url": { "type": ["string", "null"] },
+            "cms_path": { "type": ["string", "null"] }
+          }
+        },
+        "normalized_input": { "$ref": "#/$defs/pathSha" },
+        "artifacts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["payload", "diagnostic", "parseability", "validation"],
+          "properties": {
+            "payload": { "$ref": "#/$defs/pathOnly" },
+            "diagnostic": { "$ref": "#/$defs/pathOnly" },
+            "parseability": { "$ref": "#/$defs/pathOnly" },
+            "validation": { "$ref": "#/$defs/pathOnly" }
+          }
+        },
+        "controlled_source_reuse": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["applies_to", "source_content_language", "claim"],
+          "properties": {
+            "applies_to": {
+              "type": "array",
+              "prefixItems": [
+                { "const": "zh-cn/icp-faq" },
+                { "const": "en-us/icp-faq" }
+              ],
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "source_content_language": { "const": "zh-cn" },
+            "claim": { "const": "separate_language_batch_items_without_english_translation_assertion" }
+          }
+        }
+      }
+    },
+    "pathOnly": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path"],
+      "properties": {
+        "path": { "$ref": "#/$defs/relativePath" }
+      }
+    }
+  }
+}
+

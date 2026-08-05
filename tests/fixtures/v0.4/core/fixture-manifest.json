@@ -1,0 +1,420 @@
+{
+  "description": "Step 6 Slice A bilingual Core matrix fixture.",
+  "expected_item_ids": [
+    "zh-cn/api-management",
+    "en-us/api-management",
+    "zh-cn/cloud-services",
+    "en-us/cloud-services",
+    "zh-cn/service-bus",
+    "en-us/service-bus",
+    "zh-cn/icp-faq",
+    "en-us/icp-faq"
+  ],
+  "frozen_inputs": {
+    "content_sampling_profile": {
+      "id": "v0.4-content-sampling-p3",
+      "path": "data/configs/content-sampling-profiles/v0.4-p3.json",
+      "schema_version": "1.0",
+      "sha256": "2e2c33cd964ea73435a3f83c076dcdc114ee73c88e2d00c7c3c8cd4c6dd75cb0"
+    },
+    "finding_code_policy": {
+      "id": "v0.4-finding-code-policy-p4",
+      "path": "data/configs/finding-code-policies/v0.4-p4.json",
+      "schema_version": "1.0",
+      "sha256": "bed3c18a753a7e3d7a3c00ec6d690a953e3794e1f43472508290637f9266a06b"
+    },
+    "planning_baseline": {
+      "id": "v0.4-p2-product-definition-identity-overlay",
+      "path": "data/baselines/v0.4/p2-product-definition-identity-overlay.json",
+      "schema_version": "1.0",
+      "sha256": "e58650e62a5e5d2274c549cc1aad12b35b3c94c48acf6c82f2382381f70330ff"
+    },
+    "soft_category": {
+      "path": "data/configs/soft-category.json",
+      "sha256": "246ff13a504281d0b0cc23a581d8bd30582e6c1c242b57e3f2848e05e0c6d218"
+    },
+    "validation_profile": {
+      "id": "v0.4-validation-p3-successor",
+      "path": "data/configs/validation-profiles/v0.4-p3-successor.json",
+      "schema_version": "1.3",
+      "sha256": "e45ad2ba22c1a9ee91d735f18177f3e0824b01806793573112e8f15f26f94d82"
+    }
+  },
+  "items": [
+    {
+      "artifacts": {
+        "diagnostic": {
+          "path": "diagnostics/zh-cn/pricing/api-management.sidecar.json"
+        },
+        "parseability": {
+          "path": "diagnostics/zh-cn/pricing/api-management.parseability.json"
+        },
+        "payload": {
+          "path": "outputs/zh-cn/pricing/api-management.json"
+        },
+        "validation": {
+          "path": "validation/zh-cn/pricing/api-management.validation.json"
+        }
+      },
+      "capability_status": "supported",
+      "catalog_categories": [
+        "integration"
+      ],
+      "config": {
+        "path": "data/configs/products/pricing/api-management.json",
+        "sha256": "8210aefca6560368c5571ccd9e2431eb04ac0ce3bd4ad6e47f8518e4f7513676"
+      },
+      "item_id": "zh-cn/api-management",
+      "language": "zh-cn",
+      "normalized_input": {
+        "path": "data/prod-html/zh-cn/pricing/api-management.html",
+        "sha256": "2ff654ac44611f422bdcc7113fba03b7293a1f4c1f2e51b118db8568e7eb45b4"
+      },
+      "page_model": "FlexibleContentPage",
+      "product_key": "api-management",
+      "resource_key": "api-management",
+      "resource_kind": "current",
+      "slug": "api-management",
+      "source": {
+        "availability": "available",
+        "cms_path": null,
+        "path": "data/current_prod_html/zh-cn/pricing/details/api-management/index.html",
+        "sha256": "2ff654ac44611f422bdcc7113fba03b7293a1f4c1f2e51b118db8568e7eb45b4",
+        "url": "https://www.azure.cn/pricing/details/api-management/"
+      },
+      "strategy": "region_filter",
+      "support_article_type": null
+    },
+    {
+      "artifacts": {
+        "diagnostic": {
+          "path": "diagnostics/en-us/pricing/api-management.sidecar.json"
+        },
+        "parseability": {
+          "path": "diagnostics/en-us/pricing/api-management.parseability.json"
+        },
+        "payload": {
+          "path": "outputs/en-us/pricing/api-management.json"
+        },
+        "validation": {
+          "path": "validation/en-us/pricing/api-management.validation.json"
+        }
+      },
+      "capability_status": "supported",
+      "catalog_categories": [
+        "integration"
+      ],
+      "config": {
+        "path": "data/configs/products/pricing/api-management.json",
+        "sha256": "8210aefca6560368c5571ccd9e2431eb04ac0ce3bd4ad6e47f8518e4f7513676"
+      },
+      "item_id": "en-us/api-management",
+      "language": "en-us",
+      "normalized_input": {
+        "path": "data/prod-html/en-us/pricing/api-management.html",
+        "sha256": "67b1afe40512e4e8d324c83a78d23cf875083a69c1a6192e39cc9dd17c7e5b07"
+      },
+      "page_model": "FlexibleContentPage",
+      "product_key": "api-management",
+      "resource_key": "api-management",
+      "resource_kind": "current",
+      "slug": "api-management",
+      "source": {
+        "availability": "available",
+        "cms_path": null,
+        "path": "data/current_prod_html/en-us/pricing/details/api-management/index.html",
+        "sha256": "67b1afe40512e4e8d324c83a78d23cf875083a69c1a6192e39cc9dd17c7e5b07",
+        "url": "https://www.azure.cn/en-us/pricing/details/api-management/"
+      },
+      "strategy": "region_filter",
+      "support_article_type": null
+    },
+    {
+      "artifacts": {
+        "diagnostic": {
+          "path": "diagnostics/zh-cn/pricing/cloud-services.sidecar.json"
+        },
+        "parseability": {
+          "path": "diagnostics/zh-cn/pricing/cloud-services.parseability.json"
+        },
+        "payload": {
+          "path": "outputs/zh-cn/pricing/cloud-services.json"
+        },
+        "validation": {
+          "path": "validation/zh-cn/pricing/cloud-services.validation.json"
+        }
+      },
+      "capability_status": "supported",
+      "catalog_categories": [
+        "compute"
+      ],
+      "config": {
+        "path": "data/configs/products/pricing/cloud-services.json",
+        "sha256": "51bc6cc2d0e49c047026d63efcaf1d50f1725cc50508ce6f13c3708c3ab09872"
+      },
+      "item_id": "zh-cn/cloud-services",
+      "language": "zh-cn",
+      "normalized_input": {
+        "path": "data/prod-html/zh-cn/pricing/cloud-services.html",
+        "sha256": "a8048fa5d8e9e9309803b2398332f2678831344f07528d922c26c33317bcb659"
+      },
+      "page_model": "FlexibleContentPage",
+      "product_key": "cloud-services",
+      "resource_key": "cloud-services",
+      "resource_kind": "current",
+      "slug": "cloud-services",
+      "source": {
+        "availability": "available",
+        "cms_path": null,
+        "path": "data/current_prod_html/zh-cn/pricing/details/cloud-services/index.html",
+        "sha256": "a8048fa5d8e9e9309803b2398332f2678831344f07528d922c26c33317bcb659",
+        "url": "https://www.azure.cn/pricing/details/cloud-services/"
+      },
+      "strategy": "complex",
+      "support_article_type": null
+    },
+    {
+      "artifacts": {
+        "diagnostic": {
+          "path": "diagnostics/en-us/pricing/cloud-services.sidecar.json"
+        },
+        "parseability": {
+          "path": "diagnostics/en-us/pricing/cloud-services.parseability.json"
+        },
+        "payload": {
+          "path": "outputs/en-us/pricing/cloud-services.json"
+        },
+        "validation": {
+          "path": "validation/en-us/pricing/cloud-services.validation.json"
+        }
+      },
+      "capability_status": "supported",
+      "catalog_categories": [
+        "compute"
+      ],
+      "config": {
+        "path": "data/configs/products/pricing/cloud-services.json",
+        "sha256": "51bc6cc2d0e49c047026d63efcaf1d50f1725cc50508ce6f13c3708c3ab09872"
+      },
+      "item_id": "en-us/cloud-services",
+      "language": "en-us",
+      "normalized_input": {
+        "path": "data/prod-html/en-us/pricing/cloud-services.html",
+        "sha256": "c3ca3e881391eb203536c80c12ec159d6e937c2cd41fa6c4029f3e391be2b72f"
+      },
+      "page_model": "FlexibleContentPage",
+      "product_key": "cloud-services",
+      "resource_key": "cloud-services",
+      "resource_kind": "current",
+      "slug": "cloud-services",
+      "source": {
+        "availability": "available",
+        "cms_path": null,
+        "path": "data/current_prod_html/en-us/pricing/details/cloud-services/index.html",
+        "sha256": "c3ca3e881391eb203536c80c12ec159d6e937c2cd41fa6c4029f3e391be2b72f",
+        "url": "https://www.azure.cn/en-us/pricing/details/cloud-services/"
+      },
+      "strategy": "complex",
+      "support_article_type": null
+    },
+    {
+      "artifacts": {
+        "diagnostic": {
+          "path": "diagnostics/zh-cn/pricing/service-bus.sidecar.json"
+        },
+        "parseability": {
+          "path": "diagnostics/zh-cn/pricing/service-bus.parseability.json"
+        },
+        "payload": {
+          "path": "outputs/zh-cn/pricing/service-bus.json"
+        },
+        "validation": {
+          "path": "validation/zh-cn/pricing/service-bus.validation.json"
+        }
+      },
+      "capability_status": "supported",
+      "catalog_categories": [
+        "integration"
+      ],
+      "config": {
+        "path": "data/configs/products/pricing/service-bus.json",
+        "sha256": "7dad4a1ba650a9394c6fb099cd3883ef1e4761e920329a706053c53ae48a7989"
+      },
+      "item_id": "zh-cn/service-bus",
+      "language": "zh-cn",
+      "normalized_input": {
+        "path": "data/prod-html/zh-cn/pricing/service-bus.html",
+        "sha256": "72c8ff0a1a64e9a29e91b32cf0b463269f3fd9dc662e1ec064b3bdab0d1d3d32"
+      },
+      "page_model": "FlexibleContentPage",
+      "product_key": "service-bus",
+      "resource_key": "service-bus",
+      "resource_kind": "current",
+      "slug": "service-bus",
+      "source": {
+        "availability": "available",
+        "cms_path": null,
+        "path": "data/current_prod_html/zh-cn/pricing/details/service-bus/index.html",
+        "sha256": "72c8ff0a1a64e9a29e91b32cf0b463269f3fd9dc662e1ec064b3bdab0d1d3d32",
+        "url": "https://www.azure.cn/pricing/details/service-bus/"
+      },
+      "strategy": "simple_static",
+      "support_article_type": null
+    },
+    {
+      "artifacts": {
+        "diagnostic": {
+          "path": "diagnostics/en-us/pricing/service-bus.sidecar.json"
+        },
+        "parseability": {
+          "path": "diagnostics/en-us/pricing/service-bus.parseability.json"
+        },
+        "payload": {
+          "path": "outputs/en-us/pricing/service-bus.json"
+        },
+        "validation": {
+          "path": "validation/en-us/pricing/service-bus.validation.json"
+        }
+      },
+      "capability_status": "supported",
+      "catalog_categories": [
+        "integration"
+      ],
+      "config": {
+        "path": "data/configs/products/pricing/service-bus.json",
+        "sha256": "7dad4a1ba650a9394c6fb099cd3883ef1e4761e920329a706053c53ae48a7989"
+      },
+      "item_id": "en-us/service-bus",
+      "language": "en-us",
+      "normalized_input": {
+        "path": "data/prod-html/en-us/pricing/service-bus.html",
+        "sha256": "715b7014993d2e00e5c04643fbe05a9c0b8592c6d243865ac286dc8c36bcbb6f"
+      },
+      "page_model": "FlexibleContentPage",
+      "product_key": "service-bus",
+      "resource_key": "service-bus",
+      "resource_kind": "current",
+      "slug": "service-bus",
+      "source": {
+        "availability": "available",
+        "cms_path": null,
+        "path": "data/current_prod_html/en-us/pricing/details/service-bus/index.html",
+        "sha256": "715b7014993d2e00e5c04643fbe05a9c0b8592c6d243865ac286dc8c36bcbb6f",
+        "url": "https://www.azure.cn/en-us/pricing/details/service-bus/"
+      },
+      "strategy": "simple_static",
+      "support_article_type": null
+    },
+    {
+      "artifacts": {
+        "diagnostic": {
+          "path": "diagnostics/zh-cn/SupportArticles/ICP/icp-faq.sidecar.json"
+        },
+        "parseability": {
+          "path": "diagnostics/zh-cn/SupportArticles/ICP/icp-faq.parseability.json"
+        },
+        "payload": {
+          "path": "outputs/zh-cn/SupportArticles/ICP/icp-faq.json"
+        },
+        "validation": {
+          "path": "validation/zh-cn/SupportArticles/ICP/icp-faq.validation.json"
+        }
+      },
+      "capability_status": "supported",
+      "catalog_categories": [],
+      "config": {
+        "path": "data/configs/products/support-articles/icp-faq.json",
+        "sha256": "ca84540ef9a649d50f2625e786f2d8752488adf6c9adc41b7b806f10cdce5f0f"
+      },
+      "controlled_source_reuse": {
+        "applies_to": [
+          "zh-cn/icp-faq",
+          "en-us/icp-faq"
+        ],
+        "claim": "separate_language_batch_items_without_english_translation_assertion",
+        "source_content_language": "zh-cn"
+      },
+      "item_id": "zh-cn/icp-faq",
+      "language": "zh-cn",
+      "normalized_input": {
+        "path": "data/prod-html/zh-cn/SupportArticles/ICP/icp-faq.html",
+        "sha256": "9dbebd434bbe067e88512503ce6235fe24341ae219fb025685e0d85b563cbf38"
+      },
+      "page_model": "SupportArticlePage",
+      "product_key": "icp-faq",
+      "resource_key": "icp-faq",
+      "resource_kind": "current",
+      "slug": "icp-faq",
+      "source": {
+        "availability": "available",
+        "cms_path": null,
+        "path": "data/current_prod_html/zh-cn/SupportArticles/ICP/icp-faq.html",
+        "sha256": "9dbebd434bbe067e88512503ce6235fe24341ae219fb025685e0d85b563cbf38",
+        "url": "https://www.azure.cn/support/icp/icp-faq/"
+      },
+      "strategy": "support_article",
+      "support_article_type": "ICP"
+    },
+    {
+      "artifacts": {
+        "diagnostic": {
+          "path": "diagnostics/en-us/SupportArticles/ICP/icp-faq.sidecar.json"
+        },
+        "parseability": {
+          "path": "diagnostics/en-us/SupportArticles/ICP/icp-faq.parseability.json"
+        },
+        "payload": {
+          "path": "outputs/en-us/SupportArticles/ICP/icp-faq.json"
+        },
+        "validation": {
+          "path": "validation/en-us/SupportArticles/ICP/icp-faq.validation.json"
+        }
+      },
+      "capability_status": "supported",
+      "catalog_categories": [],
+      "config": {
+        "path": "data/configs/products/support-articles/icp-faq.json",
+        "sha256": "ca84540ef9a649d50f2625e786f2d8752488adf6c9adc41b7b806f10cdce5f0f"
+      },
+      "controlled_source_reuse": {
+        "applies_to": [
+          "zh-cn/icp-faq",
+          "en-us/icp-faq"
+        ],
+        "claim": "separate_language_batch_items_without_english_translation_assertion",
+        "source_content_language": "zh-cn"
+      },
+      "item_id": "en-us/icp-faq",
+      "language": "en-us",
+      "normalized_input": {
+        "path": "data/prod-html/en-us/SupportArticles/ICP/icp-faq.html",
+        "sha256": "9dbebd434bbe067e88512503ce6235fe24341ae219fb025685e0d85b563cbf38"
+      },
+      "page_model": "SupportArticlePage",
+      "product_key": "icp-faq",
+      "resource_key": "icp-faq",
+      "resource_kind": "current",
+      "slug": "icp-faq",
+      "source": {
+        "availability": "available",
+        "cms_path": null,
+        "path": "data/current_prod_html/en-us/SupportArticles/ICP/icp-faq.html",
+        "sha256": "9dbebd434bbe067e88512503ce6235fe24341ae219fb025685e0d85b563cbf38",
+        "url": "https://www.azure.cn/en-us/support/icp/icp-faq/"
+      },
+      "strategy": "support_article",
+      "support_article_type": "ICP"
+    }
+  ],
+  "languages": [
+    "zh-cn",
+    "en-us"
+  ],
+  "manifest_id": "v0.4-step6-core-fixture",
+  "matrix_id": "v0.4-core-strategy-matrix",
+  "notes": [
+    "en-us/icp-faq intentionally reuses the Chinese source snapshot.",
+    "The reuse is a language-routing workaround, not English translation validation."
+  ],
+  "schema_version": "1.0"
+}
