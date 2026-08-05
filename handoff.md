@@ -157,7 +157,7 @@ Core Fixture Manifest 必须通过 Product Definition 解析并冻结这 8 个 i
 
 ### 6.2 G6A 完成门禁
 
-- 已完成。实现提交：`97b7e3e feat: add step6 core regression harness`；baseline 提交：`62a23e5 test: freeze step6 core bilingual baselines`。
+- 已完成。实现提交：`97b7e3e feat: add step6 core regression harness`；baseline 提交：`22a9274 test: freeze step6 core bilingual baselines`。
 - 新增内部入口：`uv run scripts/v04_core.py verify-fixture|run|baseline-candidate|baseline-promote|verify-baseline`。
 - Core Fixture Manifest：`tests/fixtures/v0.4/core/fixture-manifest.json`，通过真实 Product Definition 和 canonical Source/Normalized Input 推导 8 个 current/runnable items。
 - Baseline 路径：`tests/fixtures/v0.4/core/baselines/`，包含 17 个文件：manifest、6 个 Pricing full payload golden、4 个 API Management/Cloud Services curated sampling baseline、2 个 Service Bus explicit `not_applicable` full-content baseline、2 个 ICP FAQ support article payload baseline 与 2 个 ICP content baseline。
