@@ -719,6 +719,22 @@ def make_arg_parser() -> argparse.ArgumentParser:
     promote.add_argument("--candidate", required=True)
     promote.add_argument("--expected-sha256", required=True)
 
+    compare = subparsers.add_parser("determinism-compare")
+    compare.add_argument("--left-batch-id", required=True)
+    compare.add_argument("--right-batch-id", required=True)
+    compare.add_argument("--runs-dir", default="runs")
+    compare.add_argument(
+        "--output",
+        default="reports/v0.4/core-determinism-comparison.json",
+    )
+
+    verify = subparsers.add_parser("determinism-verify")
+    verify.add_argument(
+        "--record",
+        default="reports/v0.4/core-determinism-comparison.json",
+    )
+    verify.add_argument("--runs-dir", default="runs")
+
     subparsers.add_parser("verify-baseline")
     return parser
 
@@ -769,6 +785,31 @@ def main(argv: Iterable[str] | None = None) -> int:
             expected_sha256=args.expected_sha256,
         )
         print(f"promoted: {candidate['candidate_id']}")
+        return 0
+    if args.command == "determinism-compare":
+        from src.regression.determinism import create_determinism_record
+
+        record = create_determinism_record(
+            root,
+            runs_dir=Path(args.runs_dir),
+            left_batch_id=args.left_batch_id,
+            right_batch_id=args.right_batch_id,
+            output_path=(root / args.output).resolve(),
+        )
+        print(f"determinism ok: {record['left']['batch_id']} vs {record['right']['batch_id']}")
+        print(f"record: {(root / args.output).resolve()}")
+        print(f"record_sha256={record['record_sha256']}")
+        return 0
+    if args.command == "determinism-verify":
+        from src.regression.determinism import verify_determinism_record
+
+        record = verify_determinism_record(
+            root,
+            runs_dir=Path(args.runs_dir),
+            record_path=(root / args.record).resolve(),
+        )
+        print(f"determinism record ok: {record['record_sha256']}")
+        print(f"left={record['left']['batch_id']} right={record['right']['batch_id']}")
         return 0
     if args.command == "verify-baseline":
         manifest = verify_baseline(root)
