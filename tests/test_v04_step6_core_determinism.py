@@ -186,7 +186,7 @@ def _snapshot(batch_id: str) -> dict[str, object]:
     return {
         "batch_id": batch_id,
         "provenance": {
-            "git_commit": SHA_A,
+            "git_commit": "1" * 40,
             "worktree_fingerprint": "sha256:" + SHA_B,
             "immutable_fingerprint": "sha256:" + SHA_C,
         },
