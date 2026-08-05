@@ -1,361 +1,547 @@
-# v0.4 Step 5：Finding 分级与 Approval Gate 收敛交接
+# v0.4 Step 6–7：可信回归、全量验收与版本冻结交接
 
 > 更新日期：2026-08-04
+>
 > 当前分支：`codex/v0.4`
-> 当前状态：Step 0–5 已完成；Step 6–7 已重新收窄，下一步进入 Core Matrix、golden baseline 与最终验收证据。
-> 最近 Step 4 收口提交：`0d84039 feat: add immutable release promotion and upload gate`；随后 `83d3f02 docs: update agent upload workflow` 已同步 `AGENTS.md`。
+>
+> Step 5 完成锚点：`6ecdd27 feat: complete step5 slice c review accounting`
+>
+> 当前阶段：Step 0–5 已完成；下一项是 Step 6A，不是直接运行全量 Batch
+>
+> 最终目标：完成 Step 6/7 证据闭环，将项目升级并冻结为 `0.4.0`
 
-本文不再保存 Step 4 Slice A-E 的历史实施计划。需要追溯旧交接内容时使用 Git 历史查看本文件早期版本；新的实现线程应把本文作为 Step 6 的入口，不得继续执行旧 handoff 中的 Report 2.0 / Disposition / Visual Review 五个 Slice。
+本文取代此前面向 Step 5 Slice A/B/C 的 handoff。旧交接只通过 Git 历史追溯，不再作为待办清单。接手者应从 Step 6A 开始，不能重新执行 Step 5，也不能恢复已经移出 v0.4 的 Report 2.0、Finding Disposition、Upstream Verification Report 或 Complex Visual Review。
 
-## 1. 当前任务边界
+## 1. 一句话任务与强制顺序
 
-Step 5 / P4：Source Finding 分级与 Approval Gate 收敛已经完成。下一阶段目标是实现 `plans/v0.4-execution-plan.md` 中的 **Step 6 / P5：可信回归基线与确定性验证**。
-
-Step 5 已解决此前确认的问题：`source_approval_preconditions()` 曾把每个 `source_quality_findings[]` 元素都转换成同一个 `unresolved_source_quality_finding` blocker，导致已证明不影响忠实重建的轻微源侧 warning 也无法批准。
-
-Step 5 必须建立在已完成的 Step 4 闭环上：
-
-1. 不重写 Step 3 的 CMS/state contract。
-2. 不扩大 Step 4 的抽样内容保证为“全状态内容一致”。
-3. 不恢复旧 Step 4 WIP 中的 PricingFact、ApplicabilityMap、StateProjectionMap 或完整 Expected/Observed/Diff inventory。
-4. 不反向重判或就地改写已经冻结的旧 Batch；新的 Finding Code Policy 只通过新代码身份、冻结 policy identity 和新 Validation Evidence 作用于新 Batch。只有 exact P3 1.2 legacy tuple 缺少 `finding_code_policy_identity` 时固定按 `legacy-all-source-findings-block-v1` 读取，不得套用新 advisory mapping，也不得回填 identity；其他 old/successor presence/mismatch 组合 fail closed。
-5. 不自动 push、merge、创建 PR 或发布到 CMS。
-6. 不建设 Report 2.0、正式 Finding Disposition、Upstream Verification Report、新的 Complex Table Visual Review Rendering Profile/Variant 或扩张保证范围的 P4 Validation Profile；为保持旧 P3/Validation 2.0 不变而新增的最小 P3-successor compatibility identity 不属于该延后项。已有 `v0.4-desktop-p1` Desktop Interaction Authority 继续冻结。
-7. 不把 Machine Validation failure 降级成 warning，也不增加人工 override/exception。
-
-## 2. 权威文档读取顺序
-
-开始 Step 5 前按顺序阅读：
-
-1. `plans/v0.4-execution-plan.md` 的 Step 5 / P4、Step 6 / P5、Step 7 部分；
-2. `ROADMAP.md` 的 v0.4、Post-v0.4 Roadmap Re-baseline Gate、v0.5–v0.7 候选部分；
-3. `docs/adr/0087-v04-uses-full-state-contract-validation-and-reproducible-content-sampling.md`；
-4. `docs/adr/0088-step4-delivers-dashboard-review-and-an-immutable-release-lane.md`；
-5. `README.md` 的当前 v0.4 端到端流程；
-6. `CONTEXT.md` 中与 Source Finding、Review Decision、Approval Eligibility 和 Release 相关的术语。
-
-仍然有效的关键旧 ADR：
-
-- ADR-0004：input-manifest immutable，batch-manifest 是唯一生命周期真源；
-- ADR-0005：Machine Validation 是自动门禁，人工不能覆盖 machine failure；
-- ADR-0007：Frozen Source Snapshot 是 Batch 内容权威；
-- ADR-0069：Review Queue membership 不等于批准；
-- ADR-0071：禁止 `quality_score`；
-- ADR-0076 / ADR-0077：source-proven conditional reachability 与 contentGroup 状态权威。
-
-ADR-0087/0088 仍是 Step 4 闭环的权威，但旧 Finding/视觉/测试排期将被本次决策局部 supersede。**开始代码修改前必须先创建 next available ADR**，不要预设编号。新 ADR 必须：
-
-- 局部 supersede ADR-0012、ADR-0029、ADR-0030、ADR-0064 和 ADR-0088 的冲突范围；
-- 明确 ADR-0024、ADR-0025、ADR-0067 继续保持被 ADR-0088 supersede，不会因再次调整 ADR-0088 而恢复；
-- 保留 ADR-0070/0073 的 379/379 Reliable Adjudication、ADR-0074 的 empty-state blocker、ADR-0075 的 Desktop Authority，以及 ADR-0088 的 Review Decision、单 Batch Release、seal 和 upload gate 不变量；
-- 冻结完整 Finding Code Policy、policy identity 绑定和旧 Batch 兼容规则，包括唯一 exact legacy tuple、两种合法 identity 组合与其他组合 fail-closed 的 presence/mismatch matrix；
-- 在 Consequences 中明确：v0.4 有意允许 machine-pass item 因 approval-blocking finding 不能进入 Release，这不是 incomplete adjudication，且不得由人工 override、临时 reclassification 或未冻结例外绕过。
-
-## 3. 当前已完成能力
-
-### Pipeline 与 P3 验证
-
-- `pipeline-run` / `pipeline-status` / `pipeline-resume` / `pipeline-validate` 已形成冻结 Batch workflow。
-- Batch Manifest 2.0 是生命周期和 item state 真源；所有状态变更要求 RepositoryLock 和 expected revision。
-- P3 Validation Profile 已激活；Batch 冻结 Content Sampling Profile、Validation Profile、Source、Normalized Input、Product Definition、soft-category 和代码身份。
-- Step 3 全状态结构验证继续完整执行。
-- page-global、SimpleStatic 和 SupportArticle 执行完整内容比较。
-- RegionFilter 和 Complex 执行确定性分层抽样内容比较，并冻结 Batch Item Sampling Plan 与 sampled evidence。
-- Validation Projection 2.0、Sampling Plan、Sampled Evidence 均为 closed-world artifact；旧 Validation 1.0 仍可读取但不自动升级。
-
-### Review 与 Dashboard
-
-- Machine-pass Batch Item 进入 Review Queue 2.0，初始 `review=pending`。
-- `pipeline-review-list` 可读取队列。
-- `pipeline-review-decide` 当前可写入 hash-bound、append-only Review Decision，并原子更新 Manifest current decision reference、evidence binding 和 eligibility snapshot；Step 5 必须把领域语义拆开：decision 命令只产生 review verdict/reference/binding，`approval_eligible` 由 execution、validation 与当前 Approval Blockers 独立派生，不能由人工 verdict 或 binding 赋值。
-- 旧 decision 在 Source/Payload/validation evidence/hash 漂移后变为 stale，权威 review 回到 pending。
-- 本地 Dashboard 保留 `/` Capability Ledger，并新增 `/review` Workbench。
-- `pipeline-review-serve` 提供 loopback bridge；前端只通过与 CLI 共用的 review service 写状态，不直接改 projection、decision 文件或 manifest。
-- Step 5 已将 Source Quality Finding 分为 advisory、approval-blocking 与 unknown，并在 summary/filter/status 中使用 Source Warning、Approval Blocked、Machine Failed、Release Ready 的独立 accounting；旧 `source-blocked` 仅作为 legacy Review Queue 只读兼容字段存在。
-
-### Release 与 Upload
-
-- `release-build` 从同一 Batch 中选择当前 `execution=succeeded + validation=passed + approval_eligible=true + review=approved + evidence_binding=bound` 且 decision 绑定全部当前 hashes 的 items，重放 bound Profile/policy 与 canonical preconditions 后生成 write-once `output/releases/{release_id}`；异常的 legacy `approved + finding` 不得 grandfather。
-- `release-verify` 只接受 `output/releases/{release_id}/release-manifest.json`，复核 canonical bytes、Release seal、payload/source/validation/review/sampling hashes 和 current Batch binding。
-- 正式 `upload` 只接受 `--release-manifest`，不扫描任意 output 目录。
-- 非 dry-run upload 使用 conditional create；远端已存在 Blob 只有在内容 SHA 与 Release payload 完全一致时才视为幂等成功。
-- 全部远端校验成功后写 `runs/{batch_id}/publication/receipts/{release_id}.publication-receipt.json`，再 append publication receipt reference，并把 included items 标记为 `published`。
-- `scripts/upload_to_blob.py legacy-upload` 仅为 legacy/internal 测试工具，不是 Review、Release 或 Publication 权威。
-
-## 4. 当前端到端流程
+Step 6 先建立可信的双语 Core 回归尺子，再证明两次独立运行语义一致，最后执行一次全量双语现实盘点；Step 7 只使用这一个最终全量 Batch 完成人工审核、代表 Release、验收报告和版本冻结。
 
 ```text
-上游 HTML + soft-category.json
-  → data/current_prod_html 与 data/configs
-  → copy-from-prod 字节一致复制到 data/prod-html
-  → pipeline-run 创建冻结 Batch
-  → 策略抽取 canonical Business Payload
-  → P3 Machine Validation
-      - 全状态结构验证
-      - 抽样或完整内容一致性验证
-  → Step 5 Finding Code Policy
-      - advisory 显著展示但不生成 Approval Blocker
-      - approval-blocking / unknown code 继续阻止批准
-  → machine-pass item 进入 Review Queue 2.0
-  → CLI 或本地 Dashboard /review 执行人工 approve/reject
-  → eligible + review=approved + evidence_binding=bound/current hashes 生成 immutable Release
-  → release-verify 复核 sealed Release
-  → upload --release-manifest 交付 Blob
-  → Publication Receipt 记录成功发布
+Step 6A  4 产品 × 2 语言 Core Matrix、Golden/Sampling Baseline、三层测试
+    ↓ G6A：实现与基线已提交，工作树重新 clean
+Step 6B  同一 clean commit 上创建 Core Run A / B，运行 comparator
+    ↓ G6B：8 items 的语义比较全部通过
+Step 6C  创建一次最终 clean full bilingual acceptance Batch
+    ↓ G6C：434 planned 完整对账，冻结 ACCEPTANCE_BATCH_ID
+Step 7A  重跑完整自动化验收
+    ↓
+Step 7B  真实 reviewer 在 ACCEPTANCE_BATCH_ID 内审核 8 Core items
+    ↓
+Step 7C  从同一 Batch 建立代表性 sealed Release 并 upload dry-run
+    ↓
+Step 7D  acceptance-status.json/md、短 readiness review、0.4.0、提交、clean、tag
 ```
 
-常用命令：
+不得跳序：
 
-```bash
-uv run cli.py pipeline-run --all --parallel-jobs 6
-uv run cli.py pipeline-status --batch-id <batch-id>
-uv run cli.py pipeline-validate --batch-id <batch-id>
+- 现在不能直接跑 full batch；先完成并提交 Step 6A，再在同一 clean commit 上完成 Step 6B。
+- Core Run A/B 只证明确定性，不做人工作决定，也不作为 Release 来源。
+- Step 7 的 Review Decision 和代表 Release 必须来自 Step 6C 冻结的同一个 `ACCEPTANCE_BATCH_ID`。
+- 如果修复代码、Source、Product Definition、Profile 或 Policy 后重跑全量，旧 Batch 立即失去“最终 acceptance Batch”资格；只能指定新的唯一 Batch。
 
-uv run cli.py pipeline-review-list --batch-id <batch-id>
-uv run cli.py pipeline-review-serve --batch-id <batch-id> \
-  --dashboard-origin http://127.0.0.1:3000
-uv run cli.py pipeline-review-decide --batch-id <batch-id> \
-  --item-id zh-cn/api-management \
-  --expected-revision <revision> \
-  --reviewer reviewer@example.com \
-  --verdict approved \
-  --inspect-page-global \
-  --inspect-state <reachable-state-id>
+## 2. 权威资料读取顺序
 
-uv run cli.py release-build --batch-id <batch-id> \
-  --release-id <release-id> \
-  --item-id zh-cn/api-management \
-  --expected-revision <revision> \
-  --account-url <account-url> \
-  --container <container> \
-  --prefix releases/<release-id>
-uv run cli.py release-verify \
-  --release-manifest output/releases/<release-id>/release-manifest.json \
-  --require-batch-reference
-uv run cli.py upload \
-  --release-manifest output/releases/<release-id>/release-manifest.json \
-  --dry-run
-uv run cli.py upload \
-  --release-manifest output/releases/<release-id>/release-manifest.json \
-  --expected-revision <revision>
+1. 本文件：当前执行入口、顺序、暂停点和证据清单。
+2. `plans/v0.4-execution-plan.md` 第 7、8 节：Step 6/7 的规范性任务与完成门禁。
+3. `ROADMAP.md` 的 v0.4 P5、Step 7、验收标准和 Post-v0.4 Re-baseline Gate。
+4. `docs/adr/0089-freeze-finding-code-policy-before-step5-activation.md`：Step 5 successor、Finding Policy 和兼容边界。
+5. `docs/adr/0087-v04-uses-full-state-contract-validation-and-reproducible-content-sampling.md`：全状态结构与可重复抽样保证。
+6. `docs/adr/0088-step4-delivers-dashboard-review-and-an-immutable-release-lane.md`：Review、单 Batch Release、seal 和 upload gate。
+7. ADR-0070、0073、0074、0075：Reliable Adjudication、Planning Baseline、empty-state blocker、Desktop Authority。
+8. `README.md` 与 `CONTEXT.md`：当前 CLI 和统一术语。
+
+若本文与 execution plan 或已接受 ADR 冲突，以 execution plan 和 ADR 为准，并同步修正文档。Step 6 的既定 comparator 语义已经由 execution plan/ROADMAP 冻结；只有在改变公共 CLI、生命周期权威或保证边界时才需要先补 ADR，不能借实现细节扩张 v0.4 scope。
+
+## 3. 接手时的真实基线
+
+### 3.1 已完成且不得重做
+
+- Step 5 三个提交已经完成：
+  - `07173c0`：Finding Code Policy、Validation Profile 1.3 successor、Pipeline Validation 2.1；
+  - `3fbf6dd`：Review/Release routing、Release Manifest 1.1 与 release gate；
+  - `6ecdd27`：CLI/Dashboard accounting 与文档收口。
+- 新普通 Batch 使用：
+  - `data/configs/validation-profiles/v0.4-p3-successor.json`；
+  - `schemas/pipeline-validation-2.1.schema.json`；
+  - `data/configs/finding-code-policies/v0.4-p4.json`；
+  - `schemas/release-manifest-1.1.schema.json`。
+- legacy P3 1.2 / Validation 2.0 继续只读并保持 blanket-blocker 语义；不得回填 policy identity 或用当前 registry 重判旧 Batch。
+- Source Warning、Approval Blocked、Machine Failed、Release Ready 已是独立 accounting 维度。
+
+### 3.2 2026-08-04 重新验证结果
+
+在 Step 5 完成锚点、clean worktree 上已实际执行：
+
+```text
+uv run pytest -q
+→ 815 passed, 229 subtests passed in 245.21s
+
+cd dashboard && npm test
+→ production build passed；19 tests passed
+
+git diff --check
+→ clean
 ```
 
-## 5. 必须保持分离的状态
+这些结果只是 Step 6 开工基线，不替代 Step 6A 新增的 Core tests，也不替代 Step 7 的最终重跑。
+
+### 3.3 当前仍缺失的 Step 6/7 产物
+
+以下尚未实现或尚未生成，不能把已有相似物当作完成：
+
+- `tests/fixtures/regression/payloads/*.json` 是 v0.2 留下的中文回归 Payload；当前测试只用 `zh-cn`，不满足双语 8-item Core Golden。
+- 当前没有受治理的双语 Core Fixture Manifest、完整 Step 6 Golden/Sampling Baseline 或 baseline-candidate 晋升入口。
+- 当前 `pipeline-run` 只接受 `--all` 或单个 catalog/support group，不能直接表达跨四种策略的精确 8-item Core scope。
+- 当前没有 `core-determinism-comparator-v1` 实现、schema、命令或 acceptance record。
+- 尚未创建 Core Run A、Core Run B 或最终 full bilingual acceptance Batch。
+- 尚未在 v0.4 acceptance Batch 内产生 8 个真实 Review Decisions。
+- 尚无代表性 v0.4 sealed Release、dry-run 证据或 `reports/v0.4/acceptance-status.{json,md}`。
+- 根项目 `pyproject.toml` 仍为 `0.3.0`；这是 Step 7D 前的预期状态。Dashboard 已是 `0.4.0`，最终要做版本/文档一致性复核。
+
+## 4. 全程必须保持的不变量
 
 | 维度 | 含义 |
 |---|---|
-| Capability | Product Definition 是否属于系统正式支持范围 |
-| Execution | Batch Item 是否成功生成 Payload |
-| Machine Validation | 自动化证据是否通过 |
-| Human Review | 人工对当前哈希绑定证据作出的决定 |
-| Evidence Binding | 当前 Review Decision 是否仍绑定 Source、Payload 和验证证据 |
-| Approval Eligibility | 是否满足 Machine Validation 与 Finding Code Policy 的批准前置条件；不包含 Human Review verdict 或 Evidence Binding |
-| Release | approved artifact 是否进入 sealed Release |
-| Publication | Release 是否已成功交付并记录 receipt |
+| Capability | Product Definition 是 `supported` 还是 `known_unsupported` |
+| Execution | 是否成功生成 persisted Business Payload |
+| Machine Validation | 自动验证是 passed 还是 failed |
+| Source Warning | 至少有一个 advisory finding；不等于 blocker |
+| Approval Eligibility | Machine Validation 与 Finding Policy 是否允许批准；不含人工 verdict |
+| Human Review | reviewer 对当前 hash-bound evidence 的 approved/rejected/pending 决定 |
+| Evidence Binding | 决定是否仍绑定当前 Source、Payload、Validation、Sampling evidence |
+| Release | approved + eligible + bound artifact 是否进入 sealed Release |
+| Publication | Release 是否真实交付并记录 receipt |
 
 约束：
 
-- Batch Item 是 Resource Key + Language；中文批准不能替代英文批准。
-- Review Queue membership 不等于批准。
-- Source warning 不等于 Approval Blocker；Step 5 后必须分别统计。
-- Machine failure 不能人工覆盖。
-- Dashboard、Validation、Review Queue、Release Manifest 和 Publication Receipt 不是第二份 lifecycle state authority。
-- `quality_score` 不得恢复。
+- Batch Item 始终是 `language/resource-key`；中文结果、批准或 hash 不能替代英文。
+- `source_warning_count` 与 `approval_blocked_count` 可以重叠；`machine_failed_count` 与 `approval_blocked_count` 在最终 verdict 下互斥；四个核心计数不能相加当作总数。
+- Machine Validation failure 不能被人工批准、warning、override 或 exception 覆盖。
+- `batch-manifest.json` 继续是唯一生命周期真源；comparator、Dashboard、报告和 Release Manifest 都不是第二份状态权威。
+- Business Payload 继续禁止 `validation`、`quality_score`、diagnostic 或来源元数据。
+- clean runs 禁止 `--allow-dirty`。不要通过忽略 dirty fingerprint 来取得验收证据。
+- 不改 canonical Source/Normalized Input 来让测试通过，不访问 live Azure 页面充当 Oracle。
+- 不自动覆盖 Golden/Sampling Baseline；合理变化只能先生成 candidate，再人工审核晋升。
+- 不追求全量“全绿”。追求的是完整、真实、可解释的 adjudication/accounting。
+- 不自动代替真实 reviewer 作批准/拒绝，不伪造 reviewer identity 或人工检查记录。
+- 不真实上传 Blob/CMS；v0.4 验收只要求 upload dry-run，Publication 保持 `not_published` 合法。
+- 不自动 push、merge、创建 PR 或对外发布。
 
-## 6. Step 5 / P4 要补的能力
+## 5. 固定 Core Strategy Matrix
 
-### 6.1 冻结 Finding Code Policy
+| 产品 | 策略 | Item IDs | Step 6 基线 |
+|---|---|---|---|
+| `service-bus` | `simple_static` | `zh-cn/service-bus`, `en-us/service-bus` | 完整 Pricing Golden；full-content comparison，Sampling 语义显式 N/A |
+| `api-management` | `region_filter` | `zh-cn/api-management`, `en-us/api-management` | 完整 Pricing Golden + Curated Sampling Baseline |
+| `cloud-services` | `complex` | `zh-cn/cloud-services`, `en-us/cloud-services` | 完整 Pricing Golden + Curated Sampling Baseline |
+| `icp-faq` | `support_article` | `zh-cn/icp-faq`, `en-us/icp-faq` | 文章正文、CMS contract 与内容边界基线 |
 
-建立一个小型、静态、closed-world mapping：
+Core Fixture Manifest 必须通过 Product Definition 解析并冻结这 8 个 item 的 config、Source、Normalized Input 路径和 SHA-256，不能手写第二套路由规则或复制 HTML fixture。ICP 内容实际只有 `zh-cn`；`en-us/icp-faq` 的 `snapshot_path` 是有意复用同一份中文内容、用于避免为 ICP 引入特殊语言分支的 workaround，并非两份独立中英文内容“巧合相同”。它在 pipeline accounting 中仍是独立语言级 Batch Item，必须独立生成 Payload、验证和人工审核；Golden/报告也必须明确记录该受控复用关系，不能宣称已经验证英文翻译内容。
 
-| 分类 | 行为 |
-|---|---|
-| `advisory` | 保留 warning，不生成 Approval Blocker；machine-pass 且人工核验通过时可批准 |
-| `approval_blocking` | `approval_eligible=false`；保持 pending 或使用现有 reason 拒绝 |
-| unknown code | fail closed，按 approval-blocking 处理，直到正式决策分类 |
+## 6. Step 6A：Core Matrix、Golden 与 Sampling Baseline
 
-Machine Validation failure 不属于这张 mapping，继续直接失败且不可人工覆盖。
+### 6.1 实现任务
 
-初始 policy 原则：
+1. 用 CodeGraph 先检查 `PipelinePlanner`、`PipelineCoordinator`、`StateStore`、`ExtractionCoordinator`、content sampling runtime 和现有 v0.2 regression fixture 的调用关系。
+2. 在生成 Core Fixture/Golden/Sampling Baseline 前先执行 `uv run cli.py copy-from-prod --language both` 并检查 `git status --porcelain`。如果产生 tracked diff，先审核并以独立 input update commit 提交，再更新受影响的 Planning/Core baseline；这个提交是 acceptance 输入准备，不是 Step 6 功能实现提交。只有同步后的输入 commit clean，才能生成后续基线和 clean Core runs。
+3. 建立 versioned、closed-world 的 Core Fixture Manifest，固定 8 个 item 及其真实输入身份。
+4. 建立双语基线：
+   - 三个 Pricing 产品的完整 canonical Business Payload Golden；
+   - `api-management`、`cloud-services` 的 universe/default/ordered/selected/plan/per-state Curated Sampling Baseline；
+   - 对 full-content 策略使用明确的 mode 与 `not_applicable`，不能靠缺字段表达；
+   - `icp-faq` 的文章正文、标题、slug、`pageType` 和内容边界基线。
+5. 建立 baseline candidate 流程：candidate 至少带 old-to-new diff、Source SHA、Schema/Profile identity 和理由；普通 pytest 只能只读验证 committed baseline。
+6. 补齐三层 Core tests：
+   - unit：manifest/baseline contract、canonicalization、hash、candidate 与 fail-closed 行为；
+   - component：真实 Product Definition + canonical HTML + 四种实际 Strategy/ExtractionCoordinator；
+   - end-to-end：实际 pipeline runtime、标准 `runs/{batch_id}` 布局和 persisted payload/evidence，不得 mock-only。
+7. 为精确 8-item scope 提供最小、可重复的 acceptance runner/planner。当前公共 CLI 不能表达该 scope，不能用四个 group Batch 拼成一个 Core Run 后声称完成。优先做 Step 6 专用的薄层并复用正式 Coordinator/StateStore；若扩张公共 CLI，必须补 contract、help、tests 和文档。
 
-- 严格 UTF-8 已通过时的 charset declaration finding 可为 advisory；
-- desktop identity/label 仍为冻结事实源时的 mobile label drift 可为 advisory；
-- source-confirmed empty selection state 按 ADR-0074 保持 approval-blocking；没有正式 Disposition 时不能批准；
-- bilingual source-proven reachability/state drift 必须 approval-blocking；
-- ownership、target、criteria、state mapping、sampled content mismatch 等继续 Machine Validation failure。
+### 6.2 G6A 完成门禁
 
-第一项工作必须盘点当前所有 emitted codes，并在新 ADR、代码 mapping 和参数化测试中逐项列出；unknown fallback 不能替代对当前代码的完整 inventory。
+- 8 个 item 的 unit/component/end-to-end 全部通过，双语都消费真实 canonical inputs。
+- 三个 Pricing Golden、Curated Sampling Baseline 和 SupportArticle baseline 均存在且只读。
+- 缺 fixture、缺 baseline、零测试、collection error、未经审核 overwrite 均非零退出。
+- Core runner 产生标准 Batch artifacts，并使用当前 successor Profile/Policy；没有旁路 lifecycle authority。
+- Step 6A 代码与已审核 baseline 已提交；之后工作树重新 clean。
+- 记录实际新增命令、schema、baseline 路径与 commit；不要继续在 dirty tree 上创建 Core Run A/B。
 
-兼容规则是 Finding Code Policy contract 的一部分。唯一 legacy tuple 是 `(id=v0.4-validation-p3, schema_version=1.2, path=data/configs/validation-profiles/v0.4-p3.json, sha256=fbbfa8bd937779748e86f48f738af5c561f164bf2e10615efe2515d45ba3ae1b)`；它缺少 `finding_code_policy_identity` 时，resolver 必须返回 `legacy-all-source-findings-block-v1`，继续把所有 Source Finding 当作 blocker。无 finding 的旧 item 在满足其他门禁时仍可审核/Release；任一 finding 则禁止 approve 但允许 reject。P1/P2、未知/漂移 profile、旧 P3 意外携带 policy 均 fail closed。不得读取当前 registry 后重新分类，也不得向旧 Batch 回填 identity；若要采用新 policy，创建新 Batch。
+## 7. Step 6B：两次 clean Core run 与确定性比较
 
-v0.4 不提供正式 Disposition/override 路径。因此 source-confirmed empty state、双语 state/reachability drift 或 unknown code 即使 `validation=passed`，也只能保持 pending，或以 `upstream_source` / `product_config` 等现有 reason 拒绝；修复 Source/config 后创建新 Batch。实施者不应为了让 full Batch “全绿”而临时降级这些 finding。
+### 7.1 Comparator 实现边界
 
-### 6.2 保持现有证据模型
+实现 `core-determinism-comparator-v1` 的 versioned closed-world acceptance record。它不写 Review Decision、不改变 Manifest item state，也不取得 lifecycle authority。
 
-- advisory 继续完整写入 `source_quality_findings[]`、Validation Projection 和 Workbench evidence。
-- Review Decision 继续绑定包含这些 warning 的 `validation_evidence_sha256`；不新增 acknowledgment 字段或 schema 1.1。
-- Finding Code Policy 的版本/hash 必须进入新 Batch 的冻结 validation/provenance identity，并参与 Validation Evidence 身份；不能只依赖可漂移的进程内常量。冻结的 P3 Profile 1.2 / Validation 2.0 不得原地修改：它们把任一 Source Finding canonicalize 为 blocker。
-- 新 Batch 使用最小的 Validation Profile 1.3 P3-successor 与 Pipeline Validation 2.1。Profile 1.3 必须用完整 tuple 继承上述 P3 1.2，保持 Content Sampling Profile、Sampled Content Evidence 1.0 与其他 P3 identities 不变，只升级 pipeline validation 并 canonical 地拥有 `finding_code_policy_identity`。Sampled Evidence 1.0 继续绑定 base P3 1.2；runtime 将 Sampling 与 Validation bindings 分开构造，Validation 2.1 再绑定 successor、policy 与原始 Sampled Evidence。Validation 2.1 evidence 投影同一 policy identity、绑定 Profile 1.3，二者必须逐字段相等，再按冻结 policy 生成 source preconditions。Step 6 由独立 `core-determinism-comparator-v1` acceptance record 产出 `validation_semantic_identity` 与 `sampled_content_semantic_sha256`。这是兼容迁移，不是新增 P4 内容保证；successor exact id/path/hash 由新 ADR 冻结。
-- Finding Code Policy 变化必须创建新 Batch；旧 decision 保留原 policy 下的历史语义，不被重新解释。当前 Batch 的 Source、Payload 或 Validation Evidence hash 漂移时，旧 decision 才变 stale；旧 Batch 始终不自动重算或就地改写。
-- version/profile-aware resolver 只接受 `Validation 2.0 + exact old P3 + policy absent → legacy blanket evaluator` 与 `Validation 2.1 + exact successor + Profile/evidence policy valid and equal → frozen-policy evaluator`。Review 优先消费并复核 evidence 内 canonical preconditions，不用 active registry 重解释。successor 任一侧缺失、畸形、mismatch/hash drift 以及未知 profile 全部 fail closed：创建时拒绝新 Batch，冻结后 replay 则产生稳定 `finding_policy_identity_invalid` Machine Validation failure/诊断并禁止 Review/Release；legacy 解析结果不写回旧 Manifest、Validation Evidence 或 Review Decision。
-- `batch-manifest.json` 继续是唯一 lifecycle authority；不创建 Disposition 状态机。
+比较前必须硬校验左右两次运行：
 
-### 6.3 展示与 accounting
+- 同一 clean `git_commit` 和 immutable/worktree fingerprint，排除 captured time；
+- 每 item 的 Product Definition、Source、Normalized Input SHA；
+- frozen `soft-category.json`、Validation Profile、Content Sampling Profile 和 Finding Code Policy identity/hash。
 
-- CLI 与 `/review` 在 approve/reject 动作附近显著展示 advisory code、message、path。
-- Workbench 和 batch summary 移除含糊的 `source-blocked` 聚合。JSON/schema 使用 `source_warning`、`approval_blocked`、`machine_failed`，对应计数为 `source_warning_count`、`approval_blocked_count`、`machine_failed_count`；UI 文案使用 `Source Warning`、`Approval Blocked`、`Machine Failed`。
-- `source_warning_count` 统计至少有一个 advisory finding 的 item，可与 `approval_blocked_count` 重叠；`approval_blocked_count` 统计 `validation=passed` 且至少有一个 Approval Blocker 的 item；`machine_failed_count` 统计 `validation=failed` 的 item，在最终 verdict 下与 approval blocked 互斥。`release_ready_count` 只统计 execution succeeded、validation passed、eligible、approved、bound 且 decision 绑定当前 hashes 的 item，可与 source warning 重叠；UI 对应显示 `Release Ready`。四个 count 不是总数可相加的互斥分区。
-- 前端只显示/提交受控动作，不能直接清除 blocker。
-- warning + approve、blocking + reject、unknown + blocked 都必须在 Dashboard projection 与 CLI 中可观察。
+跨 Batch 直接比较：
 
-### 6.4 Step 5 明确不做
+- Business Payload artifact SHA-256；
+- source-proven state universe、default 和 ordered state identities；
+- exact selected states 与 Sampling Plan `plan_sha256`；
+- `sampled_content_semantic_sha256`；
+- `validation_semantic_identity`；
+- finding `{code, semantic path, classification}`、canonical approval preconditions、稳定 verdict/error codes；
+- promotion predicate 所需的规范化 current identity inputs。
 
+规范化对象必须显式覆盖 mode/coverage、structure、page-global、适用时的 full-content、universe/default/ordered/selected、plan、per-state fingerprints/verdict；不适用项写 `null`/`not_applicable`，不能省略。
+
+不得跨 Batch 直接比较：
+
+- `batch_id`、`generated_at`、Manifest revision、attempt ID、存储路径、运行路径 message；
+- Sampling Plan、Sampled Evidence、Validation Projection 的外层 artifact SHA；
+- 原始 `evidence_sha256`；
+- 含 `validation_artifact_sha256` 的完整 Review/Promotion binding object；
+- Release Manifest SHA。
+
+上述外层 artifact/evidence SHA 仍必须在各自 Batch 内独立复核完整性与 current binding。metadata-insensitivity、字段遗漏、identity mismatch 和 semantic drift 都要有测试；不能用“删除不同字段直到 hash 相同”的开放式 normalization。
+
+### 7.2 运行顺序
+
+1. 提交 comparator、Core runner 和全部 Step 6A/6B 测试。
+2. 再执行一次 `copy-from-prod --language both` 作为输入同步幂等检查；`git status --porcelain` 必须为空。出现 diff 时停止，走独立 input update commit 与 baseline refresh，不能继续创建 A/B。
+3. 确认工作树 clean，记录固定 commit、Profile/Policy identity。
+4. 在该 commit 上独立创建 Core Run A，记录 `CORE_RUN_A_BATCH_ID`。
+5. 不修改任何冻结输入或 tracked file，独立创建 Core Run B，记录 `CORE_RUN_B_BATCH_ID`。
+6. 运行 comparator，生成并验证 acceptance record。
+7. 不在 A/B 中 approve、reject、release-build 或 upload。
+
+### 7.3 G6B 完成门禁
+
+- 8 个 item 的 Payload SHA、`sampled_content_semantic_sha256` 和 `validation_semantic_identity` 全部相等。
+- 两次运行各自 artifact/evidence SHA 和 current binding 有效。
+- 运行级 metadata 的合理差异不导致 semantic failure；真实业务/证据差异会稳定失败。
+- comparator record 保存 A/B Batch IDs 仅作 provenance，并记录 comparator algorithm/schema identity。
+- 任一硬前置或 Core item 不一致时，先定位并修复；修复后必须在新的同一 clean commit 上重建 A 和 B，不能只重跑一边。
+- 将稳定 comparator acceptance record 纳入可追溯证据；进入 Step 6C 前提交需要跟踪的 record/summary，并让工作树重新 clean。
+
+## 8. Step 6C：最终 full bilingual acceptance Batch
+
+### 8.1 前置门禁
+
+- G6A、G6B 已通过且证据可复核。
+- `data/baselines/v0.4/planning-baseline.json` 仍对账：434 total、379 retained runnable、54 `known_unsupported`、1 `SOURCE_UNAVAILABLE`。
+- 如 planning 出现 delta candidate，暂停并单独审核能力变化；不能临时改 Product Definition 或分母。
+
+正式运行前必须先完成下面的 Input Synchronization + Clean Gate：
+
+1. 执行 `uv run cli.py copy-from-prod --language both`。当前实现不是只读检查，也不会在目标相同时跳过写入；它始终用 `shutil.copy2` 把 Source Snapshot 覆写到 tracked `data/prod-html`，再验证两端 SHA-256。
+2. 如果 Source、目标 bytes 和 Git-tracked mode 已一致，覆写后通常不会产生 Git diff；是否真正幂等必须以 `git status --porcelain` 空输出为准，不能只看命令显示的 `copied` 数量。
+3. 如果出现任何 tracked diff，禁止启动 acceptance Batch：
+   - 先审核 Source Snapshot → Normalized Input 的实际 diff；
+   - 将接受的输入同步作为独立 input update commit 提交，它属于 acceptance provenance/input preparation，不是 Step 6 实现提交；
+   - Source identity 变化时同步更新并审核 `data/baselines/v0.4/planning-baseline.json`；只修复 stale normalized copy 且恢复到既有冻结 hash 时，Planning Baseline 不应无理由改写；
+   - 刷新受影响的 Core Fixture/Golden/Sampling Baseline；若 Core 输入、`soft-category`、Profile/Policy 或 Step 6 代码身份变化，原 Core A/B 证据失效，返回 Step 6A/6B 重建；
+   - 重新执行 tests、catalog audit 和确定性门禁，直到新的固定 commit 上 `git status --porcelain` 为空。
+4. 只有 input synchronization 没有 diff，或上述独立 input update 已完成、所有受影响证据已刷新且工作树重新 clean，才满足 Step 6C 前置门禁。此时当前 commit 才是 acceptance Batch 的最终 Step 6 + frozen input provenance；禁止 `--allow-dirty`。
+
+`pipeline-run` 内部不能替代这个门禁：它在调用 `ProvenanceProvider.capture()` 冻结 clean commit/worktree 之后，normalize 阶段才再次调用同一个 copier。若目标原先 stale，内部 normalize 会在 provenance 冻结后改写 tracked `data/prod-html`；因此必须在启动 Batch 前先证明外部复制对 Git 内容幂等。
+
+### 8.2 正式运行
+
+```bash
+uv run cli.py catalog-build --check
+uv run cli.py copy-from-prod --language both
+uv run cli.py catalog-audit --language both
+git status --porcelain
+# 只有上一条命令无输出时才继续
+uv run cli.py pipeline-run --all --language both --parallel-jobs 6
+uv run cli.py pipeline-status --batch-id <batch-id> --json
+git status --porcelain
+```
+
+最后一条 `git status --porcelain` 也必须无输出；它证明 pipeline normalize 的重复复制没有在 frozen provenance 之后制造 tracked drift。若出现输出，本次 Batch 不能被指定为最终 `ACCEPTANCE_BATCH_ID`，必须先诊断输入同步/文件 mode/实现问题。
+
+把本次唯一最终 Batch 记为 `ACCEPTANCE_BATCH_ID`。中断但 provenance 未漂移时可 `pipeline-resume`；代码或输入修复后不能恢复旧 Batch 作为最终验收，必须创建新 Batch 并更新唯一 ID。
+
+### 8.3 必须保留的真实 accounting
+
+```text
+434 planned
+├── 379 retained runnable
+│   ├── execution succeeded → validation passed/failed
+│   └── execution failed → stable failure evidence + failed adjudication
+├── 54 known_unsupported
+└── 1 SOURCE_UNAVAILABLE
+```
+
+同时报告 execution、Machine Validation、`source_warning_count`、`approval_blocked_count`、`machine_failed_count`、`release_ready_count` 和 review pending/approved/rejected。
+
+Non-Core 可以失败或保持 pending；Step 6C 不要求 379 项全部 machine-pass，也不要求全量人工审核。以下情况才表示 Step 6C 未完成：
+
+- unexplained `not_run`、missing validation/failure evidence、unknown outcome 或静默跳过；
+- 未经审核的分母漂移；
+- 把真实失败改成 `known_unsupported`、warning 或删除 item；
+- 复用 v0.3 的 379 passed 代替本次 v0.4 运行；
+- 将 Core A/B 或其他旧 Batch 的结果拼入 acceptance Batch。
+
+G6C 通过后冻结 `ACCEPTANCE_BATCH_ID`、commit/provenance、最终 revision、Batch/Review Queue/Report hashes 和失败结构簇，Step 7 全部围绕它进行。
+
+## 9. Step 7A：完整自动化验收
+
+在 `ACCEPTANCE_BATCH_ID` 冻结后重新执行并保存退出码/摘要：
+
+```bash
+uv run pytest
+uv run pytest tests/test_v04_step4_contract_schemas.py -q
+
+cd dashboard
+npm test
+npm run build
+cd ..
+
+# 使用 Step 6 实际落地的命令重放：
+<core-determinism-compare/verify command>
+<full-batch-accounting verify command>
+
+git diff --check
+```
+
+同时检查：
+
+- Core Fixture/Golden/Sampling baselines 未被测试改写；
+- comparator record 仍绑定 A/B 且通过；
+- full-batch accounting 与 434/379/54/1 基线一致，或每项已批准 delta 都有证据；
+- Schema/contract locks、README、CONTEXT、execution plan 和 ROADMAP 没有漂移；
+- 根项目仍可在 Step 7D 前保持 `0.3.0`，此处记录待 bump 项而不是提前伪装完成。
+
+这是 pre-freeze check，不是最终 clean-tree gate。Acceptance Report 和 version bump 尚未提交时，不能因为此刻 clean 就冻结版本。
+
+## 10. Step 7B：真实人工审核
+
+### 10.1 强制审核范围
+
+只在 `ACCEPTANCE_BATCH_ID` 中审核：
+
+```text
+zh-cn/service-bus
+en-us/service-bus
+zh-cn/api-management
+en-us/api-management
+zh-cn/cloud-services
+en-us/cloud-services
+zh-cn/icp-faq
+en-us/icp-faq
+```
+
+每次决定后 Manifest revision 都会变化；下一次写入前重新读取 current revision。reviewer 必须查看当前 Source、Payload、Validation、Sampling Plan/selected states、page-global/full-content evidence 和 Finding 分类，并按 Workbench/CLI 要求记录真实 inspected states。不得由自动化脚本批量伪造人工检查。
+
+### 10.2 两条必须真实演练的路径
+
+1. `advisory warning + validation=passed + approval_eligible=true`，人工检查后 approve；decision 仍绑定包含 warning 的 validation evidence。
+2. approval-blocking upstream finding，使用 `reason=upstream_source` reject；不能 approve 或人工清 blocker。
+
+优先使用最终 acceptance Batch 中自然存在的适用 item。如果没有自然 advisory 或 upstream blocker，可以创建单独标识的 controlled exercise Batch，但它：
+
+- 只证明操作路径；
+- 不计入 434/379 产品覆盖或 Core 人工审核覆盖；
+- 不得作为代表 Release 来源；
+- 不能用自动化 negative fixture 替代真实 reviewer 操作。
+
+若没有可用的真实 reviewer，执行者必须在 Step 7B 暂停，交付 Batch ID、current revision、8-item 清单和 Workbench 启动方式；不得自行编造完成证据。其他未审核 Non-Core item 合法保持 `pending`。
+
+## 11. Step 7C：代表性 sealed Release 与 dry-run
+
+只从 `ACCEPTANCE_BATCH_ID` 中选择同时满足以下条件的 current items：
+
+```text
+execution=succeeded
+validation=passed
+approval_eligible=true
+review=approved
+evidence_binding=bound
+decision 绑定当前 Source/Payload/Validation/Sampling hashes
+```
+
+included set 至少覆盖：
+
+- 一个 `simple_static` 或 `region_filter` Pricing item；
+- 一个 `complex` item；
+- 一个 `support_article` item；
+- 整个集合同时包含 `zh-cn` 与 `en-us`。
+
+例如，在三项均已 current/eligible/approved/bound 时，可用：
+
+```text
+zh-cn/service-bus
+en-us/cloud-services
+zh-cn/icp-faq
+```
+
+额外 Non-Core item 也必须先在同一 acceptance Batch 内完成人工批准；不能用未审核 item 凑覆盖，更不能跨 Batch 拼接。
+
+```bash
+uv run cli.py release-build \
+  --batch-id <ACCEPTANCE_BATCH_ID> \
+  --release-id <release-id> \
+  --item-id <item-id-1> \
+  --item-id <item-id-2> \
+  --item-id <item-id-3> \
+  --expected-revision <current-revision> \
+  --account-url <account-url> \
+  --container <container> \
+  --prefix <prefix>
+
+uv run cli.py release-verify \
+  --release-manifest output/releases/<release-id>/release-manifest.json \
+  --require-batch-reference
+
+uv run cli.py upload \
+  --release-manifest output/releases/<release-id>/release-manifest.json \
+  --dry-run
+```
+
+记录 Release ID、Manifest SHA、seal、included item bindings、verify 结果和 dry-run 结果。不要执行真实 upload；没有 Publication Receipt、items 仍为 `not_published` 是本次验收的预期合法结果。
+
+## 12. Step 7D：Acceptance Report、readiness review 与冻结
+
+### 12.1 Acceptance Report
+
+生成并校验：
+
+```text
+reports/v0.4/acceptance-status.json
+reports/v0.4/acceptance-status.md
+```
+
+报告必须从 canonical evidence 生成或复核，不能手抄“通过率”。至少分别记录：
+
+- Capability；
+- Execution；
+- Machine Validation；
+- Source Warning；
+- Approval Blocked；
+- Human Review；
+- Release；
+- Publication；
+- Core A/B determinism record；
+- 最终 acceptance Batch identity/accounting；
+- 代表 Release 与 dry-run 证据；
+- v0.4 人工核验覆盖范围及仍保持 pending 的范围；
+- P0/P1 blocker、一般缺陷、Non-Core failure clusters 和 machine-pass-but-blocked items。
+
+JSON 使用冻结字段 `source_warning_count`、`approval_blocked_count`、`machine_failed_count`、`release_ready_count`，并显式声明 overlap/互斥规则。
+
+#### v0.4 人工核验覆盖范围
+
+Acceptance Report 必须明确声明：v0.4 的强制人工核验范围是最终 `ACCEPTANCE_BATCH_ID` 中的 8 个 Core Batch Items；如果代表 Release 额外选择 Non-Core item，该 item 也必须在同一 Batch 中完成 current、eligible、approved、bound 的真实人工审核。除此以外的 Non-Core items 可以合法保持 `review=pending`，即使它们已经完成 execution 与 Machine Validation。
+
+报告应分别列出 `Core reviewed 8/8`、额外为代表 Release 审核的 Non-Core items（如有）以及其余 Non-Core pending 数量，不能把 8-item Core 验收写成“434 planned 或 379 runnable 已完成人工核验”。这是 v0.4 最小批准交付闭环的代表性验收证据，不表示已经达到 v1.0 面向最终支持范围的全面人工核验/必要人工审核目标。
+
+报告还要明确 v0.4 未证明或延后的范围：
+
+- 未抽中状态的完整内容一致性；
+- Commercial Price Accuracy；
+- 完整视觉等价和 mobile guarantee；
+- 自动 CMS/Blob 发布；
 - Machine Validation Report 2.0；
-- 正式 Source Finding Disposition / blocker clearing workflow；
-- Upstream Verification Report artifacts；
-- 新的 Complex Table Visual Review Rendering Profile、Visual Review Variant 和视觉门禁；已有 `v0.4-desktop-p1` Desktop Interaction Authority 保留；
-- 扩张内容保证的 P4 Validation Profile 或通用规则引擎；最小 P3-successor compatibility identity 仍属于 Step 5 必需迁移；
+- 正式 Finding Disposition / blocker clearing；
+- Upstream Verification Report；
+- Complex Visual Review；
 - Live Interaction / screenshot / visual baseline；
-- 多用户审核治理。
+- 尚未完成的 Non-Core 真实产品覆盖提升。
 
-这些只是 Post-v0.4 re-baseline 候选；当前上游沟通直接使用 validation evidence、Source path/SHA、finding code 和 notes。
+`runs/` 与 `output/` 被 gitignore；因此 committed acceptance report/summary 必须保存足够的 Batch IDs、artifact paths、hashes、seal、revision、commands 和结果，让证据可定位且不依赖口头说明。报告不是新的 lifecycle authority。
 
-## 7. Step 5 建议切片
+### 12.2 短 Release-readiness Review
 
-### Slice 5A：ADR、inventory 与 domain policy
+| 发现 | 处理 |
+|---|---|
+| severity P0/P1、正确性、数据安全、可绕过 promotion gate 或不可恢复状态 | 在 v0.4 内修复，并使受影响的 Core/full/review/release 证据失效后重新验收 |
+| 一般缺陷且不影响冻结承诺 | 记录到 v0.4.1 或后续 |
+| 新功能、治理深化、体验优化 | 不重新打开 v0.4 scope |
 
-- 创建 next available ADR，局部 supersede ADR-0088 的 blanket blocker 和旧 Step 5 范围。
-- inventory 所有 emitted Source Finding codes，冻结分类与 policy identity。
-- 修改 `source_approval_preconditions()` 或其单一领域入口；不在多个调用方复制分类逻辑。
-- 先写 advisory、approval-blocking、unknown fail-closed、machine-failure、old-batch immutability 与完整 identity presence/mismatch matrix 的参数化 tests；必须包含 `legacy batch without policy identity → legacy blanket policy → not reclassified by current registry`。
-- 让 policy identity 进入新 Batch 的 frozen validation/provenance evidence。
+这不是完整 Post-Implementation Review。后者只能在 v0.4.0 冻结后执行，并写入 `reports/post-v0.4/`，作为 v0.5 的进入门禁。
 
-### Slice 5B：runtime、Review/Release 回归
+### 12.3 版本冻结顺序
 
-- 从 Validation Projection 到 Review Queue、review decision、approval eligibility、release promotion 全链路保留 warning evidence。
-- 保持领域状态正交：advisory + execution succeeded + validation passed + 无其他 blocker 时先得到 `approval_eligible=true`；合法 current-hash-bound decision 单独得到 `review=approved`；只有 eligible + approved + bound 才可 release。
-- 固定正交状态矩阵：无 decision / binding not_applicable 不阻止 machine-pass、无 blocker item eligible；eligible+rejected、blocked+rejected 保持各自 eligibility；stale binding/invalid inspected states 只影响 decision/binding 与权威 review，不改变 eligibility。machine failure 只能让 decision attempt 被拒绝，不能生成 `review=rejected`。
-- 证明 blocking/unknown finding、machine failure、stale binding、pending/rejected 仍不可 approve/release。
-- 新增 Release Manifest 1.1 successor，绑定 Profile 1.3、Validation 2.1 与 policy；旧 Release Manifest 1.0 保持只读可验证，新 acceptance Batch 只生成 sealed 1.1。Publication Receipt 1.0 继续绑定已验证 Release artifact，无需另起 receipt schema。
-- 将 P3 successor 同时加入 StateStore Profile→Projection closed-world routing、Validation 2.1 write-once/self-identity/profile-policy replay、ReviewService review-capable allowlist、Queue/Workbench projection 与 Release build/verify；禁止降级路由到 Validation 1.0 或 mutable generic writer，并证明 legacy `approved + finding` 仍被 Release 拒绝。
-- 不使用新 Disposition artifact 或人工 override 清 blocker。
+1. 将根项目版本从 `0.3.0` 升级为 `0.4.0`，同步所有用户可见版本/状态文档；Dashboard 当前已是 `0.4.0`，仍要做一致性检查。
+2. 提交 `acceptance-status.{json,md}`、必要的稳定 acceptance summaries、文档和 version bump。
+3. 在 acceptance commit 上重跑版本/文档检查、必要测试和 `git diff --check`。
+4. 执行最终 `git status --short --branch`；只有工作树 clean 才能冻结。
+5. 创建本地 `v0.4.0` baseline/tag，并记录 tag 指向的 commit。
+6. 暂停并交付分支摘要；不自动 push、merge、创建 PR 或真实发布。
 
-### Slice 5C：Dashboard、accounting 与文档
+## 13. 最终证据登记清单
 
-- 已完成 Workbench warning/blocker 显示，并按 snake_case machine fields、Title Case UI labels 以及既定 overlap/互斥规则拆分 summary/filter/status language。
-- 已更新 projection schema/tests、Node tests 和 capability dashboard builder 边界；未扩建协作 UI。
-- 已同步 ROADMAP、execution plan、handoff、ADR-0089、README/CONTEXT。
-- Step 5 到此收口；下一步是 Step 6 / P5 Core Matrix、golden baseline 与确定性验证。不要自动开始 full batch。
+交付摘要必须能逐项给出：
 
-## 8. Step 6 / P5 和 Step 7 的后续位置
+- Step 6A implementation/baseline commit；
+- Core Fixture Manifest path/hash 和 8 个 item；
+- Golden、Sampling、SupportArticle baseline paths/hashes；
+- `CORE_RUN_A_BATCH_ID`、`CORE_RUN_B_BATCH_ID`、共同 commit/provenance；
+- comparator record path/hash、algorithm/schema identity、8-item verdict；
+- `ACCEPTANCE_BATCH_ID`、revision、434/379/54/1 accounting 与 Batch artifact hashes；
+- 8 个 Core Review Decision IDs、reviewer、verdict、binding 状态；
+- advisory approve 和 `upstream_source` reject 证据；
+- controlled exercise Batch ID（仅在实际使用时，并标记不计覆盖/Release）；
+- representative Release ID、included items、Manifest SHA、seal、verify 与 dry-run 结果；
+- `acceptance-status.json/md` hashes；
+- pytest、Schema、Dashboard build/tests、comparator、accounting、`git diff --check` 结果；
+- version bump commit、最终 clean-tree 结果和 `v0.4.0` tag target；
+- deferred items、Non-Core failure clusters 和后续问题。
 
-### Step 6 / P5：可信回归基线与确定性验证
+## 14. 遇到这些情况必须暂停或回退
 
-1. 固定 `service-bus`、`api-management`、`cloud-services`、`icp-faq` 双语 8-item Core Matrix，并完成 unit/component/end-to-end。
-2. 维护三个 Pricing Golden Payload、Curated Sampling Baseline 与 SupportArticle 内容/contract baseline；只生成可审核 candidate，不自动覆盖。
-3. 对 8 Core items 做两次 clean deterministic runs，由不承担 lifecycle authority 的 `core-determinism-comparator-v1` acceptance record 比较 Business Payload artifact SHA-256、state universe、selected states、Sampling Plan `plan_sha256`、`sampled_content_semantic_sha256`、`validation_semantic_identity`、Finding policy result 和 release-eligibility input identity bindings。先硬校验 clean `git_commit`/immutable fingerprint 与 Product Definition、Source、Normalized Input、soft-category、Profile/Policy hashes 相同；sampled normalized object 覆盖 mode/coverage、structure、page-global、适用时的 full-content、state universe/default/ordered/selected、plan identity 与 per-state fingerprints/verdict，无 plan/full-content 时使用显式 null/N/A；validation normalized object 引用 sampled semantic identity，再加入 finding classification、preconditions、verdict 和稳定 codes。Payload SHA 是唯一直接跨 Batch 比较的业务 artifact SHA；Sampling Plan 比较 semantic `plan_sha256`，不比较 Plan/Sampled/Validation 外层 artifact SHA。left/right Batch IDs 仅作 provenance，不进入 digest，并排除 `generated_at`、Manifest revision、attempt identity、artifact storage path 和运行路径 message。每个 Batch 内仍独立验证完整 artifact/evidence SHA 与 current binding；不跨 Batch 比较完整 Review/Promotion binding object。该 comparator 的实现和 metadata-insensitivity tests 都属于 Step 6。
-4. 在最终 Step 5 policy 上做一次 clean full bilingual Batch；对照 434 planned / 379 retained runnable / 54 `known_unsupported` / 1 `SOURCE_UNAVAILABLE` 的冻结 Planning Baseline，保留 execution、validation、`source_warning_count`、`approval_blocked_count`、`machine_failed_count`、`release_ready_count` 和 pending accounting，并按既定 overlap/互斥规则解释；任何经审核的分母变化逐项解释。该冻结输入的 Batch Run 随后作为 Step 7 唯一的 full acceptance Batch，不与两次 Core runs 混用。
-5. 按 ADR-0070/0073，冻结 runnable set 的每个 item 都必须有 evidence-backed Machine Validation `passed` 或 `failed`；更早阶段的 execution failure 也必须形成稳定 failure evidence 和 failed adjudication，不允许 missing report、unknown outcome 或静默跳过。Non-Core 不要求全绿或全批准。
-6. 不用 v0.3 的 379 passed 代替 v0.4 P3 full run，也不通过缩分母、删除产品或改 `known_unsupported` 恢复绿色。
+- 工作树 dirty：先辨认并保留用户改动；不能用 `--allow-dirty` 绕过 clean gate。
+- `copy-from-prod` 后出现 tracked diff：不得启动 Core/full Batch；先走独立 input update commit、Planning/Core baseline refresh 和新的 clean gate。该提交不是 Step 6 实现提交。
+- exact Core scope 无法表达：先实现受测的 Core runner；不能把多个 group runs 拼成一个 Core Batch。
+- baseline 与真实输入不同：生成 candidate 和 diff；不能让 pytest 自动改 baseline。
+- Source/Normalized Input identity 漂移：必须更新并审核 Planning Baseline identity；这与是否改变 434/379/54/1 capability 分母是两个不同问题。
+- A/B 的 commit、input、Profile 或 Policy identity 不同：比较前失败；不能 normalization 掩盖。
+- 任一 Core semantic identity 不同：修复后在新 clean commit 上重建 A/B 两边。
+- Planning Baseline 分母漂移：生成并审核 capability delta，未批准前不跑最终 full batch。
+- full batch 有 unexplained `not_run`、missing evidence 或 unknown outcome：Step 6C 未完成。
+- 修复改变最终代码或输入：原 `ACCEPTANCE_BATCH_ID` 作废，重新跑唯一 full batch。
+- 没有真实 reviewer：停在 Step 7B，不能自动批准。
+- 同一 Batch 内没有满足策略/语言覆盖的 approved + eligible + bound 集合：不能跨 Batch 或用 pending item 凑 Release。
+- readiness review 发现 P0/P1：修复并重建受影响证据，不能只在报告中解释过去。
+- dry-run 请求外部写入或真实凭证不是完成所必需：保持 dry-run，不扩大授权。
 
-### Step 7：v0.4 验收与收口
+## 15. 关键文件导航
 
-1. 完整 pytest、Schema、Dashboard tests/build、Core deterministic comparison、full-batch accounting、文档一致性和 `git diff --check` 通过；这只是 pre-freeze check。
-2. 在最终 full bilingual acceptance Batch 内人工审核 8 Core items；不得混用两次 Core runs 或其他 Batch 的 decision/evidence。
-3. 以真实 reviewer 演练至少一个 advisory approve 和一个 `upstream_source` reject。优先使用最终 acceptance Batch 的自然 item；若不存在，使用单独标识、不得计入真实产品覆盖或代表 Release 的 controlled exercise Batch。自动 fixture 不能替代人工操作证据。
-4. 只从同一个最终 acceptance Batch 的 current approved + eligible + bound items 建立代表性 sealed Release；至少含一个 `simple_static` 或 `region_filter` Pricing item、一个 `complex` item、一个 `support_article` item，整个 included set 覆盖 zh-cn/en-us。included items 不必全部来自 8-item Core Matrix；若选择额外 Non-Core item，它也必须在该 acceptance Batch 内完成 current、eligible、approved、bound 的人工批准，不能用未经审核的 Non-Core item 凑覆盖。执行 release-build、release-verify、upload dry-run，不得跨 Batch。
-5. 生成 `reports/v0.4/acceptance-status.{json,md}`，分别报告 Capability、Execution、Machine Validation、Source Warning、Approval Blocked、Review、Release 和 Publication；JSON 必须使用冻结的 `source_warning_count`、`approval_blocked_count`、`machine_failed_count`、`release_ready_count` 并声明 overlap/互斥规则。记录全部 deferred/known limitations；dry-run 成功且 Publication 保持 `not_published` 是合法验收结果。
-6. 做短而受控的 Release-readiness Review：severity P0/P1 缺陷在 v0.4 修复，一般缺陷后移，新功能/治理深化不重新打开 scope。
-7. 升级版本到 `0.4.0`，提交 acceptance artifacts 与 version bump，再执行最终 clean-tree check；只有 acceptance commit 后工作树干净时才冻结 baseline/tag。暂停并交付分支摘要，不自动 push、merge、创建 PR 或真实外部发布。
-8. v0.4.0 冻结后再做整体 Post-Implementation Review 和 Roadmap Re-baseline；它是 v0.5 进入门禁，不是 v0.4 退出门禁，只重新校准 v0.5–v0.7 的近期主题、顺序和范围。输出写入独立 `reports/post-v0.4/`，不修改已冻结 acceptance baseline，也不重新打开 v0.8 架构清理、v0.9 Release Candidate 与 v1.0 稳定版的长期方向。当前优先假设是提高真实产品覆盖率。
+### Step 6 主要入口
 
-## 9. 关键文件导航
+- `src/pipeline/planner.py`：当前只支持 all/group scope；精确 Core scope 不能靠现有 CLI 直接表达。
+- `src/pipeline/coordinator.py`：实际七阶段 pipeline runtime。
+- `src/pipeline/state_store.py`、`src/pipeline/models.py`：Manifest、projection、current binding 与 accounting。
+- `src/core/extraction_coordinator.py`：四种策略的真实提取协调入口。
+- `src/content_sampling/artifacts.py`、`runtime.py`、`semantic.py`、`state_sampler.py`：Sampling Plan/Evidence 与语义指纹。
+- `data/baselines/v0.4/planning-baseline.json`：434/379/54/1 冻结 Planning Baseline。
+- `tests/fixtures/regression/payloads/`、`tests/test_v02_baseline.py`：可参考的旧中文回归，不是已完成的 Step 6 双语 Golden。
+- `tests/test_v04_step4_slice_b_runtime.py`、`tests/test_v04_step4_manifest_contracts.py`：真实 P3 runtime/manifest 测试模式。
 
-### Step 4 已完成主线
+### Step 7 主要入口
 
-- `src/content_sampling/`
-- `src/review/contracts.py`
-- `src/review/service.py`
-- `src/review/workbench.py`
-- `src/review/workbench_server.py`
-- `src/release/contracts.py`
-- `src/release/service.py`
-- `src/pipeline/coordinator.py`
-- `src/pipeline/state_store.py`
-- `src/core/validation_context.py`
-- `cli.py`
+- `src/review/contracts.py`、`accounting.py`、`service.py`、`workbench.py`：eligibility、warning/blocker accounting 与 Review Decision。
+- `src/release/contracts.py`、`service.py`：Release Manifest 1.1、seal、verify、dry-run/upload gate。
+- `dashboard/app/review/ReviewWorkbench.tsx`、`dashboard/app/review-model.ts`：真实人工审核界面。
+- `schemas/pipeline-validation-2.1.schema.json`、`schemas/review-decision-1.0.schema.json`、`schemas/release-manifest-1.1.schema.json`。
+- `reports/v0.3/acceptance-status.md`、`reports/v0.3/full-run-summary.json`：报告结构参考，不得复用其 379 passed 作为 v0.4 证据。
 
-### Dashboard
+源码跨文件修改前先用 CodeGraph `explore`/`impact`；修改后若继续依赖索引，执行 `codegraph sync`。
 
-- `dashboard/app/page.tsx`
-- `dashboard/app/review/page.tsx`
-- `dashboard/app/review/ReviewWorkbench.tsx`
-- `dashboard/app/review-model.ts`
-- `dashboard/tests/review-model.test.mjs`
-- `scripts/build_capability_dashboard.py`
+## 16. 新执行线程开场检查
 
-### Schemas
+```bash
+git status --short --branch
+git log --oneline -8
+git diff --check
+uv run pytest -q
+(cd dashboard && npm test)
+```
 
-- `schemas/pipeline-validation-2.0.schema.json`
-- planned successor `schemas/pipeline-validation-2.1.schema.json`；旧 2.0 不改
-- planned `schemas/validation-profile-1.3.schema.json` 与对应 P3-successor profile artifact；exact id/path 由新 ADR 冻结
-- `schemas/content-sampling-profile-1.0.schema.json`
-- `schemas/batch-item-sampling-plan-1.0.schema.json`
-- `schemas/sampled-content-evidence-1.0.schema.json`
-- `schemas/review-decision-1.0.schema.json`
-- `schemas/release-manifest-1.0.schema.json`
-- planned successor `schemas/release-manifest-1.1.schema.json`；旧 1.0 不改
-- `schemas/publication-receipt-1.0.schema.json`
+然后：
 
-### Step 5 主要代码接触面
+1. 阅读本文件与 execution plan 第 7/8 节。
+2. 用 CodeGraph 检查 Core runner、baseline 和 comparator 的最小落点及影响测试。
+3. 先完成 Step 6A；不要运行 `pipeline-run --all`。
+4. Step 6A/6B 实现提交并 clean 后，才创建 Core Run A/B。
+5. G6B 通过后，才创建唯一 full bilingual acceptance Batch。
+6. Step 7B 到达真实人工决定时，向 reviewer 交付可核验材料并等待真实操作。
 
-- `src/review/contracts.py`：保留 legacy `source_approval_preconditions()`，successor path 使用 frozen policy evaluator；eligibility、Human Review 与 Evidence Binding 保持领域语义正交。
-- `src/content_sampling/runtime.py`：`_source_quality_findings()` 生成当前 finding evidence；保持 code/message/path 与 hash-bound evidence。
-- `src/review/service.py`：snapshot、eligibility、decision 与 release-ready binding；不得复制第二套分类规则。
-- `src/review/workbench.py`、`src/pipeline/state_store.py`：projection、Source Warning / Approval Blocked / Machine Failed / Release Ready accounting，以及 Profile→Validation Projection 2.1 closed-world routing；不得把 successor 当 Validation 1.0。
-- `src/core/validation_context.py`、profile/provenance contracts：让 Profile 1.3 canonical ownership、Validation 2.1 projection 与 exact legacy resolver 遵守两种合法组合矩阵；旧 P3 Profile 1.2 与 Validation 2.0 保持字节不变，不回填旧 artifact。
-- `dashboard/app/review-model.ts`、`dashboard/app/review/ReviewWorkbench.tsx`：warning 展示、filters 和 summary language。
-- 新增 `schemas/pipeline-validation-2.1.schema.json` 与 profile 1.3 contract；`schemas/pipeline-review-queue-2.0.schema.json`、`schemas/dashboard-review-*.schema.json` 仅做表达 policy identity/分拆统计所需的最小 additive evolution。禁止修改旧 `pipeline-validation-2.0` 的冻结 bytes/hash。
-- `src/release/contracts.py`、`src/release/service.py`、StateStore schema registry 与 upload verification：增加 Release Manifest 1.1 closed-world dispatch，并保留 1.0 只读验证；1.1 重放 successor/policy/Validation 2.1 bindings。
-
-### Step 5 目标测试
-
-- `tests/test_v04_step4_domain_contracts.py`
-- `tests/test_v04_step4_slice_b_runtime.py`
-- `tests/test_v04_step4_slice_c_review_service.py`
-- `tests/test_v04_step4_slice_e_release.py`
-- `tests/test_v04_step4_contract_schemas.py`
-- `dashboard/tests/review-model.test.mjs`
-
-Step 5 参数化回归除当前 Step 4 cases 外，必须新增 exact legacy/new identity matrix、successor routing、legacy approved+finding Release rejection、eligibility/review 正交状态和 accounting overlap。`core-determinism-comparator-v1` 的实现与 metadata-insensitivity tests 属于 Step 6，不提前塞入 Step 5。
-
-跨文件修改前再次用 CodeGraph 查询上述 symbols 的 callers/impact；源码变化后若继续依赖索引，执行 `codegraph sync`。
-
-## 10. 当前验证基线
-
-Step 4 收口时记录：
-
-- `uv run pytest tests/test_v04_step4_slice_e_release.py -q`：8 passed；
-- `uv run pytest tests/test_v04_step4_contract_schemas.py tests/test_v04_step4_domain_contracts.py -q`：164 passed；
-- sandbox 完整 `uv run pytest`：795 passed / 5 failed，失败为实验资源监控进程/信号权限问题；
-- 提升权限完整 `uv run pytest`：800 passed；
-- Dashboard `npm test`：build + 18 passed；
-- Dashboard `npm run build`：passed；
-- `git diff --check`：clean。
-
-真实运行证据仍有限：仓库当前 P3 样例 Batch `20260803T144318Z-4bbb15fa` 只规划 4 个 zh-cn items，其中 `api-management`、`service-bus` execution/validation passed，另外 2 个 skipped；没有 approved item 或 sealed Release 实例。该样例证明接线但不证明 8-item 双语 Core Matrix 或 379 runnable items 已在 P3 规则上通过。Step 6 必须补齐两次 Core runs 和一次最终 full bilingual Batch。
-
-Step 5 开始前应重新确认当前 HEAD、worktree 和测试结果，不要把上述结果当作永久事实。
-
-## 11. Step 5 开场检查清单
-
-1. `git status --short --branch`
-2. `git log --oneline -5`
-3. 阅读本文件、新 execution plan、ROADMAP re-baseline gate 和 ADR-0087/0088。
-4. 用 CodeGraph 检查 `source_approval_preconditions`、Validation/Profile identity、Review service、Release service、StateStore accounting 与 Dashboard read model。
-5. inventory 当前 emitted finding codes，并起草 next available ADR；ADR 合并前不改 runtime。
-6. 先写 closed-world policy、unknown fail-closed、old-batch immutability 和 evidence-binding tests，再接 runtime。
-7. 按 Slice 5A → 5B → 5C 推进；不要实现 Report 2.0、Disposition、UVR 或 Visual Review。
-8. 每个 slice 完成后运行相关 pytest、Dashboard tests/build 和 `git diff --check`，然后暂停汇报。
-
-如果实现中发现 Step 4 的抽样、review 或 release gate 无法支撑 Step 5，应先报告具体证据；不要通过放宽 Machine Validation、默认放行 unknown code、跳过 evidence binding、重写历史 Batch 或恢复旧 WIP 绕过。
+如果实现发现现有 pipeline 无法在不旁路 lifecycle authority 的前提下完成 exact Core runs、semantic comparison 或完整 failure adjudication，应报告具体证据并先修复该能力。不能通过 mock-only、跨 Batch 拼接、放宽 Machine Validation、缩分母或重写历史 Batch 绕过。
