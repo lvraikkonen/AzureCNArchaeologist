@@ -306,7 +306,7 @@ Pricing 始终写入 `{language}/pricing`；同一 Product Definition 即使属�
 
 ### v0.4：建立可追溯内容验证与最小批准交付闭环
 
-> 状态：Step 0–5 已完成；Step 4 Slice A-E 的能力实现已完成，Step 5 已完成 Finding Policy successor、Review/Release routing、Dashboard/CLI accounting 与文档同步。真实双语 Core Matrix、最终全量 Batch 与代表 Release 验收仍属于 Step 6/7。
+> 状态：Step 0–6A 已完成；Step 4 Slice A-E 的能力实现已完成，Step 5 已完成 Finding Policy successor、Review/Release routing、Dashboard/CLI accounting 与文档同步，Step 6A 已冻结真实双语 Core Matrix baseline。Step 6B/6C 的确定性比较、最终全量 Batch 与 Step 7 代表 Release 验收仍待完成。
 
 #### 目标与保证边界
 
@@ -420,10 +420,10 @@ v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管�
 ##### P5：可信、CI-ready 的测试体系
 
 - `uv run pytest` 是唯一正式测试入口；只收集 `tests/`，启用 strict config 与 strict markers；collection error、零测试、缺 fixture 和缺基线均失败；已有 `unittest.TestCase` 在迁移期由 pytest 兼容收集，打印式诊断不算测试；
-- 建立双语 Core Strategy Test Matrix：`service-bus/simple_static`、`api-management/region_filter`、`cloud-services/complex`、`icp-faq/support_article`，八个 Batch Items 均覆盖 unit、component、end-to-end；
-- Core Fixture Manifest 通过 Product Definition 解析并固定八个 canonical `data/prod-html` 路径和 SHA-256，不复制第二套 HTML fixtures；
-- 三个 pricing Core 产品保留完整 canonical Business Payload Golden 和 Curated Sampling Baseline；前者捕获端到端 CMS 输出回归，后者校准 state universe、分层、deterministic selection 和 selected-state comparison；`icp-faq` 保留文章内容和 CMS contract 基线；
-- Golden 和抽样基线只是测试回归证据，不是冻结 Source 的替代内容 Oracle。普通测试只读，更新只能生成包含 old-to-new Diff、Source hash、Schema/Profile 版本和理由的 Baseline Candidate，再经人工审核晋升；
+- 已建立双语 Core Strategy Test Matrix：`service-bus/simple_static`、`api-management/region_filter`、`cloud-services/complex`、`icp-faq/support_article`，八个 Batch Items 已覆盖 unit、component、end-to-end baseline 测试；
+- Core Fixture Manifest 已通过 Product Definition 解析并固定八个 canonical `data/prod-html` 路径和 SHA-256，不复制第二套 HTML fixtures；路径为 `tests/fixtures/v0.4/core/fixture-manifest.json`；
+- 三个 pricing Core 产品已保留完整 canonical Business Payload Golden 和 Curated Sampling Baseline；前者捕获端到端 CMS 输出回归，后者校准 state universe、分层、deterministic selection 和 selected-state comparison；`icp-faq` 已保留文章内容和 CMS contract 基线；路径为 `tests/fixtures/v0.4/core/baselines/`；
+- Golden 和抽样基线只是测试回归证据，不是冻结 Source 的替代内容 Oracle。普通测试只读，更新只能生成包含 old-to-new Diff、Source hash、Schema/Profile 版本和理由的 Baseline Candidate，再经人工审核晋升；初始 candidate `20260805T094417Z-d1b25bff-931509f01108` 已经以 `candidate_sha256=8b9024f9a205e7bb9a48b013f99148e684b13d6c61ab7484c7a7162adf3852a8` 批准晋升；
 - 默认 Deterministic Test Suite 完全离线；对 8 个 Core Batch Items 执行两次 clean deterministic run，由不承担 lifecycle authority 的 `core-determinism-comparator-v1` acceptance record 比较 Business Payload artifact SHA、Sampling Plan `plan_sha256`、`sampled_content_semantic_sha256`、`validation_semantic_identity` 与规范化 promotion inputs。comparator 先硬校验 clean code provenance（git commit + immutable fingerprint）和每 item Product Definition、Source、Normalized Input、soft-category、Profile/Policy hashes 相同；sampled semantic object 覆盖 mode/coverage、structure、page-global、适用时 full-content、universe/default/ordered/selected identities、plan 与 per-state fingerprints/verdict，无 plan/full-content 时使用显式 null/N/A；validation semantic object 引用 sampled identity，再覆盖 finding classification、canonical preconditions、verdict 与稳定 codes。left/right `batch_id` 仅作 provenance，不进入 digest，并排除 `generated_at`、Manifest revision、attempt identity、artifact storage path 和包含运行路径的 message。Business Payload SHA 是唯一直接跨 Batch 比较的业务 artifact SHA；Plan/Sampled/Validation 外层 artifact SHA 与现有 evidence hashes 只在每个 Batch 内验证完整性/current binding，完整 Review/Promotion binding object 或 Release Manifest SHA 也不跨 Batch 比较；实际 Review Decision 和 Release build/verify 留在 Step 7；
 - 在最终代码和 Finding policy 上执行一次 clean full bilingual Batch，按冻结 Planning Baseline 的 434 planned / 379 retained runnable / 54 `known_unsupported` / 1 `SOURCE_UNAVAILABLE` 分母对账，并保留 execution、validation、`source_warning_count`、`approval_blocked_count`、`machine_failed_count`、`release_ready_count` 和 pending accounting；该冻结输入的 Batch Run 随后作为 Step 7 唯一的 full acceptance Batch，不与两次 Core deterministic runs 混用；任何经审核的分母变化必须单独解释，不得通过删除 Non-Core 产品或改成 `known_unsupported` 恢复绿色；
 - 冻结 runnable set 的每个 item 都必须有 evidence-backed Machine Validation `passed` 或 `failed`；更早阶段的 execution failure 也必须形成稳定 failure evidence 和 failed adjudication，不能残留无法解释的 `not_run`、missing report 或 unknown outcome。Non-Core 不要求全部通过或批准；

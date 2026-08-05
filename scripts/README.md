@@ -30,6 +30,25 @@ uv run scripts/auto_copy_html.py --language en-us --support-type ICP
 
 如果配置的源文件不存在，或复制后的哈希不同，命令失败。修复方式是更新对应 Product Definition 的精确 source route，不能向复制器增加路径猜测。
 
+## v0.4 Step 6 Core 回归工具
+
+`v04_core.py` 是内部 Step 6 工具，用于固定 4 产品 × 2 语言 Core Matrix、
+生成受控 baseline candidate，并在人工批准后晋升 baseline。它不扩张公共
+`cli.py`，运行时仍复用正式 `PipelineCoordinator`、`StateStore` 和标准
+`runs/{batch_id}` artifact 布局。
+
+```bash
+uv run scripts/v04_core.py verify-fixture
+uv run scripts/v04_core.py run --parallel-jobs 4 --runs-dir runs
+uv run scripts/v04_core.py baseline-candidate --batch-id <batch-id> --reason establish-v0.4-step6-core-baseline --runs-dir runs
+uv run scripts/v04_core.py baseline-promote --candidate output/v0.4-core-baseline-candidates/<candidate-id> --expected-sha256 <candidate-sha256>
+uv run scripts/v04_core.py verify-baseline
+```
+
+普通测试和 verify 命令只读。Baseline 更新必须先生成 candidate、审核
+`baseline.diff` 和 `candidate_sha256`，再用精确 SHA 晋升；不得直接覆盖
+`tests/fixtures/v0.4/core/baselines/`。
+
 ## Payload 上传
 
 正式发布入口是 `cli.py upload --release-manifest`，只接受已经由

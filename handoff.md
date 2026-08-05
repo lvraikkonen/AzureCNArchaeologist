@@ -1,16 +1,16 @@
 # v0.4 Step 6–7：可信回归、全量验收与版本冻结交接
 
-> 更新日期：2026-08-04
+> 更新日期：2026-08-05
 >
 > 当前分支：`codex/v0.4`
 >
 > Step 5 完成锚点：`6ecdd27 feat: complete step5 slice c review accounting`
 >
-> 当前阶段：Step 0–5 已完成；下一项是 Step 6A，不是直接运行全量 Batch
+> 当前阶段：Step 0–6A 已完成；下一项是 Step 6B，不是直接运行全量 Batch
 >
 > 最终目标：完成 Step 6/7 证据闭环，将项目升级并冻结为 `0.4.0`
 
-本文取代此前面向 Step 5 Slice A/B/C 的 handoff。旧交接只通过 Git 历史追溯，不再作为待办清单。接手者应从 Step 6A 开始，不能重新执行 Step 5，也不能恢复已经移出 v0.4 的 Report 2.0、Finding Disposition、Upstream Verification Report 或 Complex Visual Review。
+本文取代此前面向 Step 5 Slice A/B/C 的 handoff。旧交接只通过 Git 历史追溯，不再作为待办清单。接手者应从 Step 6B 开始，不能重新执行 Step 5/6A，也不能恢复已经移出 v0.4 的 Report 2.0、Finding Disposition、Upstream Verification Report 或 Complex Visual Review。
 
 ## 1. 一句话任务与强制顺序
 
@@ -34,7 +34,7 @@ Step 7D  acceptance-status.json/md、短 readiness review、0.4.0、提交、cle
 
 不得跳序：
 
-- 现在不能直接跑 full batch；先完成并提交 Step 6A，再在同一 clean commit 上完成 Step 6B。
+- 现在不能直接跑 full batch；Step 6A 已完成并提交，下一步在同一 clean commit 上完成 Step 6B。
 - Core Run A/B 只证明确定性，不做人工作决定，也不作为 Release 来源。
 - Step 7 的 Review Decision 和代表 Release 必须来自 Step 6C 冻结的同一个 `ACCEPTANCE_BATCH_ID`。
 - 如果修复代码、Source、Product Definition、Profile 或 Policy 后重跑全量，旧 Batch 立即失去“最终 acceptance Batch”资格；只能指定新的唯一 Batch。
@@ -89,9 +89,7 @@ git diff --check
 
 以下尚未实现或尚未生成，不能把已有相似物当作完成：
 
-- `tests/fixtures/regression/payloads/*.json` 是 v0.2 留下的中文回归 Payload；当前测试只用 `zh-cn`，不满足双语 8-item Core Golden。
-- 当前没有受治理的双语 Core Fixture Manifest、完整 Step 6 Golden/Sampling Baseline 或 baseline-candidate 晋升入口。
-- 当前 `pipeline-run` 只接受 `--all` 或单个 catalog/support group，不能直接表达跨四种策略的精确 8-item Core scope。
+- `tests/fixtures/regression/payloads/*.json` 是 v0.2 留下的中文回归 Payload；Step 6A 已建立新的双语 Core baseline，旧 fixture 仍只作历史参考。
 - 当前没有 `core-determinism-comparator-v1` 实现、schema、命令或 acceptance record。
 - 尚未创建 Core Run A、Core Run B 或最终 full bilingual acceptance Batch。
 - 尚未在 v0.4 acceptance Batch 内产生 8 个真实 Review Decisions。
@@ -159,12 +157,14 @@ Core Fixture Manifest 必须通过 Product Definition 解析并冻结这 8 个 i
 
 ### 6.2 G6A 完成门禁
 
-- 8 个 item 的 unit/component/end-to-end 全部通过，双语都消费真实 canonical inputs。
-- 三个 Pricing Golden、Curated Sampling Baseline 和 SupportArticle baseline 均存在且只读。
-- 缺 fixture、缺 baseline、零测试、collection error、未经审核 overwrite 均非零退出。
-- Core runner 产生标准 Batch artifacts，并使用当前 successor Profile/Policy；没有旁路 lifecycle authority。
-- Step 6A 代码与已审核 baseline 已提交；之后工作树重新 clean。
-- 记录实际新增命令、schema、baseline 路径与 commit；不要继续在 dirty tree 上创建 Core Run A/B。
+- 已完成。实现提交：`97b7e3e feat: add step6 core regression harness`；baseline 提交：`62a23e5 test: freeze step6 core bilingual baselines`。
+- 新增内部入口：`uv run scripts/v04_core.py verify-fixture|run|baseline-candidate|baseline-promote|verify-baseline`。
+- Core Fixture Manifest：`tests/fixtures/v0.4/core/fixture-manifest.json`，通过真实 Product Definition 和 canonical Source/Normalized Input 推导 8 个 current/runnable items。
+- Baseline 路径：`tests/fixtures/v0.4/core/baselines/`，包含 17 个文件：manifest、6 个 Pricing full payload golden、4 个 API Management/Cloud Services curated sampling baseline、2 个 Service Bus explicit `not_applicable` full-content baseline、2 个 ICP FAQ support article payload baseline 与 2 个 ICP content baseline。
+- 受控 candidate：`output/v0.4-core-baseline-candidates/20260805T094417Z-d1b25bff-931509f01108`，用户已批准 `candidate_sha256=8b9024f9a205e7bb9a48b013f99148e684b13d6c61ab7484c7a7162adf3852a8` 后晋升。
+- 建立 baseline 的 Core batch：`20260805T094417Z-d1b25bff`，8/8 execution succeeded、8/8 validation passed，provenance 绑定 `97b7e3e7dd277a655e31fec9a2b876a6f34f55b8` 且 dirty=false。
+- `en-us/icp-faq` 与 `zh-cn/icp-faq` 继续明确记录同一中文 source snapshot 复用；这是独立语言 Batch Item 的路由 workaround，不是英文翻译验证。
+- 下一步 Step 6B 不复用 baseline-establishment batch 作为 Run A/B；必须在 Step 6A baseline commit 后重新 clean gate，再创建独立 Core Run A/B。
 
 ## 7. Step 6B：两次 clean Core run 与确定性比较
 

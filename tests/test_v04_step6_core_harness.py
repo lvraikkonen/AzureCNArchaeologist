@@ -14,15 +14,18 @@ from src.regression.core import (
     CORE_ITEM_IDS,
     CorePlanner,
     CoreRegressionError,
+    build_baseline_documents,
     json_sha256,
     promote_baseline_candidate,
     read_json,
     render_json,
+    verify_baseline,
     verify_fixture_manifest,
 )
 
 
 ROOT = Path(__file__).resolve().parents[1]
+CORE_BASELINE_BATCH_ID = "20260805T094417Z-d1b25bff"
 
 
 def test_core_fixture_manifest_is_current_and_closed_world() -> None:
@@ -159,3 +162,70 @@ def test_candidate_schema_is_closed_world() -> None:
     errors = list(validator.iter_errors(candidate))
     assert errors
     assert any("Additional properties" in error.message for error in errors)
+
+
+def test_committed_core_baselines_are_complete_and_self_consistent() -> None:
+    manifest = verify_baseline(ROOT)
+
+    assert manifest["source_batch_id"] == CORE_BASELINE_BATCH_ID
+    assert [item["item_id"] for item in manifest["items"]] == list(CORE_ITEM_IDS)
+    assert {
+        item["validation"]["validation_profile"]["id"]
+        for item in (
+            read_json(ROOT / BASELINE_ROOT / entry["content_baseline"])
+            for entry in manifest["items"]
+        )
+    } == {"v0.4-validation-p3-successor"}
+    assert all(
+        item["validation"]["finding_code_policy"]["id"]
+        == "v0.4-finding-code-policy-p4"
+        for item in (
+            read_json(ROOT / BASELINE_ROOT / entry["content_baseline"])
+            for entry in manifest["items"]
+        )
+    )
+
+
+def test_core_baseline_batch_rebuilds_committed_baseline_documents() -> None:
+    run_dir = ROOT / "runs" / CORE_BASELINE_BATCH_ID
+    if not run_dir.is_dir():
+        pytest.skip(f"Core baseline batch is not present locally: {CORE_BASELINE_BATCH_ID}")
+
+    expected = {
+        path.relative_to(ROOT / BASELINE_ROOT).as_posix(): read_json(path)
+        for path in sorted((ROOT / BASELINE_ROOT).rglob("*.json"))
+    }
+    actual = build_baseline_documents(
+        ROOT,
+        runs_dir=Path("runs"),
+        batch_id=CORE_BASELINE_BATCH_ID,
+        reason="establish-v0.4-step6-core-baseline",
+    )
+
+    assert actual == expected
+
+
+def test_service_bus_baseline_declares_sampling_not_applicable() -> None:
+    for language in ("zh-cn", "en-us"):
+        baseline = read_json(
+            ROOT / BASELINE_ROOT / language / "service-bus.content.json"
+        )
+        assert baseline["sampling_semantics"] == "not_applicable"
+        assert baseline["sampling_plan"] is None
+        assert baseline["content_mode"] == "full_content"
+        assert baseline["sampled_evidence_mode"] == "full"
+
+
+def test_icp_faq_baseline_freezes_support_article_boundaries() -> None:
+    for language in ("zh-cn", "en-us"):
+        payload = read_json(ROOT / BASELINE_ROOT / language / "icp-faq.payload.json")
+        assert set(payload) == {
+            "title",
+            "slug",
+            "pageType",
+            "articleDescription",
+            "mainContent",
+        }
+        assert payload["slug"] == "icp-faq"
+        assert payload["pageType"] == "ICP"
+        assert payload["mainContent"].startswith("<h2>")

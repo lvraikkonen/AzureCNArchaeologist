@@ -685,7 +685,12 @@ def verify_baseline(root: Path) -> dict[str, Any]:
         fixture_item = fixture_by_id[item["item_id"]]
         if item["source_sha256"] != fixture_item["source"]["sha256"]:
             raise CoreRegressionError(f"Baseline source hash drifted: {item['item_id']}")
-        for key in ("payload_baseline", "content_baseline"):
+        payload_path = root / BASELINE_ROOT / item["payload_baseline"]
+        if payload_path.is_symlink() or not payload_path.is_file():
+            raise CoreRegressionError(f"Baseline file is missing: {payload_path}")
+        read_json(payload_path)
+
+        for key in ("content_baseline",):
             path = root / BASELINE_ROOT / item[key]
             if path.is_symlink() or not path.is_file():
                 raise CoreRegressionError(f"Baseline file is missing: {path}")
