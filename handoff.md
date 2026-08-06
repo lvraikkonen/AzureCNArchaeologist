@@ -1,12 +1,12 @@
 # v0.4 Step 6–7：可信回归、全量验收与版本冻结交接
 
-> 更新日期：2026-08-05
+> 更新日期：2026-08-06
 >
 > 当前分支：`codex/v0.4`
 >
 > Step 5 完成锚点：`6ecdd27 feat: complete step5 slice c review accounting`
 >
-> 当前阶段：Step 0–6C 已完成；下一项是 Step 7A，围绕冻结的 full bilingual acceptance Batch 重跑完整自动化验收
+> 当前阶段：Step 0–7A 已完成；下一项是 Step 7B，在冻结的 full bilingual acceptance Batch 内进行真实人工审核
 >
 > 最终目标：完成 Step 6/7 证据闭环，将项目升级并冻结为 `0.4.0`
 
@@ -24,7 +24,7 @@ Step 6B  同一 clean commit 上创建 Core Run A / B，运行 comparator
 Step 6C  创建一次最终 clean full bilingual acceptance Batch
     ↓ G6C：434 planned 完整对账，已冻结 ACCEPTANCE_BATCH_ID
 Step 7A  重跑完整自动化验收
-    ↓
+    ↓ G7A：自动化验收已通过并保存 summary
 Step 7B  真实 reviewer 在 ACCEPTANCE_BATCH_ID 内审核 8 Core items
     ↓
 Step 7C  从同一 Batch 建立代表性 sealed Release 并 upload dry-run
@@ -34,7 +34,7 @@ Step 7D  acceptance-status.json/md、短 readiness review、0.4.0、提交、cle
 
 不得跳序：
 
-- 现在可以进入 Step 7A；Step 6A/6B/6C 已完成并提交，下一步是在冻结的 `ACCEPTANCE_BATCH_ID=20260806T044456Z-e6268660` 上做完整自动化验收。
+- 现在可以进入 Step 7B；Step 6A/6B/6C 与 Step 7A 已完成，下一步是在冻结的 `ACCEPTANCE_BATCH_ID=20260806T044456Z-e6268660` 内交付真实 reviewer 进行人工审核。
 - Core Run A/B 只证明确定性，不做人工作决定，也不作为 Release 来源。
 - Step 7 的 Review Decision 和代表 Release 必须来自 Step 6C 冻结的同一个 `ACCEPTANCE_BATCH_ID`。
 - 如果修复代码、Source、Product Definition、Profile 或 Policy 后重跑全量，旧 Batch 立即失去“最终 acceptance Batch”资格；只能指定新的唯一 Batch。
@@ -398,6 +398,18 @@ Core payload/validation artifact SHA：
 Step 6C 不产生 Review Decision、Release Manifest 或 Publication Receipt。Step 7 的人工审核、代表 Release、dry-run 和 acceptance report 必须全部使用上述 `ACCEPTANCE_BATCH_ID`。
 
 ## 9. Step 7A：完整自动化验收
+
+Step 7A 已完成。证据文件：`reports/v0.4/step7a-automated-acceptance-summary.json`。
+
+实际执行结果：
+
+- `uv run pytest` → `833 passed in 263.03s`；
+- `uv run pytest tests/test_v04_step4_contract_schemas.py -q` → `111 passed in 8.32s`；
+- `cd dashboard && npm test` → production build passed，19 tests passed；
+- `cd dashboard && npm run build` → production build passed；
+- `uv run scripts/v04_core.py determinism-verify --record reports/v0.4/core-determinism-comparison.json --runs-dir runs` → passed，`record_sha256=b6156a386c8e2b7e4dc9477572295b46b911301bdd187be432a8fcb8b1ce8d94`；
+- `uv run cli.py pipeline-status --batch-id 20260806T044456Z-e6268660 --json` → revision `1437`、`434/379/55` accounting 与 Step 6C 冻结摘要一致；
+- `git diff --check` → passed。
 
 在 `ACCEPTANCE_BATCH_ID` 冻结后重新执行并保存退出码/摘要：
 

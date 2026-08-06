@@ -306,7 +306,7 @@ Pricing 始终写入 `{language}/pricing`；同一 Product Definition 即使属�
 
 ### v0.4：建立可追溯内容验证与最小批准交付闭环
 
-> 状态：Step 0–6C 已完成；Step 4 Slice A-E 的能力实现已完成，Step 5 已完成 Finding Policy successor、Review/Release routing、Dashboard/CLI accounting 与文档同步，Step 6A 已冻结真实双语 Core Matrix baseline，Step 6B 已通过 `core-determinism-comparator-v1`，Step 6C 已冻结最终 full bilingual acceptance Batch `20260806T044456Z-e6268660`。Step 7 代表 Release 验收仍待完成。
+> 状态：Step 0–7A 已完成；Step 4 Slice A-E 的能力实现已完成，Step 5 已完成 Finding Policy successor、Review/Release routing、Dashboard/CLI accounting 与文档同步，Step 6A 已冻结真实双语 Core Matrix baseline，Step 6B 已通过 `core-determinism-comparator-v1`，Step 6C 已冻结最终 full bilingual acceptance Batch `20260806T044456Z-e6268660`，Step 7A 已完成最终自动化验收重跑。Step 7B 真实人工审核、代表 Release 和 v0.4.0 冻结仍待完成。
 
 #### 目标与保证边界
 
