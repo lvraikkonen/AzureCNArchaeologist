@@ -1,0 +1,257 @@
+{
+  "schema_version": "v0.4-step6c-full-acceptance-summary-1.0",
+  "generated_from": {
+    "batch_id": "20260806T044456Z-e6268660",
+    "run_dir": "runs/20260806T044456Z-e6268660",
+    "status": "completed_with_failures",
+    "stored_status": "completed_with_failures",
+    "revision": 1437,
+    "resumable": true,
+    "code_anchor": {
+      "commit": "772d083",
+      "subject": "docs: record step6 core determinism evidence"
+    }
+  },
+  "preflight_gates": {
+    "determinism_verify": {
+      "record_path": "reports/v0.4/core-determinism-comparison.json",
+      "record_sha256": "b6156a386c8e2b7e4dc9477572295b46b911301bdd187be432a8fcb8b1ce8d94",
+      "result": "passed"
+    },
+    "catalog_build_check": {
+      "result": "passed",
+      "product_index_digest": "bc359ef4a5faf011a44dab05696073528e6ac3d1d9de10fe2976380a93bda875"
+    },
+    "copy_from_prod": {
+      "result": "passed",
+      "zh_cn": {
+        "copied": 184,
+        "files": 190,
+        "skipped": 0,
+        "failed": 0
+      },
+      "en_us": {
+        "copied": 184,
+        "files": 189,
+        "skipped": 0,
+        "failed": 0
+      }
+    },
+    "read_only_catalog_audit": {
+      "result": "passed",
+      "en_us": {
+        "snapshots": 239,
+        "explained": 239,
+        "unknown": 0
+      },
+      "zh_cn": {
+        "snapshots": 238,
+        "explained": 238,
+        "unknown": 0
+      },
+      "issue_counts": {
+        "unknown_snapshots": 0,
+        "stale_exclusions": 0,
+        "duplicate_explanations": 0,
+        "missing_primary_sources": 0,
+        "missing_source_aliases": 0,
+        "missing_historical_sources": 0,
+        "normalized_input_issues": 0
+      }
+    },
+    "git_status_porcelain_before": "",
+    "git_status_porcelain_after": ""
+  },
+  "summary": {
+    "total": 434,
+    "runnable": 379,
+    "skipped": 55,
+    "known_unsupported": 54,
+    "source_unavailable": 1,
+    "execution_succeeded": 287,
+    "execution_failed": 92,
+    "execution_pending": 0,
+    "validation_passed": 276,
+    "validation_failed": 11,
+    "validation_not_run": 92,
+    "review_pending": 276,
+    "review_approved": 0,
+    "review_rejected": 0,
+    "approval_eligible": 258,
+    "approval_blocked": 176,
+    "source_warning_count": 7,
+    "approval_blocked_count": 18,
+    "machine_failed_count": 11,
+    "release_ready_count": 0,
+    "released": 0,
+    "not_released": 434,
+    "published": 0,
+    "not_published": 434
+  },
+  "interpretation": {
+    "pipeline_exit_code": 2,
+    "completed_with_failures_is_accepted_for_step6c": true,
+    "validation_not_run_reason": "The 92 validation_not_run items align with execution_failed items that have no persisted payload to validate; this is not an unexplained validation queue gap.",
+    "step6c_created_review_decisions": false,
+    "step6c_created_release_manifest": false,
+    "step6c_uploaded_publication": false
+  },
+  "artifact_hashes": {
+    "input_manifest": "6fd3be2904f06fa22e7e5aa210ad59e7380eb4ccf479b6690419bad4823368ef",
+    "batch_manifest": "3f5bd36ad217b50ca6f604f9224d9c770f46361c0a20a4a3c602f2a2a6bf3227",
+    "batch_report": "0fe6f291464025cd3ca948d93f15f93c8e7c1a95d918b578537b03a129c09bd9",
+    "review_queue": "5fd103fc7ca128127065794a3d2ef780b361ba6d574a9883f961953c92d2fc34",
+    "pipeline_log": "c559934e3f3ac3f19ab93b97b88dd70e6e55693381016b763cbd38ec863601e1"
+  },
+  "core_items": [
+    {
+      "item_id": "en-us/service-bus",
+      "strategy": "simple_static",
+      "execution": "succeeded",
+      "validation": "passed",
+      "review": "pending",
+      "approval_eligibility": "eligible",
+      "payload_sha256": "3d4b6ecc1e255baf1f2e9bb8b493b06ed7b35a4f2e63afa2fc9df5eedaa9f605",
+      "validation_sha256": "0c9a9c69e28e8d5dc400d6bd147279ee96a54719e68a1ee703f0ff274f8e141d"
+    },
+    {
+      "item_id": "zh-cn/service-bus",
+      "strategy": "simple_static",
+      "execution": "succeeded",
+      "validation": "passed",
+      "review": "pending",
+      "approval_eligibility": "eligible",
+      "payload_sha256": "167611678e2dc45eda5bfea94850a939862a1e165905805c0aa14a44c062335c",
+      "validation_sha256": "1ba2f23d24e4b5723104e86fb74f5bf9973085000b916e1f75a0c906539cca48"
+    },
+    {
+      "item_id": "en-us/api-management",
+      "strategy": "region_filter",
+      "execution": "succeeded",
+      "validation": "passed",
+      "review": "pending",
+      "approval_eligibility": "eligible",
+      "payload_sha256": "17a75aab66bc47d1842016dbd9431e7351acc8df189d2b14ec9ab73f261cd14c",
+      "validation_sha256": "7f67b519ae97e136b7c7b9c4fc560689dba3a5d786e11432cadbd66587b9d1b4"
+    },
+    {
+      "item_id": "zh-cn/api-management",
+      "strategy": "region_filter",
+      "execution": "succeeded",
+      "validation": "passed",
+      "review": "pending",
+      "approval_eligibility": "eligible",
+      "payload_sha256": "0bec4742b1f735d0b267e98c89820d95bf469a3ba6b9715b856d6dd387cecd59",
+      "validation_sha256": "2a955f8d58128d6cdae7e34a4269a7d52c79ecdfd8443d979542eef5ee797cbd"
+    },
+    {
+      "item_id": "en-us/cloud-services",
+      "strategy": "complex",
+      "execution": "succeeded",
+      "validation": "passed",
+      "review": "pending",
+      "approval_eligibility": "blocked",
+      "payload_sha256": "7183bb3f3bd69d01115e583f19937eab5694323cc1ff8ef1c81b0e668cfe57af",
+      "validation_sha256": "d3df60b1333e2e1f2f25550c53a3b3b666a3b16d93377655f22efa58bb180836"
+    },
+    {
+      "item_id": "zh-cn/cloud-services",
+      "strategy": "complex",
+      "execution": "succeeded",
+      "validation": "passed",
+      "review": "pending",
+      "approval_eligibility": "blocked",
+      "payload_sha256": "e0b58ab6c383a48454356d591623f2f6e450d147ef45d84048318989ded558c9",
+      "validation_sha256": "2d3a5663faf6d20526dad9a93fb4ebb31d6bffe7dd7047e96b71e50024b03e2a"
+    },
+    {
+      "item_id": "en-us/icp-faq",
+      "strategy": "support_article",
+      "execution": "succeeded",
+      "validation": "passed",
+      "review": "pending",
+      "approval_eligibility": "eligible",
+      "payload_sha256": "60956e73f513357c9b2d0dd54b5f42562c090eaea37aeb320bffcfc8a820daad",
+      "validation_sha256": "5742107edfa4cd85547ed94a5d035a831483b2085866d1d6a6f7f7af1f5ac7b5"
+    },
+    {
+      "item_id": "zh-cn/icp-faq",
+      "strategy": "support_article",
+      "execution": "succeeded",
+      "validation": "passed",
+      "review": "pending",
+      "approval_eligibility": "eligible",
+      "payload_sha256": "d5c9f5df6bffb1b25736cadc13c1297bc084ad5af85d1e1782c45dadacc89ce3",
+      "validation_sha256": "1a1f2f6a1cf8f83e2df1888d3ae5e5d84ff7e0dc396a856ca070850919f80bbe"
+    }
+  ],
+  "failure_summary": {
+    "execution_failed": {
+      "total": 92,
+      "extract_failures": 89,
+      "preflight_failures": 3,
+      "representative_clusters": [
+        {
+          "count": 14,
+          "stage": "extract",
+          "code": "ScopedSourceContentError",
+          "message": "Unable to prove an intrinsic Simple page-global business-content boundary"
+        },
+        {
+          "count": 12,
+          "stage": "extract",
+          "code": "missing_software_target",
+          "message": "Reachable software target missing top-level panel"
+        },
+        {
+          "count": 6,
+          "stage": "extract",
+          "code": "duplicate_software_panel",
+          "message": "top-level software panel id values must be unique"
+        },
+        {
+          "count": 6,
+          "stage": "extract",
+          "code": "missing_desktop_filter",
+          "message": "region has no desktop interaction options"
+        },
+        {
+          "count": 5,
+          "stage": "extract",
+          "code": "SOURCE_HTML_STRUCTURE_BLOCKED",
+          "message": "Source HTML Structure Audit found an ambiguous content-ownership boundary"
+        },
+        {
+          "count": 3,
+          "stage": "preflight",
+          "code": "PREFLIGHT_FAILED",
+          "message": "RECONSTRUCTION_PARSEABILITY_FAILED: independent parsers materially disagree"
+        }
+      ]
+    },
+    "validation_failed": {
+      "total": 11,
+      "code": "full_content_mismatch",
+      "message": "full-content content differs from Source projection",
+      "items": [
+        "en-us/sla-sql-data",
+        "en-us/sla-sql-data--v1-0",
+        "en-us/sla-sql-data--v1-4",
+        "en-us/sla-sql-data--v1-5",
+        "zh-cn/sla-cdn",
+        "zh-cn/sla-cdn--v1-1",
+        "zh-cn/sla-sql-data",
+        "zh-cn/sla-sql-data--v1-0",
+        "zh-cn/sla-sql-data--v1-3",
+        "zh-cn/sla-sql-data--v1-4",
+        "zh-cn/sla-sql-data--v1-5"
+      ]
+    },
+    "skipped": {
+      "total": 55,
+      "known_unsupported": 54,
+      "source_unavailable": 1,
+      "source_unavailable_item": "en-us/sla-cdn--v1-1"
+    }
+  }
+}

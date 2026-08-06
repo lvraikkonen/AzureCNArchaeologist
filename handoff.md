@@ -6,7 +6,7 @@
 >
 > Step 5 完成锚点：`6ecdd27 feat: complete step5 slice c review accounting`
 >
-> 当前阶段：Step 0–6B 已完成；下一项是 Step 6C，创建最终 full bilingual acceptance Batch
+> 当前阶段：Step 0–6C 已完成；下一项是 Step 7A，围绕冻结的 full bilingual acceptance Batch 重跑完整自动化验收
 >
 > 最终目标：完成 Step 6/7 证据闭环，将项目升级并冻结为 `0.4.0`
 
@@ -22,7 +22,7 @@ Step 6A  4 产品 × 2 语言 Core Matrix、Golden/Sampling Baseline、三层测
 Step 6B  同一 clean commit 上创建 Core Run A / B，运行 comparator
     ↓ G6B：8 items 的语义比较全部通过
 Step 6C  创建一次最终 clean full bilingual acceptance Batch
-    ↓ G6C：434 planned 完整对账，冻结 ACCEPTANCE_BATCH_ID
+    ↓ G6C：434 planned 完整对账，已冻结 ACCEPTANCE_BATCH_ID
 Step 7A  重跑完整自动化验收
     ↓
 Step 7B  真实 reviewer 在 ACCEPTANCE_BATCH_ID 内审核 8 Core items
@@ -34,7 +34,7 @@ Step 7D  acceptance-status.json/md、短 readiness review、0.4.0、提交、cle
 
 不得跳序：
 
-- 现在可以进入 Step 6C；Step 6A/6B 已完成并提交，下一步是在最新 clean commit 上创建唯一 full bilingual acceptance Batch。
+- 现在可以进入 Step 7A；Step 6A/6B/6C 已完成并提交，下一步是在冻结的 `ACCEPTANCE_BATCH_ID=20260806T044456Z-e6268660` 上做完整自动化验收。
 - Core Run A/B 只证明确定性，不做人工作决定，也不作为 Release 来源。
 - Step 7 的 Review Decision 和代表 Release 必须来自 Step 6C 冻结的同一个 `ACCEPTANCE_BATCH_ID`。
 - 如果修复代码、Source、Product Definition、Profile 或 Policy 后重跑全量，旧 Batch 立即失去“最终 acceptance Batch”资格；只能指定新的唯一 Batch。
@@ -90,7 +90,7 @@ git diff --check
 以下尚未实现或尚未生成，不能把已有相似物当作完成：
 
 - `tests/fixtures/regression/payloads/*.json` 是 v0.2 留下的中文回归 Payload；Step 6A 已建立新的双语 Core baseline，旧 fixture 仍只作历史参考。
-- 尚未创建最终 full bilingual acceptance Batch。
+- 已创建并冻结最终 full bilingual acceptance Batch；见 §8.4。
 - 尚未在 v0.4 acceptance Batch 内产生 8 个真实 Review Decisions。
 - 尚无代表性 v0.4 sealed Release、dry-run 证据或 `reports/v0.4/acceptance-status.{json,md}`。
 - 根项目 `pyproject.toml` 仍为 `0.3.0`；这是 Step 7D 前的预期状态。Dashboard 已是 `0.4.0`，最终要做版本/文档一致性复核。
@@ -256,7 +256,7 @@ Step 6B 已落地：
 ```bash
 uv run cli.py catalog-build --check
 uv run cli.py copy-from-prod --language both
-uv run cli.py catalog-audit --language both
+uv run python -c 'import json; from pathlib import Path; from src.core.product_catalog import LANGUAGES, ProductCatalog; audit=ProductCatalog(Path.cwd()).audit_snapshots(LANGUAGES); issue_keys=("unknown_snapshots","stale_exclusions","duplicate_explanations","missing_primary_sources","missing_source_aliases","missing_historical_sources","normalized_input_issues"); print(json.dumps({"passed": audit["passed"], "counts": audit["counts"], "issue_counts": {key: len(audit[key]) for key in issue_keys}}, ensure_ascii=False, sort_keys=True)); raise SystemExit(0 if audit["passed"] else 1)'
 git status --porcelain
 # 只有上一条命令无输出时才继续
 uv run cli.py pipeline-run --all --language both --parallel-jobs 6
@@ -265,6 +265,8 @@ git status --porcelain
 ```
 
 最后一条 `git status --porcelain` 也必须无输出；它证明 pipeline normalize 的重复复制没有在 frozen provenance 之后制造 tracked drift。若出现输出，本次 Batch 不能被指定为最终 `ACCEPTANCE_BATCH_ID`，必须先诊断输入同步/文件 mode/实现问题。
+
+注意：当前 `catalog-audit --language both` 会刷新 tracked `reports/v0.2/*` 报告文件，不适合作为 Step 6C clean gate 的只读命令。Step 6C 实际使用上面的 `ProductCatalog.audit_snapshots()` 只读等价检查，覆盖 unknown snapshots、stale exclusions、duplicate explanations、missing primary/source aliases/historical sources 和 normalized input issues；如未来 CLI 提供只读 audit 模式，可替换为等价公共入口。
 
 把本次唯一最终 Batch 记为 `ACCEPTANCE_BATCH_ID`。中断但 provenance 未漂移时可 `pipeline-resume`；代码或输入修复后不能恢复旧 Batch 作为最终验收，必须创建新 Batch 并更新唯一 ID。
 
@@ -290,6 +292,110 @@ Non-Core 可以失败或保持 pending；Step 6C 不要求 379 项全部 machine
 - 将 Core A/B 或其他旧 Batch 的结果拼入 acceptance Batch。
 
 G6C 通过后冻结 `ACCEPTANCE_BATCH_ID`、commit/provenance、最终 revision、Batch/Review Queue/Report hashes 和失败结构簇，Step 7 全部围绕它进行。
+
+### 8.4 G6C 完成证据（2026-08-05）
+
+Step 6C 已完成并提交。冻结 acceptance Batch 如下：
+
+- `ACCEPTANCE_BATCH_ID=20260806T044456Z-e6268660`
+- Run dir：`runs/20260806T044456Z-e6268660`
+- 当前代码锚点：`772d083 docs: record step6 core determinism evidence`
+- CLI 结果：`uv run cli.py pipeline-run --all --language both --parallel-jobs 6` 退出码 `2`，状态 `completed_with_failures`。这是可接受结果，因为 v0.4 不要求 Non-Core 全绿；失败项必须真实保留并可解释。
+- `pipeline-status --json`：`stored_status=completed_with_failures`，`revision=1437`，`resumable=true`。
+- 最终 clean gate：运行前后 `git status --porcelain` 均为空。
+
+Step 6C 前置门禁实际执行结果：
+
+```text
+uv run scripts/v04_core.py determinism-verify --record reports/v0.4/core-determinism-comparison.json --runs-dir runs
+→ passed, record_sha256=b6156a386c8e2b7e4dc9477572295b46b911301bdd187be432a8fcb8b1ce8d94
+
+uv run cli.py catalog-build --check
+→ PASS: Product Index 3.0 checked; 211 unique products; digest sha256:bc359ef4a5faf011a44dab05696073528e6ac3d1d9de10fe2976380a93bda875
+
+uv run cli.py copy-from-prod --language both
+→ zh-cn: copied=184 files=190 skipped=0 failed=0
+→ en-us: copied=184 files=189 skipped=0 failed=0
+
+ProductCatalog.audit_snapshots(LANGUAGES)
+→ passed=true
+→ en-us: snapshots=239 explained=239 unknown=0
+→ zh-cn: snapshots=238 explained=238 unknown=0
+→ issue_counts all 0
+```
+
+权威 summary：
+
+| 维度 | 数量 |
+|---|---:|
+| total | 434 |
+| runnable | 379 |
+| skipped | 55 |
+| known_unsupported | 54 |
+| source_unavailable | 1 |
+| execution_succeeded | 287 |
+| execution_failed | 92 |
+| execution_pending | 0 |
+| validation_passed | 276 |
+| validation_failed | 11 |
+| validation_not_run | 92 |
+| review_pending | 276 |
+| review_approved / review_rejected | 0 / 0 |
+| approval_eligible | 258 |
+| approval_blocked | 176 |
+| source_warning_count | 7 |
+| approval_blocked_count | 18 |
+| machine_failed_count | 11 |
+| release_ready_count | 0 |
+| released / not_released | 0 / 434 |
+| published / not_published | 0 / 434 |
+
+`validation_not_run=92` 与 `execution_failed=92` 对齐，表示这些 item 没有 persisted payload 可供机器内容验证；这不是队列漏跑。Step 6C 接受口径是“无 unexplained not_run / missing evidence / unknown outcome”，而不是要求 execution failure 之后继续产生 validation artifact。
+
+冻结证据 hash：
+
+| 文件 | SHA-256 |
+|---|---|
+| `reports/v0.4/full-acceptance-batch-summary.json` | `9b45070cabe4b6e2fe9eec94ecdbd3f68ce69c138a63ce59c1d5056bd8e98977` |
+| `runs/20260806T044456Z-e6268660/input-manifest.json` | `6fd3be2904f06fa22e7e5aa210ad59e7380eb4ccf479b6690419bad4823368ef` |
+| `runs/20260806T044456Z-e6268660/batch-manifest.json` | `3f5bd36ad217b50ca6f604f9224d9c770f46361c0a20a4a3c602f2a2a6bf3227` |
+| `runs/20260806T044456Z-e6268660/batch-report.json` | `0fe6f291464025cd3ca948d93f15f93c8e7c1a95d918b578537b03a129c09bd9` |
+| `runs/20260806T044456Z-e6268660/review/review-queue.json` | `5fd103fc7ca128127065794a3d2ef780b361ba6d574a9883f961953c92d2fc34` |
+| `runs/20260806T044456Z-e6268660/logs/pipeline.jsonl` | `c559934e3f3ac3f19ab93b97b88dd70e6e55693381016b763cbd38ec863601e1` |
+
+Core 8 在最终 full Batch 内的状态：
+
+| Item | Strategy | Execution | Validation | Review | Approval eligibility |
+|---|---|---|---|---|---|
+| `en-us/service-bus` | simple_static | succeeded | passed | pending | eligible |
+| `zh-cn/service-bus` | simple_static | succeeded | passed | pending | eligible |
+| `en-us/api-management` | region_filter | succeeded | passed | pending | eligible |
+| `zh-cn/api-management` | region_filter | succeeded | passed | pending | eligible |
+| `en-us/cloud-services` | complex | succeeded | passed | pending | blocked |
+| `zh-cn/cloud-services` | complex | succeeded | passed | pending | blocked |
+| `en-us/icp-faq` | support_article | succeeded | passed | pending | eligible |
+| `zh-cn/icp-faq` | support_article | succeeded | passed | pending | eligible |
+
+Core payload/validation artifact SHA：
+
+| Item | Payload SHA-256 | Validation SHA-256 |
+|---|---|---|
+| `en-us/service-bus` | `3d4b6ecc1e255baf1f2e9bb8b493b06ed7b35a4f2e63afa2fc9df5eedaa9f605` | `0c9a9c69e28e8d5dc400d6bd147279ee96a54719e68a1ee703f0ff274f8e141d` |
+| `zh-cn/service-bus` | `167611678e2dc45eda5bfea94850a939862a1e165905805c0aa14a44c062335c` | `1ba2f23d24e4b5723104e86fb74f5bf9973085000b916e1f75a0c906539cca48` |
+| `en-us/api-management` | `17a75aab66bc47d1842016dbd9431e7351acc8df189d2b14ec9ab73f261cd14c` | `7f67b519ae97e136b7c7b9c4fc560689dba3a5d786e11432cadbd66587b9d1b4` |
+| `zh-cn/api-management` | `0bec4742b1f735d0b267e98c89820d95bf469a3ba6b9715b856d6dd387cecd59` | `2a955f8d58128d6cdae7e34a4269a7d52c79ecdfd8443d979542eef5ee797cbd` |
+| `en-us/cloud-services` | `7183bb3f3bd69d01115e583f19937eab5694323cc1ff8ef1c81b0e668cfe57af` | `d3df60b1333e2e1f2f25550c53a3b3b666a3b16d93377655f22efa58bb180836` |
+| `zh-cn/cloud-services` | `e0b58ab6c383a48454356d591623f2f6e450d147ef45d84048318989ded558c9` | `2d3a5663faf6d20526dad9a93fb4ebb31d6bffe7dd7047e96b71e50024b03e2a` |
+| `en-us/icp-faq` | `60956e73f513357c9b2d0dd54b5f42562c090eaea37aeb320bffcfc8a820daad` | `5742107edfa4cd85547ed94a5d035a831483b2085866d1d6a6f7f7af1f5ac7b5` |
+| `zh-cn/icp-faq` | `d5c9f5df6bffb1b25736cadc13c1297bc084ad5af85d1e1782c45dadacc89ce3` | `1a1f2f6a1cf8f83e2df1888d3ae5e5d84ff7e0dc396a856ca070850919f80bbe` |
+
+真实失败簇摘要：
+
+- `execution_failed=92`：89 个 extract failure + 3 个 preflight failure。主要结构簇包括 Simple page-global boundary proof failure（14）、duplicate software panel（6）、missing desktop filter（6）、duplicate filter target（5）、responsive filter mismatch（6）、multiple defaults（6）、missing software target（12）、ambiguous filter root（6）、source ownership blocked（5）、soft-category duplicate table id（2）、soft-category projection replay mismatch（1）等；详见 `batch-report.json` 与 `pipeline.jsonl`。
+- `validation_failed=11`：全部为 `support_article/full_content_mismatch`，集中在 `en-us/sla-sql-data*`、`zh-cn/sla-cdn*`、`zh-cn/sla-sql-data*`，每项均有 validation artifact SHA。
+- `skipped=55`：54 个 `KNOWN_UNSUPPORTED`，1 个 `SOURCE_UNAVAILABLE`（`en-us/sla-cdn--v1-1`）。
+
+Step 6C 不产生 Review Decision、Release Manifest 或 Publication Receipt。Step 7 的人工审核、代表 Release、dry-run 和 acceptance report 必须全部使用上述 `ACCEPTANCE_BATCH_ID`。
 
 ## 9. Step 7A：完整自动化验收
 
@@ -548,10 +654,9 @@ uv run pytest -q
 然后：
 
 1. 阅读本文件与 execution plan 第 7/8 节。
-2. 用 CodeGraph 检查 Core runner、baseline 和 comparator 的最小落点及影响测试。
-3. 先完成 Step 6A；不要运行 `pipeline-run --all`。
-4. Step 6A/6B 实现提交并 clean 后，才创建 Core Run A/B。
-5. G6B 通过后，才创建唯一 full bilingual acceptance Batch。
-6. Step 7B 到达真实人工决定时，向 reviewer 交付可核验材料并等待真实操作。
+2. 复核 §8.4 冻结的 `ACCEPTANCE_BATCH_ID=20260806T044456Z-e6268660`、revision、artifact hashes 和 clean gate。
+3. 先完成 Step 7A 自动化验收；不要重跑 Step 6A/6B/6C，除非代码或冻结输入发生必须使 acceptance Batch 作废的修复。
+4. Step 7B 到达真实人工决定时，向 reviewer 交付可核验材料并等待真实操作。
+5. Step 7C 只能从同一个 acceptance Batch 中 current、eligible、approved、bound 的 items 建立代表 Release。
 
 如果实现发现现有 pipeline 无法在不旁路 lifecycle authority 的前提下完成 exact Core runs、semantic comparison 或完整 failure adjudication，应报告具体证据并先修复该能力。不能通过 mock-only、跨 Batch 拼接、放宽 Machine Validation、缩分母或重写历史 Batch 绕过。
