@@ -6,7 +6,7 @@
 >
 > Step 5 完成锚点：`6ecdd27 feat: complete step5 slice c review accounting`
 >
-> 当前阶段：Step 0–7A 已完成；下一项是 Step 7B，在冻结的 full bilingual acceptance Batch 内进行真实人工审核
+> 当前阶段：Step 0–7B 已完成；下一项是 Step 7C，从同一 acceptance Batch 建立代表性 sealed Release 并执行 upload dry-run
 >
 > 最终目标：完成 Step 6/7 证据闭环，将项目升级并冻结为 `0.4.0`
 
@@ -26,7 +26,7 @@ Step 6C  创建一次最终 clean full bilingual acceptance Batch
 Step 7A  重跑完整自动化验收
     ↓ G7A：自动化验收已通过并保存 summary
 Step 7B  真实 reviewer 在 ACCEPTANCE_BATCH_ID 内审核 8 Core items
-    ↓
+    ↓ G7B：Core 8 已真实人工审核，另有 2 个 Non-Core complex item approved 供 Step 7C 使用
 Step 7C  从同一 Batch 建立代表性 sealed Release 并 upload dry-run
     ↓
 Step 7D  acceptance-status.json/md、短 readiness review、0.4.0、提交、clean、tag
@@ -34,7 +34,7 @@ Step 7D  acceptance-status.json/md、短 readiness review、0.4.0、提交、cle
 
 不得跳序：
 
-- 现在可以进入 Step 7B；Step 6A/6B/6C 与 Step 7A 已完成，下一步是在冻结的 `ACCEPTANCE_BATCH_ID=20260806T044456Z-e6268660` 内交付真实 reviewer 进行人工审核。
+- 现在可以进入 Step 7C；Step 6A/6B/6C、Step 7A 与 Step 7B 已完成，下一步只能从冻结的 `ACCEPTANCE_BATCH_ID=20260806T044456Z-e6268660` 中 current、eligible、approved、bound 的 items 建立代表 Release。
 - Core Run A/B 只证明确定性，不做人工作决定，也不作为 Release 来源。
 - Step 7 的 Review Decision 和代表 Release 必须来自 Step 6C 冻结的同一个 `ACCEPTANCE_BATCH_ID`。
 - 如果修复代码、Source、Product Definition、Profile 或 Policy 后重跑全量，旧 Batch 立即失去“最终 acceptance Batch”资格；只能指定新的唯一 Batch。
@@ -440,6 +440,29 @@ git diff --check
 这是 pre-freeze check，不是最终 clean-tree gate。Acceptance Report 和 version bump 尚未提交时，不能因为此刻 clean 就冻结版本。
 
 ## 10. Step 7B：真实人工审核
+
+Step 7B 已完成。证据文件：`reports/v0.4/step7b-review-summary.json`。
+
+实际人工审核结果：
+
+- Reviewer：`claus.lv`；
+- Batch revision：`1437` → `1447`；
+- Core reviewed：8/8；
+- 额外为 Step 7C representative Release 覆盖审核的 Non-Core complex items：`zh-cn/time-series-insights`、`en-us/time-series-insights`；
+- Batch review summary：`review_approved=6`、`review_rejected=4`、`review_pending=266`、`evidence_bound=10`、`release_ready_count=6`；
+- approved：`en-us/api-management`、`zh-cn/api-management`、`zh-cn/time-series-insights`、`en-us/time-series-insights`、`en-us/icp-faq`、`zh-cn/icp-faq`；
+- rejected：`en-us/cloud-services`、`zh-cn/cloud-services` with `reason=upstream_source`；`en-us/service-bus`、`zh-cn/service-bus` with `reason=extractor_defect`；
+- 必需路径已真实演练：`en-us/api-management` advisory `responsive_filter_label_drift` approve；`cloud-services` approval-blocking upstream findings reject。
+
+Step 7C 推荐代表 Release item set：
+
+```text
+zh-cn/api-management
+en-us/time-series-insights
+zh-cn/icp-faq
+```
+
+该组合来自同一 `ACCEPTANCE_BATCH_ID`，均为 current、`approval_eligible=true`、`review=approved`、`evidence_binding=bound`，并覆盖 Pricing `region_filter`、Pricing `complex`、`support_article` 以及 zh-cn/en-us。由于 `service-bus` 已被真实 reviewer 以 `extractor_defect` 拒绝，Step 7C 不应选择 `simple_static` representative item；按计划可使用 `region_filter` Pricing item 满足 Pricing 覆盖。
 
 ### 10.1 强制审核范围
 

@@ -1,0 +1,304 @@
+{
+  "schema_version": "v0.4-step7b-review-summary-1.0",
+  "generated_at": "2026-08-06T08:32:59Z",
+  "step": "Step 7 Slice B",
+  "result": "passed",
+  "reviewer": "claus.lv",
+  "acceptance_batch": {
+    "batch_id": "20260806T044456Z-e6268660",
+    "run_dir": "runs/20260806T044456Z-e6268660",
+    "revision_before_review": 1437,
+    "revision_after_review": 1447,
+    "status": "completed_with_failures",
+    "summary_after_review": {
+      "total": 434,
+      "runnable": 379,
+      "skipped": 55,
+      "known_unsupported": 54,
+      "source_unavailable": 1,
+      "execution_succeeded": 287,
+      "execution_failed": 92,
+      "execution_pending": 0,
+      "validation_passed": 276,
+      "validation_failed": 11,
+      "validation_not_run": 92,
+      "review_approved": 6,
+      "review_pending": 266,
+      "review_rejected": 4,
+      "approval_eligible": 258,
+      "approval_blocked": 176,
+      "evidence_bound": 10,
+      "evidence_not_applicable": 424,
+      "evidence_stale": 0,
+      "released": 0,
+      "not_released": 434,
+      "published": 0,
+      "not_published": 434
+    },
+    "review_accounting_after_review": {
+      "source_warning_count": 7,
+      "approval_blocked_count": 18,
+      "machine_failed_count": 11,
+      "release_ready_count": 6
+    },
+    "artifact_hashes_after_review": {
+      "batch_manifest": "718459a822faeb8cb28bd71c07fab64889626a5be03b21ce113cd07d9c2f3fbc",
+      "review_queue": "48d73b37eecb50711542668e005020b3b23a2ce9057eb54ab5f091fbb4d4d58f"
+    }
+  },
+  "review_scope": {
+    "core_items_reviewed": 8,
+    "core_items_required": 8,
+    "extra_non_core_items_reviewed_for_release_coverage": [
+      "zh-cn/time-series-insights",
+      "en-us/time-series-insights"
+    ],
+    "core_approved": [
+      "en-us/api-management",
+      "zh-cn/api-management",
+      "en-us/icp-faq",
+      "zh-cn/icp-faq"
+    ],
+    "core_rejected": [
+      "en-us/cloud-services",
+      "zh-cn/cloud-services",
+      "en-us/service-bus",
+      "zh-cn/service-bus"
+    ],
+    "extra_approved": [
+      "en-us/time-series-insights",
+      "zh-cn/time-series-insights"
+    ]
+  },
+  "required_path_exercises": {
+    "advisory_warning_approve": {
+      "item_id": "en-us/api-management",
+      "finding_code": "responsive_filter_label_drift",
+      "verdict": "approved",
+      "decision_id": "2c128b047f1b816c3d819ea19fbe363f8dbeb21d8243916ea34366d721788c37",
+      "decision_sha256": "22e75b5f8eaf4fe3375d53001188a31c75b53bdef7a780efccbd5f282b21cec4"
+    },
+    "upstream_source_reject": [
+      {
+        "item_id": "en-us/cloud-services",
+        "finding_codes": [
+          "source_confirmed_empty_state",
+          "non_materialized_aggregate_tab_suppressed"
+        ],
+        "verdict": "rejected",
+        "reason": "upstream_source",
+        "decision_id": "31440102e31bdf73c1aa4a245f50ff717669b6c2e98c09d7a654989ab96ed18c",
+        "decision_sha256": "a49d0a3d149686cb4fa66c97050c5aa70b208c6f9dce336ef1105f2a522d3066"
+      },
+      {
+        "item_id": "zh-cn/cloud-services",
+        "finding_codes": [
+          "source_confirmed_empty_state",
+          "non_materialized_aggregate_tab_suppressed"
+        ],
+        "verdict": "rejected",
+        "reason": "upstream_source",
+        "decision_id": "fc81f31d6471496bc4a06158a22372b639d48c41119c01993976bd1f757954f0",
+        "decision_sha256": "158652ac69631b99d476f9f7a938b9827d14ebf843553791eb7f3b3f9bc2bfd2"
+      }
+    ]
+  },
+  "decisions": [
+    {
+      "item_id": "en-us/api-management",
+      "strategy": "region_filter",
+      "reviewer": "claus.lv",
+      "verdict": "approved",
+      "reason": null,
+      "decided_at": "2026-08-06T08:03:48.082418Z",
+      "decision_id": "2c128b047f1b816c3d819ea19fbe363f8dbeb21d8243916ea34366d721788c37",
+      "decision_sha256": "22e75b5f8eaf4fe3375d53001188a31c75b53bdef7a780efccbd5f282b21cec4",
+      "evidence_binding": "bound",
+      "approval_eligibility": "eligible",
+      "notes": "人工验证该RegionFilter页面内容通过，注：可以忽略mobile label differs",
+      "inspected_scope_summary": {
+        "page_global": true,
+        "full_content": false,
+        "interactive_states": 5
+      }
+    },
+    {
+      "item_id": "zh-cn/api-management",
+      "strategy": "region_filter",
+      "reviewer": "claus.lv",
+      "verdict": "approved",
+      "reason": null,
+      "decided_at": "2026-08-06T08:02:28.501131Z",
+      "decision_id": "a8156f274efbe66016b840a8d99d1942b345ce1481dfed21625afbb92ab2ff01",
+      "decision_sha256": "c5fd4237a8f0017968b2129eedd3cd055eb81e747d766aed3cdd67d2ab7d24fd",
+      "evidence_binding": "bound",
+      "approval_eligibility": "eligible",
+      "notes": "人工验证该RegionFilter页面内容通过",
+      "inspected_scope_summary": {
+        "page_global": true,
+        "full_content": false,
+        "interactive_states": 5
+      }
+    },
+    {
+      "item_id": "en-us/time-series-insights",
+      "strategy": "complex",
+      "reviewer": "claus.lv",
+      "verdict": "approved",
+      "reason": null,
+      "decided_at": "2026-08-06T08:22:51.022333Z",
+      "decision_id": "53bacc45eda6533d2a6f258fb20f27dfca363fb435d887858109f2f5f4c1787b",
+      "decision_sha256": "2ea6b6d66a169816684c8c9c5186e98594cdfee134e0d6b9a5c5dc660acf1ea7",
+      "evidence_binding": "bound",
+      "approval_eligibility": "eligible",
+      "notes": "Complex页面内容验证通过。但是<ul class='sum_title'> 内容未在productionDescription在抽取出来",
+      "inspected_scope_summary": {
+        "page_global": true,
+        "full_content": false,
+        "interactive_states": 4
+      }
+    },
+    {
+      "item_id": "zh-cn/time-series-insights",
+      "strategy": "complex",
+      "reviewer": "claus.lv",
+      "verdict": "approved",
+      "reason": null,
+      "decided_at": "2026-08-06T08:22:16.433051Z",
+      "decision_id": "65f88aefe84ada931894934385553fde9a3f8614f88d27620d95ff5ae865a74f",
+      "decision_sha256": "18c7fd97e60fdfb369c3a32c0314fa66b77f2edb59dd0927a59bf12a0fc36880",
+      "evidence_binding": "bound",
+      "approval_eligibility": "eligible",
+      "notes": "Complex页面内容验证通过。但是<ul class='sum_title'> 内容未在productionDescription在抽取出来",
+      "inspected_scope_summary": {
+        "page_global": true,
+        "full_content": false,
+        "interactive_states": 4
+      }
+    },
+    {
+      "item_id": "en-us/icp-faq",
+      "strategy": "support_article",
+      "reviewer": "claus.lv",
+      "verdict": "approved",
+      "reason": null,
+      "decided_at": "2026-08-06T08:15:30.297279Z",
+      "decision_id": "4391f3b8d929f587248385ebee646b154b81efee7d38fa7df46c67078e0b9867",
+      "decision_sha256": "2c1db3e51747283938c7d376116e7461fcae6ed386cfdeb594ebfd89ea4ae3bb",
+      "evidence_binding": "bound",
+      "approval_eligibility": "eligible",
+      "notes": "ICP-FAQ SupportArticle页面内容验证通过，英文和中文内容一致",
+      "inspected_scope_summary": {
+        "page_global": false,
+        "full_content": true,
+        "interactive_states": 0
+      },
+      "controlled_source_reuse_note": "en-us/icp-faq intentionally reuses the Chinese ICP source snapshot; this approval verifies reconstruction, not English translation fidelity."
+    },
+    {
+      "item_id": "zh-cn/icp-faq",
+      "strategy": "support_article",
+      "reviewer": "claus.lv",
+      "verdict": "approved",
+      "reason": null,
+      "decided_at": "2026-08-06T08:14:40.471425Z",
+      "decision_id": "6e7099bf370fff478b7fe33ebee6ebe4923d6fa27e6f3cfe07e18e255c77bb55",
+      "decision_sha256": "935c04d9cbd1ab52f1e90c84849cdcfcf71a62b4873a0aa21d752c21a9aefb65",
+      "evidence_binding": "bound",
+      "approval_eligibility": "eligible",
+      "notes": "ICP-FAQ SupportArticle页面内容验证通过",
+      "inspected_scope_summary": {
+        "page_global": false,
+        "full_content": true,
+        "interactive_states": 0
+      }
+    },
+    {
+      "item_id": "en-us/cloud-services",
+      "strategy": "complex",
+      "reviewer": "claus.lv",
+      "verdict": "rejected",
+      "reason": "upstream_source",
+      "decided_at": "2026-08-06T08:09:44.369229Z",
+      "decision_id": "31440102e31bdf73c1aa4a245f50ff717669b6c2e98c09d7a654989ab96ed18c",
+      "decision_sha256": "a49d0a3d149686cb4fa66c97050c5aa70b208c6f9dce336ef1105f2a522d3066",
+      "evidence_binding": "bound",
+      "approval_eligibility": "blocked",
+      "notes": "需要上游验证",
+      "inspected_scope_summary": {
+        "page_global": true,
+        "full_content": false,
+        "interactive_states": 3
+      }
+    },
+    {
+      "item_id": "zh-cn/cloud-services",
+      "strategy": "complex",
+      "reviewer": "claus.lv",
+      "verdict": "rejected",
+      "reason": "upstream_source",
+      "decided_at": "2026-08-06T08:09:01.421493Z",
+      "decision_id": "fc81f31d6471496bc4a06158a22372b639d48c41119c01993976bd1f757954f0",
+      "decision_sha256": "158652ac69631b99d476f9f7a938b9827d14ebf843553791eb7f3b3f9bc2bfd2",
+      "evidence_binding": "bound",
+      "approval_eligibility": "blocked",
+      "notes": "需要上游验证",
+      "inspected_scope_summary": {
+        "page_global": true,
+        "full_content": false,
+        "interactive_states": 2
+      }
+    },
+    {
+      "item_id": "en-us/service-bus",
+      "strategy": "simple_static",
+      "reviewer": "claus.lv",
+      "verdict": "rejected",
+      "reason": "extractor_defect",
+      "decided_at": "2026-08-06T07:56:49.791288Z",
+      "decision_id": "10cdde8747c5058b6364f86c9e67b6b1410146a8ac5147de11e2490a2aa8d690",
+      "decision_sha256": "6606c7dba39d82111f4893e8f66e324dbd0aae439cd2c4ad3e5b9f67cceb090f",
+      "evidence_binding": "bound",
+      "approval_eligibility": "eligible",
+      "notes": "表格中icon icon-tick 并没有被提取出符号",
+      "inspected_scope_summary": {
+        "page_global": false,
+        "full_content": true,
+        "interactive_states": 0
+      }
+    },
+    {
+      "item_id": "zh-cn/service-bus",
+      "strategy": "simple_static",
+      "reviewer": "claus.lv",
+      "verdict": "rejected",
+      "reason": "extractor_defect",
+      "decided_at": "2026-08-06T07:54:11.077345Z",
+      "decision_id": "4c1a1fb3b52160862c5b6cfbe8b53bfa2ab749b36ae42697be903a08e0f31542",
+      "decision_sha256": "5f133c712613a334bd05ee5853ae09b06a20e9ae41b7c75ad72d9f457cc6d2dd",
+      "evidence_binding": "bound",
+      "approval_eligibility": "eligible",
+      "notes": "表格中icon icon-tick 并没有被提取出符号",
+      "inspected_scope_summary": {
+        "page_global": false,
+        "full_content": true,
+        "interactive_states": 0
+      }
+    }
+  ],
+  "step7c_candidate_release_items": [
+    "zh-cn/api-management",
+    "en-us/time-series-insights",
+    "zh-cn/icp-faq"
+  ],
+  "interpretation": {
+    "all_core_items_reviewed": true,
+    "required_advisory_approve_exercised": true,
+    "required_upstream_source_reject_exercised": true,
+    "non_core_complex_item_approved_for_representative_release": true,
+    "service_bus_rejection_blocks_simple_static_release_candidate": true,
+    "representative_release_can_still_use_region_filter_pricing_item": true,
+    "publication_created": false,
+    "release_manifest_created": false
+  }
+}
