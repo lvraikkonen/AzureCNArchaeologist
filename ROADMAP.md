@@ -1,14 +1,14 @@
 # AzureCNArchaeologist v0.1 → v1.0 路线图
 
 > 文档状态：当前项目路线图  
-> 最新稳定版本：v0.3.0
-> 当前开发版本：v0.4
+> 最新稳定版本：v0.4.0
+> 当前开发版本：Post-v0.4 re-baseline
 > 基线日期：2026-08-04
 > 适用范围：Azure 中国区产品 HTML 标准化、策略化解析、CMS JSON 导出与质量验证
 
 ## 1. 路线图目的
 
-AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流。v0.4 Step 4 已完成抽样内容验证、受控人工审核、不可变 Release 和 Release-only upload gate；Step 5 已完成 Finding 门禁、successor Validation/Release routing、Dashboard/CLI accounting 与文档收口；Step 6 已完成可信回归基线、Core determinism record 和最终 full bilingual acceptance Batch。剩余 Step 7 只围绕该冻结 Batch 完成真实人工审核、代表 Release、dry-run、acceptance report 和版本冻结，不再扩建新的质量治理子系统。
+AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流。v0.4 Step 4 已完成抽样内容验证、受控人工审核、不可变 Release 和 Release-only upload gate；Step 5 已完成 Finding 门禁、successor Validation/Release routing、Dashboard/CLI accounting 与文档收口；Step 6 已完成可信回归基线、Core determinism record 和最终 full bilingual acceptance Batch；Step 7 已围绕该冻结 Batch 完成真实人工审核、代表 Release、dry-run、acceptance report 和版本冻结。v0.4.0 之后的下一项是 Post-v0.4 Roadmap Re-baseline Gate，不再回开 v0.4 scope。
 
 从 v0.1 到 v1.0 的核心目标不是继续堆叠功能，而是把现有能力收敛为一套：
 
@@ -306,7 +306,7 @@ Pricing 始终写入 `{language}/pricing`；同一 Product Definition 即使属�
 
 ### v0.4：建立可追溯内容验证与最小批准交付闭环
 
-> 状态：Step 0–7B 已完成；Step 4 Slice A-E 的能力实现已完成，Step 5 已完成 Finding Policy successor、Review/Release routing、Dashboard/CLI accounting 与文档同步，Step 6A 已冻结真实双语 Core Matrix baseline，Step 6B 已通过 `core-determinism-comparator-v1`，Step 6C 已冻结最终 full bilingual acceptance Batch `20260806T044456Z-e6268660`，Step 7A 已完成最终自动化验收重跑，Step 7B 已完成真实人工审核。Step 7C 代表 Release 和 v0.4.0 冻结仍待完成。
+> 状态：已完成。Step 4 Slice A-E 的能力实现已完成，Step 5 已完成 Finding Policy successor、Review/Release routing、Dashboard/CLI accounting 与文档同步，Step 6A 已冻结真实双语 Core Matrix baseline，Step 6B 已通过 `core-determinism-comparator-v1`，Step 6C 已冻结最终 full bilingual acceptance Batch `20260806T044456Z-e6268660`，Step 7A 已完成最终自动化验收重跑，Step 7B 已完成真实人工审核，Step 7C 已生成代表 Release `v0.4.0-step7c-representative` 并通过 verify/dry-run，Step 7D 已生成 `reports/v0.4/acceptance-status.{json,md}` 并升级为 `0.4.0`。
 
 #### 目标与保证边界
 

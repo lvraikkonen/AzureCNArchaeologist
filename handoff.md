@@ -6,7 +6,7 @@
 >
 > Step 5 完成锚点：`6ecdd27 feat: complete step5 slice c review accounting`
 >
-> 当前阶段：Step 0–7B 已完成；下一项是 Step 7C，从同一 acceptance Batch 建立代表性 sealed Release 并执行 upload dry-run
+> 当前阶段：Step 0–7D 已完成；v0.4.0 acceptance artifacts、代表性 sealed Release、upload dry-run 和版本 bump 已落地，下一项是最终门禁、提交和本地 `v0.4.0` tag
 >
 > 最终目标：完成 Step 6/7 证据闭环，将项目升级并冻结为 `0.4.0`
 
@@ -91,9 +91,9 @@ git diff --check
 
 - `tests/fixtures/regression/payloads/*.json` 是 v0.2 留下的中文回归 Payload；Step 6A 已建立新的双语 Core baseline，旧 fixture 仍只作历史参考。
 - 已创建并冻结最终 full bilingual acceptance Batch；见 §8.4。
-- 尚未在 v0.4 acceptance Batch 内产生 8 个真实 Review Decisions。
-- 尚无代表性 v0.4 sealed Release、dry-run 证据或 `reports/v0.4/acceptance-status.{json,md}`。
-- 根项目 `pyproject.toml` 仍为 `0.3.0`；这是 Step 7D 前的预期状态。Dashboard 已是 `0.4.0`，最终要做版本/文档一致性复核。
+- 已在同一 acceptance Batch 内完成 8 个 Core items 的真实 Review Decisions，并额外审核 `en-us/time-series-insights`、`zh-cn/time-series-insights` 供代表 Release 覆盖使用；见 §10。
+- 已生成代表性 v0.4 sealed Release、dry-run 证据和 `reports/v0.4/acceptance-status.{json,md}`；见 §11–12。
+- 根项目 `pyproject.toml` 与 `uv.lock` root package 已升级为 `0.4.0`；Dashboard 已是 `0.4.0`。历史 planning/schema/report 中的 `0.3.0` 保持冻结证据，不作为当前版本漂移。
 
 ## 4. 全程必须保持的不变量
 
@@ -497,6 +497,24 @@ en-us/icp-faq
 
 ## 11. Step 7C：代表性 sealed Release 与 dry-run
 
+Step 7C 已完成。证据文件：`reports/v0.4/step7c-release-summary.json`，SHA-256 `6e06fe51e5655c0df3ba82b707977050f46d11aa655eb9c36c7df9b707c4f5af`。
+
+实际代表 Release：
+
+- Release ID：`v0.4.0-step7c-representative`；
+- Included items：`en-us/time-series-insights`、`zh-cn/api-management`、`zh-cn/icp-faq`；
+- 覆盖：Pricing `region_filter`、Pricing `complex`、`support_article`，并同时覆盖 `en-us` 与 `zh-cn`；
+- Release Manifest：`output/releases/v0.4.0-step7c-representative/release-manifest.json`；
+- Release Manifest SHA-256：`aedc583f566ac8217d682c7347cff46ea173054ba9a468ace3cfc865d468afdc`；
+- Release content SHA-256：`8a8138bd20501d4752a6404195e072048f15f1bd5b56659448c623360d7e38c9`；
+- Release seal：`8313e866994072dd1b43392663eaa8507e29a95a4f39eaf9e39e7ef7b10d0fe4`；
+- Batch Manifest revision：`1447` → `1448`；
+- Batch Manifest SHA-256：`31e80772a4adc1cbbc09e46a73f1a84e7291475f3060aed2e9f9710755da20ba`；
+- `release-verify --require-batch-reference --json`：`registered=true`；
+- `upload --dry-run --json`：通过，`publication_receipt_path=null`、`committed_revision=null`，三个 remote blob 的 `etag` 均为 `[DRY_RUN]`。
+
+目标 `https://example.blob.core.chinacloudapi.cn` / `cms` / `releases/v0.4.0-step7c-representative` 是验收 dry-run 占位目标，不是生产发布目标。没有执行真实 upload，所有 434 items 的 Publication 保持 `not_published` 是预期合法结果。
+
 只从 `ACCEPTANCE_BATCH_ID` 中选择同时满足以下条件的 current items：
 
 ```text
@@ -549,6 +567,34 @@ uv run cli.py upload \
 记录 Release ID、Manifest SHA、seal、included item bindings、verify 结果和 dry-run 结果。不要执行真实 upload；没有 Publication Receipt、items 仍为 `not_published` 是本次验收的预期合法结果。
 
 ## 12. Step 7D：Acceptance Report、readiness review 与冻结
+
+Step 7D acceptance artifacts 与版本 bump 已完成，待最终门禁通过后提交并创建本地 `v0.4.0` tag。
+
+新增证据：
+
+| 文件 | SHA-256 |
+|---|---|
+| `reports/v0.4/step7c-release-summary.json` | `6e06fe51e5655c0df3ba82b707977050f46d11aa655eb9c36c7df9b707c4f5af` |
+| `reports/v0.4/acceptance-status.json` | `c41f5b16869df6cc75f57641da93ca2da24f1d46053e56c1385055eb311959e7` |
+| `reports/v0.4/acceptance-status.md` | `ee483edc8bf49625f03217e07c998cd6f48f207f92ac496428148f40413b6564` |
+
+最终 lifecycle authority 是 `runs/20260806T044456Z-e6268660/batch-manifest.json` revision `1448`、SHA-256 `31e80772a4adc1cbbc09e46a73f1a84e7291475f3060aed2e9f9710755da20ba`。Review Queue 是 revision `1447` 的 review projection，Batch Report 是 revision `1437` 的 execution/validation projection；二者不是新的 lifecycle authority。
+
+当前最终 accounting：
+
+| 维度 | 数量 |
+|---|---:|
+| total / runnable / skipped | 434 / 379 / 55 |
+| known_unsupported / source_unavailable | 54 / 1 |
+| execution_succeeded / execution_failed / execution_pending | 287 / 92 / 0 |
+| validation_passed / validation_failed / validation_not_run | 276 / 11 / 92 |
+| review_approved / review_rejected / review_pending | 6 / 4 / 266 |
+| approval_eligible / approval_blocked | 258 / 176 |
+| evidence_bound / evidence_stale | 10 / 0 |
+| released / not_released | 3 / 431 |
+| published / not_published | 0 / 434 |
+
+短 Release-readiness Review 结论：针对冻结 v0.4 acceptance criteria，未发现 P0/P1 correctness、data safety、promotion gate bypass 或 unrecoverable-state blocker。Service Bus icon tick 提取缺失、Time Series Insights `sum_title` omission 和 Non-Core failure clusters 记录为 v0.4.1 或后续候选问题，不重新打开 v0.4 scope。
 
 ### 12.1 Acceptance Report
 
