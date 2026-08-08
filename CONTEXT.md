@@ -24,6 +24,14 @@ _Avoid_: Product Key, filename
 An unmodified HTML page captured from the production site for a specific language. Once frozen into a Batch Run, it is that run's authoritative content baseline.
 _Avoid_: Source page, normalized HTML
 
+**Reconstruction Basis（重建依据）**:
+The reviewed and versioned combination of a frozen Source Snapshot, Product Definition, content-ownership configuration, route mapping, state rules, and allowed transformations that defines what the project reconstructs. A Live Source Page or unavailable legacy code cannot silently override it.
+_Avoid_: Truth, Canonical Reconstruction Truth, live-page oracle
+
+**Allowed Reconstruction Transformation（允许的重建转换）**:
+A reviewed rule that permits a source representation to change in the Business Payload without changing the intended business content, such as mapping a historical source link to its CMS route. It is part of the Reconstruction Basis and is not generic normalization or silent cleanup.
+_Avoid_: Normalization rule, best-effort rewrite, extractor cleanup
+
 **Live Source Page**:
 The mutable page currently served by an Azure China production URL. Its controlled rendering is non-authoritative current interaction reference, not the content authority for an existing Batch Run or evidence of source drift by itself.
 _Avoid_: Source Snapshot, validation baseline
@@ -97,8 +105,24 @@ The immutable result of applying one Content Sampling Profile to one Batch Item 
 _Avoid_: Content Sampling Profile, mutable draw, Input Manifest scope
 
 **Sampled State Content Consistency**:
-The Machine Validation judgment that all Reachable Selection States satisfy the CMS structural contract and that every state in the frozen Batch Item Sampling Plan preserves the frozen Source's complete displayed content in the persisted Business Payload. It makes no claim about unselected state content or Commercial Price Accuracy.
-_Avoid_: Pricing Fact Fidelity, full-state content fidelity, random spot check
+The Machine Validation judgment that all Reachable Selection States satisfy the CMS structural contract and that every state in the frozen Batch Item Sampling Plan is consistent with a replay of the production extraction strategy. In v0.4 it is a Strategy Replay Check, not an Independent Source Content Check, and it makes no claim about unselected state content or Commercial Price Accuracy.
+_Avoid_: Pricing Fact Fidelity, independent content proof, full-state content fidelity, random spot check
+
+**Strategy Replay Check（策略重放检查）**:
+The machine judgment that the production extraction strategy reproduces the persisted Business Payload from the same frozen inputs and receives equivalent runtime inputs on both paths. It proves repeatability and path parity, not that the strategy selected the correct source fragment.
+_Avoid_: Independent Source Content Check, final content correctness, fidelity proof
+
+**Independent Source Content Check（独立源内容核对）**:
+The machine judgment that a source fragment located from the Reconstruction Basis without production strategy selection or content assembly matches the corresponding persisted Business Payload fragment. It does not decide whether the Reconstruction Basis reflects business intent or whether CSS, JavaScript, CMS templates, or final rendering preserve meaning.
+_Avoid_: Oracle, second extractor, human approval, final content correctness
+
+**Independent Content Check Exploration（独立内容核对探索）**:
+A non-production decision stage that uses representative frozen pages to determine whether an Independent Source Content Check is feasible and what explicit Reconstruction Basis it requires. Its outputs are design inputs, never Machine Validation, Review, Release, or publication evidence.
+_Avoid_: Production validation lane, capability promotion, release evidence
+
+**Structure Problem Group（同类结构问题组）**:
+A set of language-specific Batch Items that share source layout, state shape, content-ownership conditions, and a failure pattern. Membership organizes investigation but does not prove one shared root cause until the items are examined.
+_Avoid_: Product list, same error code alone, product-name exception set
 
 **Structured Content Group Name**:
 The localized CMS import key formed by joining a reachable state's same-language Localized Source Display Labels as `region - software - category`, omitting only dimensions absent from that state path. The exact ` - ` delimiter is structural, so a segment containing it is ambiguous and invalid.
@@ -129,11 +153,11 @@ A Source Quality Finding raised when correctly captured `zh-cn` and `en-us` Sour
 _Avoid_: Localization difference, Input Language Mapping Error, extraction mismatch
 
 **Complex Pricing Table**:
-A pricing table whose source uses merged cells, multi-level headers, or another layout that makes pricing context visually dependent. Step 5 may require recorded visual verification under a frozen Rendering Profile in addition to Machine Validation.
+A pricing table whose source uses merged cells, multi-level headers, or another layout that makes pricing context visually dependent. A future explicitly activated review profile may require recorded visual verification in addition to Machine Validation.
 _Avoid_: Machine-validation exemption, large table
 
 **Complex Table Visual Review**:
-A recorded Step 5 human comparison of the frozen source rendering and Business Payload rendering for a Complex Pricing Table under a frozen Rendering Profile. When enabled by the Batch Run's Validation Profile it is an Approval Blocker, and it can never override Machine Validation failure.
+A deferred human comparison of the frozen source rendering and Business Payload rendering for a Complex Pricing Table under a frozen Rendering Profile. It becomes an Approval Blocker only if a future Validation Profile explicitly enables it, and it can never override Machine Validation failure.
 _Avoid_: Machine Validation, informal spot check, failure waiver
 
 **Manual Content Inspection（人工内容检查）**:
@@ -145,8 +169,8 @@ The categorical identity relationship between a Manual Content Inspection and th
 _Avoid_: Review status, validation verdict, latest evidence
 
 **Step 5 Complex Table Review Scope**:
-The quality-governance boundary that activates complete Complex Table Visual Review through a new Validation Profile and proves the chain with bilingual `cloud-services` Core fixtures. It deepens Step 4 without retroactively changing older Batch Runs.
-_Avoid_: Step 4 minimum review, retrospective blocker, machine-pass approval
+The deferred quality-governance boundary originally proposed for activating complete Complex Table Visual Review through a new Validation Profile. It is not active in the accepted v0.4 or v0.5 scope and cannot retroactively change older Batch Runs.
+_Avoid_: Current approval gate, retrospective blocker, machine-pass approval
 
 **Visual Review Variant**:
 An equivalence class of Reachable Selection States whose source table, Business Payload table, header context, and rendering-profile fingerprints are all identical. Every state containing a Complex Pricing Table must belong to a reviewed variant, but one human comparison may cover all states in the same variant.

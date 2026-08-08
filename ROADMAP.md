@@ -120,9 +120,16 @@ v1.0 中需要清晰区分：
 | v0.2 | 事实与契约收口 | 产品全集、CMS 契约和状态边界统一 |
 | v0.3 | 批次工作流 | 一个入口完成标准化、解析、验证和报告 |
 | v0.4 | 可信、可审核、可发布的最小完整版本 | 全状态结构验证、可复现抽样内容验证、Finding 分级、Dashboard 审核、不可变 Release 和可信回归基线 |
-| v0.5 | 暂定候选：审核治理或覆盖率提升 | 主题、顺序和范围必须通过 Post-v0.4 Roadmap Re-baseline Gate 冻结；当前优先假设是先提高真实产品覆盖率 |
-| v0.6 | 暂定候选：覆盖率或必要治理的后续阶段 | 承接 re-baseline 后未进入 v0.5 的高价值工作，不自动继承旧路线图承诺 |
-| v0.7 | 暂定候选：稳定性与性能 | 以真实超限输入和运行数据证明需求后，再建设正交 streaming Processing Mode、并发和恢复优化 |
+| v0.4.1 | 已知缺陷修复与新基线 | 修复 SLA route map 路径不一致、错误分类、日志与文档问题，冻结新的 accepted Batch |
+| v0.5.0 | 独立内容核对探索 | 用四类真实 Frozen HTML 判断独立源内容定位是否可行；只形成设计依据，不增加生产能力 |
+| v0.5.1 | 重建依据与证据规则 | 根据探索结果定义依据版本、历史证据语义、规范化版本和两类机器检查边界 |
+| v0.5.2 | 单产品生产闭环 | 以 `api-management` 跑通独立源内容核对 |
+| v0.5.3 | 四类核心页面覆盖 | Core 8 产生策略重放与独立核对两类结论，Workbench 分开显示 |
+| v0.5.4 | C2 同类结构问题 | 先归因和必要拆分，再修复适用的 software target 问题 |
+| v0.5.5 | C1 简单页正文边界 | 为 SimpleStatic 建立可证明的正文边界 |
+| v0.5.6 | C9 扩展与 v0.5 收口 | 扩展 RegionFilter/Complex 边界，拆分 C4，冻结 v0.5 基线 |
+| v0.6 | 第二批结构问题与 CMS 暂存检查 | 推进 C3–C8，并验证 Release 在 staging CMS 往返后的结构化内容一致性 |
+| v0.7 | 长尾与生产化 | 只在真实证据支持时建设 streaming、真实发布和长尾支持 |
 | v0.8 | 架构清理 | 删除 stale 代码，收缩 CLI、依赖和重复职责 |
 | v0.9 | 发布候选 | 全量演练、缺陷收敛、文档重建和发布冻结 |
 | v1.0 | 稳定版 | 可重复、可验证、可审核、可安全发布 |
@@ -486,176 +493,90 @@ Review 至少使用：
 
 - `reports/post-v0.4/v0.4-post-implementation-review.md`：交付能力、证据、正确性、运营、测试、架构和文档发现；
 - `reports/post-v0.4/roadmap-rebaseline.md`：按真实问题证据、价值、成本和风险降低评估候选工作，并明确 v0.5–v0.7 的新安排；
-- 同步更新后的 `ROADMAP.md`、对应 ADR、v0.5 Spec 和 execution plan。
+- 同步更新后的 `ROADMAP.md` 和项目词汇表；详细 execution plan 只为紧接着的阶段编写，v0.5 的正式 ADR 和 Evidence Schema 必须等待 v0.5.0 真实 HTML 探索结果。
 
 `reports/post-v0.4/` 是基线冻结后的 append-only 项目评审输出，不属于已经冻结的 `reports/v0.4/acceptance-status.*` 或 v0.4.0 acceptance baseline。
 
-当前工作假设是：
+该门禁已于 **2026-08-08** 获人工接受。权威结论见：
+
+- `reports/post-v0.4/v0.4-post-implementation-review.md`；
+- `reports/post-v0.4/roadmap-rebaseline.md`。
+
+接受后的顺序是：v0.4.1 先修复已知问题并冻结新基线；v0.5.0 用真实 Frozen HTML 探索独立内容核对；v0.5.1–v0.5.3 再定义并建设正式能力；v0.5.4–v0.5.6 按同类结构问题组扩大覆盖。Report 2.0、正式 Disposition、复杂视觉审核和 Dashboard 多用户化不进入 v0.5。
+
+### v0.4.1：修复已知问题并建立新基线
+
+不修改 v0.4.0 tag、原验收批次或 `reports/v0.4/`。修复 SupportArticle route map 路径不一致和未分类异常，收敛日志，补第一批规范化算法测试，重写 README 与长期操作文档。随后运行新 Batch，重新裁决 11 个 SLA 单项并冻结 accepted v0.4.1 Batch，作为整个 v0.5 系列的防回退基线。
+
+测试验收使用明确口径：收集数不少于原 833 项加新增测试；意外失败为 0；既有环境相关 skip 集合不扩大；新增测试全部通过。
+
+### v0.5.0：独立内容核对探索
+
+用 `api-management`、`time-series-insights`、`service-bus` 和 `sla-sql-data` 的真实 Frozen HTML，验证能否在不调用生产 Strategy 的情况下定位重建依据指定的源片段并与 v0.4.1 持久化 Payload 比较。
+
+- 原型固定在 `experiments/v0.5.0-independent-fidelity/`，不得进入 `src/`、生产 Pipeline 或正式 CLI；
+- 输出固定在受禁止上传规则保护的 `output/experiments/v0.5.0-independent-fidelity/`；
+- 不修改 Frozen Source、Product Definition、`soft-category.json` 或正式 Evidence Schema；
+- route map 数据可以共享，但允许转换的执行代码与生产改写路径保持独立；
+- 探索必须允许“继续”“补充明确依据后继续”或“缩小机器核对范围”三种结论。
+
+本阶段只生成探索报告、产品矩阵、可丢弃原型、错误注入结果和设计建议，不生成正式机器结论、Review 或 Release 证据。
+
+### v0.5.1：定义重建依据和证据规则
+
+根据 v0.5.0 结果定义：重建依据组成和版本、SHA 与 Batch 绑定、变更记录、历史证据的当前使用资格、规范化算法版本、策略重放检查与独立源内容核对的输入输出和状态。旧证据对旧依据仍是合法历史记录，但不能用于当前依据下的新 Review 或 Release；不得修改或删除历史证据。
+
+本阶段不实现完整生产核对器，不修改抽取策略，不修复产品结构问题。
+
+### v0.5.2：用一个产品跑通生产闭环
+
+以 `api-management` 为首个生产样例，独立定位区域源内容、执行 `soft-category` 保留/排除、与持久化 `contentGroups[].content` 比较，并分别保存策略重放与独立核对结论。至少有一个受控错误证明同实现重放可能一致而独立核对会报警。
+
+### v0.5.3：覆盖四类核心页面
+
+将独立核对扩展到 Core 8 / SimpleStatic、RegionFilter、ComplexContent、SupportArticle；Workbench 分开显示两类机器结论、源片段和产物片段；提供最小单项说明。人工继续负责重建依据的业务意图、CSS/JavaScript 语义、CMS 可移植性和最终批准。
+
+### v0.5.4：处理 C2 software target 问题组
+
+先确认 15 个单项是否共享根因，必要时拆分 C2a/C2b；只修复共享 detector、reachability 或状态对应逻辑，禁止产品名硬编码。成功标准是安全恢复适用单项并明确拆分或记录其余限制，不以固定净增数字推动放宽保守检查。
+
+### v0.5.5：处理 C1 简单页正文边界
+
+为 SimpleStatic 建立可证明的正文边界；无法证明时继续阻断。使用真实样例测试边界过宽、过窄和误收相邻组件，并完成问题组 Batch、双语代表人工审核和完整 Batch 防回退。
+
+### v0.5.6：扩展 C9 并完成 v0.5 收口
+
+将正文边界能力扩展到 RegionFilter/Complex，但不预设与 C1 共用同一实现；检查 page-global 与 state-specific 内容无重复、漏失或错误归属。C4 在本阶段只归因和拆分，实际修复进入 v0.6。最终以 accepted v0.4.1 Batch 为基线运行完整 Batch，冻结 v0.5 acceptance Batch 和同类结构问题完成记录。
+
+支持级别首先属于单个 `language × product/resource` Batch Item：L1 已路由、L2 已提取、L3a 策略重放一致、L3b 独立核对通过、L4 人工批准、L5 进入 sealed Release、L6 CMS staging 往返通过。产品状态从语言单项汇总；问题组完成状态单独记录。L3a/L3b 都不能简写成“内容最终正确”。
+
+### v0.6：第二批结构问题与 CMS 暂存环境往返检查
+
+处理 C3、C4 已拆分子组、C5/C7/C8；C6 按重建依据变更流程处理。对至少 3 个进入 sealed Release 的代表单项执行 staging CMS import → export，并与 Release Payload 做语义比较。该往返是生产发布前最后一道**结构化内容检查**，不证明模板、CSS glyph、JavaScript 交互、最终渲染或真实 publish 工作流正确。
+
+覆盖率使用 accepted Planning Baseline 中经审核保留的 runnable 单项作为固定分母；分母变化必须单独审核和记录：
 
 ```text
-真实产品覆盖率提升
-> 必要的轻量审核效率优化
-> 报告与 Finding 治理深化
-> 复杂视觉审核平台
+提取成功率 = execution_succeeded / retained_runnable_items
+机器通过率 = validation_passed / retained_runnable_items
 ```
 
-如果全量证据表明主要瓶颈位于 extractor、state mapping 或 content ownership，应把当前 v0.6 的覆盖率工作前移到 v0.5；如果大量 machine-pass item 的人工审核才是主要瓶颈，再保留或缩小审核治理主题。Report 2.0、正式 Disposition 和 Complex Visual Review 只有在真实证据证明现有流程不足时才能进入已承诺范围。
+候选最低目标是提取成功率 ≥95%、机器通过率 ≥90%，且每个已处理的同类结构问题组都有人工批准样例。不得通过删除单项或改成 `known_unsupported` 改善数字。
 
-### v0.5（暂定候选）：深化 Dashboard 审核与质量治理
+### v0.7：长尾与生产化（按证据启动）
 
-> 本节是进入 re-baseline 的候选能力清单，不是已经冻结的 v0.5 承诺。Post-v0.4 Review 可以缩小、换序或取消本节；当前优先假设是覆盖率提升可能前移。
-
-#### 目标
-
-若 Post-v0.4 Review 证明人工审核而非解析覆盖是主要瓶颈，则在 v0.4 已可使用的逐 Batch Item Dashboard、基础增长视图和不可变 Release 之上，只增加有真实运营证据支持的任务分派、cohort/历史分析、重复审核或必要治理能力。该候选不扩大 Machine Validation 的抽样保证，也不能用人工判断覆盖 Machine Validation failure；Report 2.0、Disposition 和视觉门禁均需单独证明价值，不能整包自动进入 v0.5。
-
-#### 对比对象
-
-采用冻结证据三方主对比、线上页面非权威辅助参考：
-
-1. `data/current_prod_html` 中的原始生产快照；
-2. `data/prod-html` 中的标准化输入；
-3. JSON 渲染后的本地预览；
-4. 当前生产 URL，只作为 Rendered Interaction Reference，不能裁决冻结批次内容。
-
-`data/current_prod_html` 与 `data/prod-html` 的 SHA-256 必须一致；它们不是两个可互相投票的内容版本。源侧视觉参照继续使用冻结 Source Snapshot 片段的受控渲染。
-
-#### 策略核验清单
-
-##### SimpleStatic
-
-- 正文是否完整；
-- FAQ、SLA 是否遗漏或重复；
-- Banner 和产品描述是否正确；
-- 页面主体是否混入导航或 UI 元素。
-
-##### RegionFilter
-
-- 区域选项数量是否一致；
-- 每个区域的表格和价格是否正确；
-- 是否存在跨区域内容污染；
-- 默认区域和筛选器配置是否正确。
-
-##### Complex
-
-- 筛选器和 Tab 组合是否完整；
-- 内容映射是否对应正确组合；
-- 共享内容是否重复或丢失；
-- 是否出现组合缺失、错误合并或空内容。
-
-##### SupportArticle
-
-- 标题、slug、日期和 Meta 是否正确；
-- `pageType` 是否为 `SLA`、`LEGAL`、`ICP`、`PSR` 之一，并与 `SupportArticles/{articleType}` 目录映射一致；
-- `articleDescription` 边界是否正确；
-- `mainContent` 是否完整；
-- 是否移除反馈组件、选择器和其他 UI 元素。
-
-#### 审核记录
-
-每次人工审核至少保存：
-
-- `batch_id`；
-- 产品和语言；
-- 输入及输出哈希；
-- 审核结果：`approved`、`rejected`、`pending`；
-- 问题分类；
-- 审核时间；
-- 审核人；
-- 备注；
-- 当前 Validation Evidence、Content Sampling Profile、Batch Item Sampling Plan，以及 re-baseline 后确实启用的任何新增证据引用；
-- 审核前后的 `approval_blockers[]`；
-- 是否生成 Baseline Candidate；审核记录本身不能直接覆盖 Golden 或事实基线。
-
-#### 验收标准
-
-- 能从 Dashboard 和批次报告直接定位、分派和追踪待审核产品。
-- 审核人员可以在 Dashboard 工作区中快速完成冻结 Source 与 Payload 对比。
-- 通用审核流程可以处理目标支持集合中所有 Machine-pass Batch Items，并对未完成项保留明确 `pending` 状态及 blocker；4 种策略均至少有一组已批准实证。
-- 人工拒绝结果不能被发布。
-- 未通过 Machine Validation 或仍有 Approval Blocker 的结果不能被人工强制批准。
-- 已批准结果可以进入不可变 Release；若同时需要更新回归基线，仍必须生成独立 Baseline Candidate 并另行审核。
-- UI、报告和状态机明确区分 Machine-pass、Review Queue membership、Approval Eligibility、最终 Approval、Release membership 与 Publication。
-
-### v0.6（暂定候选）：提高产品解析覆盖率
-
-> 本节是当前优先级最高的后续候选。Post-v0.4 Review 若证明主要瓶颈是实际解析覆盖，应将其整体或按高价值结构簇前移到 v0.5。
+> 本节中的每项能力都必须由 v0.5–v0.6 的真实运行数据单独证明需要；不得仅因旧路线图顺序自动进入实施。
 
 #### 目标
 
-修复 v0.4 全状态结构检查、抽样内容比较和人工审核所暴露的失败结构簇，提高正式支持集合的 Machine Validation pass、Approval Eligibility 和实际批准覆盖率。
-
-#### 覆盖率定义
-
-项目不再只报告一个含糊的“支持产品数”，而应分别报告：
-
-| 指标 | 定义 |
-|---|---|
-| 配置覆盖率 | 产品具有合法、可加载配置 |
-| 输入覆盖率 | 对应语言的标准化 HTML 存在 |
-| 路由覆盖率 | 页面能够选择明确且已实现的策略 |
-| 提取覆盖率 | 能够生成目标 JSON |
-| 可靠裁决覆盖率 | runnable 项具有完整证据和明确 Machine Validation pass/fail |
-| 验证通过率 | 通过 CMS Contract、全状态结构和适用抽样内容门禁 |
-| 批准资格率 | Machine-pass 且 `approval_blockers[]` 已清空 |
-| 人工批准率 | 已经完成必要人工核验并批准 |
-| 发布覆盖率 | 当前批次中允许并已完成正式发布 |
-
-#### 失败分类
-
-```text
-配置错误
-复制映射错误
-输入缺失
-编码或 HTML 解析错误
-策略误判
-通用内容定位失败
-区域内容映射失败
-复杂筛选组合失败
-Schema 验证失败
-全状态结构契约失败
-抽样内容不一致或无法评估
-内容完整性失败
-approval-blocking 或 unknown Source Finding
-复杂表格视觉审核待完成或失败（仅在 re-baseline 已明确启用该门禁时适用）
-人工审核失败
-```
-
-#### 提升原则
-
-- 优先按页面结构簇修复，不按产品逐个堆叠硬编码。
-- 产品专用配置只能处理真实业务差异，不能掩盖通用解析缺陷。
-- 新增支持产品前必须补充自动化样例。
-- 通过双语证据校准的产品只能增量晋升到 Expanded Strategy Test Matrix，不能临时移除以隐藏回归。
-- `supported` 只表示 Product Definition 已进入正式系统能力范围；它必须与当前 Batch 的提取、机器通过、人工批准和发布覆盖率分别统计，不能暗示这些结果已经完成。
-- Experimental Payload Candidate 不计入提取、验证、支持、批准或发布覆盖率。
-
-#### 验收标准
-
-- 所有已声明支持的产品均能加载配置并定位输入。
-- 每类失败都有明确错误代码和诊断信息。
-- 每次批次自动生成产品 × 语言 × 策略的覆盖率矩阵。
-- Reliable Adjudication Coverage 继续保持 100%；v0.6 提升的是 pass 与 approval coverage，而不是通过减少实际裁决来改善数字。
-- 对计划纳入 v1.0 的产品集合：
-  - 提取成功率不低于 95%；
-  - 机器验证通过率不低于 90%；
-  - 所有页面结构簇均有人工批准样例。
-- 未达到正式能力门槛的 Product Definition 只能通过独立、可审计的能力决策标记为 `known_unsupported`；Batch Item 的 `failed` 或 `non_runnable` 是另一个运行结果维度，必须分别报告，不得混为 capability status，也不得用实验产物替代支持资格。
-
-上述百分比是最低质量门槛；如果后续基线表明目标过低，应提高而不是降低。
-
-### v0.7（暂定候选）：稳定性、性能与大文件处理
-
-> 本节只有在最终全量运行证明存在真实的大文件、资源或恢复瓶颈后才冻结范围；不得仅因旧路线图顺序自动进入实施。
-
-#### 目标
-
-使完整批次可以稳定处理当前产品规模，并且不会通过静默降级隐藏错误。
+评估长尾产品的正式支持条件，完成必要的真实 CMS 发布能力，并只在真实超限输入出现时建设 streaming Processing Mode。
 
 #### 主要工作
 
-- 实现与 `simple_static`、`region_filter`、`complex`、`support_article` 语义策略正交的 streaming Processing Mode，不新增 `large_file` 内容策略。
-- 扩展 InMemory Capability Profile 为可版本化的 Processing Capability Profile，并保持超过能力边界时 fail closed；v0.4 已删除的 `LARGE_FILE` 语义选择和 Simple fallback 不得恢复。
+- 逐项评估剩余结构问题和 54 个 `known_unsupported` 项，不把旧实验产物直接升级为正式支持。
+- 建设真实 CMS upload/publish、Publication Receipt 和回滚流程；v0.6 staging 往返证据不能替代生产发布证据。
+- 只有真实输入超过已证明的 in-memory 能力边界时，才实现与四类语义策略正交的 streaming Processing Mode；不新增 `large_file` 内容策略。
+- streaming 启动时，扩展 InMemory Capability Profile 为可版本化的 Processing Capability Profile，并保持超过能力边界时 fail closed；v0.4 已删除的 `LARGE_FILE` 语义选择和 Simple fallback 不得恢复。
 - 对同一个冻结输入、语义策略和 Validation Profile，证明 streaming 与 in-memory 生成 canonical-equivalent Business Payload、Reachability Relation、selected state list、sample evidence 和验证结论。
 - 避免策略分析和正式提取重复读取、重复解析同一 HTML。
 - 复用批次级 `ProductManager`、配置缓存和解析上下文。
@@ -670,8 +591,9 @@ approval-blocking 或 unknown Source Finding
 
 #### 验收标准
 
-- 超过 in-memory 能力边界时不会静默改变语义策略；符合 streaming profile 的输入可显式使用 streaming mode。
-- 至少一个超过 in-memory ceiling 的真实双语输入完成正式 streaming 资格化，并与重叠 in-memory fixtures 证明输出和验证结论等价。
+- 每个长尾项都有明确的继续阻断、正式支持或延期决定及证据。
+- 真实 CMS 发布具有可验证 receipt 和可执行回滚路径。
+- 若 streaming 未被真实超限输入触发，本版本可以不实现它；若触发，则超过 in-memory 能力边界时不会静默改变语义策略，并至少有一个真实双语输入完成正式资格化和输出等价证明。
 - 完整批次的资源使用有可重复基线。
 - 相同输入和代码版本产生确定性等价输出。
 - 中断后的批次可以恢复，不会丢失已完成结果。
@@ -894,8 +816,11 @@ v1.0 不表示所有 Azure 页面都已经被完美解析，而表示项目对�
 → v0.4.0 基线冻结
 → Post-Implementation Review
 → Roadmap Re-baseline
-→ 覆盖率提升或经证据证明的必要审核治理
-→ 性能与稳定性
+→ v0.4.1 已知问题修复与新基线
+→ v0.5.0 真实 HTML 独立内容核对探索
+→ v0.5.1–v0.5.3 独立核对正式能力
+→ v0.5.4–v0.6 按同类结构问题扩大覆盖
+→ 经真实证据证明必要的 CMS、性能与稳定性工作
 → stale 代码清理
 → 文档重建
 → v1.0 发布
