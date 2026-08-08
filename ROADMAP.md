@@ -120,7 +120,7 @@ v1.0 中需要清晰区分：
 | v0.2 | 事实与契约收口 | 产品全集、CMS 契约和状态边界统一 |
 | v0.3 | 批次工作流 | 一个入口完成标准化、解析、验证和报告 |
 | v0.4 | 可信、可审核、可发布的最小完整版本 | 全状态结构验证、可复现抽样内容验证、Finding 分级、Dashboard 审核、不可变 Release 和可信回归基线 |
-| v0.4.1 | 已知缺陷修复与新基线 | 修复 SLA route map 路径不一致、错误分类、日志与文档问题，冻结新的 accepted Batch |
+| v0.4.1 | 已知缺陷修复与新基线 | 修复 SLA route map 路径不一致、已确认的桌面/移动默认项问题、错误分类、日志与文档问题，冻结新的 accepted Batch |
 | v0.5.0 | 独立内容核对探索 | 用四类真实 Frozen HTML 判断独立源内容定位是否可行；只形成设计依据，不增加生产能力 |
 | v0.5.1 | 重建依据与证据规则 | 根据探索结果定义依据版本、历史证据语义、规范化版本和两类机器检查边界 |
 | v0.5.2 | 单产品生产闭环 | 以 `api-management` 跑通独立源内容核对 |
@@ -365,7 +365,7 @@ v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管�
 - Contract Validation 与内容验证分别保留证据，但共同汇总为唯一 Machine Validation 结论；
 - FlexibleContent 与 SupportArticle 使用各自独立的 Local Machine Contract；删除旧字段验证和 `quality_score` 计算逻辑；
 - `filtersJsonConfig` 与 `filterCriteriaJson` 除了是合法 JSON 字符串，还必须满足完整嵌套语义契约，并采用 deterministic canonical serialization；`matchValues` 继续按单个字符串验证；
-- Filter domain 在每个适用 parent scope 内必须非空、机器身份无歧义且完全覆盖；Default CMS State 沿冻结源证明的默认条件路径形成。v0.4 以每个 scope 的 desktop interaction control 作为本语言 option label 与顺序事实源：branch default 移至该 scope 首位，其余 sibling 保持 desktop 相对顺序；对应 mobile control 必须具有相同 scoped machine set 与默认值，但不决定 v0.4 label 或顺序。Mobile label 漂移形成 Source Quality Finding，机器集合或默认值漂移仍阻断；
+- Filter domain 在每个适用 parent scope 内必须非空、机器身份无歧义且完全覆盖；Default CMS State 沿冻结源证明的默认条件路径形成。v0.4 以每个 scope 的 desktop interaction control 作为本语言 option label 与顺序事实源：branch default 移至该 scope 首位，其余 sibling 保持 desktop 相对顺序；对应 mobile control 必须具有相同 scoped machine set，但不决定默认项、label 或顺序。Mobile label 漂移形成 Source Quality Finding，机器集合漂移仍阻断；post-v0.4 按 ADR-0090 忽略移动端重复或冲突的默认标记，桌面默认项自身不明确时仍阻断；
 - CMS state space 是由冻结 Source Snapshot 与 Source Reachability Evidence 独立证明的有序 Reachability Relation。彼此独立的 domain 只在同一 scope 内形成笛卡尔积；software-specific Category 等 Conditional Filter Domain 只与其 parent branch 组合，禁止把 sibling options 合并后生成理论 cross-branch states，也禁止由待验证 Payload 自行声明完整性；
 - Business Payload 以一条 active `contentGroup` 对应一条 Reachability Relation row；CMS 导入以这些 groups 为状态与渲染真源，不会从 `filterDefinitions` option catalog 自行生成额外组合。`groupName` 必须按状态路径中同语言 Desktop Localized Source Display Label 以精确 ` - ` 连接为 `region - software - category`（例如 `zh-cn` 使用 `中国东部 2`，`en-us` 使用 `China North 3`），缺失维度只允许因该路径无此 filter 而省略；segment 自身包含该 delimiter、名称与 criteria 不一致或段数漂移均阻断；
 - 对任意产品，Category 中 label 为 `All`/`全部` 且声明 target panel 不存在的选项统一视为 Non-materialized Aggregate Tab：从 option catalog 与 Reachability Relation 省略，不合成、不输出 placeholder、不复制 sibling 价格；该 scope 的首个剩余 concrete Category 成为默认。其他 missing target 仍为阻断错误；
@@ -506,7 +506,7 @@ Review 至少使用：
 
 ### v0.4.1：修复已知问题并建立新基线
 
-不修改 v0.4.0 tag、原验收批次或 `reports/v0.4/`。修复 SupportArticle route map 路径不一致和未分类异常，收敛日志，补第一批规范化算法测试，重写 README 与长期操作文档。随后运行新 Batch，重新裁决 11 个 SLA 单项并冻结 accepted v0.4.1 Batch，作为整个 v0.5 系列的防回退基线。
+不修改 v0.4.0 tag、原验收批次或 `reports/v0.4/`。修复 SupportArticle route map 路径不一致和未分类异常，收敛日志，补第一批规范化算法测试，重写 README 与长期操作文档。对已确认不再维护的移动控件，只在桌面默认项唯一且显示一致时采用桌面默认项；移动端重复或冲突的默认标记不参与判断，也不单独产生警告，桌面版自身不明确时仍停止抽取。随后运行新 Batch，重新裁决 11 个 SLA 单项并冻结 accepted v0.4.1 Batch，作为整个 v0.5 系列的防回退基线。
 
 测试验收使用明确口径：收集数不少于原 833 项加新增测试；意外失败为 0；既有环境相关 skip 集合不扩大；新增测试全部通过。
 
@@ -521,6 +521,8 @@ Review 至少使用：
 - 探索必须允许“继续”“补充明确依据后继续”或“缩小机器核对范围”三种结论。
 
 本阶段只生成探索报告、产品矩阵、可丢弃原型、错误注入结果和设计建议，不生成正式机器结论、Review 或 Release 证据。
+
+2026-08-08 已完成一轮中文四产品预实验，结果见 `reports/post-v0.4/zh-cn-dom-payload-experiment.md`。它证明 19 个目标片段可以独立定位并与当前 payload 完全一致，也证明错状态内容可以被发现；但它尚未绑定 accepted v0.4.1 Batch，也未替代本节列出的完整代表样例。
 
 ### v0.5.1：定义重建依据和证据规则
 
@@ -546,7 +548,7 @@ Review 至少使用：
 
 ### v0.5.6：扩展 C9 并完成 v0.5 收口
 
-将正文边界能力扩展到 RegionFilter/Complex，但不预设与 C1 共用同一实现；检查 page-global 与 state-specific 内容无重复、漏失或错误归属。C4 在本阶段只归因和拆分，实际修复进入 v0.6。最终以 accepted v0.4.1 Batch 为基线运行完整 Batch，冻结 v0.5 acceptance Batch 和同类结构问题完成记录。
+将正文边界能力扩展到 RegionFilter/Complex，但不预设与 C1 共用同一实现；检查 page-global 与 state-specific 内容无重复、漏失或错误归属。除 v0.4.1 已处理的“桌面默认项明确、移动版重复标记”情况外，C4 其余问题在本阶段只归因和拆分，实际修复进入 v0.6。最终以 accepted v0.4.1 Batch 为基线运行完整 Batch，冻结 v0.5 acceptance Batch 和同类结构问题完成记录。
 
 支持级别首先属于单个 `language × product/resource` Batch Item：L1 已路由、L2 已提取、L3a 策略重放一致、L3b 独立核对通过、L4 人工批准、L5 进入 sealed Release、L6 CMS staging 往返通过。产品状态从语言单项汇总；问题组完成状态单独记录。L3a/L3b 都不能简写成“内容最终正确”。
 

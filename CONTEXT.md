@@ -52,6 +52,10 @@ _Avoid_: Same URL, latest page, capture time alone
 Frozen source controls, configuration identities, and any exact Snapshot-bound Interaction Evidence used to prove the ordered states a user could select. It establishes the Reachability Relation without assigning every price-bearing fragment or requiring an Applicability Map.
 _Avoid_: Payload-declared states, theoretical Cartesian product, current live page alone
 
+**Desktop-authoritative State（桌面版权威状态）**:
+When a Source Snapshot contains maintained desktop controls and stale responsive alternatives for the same interaction, one unambiguous desktop selection defines the default state. Responsive alternatives may corroborate the option domain but cannot override that desktop default. Conflicting or duplicate mobile default markers are ignored without becoming a Source Quality Finding; ambiguity in the desktop control still blocks extraction.
+_Avoid_: Mobile-default precedence, silently chosen responsive default, product-specific exception
+
 **Reachable Selection State**:
 A language-specific tuple of filter and tab values proven selectable in the source interaction model for a specific frozen Source Snapshot through explicit source markers or Snapshot-bound Interaction Evidence. A theoretical combination, or a state observed only on an unbound current Live Source Page, is not reachable for that snapshot.
 _Avoid_: Cartesian combination, default filter
@@ -141,7 +145,7 @@ The unique CMS Reachable State reached by following the source-proven default th
 _Avoid_: First content group, first option of a flattened union, inferred fallback
 
 **v0.4 Authoritative Filter Order**:
-The filter-option order established by the desktop interaction control in a frozen Source Snapshot and, for a Conditional Filter Domain, within its exact parent scope: the proven branch default is placed first and every other sibling retains its relative desktop order. The corresponding mobile control must expose the same scoped machine set and default but does not determine option order in v0.4.
+The filter-option order established by the desktop interaction control in a frozen Source Snapshot and, for a Conditional Filter Domain, within its exact parent scope: the proven branch default is placed first and every other sibling retains its relative desktop order. The corresponding mobile control must expose the same scoped machine set but does not determine the default, option order, or labels.
 _Avoid_: Mobile select order, alphabetical order, cyclic rotation
 
 **Bilingual Filter Identity**:

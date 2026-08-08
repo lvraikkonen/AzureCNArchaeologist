@@ -1218,6 +1218,11 @@ class SourceReachabilityResolver:
         selected_item_label = (
             self._text(selected_item) if selected_item is not None else ""
         )
+        summary_matches = [
+            href
+            for href, label in desktop_labels.items()
+            if selected_item_label and label == selected_item_label
+        ]
         desktop_default = self._declared_default(
             filter_key,
             desktop_defaults,
@@ -1225,12 +1230,47 @@ class SourceReachabilityResolver:
             desktop_labels,
             selected_item_label,
         )
+        desktop_is_unambiguous = (
+            desktop_default is not None
+            and (
+                not selected_item_label
+                or summary_matches == [desktop_default]
+            )
+        )
+        if desktop_default is None:
+            self._fail(
+                "missing_filter_default",
+                f"{filter_key} desktop control has no unambiguous default",
+            )
         mobile_defaults = [
             row[0] for row in mobile_rows if row[3]
         ]
-        mobile_default = self._single_default(
-            filter_key, "mobile", mobile_defaults
-        )
+        unique_mobile_defaults = list(dict.fromkeys(mobile_defaults))
+        if len(unique_mobile_defaults) > 1:
+            if not desktop_is_unambiguous:
+                self._single_default(
+                    filter_key, "mobile", mobile_defaults
+                )
+            # Mobile default markers are outside the maintained desktop
+            # contract.  Domain and target checks above still apply, but stale
+            # mobile defaults cannot override an unambiguous desktop default.
+            mobile_default = None
+        else:
+            mobile_default = self._single_default(
+                filter_key, "mobile", mobile_defaults
+            )
+            if (
+                mobile_default is not None
+                and mobile_default != desktop_default
+            ):
+                if not desktop_is_unambiguous:
+                    self._reconcile_default(
+                        filter_key,
+                        desktop_default,
+                        mobile_default,
+                        desktop_hrefs,
+                    )
+                mobile_default = None
         default_href = self._reconcile_default(
             filter_key,
             desktop_default,
@@ -1239,11 +1279,6 @@ class SourceReachabilityResolver:
         )
 
         if selected_item_label:
-            summary_matches = [
-                href
-                for href, label in desktop_labels.items()
-                if label == selected_item_label
-            ]
             if len(summary_matches) == 1 and summary_matches[0] != default_href:
                 findings.append(SourceReachabilityFinding(
                     code="display_summary_default_drift",

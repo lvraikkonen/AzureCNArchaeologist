@@ -27,6 +27,7 @@ def real_reachability() -> dict[tuple[str, str], SourceReachability]:
         (product, language): resolver.resolve(loader.load(product, language))
         for product in (
             "api-management",
+            "app-service",
             "sql-database",
             "virtual-machine-scale-sets",
             "machine-learning",
@@ -77,10 +78,18 @@ def _dropdown(
     default_href: str,
     label: str,
     mobile_options: list[tuple[str, str, str]] | None = None,
+    mobile_default_hrefs: set[str] | None = None,
+    desktop_default_hrefs: set[str] | None = None,
+    selected_item_label: str | None = None,
 ) -> str:
+    active_hrefs = (
+        desktop_default_hrefs
+        if desktop_default_hrefs is not None
+        else {default_href}
+    )
     links = "".join(
         (
-            f'<li class="{"active" if href == default_href else ""}">'
+            f'<li class="{"active" if href in active_hrefs else ""}">'
             f'<a data-href="{href}">{text}</a></li>'
         )
         for _, text, href in options
@@ -90,16 +99,27 @@ def _dropdown(
             value,
             text,
             href,
-            selected=href == default_href,
+            selected=href in (
+                mobile_default_hrefs
+                if mobile_default_hrefs is not None
+                else {default_href}
+            ),
         )
         for value, text, href in (mobile_options or options)
+    )
+    display_label = (
+        selected_item_label
+        if selected_item_label is not None
+        else next(
+            text for _, text, href in options if href == default_href
+        )
     )
     return f"""
     <div class="dropdown-container {css_class}">
       <label>{label}:</label>
       <div class="dropdown-box os-tab-nav">
         <span class="selected-item">
-          {next(text for _, text, href in options if href == default_href)}
+          {display_label}
         </span>
         <ol class="tab-items">{links}</ol>
       </div>
@@ -252,6 +272,21 @@ def test_api_management_uses_same_language_desktop_display_labels(
     }
 
 
+def test_app_service_zh_uses_unambiguous_desktop_default(
+    real_reachability: dict[tuple[str, str], SourceReachability],
+) -> None:
+    result = real_reachability[("app-service", "zh-cn")]
+
+    assert len(result.ordered_states) == 12
+    assert result.default_state == CmsState((
+        ("region", "east-china3"),
+        ("software", "App Windows"),
+    ))
+    assert [finding.code for finding in result.findings] == [
+        "responsive_filter_label_drift",
+    ]
+
+
 @pytest.mark.parametrize("language", ["zh-cn", "en-us"])
 def test_machine_learning_only_traverses_linux_panel(
     real_reachability: dict[tuple[str, str], SourceReachability],
@@ -287,6 +322,7 @@ def test_bilingual_machine_relations_match(
 ) -> None:
     for product in (
         "api-management",
+        "app-service",
         "sql-database",
         "virtual-machine-scale-sets",
         "machine-learning",
@@ -360,6 +396,118 @@ def test_region_only_source_uses_desktop_order(tmp_path: Path) -> None:
     assert [
         state.group_name for state in result.ordered_states
     ] == ["East", "West"]
+
+
+def test_unambiguous_desktop_default_ignores_stale_mobile_defaults(
+    tmp_path: Path,
+) -> None:
+    region = _dropdown(
+        "region-container",
+        "region-box",
+        [
+            ("west", "West", "#west"),
+            ("east", "East", "#east"),
+        ],
+        default_href="#east",
+        label="Region",
+        mobile_default_hrefs={"#west", "#east"},
+    )
+    html = (
+        '<div class="technical-azure-selector pricing-detail-tab">'
+        f"{region}</div>"
+    )
+
+    result = SourceReachabilityResolver().resolve(
+        _canonical(tmp_path, html)
+    )
+
+    assert result.default_state == CmsState((("region", "east"),))
+    assert result.findings == ()
+
+
+def test_unambiguous_desktop_default_ignores_different_mobile_default(
+    tmp_path: Path,
+) -> None:
+    region = _dropdown(
+        "region-container",
+        "region-box",
+        [
+            ("west", "West", "#west"),
+            ("east", "East", "#east"),
+        ],
+        default_href="#east",
+        label="Region",
+        mobile_default_hrefs={"#west"},
+    )
+    html = (
+        '<div class="technical-azure-selector pricing-detail-tab">'
+        f"{region}</div>"
+    )
+
+    result = SourceReachabilityResolver().resolve(
+        _canonical(tmp_path, html)
+    )
+
+    assert result.default_state == CmsState((("region", "east"),))
+    assert result.findings == ()
+
+
+def test_mobile_default_cannot_replace_missing_desktop_default(
+    tmp_path: Path,
+) -> None:
+    region = _dropdown(
+        "region-container",
+        "region-box",
+        [
+            ("west", "West", "#west"),
+            ("east", "East", "#east"),
+        ],
+        default_href="#east",
+        label="Region",
+        desktop_default_hrefs=set(),
+        selected_item_label="",
+    )
+    html = (
+        '<div class="technical-azure-selector pricing-detail-tab">'
+        f"{region}</div>"
+    )
+
+    with pytest.raises(SourceReachabilityError) as captured:
+        SourceReachabilityResolver().resolve(_canonical(tmp_path, html))
+
+    assert captured.value.code == "missing_filter_default"
+    assert str(captured.value) == (
+        "region desktop control has no unambiguous default"
+    )
+
+
+def test_multiple_mobile_defaults_still_fail_when_desktop_is_ambiguous(
+    tmp_path: Path,
+) -> None:
+    region = _dropdown(
+        "region-container",
+        "region-box",
+        [
+            ("west", "West", "#west"),
+            ("east", "East", "#east"),
+        ],
+        default_href="#east",
+        label="Region",
+        mobile_default_hrefs={"#west", "#east"},
+        desktop_default_hrefs={"#west", "#east"},
+    )
+    html = (
+        '<div class="technical-azure-selector pricing-detail-tab">'
+        f"{region}</div>"
+    )
+
+    with pytest.raises(SourceReachabilityError) as captured:
+        SourceReachabilityResolver().resolve(_canonical(tmp_path, html))
+
+    assert captured.value.code == "multiple_filter_defaults"
+    assert str(captured.value) == (
+        "region desktop control declares multiple defaults"
+    )
 
 
 def test_desktop_display_label_wins_over_mobile_label_drift(
