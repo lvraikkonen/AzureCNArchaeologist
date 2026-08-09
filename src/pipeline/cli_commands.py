@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from collections import Counter
-from contextlib import contextmanager
+from contextlib import contextmanager, redirect_stderr, redirect_stdout
 from pathlib import Path
 from typing import TYPE_CHECKING, Callable, Iterator, TextIO
 
@@ -82,6 +83,15 @@ def _quiet_pipeline_loguru() -> Iterator[None]:
             core.activation_none = activation_none
 
 
+@contextmanager
+def _quiet_pipeline_console() -> Iterator[None]:
+    """Discard legacy item-level stdout/stderr while a pipeline command runs."""
+
+    with open(os.devnull, "w", encoding="utf-8") as sink:
+        with redirect_stdout(sink), redirect_stderr(sink):
+            yield
+
+
 def _coordinator(
     args: argparse.Namespace,
     *,
@@ -154,7 +164,7 @@ def _print_outcome(outcome: "PipelineOutcome") -> None:
 def pipeline_run_command(args: argparse.Namespace) -> int:
     progress = _AggregateProgressPrinter()
     try:
-        with _quiet_pipeline_loguru():
+        with _quiet_pipeline_loguru(), _quiet_pipeline_console():
             outcome = _coordinator(
                 args,
                 progress_callback=progress,
@@ -178,7 +188,7 @@ def pipeline_run_command(args: argparse.Namespace) -> int:
 def pipeline_resume_command(args: argparse.Namespace) -> int:
     progress = _AggregateProgressPrinter()
     try:
-        with _quiet_pipeline_loguru():
+        with _quiet_pipeline_loguru(), _quiet_pipeline_console():
             outcome = _coordinator(
                 args,
                 progress_callback=progress,
@@ -196,7 +206,7 @@ def pipeline_resume_command(args: argparse.Namespace) -> int:
 def pipeline_validate_command(args: argparse.Namespace) -> int:
     progress = _AggregateProgressPrinter()
     try:
-        with _quiet_pipeline_loguru():
+        with _quiet_pipeline_loguru(), _quiet_pipeline_console():
             outcome = _coordinator(
                 args,
                 progress_callback=progress,

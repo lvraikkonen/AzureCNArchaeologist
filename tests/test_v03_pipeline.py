@@ -4,6 +4,7 @@ import argparse
 import io
 import json
 import shutil
+import sys
 import tempfile
 import unittest
 from collections import Counter
@@ -1475,6 +1476,8 @@ class PipelineCliTests(unittest.TestCase):
                 @staticmethod
                 def run(**unused: object) -> PipelineOutcome:
                     log_user_operation(None, "ITEM_LEVEL_INFO", {})
+                    print("ITEM_LEVEL_STDOUT")
+                    print("ITEM_LEVEL_STDERR", file=sys.stderr)
                     return outcome
 
             core = logger._core
@@ -1506,6 +1509,8 @@ class PipelineCliTests(unittest.TestCase):
             )
             self.assertNotIn("ITEM_LEVEL_INFO", captured_log.getvalue())
             console = stdout.getvalue()
+            self.assertNotIn("ITEM_LEVEL_STDOUT", console)
+            self.assertNotIn("ITEM_LEVEL_STDERR", stderr.getvalue())
             self.assertIn(
                 "stage=extract code=missing_cms_state_content count=1",
                 console,
