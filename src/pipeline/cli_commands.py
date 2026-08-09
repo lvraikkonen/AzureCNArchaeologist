@@ -5,8 +5,12 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections import Counter
+from contextlib import contextmanager
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, Iterator, TextIO
+
+from loguru import logger
 
 from src.review.contracts import REJECTION_REASONS, REVIEW_VERDICTS
 from src.review.service import (
@@ -32,10 +36,94 @@ def _parallel_jobs(value: str) -> int:
     return parsed
 
 
-def _coordinator(args: argparse.Namespace) -> "PipelineCoordinator":
+class _AggregateProgressPrinter:
+    """Print stage-level progress only when another ten-percent bucket closes."""
+
+    def __init__(self, stream: TextIO | None = None) -> None:
+        self.stream = stream or sys.stdout
+        self._last_bucket: dict[str, int] = {}
+
+    def __call__(self, stage: str, completed: int, total: int) -> None:
+        if total <= 0 or completed <= 0:
+            return
+        bounded_completed = min(completed, total)
+        bucket = min(10, bounded_completed * 10 // total)
+        if bounded_completed == total:
+            bucket = 10
+        if bucket <= self._last_bucket.get(stage, 0):
+            return
+        self._last_bucket[stage] = bucket
+        percent = min(100, round(bounded_completed * 100 / total))
+        print(
+            f"progress stage={stage} completed={bounded_completed}/{total} "
+            f"percent={percent}%",
+            file=self.stream,
+            flush=True,
+        )
+
+
+@contextmanager
+def _quiet_pipeline_loguru() -> Iterator[None]:
+    """Temporarily silence library item logs and restore Loguru activation."""
+
+    core = logger._core
+    with core.lock:
+        activation_list = list(core.activation_list)
+        enabled = dict(core.enabled)
+        activation_none = core.activation_none
+    logger.disable("src")
+    logger.disable("scripts")
+    try:
+        yield
+    finally:
+        with core.lock:
+            core.activation_list = activation_list
+            core.enabled = enabled
+            core.activation_none = activation_none
+
+
+def _coordinator(
+    args: argparse.Namespace,
+    *,
+    progress_callback: Callable[[str, int, int], None] | None = None,
+) -> "PipelineCoordinator":
     from src.pipeline.coordinator import PipelineCoordinator
 
-    return PipelineCoordinator(ROOT, args.runs_dir)
+    return PipelineCoordinator(
+        ROOT,
+        args.runs_dir,
+        progress_callback=progress_callback,
+    )
+
+
+def _failure_summary(outcome: "PipelineOutcome") -> Counter[tuple[str, str]] | None:
+    report_path = outcome.run_dir / "batch-report.json"
+    try:
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(report, dict) or not isinstance(report.get("items"), list):
+        return None
+    failures: Counter[tuple[str, str]] = Counter()
+    for item in report["items"]:
+        if not isinstance(item, dict):
+            continue
+        status = item.get("status")
+        if not isinstance(status, dict) or not (
+            status.get("execution") == "failed"
+            or status.get("validation") == "failed"
+        ):
+            continue
+        error = item.get("error")
+        if not isinstance(error, dict):
+            failures[("unknown", "unknown")] += 1
+            continue
+        key = (
+            str(error.get("stage") or "unknown"),
+            str(error.get("code") or "unknown"),
+        )
+        failures[key] += 1
+    return failures
 
 
 def _print_outcome(outcome: "PipelineOutcome") -> None:
@@ -47,18 +135,36 @@ def _print_outcome(outcome: "PipelineOutcome") -> None:
         f"validation_failed={summary['validation_failed']} "
         f"review_pending={summary['review_pending']}"
     )
+    failures = _failure_summary(outcome)
+    if failures is None:
+        print("failure_summary: unavailable (batch report missing or invalid)")
+    elif not failures:
+        print("failure_summary: none")
+    else:
+        print("failure_summary:")
+        for (stage, code), count in sorted(failures.items()):
+            print(f"  stage={stage} code={code} count={count}")
+    print(f"manifest: {outcome.run_dir / 'batch-manifest.json'}")
+    print(f"report: {outcome.run_dir / 'batch-report.json'}")
+    print(f"review_queue: {outcome.run_dir / 'review/review-queue.json'}")
+    print(f"jsonl: {outcome.run_dir / 'logs/pipeline.jsonl'}")
     print(f"run_dir: {outcome.run_dir}")
 
 
 def pipeline_run_command(args: argparse.Namespace) -> int:
+    progress = _AggregateProgressPrinter()
     try:
-        outcome = _coordinator(args).run(
-            all_products=args.all_products,
-            group=args.group,
-            language=args.language,
-            parallel_jobs=args.parallel_jobs,
-            allow_dirty=args.allow_dirty,
-        )
+        with _quiet_pipeline_loguru():
+            outcome = _coordinator(
+                args,
+                progress_callback=progress,
+            ).run(
+                all_products=args.all_products,
+                group=args.group,
+                language=args.language,
+                parallel_jobs=args.parallel_jobs,
+                allow_dirty=args.allow_dirty,
+            )
     except KeyboardInterrupt:
         print("INTERRUPTED: pipeline run stopped by user", file=sys.stderr)
         return 130
@@ -70,8 +176,13 @@ def pipeline_run_command(args: argparse.Namespace) -> int:
 
 
 def pipeline_resume_command(args: argparse.Namespace) -> int:
+    progress = _AggregateProgressPrinter()
     try:
-        outcome = _coordinator(args).resume(args.batch_id)
+        with _quiet_pipeline_loguru():
+            outcome = _coordinator(
+                args,
+                progress_callback=progress,
+            ).resume(args.batch_id)
     except KeyboardInterrupt:
         print("INTERRUPTED: pipeline resume stopped by user", file=sys.stderr)
         return 130
@@ -83,8 +194,13 @@ def pipeline_resume_command(args: argparse.Namespace) -> int:
 
 
 def pipeline_validate_command(args: argparse.Namespace) -> int:
+    progress = _AggregateProgressPrinter()
     try:
-        outcome = _coordinator(args).validate(args.batch_id)
+        with _quiet_pipeline_loguru():
+            outcome = _coordinator(
+                args,
+                progress_callback=progress,
+            ).validate(args.batch_id)
     except KeyboardInterrupt:
         print("INTERRUPTED: pipeline validation stopped by user", file=sys.stderr)
         return 130

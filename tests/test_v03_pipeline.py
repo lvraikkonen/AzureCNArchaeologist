@@ -14,13 +14,16 @@ from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 import cli
+from loguru import logger
 from src.batch.process_engine import BatchProcessEngine
 from src.core.canonical_input import CanonicalHtmlInput
 from src.core.data_models import ExtractionStrategy, StrategyType
 from src.core.extraction_result import ExtractionResult
+from src.core.logging import log_user_operation
 from src.core.product_catalog import sha256_file
 from src.core.validation_context import ValidationContextRegistry
 from src.pipeline.cli_commands import (
+    _AggregateProgressPrinter,
     pipeline_run_command,
     pipeline_status_command,
 )
@@ -125,11 +128,14 @@ class _Copier:
 class _StrategyManager:
     def __init__(self) -> None:
         self.calls: Counter[str] = Counter()
+        self.failures: set[str] = set()
 
     def determine_extraction_strategy(
         self, soup: object, product_key: str, *, input_bytes: int | None = None
     ) -> ExtractionStrategy:
         self.calls[product_key] += 1
+        if product_key in self.failures:
+            raise RuntimeError(f"fixture preflight failed for {product_key}")
         return ExtractionStrategy(
             strategy_type=StrategyType.SIMPLE_STATIC,
             processor="FixtureProcessor",
@@ -383,7 +389,12 @@ class _Extractor:
 
 
 class _Harness:
-    def __init__(self, root: Path, products: tuple[str, ...] = ("alpha", "beta")) -> None:
+    def __init__(
+        self,
+        root: Path,
+        products: tuple[str, ...] = ("alpha", "beta"),
+        progress_callback: object | None = None,
+    ) -> None:
         self.root = root
         shutil.copytree(ROOT / "schemas", root / "schemas")
         self.items = tuple(self._make_item(product) for product in products)
@@ -426,6 +437,7 @@ class _Harness:
                 ),
                 strategy_manager_factory=lambda unused_root: self.strategy_manager,
                 batch_id_factory=lambda: FIXED_BATCH_ID,
+                progress_callback=progress_callback,  # type: ignore[arg-type]
                 now=self.clock,
             )
         self.coordinator._input_loader = _FixtureInputLoader(root, self.items)
@@ -573,6 +585,55 @@ class PipelineCoordinatorTests(unittest.TestCase):
             }
             self.assertTrue(events)
             self.assertTrue(all(required <= event.keys() for event in events))
+            item_successes = [
+                event
+                for event in events
+                if event["item_id"] is not None and event["status"] == "succeeded"
+            ]
+            self.assertTrue(item_successes)
+            self.assertTrue(
+                all(
+                    {
+                        "message",
+                        "diagnostic_path",
+                        "parseability_path",
+                        "validation_path",
+                    }.isdisjoint(event)
+                    for event in item_successes
+                )
+            )
+
+    def test_progress_callback_reports_only_stage_aggregate_counts(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            progress: list[tuple[str, int, int]] = []
+            harness = _Harness(
+                Path(directory),
+                progress_callback=lambda stage, completed, total: progress.append(
+                    (stage, completed, total)
+                ),
+            )
+
+            outcome = harness.run()
+
+            self.assertEqual(outcome.exit_code, 0)
+            self.assertEqual(
+                Counter(stage for stage, _, _ in progress),
+                Counter({
+                    "normalize": 2,
+                    "preflight": 2,
+                    "extract": 2,
+                    "validate": 2,
+                }),
+            )
+            for stage in ("normalize", "preflight", "extract", "validate"):
+                self.assertEqual(
+                    [
+                        (completed, total)
+                        for current, completed, total in progress
+                        if current == stage
+                    ],
+                    [(1, 2), (2, 2)],
+                )
 
     def test_one_future_failure_is_isolated_and_returns_two(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -648,6 +709,72 @@ class PipelineCoordinatorTests(unittest.TestCase):
                 and event["status"] == "failed"
             )
             self.assertEqual(beta_failure["error_code"], "FIXTURE_PARSE_FAILED")
+            self.assertEqual(
+                beta_failure["message"],
+                "fixture parser rejected beta",
+            )
+            self.assertEqual(
+                beta_failure["diagnostic_path"],
+                beta_item.diagnostic_path,
+            )
+            self.assertNotIn("parseability_path", beta_failure)
+            self.assertNotIn("validation_path", beta_failure)
+
+    def test_failed_jsonl_events_include_stage_specific_artifact_pointers(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            harness = _Harness(Path(directory))
+            harness.strategy_manager.failures.add("beta")
+            outcome = harness.run()
+            beta = next(item for item in harness.items if item.resource_key == "beta")
+            events = [
+                json.loads(line)
+                for line in (outcome.run_dir / "logs/pipeline.jsonl")
+                .read_text(encoding="utf-8")
+                .splitlines()
+            ]
+            preflight = next(
+                event
+                for event in events
+                if event["item_id"] == beta.item_id
+                and event["stage"] == "preflight"
+                and event["status"] == "failed"
+            )
+            self.assertEqual(
+                preflight["message"],
+                "fixture preflight failed for beta",
+            )
+            self.assertEqual(preflight["diagnostic_path"], beta.diagnostic_path)
+            self.assertEqual(preflight["parseability_path"], beta.parseability_path)
+            self.assertNotIn("validation_path", preflight)
+
+        with tempfile.TemporaryDirectory() as directory:
+            harness = _Harness(Path(directory))
+            extractor = harness._extractor_factory(
+                harness.store.run_dir(FIXED_BATCH_ID)
+            )
+            extractor.validation_failures.add("beta")
+            outcome = harness.run()
+            beta = next(item for item in harness.items if item.resource_key == "beta")
+            events = [
+                json.loads(line)
+                for line in (outcome.run_dir / "logs/pipeline.jsonl")
+                .read_text(encoding="utf-8")
+                .splitlines()
+            ]
+            validation = next(
+                event
+                for event in events
+                if event["item_id"] == beta.item_id
+                and event["stage"] == "validate"
+                and event["status"] == "failed"
+            )
+            self.assertEqual(
+                validation["message"],
+                "fixture validation failed for beta",
+            )
+            self.assertEqual(validation["diagnostic_path"], beta.diagnostic_path)
+            self.assertEqual(validation["validation_path"], beta.validation_path)
+            self.assertNotIn("parseability_path", validation)
 
     def test_resume_appends_failed_attempt_and_does_not_rerun_success(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -1281,7 +1408,10 @@ class PipelineCliTests(unittest.TestCase):
         )
 
     @staticmethod
-    def _pipeline_outcome(exit_code: int) -> PipelineOutcome:
+    def _pipeline_outcome(
+        exit_code: int,
+        run_dir: Path | None = None,
+    ) -> PipelineOutcome:
         summary = {
             "total": 2,
             "runnable": 2,
@@ -1300,8 +1430,113 @@ class PipelineCliTests(unittest.TestCase):
             status="completed" if exit_code == 0 else "completed_with_failures",
             exit_code=exit_code,
             summary=summary,
-            run_dir=Path("runs") / FIXED_BATCH_ID,
+            run_dir=run_dir or Path("runs") / FIXED_BATCH_ID,
         )
+
+    def test_progress_printer_emits_at_most_one_line_per_ten_percent_bucket(self) -> None:
+        stream = io.StringIO()
+        progress = _AggregateProgressPrinter(stream)
+
+        for completed in range(1, 101):
+            progress("extract", completed, 100)
+
+        lines = stream.getvalue().splitlines()
+        self.assertEqual(len(lines), 10)
+        self.assertEqual(
+            [int(line.rsplit("percent=", 1)[1].removesuffix("%")) for line in lines],
+            list(range(10, 101, 10)),
+        )
+        self.assertTrue(all("Processed" not in line for line in lines))
+
+    def test_run_console_silences_item_logs_and_prints_failure_summary_and_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            run_dir = Path(directory) / FIXED_BATCH_ID
+            run_dir.mkdir(parents=True)
+            outcome = self._pipeline_outcome(2, run_dir)
+            (run_dir / "batch-report.json").write_text(
+                json.dumps({
+                    "items": [
+                        {
+                            "status": {
+                                "execution": "failed",
+                                "validation": "not_run",
+                            },
+                            "error": {
+                                "stage": "extract",
+                                "code": "missing_cms_state_content",
+                            },
+                        }
+                    ]
+                }),
+                encoding="utf-8",
+            )
+
+            class _NoisyCoordinator:
+                @staticmethod
+                def run(**unused: object) -> PipelineOutcome:
+                    log_user_operation(None, "ITEM_LEVEL_INFO", {})
+                    return outcome
+
+            core = logger._core
+            before = (
+                list(core.activation_list),
+                dict(core.enabled),
+                core.activation_none,
+            )
+            captured_log = io.StringIO()
+            sink = logger.add(captured_log, format="{message}")
+            stdout = io.StringIO()
+            stderr = io.StringIO()
+            try:
+                with patch(
+                    "src.pipeline.cli_commands._coordinator",
+                    return_value=_NoisyCoordinator(),
+                ), redirect_stdout(stdout), redirect_stderr(stderr):
+                    self.assertEqual(pipeline_run_command(self._run_args()), 2)
+            finally:
+                logger.remove(sink)
+
+            self.assertEqual(
+                (
+                    list(core.activation_list),
+                    dict(core.enabled),
+                    core.activation_none,
+                ),
+                before,
+            )
+            self.assertNotIn("ITEM_LEVEL_INFO", captured_log.getvalue())
+            console = stdout.getvalue()
+            self.assertIn(
+                "stage=extract code=missing_cms_state_content count=1",
+                console,
+            )
+            for relative in (
+                "batch-manifest.json",
+                "batch-report.json",
+                "review/review-queue.json",
+                "logs/pipeline.jsonl",
+            ):
+                self.assertIn(str(run_dir / relative), console)
+            self.assertNotIn("DEBUG", console)
+            self.assertNotIn("INFO", console)
+            self.assertNotIn("Traceback", console)
+            self.assertEqual(stderr.getvalue(), "")
+
+    def test_legacy_root_file_logging_configuration_is_not_exported(self) -> None:
+        import src.core as core_module
+        from src.core.settings import settings
+
+        self.assertNotIn("setup_logging", core_module.__all__)
+        self.assertFalse(hasattr(core_module, "setup_logging"))
+        for field in (
+            "LOG_DIR",
+            "LOG_FILE",
+            "USER_OPERATION_LOG_FILE",
+            "ERROR_LOG_FILE",
+            "PERFORMANCE_LOG_FILE",
+            "DATA_PROCESSING_LOG_FILE",
+        ):
+            self.assertFalse(hasattr(settings, field))
 
     def test_parser_exposes_pipeline_commands_and_removes_legacy_batch_commands(self) -> None:
         parser = cli.create_parser()

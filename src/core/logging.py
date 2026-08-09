@@ -6,16 +6,12 @@
 """
 
 import json
-import sys
 import time
 from datetime import datetime
 from functools import lru_cache, wraps
-from pathlib import Path
 from typing import Any, Dict, Optional, Callable
 
 from loguru import logger
-
-from .settings import settings
 
 
 @lru_cache
@@ -30,81 +26,6 @@ def get_logger(name: str):
         logger: 配置好的日志记录器
     """
     return logger.bind(name=name)
-
-
-def setup_logging():
-    """配置应用日志系统"""
-    # 确保日志目录存在
-    settings.LOG_DIR.mkdir(parents=True, exist_ok=True)
-    
-    # 移除默认处理器
-    logger.remove()
-    
-    # 添加控制台输出处理器
-    logger.add(
-        sys.stdout,
-        level=settings.LOG_LEVEL,
-        format=settings.LOG_FORMAT,
-        colorize=True,
-        filter=lambda record: record["extra"].get("name") != "user_operation"
-    )
-    
-    # 添加主日志文件处理器
-    logger.add(
-        settings.LOG_FILE,
-        level=settings.LOG_LEVEL,
-        format=settings.LOG_FORMAT,
-        rotation=settings.LOG_ROTATION,
-        retention=settings.LOG_RETENTION,
-        compression="zip",
-        filter=lambda record: record["extra"].get("name") != "user_operation"
-    )
-    
-    # 添加用户操作日志处理器
-    logger.add(
-        settings.USER_OPERATION_LOG_FILE,
-        level="INFO",
-        format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {message}",
-        rotation=settings.LOG_ROTATION,
-        retention=settings.LOG_RETENTION,
-        compression="zip",
-        filter=lambda record: record["extra"].get("name") == "user_operation"
-    )
-    
-    # 添加错误日志处理器
-    logger.add(
-        settings.ERROR_LOG_FILE,
-        level="ERROR",
-        format=settings.LOG_FORMAT,
-        rotation=settings.LOG_ROTATION,
-        retention=settings.LOG_RETENTION,
-        compression="zip"
-    )
-    
-    # 添加性能日志处理器
-    logger.add(
-        settings.PERFORMANCE_LOG_FILE,
-        level="INFO",
-        format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {message}",
-        rotation=settings.LOG_ROTATION,
-        retention=settings.LOG_RETENTION,
-        compression="zip",
-        filter=lambda record: record["extra"].get("name") == "performance"
-    )
-    
-    # 添加数据处理日志处理器
-    logger.add(
-        settings.DATA_PROCESSING_LOG_FILE,
-        level="INFO",
-        format=settings.LOG_FORMAT,
-        rotation=settings.LOG_ROTATION,
-        retention=settings.LOG_RETENTION,
-        compression="zip",
-        filter=lambda record: record["extra"].get("name") == "data_processing"
-    )
-    
-    logger.info(f"日志系统已初始化，日志级别: {settings.LOG_LEVEL}")
-    logger.info(f"日志目录: {settings.LOG_DIR}")
 
 
 def log_user_operation(

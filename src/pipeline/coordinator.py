@@ -123,6 +123,7 @@ class PipelineCoordinator:
         engine_factory: Callable[[int], BatchProcessEngine] | None = None,
         strategy_manager_factory: Callable[[Path], StrategyManager] | None = None,
         batch_id_factory: Callable[[], str] | None = None,
+        progress_callback: Callable[[str, int, int], None] | None = None,
         now: Callable[[], str] = utc_now,
     ) -> None:
         self.root = Path(root).resolve()
@@ -136,6 +137,7 @@ class PipelineCoordinator:
         )
         self._strategy_manager_factory = strategy_manager_factory or self._default_strategy_manager
         self._batch_id_factory = batch_id_factory or generate_batch_id
+        self._progress_callback = progress_callback
         self._now = now
         self._contract_validator = ContractValidator(self.root)
         self._validation_context = ValidationContextRegistry(self.root)
@@ -414,7 +416,7 @@ class PipelineCoordinator:
                     error_code="NORMALIZE_FAILED", error_message=str(exc),
                 )
 
-        self._engine_factory(parallel_jobs).process_resource_items(
+        self._stage_engine("normalize", parallel_jobs).process_resource_items(
             infos,
             worker=worker,
             result_callback=lambda result, completed, total: self._commit_stage_result(
@@ -487,7 +489,7 @@ class PipelineCoordinator:
                     error_code="PREFLIGHT_FAILED", error_message=str(exc),
                 )
 
-        self._engine_factory(parallel_jobs).process_resource_items(
+        self._stage_engine("preflight", parallel_jobs).process_resource_items(
             infos,
             worker=worker,
             result_callback=lambda result, completed, total: self._commit_stage_result(
@@ -578,7 +580,7 @@ class PipelineCoordinator:
                 result.error_code = "EXTRACTION_FAILED"
             self._commit_stage_result(batch_id, "extract", result)
 
-        self._engine_factory(parallel_jobs).process_resource_items(
+        self._stage_engine("extract", parallel_jobs).process_resource_items(
             infos, worker=worker, result_callback=callback
         )
         self._finish_stage(batch_id, "extract")
@@ -668,7 +670,7 @@ class PipelineCoordinator:
                 current=current,
             )
 
-        self._engine_factory(parallel_jobs).process_resource_items(
+        self._stage_engine("validate", parallel_jobs).process_resource_items(
             infos, worker=worker, result_callback=callback
         )
         self._apply_bilingual_pair_validation(
@@ -764,7 +766,7 @@ class PipelineCoordinator:
             else:
                 self._commit_stage_result(batch_id, "validate", result)
 
-        self._engine_factory(parallel_jobs).process_resource_items(
+        self._stage_engine("validate", parallel_jobs).process_resource_items(
             infos,
             worker=worker,
             result_callback=callback,
@@ -2555,6 +2557,22 @@ class PipelineCoordinator:
             metadata={"batch_item": item},
         )
 
+    def _stage_engine(
+        self,
+        stage: str,
+        parallel_jobs: int,
+    ) -> BatchProcessEngine:
+        engine = self._engine_factory(parallel_jobs)
+        if self._progress_callback is not None:
+            engine.set_progress_callback(
+                lambda _message, completed, total: self._progress_callback(
+                    stage,
+                    completed,
+                    total,
+                )
+            )
+        return engine
+
     def _default_extraction_factory(self, run_dir: Path) -> ExtractionCoordinator:
         return ExtractionCoordinator(
             str(run_dir),
@@ -2662,6 +2680,16 @@ class PipelineCoordinator:
         strategy: str,
         error: Mapping[str, Any] | None,
     ) -> None:
+        details: dict[str, Any] = {}
+        if error is not None:
+            details = {
+                "message": error.get("message"),
+                "diagnostic_path": item.diagnostic_path,
+            }
+            if stage == "preflight":
+                details["parseability_path"] = item.parseability_path
+            elif stage == "validate":
+                details["validation_path"] = item.validation_path
         self._log_event(
             batch_id,
             stage,
@@ -2672,6 +2700,7 @@ class PipelineCoordinator:
             language=item.language,
             strategy=strategy or item.strategy,
             error_code=error.get("code") if error else None,
+            **details,
         )
 
     def _log_event(
