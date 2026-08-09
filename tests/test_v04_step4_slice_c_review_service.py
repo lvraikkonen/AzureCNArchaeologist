@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import json
 from argparse import Namespace
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
@@ -85,12 +86,14 @@ def _reviewable_run(
     *,
     source_findings: list[dict[str, str]] | None = None,
     validation_profile_id: str = "v0.4-validation-p3",
+    item: BatchItem | None = None,
 ) -> tuple[ReviewService, Any, BatchItem, dict[str, Any]]:
+    item = item or _item()
     store, frozen = _state_store_with_run(
         tmp_path,
         validation_profile_id=validation_profile_id,
+        item=item,
     )
-    item = _item()
     criteria = [[("region", f"region-{index}")] for index in range(18)]
     from tests.test_v04_step4_slice_b_runtime import _sampling_profile_identity
 
@@ -245,6 +248,52 @@ def test_review_service_approves_reachable_state_and_writes_queue_2(
     assert queue["items"][0]["inspection"]["state_universe"] == (
         plan["state_universe"]["states"]
     )
+
+
+def test_review_service_approves_historical_resource_key(tmp_path: Path) -> None:
+    historical_item = replace(
+        _item(),
+        resource_key="sla-sql-data--v1-5",
+        product_key="sla-sql-data",
+        resource_kind="historical_version",
+        normalized_path=(
+            "data/prod-html/zh-cn/SupportArticles/SLA/"
+            "sla-sql-data--v1-5.html"
+        ),
+        output_path=(
+            "outputs/zh-cn/SupportArticles/SLA/sla-sql-data--v1-5.json"
+        ),
+        diagnostic_path=(
+            "diagnostics/zh-cn/SupportArticles/SLA/"
+            "sla-sql-data--v1-5.sidecar.json"
+        ),
+        validation_path=(
+            "validation/zh-cn/SupportArticles/SLA/"
+            "sla-sql-data--v1-5.validation.json"
+        ),
+        slug="sla-sql-data-v1-5",
+        version_key="v1-5",
+        version_label="1.5",
+    )
+    service, store, item, plan = _reviewable_run(
+        tmp_path,
+        item=historical_item,
+    )
+
+    result = service.decide(
+        _approve_request(store, item, _review_state_id(plan))
+    )
+
+    assert result.review == "approved"
+    assert result.item_id == "zh-cn/sla-sql-data--v1-5"
+    assert result.decision_path.startswith(
+        "review/decisions/zh-cn/sla-sql-data--v1-5/"
+    )
+    decision = store.read_review_decision(
+        BATCH_ID,
+        relative_path=result.decision_path,
+    )
+    assert decision["resource_key"] == "sla-sql-data--v1-5"
 
 
 def test_rejected_decision_replaces_current_decision_with_supersession(

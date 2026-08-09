@@ -1165,6 +1165,54 @@ def test_review_decision_item_id_binds_language_and_resource() -> None:
         StateStore(ROOT).validate_document(decision, "review_decision")
 
 
+@pytest.mark.parametrize(
+    ("language", "resource_key"),
+    (
+        ("en-us", "sla-sql-data--v1-5"),
+        ("zh-cn", "sla-cdn--v1-1"),
+    ),
+)
+def test_review_decision_accepts_historical_resource_key(
+    language: str,
+    resource_key: str,
+) -> None:
+    decision = _review_decision()
+    decision.update({
+        "item_id": f"{language}/{resource_key}",
+        "resource_key": resource_key,
+        "language": language,
+    })
+    decision["decision_id"] = document_identity_sha256(
+        decision,
+        "decision_id",
+    )
+
+    StateStore(ROOT).validate_document(decision, "review_decision")
+
+
+@pytest.mark.parametrize(
+    "resource_key",
+    (
+        "sla-sql-data--draft",
+        "sla-sql-data--v1-",
+        "sla-sql-data--v1-5--v2",
+    ),
+)
+def test_review_decision_rejects_malformed_historical_resource_key(
+    resource_key: str,
+) -> None:
+    decision = _review_decision()
+    decision["resource_key"] = resource_key
+    decision["item_id"] = f"zh-cn/{resource_key}"
+    decision["decision_id"] = document_identity_sha256(
+        decision,
+        "decision_id",
+    )
+
+    with pytest.raises(ManifestValidationError, match="resource_key"):
+        StateStore(ROOT).validate_document(decision, "review_decision")
+
+
 @pytest.mark.parametrize("name", ("sampled_evidence", "validation"))
 def test_runtime_evidence_rejects_a_p2_validation_profile_binding(
     name: str,

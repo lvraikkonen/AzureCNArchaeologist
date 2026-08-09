@@ -147,10 +147,11 @@ def _state_store_with_run(
     root: Path,
     *,
     validation_profile_id: str = "v0.4-validation-p3",
+    item: BatchItem | None = None,
 ) -> tuple[StateStore, dict[str, object]]:
     registry = ValidationContextRegistry(ROOT)
     frozen = registry.freeze(validation_profile_id=validation_profile_id)
-    item = _item()
+    item = item or _item()
     plan = PipelinePlan(
         scope={"kind": "group", "group": "fixture"},
         languages=("zh-cn",),
@@ -218,7 +219,7 @@ def _evidence(
             "sha256": HEX["normalized"],
         },
         "payload": {
-            "path": _item().output_path,
+            "path": manifest_item["artifacts"]["payload"]["path"],
             "sha256": HEX["payload"],
         },
         "soft_category": {
@@ -243,7 +244,7 @@ def _evidence(
     evidence = {
         "schema_version": "1.0",
         "evidence_sha256": "0" * 64,
-        "item_id": "zh-cn/fixture",
+        "item_id": sampling_plan["item_id"],
         "mode": "stratified_sample",
         "bindings": bindings,
         "coverage": coverage,
@@ -315,7 +316,7 @@ def _validation_projection(
     projection = {
         "schema_version": schema_version,
         "batch_id": BATCH_ID,
-        "item_id": "zh-cn/fixture",
+        "item_id": evidence["item_id"],
         "status": "passed",
         "evidence_sha256": "0" * 64,
         "evidence": body,
