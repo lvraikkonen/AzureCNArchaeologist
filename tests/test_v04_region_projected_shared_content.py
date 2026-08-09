@@ -391,6 +391,34 @@ def test_current_databricks_duplicate_table_id_blocks_payload(
     assert extracted.sidecar["error"]["stage"] == "source_reachability"
 
 
+def test_real_synapse_missing_state_content_has_stable_reachability_error(
+    tmp_path: Path,
+) -> None:
+    coordinator = ExtractionCoordinator(
+        str(tmp_path),
+        deferred_validation=True,
+    )
+    extracted = coordinator.coordinate_extraction(
+        "synapse-analytics",
+        "zh-cn",
+        strategy="complex",
+    )
+
+    assert not extracted.execution_succeeded
+    assert extracted.exit_code == 1
+    assert extracted.payload is None
+    assert extracted.payload_path is None
+    assert extracted.sidecar["payload"] is None
+    assert extracted.sidecar["error"] == {
+        "code": "missing_cms_state_content",
+        "stage": "source_reachability",
+        "message": (
+            "Missing or placeholder content for CMS state "
+            "(('region', 'east-china'), ('category', 'tabContent1-4'))"
+        ),
+    }
+
+
 _SYNTHETIC_SOURCE_HTML = """
 <section class="shared-ancestor">
   <div class="scroll-table">
@@ -1206,11 +1234,59 @@ def test_builder_rejects_literal_empty_content_without_shared_evidence(
     candidate[first.cms_state].pop("region_projected_shared_content")
     candidate[first.cms_state]["content"] = ""
 
-    with pytest.raises(ValueError, match="Missing or placeholder content"):
+    with pytest.raises(
+        SourceReachabilityError,
+        match="Missing or placeholder content",
+    ) as captured:
         FlexibleBuilder().build_complex_content_groups(
             unproven_reachability,
             candidate,
         )
+    assert captured.value.code == "missing_cms_state_content"
+
+
+def test_builder_classifies_placeholder_node_as_missing_cms_state_content(
+    formal_shared_case: tuple[
+        SourceReachability,
+        dict[CmsState, dict[str, str]],
+        dict[str, Any],
+    ],
+) -> None:
+    reachability, mapping, _ = formal_shared_case
+    candidate = copy.deepcopy(mapping)
+    first = reachability.ordered_states[0]
+    candidate[first.cms_state]["content"] = (
+        '<div class="tab-content-missing">No content found</div>'
+    )
+
+    with pytest.raises(SourceReachabilityError) as captured:
+        FlexibleBuilder().build_complex_content_groups(
+            reachability,
+            candidate,
+        )
+
+    assert captured.value.code == "missing_cms_state_content"
+
+
+def test_builder_keeps_adjacent_non_string_content_as_plain_value_error(
+    formal_shared_case: tuple[
+        SourceReachability,
+        dict[CmsState, dict[str, str]],
+        dict[str, Any],
+    ],
+) -> None:
+    reachability, mapping, _ = formal_shared_case
+    candidate = copy.deepcopy(mapping)
+    first = reachability.ordered_states[0]
+    candidate[first.cms_state]["content"] = 7  # type: ignore[assignment]
+
+    with pytest.raises(ValueError, match="Non-string content") as captured:
+        FlexibleBuilder().build_complex_content_groups(
+            reachability,
+            candidate,
+        )
+
+    assert type(captured.value) is ValueError
 
 
 @pytest.mark.parametrize(

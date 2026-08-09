@@ -12,7 +12,10 @@ from src.core.cms_state_contract import (
 )
 from src.core.html_price_bearing import is_price_bearing_html
 from src.core.logging import get_logger
-from src.core.source_reachability import SourceReachability
+from src.core.source_reachability import (
+    SourceReachability,
+    SourceReachabilityError,
+)
 from src.utils.html.cleaner import clean_html_content
 
 
@@ -220,7 +223,8 @@ class FlexibleBuilder:
                 software_scoped_prefix + specific
             )
             if "tab-content-missing" in combined:
-                raise ValueError(
+                raise SourceReachabilityError(
+                    "missing_cms_state_content",
                     "Missing or placeholder content for CMS state "
                     f"{cms_state.criteria!r}"
                 )
@@ -290,7 +294,8 @@ class FlexibleBuilder:
                         f"inside content for CMS state {cms_state.criteria!r}"
                     )
             if not _visible_text(combined) and not shared_wire:
-                raise ValueError(
+                raise SourceReachabilityError(
+                    "missing_cms_state_content",
                     "Missing or placeholder content for CMS state "
                     f"{cms_state.criteria!r}"
                 )
