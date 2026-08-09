@@ -86,17 +86,19 @@ def test_runtime_route_map_leaves_unconfigured_external_links_unchanged() -> Non
 def _prepare_real_sla_validation(
     tmp_path: Path,
     *,
+    language: str = "en-us",
+    resource_key: str = "sla-sql-data",
     monkeypatch: pytest.MonkeyPatch | None = None,
 ) -> tuple[Any, dict[str, Any]]:
     planned = PipelinePlanner(ROOT).plan(
         "group",
         group="SupportArticle/SLA",
-        language="en-us",
+        language=language,
     )
     item = next(
         candidate
         for candidate in planned.items
-        if candidate.resource_key == "sla-sql-data"
+        if candidate.resource_key == resource_key
     )
     plan = PipelinePlan(
         scope=planned.scope,
@@ -158,6 +160,30 @@ def test_real_sla_extract_persist_and_p3_validation_passes(tmp_path: Path) -> No
     assert prepared.error is None
     assert prepared.sampled_content_evidence["full_content_comparison"]["status"] == "matched"
     assert prepared.validation_projection["status"] == "passed"
+    assert not prepared.diff_artifacts
+
+
+@pytest.mark.parametrize(
+    ("language", "resource_key"),
+    [
+        ("en-us", "sla-sql-data--v1-0"),
+        ("zh-cn", "sla-sql-data--v1-3"),
+    ],
+)
+def test_real_historical_sla_uses_version_source_url_during_p3_projection(
+    tmp_path: Path,
+    language: str,
+    resource_key: str,
+) -> None:
+    prepared, _ = _prepare_real_sla_validation(
+        tmp_path,
+        language=language,
+        resource_key=resource_key,
+    )
+
+    assert prepared.status == "passed"
+    assert prepared.error is None
+    assert prepared.sampled_content_evidence["full_content_comparison"]["status"] == "matched"
     assert not prepared.diff_artifacts
 
 

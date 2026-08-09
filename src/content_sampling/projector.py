@@ -79,15 +79,21 @@ class SourceContentProjector:
         strategy: str,
         source_reachability: SourceReachability | None,
     ) -> dict[str, Any]:
+        product_definition = self.product_manager.get_product_config(product_key)
         definition = _runtime_definition(
-            self.product_manager.get_product_config(product_key),
+            product_definition,
             version_key,
             language,
         )
         soup = preprocess_image_paths(
             BeautifulSoup(canonical_input.text, "html.parser")
         )
-        source_url = definition["sources"][language].get("url", "")
+        source_definition = (
+            get_historical_version(product_definition, version_key)["sources"][language]
+            if version_key is not None
+            else product_definition["sources"][language]
+        )
+        source_url = source_definition.get("url", "")
         html_path = canonical_input.normalized_path.as_posix()
         if strategy == "simple_static":
             payload = SimpleStaticStrategy(
