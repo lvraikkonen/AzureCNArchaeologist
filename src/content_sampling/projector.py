@@ -12,7 +12,10 @@ from bs4 import BeautifulSoup
 from src.core.canonical_input import CanonicalHtmlInput
 from src.core.product_manager import ProductManager
 from src.core.source_reachability import SourceReachability
-from src.core.support_article_versions import get_historical_version
+from src.core.support_article_versions import (
+    build_support_url_route_map,
+    get_historical_version,
+)
 from src.strategies.complex_content_strategy import ComplexContentStrategy
 from src.strategies.region_filter_strategy import RegionFilterStrategy
 from src.strategies.simple_static_strategy import SimpleStaticStrategy
@@ -27,8 +30,13 @@ class ProjectionError(ValueError):
 def _runtime_definition(
     definition: Mapping[str, Any],
     version_key: str | None,
+    language: str,
 ) -> dict[str, Any]:
     value = dict(definition)
+    if value.get("page_model") == "SupportArticlePage":
+        extraction = dict(value.get("extraction", {}))
+        extraction["url_route_map"] = build_support_url_route_map(value, language)
+        value["extraction"] = extraction
     if version_key is not None:
         value["slug"] = get_historical_version(value, version_key)["slug"]
     return value
@@ -74,6 +82,7 @@ class SourceContentProjector:
         definition = _runtime_definition(
             self.product_manager.get_product_config(product_key),
             version_key,
+            language,
         )
         soup = preprocess_image_paths(
             BeautifulSoup(canonical_input.text, "html.parser")
