@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -9,10 +10,12 @@ import pytest
 
 from src.regression.reference_batch_v051 import (
     ReferenceBatchError,
+    _materialize_planned_artifact,
     compare_batch_documents,
     failure_groups,
     load_regression_rationales,
     semantic_sha256,
+    verify_review_queue_projection,
 )
 
 
@@ -276,3 +279,81 @@ def test_regression_rationale_is_closed_world_and_bound(tmp_path: Path) -> None:
 
 def test_semantic_identity_is_order_independent() -> None:
     assert semantic_sha256({"a": 1, "b": 2}) == semantic_sha256({"b": 2, "a": 1})
+
+
+def test_review_queue_may_bind_earlier_revision_but_not_stale_items() -> None:
+    item = _batch_item(
+        "en-us/example",
+        execution="succeeded",
+        validation="passed",
+        payload_sha="7" * 64,
+    )
+    batch = {
+        "revision": 13,
+        "items": {"en-us/example": item},
+    }
+    queue = {
+        "manifest_revision": 10,
+        "items": [
+            {
+                "item_id": "en-us/example",
+                "status": item["status"],
+                "artifacts": item["artifacts"],
+            }
+        ],
+    }
+
+    verify_review_queue_projection(
+        queue,
+        batch,
+        expected_item_ids={"en-us/example"},
+    )
+
+    queue["manifest_revision"] = 14
+    with pytest.raises(ReferenceBatchError, match="ahead"):
+        verify_review_queue_projection(
+            queue,
+            batch,
+            expected_item_ids={"en-us/example"},
+        )
+
+    queue["manifest_revision"] = 10
+    queue["items"][0]["artifacts"] = {
+        "payload": {"path": "outputs/drifted.json", "sha256": "8" * 64}
+    }
+    with pytest.raises(ReferenceBatchError, match="artifact is stale"):
+        verify_review_queue_projection(
+            queue,
+            batch,
+            expected_item_ids={"en-us/example"},
+        )
+
+
+def test_planned_artifact_materializes_observed_identity_when_sha_is_null(
+    tmp_path: Path,
+) -> None:
+    artifact_path = tmp_path / "diagnostics" / "parseability.json"
+    artifact_path.parent.mkdir()
+    artifact_path.write_text('{"parseable": false}\n', encoding="utf-8")
+
+    identity = _materialize_planned_artifact(
+        tmp_path,
+        {"path": "diagnostics/parseability.json", "sha256": None},
+        label="fixture parseability",
+    )
+
+    assert identity == {
+        "path": "diagnostics/parseability.json",
+        "batch_manifest_sha256": None,
+        "observed_sha256": hashlib.sha256(artifact_path.read_bytes()).hexdigest(),
+    }
+
+    with pytest.raises(ReferenceBatchError, match="bound SHA-256 drifted"):
+        _materialize_planned_artifact(
+            tmp_path,
+            {
+                "path": "diagnostics/parseability.json",
+                "sha256": "0" * 64,
+            },
+            label="fixture parseability",
+        )

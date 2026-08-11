@@ -129,6 +129,31 @@ def _verify_artifact(
     return True
 
 
+def _materialize_planned_artifact(
+    base: Path,
+    artifact: Mapping[str, Any] | None,
+    *,
+    label: str,
+) -> dict[str, Any]:
+    """Bind a failure artifact whose planned record legitimately has no SHA."""
+
+    if artifact is None or set(artifact) != {"path", "sha256"}:
+        raise ReferenceBatchError(f"{label} planned binding is invalid")
+    path = artifact.get("path")
+    bound_digest = artifact.get("sha256")
+    if not isinstance(path, str) or not path:
+        raise ReferenceBatchError(f"{label} planned path is invalid")
+    absolute = _safe_path(base, path, label=label)
+    actual_digest = sha256_file(absolute)
+    if bound_digest is not None and bound_digest != actual_digest:
+        raise ReferenceBatchError(f"{label} bound SHA-256 drifted")
+    return {
+        "path": path,
+        "batch_manifest_sha256": bound_digest,
+        "observed_sha256": actual_digest,
+    }
+
+
 def _load_jsonl(path: Path, *, batch_id: str) -> list[dict[str, Any]]:
     if path.is_symlink() or not path.is_file():
         raise ReferenceBatchError(f"Pipeline JSONL is missing or symlinked: {path}")
@@ -247,6 +272,43 @@ def failure_groups(items: Mapping[str, Mapping[str, Any]]) -> list[dict[str, Any
         }
         for (stage, code, message), item_ids in sorted(grouped.items())
     ]
+
+
+def verify_review_queue_projection(
+    review_queue: Mapping[str, Any],
+    batch_manifest: Mapping[str, Any],
+    *,
+    expected_item_ids: set[str],
+) -> None:
+    """Prove an earlier queue projection still matches current item authorities."""
+
+    queue_revision = review_queue.get("manifest_revision")
+    batch_revision = batch_manifest.get("revision")
+    if (
+        not isinstance(queue_revision, int)
+        or not isinstance(batch_revision, int)
+        or queue_revision > batch_revision
+    ):
+        raise ReferenceBatchError("Review Queue revision is invalid or ahead of Batch")
+    queue_items = _item_map(review_queue["items"], label="Review Queue")
+    if set(queue_items) != expected_item_ids:
+        raise ReferenceBatchError("Review Queue has a missing or extra machine-passed item")
+    batch_items = batch_manifest["items"]
+    for item_id, projected in queue_items.items():
+        current = batch_items[item_id]
+        if projected.get("status") != current.get("status"):
+            raise ReferenceBatchError(f"Review Queue item status is stale: {item_id}")
+        projected_artifacts = projected.get("artifacts")
+        current_artifacts = current.get("artifacts")
+        if not isinstance(projected_artifacts, Mapping) or not isinstance(
+            current_artifacts, Mapping
+        ):
+            raise ReferenceBatchError(f"Review Queue item artifacts are invalid: {item_id}")
+        for key, binding in projected_artifacts.items():
+            if current_artifacts.get(key) != binding:
+                raise ReferenceBatchError(
+                    f"Review Queue item artifact is stale: {item_id}/{key}"
+                )
 
 
 def _changed_fields(old: Mapping[str, Any], new: Mapping[str, Any]) -> list[str]:
@@ -572,8 +634,6 @@ def _verify_reference_accounting(
         raise ReferenceBatchError("Batch Report status is not current")
     if batch_report.get("revision") != batch_manifest.get("revision"):
         raise ReferenceBatchError("Batch Report does not bind the current Batch revision")
-    if review_queue.get("manifest_revision") != batch_manifest.get("revision"):
-        raise ReferenceBatchError("Review Queue does not bind the current Batch revision")
 
     input_items = _item_map(input_manifest["items"], label="reference input")
     batch_items = {
@@ -591,6 +651,7 @@ def _verify_reference_accounting(
     stable_failure_count = 0
     diagnostic_log_count = 0
     preflight_parseability_count = 0
+    preflight_parseability_artifacts: list[dict[str, Any]] = []
     machine_passed_ids: set[str] = set()
 
     for item_id in sorted(batch_items):
@@ -628,19 +689,32 @@ def _verify_reference_accounting(
         elif execution == "failed" and validation != "not_run":
             raise ReferenceBatchError(f"Failed extraction has invalid validation state: {item_id}")
 
+        error = current_item.get("error")
+        error_stage = error.get("stage") if isinstance(error, Mapping) else None
         if not skipped:
             _verify_artifact(
                 run_dir,
                 artifacts.get("diagnostic"),
                 label=f"{item_id} diagnostic",
-                required=True,
+                required=error_stage != "preflight",
             )
             _verify_artifact(
                 run_dir,
                 artifacts.get("parseability"),
                 label=f"{item_id} parseability",
-                required=True,
+                required=error_stage != "preflight",
             )
+            if error_stage == "preflight":
+                preflight_parseability_artifacts.append(
+                    {
+                        "item_id": item_id,
+                        **_materialize_planned_artifact(
+                            run_dir,
+                            artifacts.get("parseability"),
+                            label=f"{item_id} parseability",
+                        ),
+                    }
+                )
         if execution == "succeeded":
             for artifact_key in ("payload", "validation", "sampled_content_evidence"):
                 _verify_artifact(
@@ -656,7 +730,6 @@ def _verify_reference_accounting(
                 required=False,
             )
         elif execution == "failed":
-            error = current_item.get("error")
             if not isinstance(error, Mapping):
                 raise ReferenceBatchError(f"Failed item has no error: {item_id}")
             stage = error.get("stage")
@@ -738,9 +811,11 @@ def _verify_reference_accounting(
     }:
         raise ReferenceBatchError("Validation accounting does not match the item closed world")
 
-    review_ids = {item["item_id"] for item in review_queue["items"]}
-    if review_ids != machine_passed_ids:
-        raise ReferenceBatchError("Review Queue has a missing or extra machine-passed item")
+    verify_review_queue_projection(
+        review_queue,
+        batch_manifest,
+        expected_item_ids=machine_passed_ids,
+    )
     if review_queue.get("summary", {}).get("total") != len(machine_passed_ids):
         raise ReferenceBatchError("Review Queue summary has an accounting gap")
     if batch_manifest.get("release_manifests") != []:
@@ -764,6 +839,7 @@ def _verify_reference_accounting(
             "stable_code_and_message": stable_failure_count,
             "matching_diagnostic_path_in_jsonl": diagnostic_log_count,
             "preflight_parseability_path_in_jsonl": preflight_parseability_count,
+            "preflight_parseability_artifacts": preflight_parseability_artifacts,
         },
         "failure_groups": failure_groups(batch_items),
         "machine_passed_item_count": len(machine_passed_ids),
@@ -1111,6 +1187,7 @@ __all__ = [
     "load_regression_rationales",
     "render_json",
     "semantic_sha256",
+    "verify_review_queue_projection",
     "verify_reference_batch_summary",
     "write_reference_batch_summary",
 ]
