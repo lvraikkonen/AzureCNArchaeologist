@@ -3,7 +3,7 @@
 - 裁定编号：`V050-ENTRY-20260811`
 - 日期：2026-08-11
 - 状态：**已人工接受（2026-08-11）**
-- 接受边界：总体入口方向与最终精确定义均已接受；v0.5.1 Execution Plan 已最终冻结，实现尚未开始
+- 接受边界：总体入口方向与最终精确定义均已接受；v0.5.1 已按冻结计划完成实施与技术验收，未扩大本裁定范围
 - 评审分支：`codex/v0.5-development`
 - 评审起点：`master` / `00137ac merge: close v0.4.1 experiments`
 - 适用范围：v0.5.0–v0.5.6 的进入条件、近期顺序和基线纪律；不修改任何既有验收结论
@@ -133,7 +133,7 @@ L3b artifact 必须可以只读展示 Source、Expected、persisted Payload 和 
 
 ## 5. v0.5 入口基线门
 
-本裁定和 `plans/v0.5.1-execution-plan.md` 均已最终接受/冻结；v0.5.1 实现尚未开始。v0.5.2 生产集成开始前，必须完成以下入口基线：
+本裁定和 `plans/v0.5.1-execution-plan.md` 均已最终接受/冻结。以下原定 v0.5.2 生产集成前入口基线已由 v0.5.1 完成，结果见 `reports/v0.5.1/acceptance-status.md`：
 
 1. 保持 v0.4.0、v0.4.1 tag、accepted Batch、`reports/v0.4/` 和 `reports/v0.4.1/` 不变。
 2. 为当前 434 / 383 / 51 计划建立版本化的 v0.5 successor Planning Baseline，不覆盖 `data/baselines/v0.4/`。
@@ -181,4 +181,4 @@ L3b artifact 必须可以只读展示 Source、Expected、persisted Payload 和 
 6. v0.5.2 交付 `api-management` 逐状态只读并排报告；v0.5.3 才扩展到双语 Core 和现有 Workbench；
 7. v0.5.3 基于正式证据另行裁定 L3b Machine Gate，不预先承诺全局激活。
 
-最终人工复核确认上述范围不再需要重新设计，并要求补齐 target architecture、正式运行起点、现有 manifest owner、item-level verdict 聚合、Evidence semantic/projection identity 和 inert report 六项精确定义。四份规划文档已纳入这些补丁，`plans/v0.5.1-execution-plan.md` 现已最终冻结；实现尚未开始。`CONTEXT.md` 等运行状态文档在进入首个实现提交前同步，不回写 v0.4/v0.4.1 历史事实。
+最终人工复核确认上述范围不再需要重新设计，并要求补齐 target architecture、正式运行起点、现有 manifest owner、item-level verdict 聚合、Evidence semantic/projection identity 和 inert report 六项精确定义。四份规划文档和 v0.5.1 实现均已纳入这些补丁；v0.4/v0.4.1 历史事实保持不变。v0.5.2 以 v0.5.1 acceptance artifacts 为输入另行形成 Execution Plan。

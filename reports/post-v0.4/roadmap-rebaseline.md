@@ -278,15 +278,15 @@
 
 ---
 
-## 8. 2026-08-11 v0.5 入口重裁定（入口裁定与 v0.5.1 计划均已冻结）
+## 8. 2026-08-11 v0.5 入口重裁定（v0.5.1 已实施并通过技术验收）
 
 本节按 `reports/post-v0.4/` 的追加纪律记录 v0.4.1 验收后新增的实验和上游回归证据，不改写本文在 2026-08-08 获接受时的历史内容。
 
-- 状态：**`V050-ENTRY-20260811` 与 v0.5.1 Execution Plan 均已于 2026-08-11 获人工接受/最终冻结；实现尚未开始**；
+- 状态：**`V050-ENTRY-20260811` 与 v0.5.1 Execution Plan 均已获人工接受/最终冻结；v0.5.1 已于 2026-08-11 完成实施与技术验收**；
 - 详细裁定：`reports/post-v0.4/v050-entry-decision.md`；
 - 紧接阶段计划：`plans/v0.5.1-execution-plan.md`；
 - 新证据：`reports/post-v0.4/v041-experiments-v050-handoff.md` 及其引用的两轮实验和最新版上游回归；
-- 生效规则：本节取代本文第 4 节中 v0.5.0–v0.5.6 的未来安排、第 6 节对应完成条件和第 7 节中尚未执行的 v0.5 文档顺序；旧文字继续作为 2026-08-08 当时的决策记录保留。v0.5.1 后续实现以已最终冻结的 Execution Plan 为边界。
+- 生效规则：本节取代本文第 4 节中 v0.5.0–v0.5.6 的未来安排、第 6 节对应完成条件和第 7 节中尚未执行的 v0.5 文档顺序；旧文字继续作为 2026-08-08 当时的决策记录保留。v0.5.1 实施结果以已最终冻结的 Execution Plan 和 `reports/v0.5.1/acceptance-status.md` 为准。
 
 ### 8.1 新事实改变了什么
 
@@ -358,11 +358,10 @@ L3a 和 L3b 必须有独立 verdict、coverage、bindings 和 evidence，不能�
 
 ### 8.6 修订后的文档顺序
 
-1. `v050-entry-decision.md`、本节与 `plans/v0.5.1-execution-plan.md` 均已获人工接受/最终冻结；v0.5.1 实现尚未开始。
-2. 进入首个实现提交前同步必要的 `CONTEXT.md`；不回写 v0.4/v0.4.1 历史报告。
-3. v0.5.1 只编写该阶段必需的 successor baseline、最小 ADR/契约、轻量防火墙、基础反证、只读 Evidence 投影和 acceptance artifacts，不提前写 v0.5.2–v0.5.6 的完整 execution plan。
-4. v0.5.2 计划以 v0.5.1 accepted baseline/contract 为输入；v0.5.3 计划以首个正式闭环结果为输入。
-5. v0.5.4–v0.5.6 的具体问题组名称必须等 v0.5.3 当前完整 Batch 后再冻结；不得为了保留旧版本标题忽略最新事实。
+1. `v050-entry-decision.md`、本节与 `plans/v0.5.1-execution-plan.md` 均已获人工接受/最终冻结；v0.5.1 实施和 acceptance artifacts 已完成。
+2. v0.5.1 没有回写 v0.4/v0.4.1 历史报告；successor baseline、最小 ADR/契约、轻量防火墙、基础反证和只读 Evidence 投影均保留在 v0.5 命名空间。
+3. v0.5.2 计划以 v0.5.1 accepted baseline/contract 和正式 reference Batch 为输入；v0.5.3 计划以首个正式闭环结果为输入。
+4. v0.5.4–v0.5.6 的具体问题组名称必须等 v0.5.3 当前完整 Batch 后再冻结；不得为了保留旧版本标题忽略最新事实。
 
 Machine Validation Report 2.0、Finding Disposition、复杂视觉审核、多用户 Dashboard、外部 CI gate、Schema 大合并、完整 evidence lifecycle、Release 绑定/回填、streaming 和真实发布继续按本文原延期决定执行。
 
@@ -370,4 +369,4 @@ Machine Validation Report 2.0、Finding Disposition、复杂视觉审核、多�
 
 2026-08-11 人工评审接受 `V050-ENTRY-20260811` 的总体方向，并确认 v0.5.1 已按最小正式消费者成功收缩。两轮实验已关闭“独立方法是否可行”的探索问题，但不直接升级为正式 L3b，也不进入 Review、Release 或 Publication。v0.5.1 只冻结 L3b 与现有机器验证并行存在的声明关系、契约和证据形式；从 v0.5.2 开始对正式 Batch 并行记录 L3b；v0.5.3 扩大正式覆盖，并裁定 L3b 是否进入 Machine Gate。
 
-最终复核要求的六项精确定义——v1.0 target architecture、正式运行起点、现有 manifest owner、item-level verdict 聚合、Evidence semantic/projection identity 和 inert report——均已纳入四份规划文档。v0.5.1 Execution Plan 因此最终冻结；实现尚未开始，不需要再进行范围或架构重审。
+最终复核要求的六项精确定义——v1.0 target architecture、正式运行起点、现有 manifest owner、item-level verdict 聚合、Evidence semantic/projection identity 和 inert report——均已纳入规划和实现。v0.5.1 已在完整 reference Batch 上通过技术验收；下一步只需形成并评审 v0.5.2 Execution Plan，不需要重开 v0.5.1 范围或架构审查。

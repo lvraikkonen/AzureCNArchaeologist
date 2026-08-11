@@ -1,0 +1,201 @@
+{
+  "schema_version": "v0.5.1-acceptance-status-1.0",
+  "generated_at": "2026-08-11T17:48:48Z",
+  "version": "0.5.1",
+  "result": "accepted",
+  "branch": "codex/v0.5-development",
+  "tag": {
+    "name": "v0.5.1",
+    "kind": "local_annotated",
+    "created_after_clean_replay": true
+  },
+  "execution_plan": {
+    "path": "plans/v0.5.1-execution-plan.md",
+    "sha256": "0f0dbffa21dadb26224b3d896b7a2e11880910479e0f6eda4f0f319b01997c64"
+  },
+  "scope": {
+    "entry_planning_and_core_successors_frozen": true,
+    "minimal_l3a_l3b_contract_frozen": true,
+    "formal_batch_l3b_recorded": false,
+    "machine_gate_policy_changed": false,
+    "workbench_integrated": false,
+    "review_release_upload_policy_changed": false
+  },
+  "planning_baseline": {
+    "candidate_authorization_sha256": "1ff8d60fba65ddc9fc26123a2eb6337ecff36a5e33638f88ae4e7eea57670344",
+    "path": "data/baselines/v0.5/planning-baseline.json",
+    "sha256": "7855b23961faac8ece8505a2ad09e6964d28298167331e83e2ca14c02e350958",
+    "accounting": {
+      "total": 434,
+      "runnable": 383,
+      "skipped": 51,
+      "known_unsupported": 50,
+      "source_unavailable": 1
+    },
+    "new_runnable_item_ids": [
+      "en-us/cdn",
+      "en-us/data-transfer",
+      "zh-cn/cdn",
+      "zh-cn/data-transfer"
+    ]
+  },
+  "core_successor": {
+    "fixture": {
+      "candidate_authorization_sha256": "f6f8f82224408472aff308abd399ae00857d62bab2960d650cb888d0638dbb5c",
+      "path": "tests/fixtures/v0.5/core/fixture-manifest.json",
+      "sha256": "881ca58bf893d5fe32e2bd65d6e508cf21fa72e5fec0ad35ff09a97eea0cdd67",
+      "item_count": 8
+    },
+    "baseline": {
+      "candidate_authorization_sha256": "da8cbba1aefb0bf63bbadc49a41107c6b60c48dc7962af20debe6902321075b6",
+      "path": "tests/fixtures/v0.5/core/baselines/baseline-manifest.json",
+      "sha256": "c7a58b61e943f0918ec960ccdf6fb010dfa0d01a5b265817f8f9ecc5ae6fb622",
+      "item_count": 8
+    },
+    "determinism": {
+      "path": "reports/v0.5.1/core-determinism-comparison.json",
+      "sha256": "857fc230adf8791be6b00d737ca22dbd3e4993a4f9e74c1f2ad288aa9d86a355",
+      "semantic_sha256": "e8303965b394a5bf88333b96cac7d69bbe64b16f2c4e1d3036c1c9118cefe071",
+      "left_batch_id": "20260811T161324Z-64d20210",
+      "right_batch_id": "20260811T161405Z-7b44096c"
+    }
+  },
+  "minimal_contract": {
+    "adr": {
+      "path": "docs/adr/0091-separate-strategy-replay-from-independent-source-fidelity.md",
+      "sha256": "bffb5a74643638f516f63e1851aec321e07062550793a5cbe7758a6d2c010210"
+    },
+    "profile": {
+      "path": "data/configs/independent-fidelity-profiles/v0.5.1-minimal.json",
+      "sha256": "7a21615b2a6aea0321b95f666843beee481faa2368b6bffd2c75a02e70a628ba"
+    },
+    "schemas": [
+      {
+        "path": "schemas/independent-fidelity-profile-1.0.schema.json",
+        "sha256": "0f1ed0e70ae5ceeda2e14f48a36e2b0619d5de60289d9d3467eb9c950de0b25b"
+      },
+      {
+        "path": "schemas/independent-fidelity-basis-1.0.schema.json",
+        "sha256": "89c12f5c6ddabe1e2c5cd077ce0c50b5a798dd594947938636c21a2e99f6b1c0"
+      },
+      {
+        "path": "schemas/independent-fidelity-evidence-1.0.schema.json",
+        "sha256": "b284bdff0104e99be7d39405fc6970bf9e6a79af2f2c1c5d129689bd16dc06ec"
+      }
+    ],
+    "verdicts": [
+      "passed",
+      "failed",
+      "blocked",
+      "not_qualified",
+      "not_run"
+    ],
+    "executed_verdict_precedence": "failed > blocked > passed",
+    "algorithm_versions": [
+      "reconstruction_profile_version",
+      "wire_transform_version",
+      "comparison_version"
+    ]
+  },
+  "independence_and_counterexamples": {
+    "static_dependency_firewall": "passed",
+    "runtime_sentinel": "passed",
+    "state_swap_detected": "passed",
+    "missing_source_node_detected": "passed",
+    "extra_adjacent_node_detected": "passed",
+    "declared_and_undeclared_wire_transform_distinguished": "passed",
+    "l3a_passed_l3b_failed_constructed": "passed",
+    "inert_review_projection": "passed",
+    "semantic_projection_identity_separation": "passed"
+  },
+  "reference_batch": {
+    "batch_id": "20260811T171630Z-e80afabe",
+    "provenance_commit": "68fc8fa5acd097f97fb2ff3bce3cf8f53c519bdb",
+    "status": "completed_with_failures",
+    "revision": 1483,
+    "accounting": {
+      "total": 434,
+      "runnable": 383,
+      "skipped": 51,
+      "execution_succeeded": 319,
+      "execution_failed": 64,
+      "validation_passed": 318,
+      "validation_failed": 1,
+      "validation_not_run": 64,
+      "review_pending": 318,
+      "review_approved": 0,
+      "review_rejected": 0,
+      "released": 0,
+      "published": 0
+    },
+    "artifacts": {
+      "input_manifest": {
+        "path": "runs/20260811T171630Z-e80afabe/input-manifest.json",
+        "sha256": "ed0d8968e0b247e4bfcb11fecc88ad5db26f2be7cd3047e8d2018935bc62ca53"
+      },
+      "batch_manifest": {
+        "path": "runs/20260811T171630Z-e80afabe/batch-manifest.json",
+        "revision": 1483,
+        "sha256": "c7d98dee30f67da391ce4291283d00d710b7162d1b4a0c969b41c126b0048a2f"
+      },
+      "batch_report": {
+        "path": "runs/20260811T171630Z-e80afabe/batch-report.json",
+        "revision": 1483,
+        "sha256": "29584ddc0b4deecd2deecb9e453ce92288ec579ce19fdfbfa4b96d8385b75d02"
+      },
+      "review_queue": {
+        "path": "runs/20260811T171630Z-e80afabe/review/review-queue.json",
+        "manifest_revision": 1480,
+        "sha256": "5198881b12bced4d11aafab7be743a0b069c523c5aea76c274d57021b711976c"
+      },
+      "jsonl": {
+        "path": "runs/20260811T171630Z-e80afabe/logs/pipeline.jsonl",
+        "sha256": "53572fd2296ee5176beeee7f6d71bd10272b09bf8f034a00cdc7128b302a1cb0"
+      }
+    }
+  },
+  "reference_audit": {
+    "path": "reports/v0.5.1/reference-batch-summary.json",
+    "sha256": "31a77b8031bbdd33d8697e735af396b2d4fdeaace738dba864531fa22b153917",
+    "semantic_sha256": "20ee3d585df9afe1ef3b839c7c03a198ab635fe63f681b034b810fb2b18d3a6b",
+    "result": "qualified",
+    "queue_gap_count": 0,
+    "unexplained_regression_count": 0,
+    "regression_rationales": {
+      "path": "reports/v0.5.1/reference-regression-rationales.json",
+      "sha256": "86ad90244714eeeda2389285773d2b1971436f3c9913a265b2491c9542aabd85"
+    }
+  },
+  "automation": {
+    "pytest": "980 passed, 229 subtests passed",
+    "catalog_build": "passed; 211 products; digest a293ec6a4f52ce18e651a9facd2113b2adfe68771e811e9a2985c6519e70af1a",
+    "source_html_findings": "passed; 2 confirmed, 9 other blocking, 4 needs review",
+    "soft_category_findings": "passed; 0 duplicate pairs, 38 rows with duplicate table IDs",
+    "git_diff_check": "passed",
+    "uv_lock_check": "passed",
+    "core_fixture": "passed",
+    "core_baseline": "passed",
+    "core_determinism": "passed",
+    "reference_report_replay": "passed",
+    "static_dependency_firewall": "passed",
+    "runtime_sentinel": "passed"
+  },
+  "boundaries": {
+    "accepted_v0_4_1_artifacts_modified": false,
+    "formal_l3b_evidence_count": 0,
+    "l4_review_decisions_written": 0,
+    "release_built": false,
+    "upload_executed": false
+  },
+  "known_limitations": [
+    "v0.5.1 freezes the L3b contract and fixture proof only; no formal Batch item has an L3b verdict.",
+    "The current Machine Gate, Review, Release, upload, and Approval Eligibility policies remain unchanged.",
+    "The reference Batch retains 64 preflight/extraction failures and one validation failure with stable evidence; accepted means complete explained accounting, not a green Batch.",
+    "en-us/cache extracts five region groups but validation blocks them as content_group_not_price_bearing.",
+    "Workbench integration and the first formal api-management side-by-side report belong to v0.5.2-v0.5.3."
+  ],
+  "handoff": {
+    "path": "reports/v0.5.1/v0.5.2-handoff.md",
+    "sha256": "30bee5477c0d7a640d3c0888d4d6fbdba8df17d4c356f4299999a01ce5300bf8"
+  }
+}
