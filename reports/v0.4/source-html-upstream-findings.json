@@ -3,7 +3,7 @@
   "report_scope": "v0.4_upstream_source_html_structure_findings_inventory",
   "generator": "scripts/build_v04_source_html_findings.py",
   "auditor_version": "exact-owned-boundaries-static-page-global-ids-and-post-selector-scope-v4",
-  "product_index_source_digest": "sha256:bc359ef4a5faf011a44dab05696073528e6ac3d1d9de10fe2976380a93bda875",
+  "product_index_source_digest": "sha256:06853dee2b4b03b4d08ca56be12eb096878e8c4a5e52f712a5754f20e8e6ac30",
   "survey": {
     "supported_product_definitions": 184,
     "languages": [

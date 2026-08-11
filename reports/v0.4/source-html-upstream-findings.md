@@ -4,7 +4,7 @@
 
 ## 全量调查
 
-- Product Index：`sha256:bc359ef4a5faf011a44dab05696073528e6ac3d1d9de10fe2976380a93bda875`
+- Product Index：`sha256:06853dee2b4b03b4d08ca56be12eb096878e8c4a5e52f712a5754f20e8e6ac30`
 - 已调查 canonical 双语源：368；其中 Simple：62
 - 源身份集合 SHA-256：`5f974a63918b21fc50b46bfe9e63bc195f432d3ef4b36c829be4640f0a81b710`
 - 跨 region/software/category 状态面板的重复 ID 不按静态 `baseContent` 重复处理。

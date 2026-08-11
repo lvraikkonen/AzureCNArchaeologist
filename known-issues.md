@@ -277,6 +277,15 @@
 | `kubernetes-service` | `ProductDescription` 或 `baseContent` 缺少 pricing-page-content 和 table | expected publishable content coverage |
 | `hdinsight` | ProductDescription 缺少 section | section completeness |
 
+`service-bus` 子项已在 2026-08-10 的 v0.4.1 实验工作树中完成技术修复：最终 Business
+Payload 规范化边界按 `css-generated-semantics-v1` 将 live 空 `i.icon-tick` 转为文字
+`✓`：中文 22 个、英文 21 个；注释不转换。双语重新抽取及 persisted-payload 验证通过，
+中文独立 DOM
+实验在转换后的预期线格式上达到 1/1 精确一致。证据见
+`reports/post-v0.4/v041-zh-cn-dom-payload-experiment.md`。由于本表汇总的是尚未绑定当前
+source/payload SHA 的 legacy 人工记录，该行暂不删除；待 clean-worktree 新 Batch 与正式
+人工复核绑定后再将其置为 `VERIFIED`。
+
 - 解决标准：
   1. 修复抽取或策略配置；
   2. 为同类遗漏、误放或多提新增机器验证规则和回归测试；

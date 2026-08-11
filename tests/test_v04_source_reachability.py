@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 
 import pytest
 
 from src.core.canonical_input import CanonicalHtmlInput, CanonicalInputLoader
 from src.core.cms_state_contract import CmsState
+from src.core.extraction_coordinator import ExtractionCoordinator
 from src.core.product_manager import ProductManager
 from src.core.source_reachability import (
     SourceReachability,
@@ -28,6 +30,7 @@ def real_reachability() -> dict[tuple[str, str], SourceReachability]:
         for product in (
             "api-management",
             "app-service",
+            "azure-firewall",
             "sql-database",
             "virtual-machine-scale-sets",
             "machine-learning",
@@ -288,6 +291,74 @@ def test_app_service_zh_uses_unambiguous_desktop_default(
 
 
 @pytest.mark.parametrize("language", ["zh-cn", "en-us"])
+def test_azure_firewall_uses_one_hidden_software_scope(
+    real_reachability: dict[tuple[str, str], SourceReachability],
+    language: str,
+) -> None:
+    result = real_reachability[("azure-firewall", language)]
+
+    assert tuple(
+        definition.filter_key
+        for definition in result.filter_definitions_union
+    ) == ("region",)
+    assert len(result.ordered_states) == 5
+    assert result.default_state == CmsState((
+        ("region", "north-china3"),
+    ))
+    assert all(
+        state.source_evidence.software_value == "azure-firewall"
+        and state.source_evidence.software_visible is False
+        and state.source_evidence.software_panel_id == "tabContent1"
+        for state in result.ordered_states
+    )
+    assert result.unreachable_panel_ids == ()
+
+
+def test_azure_firewall_zh_extracts_region_only_payload(
+    tmp_path: Path,
+) -> None:
+    coordinator = ExtractionCoordinator(
+        str(tmp_path),
+        deferred_validation=True,
+    )
+    extracted = coordinator.coordinate_extraction(
+        "azure-firewall",
+        "zh-cn",
+        strategy="region_filter",
+    )
+
+    assert extracted.execution_succeeded
+    assert extracted.payload_path is not None
+    payload = json.loads(
+        extracted.payload_path.read_text(encoding="utf-8")
+    )
+    assert payload["baseContent"] == ""
+    assert [
+        section["sectionType"] for section in payload["commonSections"]
+    ] == ["Banner", "ProductDescription", "Qa"]
+    assert len(payload["contentGroups"]) == 5
+    criteria = [
+        json.loads(group["filterCriteriaJson"])
+        for group in payload["contentGroups"]
+    ]
+    assert all(
+        len(item) == 1
+        and set(item[0]) == {"filterKey", "matchValues"}
+        and item[0]["filterKey"] == "region"
+        for item in criteria
+    )
+    filters = json.loads(payload["pageConfig"]["filtersJsonConfig"])
+    assert [
+        definition["filterKey"]
+        for definition in filters["filterDefinitions"]
+    ] == ["region"]
+
+    validated = coordinator.validate_persisted_payload(extracted)
+    assert validated.succeeded
+    assert validated.sidecar["status"]["validation"] == "passed"
+
+
+@pytest.mark.parametrize("language", ["zh-cn", "en-us"])
 def test_machine_learning_only_traverses_linux_panel(
     real_reachability: dict[tuple[str, str], SourceReachability],
     language: str,
@@ -323,6 +394,7 @@ def test_bilingual_machine_relations_match(
     for product in (
         "api-management",
         "app-service",
+        "azure-firewall",
         "sql-database",
         "virtual-machine-scale-sets",
         "machine-learning",

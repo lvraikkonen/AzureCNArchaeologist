@@ -16,8 +16,12 @@ from src.utils.content.content_utils import (
 from src.utils.content.section_extractor import (
     contains_common_section_boundary,
     is_exact_common_section_boundary,
+    is_price_bearing_pricing_details_section,
 )
-from src.utils.html.cleaner import clean_html_content
+from src.utils.html.cleaner import (
+    clean_html_content,
+    materialize_css_generated_semantics,
+)
 
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _CATEGORY_WRAPPER_CLASSES = frozenset({"tab-content", "tabContent"})
@@ -381,6 +385,12 @@ def extract_intrinsic_simple_page_global_content(
             _validate_globally_unique_ids(soup, technical_selector)
             return clean_html_content(str(technical_selector))
 
+        direct_pricing_details = (
+            _extract_direct_pricing_details_page_global_content(soup)
+        )
+        if direct_pricing_details is not None:
+            return direct_pricing_details
+
         all_pricing_sections = soup.find_all(
             "div", class_=_PAGE_GLOBAL_SECTION_CLASS
         )
@@ -437,6 +447,119 @@ def extract_intrinsic_simple_page_global_content(
         raise ScopedSourceContentError(
             f"Unable to resolve intrinsic Simple page-global content: {error}"
         ) from error
+
+
+def _extract_direct_pricing_details_page_global_content(
+    soup: BeautifulSoup,
+) -> str | None:
+    """Resolve one price-bearing section directly between Banner and FAQ/SLA.
+
+    Some Simple pages do not use a ``technical-azure-selector``.  Their pricing
+    body is still intrinsic page-global content when the source itself proves a
+    closed boundary: one exact, titled pricing-table section directly follows
+    the Banner, and every later visible sibling is an exact common section.
+    """
+
+    banners = soup.select("div.common-banner")
+    if len(banners) != 1:
+        return None
+    banner = banners[0]
+    parent = banner.parent
+    if (
+        not isinstance(parent, Tag)
+        or "pure-content" not in (parent.get("class") or ())
+    ):
+        return None
+
+    candidate: Tag | None = None
+    found_common_boundary = False
+    for sibling in banner.next_siblings:
+        if isinstance(sibling, Comment):
+            continue
+        if not isinstance(sibling, Tag):
+            if str(sibling).strip():
+                if candidate is None:
+                    return None
+                raise ScopedSourceContentError(
+                    "Non-whitespace text crosses the direct Simple pricing "
+                    "boundary"
+                )
+            continue
+        if sibling.name in {"script", "style", "template", "tags"}:
+            continue
+
+        text = sibling.get_text(" ", strip=True)
+        has_visible_structure = sibling.find(
+            ["img", "video", "audio", "table", "iframe"]
+        ) is not None
+        if not text and not has_visible_structure:
+            continue
+
+        if contains_common_section_boundary(sibling):
+            if candidate is None:
+                return None
+            if not is_exact_common_section_boundary(sibling):
+                raise ScopedSourceContentError(
+                    "A common section after the direct Simple pricing body "
+                    "also contains unclassified visible content"
+                )
+            found_common_boundary = True
+            continue
+
+        if candidate is None:
+            if not is_price_bearing_pricing_details_section(sibling):
+                return None
+            candidate = sibling
+            continue
+
+        boundary_location = (
+            "after" if found_common_boundary else "before"
+        )
+        raise ScopedSourceContentError(
+            "Unclassified visible content appears "
+            f"{boundary_location} the direct Simple common-section boundary"
+        )
+
+    if candidate is None or not found_common_boundary:
+        return None
+
+    classes = {
+        str(value).casefold() for value in candidate.get("class", ())
+    }
+    style = "".join(
+        str(candidate.get("style", "")).casefold().split()
+    )
+    if (
+        candidate.has_attr("hidden")
+        or str(candidate.get("aria-hidden", "")).casefold() == "true"
+        or "display:none" in style
+        or "visibility:hidden" in style
+        or classes.intersection({"hidden", "d-none"})
+    ):
+        raise ScopedSourceContentError(
+            "Hidden pricing-page-section cannot establish a direct Simple "
+            "business-content boundary"
+        )
+    if candidate.find(
+        [
+            "script",
+            "style",
+            "noscript",
+            "template",
+            "nav",
+            "form",
+            "select",
+            "button",
+            "iframe",
+        ]
+    ) is not None:
+        raise ScopedSourceContentError(
+            "Direct Simple pricing content contains executable, interactive, "
+            "or navigation content"
+        )
+
+    _validate_globally_unique_ids(soup, candidate)
+    return clean_html_content(str(candidate))
 
 
 def extract_post_selector_page_global_content(
@@ -638,7 +761,9 @@ def resolve_page_global_base_content(
                 "assigning it to a CMS field"
             )
         if semantic_strategy == "simple_static":
-            return extract_intrinsic_simple_page_global_content(soup)
+            return materialize_css_generated_semantics(
+                extract_intrinsic_simple_page_global_content(soup)
+            )
         return ""
     if not isinstance(policy, Mapping):
         raise ScopedSourceContentError(
@@ -703,8 +828,10 @@ def resolve_page_global_base_content(
         and source_boundary != STATIC_FORMAL_SELECTOR_PAGE_GLOBAL_BOUNDARY
     ):
         intrinsic = extract_intrinsic_simple_page_global_content(soup)
-        return clean_html_content(intrinsic + wire_html)
-    return wire_html
+        return materialize_css_generated_semantics(
+            clean_html_content(intrinsic + wire_html)
+        )
+    return materialize_css_generated_semantics(wire_html)
 
 
 def extract_software_scoped_prefix(

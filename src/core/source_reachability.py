@@ -963,11 +963,17 @@ class SourceReachabilityResolver:
         return (_SoftwareScope(None, root, False),)
 
     def _top_level_panels(self, root: Tag) -> dict[str, Tag]:
+        """Index direct software targets without crossing nested tab scopes."""
+
         tab_content = root.find("div", class_="tab-content")
         if tab_content is None:
             return {}
         panels: list[tuple[str, Tag]] = []
-        for panel in tab_content.find_all("div", class_="tab-panel"):
+        # Frozen sources use tab-panel, tab-control-container, and tab-content
+        # for software targets.  Direct-child placement plus tabContentN is the
+        # common identity; a class-only recursive search misclassifies nested
+        # content panels that reuse the outer software id.
+        for panel in tab_content.find_all("div", recursive=False):
             panel_id = self._tag_id(panel)
             if panel_id is not None and _PANEL_ID.fullmatch(panel_id):
                 panels.append((panel_id, panel))

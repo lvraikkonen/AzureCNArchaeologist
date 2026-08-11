@@ -768,6 +768,37 @@ def test_databricks_zh_source_uses_only_exact_safe_qa_nodes():
     assert "databricks-data-analysis-n3" not in qa_content
 
 
+def test_azure_firewall_ul_is_the_product_description() -> None:
+    source_path = (
+        Path(__file__).parents[1]
+        / "data"
+        / "prod-html"
+        / "zh-cn"
+        / "pricing"
+        / "azure-firewall.html"
+    )
+    soup = BeautifulSoup(source_path.read_bytes(), "html.parser")
+
+    sections = SectionExtractor().extract_all_sections(soup)
+
+    assert [section["sectionType"] for section in sections] == [
+        "Banner",
+        "ProductDescription",
+        "Qa",
+    ]
+    description = next(
+        section["content"]
+        for section in sections
+        if section["sectionType"] == "ProductDescription"
+    )
+    description_soup = BeautifulSoup(description, "html.parser")
+    description_root = description_soup.find("ul", class_="ul")
+    assert description_root is not None
+    assert description_root.parent is description_soup
+    assert "本机防火墙功能" in description_root.get_text(" ", strip=True)
+    assert description_soup.select_one(".technical-azure-selector") is None
+
+
 def test_exact_faq_documentation_wrapper_is_emitted_whole() -> None:
     soup = BeautifulSoup(
         """

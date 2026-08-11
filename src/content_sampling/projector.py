@@ -20,6 +20,7 @@ from src.strategies.complex_content_strategy import ComplexContentStrategy
 from src.strategies.region_filter_strategy import RegionFilterStrategy
 from src.strategies.simple_static_strategy import SimpleStaticStrategy
 from src.strategies.support_article_strategy import SupportArticleStrategy
+from src.utils.html.cleaner import materialize_cms_html_fields
 from src.utils.media.image_processor import preprocess_image_paths
 
 
@@ -59,6 +60,7 @@ def _normalize_business_fields(
     payload["slug"] = definition["slug"]
     if definition["page_model"] == "FlexibleContentPage":
         payload["language"] = language
+    materialize_cms_html_fields(payload, definition["page_model"])
     return payload
 
 

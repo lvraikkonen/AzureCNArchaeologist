@@ -32,6 +32,10 @@ FAQ_HREF_PATTERN = re.compile(
     r"(?:^|[/_.-])faq(?:$|[/_.?#-])",
     re.IGNORECASE,
 )
+PRICING_DETAILS_HEADING_PATTERN = re.compile(
+    r"(?:定价详细信息|pricing\s+details?)",
+    re.IGNORECASE,
+)
 
 
 def owns_sla_heading(section: Tag) -> bool:
@@ -53,6 +57,38 @@ def owns_sla_heading(section: Tag) -> bool:
             and SLA_HEADING_PATTERN.search(
                 heading.get_text(" ", strip=True)
             )
+        ):
+            return True
+    return False
+
+
+def is_price_bearing_pricing_details_section(section: Tag) -> bool:
+    """Return whether one exact section owns a titled pricing table."""
+
+    if (
+        section.name != "div"
+        or set(section.get("class") or ()) != {"pricing-page-section"}
+        or section.find("table") is None
+        or section.select_one(
+            ".more-detail, .technical-azure-selector, .pricing-detail-tab"
+        )
+        is not None
+        or owns_sla_heading(section)
+    ):
+        return False
+
+    for heading in section.find_all(
+        ["h1", "h2", "h3", "h4", "h5", "h6"]
+    ):
+        owner = heading.find_parent(
+            "div", class_="pricing-page-section"
+        )
+        heading_text = heading.get_text(" ", strip=True).strip(
+            " \t\r\n:："
+        )
+        if (
+            owner is section
+            and PRICING_DETAILS_HEADING_PATTERN.fullmatch(heading_text)
         ):
             return True
     return False
@@ -404,6 +440,20 @@ class SectionExtractor:
                 if (main_content_selector and current == main_content_selector):
                     break
 
+                if (
+                    isinstance(current, Tag)
+                    and is_price_bearing_pricing_details_section(current)
+                ):
+                    logger.info(
+                        "⏩ 跳过具有自有定价标题和价格表的正式定价主体"
+                    )
+                    continue
+                if (
+                    isinstance(current, Tag)
+                    and is_exact_common_section_boundary(current)
+                ):
+                    continue
+
                 current_str = str(current)
                 if ('technical-azure-selector' in current_str and
                     'pricing-detail-tab' in current_str):
@@ -468,6 +518,17 @@ class SectionExtractor:
                 # 如果遇到technical-azure-selector，停止收集
                 if (main_content_selector and current == main_content_selector):
                     break
+
+                if (
+                    isinstance(current, Tag)
+                    and is_price_bearing_pricing_details_section(current)
+                ):
+                    continue
+                if (
+                    isinstance(current, Tag)
+                    and is_exact_common_section_boundary(current)
+                ):
+                    continue
 
                 current_str = str(current)
                 if ('technical-azure-selector' in current_str and

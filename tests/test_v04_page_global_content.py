@@ -20,6 +20,7 @@ from src.core.scoped_source_content import (
     resolve_page_global_base_content,
 )
 from src.strategies.complex_content_strategy import ComplexContentStrategy
+from src.utils.content.section_extractor import SectionExtractor
 from src.utils.html.cleaner import clean_html_content
 
 
@@ -55,6 +56,10 @@ EXPECTED_SERVICE_BUS = {
         "wire_html_sha256": (
             "9d9cce97d44e236e58d7461aa4c5425f061afabcdfbcacab8c65bae7ae725374"
         ),
+        "cms_html_sha256": (
+            "be16aa693da63b364093256528454a1f16b96fdca711b7be20523f243bcd83e4"
+        ),
+        "live_tick_count": 22,
     },
     "en-us": {
         "source_html_sha256": (
@@ -63,6 +68,10 @@ EXPECTED_SERVICE_BUS = {
         "wire_html_sha256": (
             "aa02090d85e9bac31e7c23e3f7d2863c2e6d39db78d7443f2d80d28f5b3e2cca"
         ),
+        "cms_html_sha256": (
+            "8833f9a6b4746d7bfc4747a9d42d82698c93e96fa5551f89de0e5a87d287639e"
+        ),
+        "live_tick_count": 21,
     },
 }
 EXPECTED_VMSS = {
@@ -80,6 +89,26 @@ EXPECTED_VMSS = {
         ),
         "wire_html_sha256": (
             "d520cd0ddcd5eb83c0e629666aaae239ce0ee9c5a09705ffefe22da293d508f7"
+        ),
+    },
+}
+EXPECTED_MACHINE_LEARNING = {
+    "zh-cn": {
+        "heading": "其他信息",
+        "source_html_sha256": (
+            "602acf7a66f99a06baa640ecb7874fc33f6d747225d108d970d9a1a373aa3e73"
+        ),
+        "wire_html_sha256": (
+            "1e630cd1326d8978b3eceaf922cdeb095d1183be6bcbed7d5647c8956d94042b"
+        ),
+    },
+    "en-us": {
+        "heading": "Additional Information",
+        "source_html_sha256": (
+            "6cc3b2aa0e551ae0303e39be6a152d02435aa9750dcf9da974ea15fbba9f6095"
+        ),
+        "wire_html_sha256": (
+            "0be010ea99529cc4d3311e3dc2de71c8bb422b6a92a01f4267a3aed5cff91249"
         ),
     },
 }
@@ -306,32 +335,37 @@ def test_cloud_services_bilingual_fragment_is_exact_and_not_qa(
     assert "支持和服务级别协议" not in wire_html
 
 
-@pytest.mark.parametrize(
-    "product_key",
-    ["machine-learning"],
-)
 @pytest.mark.parametrize("language", ["zh-cn", "en-us"])
-def test_unconfirmed_similar_products_remain_unclassified(
-    product_key: str,
+def test_machine_learning_page_global_content_is_frozen(
     language: str,
 ) -> None:
     manager = ProductManager()
-    definition = manager.get_product_config(product_key)
-    source_path = manager.get_html_file_path(product_key, language)
+    definition = manager.get_product_config("machine-learning")
+    source_path = manager.get_html_file_path("machine-learning", language)
     assert source_path is not None
     soup = BeautifulSoup(Path(source_path).read_bytes(), "html.parser")
 
-    assert extract_post_selector_page_global_content(soup) is not None
-    strategy = object.__new__(ComplexContentStrategy)
-    strategy.product_config = definition
-    with pytest.raises(
-        ScopedSourceContentError,
-        match="Unclassified visible content",
-    ):
-        strategy._extract_page_global_base_content(
-            soup,
-            language=language,
-        )
+    fragment = extract_post_selector_page_global_content(soup)
+    expected = EXPECTED_MACHINE_LEARNING[language]
+    assert fragment is not None
+    assert fragment.source_boundary == POST_SELECTOR_PAGE_GLOBAL_BOUNDARY
+    assert fragment.fragment_count == 1
+    assert fragment.source_html_sha256 == expected["source_html_sha256"]
+
+    wire_html = resolve_page_global_base_content(
+        soup,
+        definition,
+        language=language,
+    )
+    assert (
+        hashlib.sha256(wire_html.encode("utf-8")).hexdigest()
+        == expected["wire_html_sha256"]
+    )
+    wire_soup = BeautifulSoup(wire_html, "html.parser")
+    heading = wire_soup.find(["h1", "h2", "h3", "h4", "h5", "h6"])
+    assert heading is not None
+    assert heading.get_text(" ", strip=True) == expected["heading"]
+    assert "more-detail" not in wire_html
 
 
 @pytest.mark.parametrize("language", ["zh-cn", "en-us"])
@@ -384,6 +418,15 @@ def test_service_bus_static_page_global_content_is_frozen(
         fragment.source_html_sha256
         == EXPECTED_SERVICE_BUS[language]["source_html_sha256"]
     )
+    source_wire_html = clean_html_content(fragment.source_html)
+    assert hashlib.sha256(source_wire_html.encode("utf-8")).hexdigest() == (
+        EXPECTED_SERVICE_BUS[language]["wire_html_sha256"]
+    )
+    assert "✓" not in source_wire_html
+    assert len(BeautifulSoup(source_wire_html, "html.parser").select(
+        "i.icon-tick"
+    )) == EXPECTED_SERVICE_BUS[language]["live_tick_count"]
+
     wire_html = resolve_page_global_base_content(
         soup,
         definition,
@@ -391,8 +434,38 @@ def test_service_bus_static_page_global_content_is_frozen(
     )
     assert (
         hashlib.sha256(wire_html.encode("utf-8")).hexdigest()
-        == EXPECTED_SERVICE_BUS[language]["wire_html_sha256"]
+        == EXPECTED_SERVICE_BUS[language]["cms_html_sha256"]
     )
+    assert wire_html.count("✓") == (
+        EXPECTED_SERVICE_BUS[language]["live_tick_count"]
+    )
+    assert not BeautifulSoup(wire_html, "html.parser").select(
+        "i.icon-tick"
+    )
+    assert wire_html.count("icon-tick") == 4
+
+
+@pytest.mark.parametrize("language", ["zh-cn", "en-us"])
+def test_service_bus_final_cms_payload_materializes_tick_semantics(
+    language: str,
+    tmp_path: Path,
+) -> None:
+    result = ExtractionCoordinator(str(tmp_path)).coordinate_extraction(
+        "service-bus",
+        language,
+    )
+
+    assert result.exit_code == 0
+    assert result.payload is not None
+    assert result.sidecar["status"]["validation"] == "passed"
+    base_content = result.payload["baseContent"]
+    assert base_content.count("✓") == (
+        EXPECTED_SERVICE_BUS[language]["live_tick_count"]
+    )
+    assert not BeautifulSoup(base_content, "html.parser").select(
+        "i.icon-tick"
+    )
+    assert base_content.count("icon-tick") == 4
 
 
 @pytest.mark.parametrize("language", ["zh-cn", "en-us"])
@@ -463,6 +536,73 @@ def test_simple_pages_without_proven_business_boundary_fail_closed(
             definition,
             language=language,
         )
+
+
+@pytest.mark.parametrize("language", ["zh-cn", "en-us"])
+def test_ip_addresses_uses_direct_pricing_body_without_common_duplication(
+    language: str,
+) -> None:
+    manager = ProductManager()
+    definition = manager.get_product_config("ip-addresses")
+    source_path = manager.get_html_file_path("ip-addresses", language)
+    assert source_path is not None
+    soup = BeautifulSoup(Path(source_path).read_bytes(), "html.parser")
+
+    pricing_sections = soup.select(
+        ".pure-content > div.pricing-page-section"
+    )
+    assert len(pricing_sections) == 3
+    expected = clean_html_content(str(pricing_sections[0]))
+
+    base_content = resolve_page_global_base_content(
+        soup,
+        definition,
+        language=language,
+    )
+    assert base_content == expected
+    assert "more-detail" not in base_content
+    assert "支持和服务级别协议" not in base_content
+    assert "Support &amp; SLA" not in base_content
+
+    common_sections = SectionExtractor().extract_all_sections(soup)
+    assert [section["sectionType"] for section in common_sections] == [
+        "Banner",
+        "Qa",
+    ]
+    assert all(
+        section["content"] != base_content
+        for section in common_sections
+    )
+
+
+def test_ip_addresses_extracts_and_validates_as_simple_page(
+    tmp_path: Path,
+) -> None:
+    coordinator = ExtractionCoordinator(
+        str(tmp_path),
+        deferred_validation=True,
+    )
+    extracted = coordinator.coordinate_extraction(
+        "ip-addresses",
+        "zh-cn",
+        strategy="simple_static",
+    )
+
+    assert extracted.execution_succeeded
+    assert extracted.payload_path is not None
+    payload = json.loads(
+        extracted.payload_path.read_text(encoding="utf-8")
+    )
+    assert payload["baseContent"]
+    assert payload["contentGroups"] == []
+    assert [
+        section["sectionType"] for section in payload["commonSections"]
+    ] == ["Banner", "Qa"]
+    assert extracted.sidecar["status"]["validation"] == "not_run"
+
+    validated = coordinator.validate_persisted_payload(extracted)
+    assert validated.succeeded
+    assert validated.sidecar["status"]["validation"] == "passed"
 
 
 def test_region_filter_can_authorize_nonempty_page_global_content() -> None:

@@ -94,6 +94,7 @@ class ProductCatalogTests(unittest.TestCase):
                 expected_extraction_fields = {"semantic_strategy"}
                 if product_key in {
                     "cloud-services",
+                    "machine-learning",
                     "service-bus",
                     "virtual-machine-scale-sets",
                 }:

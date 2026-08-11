@@ -62,6 +62,7 @@ from src.core.support_article_versions import (
     historical_resource_key,
 )
 from src.strategies.strategy_factory import StrategyFactory
+from src.utils.html.cleaner import materialize_cms_html_fields
 from src.utils.media.image_processor import preprocess_image_paths
 
 
@@ -1357,6 +1358,7 @@ class ExtractionCoordinator:
         payload["slug"] = definition["slug"]
         if definition["page_model"] == "FlexibleContentPage":
             payload["language"] = language
+        materialize_cms_html_fields(payload, definition["page_model"])
 
     @staticmethod
     def _extract_ms_service(soup: BeautifulSoup) -> str:
