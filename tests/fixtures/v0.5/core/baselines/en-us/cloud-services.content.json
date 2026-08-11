@@ -1,0 +1,995 @@
+{
+  "item_id": "en-us/cloud-services",
+  "language": "en-us",
+  "page_global_comparison": {
+    "diff_reference": null,
+    "payload_fingerprint": "75e6e84c5b8294c47fe72cfb94021a5816cf567453559b73cd47a6b15a784d9d",
+    "source_fingerprint": "75e6e84c5b8294c47fe72cfb94021a5816cf567453559b73cd47a6b15a784d9d",
+    "status": "matched"
+  },
+  "resource_key": "cloud-services",
+  "samples": [
+    {
+      "diff_reference": null,
+      "payload_fingerprint": "2d3fc19dd7243329cbfacf2cd2c5fe5ba4a94622c7014dbbc69546ce83a1cf19",
+      "source_fingerprint": "2d3fc19dd7243329cbfacf2cd2c5fe5ba4a94622c7014dbbc69546ce83a1cf19",
+      "state": {
+        "criteria": [
+          [
+            "region",
+            "east-china2"
+          ],
+          [
+            "category",
+            "tabContent1-1"
+          ]
+        ],
+        "state_id": "d3368bd0e376a9dd5f560550f890d78293d3df9ac43b468a7ff92b2ae8b5b6f8"
+      },
+      "status": "matched"
+    },
+    {
+      "diff_reference": null,
+      "payload_fingerprint": "61878d231f7c60dcac649e8d33e6267b2eac915bee0f42e3843669ff988c0fea",
+      "source_fingerprint": "61878d231f7c60dcac649e8d33e6267b2eac915bee0f42e3843669ff988c0fea",
+      "state": {
+        "criteria": [
+          [
+            "region",
+            "east-china2"
+          ],
+          [
+            "category",
+            "tabContent1-2"
+          ]
+        ],
+        "state_id": "7e1ebba8facda037dcb71716063260fed6e2bbab9d3ff6394e040160704ec069"
+      },
+      "status": "matched"
+    },
+    {
+      "diff_reference": null,
+      "payload_fingerprint": "7632daf3268afd4ec56614df305ba56245f229b84215197d67b8e410a730abe3",
+      "source_fingerprint": "7632daf3268afd4ec56614df305ba56245f229b84215197d67b8e410a730abe3",
+      "state": {
+        "criteria": [
+          [
+            "region",
+            "east-china2"
+          ],
+          [
+            "category",
+            "tabContent1-3"
+          ]
+        ],
+        "state_id": "5f51466f4ad32d74c29ac83ebfa20c11c33bd294c8943cbe8acd164c6b1bedaf"
+      },
+      "status": "matched"
+    },
+    {
+      "diff_reference": null,
+      "payload_fingerprint": "50260e9d228fe8df7096b248a98e107327a76ae136411685f3d6daccf7ff7d51",
+      "source_fingerprint": "50260e9d228fe8df7096b248a98e107327a76ae136411685f3d6daccf7ff7d51",
+      "state": {
+        "criteria": [
+          [
+            "region",
+            "north-china3"
+          ],
+          [
+            "category",
+            "tabContent1-1"
+          ]
+        ],
+        "state_id": "e523c13a7e1f90bd5560caf30e6cc2213854143e8f68b66266c07681e66d1e6f"
+      },
+      "status": "matched"
+    },
+    {
+      "diff_reference": null,
+      "payload_fingerprint": "435e6f865e81016e3a7f0c3fd2bc39ebcd675724353c31522abf2813dbd34c5f",
+      "source_fingerprint": "435e6f865e81016e3a7f0c3fd2bc39ebcd675724353c31522abf2813dbd34c5f",
+      "state": {
+        "criteria": [
+          [
+            "region",
+            "north-china3"
+          ],
+          [
+            "category",
+            "tabContent1-2"
+          ]
+        ],
+        "state_id": "0573fbefdd66a13bab1707ff6fd3838673b957edcc52341b3834927fa7820261"
+      },
+      "status": "matched"
+    },
+    {
+      "diff_reference": null,
+      "payload_fingerprint": "4a7f18e2f596c4d6e8bb357328a0f4ccab1a1880e89b72a0b211522c56169755",
+      "source_fingerprint": "4a7f18e2f596c4d6e8bb357328a0f4ccab1a1880e89b72a0b211522c56169755",
+      "state": {
+        "criteria": [
+          [
+            "region",
+            "north-china3"
+          ],
+          [
+            "category",
+            "tabContent1-3"
+          ]
+        ],
+        "state_id": "f607e2903da65e6fb175ba77bc8ded9d036dee63982ef4c7642063bd8235d170"
+      },
+      "status": "matched"
+    },
+    {
+      "diff_reference": null,
+      "payload_fingerprint": "2d3fc19dd7243329cbfacf2cd2c5fe5ba4a94622c7014dbbc69546ce83a1cf19",
+      "source_fingerprint": "2d3fc19dd7243329cbfacf2cd2c5fe5ba4a94622c7014dbbc69546ce83a1cf19",
+      "state": {
+        "criteria": [
+          [
+            "region",
+            "north-china2"
+          ],
+          [
+            "category",
+            "tabContent1-1"
+          ]
+        ],
+        "state_id": "afeebce54a890f44b8372678ea40a2d7636c4590fb0ac12cf29b361c698560fb"
+      },
+      "status": "matched"
+    },
+    {
+      "diff_reference": null,
+      "payload_fingerprint": "7632daf3268afd4ec56614df305ba56245f229b84215197d67b8e410a730abe3",
+      "source_fingerprint": "7632daf3268afd4ec56614df305ba56245f229b84215197d67b8e410a730abe3",
+      "state": {
+        "criteria": [
+          [
+            "region",
+            "north-china2"
+          ],
+          [
+            "category",
+            "tabContent1-3"
+          ]
+        ],
+        "state_id": "26004dd549dd6b2f64afeed4e4f865520a491369096d80a4a0991afff9212e7e"
+      },
+      "status": "matched"
+    },
+    {
+      "diff_reference": null,
+      "payload_fingerprint": "8c4f81dcb74e9bec4b4f71666a708e1b0a02fb9fe4e55c2817ae8f3166f2c577",
+      "source_fingerprint": "8c4f81dcb74e9bec4b4f71666a708e1b0a02fb9fe4e55c2817ae8f3166f2c577",
+      "state": {
+        "criteria": [
+          [
+            "region",
+            "east-china"
+          ],
+          [
+            "category",
+            "tabContent1-1"
+          ]
+        ],
+        "state_id": "0b136cce5311fc9ab91fd14014dd88ce9d53855557d73bb286ea7fa63805133d"
+      },
+      "status": "matched"
+    },
+    {
+      "diff_reference": null,
+      "payload_fingerprint": "61878d231f7c60dcac649e8d33e6267b2eac915bee0f42e3843669ff988c0fea",
+      "source_fingerprint": "61878d231f7c60dcac649e8d33e6267b2eac915bee0f42e3843669ff988c0fea",
+      "state": {
+        "criteria": [
+          [
+            "region",
+            "east-china"
+          ],
+          [
+            "category",
+            "tabContent1-2"
+          ]
+        ],
+        "state_id": "cb8ac142fe9fc3328466065f1b2894e91d3ba28488deafc036e501114c3b65b0"
+      },
+      "status": "matched"
+    },
+    {
+      "diff_reference": null,
+      "payload_fingerprint": "61878d231f7c60dcac649e8d33e6267b2eac915bee0f42e3843669ff988c0fea",
+      "source_fingerprint": "61878d231f7c60dcac649e8d33e6267b2eac915bee0f42e3843669ff988c0fea",
+      "state": {
+        "criteria": [
+          [
+            "region",
+            "north-china"
+          ],
+          [
+            "category",
+            "tabContent1-2"
+          ]
+        ],
+        "state_id": "e3a495b4eb4d283385851155ad78f0f46ab7f9bd0d4a4abdd1c09d6c84c56ded"
+      },
+      "status": "matched"
+    },
+    {
+      "diff_reference": null,
+      "payload_fingerprint": "fb2c1f97eb7444c174887bf0b9acf49f20e717d433fd07b2f26f0d3977b69dc2",
+      "source_fingerprint": "fb2c1f97eb7444c174887bf0b9acf49f20e717d433fd07b2f26f0d3977b69dc2",
+      "state": {
+        "criteria": [
+          [
+            "region",
+            "north-china"
+          ],
+          [
+            "category",
+            "tabContent1-3"
+          ]
+        ],
+        "state_id": "020903669234416953ab3aaf4541c82b51cfefac8744151a802609011fe7ff1a"
+      },
+      "status": "matched"
+    }
+  ],
+  "sampling_plan": {
+    "coverage": {
+      "assurance": "sampled_state_content_consistency",
+      "mode": "stratified_sample",
+      "seed": "de17cf99ae045c13000eaa04453b93e20b357ca13100148daec5687e4c3486dd",
+      "selected_count": 12,
+      "selected_state_ids": [
+        "d3368bd0e376a9dd5f560550f890d78293d3df9ac43b468a7ff92b2ae8b5b6f8",
+        "7e1ebba8facda037dcb71716063260fed6e2bbab9d3ff6394e040160704ec069",
+        "5f51466f4ad32d74c29ac83ebfa20c11c33bd294c8943cbe8acd164c6b1bedaf",
+        "e523c13a7e1f90bd5560caf30e6cc2213854143e8f68b66266c07681e66d1e6f",
+        "0573fbefdd66a13bab1707ff6fd3838673b957edcc52341b3834927fa7820261",
+        "f607e2903da65e6fb175ba77bc8ded9d036dee63982ef4c7642063bd8235d170",
+        "afeebce54a890f44b8372678ea40a2d7636c4590fb0ac12cf29b361c698560fb",
+        "26004dd549dd6b2f64afeed4e4f865520a491369096d80a4a0991afff9212e7e",
+        "0b136cce5311fc9ab91fd14014dd88ce9d53855557d73bb286ea7fa63805133d",
+        "cb8ac142fe9fc3328466065f1b2894e91d3ba28488deafc036e501114c3b65b0",
+        "e3a495b4eb4d283385851155ad78f0f46ab7f9bd0d4a4abdd1c09d6c84c56ded",
+        "020903669234416953ab3aaf4541c82b51cfefac8744151a802609011fe7ff1a"
+      ],
+      "strata": [
+        "b4d84f30c41b0c3f716b117e32dae3938b1e677ce3c7acd849c9c14f40a9c014",
+        "643f4a9236c7338d2b414ddda54cd795969162327e6d9d221d155fa9fe0294b3",
+        "294ba027acbd6abb8f02d4da4b42e04dcdd759d329f7e2ef1b27cbde6f581553",
+        "64c6611e58e81dcbbae95fb7ff55edd291cf0773b466cede7a5bb2346be19989",
+        "438ec881d20455708f086021c24cbfa82ffd23bc7528df54a87ad48bda65d16f"
+      ],
+      "universe_count": 15,
+      "untested_count": 3
+    },
+    "document": {
+      "algorithm_version": "source-ordered-stratified-sampling-v1",
+      "content_sampling_profile": {
+        "id": "v0.4-content-sampling-p3",
+        "path": "data/configs/content-sampling-profiles/v0.4-p3.json",
+        "schema_version": "1.0",
+        "sha256": "2e2c33cd964ea73435a3f83c076dcdc114ee73c88e2d00c7c3c8cd4c6dd75cb0"
+      },
+      "coverage": {
+        "assurance": "sampled_state_content_consistency",
+        "mode": "stratified_sample",
+        "selected_count": 12,
+        "universe_count": 15,
+        "untested_count": 3
+      },
+      "effective_budget": 12,
+      "item_id": "en-us/cloud-services",
+      "plan_sha256": "02e26151a4f2cb1b8df266eab3405b30f87df9b08a050e6ba035c9d1821232d9",
+      "schema_version": "1.0",
+      "seed": "de17cf99ae045c13000eaa04453b93e20b357ca13100148daec5687e4c3486dd",
+      "selected_states": [
+        {
+          "criteria": [
+            [
+              "region",
+              "east-china2"
+            ],
+            [
+              "category",
+              "tabContent1-1"
+            ]
+          ],
+          "state_id": "d3368bd0e376a9dd5f560550f890d78293d3df9ac43b468a7ff92b2ae8b5b6f8"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "east-china2"
+            ],
+            [
+              "category",
+              "tabContent1-2"
+            ]
+          ],
+          "state_id": "7e1ebba8facda037dcb71716063260fed6e2bbab9d3ff6394e040160704ec069"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "east-china2"
+            ],
+            [
+              "category",
+              "tabContent1-3"
+            ]
+          ],
+          "state_id": "5f51466f4ad32d74c29ac83ebfa20c11c33bd294c8943cbe8acd164c6b1bedaf"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "north-china3"
+            ],
+            [
+              "category",
+              "tabContent1-1"
+            ]
+          ],
+          "state_id": "e523c13a7e1f90bd5560caf30e6cc2213854143e8f68b66266c07681e66d1e6f"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "north-china3"
+            ],
+            [
+              "category",
+              "tabContent1-2"
+            ]
+          ],
+          "state_id": "0573fbefdd66a13bab1707ff6fd3838673b957edcc52341b3834927fa7820261"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "north-china3"
+            ],
+            [
+              "category",
+              "tabContent1-3"
+            ]
+          ],
+          "state_id": "f607e2903da65e6fb175ba77bc8ded9d036dee63982ef4c7642063bd8235d170"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "north-china2"
+            ],
+            [
+              "category",
+              "tabContent1-1"
+            ]
+          ],
+          "state_id": "afeebce54a890f44b8372678ea40a2d7636c4590fb0ac12cf29b361c698560fb"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "north-china2"
+            ],
+            [
+              "category",
+              "tabContent1-3"
+            ]
+          ],
+          "state_id": "26004dd549dd6b2f64afeed4e4f865520a491369096d80a4a0991afff9212e7e"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "east-china"
+            ],
+            [
+              "category",
+              "tabContent1-1"
+            ]
+          ],
+          "state_id": "0b136cce5311fc9ab91fd14014dd88ce9d53855557d73bb286ea7fa63805133d"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "east-china"
+            ],
+            [
+              "category",
+              "tabContent1-2"
+            ]
+          ],
+          "state_id": "cb8ac142fe9fc3328466065f1b2894e91d3ba28488deafc036e501114c3b65b0"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "north-china"
+            ],
+            [
+              "category",
+              "tabContent1-2"
+            ]
+          ],
+          "state_id": "e3a495b4eb4d283385851155ad78f0f46ab7f9bd0d4a4abdd1c09d6c84c56ded"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "north-china"
+            ],
+            [
+              "category",
+              "tabContent1-3"
+            ]
+          ],
+          "state_id": "020903669234416953ab3aaf4541c82b51cfefac8744151a802609011fe7ff1a"
+        }
+      ],
+      "source_sha256": "fd0266473d6b79c22444e9a48d6751c2290ecc996a486efed80755a839b52f12",
+      "state_universe": {
+        "default_state_id": "d3368bd0e376a9dd5f560550f890d78293d3df9ac43b468a7ff92b2ae8b5b6f8",
+        "states": [
+          {
+            "criteria": [
+              [
+                "region",
+                "east-china2"
+              ],
+              [
+                "category",
+                "tabContent1-1"
+              ]
+            ],
+            "state_id": "d3368bd0e376a9dd5f560550f890d78293d3df9ac43b468a7ff92b2ae8b5b6f8"
+          },
+          {
+            "criteria": [
+              [
+                "region",
+                "east-china2"
+              ],
+              [
+                "category",
+                "tabContent1-2"
+              ]
+            ],
+            "state_id": "7e1ebba8facda037dcb71716063260fed6e2bbab9d3ff6394e040160704ec069"
+          },
+          {
+            "criteria": [
+              [
+                "region",
+                "east-china2"
+              ],
+              [
+                "category",
+                "tabContent1-3"
+              ]
+            ],
+            "state_id": "5f51466f4ad32d74c29ac83ebfa20c11c33bd294c8943cbe8acd164c6b1bedaf"
+          },
+          {
+            "criteria": [
+              [
+                "region",
+                "north-china3"
+              ],
+              [
+                "category",
+                "tabContent1-1"
+              ]
+            ],
+            "state_id": "e523c13a7e1f90bd5560caf30e6cc2213854143e8f68b66266c07681e66d1e6f"
+          },
+          {
+            "criteria": [
+              [
+                "region",
+                "north-china3"
+              ],
+              [
+                "category",
+                "tabContent1-2"
+              ]
+            ],
+            "state_id": "0573fbefdd66a13bab1707ff6fd3838673b957edcc52341b3834927fa7820261"
+          },
+          {
+            "criteria": [
+              [
+                "region",
+                "north-china3"
+              ],
+              [
+                "category",
+                "tabContent1-3"
+              ]
+            ],
+            "state_id": "f607e2903da65e6fb175ba77bc8ded9d036dee63982ef4c7642063bd8235d170"
+          },
+          {
+            "criteria": [
+              [
+                "region",
+                "north-china2"
+              ],
+              [
+                "category",
+                "tabContent1-1"
+              ]
+            ],
+            "state_id": "afeebce54a890f44b8372678ea40a2d7636c4590fb0ac12cf29b361c698560fb"
+          },
+          {
+            "criteria": [
+              [
+                "region",
+                "north-china2"
+              ],
+              [
+                "category",
+                "tabContent1-2"
+              ]
+            ],
+            "state_id": "a133cc73a27405ce4ead3227ff040e24547e25e6c2ad0820eaed020d89f91b31"
+          },
+          {
+            "criteria": [
+              [
+                "region",
+                "north-china2"
+              ],
+              [
+                "category",
+                "tabContent1-3"
+              ]
+            ],
+            "state_id": "26004dd549dd6b2f64afeed4e4f865520a491369096d80a4a0991afff9212e7e"
+          },
+          {
+            "criteria": [
+              [
+                "region",
+                "east-china"
+              ],
+              [
+                "category",
+                "tabContent1-1"
+              ]
+            ],
+            "state_id": "0b136cce5311fc9ab91fd14014dd88ce9d53855557d73bb286ea7fa63805133d"
+          },
+          {
+            "criteria": [
+              [
+                "region",
+                "east-china"
+              ],
+              [
+                "category",
+                "tabContent1-2"
+              ]
+            ],
+            "state_id": "cb8ac142fe9fc3328466065f1b2894e91d3ba28488deafc036e501114c3b65b0"
+          },
+          {
+            "criteria": [
+              [
+                "region",
+                "east-china"
+              ],
+              [
+                "category",
+                "tabContent1-3"
+              ]
+            ],
+            "state_id": "984ebd84ea3f07ed168be3af1b1e71c6c3ebf4909d50f6fd2da7228bc8168b4b"
+          },
+          {
+            "criteria": [
+              [
+                "region",
+                "north-china"
+              ],
+              [
+                "category",
+                "tabContent1-1"
+              ]
+            ],
+            "state_id": "31a9dd0bfed24968042402a56fcbc6da62d8fba6aa4938463c61979ccf4ae099"
+          },
+          {
+            "criteria": [
+              [
+                "region",
+                "north-china"
+              ],
+              [
+                "category",
+                "tabContent1-2"
+              ]
+            ],
+            "state_id": "e3a495b4eb4d283385851155ad78f0f46ab7f9bd0d4a4abdd1c09d6c84c56ded"
+          },
+          {
+            "criteria": [
+              [
+                "region",
+                "north-china"
+              ],
+              [
+                "category",
+                "tabContent1-3"
+              ]
+            ],
+            "state_id": "020903669234416953ab3aaf4541c82b51cfefac8744151a802609011fe7ff1a"
+          }
+        ],
+        "universe_id": "428fa6227bd258907c576b4da48159b7049fda110e9709be6183fe438a200f61"
+      },
+      "strata": [
+        {
+          "criteria": [
+            [
+              "region",
+              "east-china2"
+            ]
+          ],
+          "kind": "actual_parent_branch",
+          "state_ids": [
+            "d3368bd0e376a9dd5f560550f890d78293d3df9ac43b468a7ff92b2ae8b5b6f8",
+            "7e1ebba8facda037dcb71716063260fed6e2bbab9d3ff6394e040160704ec069",
+            "5f51466f4ad32d74c29ac83ebfa20c11c33bd294c8943cbe8acd164c6b1bedaf"
+          ],
+          "stratum_id": "b4d84f30c41b0c3f716b117e32dae3938b1e677ce3c7acd849c9c14f40a9c014"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "north-china3"
+            ]
+          ],
+          "kind": "actual_parent_branch",
+          "state_ids": [
+            "e523c13a7e1f90bd5560caf30e6cc2213854143e8f68b66266c07681e66d1e6f",
+            "0573fbefdd66a13bab1707ff6fd3838673b957edcc52341b3834927fa7820261",
+            "f607e2903da65e6fb175ba77bc8ded9d036dee63982ef4c7642063bd8235d170"
+          ],
+          "stratum_id": "643f4a9236c7338d2b414ddda54cd795969162327e6d9d221d155fa9fe0294b3"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "north-china2"
+            ]
+          ],
+          "kind": "actual_parent_branch",
+          "state_ids": [
+            "afeebce54a890f44b8372678ea40a2d7636c4590fb0ac12cf29b361c698560fb",
+            "a133cc73a27405ce4ead3227ff040e24547e25e6c2ad0820eaed020d89f91b31",
+            "26004dd549dd6b2f64afeed4e4f865520a491369096d80a4a0991afff9212e7e"
+          ],
+          "stratum_id": "294ba027acbd6abb8f02d4da4b42e04dcdd759d329f7e2ef1b27cbde6f581553"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "east-china"
+            ]
+          ],
+          "kind": "actual_parent_branch",
+          "state_ids": [
+            "0b136cce5311fc9ab91fd14014dd88ce9d53855557d73bb286ea7fa63805133d",
+            "cb8ac142fe9fc3328466065f1b2894e91d3ba28488deafc036e501114c3b65b0",
+            "984ebd84ea3f07ed168be3af1b1e71c6c3ebf4909d50f6fd2da7228bc8168b4b"
+          ],
+          "stratum_id": "64c6611e58e81dcbbae95fb7ff55edd291cf0773b466cede7a5bb2346be19989"
+        },
+        {
+          "criteria": [
+            [
+              "region",
+              "north-china"
+            ]
+          ],
+          "kind": "actual_parent_branch",
+          "state_ids": [
+            "31a9dd0bfed24968042402a56fcbc6da62d8fba6aa4938463c61979ccf4ae099",
+            "e3a495b4eb4d283385851155ad78f0f46ab7f9bd0d4a4abdd1c09d6c84c56ded",
+            "020903669234416953ab3aaf4541c82b51cfefac8744151a802609011fe7ff1a"
+          ],
+          "stratum_id": "438ec881d20455708f086021c24cbfa82ffd23bc7528df54a87ad48bda65d16f"
+        }
+      ],
+      "strategy": "complex",
+      "target_budget": 12
+    },
+    "path": "validation/en-us/pricing/cloud-services.sampling-plan.json",
+    "plan_sha256": "02e26151a4f2cb1b8df266eab3405b30f87df9b08a050e6ba035c9d1821232d9",
+    "sha256": "dbd706156f4c44145107c109c25a0f83d54a0ca1252a5f15ed02e5cc536a12a5"
+  },
+  "sampling_semantics": "curated_stratified_sample",
+  "schema_version": "1.0",
+  "state_universe": {
+    "default_state_id": "d3368bd0e376a9dd5f560550f890d78293d3df9ac43b468a7ff92b2ae8b5b6f8",
+    "selected_count": 12,
+    "selected_state_ids": [
+      "d3368bd0e376a9dd5f560550f890d78293d3df9ac43b468a7ff92b2ae8b5b6f8",
+      "7e1ebba8facda037dcb71716063260fed6e2bbab9d3ff6394e040160704ec069",
+      "5f51466f4ad32d74c29ac83ebfa20c11c33bd294c8943cbe8acd164c6b1bedaf",
+      "e523c13a7e1f90bd5560caf30e6cc2213854143e8f68b66266c07681e66d1e6f",
+      "0573fbefdd66a13bab1707ff6fd3838673b957edcc52341b3834927fa7820261",
+      "f607e2903da65e6fb175ba77bc8ded9d036dee63982ef4c7642063bd8235d170",
+      "afeebce54a890f44b8372678ea40a2d7636c4590fb0ac12cf29b361c698560fb",
+      "26004dd549dd6b2f64afeed4e4f865520a491369096d80a4a0991afff9212e7e",
+      "0b136cce5311fc9ab91fd14014dd88ce9d53855557d73bb286ea7fa63805133d",
+      "cb8ac142fe9fc3328466065f1b2894e91d3ba28488deafc036e501114c3b65b0",
+      "e3a495b4eb4d283385851155ad78f0f46ab7f9bd0d4a4abdd1c09d6c84c56ded",
+      "020903669234416953ab3aaf4541c82b51cfefac8744151a802609011fe7ff1a"
+    ],
+    "states": [
+      {
+        "criteria": [
+          [
+            "region",
+            "east-china2"
+          ],
+          [
+            "category",
+            "tabContent1-1"
+          ]
+        ],
+        "state_id": "d3368bd0e376a9dd5f560550f890d78293d3df9ac43b468a7ff92b2ae8b5b6f8"
+      },
+      {
+        "criteria": [
+          [
+            "region",
+            "east-china2"
+          ],
+          [
+            "category",
+            "tabContent1-2"
+          ]
+        ],
+        "state_id": "7e1ebba8facda037dcb71716063260fed6e2bbab9d3ff6394e040160704ec069"
+      },
+      {
+        "criteria": [
+          [
+            "region",
+            "east-china2"
+          ],
+          [
+            "category",
+            "tabContent1-3"
+          ]
+        ],
+        "state_id": "5f51466f4ad32d74c29ac83ebfa20c11c33bd294c8943cbe8acd164c6b1bedaf"
+      },
+      {
+        "criteria": [
+          [
+            "region",
+            "north-china3"
+          ],
+          [
+            "category",
+            "tabContent1-1"
+          ]
+        ],
+        "state_id": "e523c13a7e1f90bd5560caf30e6cc2213854143e8f68b66266c07681e66d1e6f"
+      },
+      {
+        "criteria": [
+          [
+            "region",
+            "north-china3"
+          ],
+          [
+            "category",
+            "tabContent1-2"
+          ]
+        ],
+        "state_id": "0573fbefdd66a13bab1707ff6fd3838673b957edcc52341b3834927fa7820261"
+      },
+      {
+        "criteria": [
+          [
+            "region",
+            "north-china3"
+          ],
+          [
+            "category",
+            "tabContent1-3"
+          ]
+        ],
+        "state_id": "f607e2903da65e6fb175ba77bc8ded9d036dee63982ef4c7642063bd8235d170"
+      },
+      {
+        "criteria": [
+          [
+            "region",
+            "north-china2"
+          ],
+          [
+            "category",
+            "tabContent1-1"
+          ]
+        ],
+        "state_id": "afeebce54a890f44b8372678ea40a2d7636c4590fb0ac12cf29b361c698560fb"
+      },
+      {
+        "criteria": [
+          [
+            "region",
+            "north-china2"
+          ],
+          [
+            "category",
+            "tabContent1-2"
+          ]
+        ],
+        "state_id": "a133cc73a27405ce4ead3227ff040e24547e25e6c2ad0820eaed020d89f91b31"
+      },
+      {
+        "criteria": [
+          [
+            "region",
+            "north-china2"
+          ],
+          [
+            "category",
+            "tabContent1-3"
+          ]
+        ],
+        "state_id": "26004dd549dd6b2f64afeed4e4f865520a491369096d80a4a0991afff9212e7e"
+      },
+      {
+        "criteria": [
+          [
+            "region",
+            "east-china"
+          ],
+          [
+            "category",
+            "tabContent1-1"
+          ]
+        ],
+        "state_id": "0b136cce5311fc9ab91fd14014dd88ce9d53855557d73bb286ea7fa63805133d"
+      },
+      {
+        "criteria": [
+          [
+            "region",
+            "east-china"
+          ],
+          [
+            "category",
+            "tabContent1-2"
+          ]
+        ],
+        "state_id": "cb8ac142fe9fc3328466065f1b2894e91d3ba28488deafc036e501114c3b65b0"
+      },
+      {
+        "criteria": [
+          [
+            "region",
+            "east-china"
+          ],
+          [
+            "category",
+            "tabContent1-3"
+          ]
+        ],
+        "state_id": "984ebd84ea3f07ed168be3af1b1e71c6c3ebf4909d50f6fd2da7228bc8168b4b"
+      },
+      {
+        "criteria": [
+          [
+            "region",
+            "north-china"
+          ],
+          [
+            "category",
+            "tabContent1-1"
+          ]
+        ],
+        "state_id": "31a9dd0bfed24968042402a56fcbc6da62d8fba6aa4938463c61979ccf4ae099"
+      },
+      {
+        "criteria": [
+          [
+            "region",
+            "north-china"
+          ],
+          [
+            "category",
+            "tabContent1-2"
+          ]
+        ],
+        "state_id": "e3a495b4eb4d283385851155ad78f0f46ab7f9bd0d4a4abdd1c09d6c84c56ded"
+      },
+      {
+        "criteria": [
+          [
+            "region",
+            "north-china"
+          ],
+          [
+            "category",
+            "tabContent1-3"
+          ]
+        ],
+        "state_id": "020903669234416953ab3aaf4541c82b51cfefac8744151a802609011fe7ff1a"
+      }
+    ],
+    "universe_count": 15,
+    "universe_id": "428fa6227bd258907c576b4da48159b7049fda110e9709be6183fe438a200f61",
+    "untested_count": 3
+  },
+  "strategy": "complex",
+  "validation": {
+    "approval_preconditions": {
+      "machine": {
+        "blockers": [],
+        "eligible": true
+      },
+      "source": {
+        "blockers": [
+          {
+            "code": "approval_blocking_source_quality_finding",
+            "message": "Approval-blocking Source Quality Finding: source_confirmed_empty_state",
+            "path": "$.source_quality_findings[0]"
+          },
+          {
+            "code": "approval_blocking_source_quality_finding",
+            "message": "Approval-blocking Source Quality Finding: non_materialized_aggregate_tab_suppressed",
+            "path": "$.source_quality_findings[1]"
+          }
+        ],
+        "eligible": false
+      }
+    },
+    "evidence_sha256": "44b276f9670699537791d4005ccfa9a631b510ffc6d301c1f1cdad64ee72e285",
+    "finding_code_policy": {
+      "id": "v0.4-finding-code-policy-p4",
+      "path": "data/configs/finding-code-policies/v0.4-p4.json",
+      "schema_version": "1.0",
+      "sha256": "bed3c18a753a7e3d7a3c00ec6d690a953e3794e1f43472508290637f9266a06b"
+    },
+    "schema_version": "2.1",
+    "status": "passed",
+    "validation_profile": {
+      "id": "v0.4-validation-p3-successor",
+      "path": "data/configs/validation-profiles/v0.4-p3-successor.json",
+      "schema_version": "1.3",
+      "sha256": "e45ad2ba22c1a9ee91d735f18177f3e0824b01806793573112e8f15f26f94d82"
+    },
+    "verdict": "passed"
+  }
+}
