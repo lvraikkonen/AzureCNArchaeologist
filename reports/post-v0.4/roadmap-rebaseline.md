@@ -275,3 +275,99 @@
 6. README 和长期操作手册在 v0.4.1 更新；每个后续子版本结束时追加 acceptance report、accepted Batch ID（适用时）、防回退结果和下一阶段 handoff。
 
 本文与 `v0.4-post-implementation-review.md` 共同完成 `ROADMAP.md` 要求的 Post-v0.4 Roadmap Re-baseline Gate。
+
+---
+
+## 8. 2026-08-11 v0.5 入口重裁定（入口裁定与 v0.5.1 计划均已冻结）
+
+本节按 `reports/post-v0.4/` 的追加纪律记录 v0.4.1 验收后新增的实验和上游回归证据，不改写本文在 2026-08-08 获接受时的历史内容。
+
+- 状态：**`V050-ENTRY-20260811` 与 v0.5.1 Execution Plan 均已于 2026-08-11 获人工接受/最终冻结；实现尚未开始**；
+- 详细裁定：`reports/post-v0.4/v050-entry-decision.md`；
+- 紧接阶段计划：`plans/v0.5.1-execution-plan.md`；
+- 新证据：`reports/post-v0.4/v041-experiments-v050-handoff.md` 及其引用的两轮实验和最新版上游回归；
+- 生效规则：本节取代本文第 4 节中 v0.5.0–v0.5.6 的未来安排、第 6 节对应完成条件和第 7 节中尚未执行的 v0.5 文档顺序；旧文字继续作为 2026-08-08 当时的决策记录保留。v0.5.1 后续实现以已最终冻结的 Execution Plan 为边界。
+
+### 8.1 新事实改变了什么
+
+v0.5.0 原本要回答“能否在不调用生产抽取策略的情况下，独立从 Frozen HTML 和认可的重建依据定位业务内容并与 persisted payload 比较”。v0.4.1 验收后的证据已经回答该问题：
+
+- 先导实验覆盖四类页面，19 个目标片段精确一致并识别受控错状态；
+- 第一轮在最新版上游修复后 14/14 产品抽取和验证通过，134/134 个线格式/DOM 比较一致；
+- 第二轮 19 个 supported 产品的 79/79 个实际业务片段精确一致；
+- 独立 oracle 发现了现有策略重放检查未发现的 `container-registry` 真实内容截断；
+- `soft-category` 投影、CSS 语义物化、输入不足时 fail-closed、冻结算法盲区和补充资格程序都有显式证据。
+
+这些结果足以关闭可行性探索，但不等于正式 L3b：实验主要是中文、使用隔离输出、没有正式 Batch/Schema/Review/Release 绑定。旧清单中的 `en-us/time-series-insights` 和 `zh-cn/sla-sql-data` 没有按原身份全部执行；它们不再触发一次重复探索，而是进入 v0.5.2–v0.5.3 的正式双语覆盖。
+
+### 8.2 新入口基线
+
+accepted v0.4.1 Batch `20260809T030936Z-ce23e678` 继续是不可变历史基线，其对账为 434 total / 379 runnable / 55 skipped。后置实验和最新版输入形成的当前候选计划是 434 total / 383 runnable / 51 skipped；`cdn`、`data-transfer` 四个语言项新增为 runnable。
+
+当前 Core fixture candidate 同时包含 `cloud-services` 双语输入身份和 `soft-category.json` 身份变化。Step 6 Core harness 的 4 个失败是正式 v0.4 fixture 对当前身份的预期拒绝，不能通过直接更新 golden 消除。
+
+因此 v0.5.1 增加入口基线工作：
+
+1. 建立不覆盖 `data/baselines/v0.4/` 的 v0.5 successor Planning Baseline；
+2. 逐项审核 434 / 383 / 51 和四个新增 runnable 的分母变化；
+3. 从当前 candidate 建立不覆盖历史 v0.4 fixture/goldens 的 v0.5 Core successor；
+4. 继续使用 candidate + diff + rationale + exact SHA promotion；
+5. 在最终 clean commit 上运行完整双语 reference Batch，冻结当前失败地图；
+6. accepted v0.4.1 Batch 保留为历史防回退参照；v0.5.1 reference Batch 形成入口问题地图，v0.5.3 当前完整 Batch 再冻结 v0.5.4–v0.6 的最终顺序。
+
+三类逻辑 successor artifact 的职责不得重叠：Planning Baseline 只负责计划范围、runnable/skip、分母和变化理由；immutable `input-manifest.json` 负责一次真实运行的 Source、Definition、config 和 route map 等输入身份；current `batch-manifest.json` item/output record 负责 Batch revision 与 persisted payload path/SHA；L3b Evidence 同时引用两部分 current binding，并补充 verifier profile、状态重建和比较结果。本文中的 `Batch/Input Manifest` 只是上述现有绑定的逻辑统称，不新增第三份 Manifest，也不向 input manifest 回写 output identity。`Reconstruction Basis` 是最小逻辑绑定，不再另建重复输入事实的巨型 manifest。
+
+### 8.3 修订后的版本安排
+
+| 版本 | 修订主题 | 主要结果 |
+|---|---|---|
+| v0.5.0 | 独立内容核对探索关闭 | 由入口裁定确认既有实验完成可行性决策；不生成生产证据、不打生产版本 |
+| v0.5.1 | 入口基线与最小 L3b 契约 | v0.5 Planning/Core successor、最小 Profile/Basis/Evidence 契约、三类算法版本、轻量依赖防火墙、五项反证和可人工复核的只读 Evidence 投影 |
+| v0.5.2 | `api-management` 正式闭环 | 从正式 Batch persisted payload 产生第一份 L3b artifact 和逐状态只读 `review.html`；L3a/L3b 分别记录；不扩大到全目录 |
+| v0.5.3 | 双语四类核心覆盖与门禁裁定 | Core 页面产生两类声明并从现有 Workbench 提供证据入口；运行当前完整双语 Batch，裁定是否及如何启用 L3b Machine Gate，并冻结新的问题组排序 |
+| v0.5.4 | 第一优先残余问题组 | 由 v0.5.3 Batch 的风险、项数、共享根因和可安全修复性选择；旧 C2 仅为候选 |
+| v0.5.5 | 第二优先残余问题组 | 按相同规则选择；旧 C1 仅为候选 |
+| v0.5.6 | 剩余优先组与 v0.5 收口 | 处理经审核的剩余 v0.5 组、拆分 C4、运行完整防回退并冻结 acceptance Batch |
+| v0.6 | 后续结构问题与 CMS staging 往返 | 处理重排后剩余问题组，并保留至少 3 个 Release 单项的 staging 结构化往返目标 |
+
+不建议跳过 v0.5.1 或 v0.5.2。当前正式验证仍使用生产 Source Reachability 和 Source Content Projection；实验脚本仍是硬编码产品矩阵、中文为主、隔离输出且没有正式 Batch/Evidence 绑定。可行性成功使最小契约和首个正式消费者更紧迫，而不是要求建设完整 evidence lifecycle 或大型验证平台。
+
+### 8.4 两类机器声明与单一授权门
+
+修订后的术语为：
+
+- L3a：策略重放一致；
+- L3b：独立源内容保真；
+- Machine Gate：未来可按经审核 policy 汇总所需机器声明的单一自动授权结果。
+
+L3a 和 L3b 必须有独立 verdict、coverage、bindings 和 evidence，不能继续由一个笼统 `validation_passed` 隐藏保证范围；但它们不成为两个互相竞争的 lifecycle authority。v0.5.1 只冻结最小声明契约，不改变当前 Review、Release、upload 或 Approval Eligibility policy；v0.5.2 只为单产品记录 L3b；v0.5.3 根据正式覆盖率、失败类型、`blocked/not_qualified` 分布和人工复核结果，裁定是否、何时以及对哪些 qualified items 启用 L3b Machine Gate。该裁定可以是不启用、分阶段启用或限定范围启用，不能在取得证据前预设全局强制门禁。
+
+并排人工复核是 L3b Evidence 的只读投影，不是新的状态权威：v0.5.1 冻结可展示 Source、Expected、Payload、diff、locator/criteria、table IDs、转换规则与 SHA 的最小 bundle；v0.5.2 为 `api-management` 交付第一份本地静态报告；v0.5.3 才把已验证方式接入现有 Workbench。不得新增 `manual_l3b_*` 状态，最终人工结论继续进入现有 L4 Review Decision 和 `inspected_states`。
+
+### 8.5 修订后的完成条件
+
+| 版本 | 可检查的完成条件 |
+|---|---|
+| v0.5.0 | 入口裁定已获人工接受，现有实验替代旧探索矩阵的范围和未完成的正式化事项已明确 |
+| v0.5.1 | 434 / 383 / 51 入口基线、v0.5 Core successor、完整 reference Batch、最小 Profile/Basis/Evidence 契约、三类算法版本、item verdict 聚合、semantic/projection identity、一个静态检查、一个 runtime sentinel、五项反证和可生成 inert 只读并排视图的 Evidence bundle 通过 |
+| v0.5.2 | `api-management` 从正式 Batch 产生绑定 persisted payload 的 L3b Evidence 和逐状态只读 `review.html`，现有 L3a 独立保留；报告不修改 Batch、Review Decision 或 gate |
+| v0.5.3 | 双语四类核心页面产生 L3a/L3b，现有 Workbench 提供证据入口；依据正式运行和人工复核结果形成 L3b Machine Gate 启用/暂不启用裁定，并生成经审核的残余问题地图与 v0.5.4–v0.6 排序 |
+| v0.5.4 | 第一优先问题组完成根因证明、必要拆分、适用修复、双语人工审核和完整防回退 |
+| v0.5.5 | 第二优先问题组满足同一验收纪律 |
+| v0.5.6 | 剩余 v0.5 优先组完成；C4 有当前子问题地图；v0.5 acceptance Batch、分母、完成记录和 handoff 冻结 |
+
+### 8.6 修订后的文档顺序
+
+1. `v050-entry-decision.md`、本节与 `plans/v0.5.1-execution-plan.md` 均已获人工接受/最终冻结；v0.5.1 实现尚未开始。
+2. 进入首个实现提交前同步必要的 `CONTEXT.md`；不回写 v0.4/v0.4.1 历史报告。
+3. v0.5.1 只编写该阶段必需的 successor baseline、最小 ADR/契约、轻量防火墙、基础反证、只读 Evidence 投影和 acceptance artifacts，不提前写 v0.5.2–v0.5.6 的完整 execution plan。
+4. v0.5.2 计划以 v0.5.1 accepted baseline/contract 为输入；v0.5.3 计划以首个正式闭环结果为输入。
+5. v0.5.4–v0.5.6 的具体问题组名称必须等 v0.5.3 当前完整 Batch 后再冻结；不得为了保留旧版本标题忽略最新事实。
+
+Machine Validation Report 2.0、Finding Disposition、复杂视觉审核、多用户 Dashboard、外部 CI gate、Schema 大合并、完整 evidence lifecycle、Release 绑定/回填、streaming 和真实发布继续按本文原延期决定执行。
+
+### 8.7 人工评审结论
+
+2026-08-11 人工评审接受 `V050-ENTRY-20260811` 的总体方向，并确认 v0.5.1 已按最小正式消费者成功收缩。两轮实验已关闭“独立方法是否可行”的探索问题，但不直接升级为正式 L3b，也不进入 Review、Release 或 Publication。v0.5.1 只冻结 L3b 与现有机器验证并行存在的声明关系、契约和证据形式；从 v0.5.2 开始对正式 Batch 并行记录 L3b；v0.5.3 扩大正式覆盖，并裁定 L3b 是否进入 Machine Gate。
+
+最终复核要求的六项精确定义——v1.0 target architecture、正式运行起点、现有 manifest owner、item-level verdict 聚合、Evidence semantic/projection identity 和 inert report——均已纳入四份规划文档。v0.5.1 Execution Plan 因此最终冻结；实现尚未开始，不需要再进行范围或架构重审。
