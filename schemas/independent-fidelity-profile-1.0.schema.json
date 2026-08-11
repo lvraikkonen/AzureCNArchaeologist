@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/independent-fidelity-profile-1.0.schema.json",
+  "title": "Independent Fidelity Profile 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile_id",
+    "profile_version",
+    "claim",
+    "qualification",
+    "allowed_dependencies",
+    "forbidden_dependency_prefixes",
+    "reconstruction_profile_version",
+    "wire_transform_version",
+    "comparison_version",
+    "supported_transform_rule_ids",
+    "verdicts"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "profile_id": { "const": "v0.5.1-independent-fidelity-minimal" },
+    "profile_version": { "const": "0.5.1" },
+    "claim": { "const": "independent_source_content_fidelity" },
+    "qualification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supported_page_families", "unsupported_result"],
+      "properties": {
+        "supported_page_families": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["controlled_fixture", "region_filter"]
+          }
+        },
+        "unsupported_result": { "const": "not_qualified" }
+      }
+    },
+    "allowed_dependencies": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "forbidden_dependency_prefixes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "reconstruction_profile_version": {
+      "const": "independent-state-reconstruction-v1"
+    },
+    "wire_transform_version": { "const": "independent-cms-wire-v1" },
+    "comparison_version": { "const": "independent-html-comparison-v1" },
+    "supported_transform_rule_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "const": "css-generated-semantics-v1" }
+    },
+    "verdicts": {
+      "type": "array",
+      "prefixItems": [
+        { "const": "passed" },
+        { "const": "failed" },
+        { "const": "blocked" },
+        { "const": "not_qualified" },
+        { "const": "not_run" }
+      ],
+      "minItems": 5,
+      "maxItems": 5
+    }
+  }
+}
