@@ -15,6 +15,7 @@ from src.batch.process_engine import (
     ResourceProcessingResult,
 )
 from src.core.product_catalog import ProductDefinitionRecord
+from src.core.validation_context import ValidationContextRegistry
 from src.pipeline.models import InputManifest
 from src.pipeline.planner import PipelinePlanner
 from src.pipeline.state_store import (
@@ -70,7 +71,7 @@ def _available(snapshot_path: str, url: str, *, cms_path: str | None = None) -> 
 
 def _mini_definitions() -> dict[str, tuple[str, dict[str, Any]]]:
     frontdoor = {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "product_key": "frontdoor",
         "display_name": "Azure Front Door",
         "slug": "frontdoor",
@@ -87,10 +88,10 @@ def _mini_definitions() -> dict[str, tuple[str, dict[str, Any]]]:
                 "https://www.azure.cn/en-us/pricing/details/frontdoor/",
             ),
         },
-        "extraction": {"strategy": "complex"},
+        "extraction": {"semantic_strategy": "complex"},
     }
     event_grid = {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "product_key": "event-grid",
         "display_name": "Event Grid",
         "slug": "event-grid",
@@ -108,16 +109,17 @@ def _mini_definitions() -> dict[str, tuple[str, dict[str, Any]]]:
                 "https://www.azure.cn/en-us/pricing/details/event-grid/",
             ),
         },
-        "extraction": {"strategy": "simple_static"},
+        "extraction": {"semantic_strategy": "simple_static"},
     }
     sla_cdn = {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "product_key": "sla-cdn",
         "display_name": "CDN SLA",
         "slug": "cdn",
         "page_model": "SupportArticlePage",
         "capability_status": "supported",
         "support_article_type": "SLA",
+        "extraction": {"semantic_strategy": "support_article"},
         "sources": {
             "zh-cn": _available(
                 "SupportArticles/SLA/cdn/index.html",
@@ -174,6 +176,11 @@ def _mini_definitions() -> dict[str, tuple[str, dict[str, Any]]]:
 
 
 def _build_mini_planner(root: Path) -> PipelinePlanner:
+    soft_category = root / "data/configs/soft-category.json"
+    soft_category.parent.mkdir(parents=True, exist_ok=True)
+    soft_category.write_bytes(
+        (ROOT / "data/configs/soft-category.json").read_bytes()
+    )
     records: dict[str, ProductDefinitionRecord] = {}
     for product_key, (relative_path, definition) in _mini_definitions().items():
         config_path = root / "data" / "configs" / relative_path
@@ -224,6 +231,10 @@ def _frozen_provenance() -> dict[str, Any]:
     }
 
 
+def _frozen_validation_context() -> dict[str, Any]:
+    return ValidationContextRegistry(ROOT).freeze()
+
+
 class PipelinePlannerTests(unittest.TestCase):
     def test_real_all_inventory_is_fully_accounted(self) -> None:
         plan = PipelinePlanner(ROOT).plan()
@@ -232,9 +243,9 @@ class PipelinePlannerTests(unittest.TestCase):
             plan.summary,
             {
                 "total": 434,
-                "runnable": 379,
-                "skipped": 55,
-                "known_unsupported": 54,
+                "runnable": 383,
+                "skipped": 51,
+                "known_unsupported": 50,
                 "source_unavailable": 1,
             },
         )
@@ -329,8 +340,27 @@ class PipelineStateFoundationTests(unittest.TestCase):
                 plan,
                 _frozen_provenance(),
                 created_at=FIXED_TIMESTAMP,
+                **_frozen_validation_context(),
             )
             store = StateStore(ROOT, runs_dir=Path(run_directory) / "runs")
+            self.assertEqual(frozen.schema_version, "2.0")
+            self.assertEqual(
+                set(frozen.validation_context),
+                {
+                    "validation_profile",
+                    "applicability_map",
+                    "rendering_profile",
+                    "in_memory_capability_profile",
+                },
+            )
+            tampered = frozen.to_dict()
+            tampered["validation_context"]["validation_profile"]["sha256"] = (
+                "0" * 64
+            )
+            with self.assertRaisesRegex(
+                ManifestValidationError, "validation_profile SHA-256 drifted"
+            ):
+                store.create_run(tampered)
             batch_directory = store.create_run(frozen)
 
             initial = store.read_manifest(FIXED_BATCH_ID)
@@ -339,26 +369,31 @@ class PipelineStateFoundationTests(unittest.TestCase):
             with self.assertRaises(ImmutableManifestError):
                 store.write_input_manifest(FIXED_BATCH_ID, frozen)
 
-            updated = store.update_manifest(
-                FIXED_BATCH_ID,
-                lambda value: value.update({"status": "running"}),
-                expected_revision=0,
-            )
-            self.assertEqual(updated["revision"], 1)
-            self.assertEqual(updated["status"], "running")
-            with self.assertRaises(ManifestConflictError):
-                store.update_manifest(
+            with RepositoryLock(
+                store.lock_root,
+                batch_id=FIXED_BATCH_ID,
+                command="foundation-test",
+            ):
+                updated = store.update_manifest(
                     FIXED_BATCH_ID,
-                    lambda value: value.update({"status": "completed"}),
+                    lambda value: value.update({"status": "running"}),
                     expected_revision=0,
                 )
+                self.assertEqual(updated["revision"], 1)
+                self.assertEqual(updated["status"], "running")
+                with self.assertRaises(ManifestConflictError):
+                    store.update_manifest(
+                        FIXED_BATCH_ID,
+                        lambda value: value.update({"status": "completed"}),
+                        expected_revision=0,
+                    )
 
-            with self.assertRaises(ManifestValidationError):
-                store.update_manifest(
-                    FIXED_BATCH_ID,
-                    lambda value: value.update({"status": "invalid-state"}),
-                    expected_revision=1,
-                )
+                with self.assertRaises(ManifestValidationError):
+                    store.update_manifest(
+                        FIXED_BATCH_ID,
+                        lambda value: value.update({"status": "invalid-state"}),
+                        expected_revision=1,
+                    )
             self.assertEqual(store.read_manifest(FIXED_BATCH_ID)["revision"], 1)
             with self.assertRaises(ManifestValidationError):
                 store.validate_document({"schema_version": "1.0"}, "input")
@@ -466,39 +501,49 @@ class PipelineStateFoundationTests(unittest.TestCase):
                 plan,
                 _frozen_provenance(),
                 created_at=FIXED_TIMESTAMP,
+                **_frozen_validation_context(),
             )
             store = StateStore(ROOT, runs_dir=Path(run_directory) / "runs")
             store.create_run(frozen)
             item_id = next(item.item_id for item in plan.items if item.runnable)
 
-            updated = store.update_manifest(
-                FIXED_BATCH_ID,
-                lambda value: value["items"][item_id].update(
-                    {"strategy": "simple_static"}
-                ),
-                changed_item_ids=(item_id,),
-            )
-            self.assertEqual(updated["revision"], 1)
-
-            with self.assertRaisesRegex(
-                ManifestValidationError, "undeclared Batch Items"
+            with RepositoryLock(
+                store.lock_root,
+                batch_id=FIXED_BATCH_ID,
+                command="foundation-incremental-test",
             ):
-                store.update_manifest(
+                updated = store.update_manifest(
                     FIXED_BATCH_ID,
                     lambda value: value["items"][item_id].update(
-                        {"strategy": "complex"}
+                        {"strategy": "simple_static"}
                     ),
-                    changed_item_ids=(),
-                )
-
-            with self.assertRaises(ManifestValidationError):
-                store.update_manifest(
-                    FIXED_BATCH_ID,
-                    lambda value: value["items"][item_id]["status"].update(
-                        {"execution": "invalid"}
-                    ),
+                    expected_revision=0,
                     changed_item_ids=(item_id,),
                 )
+                self.assertEqual(updated["revision"], 1)
+
+                with self.assertRaisesRegex(
+                    ManifestValidationError,
+                    "undeclared Batch Items",
+                ):
+                    store.update_manifest(
+                        FIXED_BATCH_ID,
+                        lambda value: value["items"][item_id].update(
+                            {"strategy": "complex"}
+                        ),
+                        expected_revision=1,
+                        changed_item_ids=(),
+                    )
+
+                with self.assertRaises(ManifestValidationError):
+                    store.update_manifest(
+                        FIXED_BATCH_ID,
+                        lambda value: value["items"][item_id]["status"].update(
+                            {"execution": "invalid"}
+                        ),
+                        expected_revision=1,
+                        changed_item_ids=(item_id,),
+                    )
             self.assertEqual(store.read_manifest(FIXED_BATCH_ID)["revision"], 1)
 
 

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/experimental-payload-candidate-1.0.schema.json",
+  "title": "Experimental Payload Candidate 1.0",
+  "description": "Execution-safety shape only. This is not a CMS Contract, content-quality, or Pricing Fidelity validation.",
+  "type": "object",
+  "minProperties": 1
+}

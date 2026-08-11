@@ -7,9 +7,9 @@
 ProductManager中的策略决策逻辑。
 """
 
-import os
-from pathlib import Path
 from typing import Dict, Any, Optional
+
+from bs4 import BeautifulSoup
 
 from .data_models import (
     PageComplexity, ExtractionStrategy, PageType, StrategyType
@@ -22,8 +22,8 @@ class StrategyManager:
     """
     策略管理器。
     
-    根据页面复杂度分析和产品配置，智能选择最适合的提取策略。
-    整合了文件大小检测、页面类型判断、策略匹配等功能。
+    根据页面结构分析和产品配置选择语义提取策略。输入大小属于独立的
+    processing capability，不得影响这里的内容策略。
     """
     
     def __init__(self, product_manager: Optional[ProductManager] = None):
@@ -36,106 +36,79 @@ class StrategyManager:
         self.product_manager = product_manager or ProductManager()
         self.page_analyzer = PageAnalyzer()
         
-        # 大文件阈值 (MB)
-        self.large_file_threshold_mb = 5.0
-        
         # 策略注册表
         self.strategy_registry = self._initialize_strategy_registry()
         
         print("✓ 策略管理器初始化完成")
         print(f"📊 支持策略类型: {len(self.strategy_registry)}种")
     
-    def determine_extraction_strategy(self, html_file_path: str, 
-                                    product_key: str) -> ExtractionStrategy:
+    def determine_extraction_strategy(
+        self,
+        soup: BeautifulSoup,
+        product_key: str,
+        *,
+        input_bytes: int | None = None,
+    ) -> ExtractionStrategy:
         """
         确定提取策略。
         
         Args:
-            html_file_path: HTML文件路径
+            soup: 已由正式 strict UTF-8 输入路径解析的 HTML
             product_key: 产品标识符
+            input_bytes: 可选诊断数据；不参与语义策略选择
             
         Returns:
             ExtractionStrategy对象，包含完整的策略信息
         """
-        print(f"🎯 策略决策: {os.path.basename(html_file_path)}")
-        
-        # 1. 文件大小检测
-        file_size_mb = self._get_file_size_mb(html_file_path)
-        is_large_file = file_size_mb > self.large_file_threshold_mb
-        
-        print(f"📏 文件大小: {file_size_mb:.2f} MB")
-        
-        # 2. SupportArticle is selected by the explicit page model. Its CMS type is
+        if not isinstance(soup, BeautifulSoup):
+            raise TypeError("soup must be a parsed BeautifulSoup document")
+        if input_bytes is not None:
+            if (
+                isinstance(input_bytes, bool)
+                or not isinstance(input_bytes, int)
+                or input_bytes < 0
+            ):
+                raise ValueError("input_bytes must be a non-negative integer")
+            print(f"📏 输入大小（仅诊断）: {input_bytes} bytes")
+        print(f"🎯 策略决策: {product_key}")
+
+        # SupportArticle is selected by the explicit page model. Its CMS type is
         # independent from catalog categories and source directories.
-        try:
-            product_config = self.product_manager.get_product_config(product_key)
-            if product_config.get("page_model") == "SupportArticlePage":
-                support_type = product_config["support_article_type"]
-                print(f"📄 支持文章策略: support_article_type={support_type}")
-                return self._create_support_article_strategy(product_key, support_type)
-        except Exception:
-            pass
+        product_config = self.product_manager.get_product_config(product_key)
+        page_model = product_config.get("page_model")
+        configured_strategy = product_config.get("extraction", {}).get(
+            "semantic_strategy"
+        )
+        if page_model == "SupportArticlePage":
+            if configured_strategy != "support_article":
+                raise ValueError(
+                    "SupportArticlePage must declare semantic_strategy=support_article"
+                )
+            support_type = product_config["support_article_type"]
+            print(f"📄 支持文章策略: support_article_type={support_type}")
+            return self._create_support_article_strategy(product_key, support_type)
+        if page_model != "FlexibleContentPage":
+            raise ValueError(f"Unknown Product Definition page_model: {page_model!r}")
 
         # A Product Definition may pin a stable strategy when source controls are
         # present but intentionally belong in static content (for example Event Grid).
-        configured_strategy = product_config.get("extraction", {}).get("strategy")
         configured_page_types = {
             "simple_static": PageType.SIMPLE_STATIC,
             "region_filter": PageType.REGION_FILTER,
             "complex": PageType.COMPLEX,
         }
-        if configured_strategy in configured_page_types:
-            print(f"📌 Product Definition strategy: {configured_strategy}")
-            return self._select_strategy_by_page_type(configured_page_types[configured_strategy], product_key, None)
-
-        # 3. 大文件优先处理
-        if is_large_file:
-            print(f"🔥 大文件策略: 文件大小超过 {self.large_file_threshold_mb} MB")
-            return self._create_large_file_strategy(file_size_mb, product_key)
-
-        # 4. 页面分析和策略决策 (基于3+1架构)
-        try:
-            from bs4 import BeautifulSoup
-            with open(html_file_path, 'r', encoding='utf-8') as f:
-                html_content = f.read()
-            soup = BeautifulSoup(html_content, 'html.parser')
-            
-            # 使用新的3策略决策逻辑
-            strategy_name = self.page_analyzer.determine_page_type_v3(soup)
-            
-            # 将字符串结果映射到PageType
-            strategy_to_page_type = {
-                "SimpleStatic": PageType.SIMPLE_STATIC,
-                "RegionFilter": PageType.REGION_FILTER,
-                "Complex": PageType.COMPLEX
-            }
-            recommended_page_type = strategy_to_page_type.get(strategy_name, PageType.SIMPLE_STATIC)
-            
-            # 为了兼容性，仍然生成PageComplexity对象（用于日志和验证）
-            complexity = self.page_analyzer.analyze_page_complexity(soup, html_file_path)
-            
-            print(f"📊 策略决策: {strategy_name} → {recommended_page_type}")
-            print(f"🌏 区域筛选: {complexity.has_region_filter}")
-            print(f"📂 Tab结构: {complexity.has_tabs}")
-            print(f"🔧 多重筛选: {complexity.has_multiple_filters}")
-            
-        except Exception as e:
-            print(f"⚠ 页面分析失败: {e}")
-            # 降级到简单策略
-            recommended_page_type = PageType.SIMPLE_STATIC
-            complexity = None
-            strategy_name = "SimpleStatic"
-        
-        # 4. 根据页面类型选择策略
-        strategy = self._select_strategy_by_page_type(
-            recommended_page_type, product_key, complexity
+        if configured_strategy not in configured_page_types:
+            raise ValueError(
+                "Product Definition must declare a known semantic_strategy; "
+                f"found {configured_strategy!r}"
+            )
+        print(f"📌 Product Definition semantic strategy: {configured_strategy}")
+        return self._select_strategy_by_page_type(
+            configured_page_types[configured_strategy], product_key, None
         )
-        
-        print(f"✅ 选择策略: {strategy.strategy_type}")
-        return strategy
     
     def _initialize_strategy_registry(self) -> Dict[StrategyType, Dict[str, Any]]:
-        """初始化3+1策略注册表。"""
+        """初始化语义策略注册表。"""
         return {
             StrategyType.SIMPLE_STATIC: {
                 "processor": "SimpleStaticProcessor",
@@ -155,12 +128,6 @@ class StrategyManager:
                 "features": ["多筛选器检测", "Tab结构处理", "复合内容提取", "动态筛选器配置"],
                 "complexity_threshold": 0.8
             },
-            StrategyType.LARGE_FILE: {
-                "processor": "LargeFileProcessor",
-                "description": "大文件优化处理",
-                "features": ["流式处理", "内存优化", "分块处理"],
-                "complexity_threshold": 1.0
-            },
             StrategyType.SUPPORT_ARTICLE: {
                 "processor": "SupportArticleProcessor",
                 "description": "支持文章页面处理 (SLA/ICP/Legal/公安备案)",
@@ -174,16 +141,18 @@ class StrategyManager:
                                     complexity: Optional[PageComplexity]) -> ExtractionStrategy:
         """根据页面类型选择策略。"""
         
-        # 页面类型到策略类型的映射 (3+1架构)
+        # 页面类型到语义策略类型的一对一映射。
         page_to_strategy_mapping = {
             PageType.SIMPLE_STATIC: StrategyType.SIMPLE_STATIC,
             PageType.REGION_FILTER: StrategyType.REGION_FILTER,
             PageType.COMPLEX: StrategyType.COMPLEX,
-            PageType.LARGE_FILE: StrategyType.LARGE_FILE,
             PageType.SUPPORT_ARTICLE: StrategyType.SUPPORT_ARTICLE
         }
-        
-        strategy_type = page_to_strategy_mapping.get(page_type, StrategyType.SIMPLE_STATIC)
+
+        try:
+            strategy_type = page_to_strategy_mapping[page_type]
+        except (KeyError, TypeError) as error:
+            raise ValueError(f"Unknown semantic page type: {page_type!r}") from error
         
         # 获取策略配置
         strategy_config = self.strategy_registry[strategy_type]
@@ -219,41 +188,6 @@ class StrategyManager:
             recommended_page_type=PageType.SUPPORT_ARTICLE
         )
 
-    def _create_large_file_strategy(self, file_size_mb: float,
-                                  product_key: str) -> ExtractionStrategy:
-        """创建大文件处理策略。"""
-        strategy_config = self.strategy_registry[StrategyType.LARGE_FILE]
-        
-        # 根据文件大小确定处理模式
-        if file_size_mb > 20.0:
-            processing_mode = "streaming"
-        elif file_size_mb > 10.0:
-            processing_mode = "chunked"
-        else:
-            processing_mode = "optimized"
-        
-        config_overrides = {
-            "file_size_mb": file_size_mb,
-            "processing_mode": processing_mode,
-            "memory_limit_mb": min(file_size_mb * 2, 200),  # 动态内存限制
-            "chunk_size": 1024 * 1024 if processing_mode == "chunked" else None
-        }
-        
-        # 获取产品特定配置
-        product_overrides = self._get_product_config_overrides(product_key, StrategyType.LARGE_FILE)
-        config_overrides.update(product_overrides)
-        
-        return ExtractionStrategy(
-            strategy_type=StrategyType.LARGE_FILE,
-            processor=strategy_config["processor"],
-            description=f"大文件处理 ({file_size_mb:.1f}MB)",
-            features=strategy_config["features"] + [f"{processing_mode}模式"],
-            priority_features=["内存优化", "性能优化"],
-            config_overrides=config_overrides,
-            complexity_score=1.0,  # 大文件总是最高复杂度
-            recommended_page_type=PageType.LARGE_FILE
-        )
-    
     def _determine_priority_features(self, complexity: Optional[PageComplexity], 
                                    strategy_type: StrategyType) -> list[str]:
         """确定优先特性。"""
@@ -275,35 +209,29 @@ class StrategyManager:
         if complexity.interactive_elements > 10:
             priority_features.append("交互元素处理")
         
-        # 根据策略类型添加特定优先级 (3+1架构)
+        # 根据语义策略类型添加特定优先级。
         strategy_priority_map = {
             StrategyType.SIMPLE_STATIC: ["基础内容提取", "FAQ处理"],
             StrategyType.REGION_FILTER: ["区域检测", "区域内容提取", "地区内容组生成"],
             StrategyType.COMPLEX: ["多筛选器处理", "Tab结构解析", "复合内容提取", "动态筛选器配置"],
-            StrategyType.LARGE_FILE: ["内存优化", "流式处理"]
         }
         
         strategy_priorities = strategy_priority_map.get(strategy_type, [])
         priority_features.extend(strategy_priorities)
         
-        return list(set(priority_features))  # 去重
+        return list(dict.fromkeys(priority_features))
     
     def _get_product_config_overrides(self, product_key: str, 
                                     strategy_type: StrategyType) -> Dict[str, Any]:
         """获取产品特定的配置覆盖。"""
         overrides = {}
         
-        # 从ProductManager获取产品配置
-        try:
-            product_config = self.product_manager.get_product_config(product_key)
-            if product_config:
-                # 提取策略相关的配置
-                overrides.update(product_config.get('extraction', {}))
-                
-        except Exception as e:
-            print(f"⚠ 获取产品配置失败: {e}")
+        # Product Definition failures are fatal; an empty/default override must
+        # never conceal a missing or invalid definition.
+        product_config = self.product_manager.get_product_config(product_key)
+        overrides.update(product_config.get('extraction', {}))
         
-        # 产品特定的硬编码覆盖（临时）- 3+1架构
+        # 产品特定的硬编码覆盖（临时）
         product_specific_overrides = {
             'api-management': {
                 StrategyType.REGION_FILTER: {
@@ -333,19 +261,6 @@ class StrategyManager:
         
         return overrides
     
-    def _get_file_size_mb(self, file_path: str) -> float:
-        """获取文件大小（MB）。"""
-        try:
-            if os.path.exists(file_path):
-                size_bytes = os.path.getsize(file_path)
-                return size_bytes / (1024 * 1024)
-            else:
-                print(f"⚠ 文件不存在: {file_path}")
-                return 0.0
-        except OSError as e:
-            print(f"⚠ 获取文件大小失败: {e}")
-            return 0.0
-    
     def get_strategy_info(self, strategy_type: StrategyType) -> Dict[str, Any]:
         """获取策略信息。"""
         return self.strategy_registry.get(strategy_type, {})
@@ -367,14 +282,6 @@ class StrategyManager:
             # 检查处理器是否指定
             if not strategy.processor:
                 return False
-            
-            # 检查配置覆盖是否合理
-            if strategy.config_overrides:
-                # 检查大文件策略的特殊要求
-                if strategy.strategy_type == StrategyType.LARGE_FILE:
-                    required_keys = ['file_size_mb', 'processing_mode']
-                    if not all(key in strategy.config_overrides for key in required_keys):
-                        return False
             
             return True
             

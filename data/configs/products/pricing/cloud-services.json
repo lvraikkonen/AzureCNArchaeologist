@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "product_key": "cloud-services",
   "display_name": "Cloud Services",
   "slug": "cloud-services",
@@ -21,27 +21,21 @@
     }
   },
   "extraction": {
-    "important_section_titles": [
-      "定价详细信息",
-      "定价详情",
-      "pricing details",
-      "常见问题",
-      "faq",
-      "frequently asked questions",
-      "支持和服务级别协议",
-      "Cloud Services",
-      "cloud-services"
-    ],
-    "estimated_size_mb": 1.0,
-    "priority_sections": [
-      "pricing-tables",
-      "banner",
-      "description",
-      "faq"
-    ],
-    "enable_region_processing": true
-  },
-  "quality": {
-    "min_content_length": 100
+    "semantic_strategy": "complex",
+    "page_global_content": {
+      "source_boundary": "after_final_formal_selector_before_common_sections",
+      "expected_by_language": {
+        "zh-cn": {
+          "fragment_count": 1,
+          "source_html_sha256": "722632961a14e2820de2dc94b396877eaa253c18a19d779c2461bf4f0332afee",
+          "wire_html_sha256": "6f33121990b29b5c3197790202be399bf2fde8e68b7f593bd552e6ccd8accb4e"
+        },
+        "en-us": {
+          "fragment_count": 1,
+          "source_html_sha256": "872768eb38de2257d1d56fd6aa2b9b895497885a3c17ebc22947f1b41fff6819",
+          "wire_html_sha256": "0ab769fa88a4d9d8578d73f612bd43b92cde53c39d0a3ffb8a8640384655c2fb"
+        }
+      }
+    }
   }
 }

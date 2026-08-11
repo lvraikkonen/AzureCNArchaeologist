@@ -1,0 +1,170 @@
+{
+  "baseline_id": "v0.4-step6-core-baseline",
+  "fixture_manifest_sha256": "2bfb485d28ec9922e23589d6a358a04daa92ea5d420993c00ce6697cf72e54e6",
+  "frozen_inputs": {
+    "content_sampling_profile": {
+      "id": "v0.4-content-sampling-p3",
+      "path": "data/configs/content-sampling-profiles/v0.4-p3.json",
+      "schema_version": "1.0",
+      "sha256": "2e2c33cd964ea73435a3f83c076dcdc114ee73c88e2d00c7c3c8cd4c6dd75cb0"
+    },
+    "finding_code_policy": {
+      "id": "v0.4-finding-code-policy-p4",
+      "path": "data/configs/finding-code-policies/v0.4-p4.json",
+      "schema_version": "1.0",
+      "sha256": "bed3c18a753a7e3d7a3c00ec6d690a953e3794e1f43472508290637f9266a06b"
+    },
+    "planning_baseline": {
+      "id": "v0.4-p2-product-definition-identity-overlay",
+      "path": "data/baselines/v0.4/p2-product-definition-identity-overlay.json",
+      "schema_version": "1.0",
+      "sha256": "e58650e62a5e5d2274c549cc1aad12b35b3c94c48acf6c82f2382381f70330ff"
+    },
+    "soft_category": {
+      "path": "data/configs/soft-category.json",
+      "sha256": "246ff13a504281d0b0cc23a581d8bd30582e6c1c242b57e3f2848e05e0c6d218"
+    },
+    "validation_profile": {
+      "id": "v0.4-validation-p3-successor",
+      "path": "data/configs/validation-profiles/v0.4-p3-successor.json",
+      "schema_version": "1.3",
+      "sha256": "e45ad2ba22c1a9ee91d735f18177f3e0824b01806793573112e8f15f26f94d82"
+    }
+  },
+  "generated_at": "2026-08-05T09:44:20.299150Z",
+  "items": [
+    {
+      "content_baseline": "zh-cn/api-management.content.json",
+      "item_id": "zh-cn/api-management",
+      "language": "zh-cn",
+      "payload_baseline": "zh-cn/api-management.payload.json",
+      "payload_sha256": "0bec4742b1f735d0b267e98c89820d95bf469a3ba6b9715b856d6dd387cecd59",
+      "resource_key": "api-management",
+      "source_sha256": "2ff654ac44611f422bdcc7113fba03b7293a1f4c1f2e51b118db8568e7eb45b4",
+      "strategy": "region_filter",
+      "validation_sha256": "76dd1f6d671fae494f86706ef4dc58cda3e1936bf840c7f878a6639b28a5e421"
+    },
+    {
+      "content_baseline": "en-us/api-management.content.json",
+      "item_id": "en-us/api-management",
+      "language": "en-us",
+      "payload_baseline": "en-us/api-management.payload.json",
+      "payload_sha256": "17a75aab66bc47d1842016dbd9431e7351acc8df189d2b14ec9ab73f261cd14c",
+      "resource_key": "api-management",
+      "source_sha256": "67b1afe40512e4e8d324c83a78d23cf875083a69c1a6192e39cc9dd17c7e5b07",
+      "strategy": "region_filter",
+      "validation_sha256": "d60fe4f08e00ee3dddd3785fb82ed57a13f4786c215ead3ec879c6246f2b1aa3"
+    },
+    {
+      "content_baseline": "zh-cn/cloud-services.content.json",
+      "item_id": "zh-cn/cloud-services",
+      "language": "zh-cn",
+      "payload_baseline": "zh-cn/cloud-services.payload.json",
+      "payload_sha256": "e0b58ab6c383a48454356d591623f2f6e450d147ef45d84048318989ded558c9",
+      "resource_key": "cloud-services",
+      "source_sha256": "a8048fa5d8e9e9309803b2398332f2678831344f07528d922c26c33317bcb659",
+      "strategy": "complex",
+      "validation_sha256": "874cf6dc06e6ed98b862250eff8d9ac32a171005c7dbd552e2f4cb8502a3b8bf"
+    },
+    {
+      "content_baseline": "en-us/cloud-services.content.json",
+      "item_id": "en-us/cloud-services",
+      "language": "en-us",
+      "payload_baseline": "en-us/cloud-services.payload.json",
+      "payload_sha256": "7183bb3f3bd69d01115e583f19937eab5694323cc1ff8ef1c81b0e668cfe57af",
+      "resource_key": "cloud-services",
+      "source_sha256": "c3ca3e881391eb203536c80c12ec159d6e937c2cd41fa6c4029f3e391be2b72f",
+      "strategy": "complex",
+      "validation_sha256": "8c716937ebc2b8517e601e291ec3365fd1c57cf6d26e8b32cdf79cf5c84e0762"
+    },
+    {
+      "content_baseline": "zh-cn/service-bus.content.json",
+      "item_id": "zh-cn/service-bus",
+      "language": "zh-cn",
+      "payload_baseline": "zh-cn/service-bus.payload.json",
+      "payload_sha256": "167611678e2dc45eda5bfea94850a939862a1e165905805c0aa14a44c062335c",
+      "resource_key": "service-bus",
+      "source_sha256": "72c8ff0a1a64e9a29e91b32cf0b463269f3fd9dc662e1ec064b3bdab0d1d3d32",
+      "strategy": "simple_static",
+      "validation_sha256": "08030088fa77413c2a996a08942a6de0eeaadad57d0b4d4e40139a643b086028"
+    },
+    {
+      "content_baseline": "en-us/service-bus.content.json",
+      "item_id": "en-us/service-bus",
+      "language": "en-us",
+      "payload_baseline": "en-us/service-bus.payload.json",
+      "payload_sha256": "3d4b6ecc1e255baf1f2e9bb8b493b06ed7b35a4f2e63afa2fc9df5eedaa9f605",
+      "resource_key": "service-bus",
+      "source_sha256": "715b7014993d2e00e5c04643fbe05a9c0b8592c6d243865ac286dc8c36bcbb6f",
+      "strategy": "simple_static",
+      "validation_sha256": "b748a5719c1b29f8ebd94b446919713ccade71efd31fd8083b31642220173eea"
+    },
+    {
+      "content_baseline": "zh-cn/icp-faq.content.json",
+      "item_id": "zh-cn/icp-faq",
+      "language": "zh-cn",
+      "payload_baseline": "zh-cn/icp-faq.payload.json",
+      "payload_sha256": "d5c9f5df6bffb1b25736cadc13c1297bc084ad5af85d1e1782c45dadacc89ce3",
+      "resource_key": "icp-faq",
+      "source_sha256": "9dbebd434bbe067e88512503ce6235fe24341ae219fb025685e0d85b563cbf38",
+      "strategy": "support_article",
+      "validation_sha256": "12254788d073051ec73576b7b047247dbe25acd96680b92b022864b9551e95a7"
+    },
+    {
+      "content_baseline": "en-us/icp-faq.content.json",
+      "item_id": "en-us/icp-faq",
+      "language": "en-us",
+      "payload_baseline": "en-us/icp-faq.payload.json",
+      "payload_sha256": "60956e73f513357c9b2d0dd54b5f42562c090eaea37aeb320bffcfc8a820daad",
+      "resource_key": "icp-faq",
+      "source_sha256": "9dbebd434bbe067e88512503ce6235fe24341ae219fb025685e0d85b563cbf38",
+      "strategy": "support_article",
+      "validation_sha256": "375a33bb6453f8cd18df88a732d4b4dcdc2c094503ae9824e761a39fa80cb2ed"
+    }
+  ],
+  "matrix_id": "v0.4-core-strategy-matrix",
+  "planning": {
+    "baseline": {
+      "id": "v0.4-p2-product-definition-identity-overlay",
+      "path": "data/baselines/v0.4/p2-product-definition-identity-overlay.json",
+      "schema_version": "1.0",
+      "sha256": "e58650e62a5e5d2274c549cc1aad12b35b3c94c48acf6c82f2382381f70330ff"
+    },
+    "baseline_accounting": {
+      "accounted": 379,
+      "coverage": "379/379",
+      "denominator": 379,
+      "retained_runnable": 379,
+      "reviewed_non_runnable": 0
+    }
+  },
+  "reason": "establish-v0.4-step6-core-baseline",
+  "schema_version": "1.0",
+  "source_batch_id": "20260805T094417Z-d1b25bff",
+  "validation_context": {
+    "applicability_map": {
+      "id": "v0.4-applicability-p1",
+      "path": "data/configs/applicability-maps/v0.4-p1-registry.json",
+      "schema_version": "1.0",
+      "sha256": "d571257202897033c771c7c15bbab372b1b76c99f1c979e7a3ba173d06d03b5f"
+    },
+    "in_memory_capability_profile": {
+      "id": "v0.4-in-memory-5mib",
+      "path": "data/configs/capability-profiles/in-memory-v0.4.json",
+      "schema_version": "1.0",
+      "sha256": "fd9e4f0e68ddf1ca60cf78c3b65a5ac620f59d88c0ae499cbd9afa8bc2365d16"
+    },
+    "rendering_profile": {
+      "id": "v0.4-desktop-p1",
+      "path": "data/configs/rendering-profiles/desktop-v0.4-p1.json",
+      "schema_version": "1.0",
+      "sha256": "12f258c7505a1ebcc5d828cc40765903bc63cb80b027c01b494a957b2a187c97"
+    },
+    "validation_profile": {
+      "id": "v0.4-validation-p3-successor",
+      "path": "data/configs/validation-profiles/v0.4-p3-successor.json",
+      "schema_version": "1.3",
+      "sha256": "e45ad2ba22c1a9ee91d735f18177f3e0824b01806793573112e8f15f26f94d82"
+    }
+  }
+}

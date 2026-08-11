@@ -1,0 +1,104 @@
+{
+  "schema_version": "v0.4.1-sla-route-map-regression-summary-1.0",
+  "generated_at": "2026-08-09T04:07:21Z",
+  "result": "passed",
+  "defect": {
+    "baseline_code": "full_content_mismatch",
+    "baseline_message": "full-content content differs from Source projection",
+    "cause": "SupportArticle extraction used the Product Definition SLA URL route map while Source validation projection did not.",
+    "fix": "SourceContentProjector builds the same language-specific route map for current and historical SupportArticle resources without mutating the ProductManager cache.",
+    "scope": "SLA URL projection parity only; no product-specific route copies and no Business Payload or evidence-schema changes."
+  },
+  "baseline": {
+    "version": "0.4.0",
+    "batch_id": "20260806T044456Z-e6268660",
+    "validation_failed": 11
+  },
+  "fixed_batches": {
+    "sla_batch": "20260809T030254Z-969f735f",
+    "accepted_full_batch": "20260809T030936Z-ce23e678",
+    "provenance_commit": "1df680fb4bcff73abd9e6764ec7927810dfb389d"
+  },
+  "affected_items": [
+    {
+      "item_id": "en-us/sla-sql-data",
+      "old": {"execution": "succeeded", "validation": "failed", "code": "full_content_mismatch"},
+      "new": {"execution": "succeeded", "validation": "passed", "review": "approved", "evidence_binding": "bound"}
+    },
+    {
+      "item_id": "en-us/sla-sql-data--v1-0",
+      "old": {"execution": "succeeded", "validation": "failed", "code": "full_content_mismatch"},
+      "new": {"execution": "succeeded", "validation": "passed", "review": "pending", "evidence_binding": "not_applicable"}
+    },
+    {
+      "item_id": "en-us/sla-sql-data--v1-4",
+      "old": {"execution": "succeeded", "validation": "failed", "code": "full_content_mismatch"},
+      "new": {"execution": "succeeded", "validation": "passed", "review": "pending", "evidence_binding": "not_applicable"}
+    },
+    {
+      "item_id": "en-us/sla-sql-data--v1-5",
+      "old": {"execution": "succeeded", "validation": "failed", "code": "full_content_mismatch"},
+      "new": {"execution": "succeeded", "validation": "passed", "review": "approved", "evidence_binding": "bound"}
+    },
+    {
+      "item_id": "zh-cn/sla-cdn",
+      "old": {"execution": "succeeded", "validation": "failed", "code": "full_content_mismatch"},
+      "new": {"execution": "succeeded", "validation": "passed", "review": "approved", "evidence_binding": "bound"}
+    },
+    {
+      "item_id": "zh-cn/sla-cdn--v1-1",
+      "old": {"execution": "succeeded", "validation": "failed", "code": "full_content_mismatch"},
+      "new": {"execution": "succeeded", "validation": "passed", "review": "approved", "evidence_binding": "bound"}
+    },
+    {
+      "item_id": "zh-cn/sla-sql-data",
+      "old": {"execution": "succeeded", "validation": "failed", "code": "full_content_mismatch"},
+      "new": {"execution": "succeeded", "validation": "passed", "review": "approved", "evidence_binding": "bound"}
+    },
+    {
+      "item_id": "zh-cn/sla-sql-data--v1-0",
+      "old": {"execution": "succeeded", "validation": "failed", "code": "full_content_mismatch"},
+      "new": {"execution": "succeeded", "validation": "passed", "review": "pending", "evidence_binding": "not_applicable"}
+    },
+    {
+      "item_id": "zh-cn/sla-sql-data--v1-3",
+      "old": {"execution": "succeeded", "validation": "failed", "code": "full_content_mismatch"},
+      "new": {"execution": "succeeded", "validation": "passed", "review": "pending", "evidence_binding": "not_applicable"}
+    },
+    {
+      "item_id": "zh-cn/sla-sql-data--v1-4",
+      "old": {"execution": "succeeded", "validation": "failed", "code": "full_content_mismatch"},
+      "new": {"execution": "succeeded", "validation": "passed", "review": "pending", "evidence_binding": "not_applicable"}
+    },
+    {
+      "item_id": "zh-cn/sla-sql-data--v1-5",
+      "old": {"execution": "succeeded", "validation": "failed", "code": "full_content_mismatch"},
+      "new": {"execution": "succeeded", "validation": "passed", "review": "pending", "evidence_binding": "not_applicable"}
+    }
+  ],
+  "expected_unavailable": {
+    "item_id": "en-us/sla-cdn--v1-1",
+    "execution": "skipped",
+    "validation": "not_run",
+    "code": "SOURCE_UNAVAILABLE",
+    "message": "Version 1.1 is the current English CDN source, not a separate historical snapshot."
+  },
+  "automated_coverage": {
+    "test_file": "tests/test_v041_support_article_route_map.py",
+    "current_and_historical_share_route_map": true,
+    "languages": ["en-us", "zh-cn"],
+    "current_source_url": true,
+    "historical_source_url": true,
+    "historical_url_aliases": true,
+    "unconfigured_external_links_unchanged": true,
+    "extract_persist_validate_path": true,
+    "negative_monkeypatch_yields_full_content_mismatch": true,
+    "product_manager_cache_not_mutated": true
+  },
+  "human_review": {
+    "result": "passed",
+    "summary_path": "reports/v0.4.1/human-review-summary.json",
+    "fixed_items_reviewed": 5,
+    "review_mode": "full_content"
+  }
+}

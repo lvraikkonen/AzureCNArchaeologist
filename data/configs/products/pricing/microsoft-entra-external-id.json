@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "product_key": "microsoft-entra-external-id",
   "display_name": "Microsoft Entra External ID",
   "slug": "microsoft-entra-external-id",
@@ -21,7 +21,7 @@
       "url": "https://www.azure.cn/en-us/pricing/details/microsoft-entra-external-id/"
     }
   },
-  "quality": {
-    "min_content_length": 100
+  "extraction": {
+    "semantic_strategy": "simple_static"
   }
 }

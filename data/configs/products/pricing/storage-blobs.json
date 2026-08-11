@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "product_key": "storage-blobs",
   "display_name": "Blob Storage",
   "slug": "storage-blobs",
@@ -35,7 +35,7 @@
       ]
     }
   },
-  "quality": {
-    "min_content_length": 100
+  "extraction": {
+    "semantic_strategy": "complex"
   }
 }

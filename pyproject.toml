@@ -1,6 +1,6 @@
 [project]
 name = "AzureCN-Archeologist"
-version = "0.3.0"
+version = "0.4.1"
 description = "ACN rebuild"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -11,4 +11,28 @@ dependencies = [
     "psutil>=7.0.0",
     "python-dotenv>=1.1.1",
     "jsonschema>=4.23.0",
+    "lxml>=5.4,<7",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4,<10",
+]
+
+[tool.pytest.ini_options]
+minversion = "8.4"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+pythonpath = ["."]
+strict_config = true
+strict_markers = true
+addopts = [
+    "--strict-config",
+    "--strict-markers",
+    "--ignore=tests/test_data_models.py",
+    "--ignore=tests/test_detectors.py",
+    "--ignore=tests/test_page_analyzer.py",
+]
+markers = [
+    "live_interaction: explicitly network-enabled rendered interaction reference tests",
 ]

@@ -1,9 +1,9 @@
 {
   "schema_version": "3.0",
-  "source_digest": "sha256:c102b60d533a619a6656ed0038f76873ada3d7b497510efb44f82c12f10fb5c0",
+  "source_digest": "sha256:a293ec6a4f52ce18e651a9facd2113b2adfe68771e811e9a2985c6519e70af1a",
   "total_products": 211,
-  "supported_products": 184,
-  "known_unsupported_products": 27,
+  "supported_products": 186,
+  "known_unsupported_products": 25,
   "total_historical_versions": 6,
   "products": {
     "active-directory": {
@@ -250,7 +250,7 @@
       "config_path": "products/pricing/cdn.json",
       "page_model": "FlexibleContentPage",
       "slug": "cdn",
-      "capability_status": "known_unsupported",
+      "capability_status": "supported",
       "historical_version_count": 0,
       "catalog_categories": [
         "networking"
@@ -390,7 +390,7 @@
       "config_path": "products/pricing/data-transfer.json",
       "page_model": "FlexibleContentPage",
       "slug": "data-transfer",
-      "capability_status": "known_unsupported",
+      "capability_status": "supported",
       "historical_version_count": 0,
       "catalog_categories": [
         "networking"

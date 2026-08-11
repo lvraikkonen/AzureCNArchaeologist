@@ -150,6 +150,7 @@ class ProvenanceProvider:
                 or relative.startswith("scripts/")
                 or relative.startswith("schemas/")
                 or relative.startswith("data/configs/")
+                or relative.startswith("data/baselines/")
                 or relative.startswith("data/current_prod_html/")
             ):
                 candidates.add(relative)

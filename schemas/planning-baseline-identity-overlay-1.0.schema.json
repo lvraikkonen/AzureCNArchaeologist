@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/planning-baseline-identity-overlay-1.0.schema.json",
+  "title": "Planning Baseline Product Definition Identity Overlay 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "baseline_id",
+    "status",
+    "base_baseline",
+    "change_policy",
+    "allowed_item_ids",
+    "amendments",
+    "effective_summary",
+    "accounting",
+    "review"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "baseline_id": {
+      "const": "v0.4-p2-product-definition-identity-overlay"
+    },
+    "status": {
+      "const": "approved"
+    },
+    "base_baseline": {
+      "$ref": "#/$defs/base_baseline_identity"
+    },
+    "change_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mutable_field",
+        "product_definition_path_must_match",
+        "all_other_item_fields_must_match_base"
+      ],
+      "properties": {
+        "mutable_field": {
+          "const": "product_definition.sha256"
+        },
+        "product_definition_path_must_match": {
+          "const": true
+        },
+        "all_other_item_fields_must_match_base": {
+          "const": true
+        }
+      }
+    },
+    "allowed_item_ids": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "prefixItems": [
+        {
+          "const": "en-us/cloud-services"
+        },
+        {
+          "const": "en-us/service-bus"
+        },
+        {
+          "const": "zh-cn/cloud-services"
+        },
+        {
+          "const": "zh-cn/service-bus"
+        }
+      ],
+      "items": false
+    },
+    "amendments": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "$ref": "#/$defs/amendment"
+      }
+    },
+    "effective_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total",
+        "v03_runnable_denominator",
+        "known_unsupported",
+        "source_unavailable"
+      ],
+      "properties": {
+        "total": {
+          "const": 434
+        },
+        "v03_runnable_denominator": {
+          "const": 379
+        },
+        "known_unsupported": {
+          "const": 54
+        },
+        "source_unavailable": {
+          "const": 1
+        }
+      }
+    },
+    "accounting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "denominator",
+        "retained_runnable",
+        "reviewed_non_runnable",
+        "accounted",
+        "coverage"
+      ],
+      "properties": {
+        "denominator": {
+          "const": 379
+        },
+        "retained_runnable": {
+          "const": 379
+        },
+        "reviewed_non_runnable": {
+          "const": 0
+        },
+        "accounted": {
+          "const": 379
+        },
+        "coverage": {
+          "const": "379/379"
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verdict",
+        "reviewer",
+        "rationale"
+      ],
+      "properties": {
+        "verdict": {
+          "const": "approved"
+        },
+        "reviewer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "base_baseline_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "schema_version",
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "id": {
+          "const": "v0.4-from-v0.3"
+        },
+        "schema_version": {
+          "const": "1.0"
+        },
+        "path": {
+          "const": "data/baselines/v0.4/planning-baseline.json"
+        },
+        "sha256": {
+          "const": "47e721642df8bdbab16eb62643dcb64aff0578fa8685bd8ab4b8070d1f25f8c8"
+        }
+      }
+    },
+    "amendment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "product_definition",
+        "reason_code"
+      ],
+      "properties": {
+        "item_id": {
+          "enum": [
+            "en-us/cloud-services",
+            "en-us/service-bus",
+            "zh-cn/cloud-services",
+            "zh-cn/service-bus"
+          ]
+        },
+        "product_definition": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "old_sha256",
+            "new_sha256"
+          ],
+          "properties": {
+            "path": {
+              "enum": [
+                "data/configs/products/pricing/cloud-services.json",
+                "data/configs/products/pricing/service-bus.json"
+              ]
+            },
+            "old_sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "new_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        "reason_code": {
+          "const": "approved_p2_page_global_content_identity"
+        }
+      }
+    }
+  }
+}

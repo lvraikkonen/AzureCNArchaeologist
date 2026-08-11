@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "profile_id": "v0.4-content-sampling-p3",
+  "status": "frozen",
+  "algorithm_version": "source-ordered-stratified-sampling-v1",
+  "target_budget": 12,
+  "mandatory_anchors": [
+    "default_state"
+  ],
+  "strategy_rules": {
+    "simple_static": {
+      "coverage_mode": "full",
+      "sampling_plan": "not_applicable"
+    },
+    "support_article": {
+      "coverage_mode": "full",
+      "sampling_plan": "not_applicable"
+    },
+    "region_filter": {
+      "coverage_mode": "stratified_sample",
+      "sampling_plan": "required",
+      "stratum_dimension": "source_proven_region",
+      "minimum_per_stratum": 1
+    },
+    "complex": {
+      "coverage_mode": "stratified_sample",
+      "sampling_plan": "required",
+      "stratum_dimension": "actual_parent_branch",
+      "parent_branch_definition": "ordered_criteria_prefix_excluding_leaf",
+      "minimum_per_stratum": 1,
+      "cartesian_expansion": "forbidden"
+    }
+  },
+  "selection_policy": {
+    "small_universe": "select_all_when_universe_lte_effective_budget",
+    "forced_coverage_over_budget": "expand_effective_budget",
+    "first_pass": "one_per_stratum_by_seed_state_hash",
+    "stratum_order": "source_first_appearance",
+    "within_stratum_rank": "sha256-canonical-json-array-seed-state-id",
+    "remainder": "stable_stratum_round_robin",
+    "output_order": "source_order"
+  },
+  "seed_derivation": {
+    "digest": "sha256",
+    "serialization": "canonical-json-utf8-sorted-keys-compact",
+    "ordered_inputs": [
+      "algorithm_version",
+      "source_sha256",
+      "item_id",
+      "profile_sha256"
+    ],
+    "excluded_inputs": [
+      "payload_sha256",
+      "batch_id",
+      "time",
+      "process_random_state"
+    ]
+  },
+  "comparison_policy": {
+    "page_global": "full",
+    "selected_state": "complete_rendered_content",
+    "selected_state_failure": "fail_validation",
+    "replacement_draw": "forbidden"
+  }
+}

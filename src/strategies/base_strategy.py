@@ -34,7 +34,6 @@ class BaseStrategy(ABC):
         self.content_extractor = None
         self.section_extractor = None
         self.flexible_builder = None
-        self.extraction_validator = None
 
     # @abstractmethod
     # def extract(self, soup: BeautifulSoup, url: str = "") -> Dict[str, Any]:

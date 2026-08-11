@@ -5,10 +5,9 @@
 负责注册、创建和管理所有提取策略实例
 """
 
-import os
 import sys
 from pathlib import Path
-from typing import Dict, Type, Any, Optional
+from typing import Dict, Type, Any
 
 # 添加项目根目录到Python路径
 project_root = Path(__file__).parent.parent.parent
@@ -27,12 +26,12 @@ class StrategyFactory:
     # 策略注册表：策略类型 -> 策略类
     _strategies: Dict[StrategyType, Type[BaseStrategy]] = {}
     
-    # 策略描述信息 - 3+1架构
+    # 语义策略描述信息
     _strategy_descriptions: Dict[StrategyType, str] = {
         StrategyType.SIMPLE_STATIC: "简单静态页面处理策略",
         StrategyType.REGION_FILTER: "区域筛选页面处理策略",
         StrategyType.COMPLEX: "复杂多筛选器页面处理策略",
-        StrategyType.LARGE_FILE: "大文件优化处理策略"
+        StrategyType.SUPPORT_ARTICLE: "支持文章页面处理策略",
     }
 
     @classmethod
@@ -95,38 +94,6 @@ class StrategyFactory:
             
         except Exception as e:
             raise ValueError(f"创建策略实例失败 ({strategy_type.value}): {e}")
-
-    @classmethod
-    def create_fallback_strategy(cls, product_config: Dict[str, Any], 
-                                html_file_path: str = "") -> BaseStrategy:
-        """
-        创建回退策略实例（当策略选择失败时使用）
-        
-        Args:
-            product_config: 产品配置信息
-            html_file_path: HTML文件路径
-            
-        Returns:
-            简单静态策略实例作为回退
-        """
-        logger.info("⚠ 使用回退策略: SimpleStaticStrategy")
-        
-        # 创建默认的提取策略配置
-        from src.core.data_models import ExtractionStrategy
-        fallback_extraction_strategy = ExtractionStrategy(
-            strategy_type=StrategyType.SIMPLE_STATIC,
-            processor="SimpleStaticProcessor",
-            description="回退策略",
-            features=["基础内容提取"],
-            priority_features=["Title", "DescriptionContent"],
-            config_overrides={}
-        )
-        
-        return cls.create_strategy(
-            fallback_extraction_strategy, 
-            product_config, 
-            html_file_path
-        )
 
     @classmethod
     def get_registered_strategies(cls) -> Dict[StrategyType, Type[BaseStrategy]]:

@@ -1,0 +1,275 @@
+{
+  "accounting": {
+    "approval": {
+      "blocked": 176,
+      "eligible": 258
+    },
+    "capability": {
+      "known_unsupported": 54,
+      "runnable": 379,
+      "skipped": 55,
+      "source_unavailable": 1,
+      "total": 434
+    },
+    "evidence": {
+      "bound": 10,
+      "not_applicable": 424,
+      "stale": 0
+    },
+    "execution": {
+      "failed": 92,
+      "pending": 0,
+      "succeeded": 287
+    },
+    "machine_validation": {
+      "failed": 11,
+      "not_run": 92,
+      "not_run_interpretation": "matches execution_failed; no persisted payload exists for those items",
+      "passed": 276
+    },
+    "overlap_rules": {
+      "counts_are_orthogonal": true,
+      "machine_failed_and_approval_blocked": "mutually exclusive under final validation verdict",
+      "source_warning_and_approval_blocked": "may overlap"
+    },
+    "publication": {
+      "not_published": 434,
+      "published": 0
+    },
+    "release": {
+      "not_released": 431,
+      "release_ready_count": 6,
+      "release_ready_count_note": "computed from succeeded/passed/eligible/approved/bound and does not exclude already released items",
+      "released": 3
+    },
+    "review": {
+      "approved": 6,
+      "core_reviewed": "8/8",
+      "pending": 266,
+      "rejected": 4,
+      "reviewer": "claus.lv"
+    },
+    "review_accounting": {
+      "approval_blocked_count": 18,
+      "machine_failed_count": 11,
+      "release_ready_count": 6,
+      "source_warning_count": 7
+    }
+  },
+  "automation": {
+    "dashboard": "19 tests passed and production build passed",
+    "determinism_verify": "passed",
+    "git_diff_check": "passed",
+    "pytest": "833 passed in 263.03s",
+    "schema_tests": "111 passed in 8.32s",
+    "step7a_report": "reports/v0.4/step7a-automated-acceptance-summary.json",
+    "step7a_result": "passed"
+  },
+  "batch_id": "20260806T044456Z-e6268660",
+  "deferred_or_excluded_claims": [
+    "commercial price accuracy",
+    "full content fidelity for unselected states",
+    "complete visual equivalence",
+    "mobile guarantee",
+    "external CI required gate",
+    "automatic CMS/Blob publication",
+    "Machine Validation Report 2.0",
+    "formal Finding Disposition or blocker clearing workflow",
+    "Upstream Verification Report",
+    "Complex Visual Review",
+    "Live Interaction screenshot/visual baseline",
+    "full Non-Core product coverage uplift"
+  ],
+  "determinism": {
+    "algorithm": "core-determinism-comparator-v1",
+    "record_path": "reports/v0.4/core-determinism-comparison.json",
+    "record_sha256": "b6156a386c8e2b7e4dc9477572295b46b911301bdd187be432a8fcb8b1ce8d94",
+    "run_a_batch_id": "20260805T142020Z-79177932",
+    "run_b_batch_id": "20260805T142115Z-f3474c54",
+    "verdict": "8/8 passed"
+  },
+  "failure_summary": {
+    "execution_failed": {
+      "extract": 89,
+      "preflight": 3,
+      "representative_clusters": [
+        {
+          "cluster": "ScopedSourceContentError intrinsic simple page-global boundary",
+          "count": 14
+        },
+        {
+          "cluster": "missing_software_target",
+          "count": 12
+        },
+        {
+          "cluster": "duplicate_software_panel",
+          "count": 6
+        },
+        {
+          "cluster": "missing_desktop_filter",
+          "count": 6
+        },
+        {
+          "cluster": "SOURCE_HTML_STRUCTURE_BLOCKED ambiguous ownership",
+          "count": 5
+        },
+        {
+          "cluster": "PREFLIGHT_FAILED parser disagreement",
+          "count": 3
+        }
+      ],
+      "total": 92
+    },
+    "machine_pass_but_approval_blocked_items": [
+      "en-us/cloud-services",
+      "en-us/cosmos-db",
+      "en-us/data-pipeline",
+      "en-us/dedicated-host",
+      "en-us/firewall-manager",
+      "en-us/form-recognizer",
+      "en-us/mariadb",
+      "en-us/virtual-desktop",
+      "en-us/virtual-machine-scale-sets",
+      "zh-cn/cloud-services",
+      "zh-cn/data-pipeline",
+      "zh-cn/database-migration",
+      "zh-cn/firewall-manager",
+      "zh-cn/mariadb",
+      "zh-cn/power-bi-embedded",
+      "zh-cn/search",
+      "zh-cn/virtual-desktop",
+      "zh-cn/virtual-machine-scale-sets"
+    ],
+    "skipped": {
+      "known_unsupported": 54,
+      "source_unavailable": [
+        "en-us/sla-cdn--v1-1"
+      ],
+      "total": 55
+    },
+    "validation_failed": {
+      "cluster": "SLA sql-data/cdn support article items",
+      "reason": "full_content_mismatch",
+      "total": 11
+    }
+  },
+  "final_verification_after_version_bump": {
+    "dashboard_build": "production build passed",
+    "dashboard_test": "19 passed; production build passed",
+    "determinism_verify": "passed; record_sha256=b6156a386c8e2b7e4dc9477572295b46b911301bdd187be432a8fcb8b1ce8d94",
+    "experimental_skip_reason": "process resource/signal observation denied or not observable in this environment; production runner remains fail-closed",
+    "git_diff_check": "passed",
+    "pipeline_status": "passed; revision=1448; released=3; published=0",
+    "pytest": "828 passed, 5 skipped in 312.65s",
+    "release_verify": "passed; registered=true",
+    "schema_tests": "111 passed in 10.45s",
+    "upload_dry_run": "passed; no receipt; no committed revision",
+    "uv_lock_check": "passed",
+    "version_check": "pyproject=0.4.0; uv.lock root package=0.4.0; dashboard=0.4.0"
+  },
+  "generated_at": "2026-08-06T09:02:35.855529Z",
+  "human_review": {
+    "approved": [
+      "en-us/api-management",
+      "zh-cn/api-management",
+      "en-us/time-series-insights",
+      "zh-cn/time-series-insights",
+      "en-us/icp-faq",
+      "zh-cn/icp-faq"
+    ],
+    "extra_non_core_reviewed_for_release": [
+      "en-us/time-series-insights",
+      "zh-cn/time-series-insights"
+    ],
+    "rejected": [
+      {
+        "item_id": "en-us/cloud-services",
+        "reason": "upstream_source"
+      },
+      {
+        "item_id": "zh-cn/cloud-services",
+        "reason": "upstream_source"
+      },
+      {
+        "item_id": "en-us/service-bus",
+        "reason": "extractor_defect"
+      },
+      {
+        "item_id": "zh-cn/service-bus",
+        "reason": "extractor_defect"
+      }
+    ],
+    "remaining_non_core_pending": 266,
+    "required_exercises": {
+      "advisory_approve": "en-us/api-management",
+      "upstream_source_reject": [
+        "en-us/cloud-services",
+        "zh-cn/cloud-services"
+      ]
+    },
+    "result": "passed",
+    "reviewer": "claus.lv",
+    "step7b_report": "reports/v0.4/step7b-review-summary.json"
+  },
+  "lifecycle_authority": {
+    "note": "Batch Manifest is the only lifecycle authority. Review Queue and Batch Report are projections and may be at older revisions.",
+    "path": "runs/20260806T044456Z-e6268660/batch-manifest.json",
+    "revision": 1448,
+    "sha256": "31e80772a4adc1cbbc09e46a73f1a84e7291475f3060aed2e9f9710755da20ba"
+  },
+  "projection_hashes": {
+    "batch_manifest": {
+      "authority": "lifecycle_authority",
+      "path": "runs/20260806T044456Z-e6268660/batch-manifest.json",
+      "revision": 1448,
+      "sha256": "31e80772a4adc1cbbc09e46a73f1a84e7291475f3060aed2e9f9710755da20ba"
+    },
+    "batch_report": {
+      "authority": "execution_validation_projection",
+      "path": "runs/20260806T044456Z-e6268660/batch-report.json",
+      "revision": 1437,
+      "sha256": "0fe6f291464025cd3ca948d93f15f93c8e7c1a95d918b578537b03a129c09bd9"
+    },
+    "release_manifest": {
+      "path": "output/releases/v0.4.0-step7c-representative/release-manifest.json",
+      "schema_version": "1.1",
+      "sha256": "aedc583f566ac8217d682c7347cff46ea173054ba9a468ace3cfc865d468afdc"
+    },
+    "review_queue": {
+      "authority": "review_projection",
+      "path": "runs/20260806T044456Z-e6268660/review/review-queue.json",
+      "revision": null,
+      "sha256": "48d73b37eecb50711542668e005020b3b23a2ce9057eb54ab5f091fbb4d4d58f"
+    }
+  },
+  "readiness_review": {
+    "general_defects_recorded_for_followup": [
+      "Service Bus icon tick symbol not extracted; Core simple_static items rejected as extractor_defect",
+      "Time Series Insights sum_title list omitted from ProductDescription; approved with reviewer note",
+      "Non-Core execution and validation failure clusters retained as follow-up candidates"
+    ],
+    "p0_p1_blockers": [],
+    "scope": "v0.4 acceptance criteria, P0/P1 correctness/data safety/promotion gate/unrecoverable state only"
+  },
+  "release": {
+    "content_sha256": "8a8138bd20501d4752a6404195e072048f15f1bd5b56659448c623360d7e38c9",
+    "dry_run_upload": true,
+    "included_items": [
+      "en-us/time-series-insights",
+      "zh-cn/api-management",
+      "zh-cn/icp-faq"
+    ],
+    "manifest_path": "output/releases/v0.4.0-step7c-representative/release-manifest.json",
+    "manifest_sha256": "aedc583f566ac8217d682c7347cff46ea173054ba9a468ace3cfc865d468afdc",
+    "publication_receipt_path": null,
+    "release_id": "v0.4.0-step7c-representative",
+    "seal": "8313e866994072dd1b43392663eaa8507e29a95a4f39eaf9e39e7ef7b10d0fe4",
+    "step7c_report": "reports/v0.4/step7c-release-summary.json",
+    "step7c_report_sha256": "6e06fe51e5655c0df3ba82b707977050f46d11aa655eb9c36c7df9b707c4f5af",
+    "target_note": "https://example.blob.core.chinacloudapi.cn/cms is an acceptance dry-run placeholder, not a production publication target",
+    "verify_registered": true
+  },
+  "result": "passed",
+  "schema_version": "v0.4-acceptance-status-1.0",
+  "version": "0.4.0"
+}

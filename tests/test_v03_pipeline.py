@@ -4,6 +4,7 @@ import argparse
 import io
 import json
 import shutil
+import sys
 import tempfile
 import unittest
 from collections import Counter
@@ -14,11 +15,16 @@ from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 import cli
+from loguru import logger
 from src.batch.process_engine import BatchProcessEngine
+from src.core.canonical_input import CanonicalHtmlInput
 from src.core.data_models import ExtractionStrategy, StrategyType
 from src.core.extraction_result import ExtractionResult
+from src.core.logging import log_user_operation
 from src.core.product_catalog import sha256_file
+from src.core.validation_context import ValidationContextRegistry
 from src.pipeline.cli_commands import (
+    _AggregateProgressPrinter,
     pipeline_run_command,
     pipeline_status_command,
 )
@@ -123,15 +129,94 @@ class _Copier:
 class _StrategyManager:
     def __init__(self) -> None:
         self.calls: Counter[str] = Counter()
+        self.failures: set[str] = set()
 
     def determine_extraction_strategy(
-        self, html_file_path: str, product_key: str
+        self, soup: object, product_key: str, *, input_bytes: int | None = None
     ) -> ExtractionStrategy:
         self.calls[product_key] += 1
+        if product_key in self.failures:
+            raise RuntimeError(f"fixture preflight failed for {product_key}")
         return ExtractionStrategy(
             strategy_type=StrategyType.SIMPLE_STATIC,
             processor="FixtureProcessor",
             description="pipeline fixture",
+        )
+
+
+class _FixtureValidationContext:
+    """Use the repository's frozen identities without applying them to a mini plan."""
+
+    def __init__(self) -> None:
+        self._registry = ValidationContextRegistry(ROOT)
+
+    @property
+    def max_input_bytes(self) -> int:
+        return self._registry.max_input_bytes
+
+    def assert_plan_matches_baseline(self, plan: PipelinePlan) -> None:
+        assert plan.items
+
+    def capability_delta_proposals(self, plan: PipelinePlan) -> list[dict[str, object]]:
+        return []
+
+    def freeze(self) -> dict[str, object]:
+        return self._registry.freeze(validation_profile_id="v0.4-validation-p2")
+
+    def verify_frozen(
+        self,
+        planning: object,
+        validation_context: object,
+    ) -> None:
+        self._registry.verify_frozen(planning, validation_context)  # type: ignore[arg-type]
+
+    def document_for_identity(
+        self,
+        key: str,
+        identity: object,
+    ) -> dict[str, object]:
+        return self._registry.document_for_identity(key, identity)  # type: ignore[arg-type]
+
+    def content_sampling_profile_for(self, validation_profile_identity: object) -> None:
+        return None
+
+
+class _FixtureInputLoader:
+    def __init__(self, root: Path, items: tuple[BatchItem, ...]) -> None:
+        self.root = root
+        self.items = {
+            (item.product_key, item.language, item.version_key): item for item in items
+        }
+
+    def load(
+        self,
+        product_key: str,
+        language: str,
+        *,
+        version_key: str | None = None,
+        expected_sha256: str | None = None,
+    ) -> CanonicalHtmlInput:
+        item = self.items[(product_key, language, version_key)]
+        source = self.root / str(item.source_path)
+        normalized = self.root / item.normalized_path
+        source_bytes = source.read_bytes()
+        normalized_bytes = normalized.read_bytes()
+        assert source_bytes == normalized_bytes
+        digest = sha256_file(normalized)
+        assert expected_sha256 in (None, digest)
+        return CanonicalHtmlInput(
+            product_key=product_key,
+            resource_key=item.resource_key,
+            language=language,
+            source_path=source,
+            normalized_path=normalized,
+            source_sha256=digest,
+            normalized_sha256=digest,
+            expected_sha256=expected_sha256 or digest,
+            raw_bytes=normalized_bytes,
+            text=normalized_bytes.decode("utf-8", errors="strict"),
+            has_utf8_bom=normalized_bytes.startswith(b"\xef\xbb\xbf"),
+            source_findings=(),
         )
 
 
@@ -152,7 +237,7 @@ class _Extractor:
         self,
         product_key: str,
         language: str,
-        html_file_path: str,
+        *,
         version_key: str | None = None,
         **options: object,
     ) -> ExtractionResult:
@@ -209,7 +294,6 @@ class _Extractor:
         *,
         payload_path: Path,
         sidecar_path: Path,
-        html_file_path: str | Path,
         version_key: str | None = None,
     ) -> ExtractionResult:
         item = self.items[(product_key, language, version_key)]
@@ -237,10 +321,11 @@ class _Extractor:
             sidecar_path=sidecar_path,
         )
 
-    @staticmethod
-    def _sidecar(item: BatchItem, *, validation: str) -> dict[str, object]:
+    def _sidecar(self, item: BatchItem, *, validation: str) -> dict[str, object]:
+        evidence_path = self.run_dir / item.parseability_path
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
         return {
-            "schema_version": "1.1",
+            "schema_version": "1.2",
             "product_key": item.product_key,
             "resource": {
                 "kind": item.resource_kind,
@@ -276,6 +361,23 @@ class _Extractor:
                 "duration_ms": 1,
             },
             "error": None,
+            "input_assurance": {
+                "status": "passed",
+                "encoding": "utf-8-strict",
+                "has_utf8_bom": False,
+                "source_normalized_byte_identical": True,
+                "source_findings": [],
+                "source_html_structure": None,
+                "reconstruction_parseability": {
+                    "verdict": evidence["verdict"],
+                    "input_sha256": evidence["input_sha256"],
+                    "profile_sha256": evidence["profile"]["sha256"],
+                    "evidence": {
+                        "path": str(evidence_path),
+                        "sha256": sha256_file(evidence_path),
+                    },
+                },
+            },
         }
 
     @staticmethod
@@ -288,34 +390,58 @@ class _Extractor:
 
 
 class _Harness:
-    def __init__(self, root: Path, products: tuple[str, ...] = ("alpha", "beta")) -> None:
+    def __init__(
+        self,
+        root: Path,
+        products: tuple[str, ...] = ("alpha", "beta"),
+        progress_callback: object | None = None,
+    ) -> None:
         self.root = root
         shutil.copytree(ROOT / "schemas", root / "schemas")
         self.items = tuple(self._make_item(product) for product in products)
         self.plan = PipelinePlan(
-            scope={"kind": "all"}, languages=("zh-cn",), items=self.items
+            scope={"kind": "all"},
+            languages=("zh-cn",),
+            items=self.items,
+            frozen_inputs={
+                "soft_category": {
+                    "path": "data/configs/soft-category.json",
+                    "sha256": sha256_file(
+                        ROOT / "data/configs/soft-category.json"
+                    ),
+                }
+            },
         )
         self.planner = _Planner(self.plan)
         self.provenance = _Provenance()
         self.copier = _Copier(root, self.items)
         self.strategy_manager = _StrategyManager()
         self.extractor: _Extractor | None = None
-        self.store = StateStore(root)
+        # These legacy pipeline fixtures exercise the P2/Validation1 sidecar
+        # path while run artifacts remain isolated in this temporary root.
+        self.store = StateStore(ROOT, runs_dir=root / "runs")
+        self.store._validation_context = _FixtureValidationContext()
         self.clock = _Clock()
-        self.coordinator = PipelineCoordinator(
-            root,
-            planner=self.planner,
-            state_store=self.store,
-            provenance=self.provenance,
-            copier_factory=lambda unused_root: self.copier,
-            extraction_factory=self._extractor_factory,
-            engine_factory=lambda workers: BatchProcessEngine(
-                max_workers=workers, persist_records=False
-            ),
-            strategy_manager_factory=lambda unused_root: self.strategy_manager,
-            batch_id_factory=lambda: FIXED_BATCH_ID,
-            now=self.clock,
-        )
+        with patch(
+            "src.pipeline.coordinator.ValidationContextRegistry",
+            lambda unused_root: _FixtureValidationContext(),
+        ):
+            self.coordinator = PipelineCoordinator(
+                root,
+                planner=self.planner,
+                state_store=self.store,
+                provenance=self.provenance,
+                copier_factory=lambda unused_root: self.copier,
+                extraction_factory=self._extractor_factory,
+                engine_factory=lambda workers: BatchProcessEngine(
+                    max_workers=workers, persist_records=False
+                ),
+                strategy_manager_factory=lambda unused_root: self.strategy_manager,
+                batch_id_factory=lambda: FIXED_BATCH_ID,
+                progress_callback=progress_callback,  # type: ignore[arg-type]
+                now=self.clock,
+            )
+        self.coordinator._input_loader = _FixtureInputLoader(root, self.items)
 
     def _make_item(self, product_key: str) -> BatchItem:
         config_path = Path("data/configs/products/pricing") / f"{product_key}.json"
@@ -398,21 +524,40 @@ class PipelineCoordinatorTests(unittest.TestCase):
                         "validation": "passed",
                         "review": "pending",
                         "publication": "not_published",
+                        "evidence_binding": "not_applicable",
+                        "approval_eligibility": "blocked",
+                        "release": "not_released",
                     },
                 )
                 for relative in (
                     item.output_path,
                     item.diagnostic_path,
+                    item.parseability_path,
                     item.validation_path,
                 ):
                     self.assertTrue((outcome.run_dir / relative).is_file(), relative)
                 sidecar = json.loads(
                     (outcome.run_dir / item.diagnostic_path).read_text(encoding="utf-8")
                 )
-                self.assertEqual(sidecar["status"], state["status"])
+                self.assertEqual(
+                    sidecar["status"],
+                    {
+                        key: state["status"][key]
+                        for key in (
+                            "execution",
+                            "validation",
+                            "review",
+                            "publication",
+                        )
+                    },
+                )
                 self.assertEqual(
                     sha256_file(outcome.run_dir / item.diagnostic_path),
                     state["artifacts"]["diagnostic"]["sha256"],
+                )
+                self.assertEqual(
+                    sha256_file(outcome.run_dir / item.parseability_path),
+                    state["artifacts"]["parseability"]["sha256"],
                 )
                 validation = json.loads(
                     (outcome.run_dir / item.validation_path).read_text(encoding="utf-8")
@@ -441,6 +586,55 @@ class PipelineCoordinatorTests(unittest.TestCase):
             }
             self.assertTrue(events)
             self.assertTrue(all(required <= event.keys() for event in events))
+            item_successes = [
+                event
+                for event in events
+                if event["item_id"] is not None and event["status"] == "succeeded"
+            ]
+            self.assertTrue(item_successes)
+            self.assertTrue(
+                all(
+                    {
+                        "message",
+                        "diagnostic_path",
+                        "parseability_path",
+                        "validation_path",
+                    }.isdisjoint(event)
+                    for event in item_successes
+                )
+            )
+
+    def test_progress_callback_reports_only_stage_aggregate_counts(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            progress: list[tuple[str, int, int]] = []
+            harness = _Harness(
+                Path(directory),
+                progress_callback=lambda stage, completed, total: progress.append(
+                    (stage, completed, total)
+                ),
+            )
+
+            outcome = harness.run()
+
+            self.assertEqual(outcome.exit_code, 0)
+            self.assertEqual(
+                Counter(stage for stage, _, _ in progress),
+                Counter({
+                    "normalize": 2,
+                    "preflight": 2,
+                    "extract": 2,
+                    "validate": 2,
+                }),
+            )
+            for stage in ("normalize", "preflight", "extract", "validate"):
+                self.assertEqual(
+                    [
+                        (completed, total)
+                        for current, completed, total in progress
+                        if current == stage
+                    ],
+                    [(1, 2), (2, 2)],
+                )
 
     def test_one_future_failure_is_isolated_and_returns_two(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -490,6 +684,17 @@ class PipelineCoordinatorTests(unittest.TestCase):
             )
             self.assertFalse((outcome.run_dir / beta_item.output_path).exists())
             self.assertTrue((outcome.run_dir / beta_item.diagnostic_path).is_file())
+            self.assertIsNone(
+                beta["artifacts"]["payload"]["sha256"]
+            )
+            self.assertEqual(
+                beta["artifacts"]["diagnostic"]["sha256"],
+                sha256_file(outcome.run_dir / beta_item.diagnostic_path),
+            )
+            self.assertEqual(
+                beta["artifacts"]["parseability"]["sha256"],
+                sha256_file(outcome.run_dir / beta_item.parseability_path),
+            )
 
             events = [
                 json.loads(line)
@@ -505,6 +710,72 @@ class PipelineCoordinatorTests(unittest.TestCase):
                 and event["status"] == "failed"
             )
             self.assertEqual(beta_failure["error_code"], "FIXTURE_PARSE_FAILED")
+            self.assertEqual(
+                beta_failure["message"],
+                "fixture parser rejected beta",
+            )
+            self.assertEqual(
+                beta_failure["diagnostic_path"],
+                beta_item.diagnostic_path,
+            )
+            self.assertNotIn("parseability_path", beta_failure)
+            self.assertNotIn("validation_path", beta_failure)
+
+    def test_failed_jsonl_events_include_stage_specific_artifact_pointers(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            harness = _Harness(Path(directory))
+            harness.strategy_manager.failures.add("beta")
+            outcome = harness.run()
+            beta = next(item for item in harness.items if item.resource_key == "beta")
+            events = [
+                json.loads(line)
+                for line in (outcome.run_dir / "logs/pipeline.jsonl")
+                .read_text(encoding="utf-8")
+                .splitlines()
+            ]
+            preflight = next(
+                event
+                for event in events
+                if event["item_id"] == beta.item_id
+                and event["stage"] == "preflight"
+                and event["status"] == "failed"
+            )
+            self.assertEqual(
+                preflight["message"],
+                "fixture preflight failed for beta",
+            )
+            self.assertEqual(preflight["diagnostic_path"], beta.diagnostic_path)
+            self.assertEqual(preflight["parseability_path"], beta.parseability_path)
+            self.assertNotIn("validation_path", preflight)
+
+        with tempfile.TemporaryDirectory() as directory:
+            harness = _Harness(Path(directory))
+            extractor = harness._extractor_factory(
+                harness.store.run_dir(FIXED_BATCH_ID)
+            )
+            extractor.validation_failures.add("beta")
+            outcome = harness.run()
+            beta = next(item for item in harness.items if item.resource_key == "beta")
+            events = [
+                json.loads(line)
+                for line in (outcome.run_dir / "logs/pipeline.jsonl")
+                .read_text(encoding="utf-8")
+                .splitlines()
+            ]
+            validation = next(
+                event
+                for event in events
+                if event["item_id"] == beta.item_id
+                and event["stage"] == "validate"
+                and event["status"] == "failed"
+            )
+            self.assertEqual(
+                validation["message"],
+                "fixture validation failed for beta",
+            )
+            self.assertEqual(validation["diagnostic_path"], beta.diagnostic_path)
+            self.assertEqual(validation["validation_path"], beta.validation_path)
+            self.assertNotIn("parseability_path", validation)
 
     def test_resume_appends_failed_attempt_and_does_not_rerun_success(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -589,14 +860,12 @@ class PipelineCoordinatorTests(unittest.TestCase):
                 )
                 status = harness.coordinator.status(FIXED_BATCH_ID)
                 cli_stdout = io.StringIO()
-                with patch(
-                    "src.pipeline.cli_commands.ROOT", harness.root
-                ), redirect_stdout(cli_stdout):
+                with redirect_stdout(cli_stdout):
                     self.assertEqual(
                         pipeline_status_command(
                             SimpleNamespace(
                                 batch_id=FIXED_BATCH_ID,
-                                runs_dir="runs",
+                                runs_dir=str(harness.store.runs_dir),
                                 json=True,
                             )
                         ),
@@ -872,6 +1141,34 @@ class PipelineCoordinatorTests(unittest.TestCase):
             self.assertEqual(alpha["status"]["review"], "not_requested")
             self.assertEqual(alpha["error"]["code"], "DIAGNOSTIC_HASH_MISMATCH")
 
+    def test_tampered_parseability_evidence_fails_revalidation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            harness = _Harness(Path(directory))
+            outcome = harness.run()
+            item = harness.items[0]
+            before = harness.store.read_manifest(FIXED_BATCH_ID)
+            expected = before["items"][item.item_id]["artifacts"]["parseability"][
+                "sha256"
+            ]
+            evidence_path = outcome.run_dir / item.parseability_path
+            evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+            evidence["verdict"] = "failed"
+            _Extractor._write_json(evidence_path, evidence)
+            self.assertNotEqual(sha256_file(evidence_path), expected)
+
+            validated = harness.coordinator.validate(
+                FIXED_BATCH_ID, parallel_jobs=2
+            )
+
+            self.assertEqual(validated.exit_code, 2)
+            after = harness.store.read_manifest(FIXED_BATCH_ID)
+            current = after["items"][item.item_id]
+            self.assertEqual(
+                current["artifacts"]["parseability"]["sha256"], expected
+            )
+            self.assertEqual(current["status"]["validation"], "failed")
+            self.assertEqual(current["error"]["code"], "PARSEABILITY_HASH_MISMATCH")
+
     def test_completed_resume_is_a_byte_stable_no_op(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             harness = _Harness(Path(directory))
@@ -1112,7 +1409,10 @@ class PipelineCliTests(unittest.TestCase):
         )
 
     @staticmethod
-    def _pipeline_outcome(exit_code: int) -> PipelineOutcome:
+    def _pipeline_outcome(
+        exit_code: int,
+        run_dir: Path | None = None,
+    ) -> PipelineOutcome:
         summary = {
             "total": 2,
             "runnable": 2,
@@ -1131,8 +1431,117 @@ class PipelineCliTests(unittest.TestCase):
             status="completed" if exit_code == 0 else "completed_with_failures",
             exit_code=exit_code,
             summary=summary,
-            run_dir=Path("runs") / FIXED_BATCH_ID,
+            run_dir=run_dir or Path("runs") / FIXED_BATCH_ID,
         )
+
+    def test_progress_printer_emits_at_most_one_line_per_ten_percent_bucket(self) -> None:
+        stream = io.StringIO()
+        progress = _AggregateProgressPrinter(stream)
+
+        for completed in range(1, 101):
+            progress("extract", completed, 100)
+
+        lines = stream.getvalue().splitlines()
+        self.assertEqual(len(lines), 10)
+        self.assertEqual(
+            [int(line.rsplit("percent=", 1)[1].removesuffix("%")) for line in lines],
+            list(range(10, 101, 10)),
+        )
+        self.assertTrue(all("Processed" not in line for line in lines))
+
+    def test_run_console_silences_item_logs_and_prints_failure_summary_and_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            run_dir = Path(directory) / FIXED_BATCH_ID
+            run_dir.mkdir(parents=True)
+            outcome = self._pipeline_outcome(2, run_dir)
+            (run_dir / "batch-report.json").write_text(
+                json.dumps({
+                    "items": [
+                        {
+                            "status": {
+                                "execution": "failed",
+                                "validation": "not_run",
+                            },
+                            "error": {
+                                "stage": "extract",
+                                "code": "missing_cms_state_content",
+                            },
+                        }
+                    ]
+                }),
+                encoding="utf-8",
+            )
+
+            class _NoisyCoordinator:
+                @staticmethod
+                def run(**unused: object) -> PipelineOutcome:
+                    log_user_operation(None, "ITEM_LEVEL_INFO", {})
+                    print("ITEM_LEVEL_STDOUT")
+                    print("ITEM_LEVEL_STDERR", file=sys.stderr)
+                    return outcome
+
+            core = logger._core
+            before = (
+                list(core.activation_list),
+                dict(core.enabled),
+                core.activation_none,
+            )
+            captured_log = io.StringIO()
+            sink = logger.add(captured_log, format="{message}")
+            stdout = io.StringIO()
+            stderr = io.StringIO()
+            try:
+                with patch(
+                    "src.pipeline.cli_commands._coordinator",
+                    return_value=_NoisyCoordinator(),
+                ), redirect_stdout(stdout), redirect_stderr(stderr):
+                    self.assertEqual(pipeline_run_command(self._run_args()), 2)
+            finally:
+                logger.remove(sink)
+
+            self.assertEqual(
+                (
+                    list(core.activation_list),
+                    dict(core.enabled),
+                    core.activation_none,
+                ),
+                before,
+            )
+            self.assertNotIn("ITEM_LEVEL_INFO", captured_log.getvalue())
+            console = stdout.getvalue()
+            self.assertNotIn("ITEM_LEVEL_STDOUT", console)
+            self.assertNotIn("ITEM_LEVEL_STDERR", stderr.getvalue())
+            self.assertIn(
+                "stage=extract code=missing_cms_state_content count=1",
+                console,
+            )
+            for relative in (
+                "batch-manifest.json",
+                "batch-report.json",
+                "review/review-queue.json",
+                "logs/pipeline.jsonl",
+            ):
+                self.assertIn(str(run_dir / relative), console)
+            self.assertNotIn("DEBUG", console)
+            self.assertNotIn("INFO", console)
+            self.assertNotIn("Traceback", console)
+            self.assertEqual(stderr.getvalue(), "")
+
+    def test_legacy_root_file_logging_configuration_is_not_exported(self) -> None:
+        import src.core as core_module
+        from src.core.settings import settings
+
+        self.assertNotIn("setup_logging", core_module.__all__)
+        self.assertFalse(hasattr(core_module, "setup_logging"))
+        for field in (
+            "LOG_DIR",
+            "LOG_FILE",
+            "USER_OPERATION_LOG_FILE",
+            "ERROR_LOG_FILE",
+            "PERFORMANCE_LOG_FILE",
+            "DATA_PROCESSING_LOG_FILE",
+        ):
+            self.assertFalse(hasattr(settings, field))
 
     def test_parser_exposes_pipeline_commands_and_removes_legacy_batch_commands(self) -> None:
         parser = cli.create_parser()

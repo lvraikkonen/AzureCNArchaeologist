@@ -210,7 +210,7 @@
                                         用于 Azure 虚拟机的永久且安全的磁盘存储
                                     </h4>
                                     <div class="updatetime">
-                                        更新时间：2026年3月20日
+                                        更新时间：2026年8月10日
                                     </div>
                                 </div>
                             </div>
@@ -1983,18 +1983,66 @@
                                                             GB。第一个增量快照仅针对已使用的 10 GB 大小计费。在创建第二个快照之前，磁盘上将添加 20 GB
                                                             的数据。现在，第二个增量快照仅收取 20 GB 的费用。
                                                         </p>
-                                                    </div>
-                                                    <div class="notn3">
-                                                        <h4>
-                                                            快照
-                                                        </h4>
                                                         <p>
                                                             只能在标准存储上存储高级 SSD v2 的增量快照。对于自上次快照以来增量更改占用的存储的标准 LRS
                                                             快照选项，按每月 ￥0.3/GB 收费。例如，使用的是预配大小为 128 GB 的托管磁盘，且已使用的大小为 10
                                                             GB。第一个增量快照仅针对已使用的 10 GB 大小计费。在创建第二个快照之前，磁盘上将添加 20 GB
                                                             的数据。现在，第二个增量快照仅收取 20 GB 的费用。
                                                         </p>
+                                                        <p>
+                                                            当从 Premium SSD v2 磁盘创建即时访问增量快照时，会产生以下两项费用：
+                                                        </p>
+                                                        <ol>
+                                                            <li>
+                                                                存储费用：您只需为快照额外占用的存储空间付费。
+                                                            </li>
+                                                            <li>
+                                                                恢复费用：每次从即时访问增量快照恢复磁盘时，都会收取一次性恢复费用。该费用按照恢复时磁盘的预配容量计算。
+                                                            </li>
+                                                        </ol>
+                                                        <p>
+                                                            如需了解更多信息，请参阅 
+                                                            <a href="https://docs.microsoft.com/zh-cn/azure/virtual-machines/disks-instant-access-snapshots?tabs=azure-cli%2Cazure-cli-snapshot-state">
+                                                            Azure托管磁盘的即时访问快照
+                                                            </a>。
+                                                        </p>
+                                                        <p>
+                                                            作为一项限时优惠，在 2027 年 1 月之前，您无需为即时访问增量快照所消耗的额外存储空间付费。
+                                                        </p>
                                                     </div>
+                                                    <table cellpadding="0" cellspacing="0" id="managed-disks-SSD-V2-snapshots-north-china3" width="100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    <strong>即时访问费用</strong>
+                                                                </th>
+                                                                <th>
+                                                                    <strong>价格</strong>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    存储费用
+                                                                </td>
+                                                                <th>
+                                                                    ￥0.00164 每GB/每小时
+                                                                </th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    恢复操作费用
+                                                                </td>
+                                                                <th>
+                                                                    按预配容量每 TB/每次恢复收费￥4.07 
+                                                                </th>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                    <br/>
+
                                                     <h4>
                                                         定价
                                                     </h4>
@@ -5013,6 +5061,66 @@
                                                     <p>
                                                         超级磁盘的总成本取决于磁盘大小及其性能配置，并受磁盘数量影响。
                                                     </p>
+
+                                                    <div class="isn3">
+                                                        <h4>快照</h4>
+                                                        <p>只能在标准存储上存储超级磁盘的增量快照。对于自上次快照以来增量更改占用的存储的标准 LRS 和 ZRS 快照选项，按每月 $0.05/GB 收费。
+                                                            例如使用的是预配大小为 128 GB 的托管磁盘，且已使用的大小为 10 GB。
+                                                            第一个增量快照仅针对已使用的 10 GB 大小计费。在创建第二个快照之前，将向磁盘添加 20 GB 的数据。现在，第二个增量快照仅收取 20 GB 的费用。
+                                                        </p>
+                                                        <ol>
+                                                            <li>
+                                                                存储费用：您只需为该增量快照额外占用的存储空间付费。
+                                                            </li>
+                                                            <li>
+                                                                恢复费用：每次从即时访问增量快照恢复磁盘时，都会收取一次性恢复费用。该费用根据恢复时磁盘的预配容量计算。
+                                                            </li>
+                                                        </ol>
+                                                        <p>
+                                                            有关详细信息，请参阅：
+                                                            <a href="https://docs.microsoft.com/zh-cn/azure/virtual-machines/disks-instant-access-snapshots?tabs=azure-cli%2Cazure-cli-snapshot-state">
+                                                            Azure托管磁盘的即时访问快照
+                                                            </a>
+                                                            。
+                                                        </p>
+                                                        <p>
+                                                            作为一项限时优惠，在 2027 年 1 月之前，您无需支付即时访问增量快照所消耗的额外存储费用。
+                                                        </p>
+                                                    </div>
+
+                                                    <table cellpadding="0" cellspacing="0" id="managed-disks-ultra-disk-snapshots-north-china3" width="100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    <strong>即时访问费用</strong>
+                                                                </th>
+                                                                <th>
+                                                                    <strong>价格</strong>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    存储费用
+                                                                </td>
+                                                                <th>
+                                                                    ￥0.00164 每GB/每小时
+                                                                </th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    恢复操作费用
+                                                                </td>
+                                                                <th>
+                                                                    按预配容量每 TB/每次恢复收费￥4.07 
+                                                                </th>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                    <br/>
+
                                                     <p>
                                                         超级磁盘有不同大小规格，其每秒输入/输出操作数 (IOPS)
                                                         范围和吞吐量（MB/秒）范围均可配置，且按小时计费。可以选择最符合所需存储大小、IOPS
@@ -5064,9 +5172,9 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr>
-                                                                <td>
+                                                                <th>
                                                                     最大 IOPS
-                                                                </td>
+                                                                </th>
                                                                 <th>
                                                                     1,200
                                                                 </th>
@@ -5096,9 +5204,9 @@
                                                                 </th>
                                                             </tr>
                                                             <tr>
-                                                                <td>
+                                                                <th>
                                                                     最大吞吐量(MB/s)
-                                                                </td>
+                                                                </th>
                                                                 <th>
                                                                     300
                                                                 </th>

@@ -1,0 +1,298 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/review-decision-1.0.schema.json",
+  "title": "Review Decision 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "decision_id",
+    "batch_id",
+    "item_id",
+    "resource_key",
+    "language",
+    "reviewer",
+    "decided_at",
+    "verdict",
+    "reason",
+    "notes",
+    "bindings",
+    "inspected_states",
+    "supersedes_decision_id"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "decision_id": {
+      "$ref": "#/$defs/sha256"
+    },
+    "batch_id": {
+      "type": "string",
+      "pattern": "^[0-9]{8}T[0-9]{6}Z-[a-f0-9]{8}$"
+    },
+    "item_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resource_key": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*(?:--v[0-9]+(?:-[0-9]+)*)?$"
+    },
+    "language": {
+      "enum": [
+        "zh-cn",
+        "en-us"
+      ]
+    },
+    "reviewer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "verdict": {
+      "enum": [
+        "approved",
+        "rejected"
+      ]
+    },
+    "reason": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/rejection_reason"
+        }
+      ]
+    },
+    "notes": {
+      "type": "string"
+    },
+    "bindings": {
+      "$ref": "#/$defs/bindings"
+    },
+    "inspected_states": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/inspected_state"
+      }
+    },
+    "supersedes_decision_id": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/sha256"
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "verdict": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "verdict"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "reason": {
+            "$ref": "#/$defs/rejection_reason"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "inspected_states": {
+            "contains": {
+              "properties": {
+                "scope": {
+                  "const": "interactive_state"
+                }
+              },
+              "required": [
+                "scope"
+              ]
+            },
+            "minContains": 1
+          }
+        },
+        "required": [
+          "inspected_states"
+        ]
+      },
+      "then": {
+        "properties": {
+          "bindings": {
+            "properties": {
+              "sampling_plan_sha256": {
+                "$ref": "#/$defs/sha256"
+              }
+            }
+          },
+          "inspected_states": {
+            "not": {
+              "contains": {
+                "properties": {
+                  "scope": {
+                    "const": "full_content"
+                  }
+                },
+                "required": [
+                  "scope"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "bindings": {
+            "properties": {
+              "sampling_plan_sha256": {
+                "type": "null"
+              }
+            }
+          },
+          "inspected_states": {
+            "prefixItems": [
+              {
+                "properties": {
+                  "scope": {
+                    "const": "full_content"
+                  }
+                },
+                "required": [
+                  "scope"
+                ]
+              }
+            ],
+            "items": false,
+            "minItems": 1,
+            "maxItems": 1
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nullable_sha256": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/sha256"
+        }
+      ]
+    },
+    "rejection_reason": {
+      "enum": [
+        "upstream_source",
+        "product_config",
+        "extractor_defect",
+        "validator_defect",
+        "needs_clarification"
+      ]
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_sha256",
+        "payload_sha256",
+        "validation_artifact_sha256",
+        "validation_evidence_sha256",
+        "sampling_plan_sha256"
+      ],
+      "properties": {
+        "source_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "payload_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "validation_artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "validation_evidence_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "sampling_plan_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        }
+      }
+    },
+    "inspected_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope"
+      ],
+      "properties": {
+        "scope": {
+          "enum": [
+            "interactive_state",
+            "page_global",
+            "full_content"
+          ]
+        },
+        "state_id": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "scope": {
+                "const": "interactive_state"
+              }
+            },
+            "required": [
+              "scope"
+            ]
+          },
+          "then": {
+            "required": [
+              "state_id"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "state_id"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

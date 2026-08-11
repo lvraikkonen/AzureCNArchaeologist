@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/experimental-extraction-exceptions-1.0.schema.json",
+  "title": "Experimental Extraction Exceptions 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "exceptions"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "exceptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["virtual-machines"],
+      "properties": {
+        "virtual-machines": {"$ref": "#/$defs/virtualMachinesException"}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["snapshot_path", "resolved_path", "bytes", "sha256"],
+      "properties": {
+        "snapshot_path": {"const": "pricing/details/virtual-machines/index.html"},
+        "resolved_path": {"type": "string", "pattern": "^data/current_prod_html/(zh-cn|en-us)/pricing/details/virtual-machines/index\\.html$"},
+        "bytes": {"type": "integer", "minimum": 1, "maximum": 8388608},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "virtualMachinesException": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "experiment_key",
+        "product_key",
+        "product_definition_path",
+        "required_capability_status",
+        "page_model",
+        "forced_strategy",
+        "reason",
+        "owning_team",
+        "sources",
+        "limits",
+        "output_root",
+        "expiry"
+      ],
+      "properties": {
+        "experiment_key": {"const": "v0.4-virtual-machines-bilingual-export"},
+        "product_key": {"const": "virtual-machines"},
+        "product_definition_path": {"const": "data/configs/products/pricing/virtual-machines.json"},
+        "required_capability_status": {"const": "known_unsupported"},
+        "page_model": {"const": "FlexibleContentPage"},
+        "forced_strategy": {"const": "complex"},
+        "reason": {"const": "v0.4_p0_bilingual_experimental_export"},
+        "owning_team": {"const": "AzureCNArchaeologist"},
+        "sources": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["zh-cn", "en-us"],
+          "properties": {
+            "zh-cn": {
+              "allOf": [
+                {"$ref": "#/$defs/source"},
+                {
+                  "properties": {
+                    "resolved_path": {"const": "data/current_prod_html/zh-cn/pricing/details/virtual-machines/index.html"},
+                    "bytes": {"const": 8064052},
+                    "sha256": {"const": "b1eedddb9020c94399063f95cc746609c1c86ec658fba5457d8d84197a2ea19f"}
+                  }
+                }
+              ]
+            },
+            "en-us": {
+              "allOf": [
+                {"$ref": "#/$defs/source"},
+                {
+                  "properties": {
+                    "resolved_path": {"const": "data/current_prod_html/en-us/pricing/details/virtual-machines/index.html"},
+                    "bytes": {"const": 7239577},
+                    "sha256": {"const": "8d0167fe4aa7e196b1879941d6830b3ef30f7e448501e53706823d736e827ea1"}
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["max_source_bytes", "timeout_seconds", "max_peak_rss_bytes"],
+          "properties": {
+            "max_source_bytes": {"const": 8388608},
+            "timeout_seconds": {"const": 900},
+            "max_peak_rss_bytes": {"const": 2147483648}
+          }
+        },
+        "output_root": {"const": "output/experiments"},
+        "expiry": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["on_source_identity_change", "project_version_at_least"],
+          "properties": {
+            "on_source_identity_change": {"const": true},
+            "project_version_at_least": {"const": "0.4.0"}
+          }
+        }
+      }
+    }
+  }
+}

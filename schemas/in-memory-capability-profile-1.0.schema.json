@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/in-memory-capability-profile-1.0.schema.json",
+  "title": "InMemory Capability Profile 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "profile_id", "status", "processing_mode", "max_normalized_input_bytes", "semantic_strategies", "over_limit_disposition", "qualification_evidence"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "profile_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"},
+    "status": {"const": "frozen"},
+    "processing_mode": {"const": "in_memory"},
+    "max_normalized_input_bytes": {"const": 5242880},
+    "semantic_strategies": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {"enum": ["simple_static", "region_filter", "complex", "support_article"]}
+    },
+    "over_limit_disposition": {"const": "reviewed_planning_delta_required"},
+    "qualification_evidence": {"$ref": "#/$defs/artifact"}
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "path", "sha256"],
+      "properties": {
+        "schema_version": {"const": "1.0"},
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    }
+  }
+}

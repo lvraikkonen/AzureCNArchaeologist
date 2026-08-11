@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "recorded_at_utc": "2026-07-22T12:16:04Z",
+  "step": "v0.4-step-0",
+  "git": {
+    "branch": "codex/v0.4",
+    "baseline_commit": "00e6df57dbde82718a60ccfe8b5d9bccbe1c2c98",
+    "baseline_short_commit": "00e6df5"
+  },
+  "product_index": {
+    "path": "data/configs/products-index.json",
+    "schema_version": "3.0",
+    "unique_products": 211,
+    "catalog_digest": "sha256:c102b60d533a619a6656ed0038f76873ada3d7b497510efb44f82c12f10fb5c0",
+    "file_sha256": "0d0d624141a56e69fd439bd1720ec052c8fea62413269eaab60fb5c354eaa783"
+  },
+  "virtual_machines_sources": [
+    {
+      "language": "zh-cn",
+      "path": "data/current_prod_html/zh-cn/pricing/details/virtual-machines/index.html",
+      "bytes": 8064052,
+      "sha256": "b1eedddb9020c94399063f95cc746609c1c86ec658fba5457d8d84197a2ea19f"
+    },
+    {
+      "language": "en-us",
+      "path": "data/current_prod_html/en-us/pricing/details/virtual-machines/index.html",
+      "bytes": 7239577,
+      "sha256": "8d0167fe4aa7e196b1879941d6830b3ef30f7e448501e53706823d736e827ea1"
+    }
+  ],
+  "regression_baseline": {
+    "legacy_entry_point": ".venv/bin/python -m unittest discover -s tests",
+    "legacy_result": {
+      "tests": 49,
+      "status": "passed"
+    },
+    "trusted_entry_point": "uv run pytest",
+    "collection_result": {
+      "tests": 49,
+      "status": "passed"
+    },
+    "execution_result": {
+      "tests": 49,
+      "subtests": 4,
+      "status": "passed"
+    },
+    "excluded_legacy_diagnostics": [
+      "tests/test_data_models.py",
+      "tests/test_detectors.py",
+      "tests/test_page_analyzer.py"
+    ]
+  },
+  "dependency_lock": {
+    "path": "uv.lock",
+    "sha256": "c206c7f011f75abce8e6cf8137d7d70f5bae303f2bf2b0ece3a8eb6c82fdb6cc",
+    "pytest_version": "9.1.1"
+  }
+}

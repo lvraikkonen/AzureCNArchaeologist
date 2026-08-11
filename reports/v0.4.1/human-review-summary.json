@@ -1,0 +1,140 @@
+{
+  "schema_version": "v0.4.1-human-review-summary-1.0",
+  "generated_at": "2026-08-09T04:07:21Z",
+  "result": "passed",
+  "batch_id": "20260809T030936Z-ce23e678",
+  "batch_provenance_commit": "1df680fb4bcff73abd9e6764ec7927810dfb389d",
+  "reviewer": "claus.lv",
+  "required_scope": {
+    "mode": "full_content",
+    "items": 5,
+    "checks": [
+      "complete article content",
+      "metadata",
+      "all internal SLA links",
+      "configured internal routes resolve to CMS paths",
+      "unconfigured external links remain external"
+    ]
+  },
+  "decisions": [
+    {
+      "item_id": "en-us/sla-sql-data",
+      "resource_key": "sla-sql-data",
+      "language": "en-us",
+      "verdict": "approved",
+      "reason": null,
+      "notes": "页面内容审核通过",
+      "decided_at": "2026-08-09T03:45:38.841406Z",
+      "decision_id": "e3671b86cba81e4b3fa12ef61bdb0685e6eff38fa7cc62e9878f9b91f13dcf5b",
+      "path": "runs/20260809T030936Z-ce23e678/review/decisions/en-us/sla-sql-data/e3671b86cba81e4b3fa12ef61bdb0685e6eff38fa7cc62e9878f9b91f13dcf5b.json",
+      "sha256": "95edfe0901f0d63c099c9b4b5d97768da1dc08ee2892a9a966695ff9d917538b",
+      "inspected_states": [{"scope": "full_content"}],
+      "bindings": {
+        "source_sha256": "07999786202f58da729a843a50d87838dd7f947407d6eac7ec39ee429dc034cb",
+        "payload_sha256": "091cff29d763292eaf1212099fde451a5cbb3a1d9406bf66c0c619ee321de5bd",
+        "validation_artifact_sha256": "471de7c62f25c83a01fda5834cb9811189a5d7e364aed324df4fdfe20b37e6c6",
+        "validation_evidence_sha256": "9ff34afe7b320141beeaf09461f660070a7c053868e37910be5e26cbf5d5ecb5",
+        "sampling_plan_sha256": null
+      }
+    },
+    {
+      "item_id": "en-us/sla-sql-data--v1-5",
+      "resource_key": "sla-sql-data--v1-5",
+      "language": "en-us",
+      "verdict": "approved",
+      "reason": null,
+      "notes": "页面内容审核通过",
+      "decided_at": "2026-08-09T03:46:25.738889Z",
+      "decision_id": "c2892345ce7050c82a29519faba8dc09d4639f68905e5115113c88ccf90b48e4",
+      "path": "runs/20260809T030936Z-ce23e678/review/decisions/en-us/sla-sql-data--v1-5/c2892345ce7050c82a29519faba8dc09d4639f68905e5115113c88ccf90b48e4.json",
+      "sha256": "3ef51f53129a701ab8a066153c45bce1999f75f58aca6a1cb4e20e41c6fa20e1",
+      "inspected_states": [{"scope": "full_content"}],
+      "bindings": {
+        "source_sha256": "029b0c63eddabf05648d2539e4bf9cab2eceed886211d5b39691af67ccb887b2",
+        "payload_sha256": "ad407e5353963e95b036f337f11a6065e04bacd82d5da6dd084325135059cd8e",
+        "validation_artifact_sha256": "bc65100fed8b1c0ffaf258e00583572394b5128510145c26461658a9d5515ae7",
+        "validation_evidence_sha256": "a63b756447635bc817d769006ffbd0a42086ea342acd820131ee0da7498203f5",
+        "sampling_plan_sha256": null
+      }
+    },
+    {
+      "item_id": "zh-cn/sla-cdn",
+      "resource_key": "sla-cdn",
+      "language": "zh-cn",
+      "verdict": "approved",
+      "reason": null,
+      "notes": "页面内容审核通过",
+      "decided_at": "2026-08-09T03:47:01.892974Z",
+      "decision_id": "fd73f1c9c9493a0bf9aa34c3ae5d81dc5267f7bee43de827ea484d3710b49eb8",
+      "path": "runs/20260809T030936Z-ce23e678/review/decisions/zh-cn/sla-cdn/fd73f1c9c9493a0bf9aa34c3ae5d81dc5267f7bee43de827ea484d3710b49eb8.json",
+      "sha256": "fd2c40c4f2ac307eb989c35af1ebe5e97320bc892d990167411ba978e255a224",
+      "inspected_states": [{"scope": "full_content"}],
+      "bindings": {
+        "source_sha256": "53bb893fea279d5b15c8560331c044436464c5131bdd14829cfcef37196d86dc",
+        "payload_sha256": "854c70644b5660f01e0e9cecf2f83ac1c1cc1aadfe175909f667d4ed88f03a79",
+        "validation_artifact_sha256": "dbe672c2d781feacc431386b138ca2c00b1a559024cd6857bcef38cf820b1c9c",
+        "validation_evidence_sha256": "5475e3d48e90d7e2635f557418fa598af56322c7d5989a6ca7593e0f2a3c6c81",
+        "sampling_plan_sha256": null
+      }
+    },
+    {
+      "item_id": "zh-cn/sla-cdn--v1-1",
+      "resource_key": "sla-cdn--v1-1",
+      "language": "zh-cn",
+      "verdict": "approved",
+      "reason": null,
+      "notes": "页面内容审核通过",
+      "decided_at": "2026-08-09T03:48:27.031589Z",
+      "decision_id": "d348a29a7172c76c05584a85f30313bb67d98d6128f14d606e8a84cd79cb5fdf",
+      "path": "runs/20260809T030936Z-ce23e678/review/decisions/zh-cn/sla-cdn--v1-1/d348a29a7172c76c05584a85f30313bb67d98d6128f14d606e8a84cd79cb5fdf.json",
+      "sha256": "9f1683ca81c578551aee49294b7d56f8b263c2a2373d74d5c11a11cf3506b8f8",
+      "inspected_states": [{"scope": "full_content"}],
+      "bindings": {
+        "source_sha256": "b3c8079973db3c7077de2c6d1cb44550467fcd3999a8d055166ff4edbd9eaee9",
+        "payload_sha256": "a3030225a8cb1f3e8e6e12581e5f52738211563da846d89103b7bccc422c09ce",
+        "validation_artifact_sha256": "2ca9f4274b331b9812b0e3d2f181148e934fb78092f83736a2506de55740bb6d",
+        "validation_evidence_sha256": "e45b4a8043dea8a934d49c17dea863d3ce457f8b6733f89d19087ce3d43d31e7",
+        "sampling_plan_sha256": null
+      }
+    },
+    {
+      "item_id": "zh-cn/sla-sql-data",
+      "resource_key": "sla-sql-data",
+      "language": "zh-cn",
+      "verdict": "approved",
+      "reason": null,
+      "notes": "页面内容审核通过",
+      "decided_at": "2026-08-09T03:47:40.992492Z",
+      "decision_id": "634be017366a2198d8128567b22d6d8ba282e9a3282896cc2061a56b44270079",
+      "path": "runs/20260809T030936Z-ce23e678/review/decisions/zh-cn/sla-sql-data/634be017366a2198d8128567b22d6d8ba282e9a3282896cc2061a56b44270079.json",
+      "sha256": "85888b42b8bcbb59d518ecef40ac2ad6d1267977f37e771456cfa6a61a9e45ac",
+      "inspected_states": [{"scope": "full_content"}],
+      "bindings": {
+        "source_sha256": "b856af44241725939c347811512ac04b6f979abe838cc8f9b8b55167ea4293dc",
+        "payload_sha256": "3cd6b8b8682f97f6cb7114a09b0710d1c73bb63f78a81737c23dba89f63d437f",
+        "validation_artifact_sha256": "f4654fea460fe075507718a0fc2813a9f5463f0a018d793238c71a9cd46d10e1",
+        "validation_evidence_sha256": "b327a3b7a28cae2db1cc36cd85003e98580cc7f8641c768f657c2a5af60f83bf",
+        "sampling_plan_sha256": null
+      }
+    }
+  ],
+  "checks": {
+    "decision_count": 5,
+    "approved_count": 5,
+    "rejected_count": 0,
+    "full_content_count": 5,
+    "evidence_bound_count": 5,
+    "evidence_stale_count": 0,
+    "reviewer_identity_fabricated_by_codex": false,
+    "historical_resource_key_decisions_written": [
+      "en-us/sla-sql-data--v1-5",
+      "zh-cn/sla-cdn--v1-1"
+    ]
+  },
+  "superseded_batch": {
+    "batch_id": "20260809T015109Z-b2e2aff7",
+    "existing_decisions_preserved": true,
+    "decisions_migrated": false,
+    "reason": "The accepted execution plan requires new bound decisions after a code change creates a new full Batch."
+  }
+}

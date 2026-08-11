@@ -1,0 +1,3 @@
+# Project Software-scoped Prefix Content into Descendant States
+
+Source-visible content placed inside one Software panel before its first concrete Category panel, and unchanged by every other active filter dimension, is classified as Software-scoped Prefix Content and fingerprinted as source evidence. Reconstruction prepends that exact fragment to every source-proven descendant `contentGroup.content` for the same Software scope; promoting it to `commonSections`, attaching it only to the first Category, or dropping it were rejected because each changes what CMS renders. Region-sensitive price-bearing ancestor content is a different concept governed by ADR-0080 and is not coerced into this prefix model.

@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "product_key": "container-instances",
   "display_name": "Container Instances",
   "slug": "container-instances",
@@ -21,41 +21,21 @@
     }
   },
   "extraction": {
-    "important_section_titles": [
-      "定价详细信息",
-      "定价详情",
-      "pricing details",
-      "常见问题",
-      "faq",
-      "frequently asked questions",
-      "支持和服务级别协议",
-      "Container Instances",
-      "container-instances"
-    ],
-    "estimated_size_mb": 1.0,
-    "priority_sections": [
-      "pricing-tables",
-      "banner",
-      "description",
-      "faq"
-    ],
-    "enable_region_processing": true,
-    "extra_sections": [
-      {
-        "title": "公共 IP 地址",
-        "type": "content",
-        "include_in": "contentGroups",
-        "position": "after_main"
-      },
-      {
-        "title": "定价示例",
-        "type": "content",
-        "include_in": "contentGroups",
-        "position": "after_main"
+    "semantic_strategy": "region_filter",
+    "page_global_content": {
+      "source_boundary": "after_final_formal_selector_before_common_sections",
+      "expected_by_language": {
+        "zh-cn": {
+          "fragment_count": 2,
+          "source_html_sha256": "4de1f300b0cd8464cce60687c02b6a13bb5a20b5614f82326a8c6398702dfbd6",
+          "wire_html_sha256": "7f8d653f6f171859126fc5e2dea5c366a45b576f5957ed56e53e5b38c1072edd"
+        },
+        "en-us": {
+          "fragment_count": 2,
+          "source_html_sha256": "d0e51fbc7b1654a155dfcca3b0b324d08bdf94301a958bc60aa1c10812944e95",
+          "wire_html_sha256": "4ca0e1994324e4056e436261030841a0fbc2434b02ecd8beab6b9aa177c16f3c"
+        }
       }
-    ]
-  },
-  "quality": {
-    "min_content_length": 100
+    }
   }
 }

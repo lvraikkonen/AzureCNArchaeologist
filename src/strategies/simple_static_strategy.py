@@ -20,9 +20,9 @@ from src.strategies.base_strategy import BaseStrategy
 from src.utils.content.content_extractor import ContentExtractor
 from src.utils.content.section_extractor import SectionExtractor
 from src.utils.content.flexible_builder import FlexibleBuilder
-from src.utils.data.extraction_validator import ExtractionValidator
 from src.utils.html.cleaner import clean_html_content
 from src.utils.content.content_utils import classify_pricing_section, filter_sections_by_type
+from src.core.scoped_source_content import resolve_page_global_base_content
 from src.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -55,7 +55,6 @@ class SimpleStaticStrategy(BaseStrategy):
         self.content_extractor = ContentExtractor()
         self.section_extractor = SectionExtractor()
         self.flexible_builder = FlexibleBuilder()
-        self.extraction_validator = ExtractionValidator()
         
         logger.info(f"📄 初始化简单静态策略: {self._get_product_key()}")
 
@@ -80,7 +79,11 @@ class SimpleStaticStrategy(BaseStrategy):
         
         # 3. 构建策略特定内容
         strategy_content = {
-            "baseContent": self._extract_main_content(soup),
+            "baseContent": resolve_page_global_base_content(
+                soup,
+                self.product_config,
+                language=str(base_metadata.get("Language", "")),
+            ),
             "contentGroups": self.flexible_builder.build_simple_content_groups(""),  # 简单页面无contentGroups
             "strategy_type": "simple_static"
         }
@@ -89,9 +92,6 @@ class SimpleStaticStrategy(BaseStrategy):
         flexible_data = self.flexible_builder.build_flexible_page(
             base_metadata, common_sections, strategy_content
         )
-        
-        # 5. 验证flexible JSON结果
-        flexible_data = self.extraction_validator.validate_flexible_json(flexible_data)
         
         logger.info("✅ 简单静态策略提取完成（flexible JSON格式）")
         return flexible_data

@@ -1,4 +1,4 @@
-"""Authoritative seven-stage coordinator for v0.3 batch runs."""
+"""Authoritative seven-stage coordinator for v0.4 batch runs."""
 
 from __future__ import annotations
 
@@ -17,12 +17,38 @@ from src.batch.process_engine import (
     ResourceProcessingInfo,
     ResourceProcessingResult,
 )
+from src.content_sampling.runtime import (
+    PreparedSampledValidation,
+    SampledValidationRuntime,
+)
 from src.core.contract_validator import ContractValidator
+from src.core.canonical_input import CanonicalInputLoader, InputAssuranceError
 from src.core.data_models import ExtractionStrategy
-from src.core.extraction_coordinator import ExtractionCoordinator
+from src.core.extraction_coordinator import (
+    ExtractionCoordinator,
+    strict_soft_category_failure_envelope,
+    unwrap_strict_soft_category_error,
+)
 from src.core.product_catalog import sha256_file
 from src.core.product_manager import ProductManager
+from src.core.reconstruction_parseability import ReconstructionParseabilityValidator
+from src.core.source_html_structure import (
+    SourceHtmlStructureAuditError,
+    SourceHtmlStructureAuditor,
+)
+from src.core.source_state_evidence import (
+    SourceStateEvidenceError,
+    SourceStateEvidenceResolver,
+)
+from src.core.source_reachability import (
+    SourceReachabilityError,
+    SourceReachabilityResolver,
+)
+from src.core.strict_soft_category_projection import (
+    StrictSoftCategoryProjectionError,
+)
 from src.core.strategy_manager import StrategyManager
+from src.core.validation_context import ValidationContextRegistry
 from src.pipeline.models import (
     BatchItem,
     InputManifest,
@@ -40,6 +66,7 @@ from src.pipeline.state_store import (
     StateStoreError,
     generate_batch_id,
 )
+from src.review.service import ReviewService
 from src.strategies.strategy_factory import StrategyFactory
 
 
@@ -96,6 +123,7 @@ class PipelineCoordinator:
         engine_factory: Callable[[int], BatchProcessEngine] | None = None,
         strategy_manager_factory: Callable[[Path], StrategyManager] | None = None,
         batch_id_factory: Callable[[], str] | None = None,
+        progress_callback: Callable[[str, int, int], None] | None = None,
         now: Callable[[], str] = utc_now,
     ) -> None:
         self.root = Path(root).resolve()
@@ -109,8 +137,26 @@ class PipelineCoordinator:
         )
         self._strategy_manager_factory = strategy_manager_factory or self._default_strategy_manager
         self._batch_id_factory = batch_id_factory or generate_batch_id
+        self._progress_callback = progress_callback
         self._now = now
         self._contract_validator = ContractValidator(self.root)
+        self._validation_context = ValidationContextRegistry(self.root)
+        self._input_loader = CanonicalInputLoader(
+            self.root,
+            ProductManager(str(self.root / "data" / "configs")),
+            max_input_bytes=self._validation_context.max_input_bytes,
+        )
+        self._parseability_validator = ReconstructionParseabilityValidator()
+        self._source_html_structure_auditor = SourceHtmlStructureAuditor(
+            self.root
+        )
+        self._source_state_evidence = SourceStateEvidenceResolver(self.root)
+        self._source_reachability = SourceReachabilityResolver(self.root)
+        self._review_service = ReviewService(
+            self.root,
+            state_store=self.store,
+            now=self._now,
+        )
         self._active_stage: str | None = None
 
     def run(
@@ -133,15 +179,32 @@ class PipelineCoordinator:
         # directory or an input manifest.
         batch_id = self._batch_id_factory()
         with RepositoryLock(
-            self.root, batch_id=batch_id, command="pipeline-run"
+            self.store.lock_root,
+            batch_id=batch_id,
+            command="pipeline-run",
         ):
             frozen_provenance = self.provenance.capture(allow_dirty=allow_dirty)
             plan = self.planner.plan(scope, group=group, language=language)
+            self._validation_context.assert_plan_matches_baseline(plan)
+            capability_proposals = self._validation_context.capability_delta_proposals(
+                plan
+            )
+            if capability_proposals:
+                candidate_path = self._write_planning_delta_candidate(
+                    batch_id, capability_proposals
+                )
+                raise PipelineError(
+                    "Unreviewed capability delta proposal(s) block planning; "
+                    f"candidate: {candidate_path}"
+                )
+            frozen_context = self._validation_context.freeze()
             frozen = InputManifest.from_plan(
                 batch_id,
                 plan,
                 frozen_provenance,
                 created_at=self._now(),
+                planning=frozen_context["planning"],
+                validation_context=frozen_context["validation_context"],
             )
             run_dir = self.store.create_run(frozen)
             self._activate_stage("discovery")
@@ -168,7 +231,9 @@ class PipelineCoordinator:
         """Resume operationally failed or interrupted stages without redoing success."""
         self._validate_parallel_jobs(parallel_jobs)
         with RepositoryLock(
-            self.root, batch_id=batch_id, command="pipeline-resume"
+            self.store.lock_root,
+            batch_id=batch_id,
+            command="pipeline-resume",
         ):
             frozen = self.store.read_input_manifest(batch_id)
             self.provenance.verify(frozen["provenance"])
@@ -200,7 +265,9 @@ class PipelineCoordinator:
         """Revalidate existing successful extractions without invoking earlier stages."""
         self._validate_parallel_jobs(parallel_jobs)
         with RepositoryLock(
-            self.root, batch_id=batch_id, command="pipeline-validate"
+            self.store.lock_root,
+            batch_id=batch_id,
+            command="pipeline-validate",
         ):
             frozen = self.store.read_input_manifest(batch_id)
             self.provenance.verify(frozen["provenance"])
@@ -245,7 +312,8 @@ class PipelineCoordinator:
         display_status, resumable = derive_batch_availability(
             manifest,
             lock_is_held=RepositoryLock.is_locked(
-                self.root, batch_id=batch_id
+                self.store.lock_root,
+                batch_id=batch_id,
             ),
         )
         return {
@@ -348,7 +416,7 @@ class PipelineCoordinator:
                     error_code="NORMALIZE_FAILED", error_message=str(exc),
                 )
 
-        self._engine_factory(parallel_jobs).process_resource_items(
+        self._stage_engine("normalize", parallel_jobs).process_resource_items(
             infos,
             worker=worker,
             result_callback=lambda result, completed, total: self._commit_stage_result(
@@ -364,6 +432,7 @@ class PipelineCoordinator:
             return
         self._start_stage(batch_id, "preflight", items)
         strategy_manager = self._strategy_manager_factory(self.root)
+        run_dir = self.store.run_dir(batch_id)
         infos = [self._resource_info(batch_id, item) for item in items]
 
         def worker(info: ResourceProcessingInfo) -> ResourceProcessingResult:
@@ -371,8 +440,38 @@ class PipelineCoordinator:
             item = info.metadata["batch_item"]
             try:
                 self._check_preflight_artifacts(item)
+                canonical_input = self._input_loader.load(
+                    item.product_key,
+                    item.language,
+                    version_key=item.version_key,
+                    expected_sha256=item.normalized_sha256,
+                )
+                parseability = self._parseability_validator.validate(canonical_input)
+                evidence_contract = (
+                    self._contract_validator.validate_reconstruction_parseability(
+                        dict(parseability.evidence)
+                    )
+                )
+                if not evidence_contract.passed:
+                    raise RuntimeError(
+                        "Invalid Reconstruction Parseability evidence: "
+                        + "; ".join(
+                            issue.message for issue in evidence_contract.errors
+                        )
+                    )
+                self._write_json_atomic(
+                    run_dir / item.parseability_path,
+                    dict(parseability.evidence),
+                )
+                if not parseability.passed or parseability.production_soup is None:
+                    raise RuntimeError(
+                        "RECONSTRUCTION_PARSEABILITY_FAILED: independent parsers "
+                        "materially disagree"
+                    )
                 selected = strategy_manager.determine_extraction_strategy(
-                    str(self.root / item.normalized_path), item.product_key
+                    parseability.production_soup,
+                    item.product_key,
+                    input_bytes=canonical_input.size_bytes,
                 )
                 if not StrategyFactory.is_strategy_registered(selected.strategy_type):
                     raise RuntimeError(
@@ -390,7 +489,7 @@ class PipelineCoordinator:
                     error_code="PREFLIGHT_FAILED", error_message=str(exc),
                 )
 
-        self._engine_factory(parallel_jobs).process_resource_items(
+        self._stage_engine("preflight", parallel_jobs).process_resource_items(
             infos,
             worker=worker,
             result_callback=lambda result, completed, total: self._commit_stage_result(
@@ -419,8 +518,10 @@ class PipelineCoordinator:
             result = extractor.coordinate_extraction(
                 info.product_key,
                 info.language,
-                info.html_file_path,
-                info.version_key,
+                version_key=info.version_key,
+                expected_input_sha256=info.metadata[
+                    "batch_item"
+                ].normalized_sha256,
                 preselected_strategy=info.strategy,
                 defer_validation=True,
             )
@@ -437,6 +538,23 @@ class PipelineCoordinator:
             if result.sidecar_path.resolve() != expected_sidecar:
                 raise ValueError(
                     f"Diagnostic path mismatch for {info.resource_key}: {result.sidecar_path}"
+                )
+            reconstruction = result.sidecar.get("input_assurance", {}).get(
+                "reconstruction_parseability"
+            ) or {}
+            parseability_artifact = reconstruction.get("evidence", {})
+            expected_parseability = (
+                run_dir / info.metadata["batch_item"].parseability_path
+            ).resolve()
+            actual_parseability = (
+                Path(parseability_artifact["path"]).resolve()
+                if parseability_artifact.get("path")
+                else None
+            )
+            if result.execution_succeeded and actual_parseability != expected_parseability:
+                raise ValueError(
+                    f"Parseability evidence path mismatch for {info.resource_key}: "
+                    f"{actual_parseability}"
                 )
             if result.execution_succeeded:
                 if (
@@ -462,7 +580,7 @@ class PipelineCoordinator:
                 result.error_code = "EXTRACTION_FAILED"
             self._commit_stage_result(batch_id, "extract", result)
 
-        self._engine_factory(parallel_jobs).process_resource_items(
+        self._stage_engine("extract", parallel_jobs).process_resource_items(
             infos, worker=worker, result_callback=callback
         )
         self._finish_stage(batch_id, "extract")
@@ -477,10 +595,20 @@ class PipelineCoordinator:
     ) -> None:
         if not items and self._batch_stage_complete(batch_id, "validate"):
             return
+        manifest = self.store.read_manifest(batch_id)
+        profile_id = manifest["validation_context"]["validation_profile"]["id"]
+        if profile_id in ("v0.4-validation-p3", "v0.4-validation-p3-successor"):
+            self._run_p3_validation_stage(
+                batch_id,
+                items,
+                parallel_jobs,
+                explicit=explicit,
+            )
+            return
         self._start_stage(batch_id, "validate", items)
         run_dir = self.store.run_dir(batch_id)
         extractor = self._extraction_factory(run_dir)
-        manifest = self.store.read_manifest(batch_id)
+        completed_results: dict[str, ResourceProcessingResult] = {}
         infos = []
         for item in items:
             info = self._resource_info(batch_id, item)
@@ -508,7 +636,6 @@ class PipelineCoordinator:
                     item.language,
                     payload_path=run_dir / item.output_path,
                     sidecar_path=run_dir / item.diagnostic_path,
-                    html_file_path=self.root / item.normalized_path,
                     version_key=item.version_key,
                 )
                 sidecar_status = result.sidecar["status"]["validation"]
@@ -532,6 +659,9 @@ class PipelineCoordinator:
                 )
 
         def callback(result: ResourceProcessingResult, completed: int, total: int) -> None:
+            completed_results[
+                result.item.metadata["batch_item"].item_id
+            ] = result
             current = self._commit_stage_result(batch_id, "validate", result)
             self._write_validation_projection(
                 batch_id,
@@ -540,8 +670,106 @@ class PipelineCoordinator:
                 current=current,
             )
 
-        self._engine_factory(parallel_jobs).process_resource_items(
+        self._stage_engine("validate", parallel_jobs).process_resource_items(
             infos, worker=worker, result_callback=callback
+        )
+        self._apply_bilingual_pair_validation(
+            batch_id,
+            selected_item_ids={item.item_id for item in items},
+            completed_results=completed_results,
+        )
+        self._finish_stage(batch_id, "validate")
+        self._log_event(
+            batch_id,
+            "validate",
+            "succeeded",
+            error_code=None,
+            explicit=explicit,
+        )
+
+    def _run_p3_validation_stage(
+        self,
+        batch_id: str,
+        items: list[BatchItem],
+        parallel_jobs: int,
+        *,
+        explicit: bool,
+    ) -> None:
+        self._start_stage(batch_id, "validate", items)
+        run_dir = self.store.run_dir(batch_id)
+        manifest = self.store.read_manifest(batch_id)
+        infos = []
+        for item in items:
+            info = self._resource_info(batch_id, item)
+            info.metadata["manifest_item"] = manifest["items"][item.item_id]
+            infos.append(info)
+
+        def worker(info: ResourceProcessingInfo) -> ResourceProcessingResult:
+            started = time.perf_counter()
+            item = info.metadata["batch_item"]
+            state = info.metadata["manifest_item"]
+            try:
+                integrity_error = self._validate_frozen_extraction_artifacts_from_state(
+                    batch_id, item, state
+                )
+                if integrity_error is not None:
+                    return ResourceProcessingResult(
+                        info,
+                        "succeeded",
+                        "failed",
+                        strategy=state["strategy"],
+                        processing_time_ms=_elapsed_ms(started),
+                        error_code=integrity_error["code"],
+                        error_message=integrity_error["message"],
+                    )
+                prepared = SampledValidationRuntime(self.root).prepare(
+                    batch_id=batch_id,
+                    run_dir=run_dir,
+                    item=item,
+                    manifest=manifest,
+                    manifest_item=state,
+                )
+                return ResourceProcessingResult(
+                    info,
+                    "succeeded",
+                    prepared.status,
+                    strategy=state["strategy"],
+                    processing_time_ms=_elapsed_ms(started),
+                    error_code=(
+                        prepared.error["code"] if prepared.error else None
+                    ),
+                    error_message=(
+                        prepared.error["message"] if prepared.error else None
+                    ),
+                    metadata={"prepared_sampled_validation": prepared},
+                )
+            except Exception as exc:
+                return ResourceProcessingResult(
+                    info,
+                    "succeeded",
+                    "failed",
+                    strategy=state["strategy"],
+                    processing_time_ms=_elapsed_ms(started),
+                    error_code="VALIDATION_FAILED",
+                    error_message=str(exc),
+                )
+
+        def callback(result: ResourceProcessingResult, completed: int, total: int) -> None:
+            prepared = result.metadata.get("prepared_sampled_validation")
+            if isinstance(prepared, PreparedSampledValidation):
+                self._land_p3_validation_result(
+                    batch_id,
+                    result.item.metadata["batch_item"],
+                    result,
+                    prepared,
+                )
+            else:
+                self._commit_stage_result(batch_id, "validate", result)
+
+        self._stage_engine("validate", parallel_jobs).process_resource_items(
+            infos,
+            worker=worker,
+            result_callback=callback,
         )
         self._finish_stage(batch_id, "validate")
         self._log_event(
@@ -576,7 +804,7 @@ class PipelineCoordinator:
                     item_checkpoint, "succeeded", now, now, None
                 )
 
-        self.store.update_manifest(batch_id, mutate)
+        self._update_manifest(batch_id, mutate)
         self._log_event(batch_id, "discovery", "succeeded")
 
     def _start_stage(self, batch_id: str, stage: str, items: Iterable[BatchItem]) -> None:
@@ -596,7 +824,16 @@ class PipelineCoordinator:
                     item["error"] = None
                 elif stage == "validate":
                     item["status"]["validation"] = "not_run"
-                    item["status"]["review"] = "not_requested"
+                    if "evidence_binding" not in item["status"]:
+                        item["status"]["review"] = "not_requested"
+                    elif item["artifacts"].get("current_review_decision") is None:
+                        item["status"]["review"] = "not_requested"
+                        item["status"]["evidence_binding"] = "not_applicable"
+                        item["status"]["approval_eligibility"] = "blocked"
+                    else:
+                        item["status"]["review"] = "pending"
+                        item["status"]["evidence_binding"] = "stale"
+                        item["status"]["approval_eligibility"] = "blocked"
                     item["error"] = None
                     item["artifacts"]["validation"]["sha256"] = None
                     for downstream in ("review", "report"):
@@ -610,7 +847,7 @@ class PipelineCoordinator:
                                 "error": None,
                             })
 
-        self.store.update_manifest(batch_id, mutate)
+        self._update_manifest(batch_id, mutate)
         self._log_event(batch_id, stage, "running")
 
     def _finish_stage(self, batch_id: str, stage: str) -> None:
@@ -633,7 +870,7 @@ class PipelineCoordinator:
                 checkpoint, "succeeded", checkpoint.get("started_at") or now, now, error
             )
 
-        self.store.update_manifest(batch_id, mutate, changed_item_ids=())
+        self._update_manifest(batch_id, mutate, changed_item_ids=())
         self._log_event(batch_id, stage, "succeeded")
 
     def _commit_stage_result(
@@ -685,6 +922,12 @@ class PipelineCoordinator:
                     self._set_item_failed(current, error)
             elif stage == "preflight":
                 if succeeded:
+                    parseability = (
+                        self.store.run_dir(batch_id) / item.parseability_path
+                    )
+                    current["artifacts"]["parseability"]["sha256"] = (
+                        sha256_file(parseability) if parseability.is_file() else None
+                    )
                     current["status"]["execution"] = "pending"
                     current["error"] = None
                 else:
@@ -693,11 +936,28 @@ class PipelineCoordinator:
                 if succeeded and result.extraction_result is not None:
                     current["status"]["execution"] = "succeeded"
                     current["status"]["validation"] = "not_run"
-                    current["status"]["review"] = "not_requested"
+                    if "evidence_binding" in current["status"]:
+                        if current["artifacts"].get("current_review_decision") is None:
+                            current["status"]["review"] = "not_requested"
+                            current["status"]["evidence_binding"] = "not_applicable"
+                        else:
+                            current["status"]["review"] = "pending"
+                            current["status"]["evidence_binding"] = "stale"
+                        current["status"]["approval_eligibility"] = "blocked"
+                    else:
+                        current["status"]["review"] = "not_requested"
                     current["error"] = None
                     self._capture_run_artifact_hashes(batch_id, current, item, include_validation=False)
                 else:
                     self._set_item_failed(current, error)
+                    if result.extraction_result is not None:
+                        self._capture_run_artifact_hashes(
+                            batch_id,
+                            current,
+                            item,
+                            include_validation=False,
+                        )
+                        current["artifacts"]["payload"]["sha256"] = None
             elif stage == "validate":
                 current["status"]["execution"] = "succeeded"
                 current["status"]["validation"] = "passed" if succeeded else "failed"
@@ -711,17 +971,136 @@ class PipelineCoordinator:
                     if diagnostic.is_file():
                         current["artifacts"]["diagnostic"]["sha256"] = sha256_file(diagnostic)
 
-        updated = self.store.update_manifest(
+        updated = self._update_manifest(
             batch_id, mutate, changed_item_ids=(item.item_id,)
         )
         self._log_item_event(batch_id, item, stage, status, result.strategy, error)
+        return updated["items"][item.item_id]
+
+    def _land_p3_validation_result(
+        self,
+        batch_id: str,
+        item: BatchItem,
+        result: ResourceProcessingResult,
+        prepared: PreparedSampledValidation,
+    ) -> dict[str, Any]:
+        if prepared.sampling_plan is not None:
+            if prepared.sampling_plan_path is None:
+                raise PipelineError(
+                    f"P3 Sampling Plan has no target path for {item.item_id}"
+                )
+            self.store.write_step4_artifact(
+                batch_id,
+                "sampling_plan",
+                prepared.sampling_plan,
+                relative_path=prepared.sampling_plan_path,
+            )
+        for artifact in prepared.diff_artifacts:
+            self.store.write_json_artifact_once(
+                batch_id,
+                artifact.value,
+                relative_path=artifact.relative_path,
+            )
+            written = self.store.run_dir(batch_id) / artifact.relative_path
+            if sha256_file(written) != artifact.sha256:
+                raise PipelineError(
+                    f"P3 diff artifact hash changed for {item.item_id}: {artifact.relative_path}"
+                )
+        self.store.write_step4_artifact(
+            batch_id,
+            "sampled_content_evidence",
+            prepared.sampled_content_evidence,
+            relative_path=prepared.sampled_content_evidence_path,
+        )
+        self.store.write_projection(
+            batch_id,
+            "validation",
+            prepared.validation_projection,
+            relative_path=prepared.validation_path,
+        )
+        completed_at = self._now()
+        status = "succeeded" if prepared.status == "passed" else "failed"
+        error = prepared.error
+
+        def mutate(manifest: dict[str, Any]) -> None:
+            current = manifest["items"][item.item_id]
+            checkpoint = current["checkpoints"]["validate"]
+            started_at = checkpoint.get("started_at") or completed_at
+            self._complete_checkpoint(
+                checkpoint,
+                status,
+                started_at,
+                completed_at,
+                error,
+                duration_ms=result.processing_time_ms,
+            )
+            current["status"]["execution"] = "succeeded"
+            current["status"]["validation"] = prepared.status
+            current["status"]["release"] = "not_released"
+            current["error"] = dict(error) if error else None
+            if prepared.sampling_plan is not None:
+                current["artifacts"]["sampling_plan"]["sha256"] = (
+                    prepared.sampling_plan_artifact_sha256
+                )
+            current["artifacts"]["sampled_content_evidence"]["sha256"] = (
+                prepared.sampled_content_evidence_artifact_sha256
+            )
+            current["artifacts"]["validation"]["sha256"] = (
+                prepared.validation_artifact_sha256
+            )
+            lifecycle = self._review_service.lifecycle_after_validation(
+                batch_id=batch_id,
+                item=item,
+                manifest_item=current,
+                validation_projection=prepared.validation_projection,
+            )
+            current["status"]["review"] = lifecycle["review"]
+            current["status"]["evidence_binding"] = lifecycle[
+                "evidence_binding"
+            ]
+            current["status"]["approval_eligibility"] = lifecycle[
+                "approval_eligibility"
+            ]
+            for downstream in ("review", "report"):
+                downstream_checkpoint = current["checkpoints"][downstream]
+                if downstream_checkpoint["status"] != "skipped":
+                    downstream_checkpoint.update({
+                        "status": "pending",
+                        "started_at": None,
+                        "completed_at": None,
+                        "duration_ms": None,
+                        "error": None,
+                    })
+
+        updated = self._update_manifest(
+            batch_id,
+            mutate,
+            changed_item_ids=(item.item_id,),
+        )
+        self._log_item_event(
+            batch_id,
+            item,
+            "validate",
+            status,
+            result.strategy,
+            error,
+        )
         return updated["items"][item.item_id]
 
     @staticmethod
     def _set_item_failed(item: dict[str, Any], error: Mapping[str, Any] | None) -> None:
         item["status"]["execution"] = "failed"
         item["status"]["validation"] = "not_run"
-        item["status"]["review"] = "not_requested"
+        if "evidence_binding" in item["status"]:
+            if item["artifacts"].get("current_review_decision") is None:
+                item["status"]["review"] = "not_requested"
+                item["status"]["evidence_binding"] = "not_applicable"
+            else:
+                item["status"]["review"] = "pending"
+                item["status"]["evidence_binding"] = "stale"
+            item["status"]["approval_eligibility"] = "blocked"
+        else:
+            item["status"]["review"] = "not_requested"
         item["error"] = dict(error) if error else None
 
     @staticmethod
@@ -819,7 +1198,7 @@ class PipelineCoordinator:
             for item_id, stage in resets.items():
                 self._reset_item_from(manifest["items"][item_id], stage)
 
-        self.store.update_manifest(
+        self._update_manifest(
             batch_id, mutate, changed_item_ids=resets.keys()
         )
 
@@ -839,14 +1218,30 @@ class PipelineCoordinator:
         item["status"].update({
             "execution": "pending",
             "validation": "not_run",
-            "review": "not_requested",
             "publication": "not_published",
         })
+        if "evidence_binding" in item["status"]:
+            if item["artifacts"].get("current_review_decision") is None:
+                item["status"]["review"] = "not_requested"
+                item["status"]["evidence_binding"] = "not_applicable"
+            else:
+                item["status"]["review"] = "pending"
+                item["status"]["evidence_binding"] = "stale"
+            item["status"]["approval_eligibility"] = "blocked"
+        else:
+            item["status"]["review"] = "not_requested"
         item["error"] = None
         if stage in ("normalize", "extract"):
             for artifact_name in (
-                ("normalized_input", "payload", "diagnostic", "validation")
-                if stage == "normalize" else ("payload", "diagnostic", "validation")
+                (
+                    "normalized_input",
+                    "payload",
+                    "diagnostic",
+                    "parseability",
+                    "validation",
+                )
+                if stage == "normalize"
+                else ("payload", "diagnostic", "parseability", "validation")
             ):
                 item["artifacts"][artifact_name]["sha256"] = None
 
@@ -855,6 +1250,17 @@ class PipelineCoordinator:
     ) -> None:
         run_dir = self.store.run_dir(batch_id)
         manifest = self.store.read_manifest(batch_id)
+        validation_context = manifest.get("validation_context", {})
+        validation_profile = (
+            validation_context.get("validation_profile", {})
+            if isinstance(validation_context, dict)
+            else {}
+        )
+        if validation_profile.get("id") in (
+            "v0.4-validation-p3",
+            "v0.4-validation-p3-successor",
+        ):
+            return
         for item in items:
             current = manifest["items"][item.item_id]
             validation_status = current["status"]["validation"]
@@ -902,6 +1308,9 @@ class PipelineCoordinator:
                 validation_status,
                 errors,
                 warnings,
+                source_findings=self._source_findings_with_bilingual_warnings(
+                    item, warnings
+                ),
                 current=current,
             )
             self.store.write_projection(
@@ -917,6 +1326,45 @@ class PipelineCoordinator:
     def _rebuild_review(self, batch_id: str, items: Iterable[BatchItem]) -> None:
         items = tuple(items)
         manifest = self.store.read_manifest(batch_id)
+        profile_id = manifest["validation_context"]["validation_profile"]["id"]
+        if profile_id in ("v0.4-validation-p3", "v0.4-validation-p3-successor"):
+            checkpoints_complete = (
+                manifest["checkpoints"]["review"]["status"] == "succeeded"
+                and all(
+                    manifest["items"][item.item_id]["checkpoints"]["review"]["status"]
+                    == "succeeded"
+                    for item in items
+                    if item.runnable
+                )
+            )
+            if not checkpoints_complete:
+                self._start_stage(
+                    batch_id, "review", [item for item in items if item.runnable]
+                )
+                completed_at = self._now()
+
+                def mutate(value: dict[str, Any]) -> None:
+                    for item in items:
+                        current = value["items"][item.item_id]
+                        if current["status"]["execution"] == "skipped":
+                            continue
+                        checkpoint = current["checkpoints"]["review"]
+                        self._complete_checkpoint(
+                            checkpoint,
+                            "succeeded",
+                            checkpoint.get("started_at") or completed_at,
+                            completed_at,
+                            None,
+                        )
+
+                self._update_manifest(batch_id, mutate)
+
+            self._sync_sidecar_statuses(batch_id, items)
+            if not checkpoints_complete:
+                self._finish_stage(batch_id, "review")
+            self._review_service.rebuild_queue(batch_id)
+            return
+
         target = self.store.run_dir(batch_id) / "review" / "review-queue.json"
         checkpoints_complete = (
             manifest["checkpoints"]["review"]["status"] == "succeeded"
@@ -962,7 +1410,7 @@ class PipelineCoordinator:
                         None,
                     )
 
-            self.store.update_manifest(batch_id, mutate)
+            self._update_manifest(batch_id, mutate)
 
         self._sync_sidecar_statuses(batch_id, items)
         if stage_needed:
@@ -1035,7 +1483,7 @@ class PipelineCoordinator:
                 value["status"] = self._completed_status(current_summary)
                 value["summary"] = current_summary
 
-            self.store.update_manifest(batch_id, mutate)
+            self._update_manifest(batch_id, mutate)
             self._finish_stage(batch_id, "report")
         elif status_reconcile_needed:
             def reconcile_status(value: dict[str, Any]) -> None:
@@ -1043,7 +1491,7 @@ class PipelineCoordinator:
                 value["status"] = self._completed_status(current_summary)
                 value["summary"] = current_summary
 
-            self.store.update_manifest(
+            self._update_manifest(
                 batch_id, reconcile_status, changed_item_ids=()
             )
 
@@ -1157,9 +1605,20 @@ class PipelineCoordinator:
             sidecar = self._read_trusted_sidecar(path, expected_hash)
             if sidecar is None:
                 return False
-            if sidecar.get("status") != current["status"]:
+            if sidecar.get("status") != self._sidecar_status_projection(
+                current["status"]
+            ):
                 return False
         return True
+
+    @staticmethod
+    def _sidecar_status_projection(status: Mapping[str, Any]) -> dict[str, Any]:
+        """Project Manifest lifecycle state onto Diagnostic Sidecar 1.2."""
+
+        return {
+            key: status[key]
+            for key in ("execution", "validation", "review", "publication")
+        }
 
     def _sync_sidecar_statuses(
         self, batch_id: str, items: Iterable[BatchItem]
@@ -1197,8 +1656,11 @@ class PipelineCoordinator:
                         "warnings": [],
                     }
                     sidecar_changed = True
-            if sidecar["status"] != current["status"]:
-                sidecar["status"] = dict(current["status"])
+            projected_status = self._sidecar_status_projection(
+                current["status"]
+            )
+            if sidecar["status"] != projected_status:
+                sidecar["status"] = projected_status
                 sidecar_changed = True
             if sidecar_changed:
                 contract = self._contract_validator.validate_sidecar(sidecar)
@@ -1220,7 +1682,7 @@ class PipelineCoordinator:
             for item_id, digest in hashes.items():
                 value["items"][item_id]["artifacts"]["diagnostic"]["sha256"] = digest
 
-        self.store.update_manifest(
+        self._update_manifest(
             batch_id, mutate, changed_item_ids=hashes.keys()
         )
 
@@ -1250,6 +1712,548 @@ class PipelineCoordinator:
             "message": str(error.get("message") or "Validation failed"),
         }
 
+    def _apply_bilingual_pair_validation(
+        self,
+        batch_id: str,
+        *,
+        selected_item_ids: set[str],
+        completed_results: Mapping[str, ResourceProcessingResult],
+    ) -> None:
+        """Apply the pair contract only to complete, trusted bilingual pairs.
+
+        Each language derives its own source-confirmed state collection from
+        its frozen Source Snapshot. The shared soft-category identity is
+        checked before either collection is allowed to reach the pair API.
+        A single-language batch has no pair verdict; it is never represented
+        as a successful bilingual comparison.
+        """
+
+        frozen = self.store.read_input_manifest(batch_id)
+        all_items = items_from_dicts(frozen["items"])
+        grouped: dict[tuple[str, str, str | None], dict[str, BatchItem]] = {}
+        for item in all_items:
+            if not item.runnable or item.page_model != "FlexibleContentPage":
+                continue
+            key = (item.product_key, item.resource_key, item.version_key)
+            grouped.setdefault(key, {})[item.language] = item
+
+        for pair in grouped.values():
+            if set(pair) != {"zh-cn", "en-us"}:
+                continue
+            zh_item = pair["zh-cn"]
+            en_item = pair["en-us"]
+            manifest = self.store.read_manifest(batch_id)
+            if not all(
+                self._pair_item_is_ready(
+                    batch_id,
+                    item,
+                    manifest["items"][item.item_id],
+                    selected_item_ids,
+                    completed_results,
+                )
+                for item in (zh_item, en_item)
+            ):
+                continue
+
+            zh_payload = self._read_frozen_pair_payload(
+                batch_id, zh_item, manifest["items"][zh_item.item_id]
+            )
+            en_payload = self._read_frozen_pair_payload(
+                batch_id, en_item, manifest["items"][en_item.item_id]
+            )
+            if zh_payload is None or en_payload is None:
+                untrusted_items = tuple(
+                    item
+                    for item, payload in (
+                        (zh_item, zh_payload),
+                        (en_item, en_payload),
+                    )
+                    if payload is None
+                )
+                self._record_bilingual_pair_errors(
+                    batch_id,
+                    (zh_item, en_item),
+                    [
+                        {
+                            "code": "bilingual_pair_payload_untrusted",
+                            "path": f"$.{item.language}.payload",
+                            "message": (
+                                f"The frozen {item.language} Business Payload is "
+                                "missing, hash-drifted, or not a JSON object."
+                            ),
+                        }
+                        for item in untrusted_items
+                    ],
+                )
+                continue
+
+            replay_language = "zh-cn"
+            try:
+                zh_canonical = self._input_loader.load(
+                    zh_item.product_key,
+                    "zh-cn",
+                    version_key=zh_item.version_key,
+                    expected_sha256=zh_item.normalized_sha256,
+                )
+                replay_language = "en-us"
+                en_canonical = self._input_loader.load(
+                    en_item.product_key,
+                    "en-us",
+                    version_key=en_item.version_key,
+                    expected_sha256=en_item.normalized_sha256,
+                )
+                replay_language = "zh-cn"
+                zh_reachability = self._source_reachability.resolve(
+                    zh_canonical
+                )
+                replay_language = "en-us"
+                en_reachability = self._source_reachability.resolve(
+                    en_canonical
+                )
+                if zh_item.strategy == "complex":
+                    replay_language = "zh-cn"
+                    zh_reachability = (
+                        self._source_reachability
+                        .attach_strict_soft_category_projections(
+                            zh_canonical,
+                            zh_reachability,
+                        )
+                    )
+                if en_item.strategy == "complex":
+                    replay_language = "en-us"
+                    en_reachability = (
+                        self._source_reachability
+                        .attach_strict_soft_category_projections(
+                            en_canonical,
+                            en_reachability,
+                        )
+                    )
+                replay_language = "zh-cn"
+                zh_evidence = self._source_state_evidence.resolve(
+                    zh_canonical,
+                    source_reachability=zh_reachability,
+                )
+                replay_language = "en-us"
+                en_evidence = self._source_state_evidence.resolve(
+                    en_canonical,
+                    source_reachability=en_reachability,
+                )
+            except InputAssuranceError:
+                self._record_bilingual_pair_errors(
+                    batch_id,
+                    (zh_item, en_item),
+                    [{
+                        "code": "bilingual_input_assurance_replay_failed",
+                        "path": "$.normalized_input",
+                        "message": (
+                            "The trusted bilingual pair could not replay both "
+                            "frozen canonical inputs."
+                        ),
+                    }],
+                )
+                continue
+            except SourceStateEvidenceError:
+                self._record_bilingual_pair_errors(
+                    batch_id,
+                    (zh_item, en_item),
+                    [{
+                        "code": "bilingual_source_state_evidence_replay_failed",
+                        "path": "$.source_confirmed_empty_states",
+                        "message": (
+                            "The trusted bilingual pair could not replay source-state "
+                            "evidence from both frozen inputs."
+                        ),
+                    }],
+                )
+                continue
+            except (
+                SourceReachabilityError,
+                StrictSoftCategoryProjectionError,
+            ) as error:
+                strict_error = unwrap_strict_soft_category_error(error)
+                classified_error = strict_error or error
+                strict_failures = (
+                    {
+                        replay_language:
+                        strict_soft_category_failure_envelope(
+                            strict_error,
+                            phase="bilingual_replay",
+                        )
+                    }
+                    if strict_error is not None
+                    else None
+                )
+                self._record_bilingual_pair_errors(
+                    batch_id,
+                    (zh_item, en_item),
+                    [{
+                        "code": classified_error.code,
+                        "path": (
+                            f"$.{replay_language}.expected_reachability"
+                        ),
+                        "message": str(classified_error),
+                    }],
+                    strict_projection_failures=strict_failures,
+                )
+                continue
+
+            pair_findings: list[dict[str, str]] = []
+            if bool(zh_evidence) != bool(en_evidence):
+                pair_errors = [{
+                    "code": "bilingual_source_evidence_incomplete",
+                    "path": "$.source_confirmed_empty_states",
+                    "message": (
+                        "Each language must independently prove every bilingual "
+                        "source-confirmed empty state."
+                    ),
+                }]
+            elif not self._source_evidence_states_match(
+                zh_evidence, en_evidence
+            ):
+                pair_errors = [{
+                    "code": "bilingual_source_evidence_state_mismatch",
+                    "path": "$.source_confirmed_empty_states",
+                    "message": (
+                        "Both languages must independently prove the same "
+                        "ordered source-confirmed empty states."
+                    ),
+                }]
+            elif not self._shared_source_evidence_config(zh_evidence, en_evidence):
+                pair_errors = [{
+                    "code": "bilingual_source_evidence_config_mismatch",
+                    "path": "$.source_confirmed_empty_states",
+                    "message": (
+                        "Bilingual source-state evidence must reference the same "
+                        "soft-category path and SHA-256 identity."
+                    ),
+                }]
+            else:
+                pair_result = self._contract_validator.validate_bilingual_pair(
+                    zh_payload,
+                    en_payload,
+                    zh_cn_expected_reachability=(
+                        zh_reachability.to_expected_reachability()
+                    ),
+                    en_us_expected_reachability=(
+                        en_reachability.to_expected_reachability()
+                    ),
+                    expected_semantic_strategy=zh_item.strategy,
+                    zh_cn_source_confirmed_empty_states=tuple(
+                        finding.to_cms_state() for finding in zh_evidence
+                    ),
+                    en_us_source_confirmed_empty_states=tuple(
+                        finding.to_cms_state() for finding in en_evidence
+                    ),
+                )
+                pair_errors = [issue.to_dict() for issue in pair_result.errors]
+                pair_findings = [
+                    issue.to_dict() for issue in pair_result.source_findings
+                ]
+
+            if pair_errors:
+                self._record_bilingual_pair_errors(
+                    batch_id,
+                    (zh_item, en_item),
+                    pair_errors,
+                    pair_findings=pair_findings,
+                )
+            elif pair_findings:
+                self._record_bilingual_pair_findings(
+                    batch_id,
+                    (zh_item, en_item),
+                    pair_findings,
+                )
+
+    def _pair_item_is_ready(
+        self,
+        batch_id: str,
+        item: BatchItem,
+        current: Mapping[str, Any],
+        selected_item_ids: set[str],
+        completed_results: Mapping[str, ResourceProcessingResult],
+    ) -> bool:
+        if current["status"]["execution"] != "succeeded":
+            return False
+        if item.item_id in selected_item_ids:
+            result = completed_results.get(item.item_id)
+            return bool(
+                result
+                and result.extraction_result is not None
+                and result.validation == "passed"
+            )
+        if current["status"]["validation"] != "passed":
+            return False
+        sidecar = self.store.run_dir(batch_id) / item.diagnostic_path
+        trusted = self._read_trusted_sidecar(
+            sidecar, current["artifacts"]["diagnostic"]["sha256"]
+        )
+        return bool(
+            trusted
+            and trusted.get("status", {}).get("validation") == "passed"
+        )
+
+    def _read_frozen_pair_payload(
+        self,
+        batch_id: str,
+        item: BatchItem,
+        current: Mapping[str, Any],
+    ) -> dict[str, Any] | None:
+        path = self.store.run_dir(batch_id) / item.output_path
+        expected = current["artifacts"]["payload"]["sha256"]
+        if not expected:
+            return None
+        try:
+            if not path.is_file() or sha256_file(path) != expected:
+                return None
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+            return None
+        return payload if isinstance(payload, dict) else None
+
+    @staticmethod
+    def _source_evidence_states_match(
+        zh_evidence: Iterable[Any],
+        en_evidence: Iterable[Any],
+    ) -> bool:
+        identities = [
+            tuple(item.to_cms_state() for item in evidence)
+            for evidence in (zh_evidence, en_evidence)
+        ]
+        return identities[0] == identities[1]
+
+    @staticmethod
+    def _shared_source_evidence_config(
+        zh_evidence: Iterable[Any],
+        en_evidence: Iterable[Any],
+    ) -> bool:
+        identities = [
+            {(item.config_path, item.config_sha256) for item in evidence}
+            for evidence in (zh_evidence, en_evidence)
+        ]
+        # Empty evidence on both sides is valid and needs no exception. If
+        # either side has evidence, each side must independently prove it from
+        # the same authoritative configuration identity.
+        return identities[0] == identities[1]
+
+    def _record_bilingual_pair_errors(
+        self,
+        batch_id: str,
+        items: tuple[BatchItem, BatchItem],
+        pair_errors: list[dict[str, str]],
+        *,
+        pair_findings: list[dict[str, str]] | None = None,
+        strict_projection_failures: (
+            Mapping[str, Mapping[str, Any]] | None
+        ) = None,
+    ) -> None:
+        run_dir = self.store.run_dir(batch_id)
+        first = pair_errors[0]
+        manifest_error = _error(
+            first["code"], "validate", first["message"]
+        )
+        sidecars: dict[str, dict[str, Any]] = {}
+        for item in items:
+            path = run_dir / item.diagnostic_path
+            sidecar = json.loads(path.read_text(encoding="utf-8"))
+            validation = sidecar.setdefault("validation", {})
+            existing = validation.setdefault("errors", [])
+            for error in pair_errors:
+                if error not in existing:
+                    existing.append(dict(error))
+            self._append_bilingual_pair_findings(
+                validation, pair_findings or ()
+            )
+            strict_failure = (strict_projection_failures or {}).get(
+                item.language
+            )
+            if strict_failure is not None:
+                sidecar["strategy"].pop(
+                    "strict_soft_category_projection_evidence",
+                    None,
+                )
+                sidecar["strategy"][
+                    "strict_soft_category_projection_failure"
+                ] = dict(strict_failure)
+            sidecar["status"]["validation"] = "failed"
+            sidecar_contract = self._contract_validator.validate_sidecar(sidecar)
+            if not sidecar_contract.passed:
+                raise PipelineError(
+                    "Bilingual pair errors produced an invalid Diagnostic Sidecar"
+                )
+            self._write_json_atomic(path, sidecar)
+            sidecars[item.item_id] = sidecar
+
+        def mutate(manifest: dict[str, Any]) -> None:
+            for item in items:
+                current = manifest["items"][item.item_id]
+                current["status"]["validation"] = "failed"
+                current["status"]["review"] = "not_requested"
+                current["error"] = dict(manifest_error)
+                checkpoint = current["checkpoints"]["validate"]
+                checkpoint["status"] = "failed"
+                checkpoint["error"] = dict(manifest_error)
+                if checkpoint["attempts"]:
+                    checkpoint["attempts"][-1]["status"] = "failed"
+                    checkpoint["attempts"][-1]["error"] = dict(manifest_error)
+                for downstream in ("review", "report"):
+                    value = current["checkpoints"][downstream]
+                    if value["status"] != "skipped":
+                        value.update({
+                            "status": "pending",
+                            "started_at": None,
+                            "completed_at": None,
+                            "duration_ms": None,
+                            "error": None,
+                        })
+                current["artifacts"]["diagnostic"]["sha256"] = sha256_file(
+                    run_dir / item.diagnostic_path
+                )
+
+        updated = self._update_manifest(
+            batch_id,
+            mutate,
+            changed_item_ids=(item.item_id for item in items),
+        )
+        for item in items:
+            current = updated["items"][item.item_id]
+            sidecar = sidecars[item.item_id]
+            projection = self._validation_projection(
+                batch_id,
+                item,
+                "failed",
+                list(sidecar["validation"]["errors"]),
+                list(sidecar["validation"]["warnings"]),
+                source_findings=self._source_findings_with_bilingual_warnings(
+                    item, sidecar["validation"]["warnings"]
+                ),
+                current=current,
+            )
+            self.store.write_projection(
+                batch_id,
+                "validation",
+                projection,
+                relative_path=item.validation_path,
+            )
+            self._set_validation_artifact_hash(
+                batch_id,
+                item,
+                allow_replace=True,
+                expected=current["artifacts"]["validation"]["sha256"],
+            )
+
+    def _record_bilingual_pair_findings(
+        self,
+        batch_id: str,
+        items: tuple[BatchItem, BatchItem],
+        pair_findings: list[dict[str, str]],
+    ) -> None:
+        """Persist non-blocking source drift without changing machine verdicts."""
+
+        run_dir = self.store.run_dir(batch_id)
+        sidecars: dict[str, dict[str, Any]] = {}
+        for item in items:
+            path = run_dir / item.diagnostic_path
+            sidecar = json.loads(path.read_text(encoding="utf-8"))
+            validation = sidecar.setdefault("validation", {})
+            self._append_bilingual_pair_findings(validation, pair_findings)
+            sidecar_contract = self._contract_validator.validate_sidecar(sidecar)
+            if not sidecar_contract.passed:
+                raise PipelineError(
+                    "Bilingual source findings produced an invalid Diagnostic Sidecar"
+                )
+            self._write_json_atomic(path, sidecar)
+            sidecars[item.item_id] = sidecar
+
+        def mutate(manifest: dict[str, Any]) -> None:
+            for item in items:
+                manifest["items"][item.item_id]["artifacts"]["diagnostic"][
+                    "sha256"
+                ] = sha256_file(run_dir / item.diagnostic_path)
+
+        updated = self._update_manifest(
+            batch_id,
+            mutate,
+            changed_item_ids=(item.item_id for item in items),
+        )
+        for item in items:
+            current = updated["items"][item.item_id]
+            sidecar = sidecars[item.item_id]
+            projection = self._validation_projection(
+                batch_id,
+                item,
+                current["status"]["validation"],
+                list(sidecar["validation"]["errors"]),
+                list(sidecar["validation"]["warnings"]),
+                source_findings=self._source_findings_with_bilingual_warnings(
+                    item, sidecar["validation"]["warnings"]
+                ),
+                current=current,
+            )
+            self.store.write_projection(
+                batch_id,
+                "validation",
+                projection,
+                relative_path=item.validation_path,
+            )
+            self._set_validation_artifact_hash(
+                batch_id,
+                item,
+                allow_replace=True,
+                expected=current["artifacts"]["validation"]["sha256"],
+            )
+
+    @staticmethod
+    def _append_bilingual_pair_findings(
+        validation: dict[str, Any],
+        pair_findings: Iterable[Mapping[str, Any]],
+    ) -> None:
+        """Persist pair findings in the Sidecar 1.2 warning channel."""
+
+        existing = validation.setdefault("warnings", [])
+        for finding in pair_findings:
+            warning = {
+                "code": str(finding["code"]),
+                "path": str(finding.get("path", "$")),
+                "message": str(finding["message"]),
+            }
+            if warning not in existing:
+                existing.append(warning)
+
+    @staticmethod
+    def _bilingual_pair_findings_from_warnings(
+        warnings: Iterable[Mapping[str, Any]],
+    ) -> list[dict[str, str]]:
+        """Recover durable pair findings without treating ordinary warnings as evidence."""
+
+        findings: list[dict[str, str]] = []
+        for warning in warnings:
+            code = str(warning.get("code", ""))
+            path = str(warning.get("path", ""))
+            is_language_scoped = path in ("$.zh-cn", "$.en-us") or path.startswith(
+                ("$.zh-cn.", "$.en-us.")
+            )
+            if not code.startswith("bilingual_source_") and not is_language_scoped:
+                continue
+            finding = {
+                "code": code,
+                "path": path,
+                "message": str(warning.get("message", "")),
+            }
+            if finding not in findings:
+                findings.append(finding)
+        return findings
+
+    def _source_findings_with_bilingual_warnings(
+        self,
+        item: BatchItem,
+        warnings: Iterable[Mapping[str, Any]],
+    ) -> list[dict[str, Any]]:
+        findings = self._source_findings_for_item(item)
+        for finding in self._bilingual_pair_findings_from_warnings(warnings):
+            if finding not in findings:
+                findings.append(finding)
+        return findings
+
     def _write_validation_projection(
         self,
         batch_id: str,
@@ -1271,7 +2275,17 @@ class PipelineCoordinator:
                 "message": result.error_message or "Validation failed",
             }]
         projection = self._validation_projection(
-            batch_id, item, result.validation, errors, warnings, current=current
+            batch_id,
+            item,
+            result.validation,
+            errors,
+            warnings,
+            source_findings=(
+                self._source_findings_for_item(item)
+                if result.extraction_result is not None
+                else []
+            ),
+            current=current,
         )
         self.store.write_projection(
             batch_id, "validation", projection, relative_path=item.validation_path
@@ -1291,6 +2305,7 @@ class PipelineCoordinator:
         errors: list[dict[str, Any]],
         warnings: list[dict[str, Any]],
         *,
+        source_findings: list[dict[str, Any]] | None = None,
         current: Mapping[str, Any],
     ) -> dict[str, Any]:
         validated_at = current["checkpoints"]["validate"].get("completed_at")
@@ -1312,7 +2327,118 @@ class PipelineCoordinator:
             "diagnostic": {"path": current["artifacts"]["diagnostic"]["path"]},
             "errors": errors,
             "warnings": warnings,
+            "source_findings": list(source_findings or ()),
         }
+
+    def _source_findings_for_item(self, item: BatchItem) -> list[dict[str, Any]]:
+        try:
+            canonical = self._input_loader.load(
+                item.product_key,
+                item.language,
+                version_key=item.version_key,
+                expected_sha256=item.normalized_sha256,
+            )
+            structure_audit = self._source_html_structure_auditor.audit(
+                canonical
+            ).to_dict()
+        except (InputAssuranceError, SourceHtmlStructureAuditError):
+            # Validation itself records this as a blocking error. A projection
+            # must not invent evidence when the canonical audit cannot replay.
+            return []
+
+        structure_findings = [
+            {
+                "schema_version": structure_audit["schema_version"],
+                "category": "source_html_structure",
+                "auditor_version": structure_audit["auditor_version"],
+                "source": dict(structure_audit["source"]),
+                "code": finding["code"],
+                "severity": finding["severity"],
+                "blocking": finding["blocking"],
+                "message": finding["message"],
+                "evidence": [
+                    dict(evidence)
+                    for evidence in finding["evidence"]
+                ],
+                "safety_checks": list(finding["safety_checks"]),
+                "upstream_suggestion": (
+                    dict(finding["upstream_suggestion"])
+                    if finding["upstream_suggestion"] is not None
+                    else None
+                ),
+            }
+            for finding in structure_audit["findings"]
+        ]
+        if item.page_model != "FlexibleContentPage":
+            return structure_findings
+
+        try:
+            reachability = self._source_reachability.resolve(canonical)
+            if getattr(item, "strategy", None) == "complex":
+                reachability = (
+                    self._source_reachability
+                    .attach_strict_soft_category_projections(
+                        canonical,
+                        reachability,
+                    )
+                )
+            findings = list(
+                self._source_state_evidence.resolve_dicts(
+                    canonical,
+                    source_reachability=reachability,
+                )
+            )
+            findings.extend(
+                {
+                    "schema_version": "1.0",
+                    "code": finding.code,
+                    "category": "source_reachability",
+                    "severity": "warning",
+                    "message": finding.message,
+                    "evidence": dict(finding.evidence),
+                }
+                for finding in reachability.findings
+            )
+            findings.extend(
+                {
+                    "schema_version": "1.0",
+                    "code": "NON_MATERIALIZED_AGGREGATE_TAB",
+                    "category": "source_reachability",
+                    "severity": "warning",
+                    "message": (
+                        "A source All/全部 category option with no target "
+                        "panel was omitted from CMS reachability."
+                    ),
+                    "evidence": option.to_dict(),
+                }
+                for option in reachability.suppressed_options
+            )
+            if reachability.unreachable_panel_ids:
+                findings.append({
+                    "schema_version": "1.0",
+                    "code": "SOURCE_UNREACHABLE_FILTER_PANELS_OMITTED",
+                    "category": "source_reachability",
+                    "severity": "warning",
+                    "message": (
+                        "Source panels not referenced by an active interaction "
+                        "control were excluded from CMS reachability."
+                    ),
+                    "evidence": {
+                        "panel_ids": list(
+                            reachability.unreachable_panel_ids
+                        )
+                    },
+                })
+            findings.extend(structure_findings)
+            return findings
+        except (
+            SourceStateEvidenceError,
+            SourceReachabilityError,
+        ):
+            # Reachability validation records its own blocking error. Preserve
+            # the independently replayed structure findings without inventing
+            # any CMS-state evidence.
+            return structure_findings
 
     def _set_validation_artifact_hash(
         self,
@@ -1334,7 +2460,7 @@ class PipelineCoordinator:
         def mutate(manifest: dict[str, Any]) -> None:
             manifest["items"][item.item_id]["artifacts"]["validation"]["sha256"] = digest
 
-        self.store.update_manifest(
+        self._update_manifest(
             batch_id, mutate, changed_item_ids=(item.item_id,)
         )
 
@@ -1345,6 +2471,7 @@ class PipelineCoordinator:
         for name, relative in (
             ("payload", item.output_path),
             ("diagnostic", item.diagnostic_path),
+            ("parseability", item.parseability_path),
         ):
             path = run_dir / relative
             expected = current["artifacts"][name]["sha256"]
@@ -1365,6 +2492,28 @@ class PipelineCoordinator:
         return None
 
     # ---- generic helpers --------------------------------------------------------
+
+    def _write_planning_delta_candidate(
+        self, batch_id: str, proposals: list[dict[str, Any]]
+    ) -> Path:
+        """Persist proposals outside the immutable baseline without applying them."""
+        path = (
+            self.root
+            / "output"
+            / "planning-deltas"
+            / f"{batch_id}.candidate.json"
+        )
+        self._write_json_atomic(
+            path,
+            {
+                "schema_version": "1.0",
+                "artifact_kind": "planning_delta_candidate",
+                "baseline": self._validation_context.freeze()["planning"]["baseline"],
+                "proposals": proposals,
+                "applied": False,
+            },
+        )
+        return path
 
     @staticmethod
     def _write_json_atomic(path: Path, value: Mapping[str, Any]) -> None:
@@ -1408,6 +2557,22 @@ class PipelineCoordinator:
             metadata={"batch_item": item},
         )
 
+    def _stage_engine(
+        self,
+        stage: str,
+        parallel_jobs: int,
+    ) -> BatchProcessEngine:
+        engine = self._engine_factory(parallel_jobs)
+        if self._progress_callback is not None:
+            engine.set_progress_callback(
+                lambda _message, completed, total: self._progress_callback(
+                    stage,
+                    completed,
+                    total,
+                )
+            )
+        return engine
+
     def _default_extraction_factory(self, run_dir: Path) -> ExtractionCoordinator:
         return ExtractionCoordinator(
             str(run_dir),
@@ -1446,6 +2611,7 @@ class PipelineCoordinator:
         pairs = [
             ("payload", item.output_path),
             ("diagnostic", item.diagnostic_path),
+            ("parseability", item.parseability_path),
         ]
         if include_validation:
             pairs.append(("validation", item.validation_path))
@@ -1460,11 +2626,31 @@ class PipelineCoordinator:
     def _status_summary(manifest: Mapping[str, Any]) -> dict[str, int]:
         return summarize_batch_manifest(manifest)
 
+    def _update_manifest(
+        self,
+        batch_id: str,
+        update: Callable[
+            [dict[str, Any]], Mapping[str, Any] | None
+        ]
+        | Mapping[str, Any],
+        *,
+        changed_item_ids: Iterable[str] | None = None,
+    ) -> dict[str, Any]:
+        """Commit one lock-serialized mutation with optimistic revision replay."""
+
+        revision = self.store.read_manifest(batch_id)["revision"]
+        return self.store.update_manifest(
+            batch_id,
+            update,
+            expected_revision=revision,
+            changed_item_ids=changed_item_ids,
+        )
+
     def _mark_batch_failed(
         self, batch_id: str, exc: Exception, *, stage: str
     ) -> None:
         try:
-            self.store.update_manifest(
+            self._update_manifest(
                 batch_id,
                 lambda manifest: manifest.update({"status": "failed"}),
                 changed_item_ids=(),
@@ -1494,6 +2680,16 @@ class PipelineCoordinator:
         strategy: str,
         error: Mapping[str, Any] | None,
     ) -> None:
+        details: dict[str, Any] = {}
+        if error is not None:
+            details = {
+                "message": error.get("message"),
+                "diagnostic_path": item.diagnostic_path,
+            }
+            if stage == "preflight":
+                details["parseability_path"] = item.parseability_path
+            elif stage == "validate":
+                details["validation_path"] = item.validation_path
         self._log_event(
             batch_id,
             stage,
@@ -1504,6 +2700,7 @@ class PipelineCoordinator:
             language=item.language,
             strategy=strategy or item.strategy,
             error_code=error.get("code") if error else None,
+            **details,
         )
 
     def _log_event(

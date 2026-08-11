@@ -24,6 +24,14 @@ _Avoid_: Product Key, filename
 An unmodified HTML page captured from the production site for a specific language. Once frozen into a Batch Run, it is that run's authoritative content baseline.
 _Avoid_: Source page, normalized HTML
 
+**Reconstruction Basis（重建依据）**:
+The reviewed and versioned combination of a frozen Source Snapshot, Product Definition, content-ownership configuration, route mapping, state rules, and allowed transformations that defines what the project reconstructs. A Live Source Page or unavailable legacy code cannot silently override it.
+_Avoid_: Truth, Canonical Reconstruction Truth, live-page oracle
+
+**Allowed Reconstruction Transformation（允许的重建转换）**:
+A reviewed rule that permits a source representation to change in the Business Payload without changing the intended business content, such as mapping a historical source link to its CMS route. It is part of the Reconstruction Basis and is not generic normalization or silent cleanup.
+_Avoid_: Normalization rule, best-effort rewrite, extractor cleanup
+
 **Live Source Page**:
 The mutable page currently served by an Azure China production URL. Its controlled rendering is non-authoritative current interaction reference, not the content authority for an existing Batch Run or evidence of source drift by itself.
 _Avoid_: Source Snapshot, validation baseline
@@ -40,49 +48,133 @@ _Avoid_: Source Snapshot, Business Payload
 Reviewed Interaction Evidence that records the exact Source Snapshot SHA-256 and whose rendered state-marker and content-fragment fingerprints are matched to that snapshot. Only snapshot-bound evidence may prove the historical behavior and applicability of that snapshot; it still cannot replace the snapshot as content-fact authority. Evidence that cannot establish this identity remains current-page reference only.
 _Avoid_: Same URL, latest page, capture time alone
 
+**Source Reachability Evidence**:
+Frozen source controls, configuration identities, and any exact Snapshot-bound Interaction Evidence used to prove the ordered states a user could select. It establishes the Reachability Relation without assigning every price-bearing fragment or requiring an Applicability Map.
+_Avoid_: Payload-declared states, theoretical Cartesian product, current live page alone
+
+**Desktop-authoritative State（桌面版权威状态）**:
+When a Source Snapshot contains maintained desktop controls and stale responsive alternatives for the same interaction, one unambiguous desktop selection defines the default state. Responsive alternatives may corroborate the option domain but cannot override that desktop default. Conflicting or duplicate mobile default markers are ignored without becoming a Source Quality Finding; ambiguity in the desktop control still blocks extraction.
+_Avoid_: Mobile-default precedence, silently chosen responsive default, product-specific exception
+
 **Reachable Selection State**:
 A language-specific tuple of filter and tab values proven selectable in the source interaction model for a specific frozen Source Snapshot through explicit source markers or Snapshot-bound Interaction Evidence. A theoretical combination, or a state observed only on an unbound current Live Source Page, is not reachable for that snapshot.
 _Avoid_: Cartesian combination, default filter
 
+**Source-confirmed Empty Selection State**:
+A Reachable Selection State for which frozen Source Reachability and configuration evidence proves that intentional source exclusions leave the full rendered state—its state-specific `content` plus any exact proven `sharedContent`—without an applicable price-bearing fragment. Price-bearing Region-Projected Shared Content means the state is not empty even when its Category-specific `content` is empty. Faithful reconstruction keeps one active, non-placeholder `contentGroup` containing any remaining source content, records a Source Quality Finding, and does not invent a price; an empty extractor result alone can never establish this state.
+_Avoid_: Empty fallback, placeholder state, inferred blank state
+
 **CMS Reachable State**:
-A complete tuple that the CMS UI can produce from `filtersJsonConfig`. Because the v0.4 contract has no dependency model, the CMS Reachable State set is the Cartesian product of every declared filter option and must equal the source Reachable Selection State set.
-_Avoid_: Source-only hidden state, assumed dependency, content-group fallback
+A complete tuple admitted by the frozen source-proven Reachability Relation and represented by exactly one Business Payload `contentGroup`, which the CMS import treats as its state authority. Independent domains may form a Cartesian product within one scope, but a child domain contributes only the options available under its selected parent; theoretical cross-branch combinations are not CMS Reachable States.
+_Avoid_: Global Cartesian combination, source-only hidden state, payload-inferred state
+
+**Conditional Filter Domain**:
+A filter option set whose membership, order, or default is scoped by an upstream selection such as the Category tabs belonging to one selected Software panel. Options from sibling parent branches are not interchangeable even when their localized labels look alike.
+_Avoid_: Global option union, label-based equivalence, independent filter axis
+
+**Page-Global Content**:
+A source-visible business fragment whose applicability does not vary with any Reachable Selection State. Any Flexible page may have or omit it; strategy and physical placement alone do not prove its scope.
+_Avoid_: Strategy-specific base content, Qa prefix, global `sharedContent`, repeated state content
+
+**Unproven Page-Global Boundary**:
+A source layout from which the exact Page-Global Content ownership boundary cannot be established without guessing. It is a blocking reconstruction condition, not evidence that `baseContent` is empty and not permission to sweep a broader page container.
+_Avoid_: Empty base content, whole-page fallback, best-effort main content
+
+**Content Ownership Overlap**:
+The same complete business fragment assigned to more than one CMS ownership field, such as both `baseContent` and a `commonSection` or state-scoped group. It is a reconstruction error even when each field is independently valid.
+_Avoid_: Shared applicability, harmless duplication, repeated wrapper
+
+**Post-selector Global Content Candidate**:
+A visible pricing fragment after the final formal selection control and before exact FAQ/SLA content that may be Page-Global Content only when frozen source evidence proves that scope.
+_Avoid_: Automatically global trailing content, selector suffix, inferred `baseContent`
+
+**Software-scoped Prefix Content**:
+A source-visible fragment located inside one Software panel immediately before its first concrete Category panel, inherited unchanged by every reachable descendant state of that Software scope. It is neither page-global nor Category-specific, and it does not vary with another active filter dimension.
+_Avoid_: Region-Projected Shared Content, common section, first-Category introduction, unclassified shared fragment
+
+**Region-Projected Shared Content**:
+A price-bearing ancestor fragment shared by descendant Category states whose exact form is selected by the active Region through frozen source and `soft-category.json` evidence. Source table IDs used as identity must be globally unique in the page, and an exact retained shared table identity may appear only in the applicable states' CMS `sharedContent`, never in `content`, `baseContent`, or `commonSections`. It is neither page-global nor Software-scoped Prefix Content: every applicable reachable state carries the exact region projection in its CMS shared-content field.
+_Avoid_: Legacy `sharedContent`, global shared content, unfiltered ancestor prefix, duplicated Category content
+
+**Reachability Relation**:
+The deterministic ordered set of complete selection tuples independently proven by a frozen Source Snapshot and its Source Reachability Evidence, then represented one-for-one by Business Payload `contentGroups` for CMS import. Source evidence is the reconstruction completeness authority; the resulting exact group relation, rather than an option-catalog product, is the CMS rendering authority.
+_Avoid_: Payload state list, theoretical product, best-effort mapping
+
+**Content Sampling Profile**:
+The reusable, frozen, versioned rule set that defines how RegionFilter or Complex Reachable Selection States are selected for content comparison. It records mandatory anchors, strata, budget, seed derivation, and algorithm version but not one source-specific universe or selected-state result.
+_Avoid_: Runtime random choice, human review plan, full-state guarantee
+
+**Batch Item Sampling Plan**:
+The immutable result of applying one Content Sampling Profile to one Batch Item after its Source Reachability is known. It records the Profile identity, state-universe identity, derived seed, strata instances, exact selected states, and its own hash so validation can replay the same selection.
+_Avoid_: Content Sampling Profile, mutable draw, Input Manifest scope
+
+**Sampled State Content Consistency**:
+The Machine Validation judgment that all Reachable Selection States satisfy the CMS structural contract and that every state in the frozen Batch Item Sampling Plan is consistent with a replay of the production extraction strategy. In v0.4 it is a Strategy Replay Check, not an Independent Source Content Check, and it makes no claim about unselected state content or Commercial Price Accuracy.
+_Avoid_: Pricing Fact Fidelity, independent content proof, full-state content fidelity, random spot check
+
+**Strategy Replay Check（策略重放检查）**:
+The machine judgment that the production extraction strategy reproduces the persisted Business Payload from the same frozen inputs and receives equivalent runtime inputs on both paths. It proves repeatability and path parity, not that the strategy selected the correct source fragment.
+_Avoid_: Independent Source Content Check, final content correctness, fidelity proof
+
+**Independent Source Content Check（独立源内容核对）**:
+The machine judgment that a source fragment located from the Reconstruction Basis without production strategy selection or content assembly matches the corresponding persisted Business Payload fragment. It does not decide whether the Reconstruction Basis reflects business intent or whether CSS, JavaScript, CMS templates, or final rendering preserve meaning.
+_Avoid_: Oracle, second extractor, human approval, final content correctness
+
+**Independent Content Check Exploration（独立内容核对探索）**:
+A non-production decision stage that uses representative frozen pages to determine whether an Independent Source Content Check is feasible and what explicit Reconstruction Basis it requires. Its outputs are design inputs, never Machine Validation, Review, Release, or publication evidence.
+_Avoid_: Production validation lane, capability promotion, release evidence
+
+**Structure Problem Group（同类结构问题组）**:
+A set of language-specific Batch Items that share source layout, state shape, content-ownership conditions, and a failure pattern. Membership organizes investigation but does not prove one shared root cause until the items are examined.
+_Avoid_: Product list, same error code alone, product-name exception set
+
+**Structured Content Group Name**:
+The localized CMS import key formed by joining a reachable state's same-language Localized Source Display Labels as `region - software - category`, omitting only dimensions absent from that state path. The exact ` - ` delimiter is structural, so a segment containing it is ambiguous and invalid.
+_Avoid_: Free-form group title, machine criteria replacement, raw hyphen split
+
+**Localized Source Display Label**:
+The human-readable label declared by the authoritative interaction control in one language-specific Source Snapshot for a stable machine filter identity. `zh-cn` and `en-us` labels may differ and name Payload options and content-group segments without changing the underlying machine value.
+_Avoid_: Machine value, cross-language copied label, translated fallback
+
+**Non-materialized Aggregate Tab**:
+A source Category option labeled `All` or `全部` whose declared target panel does not exist because the live interaction aggregates its sibling Category content. It is omitted from the Business Payload option catalog and Reachability Relation rather than synthesized, blanked, or treated as a missing concrete tab; the first remaining concrete sibling becomes the branch default.
+_Avoid_: Missing content placeholder, synthetic All group, product-specific missing-tab exception
 
 **Default CMS State**:
-The unique CMS Reachable State formed from the first declared option of every filter. Filter and option order is behavior-bearing source evidence, and the default tuple must match the proven source default and exactly one non-empty active `contentGroup`.
-_Avoid_: First content group, alphabetically sorted option, inferred fallback
+The unique CMS Reachable State reached by following the source-proven default through each active domain on that conditional path. A child default is evaluated within its selected parent branch, and the resulting tuple must match exactly one non-empty active `contentGroup`.
+_Avoid_: First content group, first option of a flattened union, inferred fallback
+
+**v0.4 Authoritative Filter Order**:
+The filter-option order established by the desktop interaction control in a frozen Source Snapshot and, for a Conditional Filter Domain, within its exact parent scope: the proven branch default is placed first and every other sibling retains its relative desktop order. The corresponding mobile control must expose the same scoped machine set but does not determine the default, option order, or labels.
+_Avoid_: Mobile select order, alphabetical order, cyclic rotation
 
 **Bilingual Filter Identity**:
-The expectation that a product's `zh-cn` and `en-us` payloads use the same ordered, non-empty and unique filter keys, option values, and Default CMS State while allowing localized display names, labels, and language-specific hrefs for the same machine states.
+The expectation that a product's `zh-cn` and `en-us` payloads use the same ordered filter keys, scoped option identities, parent-child topology, Reachability Relation, and Default CMS State while allowing localized display names and labels for the same machine states.
 _Avoid_: Translated machine value, label equality, independent generated ordering
 
 **Bilingual State Drift**:
-A Source Quality Finding raised when correctly captured `zh-cn` and `en-us` Source Snapshots expose different filter identities, option order, state spaces, or defaults. Faithful language-specific reconstruction may pass, but approval remains blocked pending disposition; extractor-created divergence is a blocking reconstruction error.
+A Source Quality Finding raised when correctly captured `zh-cn` and `en-us` Source Snapshots expose different filter identities, v0.4 Authoritative Filter Orders, state spaces, or defaults. Faithful language-specific reconstruction may pass, but approval remains blocked pending disposition; extractor-created divergence is a blocking reconstruction error.
 _Avoid_: Localization difference, Input Language Mapping Error, extraction mismatch
 
-**Source-declared SKU**:
-A stable SKU identifier explicitly present in the source evidence. A table row, display label, or inferred combination is not a SKU unless the source identifies it as one.
-_Avoid_: Table row, inferred SKU
-
-**Pricing Fact**:
-A price-bearing displayed value together with the labels, currency or unit text, qualifications, and Reachable Selection State needed to preserve its meaning. It need not have a Source-declared SKU.
-_Avoid_: Price cell, SKU
-
-**Canonical Pricing Table**:
-The logical grid produced from a price-bearing HTML table by expanding `rowspan` and `colspan` and associating every value with its complete hierarchical row headers, column headers, units, periods, ranges, qualifiers, and footnotes. Physical cell coordinates remain provenance only.
-_Avoid_: Raw HTML table, flat list of cells
-
 **Complex Pricing Table**:
-A Canonical Pricing Table whose source uses merged cells, multi-level headers, or another layout that makes pricing context visually dependent. It remains subject to Machine Validation and additionally requires recorded human visual verification.
+A pricing table whose source uses merged cells, multi-level headers, or another layout that makes pricing context visually dependent. A future explicitly activated review profile may require recorded visual verification in addition to Machine Validation.
 _Avoid_: Machine-validation exemption, large table
 
 **Complex Table Visual Review**:
-A recorded human comparison of the frozen source rendering and Business Payload rendering for a Complex Pricing Table. It is mandatory after Machine Validation passes and before approval or publication, and it cannot override a Machine Validation failure.
+A deferred human comparison of the frozen source rendering and Business Payload rendering for a Complex Pricing Table under a frozen Rendering Profile. It becomes an Approval Blocker only if a future Validation Profile explicitly enables it, and it can never override Machine Validation failure.
 _Avoid_: Machine Validation, informal spot check, failure waiver
 
-**v0.4 Complex Table Review Scope**:
-The delivery boundary in which v0.4 implements the real Complex Table Visual Review gate for every affected Business Payload and completes the end-to-end review for the bilingual `cloud-services` Core fixtures. Other complex-table items may pass Machine Validation but remain `approval_eligible=false` until their own required review is completed; v0.4 completion does not require all such reviews, while v0.5 expands the general human-review workflow across products and page types.
-_Avoid_: Core-only gate, full-batch manual completion, machine-pass approval
+**Manual Content Inspection（人工内容检查）**:
+A human check of frozen Source and persisted Payload content for one Batch Item. It records the states actually inspected and may support a Review Decision, but it cannot change Machine Validation or Capability Status.
+_Avoid_: 人工验证, Machine Validation, Complex Table Visual Review, Review Approval
+
+**Evidence Binding Status**:
+The categorical identity relationship between a Manual Content Inspection and the selected machine evidence: `bound` names matching source and payload identities, `legacy_unbound` preserves an inspection whose complete identities were never recorded, and `stale` means a previously bound identity no longer matches. Only `bound` inspection evidence is current.
+_Avoid_: Review status, validation verdict, latest evidence
+
+**Step 5 Complex Table Review Scope**:
+The deferred quality-governance boundary originally proposed for activating complete Complex Table Visual Review through a new Validation Profile. It is not active in the accepted v0.4 or v0.5 scope and cannot retroactively change older Batch Runs.
+_Avoid_: Current approval gate, retrospective blocker, machine-pass approval
 
 **Visual Review Variant**:
 An equivalence class of Reachable Selection States whose source table, Business Payload table, header context, and rendering-profile fingerprints are all identical. Every state containing a Complex Pricing Table must belong to a reviewed variant, but one human comparison may cover all states in the same variant.
@@ -92,12 +184,12 @@ _Avoid_: Random sample, similar-looking table, product-level review
 The immutable identity of the CMS template, styles, fonts, browser engine and version, desktop viewport, zoom and device scale, and visual-review protocol used to render and judge a Visual Review Variant. v0.4 defines no mobile rendering guarantee.
 _Avoid_: Browser name alone, current local environment
 
-**v0.4 Desktop Rendering Profile**:
-The standard v0.4 Rendering Profile with a `1440 × 900` CSS-pixel viewport, `100%` browser zoom, and device scale factor `1`, plus frozen Chromium version, font bundle, CMS template, stylesheet hashes, and review-protocol version.
+**Step 5 Desktop Rendering Profile**:
+The standard Step 5 Rendering Profile with a `1440 × 900` CSS-pixel viewport, `100%` browser zoom, and device scale factor `1`, plus frozen Chromium version, font bundle, CMS template, stylesheet hashes, and review-protocol version. It is not part of the Step 4 approval gate unless a later Validation Profile explicitly activates it.
 _Avoid_: Physical screen size, responsive profile, unpinned Chrome session
 
 **Frozen Source Table Rendering**:
-The controlled-browser rendering of an exact price-table fragment from a frozen Source Snapshot, selected for a Reachable Selection State using Applicability Evidence. It is the source-side visual reference for Complex Table Visual Review; the Live Source Page remains non-authoritative interaction reference.
+The controlled-browser rendering of an exact price-table fragment from a frozen Source Snapshot, selected for a Reachable Selection State using Source Reachability Evidence. It is the source-side visual reference for Complex Table Visual Review; the Live Source Page remains non-authoritative interaction reference.
 _Avoid_: Live-page oracle, reconstructed payload rendering, screenshot without source hash
 
 **Visual Semantic Equivalence**:
@@ -108,40 +200,20 @@ _Avoid_: Pixel equality, same stylesheet, subjective resemblance
 A prior Complex Table Visual Review that a later Batch Run may reference only when the Source Snapshot, rendered business HTML, covered states, Rendering Profile, and review-protocol fingerprints are all identical. Any changed fingerprint invalidates reuse.
 _Avoid_: Copied approval, same product name, similar screenshot
 
-**Pricing Fact Equivalence**:
-The equivalence of two Pricing Fact observations after insignificant HTML and whitespace normalization when all meaning-bearing value, currency, unit, period, range, label, state, qualifier, and footnote tokens still agree.
-_Avoid_: Raw HTML equality, numeric-only equality
-
-**State-scoped Pricing Fact Multiset**:
-The comparison projection that groups Pricing Fact occurrences by canonical Reachable Selection State and preserves multiplicity within each state. Equal display values in different states, or repeated occurrences in one state, are not collapsed; source DOM and payload JSON locations remain provenance rather than semantic identity.
-_Avoid_: Page-wide unique values, unordered table set
-
-**Pricing Fact Applicability**:
-The logical set of Reachable Selection States to which one physically stored Pricing Fact applies. Applicability is either global across all reachable states or explicitly state-scoped, and is evaluated independently from its source DOM or payload JSON storage location.
-_Avoid_: Physical duplication, DOM location, filter label alone
-
-**Applicability Evidence**:
-The frozen, auditable evidence that proves a Pricing Fact is global or identifies its exact state scope. Payload applicability follows CMS machine-contract field semantics. Source applicability follows explicit frozen-source markers and Product Definition rules first, then Snapshot-bound Interaction Evidence when static evidence is insufficient; ambiguity is a Pricing Fidelity Evaluation Failure.
-_Avoid_: Equal text across states, CSS visibility alone, best-effort guess
-
-**Applicability Map**:
-A versioned, Batch Item-specific mapping that enumerates every Reachable Selection State and assigns its source price-bearing fragments and Pricing Facts to global or exact state scope, with hashes and provenance for every supporting Applicability Evidence reference. Every runnable interactive pricing item must resolve one before extraction; the representative `api-management` and `cloud-services` Interaction Baselines calibrate the mechanism but do not exempt other products.
-_Avoid_: Strategy-wide assumption, representative-only coverage, current live state map
-
 **Exclusive Content Group Coverage**:
-The CMS filtering invariant that every Reachable Selection State on a filter-enabled pricing page matches exactly one active, price-bearing `contentGroup`. Zero matches mean missing reconstructed content and multiple matches mean ambiguous composition or leakage; shared content belongs in `baseContent` or `commonSections`.
+The CMS filtering invariant that every Reachable Selection State on a filter-enabled pricing page matches exactly one active, non-placeholder `contentGroup`, whose Structured Content Group Name and criteria describe the same ordered state. The group must be price-bearing unless the exact state is a Source-confirmed Empty Selection State; zero matches mean missing reconstructed content and multiple matches mean ambiguous composition or leakage.
 _Avoid_: First-match fallback, overlapping groups, implicit shared group
 
 **Complete Content Group Criteria**:
-The requirement that every active price-bearing `contentGroup` contains each active filter key exactly once and matches exactly one declared option value for that key. Omitted wildcard keys and encoded multi-values are forbidden, creating a one-to-one mapping between complete Reachable Selection States and content groups.
-_Avoid_: Partial criteria, wildcard group, comma-delimited values
+The requirement that every active `contentGroup` contains each filter key active on its Reachable Selection State path exactly once and matches one option admitted in that conditional scope. Omitting a path-active key as a wildcard or encoding multiple values remains forbidden, creating a one-to-one mapping between complete reachable tuples and content groups.
+_Avoid_: Partial path criteria, wildcard group, global-key assumption, comma-delimited values
 
 **Generated Active Content**:
-The rule that every `contentGroup` and `commonSection` emitted by reconstruction is active and belongs to publishable source content. Inactive drafts, placeholders, Orphan Pricing Evidence, and unreachable legacy fragments remain outside the Business Payload.
+The rule that every `contentGroup` and `commonSection` emitted by reconstruction is active and belongs to publishable source content. Inactive drafts, placeholders, and unreachable legacy fragments remain outside the Business Payload.
 _Avoid_: Hidden payload archive, inactive placeholder, imported orphan content
 
-**Contract-only Content Group Fields**:
-The output boundary that permits only `groupName`, `filterCriteriaJson`, `content`, `sortOrder`, and `isActive` in a generated `contentGroup`. Legacy `sharedContent` is removed; global, state-specific, and orphan fragments follow their respective content or evidence locations.
+**Evidence-bound Content Group Fields**:
+The output boundary that permits `groupName`, `filterCriteriaJson`, `content`, `sortOrder`, and `isActive` in every generated `contentGroup`, plus `sharedContent` only when the exact state has Region-Projected Shared Content evidence. `groupName` carries localized import identity, criteria carry machine identity, and unproven shared content remains forbidden.
 _Avoid_: Legacy field compatibility, producer-defined CMS extension, hidden shared fragment
 
 **Deterministic Sort Order**:
@@ -153,11 +225,11 @@ The deterministic string representation required for `filtersJsonConfig` and `fi
 _Avoid_: Parsed-only equivalence, pretty-printed nested JSON, alphabetic array sorting
 
 **Valid Filter Domain**:
-A filter definition with non-empty unique identity and display name, at least one option, non-empty option values and labels that are each unique within the filter, optional hrefs tied to Interaction Evidence, and every option participating in the CMS Reachable State set and an exclusive content group.
-_Avoid_: Empty option, duplicate UI label, unused option, unverified href
+A filter definition with non-empty identity and display name plus at least one source-proven option in every applicable scope. Machine identities are unambiguous, sibling values and labels are non-empty and unique within their Conditional Filter Domain, optional hrefs are tied to Interaction Evidence, and every option participates in at least one CMS Reachable State and exclusive content group.
+_Avoid_: Empty option, duplicate sibling identity, flattened label uniqueness, unused option, unverified href
 
 **Flexible Page State Machine**:
-The cross-field contract that binds `pageType`, `enableFilters`, filter topology, `contentGroups`, `baseContent`, and the confirmed extraction strategy. `Simple` has no filters or groups and non-empty base content; `RegionFilter` has only a region dropdown; `ComplexFilter` represents tab, software, or multidimensional filtering; unknown or contradictory states fail without fallback.
+The cross-field contract that binds `pageType`, `enableFilters`, filter topology, `contentGroups`, `baseContent`, and the confirmed extraction strategy. `Simple` has no filters or groups and therefore requires a non-empty business body; `RegionFilter` has only a region dropdown; `ComplexFilter` represents tab, software, or multidimensional filtering. Page-Global Content is independently evidence-driven for every Flexible strategy, and unknown or contradictory states fail without fallback.
 _Avoid_: Field-by-field validity, unknown-to-Simple fallback, page type by group count alone
 
 **Semantic Extraction Strategy**:
@@ -165,7 +237,7 @@ The content-behavior classification `simple_static`, `region_filter`, `complex`,
 _Avoid_: `large_file`, parser implementation, memory threshold
 
 **Processing Mode**:
-An execution mechanism orthogonal to the Semantic Extraction Strategy. v0.4 supports only the proven in-memory mode and fails preflight outside its capability boundary; a future streaming mode must produce equivalent Business Payloads and Pricing Facts.
+An execution mechanism orthogonal to the Semantic Extraction Strategy. v0.4 supports only the proven in-memory mode and fails preflight outside its capability boundary; a future streaming mode must produce equivalent Business Payloads, Reachability Relation, Batch Item Sampling Plans, sampled evidence, and verdicts.
 _Avoid_: Page type, content strategy, silent large-file fallback
 
 **InMemory Capability Profile**:
@@ -173,7 +245,7 @@ The frozen safety policy for the v0.4 in-memory Processing Mode, including maxim
 _Avoid_: Physical machine limit, `LARGE_FILE` strategy, untested size constant
 
 **Experimental Extraction Exception**:
-An explicit offline-research execution lane that may force a named Semantic Extraction Strategy for a `known_unsupported` item outside the canonical pipeline and without Contract, Pricing Fidelity, or Content Quality validation. It performs only execution-safety checks, runs with resource isolation, never changes Capability Status, and produces quarantined unvalidated artifacts that upload and publication paths reject.
+An explicit offline-research execution lane that may force a named Semantic Extraction Strategy for a `known_unsupported` item outside the canonical pipeline and without Contract, sampled-content, or other Content Quality validation. It performs only execution-safety checks, runs with resource isolation, never changes Capability Status, and produces quarantined unvalidated artifacts that Review, Release, and upload paths reject.
 _Avoid_: `--skip-validation` on a formal command, deferred validation, temporary supported status
 
 **Experimental Exception Specification**:
@@ -189,28 +261,8 @@ The execution-only result of `experimental-extract`. Exit code `0` means the Exp
 _Avoid_: Validation pass, formal extract exit code `2`, success without manifest
 
 **v0.4 P0 Experimental Export**:
-The first implementation slice of v0.4: provide the isolated `experimental-extract` lane and force the current `complex` strategy for canonical Product Key `virtual-machines`, whose Capability Status remains `known_unsupported`. The language-specific source artifacts are pinned as `zh-cn` 7,952,161 bytes / SHA-256 `c2dcc7f54cd78fbaa3052934e1b174b234d594431a7f0ea56ce7eb6b48749bfe` and `en-us` 7,120,359 bytes / SHA-256 `9cc3063549a3a44430bde949a816f16dd398291a859248c7513381ad69ed418c`; `zh-cn` is delivered first. P0 completes only after both languages independently produce an Experimental Payload Candidate and success manifest. If either execution fails, P0 is blocked or failed rather than complete; independent v0.4 foundation work may continue in parallel. P0 ordering does not relax quarantine, require cross-language content validation, or promote the product into the Core Strategy Test Matrix.
+The first implementation slice of v0.4: provide the isolated `experimental-extract` lane and force the current `complex` strategy for canonical Product Key `virtual-machines`, whose Capability Status remains `known_unsupported`. The language-specific source artifacts are pinned as `zh-cn` 8,064,052 bytes / SHA-256 `b1eedddb9020c94399063f95cc746609c1c86ec658fba5457d8d84197a2ea19f` and `en-us` 7,239,577 bytes / SHA-256 `8d0167fe4aa7e196b1879941d6830b3ef30f7e448501e53706823d736e827ea1`; `zh-cn` is delivered first. P0 completes only after both languages independently produce an Experimental Payload Candidate and success manifest. If either execution fails, P0 is blocked or failed rather than complete; independent v0.4 foundation work may continue in parallel. P0 ordering does not relax quarantine, require cross-language content validation, or promote the product into the Core Strategy Test Matrix.
 _Avoid_: `virtual-machies`, formal support promotion, validation waiver
-
-**Expected Pricing Fact Inventory**:
-The state-scoped Pricing Fact multisets independently derived from a Batch Run's frozen Source Snapshot and behavioral evidence, restricted and assigned to the Reachable Selection States that the Business Payload must reconstruct. It is the content-correctness oracle for Pricing Fact Fidelity.
-_Avoid_: Golden Payload, all hidden price fragments
-
-**Observed Payload Fact Inventory**:
-The state-scoped Pricing Fact multisets independently read back from a produced Business Payload, including their `filterCriteriaJson` or other reconstructed state assignment, for comparison with the Expected Pricing Fact Inventory.
-_Avoid_: Extraction diagnostics, source-side facts
-
-**Independent Fact Derivation**:
-The architectural separation in which source-side expected facts and payload-side observed facts are collected and assigned to states without reusing the production extractor's content-selection or mapping decisions. The two paths may share the Pricing Fact data model and independently tested normalization primitives; manually calibrated representative baselines test the validation paths themselves.
-_Avoid_: Duplicate invocation of the production extractor, whole-stack code reuse
-
-**Pricing Fact Fidelity**:
-The judgment that the Observed Payload Fact Inventory preserves the Expected Pricing Fact Inventory without changing, omitting, inventing, conflicting, or misassigning facts.
-_Avoid_: Commercial Price Accuracy, table count
-
-**Pricing Fidelity Coverage**:
-The runtime guarantee that every runnable pricing Batch Item must produce and compare its Expected and Observed Pricing Fact Inventories before Machine Validation can pass. Representative test fixtures limit regression-test cost but do not narrow this runtime guarantee.
-_Avoid_: Representative-only validation, schema-only pass
 
 **Reliable Adjudication Coverage**:
 The proportion of Batch Items in the frozen v0.4 runnable set that complete their applicable Machine Validation with an evidence-backed explicit `passed` or `failed` verdict. v0.4 requires 100% Reliable Adjudication Coverage: schema-only passes, post-run skips, silent fallbacks, missing reports, and indeterminate outcomes do not count. This metric is reported alongside, never instead of, complete accounting against the v0.3 runnable baseline.
@@ -225,20 +277,16 @@ The proportion of the 379 v0.3 runnable baseline items represented in the v0.4 P
 _Avoid_: Runnable denominator, pass rate, skipped-item omission
 
 **v0.4 Completion Boundary**:
-The milestone condition that all 8 language-level Core Batch Items (4 products × 2 languages) pass unit, component, and end-to-end tests, Baseline Accountability Coverage is `379 / 379`, and the frozen full bilingual runnable set reaches 100% Reliable Adjudication Coverage. Non-Core items may remain explicit reconstruction failures and ineligible for approval; their structure-cluster remediation belongs to v0.6 and they cannot be relabeled `known_unsupported` merely to complete v0.4.
-_Avoid_: Full-batch green requirement, representative-only runtime validation, failure reclassification
-
-**Pricing Fidelity Evaluation Failure**:
-The blocking outcome for a runnable pricing Batch Item when a complete, reliable Expected Pricing Fact Inventory cannot be established or compared. It is a validation failure rather than a skip.
-_Avoid_: Planned skip, empty pass, unsupported warning
+The milestone condition that the Step 4 sampled-validation, Dashboard review, immutable Release, and upload-gate loop is usable; Step 5 reporting and visual governance are complete; all 8 language-level Core Batch Items pass; and baseline accounting remains complete. Non-Core failures stay explicit and cannot be relabeled `known_unsupported` merely to finish the version.
+_Avoid_: Full-batch green requirement, implicit approval, failure reclassification
 
 **Golden Payload**:
 A human-reviewed, version-controlled and canonically serialized complete Business Payload for a representative end-to-end fixture, used to expose CMS-importable output regressions. Diagnostic Sidecars, timestamps, Run IDs, and evidence paths are outside the Business Payload and therefore outside the Golden rather than silently ignored. It is regression evidence rather than a content-correctness oracle because it may preserve an earlier reconstruction defect.
-_Avoid_: Expected Pricing Fact Inventory, approved source truth
+_Avoid_: Frozen Source Snapshot, approved source truth
 
-**Dual Pricing Baseline**:
-The Core pricing end-to-end requirement that each bilingual fixture has both a Golden Payload for complete Business Payload regression and a Curated Pricing Fact Baseline for independent validator calibration. A change to either fails the Deterministic Test Suite and may only be accepted through a reviewed Baseline Candidate; neither replaces the runtime source-derived Expected Pricing Fact Inventory.
-_Avoid_: One shared generated expectation, Golden as source oracle, facts-only output test
+**Curated Sampling Baseline**:
+A human-reviewed, version-controlled fixture for one Core Batch Item that fixes the Reachability Relation, Sampling Profile, exact selected states, and expected selected-state comparison evidence. It calibrates deterministic sampling and never replaces the frozen Source Snapshot as content authority.
+_Avoid_: Runtime sample plan, Golden Payload, full-state content oracle
 
 **Baseline Drift Classification**:
 The distinction between an unexplained deterministic regression when Source Snapshot and Validation Profile are unchanged, which fails the Deterministic Test Suite, and a source- or profile-driven change that requires complete revalidation and reviewed Baseline Candidates rather than automatic acceptance.
@@ -248,40 +296,36 @@ _Avoid_: Any-diff failure, auto-updated Golden, source-change waiver
 The judgment that a price agrees with an external authoritative billing or commercial source. Source reconstruction alone does not establish this judgment.
 _Avoid_: Pricing Fact Fidelity, source comparison
 
-**Orphan Pricing Evidence**:
-Price-bearing content present in a Source Snapshot whose non-membership in every Reachable Selection State is affirmatively proven. It is retained as an archaeological finding but is not a Pricing Fact that the Business Payload must reconstruct; importing it into a Business Payload is a blocking reconstruction error. Mere inability to determine applicability is not an orphan and remains a Pricing Fidelity Evaluation Failure.
-_Avoid_: Missing Pricing Fact, unsupported SKU
-
-**Explained Orphan**:
-Orphan Pricing Evidence with explicit frozen-source evidence that it was intentionally disabled, archived, or deprecated. It is reported upstream as a warning but does not fail Machine Validation or remove approval eligibility.
-_Avoid_: Unexplained hidden fragment, imported legacy price, silent discard
-
-**Unresolved Orphan**:
-Orphan Pricing Evidence whose unreachable status is proven but whose reason or ownership cannot be established. It remains excluded from the Business Payload and does not fail faithful Machine Validation, but it is an unresolved Source Quality Finding that sets `approval_eligible=false` until Source Finding Disposition.
-_Avoid_: Explained Orphan, validation failure, publishable content
-
 **Source Quality Finding**:
-A reproducible anomaly or internal inconsistency in frozen source evidence that is independent of reconstruction. In v0.4 it remains a warning and does not fail Pricing Fact Fidelity or Machine Validation.
+A reproducible anomaly or internal inconsistency in frozen source evidence that is independent of reconstruction. When the Payload can faithfully preserve the affected source and remain contract-valid, it is a warning rather than a Machine Validation failure; human review may still reject the item for upstream correction.
 _Avoid_: Reconstruction error, Commercial Price Accuracy
+
+**Source HTML Structure Finding**:
+A finding backed by immutable source bytes and exact line/DOM evidence that page wrappers, section nesting, control boundaries, or emitted-fragment identities are internally inconsistent while remaining parseable. It may be advisory or blocking, and may carry a conservative upstream edit suggestion, but neither extraction nor validation applies that suggestion to the Source Snapshot.
+_Avoid_: Repaired input, parser guess, product-specific extraction exception
+
+**Blocking Source Structure Finding**:
+A Source HTML Structure Finding proving that no contract-valid Business Payload can faithfully preserve the affected source fragment without an unauthorized source repair or an unproven ownership guess. The runnable item fails before Payload generation while retaining its supported capability status and upstream evidence.
+_Avoid_: Source warning, known unsupported, extractor-side repair, skipped item
+
+**Unconditional ID-less Table**:
+A source table without a non-empty `id`. It is outside `soft-category.json` selector membership and therefore remains in every applicable projection of its owning source state. v0.4 freezes its physical table index, normalized HTML SHA-256, and ordered aggregate identity; projection must preserve it byte-semantically and must not invent an ID.
+_Avoid_: Missing configured table, orphan table, implicit soft-category member
+
+**soft-category Configuration Finding**:
+A deterministic defect in the frozen `soft-category.json`, including duplicate `(os, region)` entries or repeated normalized table IDs inside one entry. A repeated ID inside one row is semantically redundant and does not change the selector set, but the runtime does not silently repair it: a reachable state containing that ID fails before Payload generation, while an irrelevant duplicate remains report-only.
+_Avoid_: Source HTML defect, silent deduplication, selector-set difference
 
 **Source-aware Field Completeness**:
 The field rule that CMS-required values must be non-empty, source-present optional values must be faithfully reconstructed, and source-absent optional values remain Source Quality Findings rather than invented content. A required value missing in the source produces both Contract Validation failure and an upstream finding.
 _Avoid_: Universal non-empty rule, source-blind default, invented metadata
 
 **Content Reconciliation Summary**:
-The explanatory counts derived from item-level matching for tables, FAQ pairs, and other content: source physical, expected logical, payload physical, projected logical, matched, missing, extra, duplicate, changed, misassigned, global, and orphan. Counts diagnose the reconciliation but do not replace it as the gate.
+The explanatory counts derived from page-global, full-mode, or selected-state content comparison, such as source, payload, matched, missing, extra, duplicate, changed, and misassigned fragments. Counts diagnose the evaluated scope but do not replace per-fragment comparison or imply anything about unselected states.
 _Avoid_: Raw count equality, minimum-count threshold, unexplained delta
 
-**Expected Publishable Text**:
-The source-derived text inventory for Title, metadata, Banner, Description, pricing, FAQ, and selected body blocks after navigation, footer, script, style, unreachable legacy content, and proven Orphan Pricing Evidence are excluded with rule codes and provenance. Explained versus Unresolved Orphan classification changes approval impact, not text-inventory membership.
-_Avoid_: Entire DOM text, extractor output, silently filtered text
-
-**Normalized Text Fidelity**:
-The requirement that Expected Publishable Text has complete state-aware coverage in the Business Payload after only entity decoding, Unicode normalization, and insignificant whitespace normalization. Missing, extra, duplicate, changed, or misassigned text is blocking; percentage thresholds below complete coverage are not accepted.
-_Avoid_: Text-volume score, lowercase comparison, 95-percent threshold
-
 **Source-relative Duplication**:
-The rule that duplication and cross-state leakage are judged against expected state-scoped multiplicity and Applicability. Source-evidenced repetition across or within states may be faithful; any payload occurrence beyond that multiplicity or in an unauthorized state is blocking.
+The rule that duplication and state leakage are judged within the page-global, full-mode, or selected-state comparison scope against the Source's observed multiplicity. Source-evidenced repetition may be faithful; an excess or misassigned Payload occurrence in an evaluated scope is blocking. Unselected states receive no content-duplication guarantee.
 _Avoid_: Hash-equality duplicate, same-price leakage, page-wide deduplication
 
 **Source Finding Disposition**:
@@ -293,19 +337,23 @@ A batch-level evidence handoff that identifies Source Quality Findings and their
 _Avoid_: Validation failure, Review approval
 
 **Machine Validation Report**:
-The Batch Item-specific evidence for its aggregate Machine Validation judgment, separating Contract Validation, Pricing Fact Fidelity, other Content Quality Rules and Source Quality Findings while recording the Validation Profile, Applicability Map and baseline identities and hashes. It also records derived `approval_eligible` and structured `approval_blockers[]`; the Review Queue is a projection of Machine-pass reports, not another verdict authority.
+The Batch Item-specific evidence for its aggregate Machine Validation judgment. It separates full-state Contract Validation, Sampled State Content Consistency, other rules, and Source Quality Findings while recording Validation/Content Sampling Profile identities, the Batch Item Sampling Plan, selected and total state counts, hashes, and stable failure codes. Step 5 may add richer structured Approval Blockers; the Batch Manifest remains lifecycle authority.
 _Avoid_: Business Payload, Diagnostic Sidecar, quality score
 
-**Pricing Fidelity Evidence Bundle**:
-The generated, immutable Expected Pricing Fact Inventory, Observed Payload Fact Inventory, and itemized Pricing Fact Diff artifacts referenced and hashed by one Machine Validation Report. Each Inventory is a state-scoped multiset. These files contain evidence but never an independent pass or fail judgment, live under the Batch Run, and are excluded from Git.
-_Avoid_: Machine Validation Report, Business Payload, committed test fixture
+**Capability Dashboard Projection**:
+A read model of fixed product scope, explicit Batch evidence, Review Decisions, Releases, Publication Receipts, and historical manual inspections. It is never a lifecycle or evidence authority and never chooses a “latest” conclusion implicitly.
+_Avoid_: Tracking database, manifest replacement, implicit latest-run authority
 
-**Curated Pricing Fact Baseline**:
-A human-calibrated, version-controlled Expected Pricing Fact Inventory fixture for a representative product and language, used by pytest and any future automation runner to test source-side and payload-side validators independently. It is not a generated Batch Run artifact or a correctness oracle for unrelated items.
-_Avoid_: Runtime evidence bundle, Golden Payload, automatically accepted fixture
+**Dashboard Review Workbench**:
+The local interface that displays the Capability Dashboard Projection and invokes controlled review commands to record approved or rejected Review Decisions. Its buttons do not directly edit projections or manifests, and it cannot override Machine Validation.
+_Avoid_: State authority, validation console, direct JSON editor
+
+**Sampled Content Evidence**:
+The immutable per-state Source/Payload fingerprints and diffs referenced by one Machine Validation Report for the exact states in its Batch Item Sampling Plan. It contains evidence, not an independent verdict, and makes no claim about unselected states.
+_Avoid_: Full-state inventory, Business Payload, human review decision
 
 **Baseline Candidate**:
-An explicitly generated proposed replacement for a committed Golden Payload or Curated Pricing Fact Baseline, identified by `artifact_kind` and accompanied by its old-to-new Diff, Source Snapshot hash, schema and Validation Profile versions, and change rationale. It becomes the new regression baseline only after human review and cannot be generated or accepted by normal test or automation runs.
+An explicitly generated proposed replacement for a committed Golden Payload, Curated Sampling Baseline, or other governed fixture, identified by `artifact_kind` and accompanied by its old-to-new Diff, Source Snapshot hash, schema/Profile versions, and change rationale. It becomes the new regression baseline only after separate human review and cannot be accepted by normal test runs.
 _Avoid_: Updated Golden, automatic test output, passing expectation
 
 **Core Strategy Test Matrix**:
@@ -337,15 +385,15 @@ The additive set of promoted products beyond the Core Strategy Test Matrix. The 
 _Avoid_: Optional test suite, quarantine list, unreviewed product sample
 
 **Expanded Matrix Promotion**:
-The explicit admission of a bilingual product after its Product Definition and contracts pass, two clean runs produce identical business and fact-evidence hashes, curated baselines and applicable interaction or visual evidence are reviewed, and unit, component, and end-to-end tests exist. Recorded Source Quality Findings may remain stable warnings because promotion tests reconstruction rather than publication approval.
+The explicit admission of a bilingual product after its Product Definition and contracts pass, two clean runs produce identical Business Payload, selected-state, and sampled-evidence hashes, curated baselines and applicable interaction or visual evidence are reviewed, and unit, component, and end-to-end tests exist. Recorded Source Quality Findings may remain stable warnings because promotion tests reconstruction rather than publication approval.
 _Avoid_: One green run, automatic discovery, publication approval
 
 **Validation Profile**:
-The immutable, versioned set of Local Machine Contract references, Content Quality Rules and severities, thresholds, Pricing Fact interpretation rules, evidence baselines, and per-item Applicability Map schema/version/path/SHA-256 identities used to judge a Batch Run.
+The immutable, versioned set of Local Machine Contract references, Content Quality Rules and severities, Content Sampling Profile, evidence baselines, and any Step 5 review-gate identities used to judge a Batch Run.
 _Avoid_: Current validator, product validation rules
 
 **Interaction Baseline**:
-A compact, human-calibrated and version-controlled manifest covering the rendered states of a representative interactive page, including state tuples, visible-fragment and table fingerprints, mappings, capture metadata, Rendering Profile, `source_snapshot_sha256`, binding status (`current_reference` or `snapshot_bound`), and binding evidence. Only `snapshot_bound` entries may support an Applicability Map; full live screenshots and DOM captures remain gitignored runtime reference artifacts.
+A compact, human-calibrated and version-controlled manifest covering the rendered states of a representative interactive page, including state tuples, visible-fragment and table fingerprints, capture metadata, Rendering Profile, `source_snapshot_sha256`, binding status (`current_reference` or `snapshot_bound`), and binding evidence. Snapshot-bound entries may calibrate Source Reachability and sampling strata; full live screenshots and DOM captures remain gitignored runtime reference artifacts.
 _Avoid_: Approved output, Review approval
 
 **Rendered Interaction Capture**:
@@ -381,16 +429,36 @@ One language-specific resource in a Batch Run, identified by the pair of Languag
 _Avoid_: Product task, category item
 
 **Review Queue**:
-The batch-specific collection of Batch Items whose reconstructed Business Payloads passed Machine Validation and await human review or disposition. Items with unresolved Source Quality Findings or outstanding visual review may enter with `approval_eligible=false`; membership is neither approval nor authorization to publish.
+The batch-specific collection of Batch Items whose reconstructed Business Payloads passed Machine Validation and await a human Review Decision. Membership is neither approval nor authorization to create a Release.
 _Avoid_: Approval queue, publication queue
 
 **Approval Eligibility**:
-The machine-enforced derived state indicating whether a Machine-validated Review Queue item currently has no unresolved approval conditions. `approval_eligible=false` never changes the Machine Validation verdict and prevents transition to `approved` until every structured Approval Blocker is cleared.
+The machine-enforced derived state indicating whether execution and Machine Validation passed and the current Finding Policy produced no Approval Blocker. It is independent of Review Decision verdict, evidence binding, and inspected-state validity; those states can make a decision stale or non-releasable without changing Approval Eligibility. Advisory Source Warnings remain visible evidence but do not make this state false.
 _Avoid_: Machine Validation pass, reviewer preference, publication status
 
 **Approval Blocker**:
-A structured, auditable unmet condition in `approval_blockers[]`, such as `source_finding_disposition_required` or `complex_table_visual_review_required`. Human review supplies the required evidence or disposition but cannot force an approval transition while any blocker remains.
+A structured, auditable unmet condition that prevents an approved Review Decision or Release membership. In Step 5 this includes approval-blocking or unknown Source Quality Finding codes under the frozen policy; Machine Validation failure remains a machine failure, not an Approval Blocker. Human review cannot bypass one.
 _Avoid_: Warning text, validation error, manual override flag
+
+**Source Warning**:
+An advisory Source Quality Finding classified by the frozen Finding Code Policy. It is preserved in Validation Evidence and shown by CLI/Dashboard before review, but it does not block Approval Eligibility or Release when all other gates pass.
+_Avoid_: Approval Blocker, Machine Validation failure, hidden note
+
+**Review Decision**:
+An append-only, hash-bound human decision for one Batch Item with verdict `approved` or `rejected`, reviewer, time, inspected states, reason, notes, and Source/Payload/validation identities. A newer decision may supersede but never erase an older one; changed bound evidence makes it stale.
+_Avoid_: Manual Content Inspection, Machine Validation verdict, mutable status field
+
+**Release**:
+A write-once collection of currently approved Batch Items copied from canonical Batch outputs for delivery. It is identified by a Release Manifest and is distinct from both the Batch Run and Publication.
+_Avoid_: Output folder, Review Queue, published content
+
+**Release Manifest**:
+The immutable inventory that binds a Release to its Batch/Input Manifest identities, exact Batch Items, Payload hashes, Machine Validation evidence, Review Decisions, and planned delivery identities. Upload accepts this manifest rather than scanning an arbitrary directory.
+_Avoid_: Batch Manifest, sidecar, recursive upload list
+
+**Publication Receipt**:
+Append-only evidence that one sealed Release was successfully delivered and remotely verified. Only after this evidence exists may the Batch Manifest record the included items as published.
+_Avoid_: Upload attempt, local Release, success message alone
 
 **Normalized Input**:
 A SHA-256-verified, byte-identical Source Snapshot organized into the canonical product, language, content-type, and optional SLA-version structure consumed by extraction. It never performs transcoding, newline normalization, HTML repair, or any other content mutation; tolerant parsing may occur only in memory.
@@ -433,8 +501,8 @@ An organizational membership applied only to Flexible Content Pages. A Product D
 _Avoid_: Product owner, source directory
 
 **Capability Status**:
-The explicit statement that a Product Definition is either eligible for extraction and publication (`supported`) or deliberately excluded because its source or pipeline is known unsuitable (`known_unsupported`); every exclusion includes a concrete reason.
-_Avoid_: Missing config, implicit failure
+The explicit statement that a Product Definition may enter the formal extraction pipeline (`supported`) or is deliberately excluded because its source or pipeline is known unsuitable (`known_unsupported`). It is independent from one Batch Item's execution, Machine Validation, Review Decision, Release membership, or Publication; every exclusion includes a concrete reason.
+_Avoid_: Current validation pass, approval, missing config, implicit failure
 
 **CMS Contract Description**:
 The human-readable field and import rules supplied by the CMS team.
@@ -445,7 +513,7 @@ The executable schema and semantic rules derived from a confirmed CMS Contract D
 _Avoid_: CMS documentation, product validation rules
 
 **Machine Validation**:
-The aggregate automated judgment that a Business Payload satisfies its Local Machine Contract and every blocking Content Quality Rule. A passing result may still carry non-blocking Quality Findings.
+The aggregate automated judgment that a persisted Business Payload satisfies its Local Machine Contract for the complete Reachability Relation and every blocking rule in its frozen Validation Profile, including Sampled State Content Consistency where applicable. A passing result may carry warnings but makes no claim about unselected state content.
 _Avoid_: Schema Validation, Quality Score
 
 **Categorical Validation Verdict**:

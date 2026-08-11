@@ -1,0 +1,225 @@
+{
+  "artifact_hashes": {
+    "batch_manifest": {
+      "authority": "lifecycle_authority",
+      "path": "runs/20260806T044456Z-e6268660/batch-manifest.json",
+      "revision": 1448,
+      "sha256": "31e80772a4adc1cbbc09e46a73f1a84e7291475f3060aed2e9f9710755da20ba"
+    },
+    "batch_report": {
+      "authority": "execution_validation_projection",
+      "path": "runs/20260806T044456Z-e6268660/batch-report.json",
+      "revision": 1437,
+      "sha256": "0fe6f291464025cd3ca948d93f15f93c8e7c1a95d918b578537b03a129c09bd9"
+    },
+    "release_manifest": {
+      "path": "output/releases/v0.4.0-step7c-representative/release-manifest.json",
+      "schema_version": "1.1",
+      "sha256": "aedc583f566ac8217d682c7347cff46ea173054ba9a468ace3cfc865d468afdc"
+    },
+    "review_queue": {
+      "authority": "review_projection",
+      "path": "runs/20260806T044456Z-e6268660/review/review-queue.json",
+      "revision": null,
+      "sha256": "48d73b37eecb50711542668e005020b3b23a2ce9057eb54ab5f091fbb4d4d58f"
+    }
+  },
+  "batch_id": "20260806T044456Z-e6268660",
+  "before_after_summary": {
+    "after": {
+      "batch_manifest_sha256": "31e80772a4adc1cbbc09e46a73f1a84e7291475f3060aed2e9f9710755da20ba",
+      "not_published": 434,
+      "not_released": 431,
+      "published": 0,
+      "released": 3,
+      "revision": 1448
+    },
+    "before": {
+      "batch_manifest_sha256": "718459a822faeb8cb28bd71c07fab64889626a5be03b21ce113cd07d9c2f3fbc",
+      "not_published": 434,
+      "not_released": 434,
+      "published": 0,
+      "released": 0,
+      "revision": 1447
+    }
+  },
+  "build_result": {
+    "committed_revision": 1448,
+    "recovered": false,
+    "release_content_sha256": "8a8138bd20501d4752a6404195e072048f15f1bd5b56659448c623360d7e38c9",
+    "release_manifest_sha256": "aedc583f566ac8217d682c7347cff46ea173054ba9a468ace3cfc865d468afdc",
+    "release_seal": "8313e866994072dd1b43392663eaa8507e29a95a4f39eaf9e39e7ef7b10d0fe4"
+  },
+  "commands": {
+    "build": "UV_CACHE_DIR=.uv-cache uv run cli.py release-build --batch-id 20260806T044456Z-e6268660 --release-id v0.4.0-step7c-representative --item-id zh-cn/api-management --item-id en-us/time-series-insights --item-id zh-cn/icp-faq --expected-revision 1447 --account-url https://example.blob.core.chinacloudapi.cn --container cms --prefix releases/v0.4.0-step7c-representative --json",
+    "dry_run_upload": "UV_CACHE_DIR=.uv-cache uv run cli.py upload --release-manifest output/releases/v0.4.0-step7c-representative/release-manifest.json --dry-run --json",
+    "verify": "UV_CACHE_DIR=.uv-cache uv run cli.py release-verify --release-manifest output/releases/v0.4.0-step7c-representative/release-manifest.json --require-batch-reference --json"
+  },
+  "dry_run_upload_result": {
+    "committed_revision": null,
+    "dry_run": true,
+    "publication_receipt_path": null,
+    "publication_receipt_sha256": null,
+    "remote_blobs": [
+      {
+        "account_url": "https://example.blob.core.chinacloudapi.cn",
+        "container": "cms",
+        "etag": "[DRY_RUN]",
+        "name": "releases/v0.4.0-step7c-representative/en-us/pricing/time-series-insights.json",
+        "sha256": "7ab711a66c307d9de83f464a3ae89ca4d83c92d21f723f440e715abaf9efc64b"
+      },
+      {
+        "account_url": "https://example.blob.core.chinacloudapi.cn",
+        "container": "cms",
+        "etag": "[DRY_RUN]",
+        "name": "releases/v0.4.0-step7c-representative/zh-cn/pricing/api-management.json",
+        "sha256": "0bec4742b1f735d0b267e98c89820d95bf469a3ba6b9715b856d6dd387cecd59"
+      },
+      {
+        "account_url": "https://example.blob.core.chinacloudapi.cn",
+        "container": "cms",
+        "etag": "[DRY_RUN]",
+        "name": "releases/v0.4.0-step7c-representative/zh-cn/SupportArticles/ICP/icp-faq.json",
+        "sha256": "d5c9f5df6bffb1b25736cadc13c1297bc084ad5af85d1e1782c45dadacc89ce3"
+      }
+    ]
+  },
+  "generated_at": "2026-08-06T09:02:35.853942Z",
+  "included_items": [
+    {
+      "coverage": {
+        "mode": "stratified_sample",
+        "selected_count": 4,
+        "universe_count": 4,
+        "untested_count": 0
+      },
+      "item_id": "en-us/time-series-insights",
+      "language": "en-us",
+      "page_model": "FlexibleContentPage",
+      "payload_sha256": "7ab711a66c307d9de83f464a3ae89ca4d83c92d21f723f440e715abaf9efc64b",
+      "release_payload_path": "output/releases/v0.4.0-step7c-representative/payloads/en-us/pricing/time-series-insights.json",
+      "resource_key": "time-series-insights",
+      "review_decision_id": "53bacc45eda6533d2a6f258fb20f27dfca363fb435d887858109f2f5f4c1787b",
+      "review_decision_sha256": "2ea6b6d66a169816684c8c9c5186e98594cdfee134e0d6b9a5c5dc660acf1ea7",
+      "review_release_ready": true,
+      "sampling_plan_sha256": "870f3e25eb617065907c6c2ca0e12ae7a63eb4d41af01acc325cde41e63207d4",
+      "source_payload_path": "runs/20260806T044456Z-e6268660/outputs/en-us/pricing/time-series-insights.json",
+      "status": {
+        "approval_eligibility": "eligible",
+        "evidence_binding": "bound",
+        "execution": "succeeded",
+        "publication": "not_published",
+        "release": "released",
+        "review": "approved",
+        "validation": "passed"
+      },
+      "strategy": "complex",
+      "target_blob": {
+        "container": "cms",
+        "name": "releases/v0.4.0-step7c-representative/en-us/pricing/time-series-insights.json"
+      },
+      "validation_artifact_sha256": "a6eff7654f535a0a1216dff96faac9fb155db6c081530047787b800d84622e76",
+      "validation_evidence_sha256": "1a1ccbfce0dd8f88154c5bd225fbb45bbb8940467eaacd422d80295cbc769c8e"
+    },
+    {
+      "coverage": {
+        "mode": "stratified_sample",
+        "selected_count": 5,
+        "universe_count": 5,
+        "untested_count": 0
+      },
+      "item_id": "zh-cn/api-management",
+      "language": "zh-cn",
+      "page_model": "FlexibleContentPage",
+      "payload_sha256": "0bec4742b1f735d0b267e98c89820d95bf469a3ba6b9715b856d6dd387cecd59",
+      "release_payload_path": "output/releases/v0.4.0-step7c-representative/payloads/zh-cn/pricing/api-management.json",
+      "resource_key": "api-management",
+      "review_decision_id": "a8156f274efbe66016b840a8d99d1942b345ce1481dfed21625afbb92ab2ff01",
+      "review_decision_sha256": "c5fd4237a8f0017968b2129eedd3cd055eb81e747d766aed3cdd67d2ab7d24fd",
+      "review_release_ready": true,
+      "sampling_plan_sha256": "a9ab493c28b709886b674a35a5ba95d2799aad84a06c6e34a9b50380141f4bf6",
+      "source_payload_path": "runs/20260806T044456Z-e6268660/outputs/zh-cn/pricing/api-management.json",
+      "status": {
+        "approval_eligibility": "eligible",
+        "evidence_binding": "bound",
+        "execution": "succeeded",
+        "publication": "not_published",
+        "release": "released",
+        "review": "approved",
+        "validation": "passed"
+      },
+      "strategy": "region_filter",
+      "target_blob": {
+        "container": "cms",
+        "name": "releases/v0.4.0-step7c-representative/zh-cn/pricing/api-management.json"
+      },
+      "validation_artifact_sha256": "2a955f8d58128d6cdae7e34a4269a7d52c79ecdfd8443d979542eef5ee797cbd",
+      "validation_evidence_sha256": "532523ccb98a872c901cf2627e033df9d80c0897d75687c5c30c978a25605cc1"
+    },
+    {
+      "coverage": {
+        "mode": "full",
+        "selected_count": 1,
+        "universe_count": 1,
+        "untested_count": 0
+      },
+      "item_id": "zh-cn/icp-faq",
+      "language": "zh-cn",
+      "page_model": "SupportArticlePage",
+      "payload_sha256": "d5c9f5df6bffb1b25736cadc13c1297bc084ad5af85d1e1782c45dadacc89ce3",
+      "release_payload_path": "output/releases/v0.4.0-step7c-representative/payloads/zh-cn/SupportArticles/ICP/icp-faq.json",
+      "resource_key": "icp-faq",
+      "review_decision_id": "6e7099bf370fff478b7fe33ebee6ebe4923d6fa27e6f3cfe07e18e255c77bb55",
+      "review_decision_sha256": "935c04d9cbd1ab52f1e90c84849cdcfcf71a62b4873a0aa21d752c21a9aefb65",
+      "review_release_ready": true,
+      "sampling_plan_sha256": null,
+      "source_payload_path": "runs/20260806T044456Z-e6268660/outputs/zh-cn/SupportArticles/ICP/icp-faq.json",
+      "status": {
+        "approval_eligibility": "eligible",
+        "evidence_binding": "bound",
+        "execution": "succeeded",
+        "publication": "not_published",
+        "release": "released",
+        "review": "approved",
+        "validation": "passed"
+      },
+      "strategy": "support_article",
+      "target_blob": {
+        "container": "cms",
+        "name": "releases/v0.4.0-step7c-representative/zh-cn/SupportArticles/ICP/icp-faq.json"
+      },
+      "validation_artifact_sha256": "1a1f2f6a1cf8f83e2df1888d3ae5e5d84ff7e0dc396a856ca070850919f80bbe",
+      "validation_evidence_sha256": "5ad9b1431d4bb8fbab505e63e7f4de95b457230bc021178dd3d22c936c9b8f50"
+    }
+  ],
+  "release_id": "v0.4.0-step7c-representative",
+  "release_scope": {
+    "coverage": [
+      "pricing_region_filter",
+      "pricing_complex",
+      "support_article",
+      "zh-cn",
+      "en-us"
+    ],
+    "item_ids": [
+      "en-us/time-series-insights",
+      "zh-cn/api-management",
+      "zh-cn/icp-faq"
+    ],
+    "selection_rule": "same acceptance batch; current, execution=succeeded, validation=passed, approval_eligible, review=approved, evidence_binding=bound"
+  },
+  "result": "passed",
+  "schema_version": "v0.4-step7c-release-summary-1.0",
+  "target": {
+    "account_url": "https://example.blob.core.chinacloudapi.cn",
+    "container": "cms",
+    "prefix": "releases/v0.4.0-step7c-representative",
+    "purpose": "acceptance dry-run placeholder only; not a production publication target"
+  },
+  "verify_result": {
+    "registered": true,
+    "release_content_sha256": "8a8138bd20501d4752a6404195e072048f15f1bd5b56659448c623360d7e38c9",
+    "release_manifest_sha256": "aedc583f566ac8217d682c7347cff46ea173054ba9a468ace3cfc865d468afdc",
+    "release_seal": "8313e866994072dd1b43392663eaa8507e29a95a4f39eaf9e39e7ef7b10d0fe4"
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "product_key": "data-factory",
   "display_name": "Data Factory",
   "slug": "data-factory",
@@ -21,7 +21,7 @@
       "url": "https://www.azure.cn/en-us/pricing/details/data-factory/"
     }
   },
-  "quality": {
-    "min_content_length": 100
+  "extraction": {
+    "semantic_strategy": "simple_static"
   }
 }

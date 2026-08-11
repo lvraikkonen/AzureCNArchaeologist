@@ -1,0 +1,3 @@
+# Map Authorized Page-Global Content to baseContent Independently of Strategy
+
+Any Flexible page—Simple, RegionFilter, or ComplexFilter—may contain Page-Global Content that does not vary with a Reachable Selection State. We emit it once as CMS `baseContent` only from a closed-world source boundary whose identity is replayable from canonical input and, when classification is not structurally inherent, explicitly authorized by the Product Definition with frozen bilingual source and wire hashes. Inferring emptiness from extraction strategy, keeping global content in `Qa`, copying it into state groups, or broadly sweeping trailing DOM were rejected because they respectively conflate state topology with content ownership, misclassify, duplicate, or guess applicability.

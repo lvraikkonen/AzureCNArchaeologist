@@ -1,4 +1,4 @@
-"""Serializable domain models for the v0.3 batch pipeline.
+"""Serializable domain models for the v0.4 batch pipeline.
 
 The immutable input manifest records what a run means.  The batch manifest is
 the only mutable source of truth for what happened to that input.
@@ -75,6 +75,15 @@ class BatchItem:
     def runnable(self) -> bool:
         return self.skip_reason is None
 
+    @property
+    def parseability_path(self) -> str:
+        suffix = ".sidecar.json"
+        if not self.diagnostic_path.endswith(suffix):
+            raise ValueError(
+                f"Diagnostic path cannot derive parseability evidence: {self.diagnostic_path}"
+            )
+        return self.diagnostic_path[: -len(suffix)] + ".parseability.json"
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "item_id": self.item_id,
@@ -103,6 +112,7 @@ class BatchItem:
             "artifacts": {
                 "payload": {"path": self.output_path, "sha256": None},
                 "diagnostic": {"path": self.diagnostic_path, "sha256": None},
+                "parseability": {"path": self.parseability_path, "sha256": None},
                 "validation": {"path": self.validation_path, "sha256": None},
             },
             "skip_reason": dict(self.skip_reason) if self.skip_reason else None,
@@ -136,6 +146,7 @@ class PipelinePlan:
     scope: Mapping[str, Any]
     languages: tuple[str, ...]
     items: tuple[BatchItem, ...]
+    frozen_inputs: Mapping[str, Any] | None = None
 
     @property
     def summary(self) -> dict[str, int]:
@@ -158,12 +169,15 @@ class PipelinePlan:
         }
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        value = {
             "scope": _clone(dict(self.scope)),
             "languages": list(self.languages),
             "summary": self.summary,
             "items": [item.to_dict() for item in self.items],
         }
+        if self.frozen_inputs is not None:
+            value["frozen_inputs"] = _clone(dict(self.frozen_inputs))
+        return value
 
 
 @dataclass(frozen=True)
@@ -174,8 +188,11 @@ class InputManifest:
     languages: tuple[str, ...]
     summary: Mapping[str, int]
     provenance: Mapping[str, Any]
+    planning: Mapping[str, Any]
+    validation_context: Mapping[str, Any]
     items: tuple[Mapping[str, Any], ...]
-    schema_version: str = "1.0"
+    frozen_inputs: Mapping[str, Any] | None = None
+    schema_version: str = "2.0"
 
     @classmethod
     def from_plan(
@@ -185,6 +202,8 @@ class InputManifest:
         provenance: Mapping[str, Any],
         *,
         created_at: str | None = None,
+        planning: Mapping[str, Any],
+        validation_context: Mapping[str, Any],
     ) -> "InputManifest":
         return cls(
             batch_id=batch_id,
@@ -193,11 +212,18 @@ class InputManifest:
             languages=plan.languages,
             summary=plan.summary,
             provenance=_clone(dict(provenance)),
+            planning=_clone(dict(planning)),
+            validation_context=_clone(dict(validation_context)),
             items=tuple(item.to_dict() for item in plan.items),
+            frozen_inputs=(
+                _clone(dict(plan.frozen_inputs))
+                if plan.frozen_inputs is not None
+                else None
+            ),
         )
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        value = {
             "schema_version": self.schema_version,
             "batch_id": self.batch_id,
             "created_at": self.created_at,
@@ -205,8 +231,13 @@ class InputManifest:
             "languages": list(self.languages),
             "summary": _clone(dict(self.summary)),
             "provenance": _clone(dict(self.provenance)),
+            "planning": _clone(dict(self.planning)),
+            "validation_context": _clone(dict(self.validation_context)),
             "items": _clone(list(self.items)),
         }
+        if self.frozen_inputs is not None:
+            value["frozen_inputs"] = _clone(dict(self.frozen_inputs))
+        return value
 
 
 def initial_checkpoint(status: str = "pending") -> dict[str, Any]:
@@ -223,7 +254,21 @@ def initial_checkpoint(status: str = "pending") -> dict[str, Any]:
 @dataclass(frozen=True)
 class BatchManifest:
     value: Mapping[str, Any]
-    SCHEMA_VERSION: ClassVar[str] = "1.0"
+    SCHEMA_VERSION: ClassVar[str] = "2.0"
+
+    @staticmethod
+    def _planned_validation_artifact(
+        validation_path: str,
+        suffix: str,
+    ) -> dict[str, str | None]:
+        expected_suffix = ".validation.json"
+        if not validation_path.endswith(expected_suffix):
+            raise ValueError(
+                "Validation path cannot derive Step 4 evidence: "
+                f"{validation_path}"
+            )
+        stem = validation_path[: -len(expected_suffix)]
+        return {"path": f"{stem}{suffix}", "sha256": None}
 
     @classmethod
     def from_input_manifest(cls, manifest: InputManifest | Mapping[str, Any]) -> "BatchManifest":
@@ -237,6 +282,8 @@ class BatchManifest:
             if skipped:
                 for checkpoint in checkpoints.values():
                     checkpoint["error"] = _clone(frozen["skip_reason"])
+            interactive = frozen["strategy"] in ("region_filter", "complex")
+            validation_path = frozen["artifacts"]["validation"]["path"]
             items[item_id] = {
                 "item_id": item_id,
                 "identity": _clone(frozen["identity"]),
@@ -249,16 +296,35 @@ class BatchManifest:
                     "validation": "not_run",
                     "review": "not_requested",
                     "publication": "not_published",
+                    "evidence_binding": "not_applicable",
+                    "approval_eligibility": "blocked",
+                    "release": "not_released",
                 },
                 "checkpoints": checkpoints,
                 "artifacts": {
                     "normalized_input": _clone(frozen["normalized_input"]),
                     **_clone(frozen["artifacts"]),
+                    "sampling_plan": (
+                        cls._planned_validation_artifact(
+                            validation_path, ".sampling-plan.json"
+                        )
+                        if interactive
+                        else None
+                    ),
+                    "sampled_content_evidence": (
+                        cls._planned_validation_artifact(
+                            validation_path,
+                            ".sampled-content-evidence.json",
+                        )
+                        if not skipped
+                        else None
+                    ),
+                    "current_review_decision": None,
                 },
                 "error": _clone(frozen.get("skip_reason")),
             }
         now = source["created_at"]
-        return cls({
+        value = {
             "schema_version": cls.SCHEMA_VERSION,
             "batch_id": source["batch_id"],
             "revision": 0,
@@ -266,10 +332,17 @@ class BatchManifest:
             "created_at": now,
             "updated_at": now,
             "input_manifest": {"path": "input-manifest.json", "sha256": None},
+            "planning": _clone(source["planning"]),
+            "validation_context": _clone(source["validation_context"]),
             "checkpoints": {stage: initial_checkpoint() for stage in STAGES},
             "items": items,
             "summary": _clone(source["summary"]),
-        })
+            "release_manifests": [],
+            "publication_receipts": [],
+        }
+        if "frozen_inputs" in source:
+            value["frozen_inputs"] = _clone(source["frozen_inputs"])
+        return cls(value)
 
     def to_dict(self) -> dict[str, Any]:
         return _clone(dict(self.value))
@@ -326,6 +399,46 @@ def summarize_batch_manifest(manifest: Mapping[str, Any]) -> dict[str, int]:
         ),
         "review_pending": sum(
             item["status"]["review"] == "pending" for item in items
+        ),
+        "review_approved": sum(
+            item["status"]["review"] == "approved" for item in items
+        ),
+        "review_rejected": sum(
+            item["status"]["review"] == "rejected" for item in items
+        ),
+        "evidence_bound": sum(
+            item["status"].get("evidence_binding", "not_applicable")
+            == "bound"
+            for item in items
+        ),
+        "evidence_stale": sum(
+            item["status"].get("evidence_binding", "not_applicable")
+            == "stale"
+            for item in items
+        ),
+        "evidence_not_applicable": sum(
+            item["status"].get("evidence_binding", "not_applicable")
+            == "not_applicable"
+            for item in items
+        ),
+        "approval_eligible": sum(
+            item["status"].get("approval_eligibility", "blocked")
+            == "eligible"
+            for item in items
+        ),
+        "approval_blocked": sum(
+            item["status"].get("approval_eligibility", "blocked")
+            == "blocked"
+            for item in items
+        ),
+        "released": sum(
+            item["status"].get("release", "not_released") == "released"
+            for item in items
+        ),
+        "not_released": sum(
+            item["status"].get("release", "not_released")
+            == "not_released"
+            for item in items
         ),
         "not_published": sum(
             item["status"]["publication"] == "not_published" for item in items

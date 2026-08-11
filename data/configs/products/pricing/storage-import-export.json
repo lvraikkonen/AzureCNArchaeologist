@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "product_key": "storage-import-export",
   "display_name": "Storage Import/Export",
   "slug": "storage-import-export",
@@ -21,7 +21,7 @@
       "url": "https://www.azure.cn/en-us/pricing/details/storage-import-export/"
     }
   },
-  "quality": {
-    "min_content_length": 100
+  "extraction": {
+    "semantic_strategy": "simple_static"
   }
 }

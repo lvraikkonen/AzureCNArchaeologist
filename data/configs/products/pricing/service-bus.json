@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "product_key": "service-bus",
   "display_name": "Service Bus",
   "slug": "service-bus",
@@ -21,28 +21,21 @@
     }
   },
   "extraction": {
-    "strategy": "simple_static",
-    "important_section_titles": [
-      "定价详细信息",
-      "定价详情",
-      "pricing details",
-      "常见问题",
-      "faq",
-      "frequently asked questions",
-      "支持和服务级别协议",
-      "Service Bus",
-      "service-bus"
-    ],
-    "estimated_size_mb": 0.2,
-    "priority_sections": [
-      "pricing-tables",
-      "banner",
-      "description",
-      "faq"
-    ],
-    "enable_region_processing": false
-  },
-  "quality": {
-    "min_content_length": 50
+    "semantic_strategy": "simple_static",
+    "page_global_content": {
+      "source_boundary": "sole_static_formal_selector_before_common_sections",
+      "expected_by_language": {
+        "zh-cn": {
+          "fragment_count": 1,
+          "source_html_sha256": "95f29033d0c710e71260fdc926f96c885c124dabb16672939a5a832fd7b9ede5",
+          "wire_html_sha256": "9d9cce97d44e236e58d7461aa4c5425f061afabcdfbcacab8c65bae7ae725374"
+        },
+        "en-us": {
+          "fragment_count": 1,
+          "source_html_sha256": "8f05d669c13e2daa02d968b50dcf5ec31f6f342f2c9e1d8f67131682637488ea",
+          "wire_html_sha256": "aa02090d85e9bac31e7c23e3f7d2863c2e6d39db78d7443f2d80d28f5b3e2cca"
+        }
+      }
+    }
   }
 }

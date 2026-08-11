@@ -1,11 +1,10 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "product_key": "data-transfer",
   "display_name": "Data Transfer",
   "slug": "data-transfer",
   "page_model": "FlexibleContentPage",
-  "capability_status": "known_unsupported",
-  "unsupported_reason": "not_yet_qualified_for_extraction",
+  "capability_status": "supported",
   "catalog_categories": [
     "networking"
   ],
@@ -21,7 +20,7 @@
       "url": "https://www.azure.cn/en-us/pricing/details/data-transfer/"
     }
   },
-  "quality": {
-    "min_content_length": 100
+  "extraction": {
+    "semantic_strategy": "simple_static"
   }
 }

@@ -1,11 +1,10 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "product_key": "cdn",
   "display_name": "Content Delivery Network",
   "slug": "cdn",
   "page_model": "FlexibleContentPage",
-  "capability_status": "known_unsupported",
-  "unsupported_reason": "not_yet_qualified_for_extraction",
+  "capability_status": "supported",
   "catalog_categories": [
     "networking"
   ],
@@ -21,7 +20,22 @@
       "url": "https://www.azure.cn/en-us/pricing/details/cdn/"
     }
   },
-  "quality": {
-    "min_content_length": 100
+  "extraction": {
+    "semantic_strategy": "simple_static",
+    "page_global_content": {
+      "source_boundary": "sole_static_formal_selector_before_common_sections",
+      "expected_by_language": {
+        "zh-cn": {
+          "fragment_count": 1,
+          "source_html_sha256": "3bb280f8f6794fc4d4ca42c5cb6d68b59943f68fe1b67b5f5e783019dd58bf88",
+          "wire_html_sha256": "3b5d35bdc0ece4b2c453a3773dcc235b7a47c3e1a8a7b066834819aaa7fb1c93"
+        },
+        "en-us": {
+          "fragment_count": 1,
+          "source_html_sha256": "07e33ca0ffdf358dd41d23175a71f7a28929942c43742488d87db2c8f5ef569b",
+          "wire_html_sha256": "54777199140e606b652c68fd0fda3351a30de6a0de6737cfa1274a5ebca671be"
+        }
+      }
+    }
   }
 }
