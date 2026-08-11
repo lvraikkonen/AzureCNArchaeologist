@@ -116,7 +116,19 @@ def build_planning_baseline(root: str | Path = ".") -> dict[str, Any]:
 
     root = Path(root).resolve()
     plan = PipelinePlanner(root).plan(language="both")
-    predecessor = ValidationContextRegistry(root).effective_planning_baseline()
+    predecessor_path = root / P2_PLANNING_BASELINE_SPEC.relative_path
+    predecessor_authority = json.loads(
+        predecessor_path.read_text(encoding="utf-8")
+    )
+    predecessor_identity = {
+        "id": predecessor_authority["baseline_id"],
+        "schema_version": predecessor_authority["schema_version"],
+        "path": P2_PLANNING_BASELINE_SPEC.relative_path,
+        "sha256": sha256_file(predecessor_path),
+    }
+    predecessor = ValidationContextRegistry(
+        root
+    ).planning_baseline_for_identity(predecessor_identity)
     predecessor_by_id = {item["item_id"]: item for item in predecessor["items"]}
     current_ids = [item.item_id for item in plan.items]
     if len(current_ids) != 434 or len(set(current_ids)) != 434:
@@ -203,22 +215,13 @@ def build_planning_baseline(root: str | Path = ".") -> dict[str, Any]:
             f"Current plan accounting differs: {summary}"
         )
 
-    predecessor_path = root / P2_PLANNING_BASELINE_SPEC.relative_path
-    predecessor_authority = json.loads(
-        predecessor_path.read_text(encoding="utf-8")
-    )
     document = {
         "schema_version": "2.0",
         "baseline_id": BASELINE_ID,
         "predecessor": {
             "accepted_version": "0.4.1",
             "accepted_tag": "v0.4.1",
-            "planning_baseline": {
-                "id": predecessor_authority["baseline_id"],
-                "schema_version": predecessor_authority["schema_version"],
-                "path": P2_PLANNING_BASELINE_SPEC.relative_path,
-                "sha256": sha256_file(predecessor_path),
-            },
+            "planning_baseline": predecessor_identity,
             "accepted_batch_id": "20260809T030936Z-ce23e678",
             "accepted_batch_report": _artifact(root, ACCEPTED_BATCH_REPORT),
             "qualification_report": qualification_artifact,

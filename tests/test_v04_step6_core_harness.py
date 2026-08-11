@@ -16,20 +16,22 @@ from src.regression.core import (
     CoreRegressionError,
     build_baseline_documents,
     json_sha256,
+    load_fixture_manifest,
     promote_baseline_candidate,
     read_json,
     render_json,
     verify_baseline,
     verify_fixture_manifest,
 )
+from src.pipeline.state_store import ManifestValidationError
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CORE_BASELINE_BATCH_ID = "20260805T094417Z-d1b25bff"
 
 
-def test_core_fixture_manifest_is_current_and_closed_world() -> None:
-    manifest = verify_fixture_manifest(ROOT)
+def test_accepted_v04_core_tree_is_immutable_and_closed_world() -> None:
+    manifest = load_fixture_manifest(ROOT)
 
     assert manifest["matrix_id"] == CORE_GROUP
     assert manifest["expected_item_ids"] == list(CORE_ITEM_IDS)
@@ -57,20 +59,23 @@ def test_core_fixture_manifest_is_current_and_closed_world() -> None:
         for item in icp_items
     )
 
+    rows = [
+        f"{path.relative_to(ROOT / 'tests/fixtures/v0.4/core').as_posix()}\0"
+        f"{hashlib.sha256(path.read_bytes()).hexdigest()}"
+        for path in sorted((ROOT / "tests/fixtures/v0.4/core").rglob("*"))
+        if path.is_file()
+    ]
+    assert len(rows) == 18
+    assert hashlib.sha256("\n".join(rows).encode()).hexdigest() == (
+        "6ce95c85a07ccd2e6463aa418471340d721be58234b4e6fa27f56725d3908ddf"
+    )
 
-def test_core_planner_returns_exact_group_plan() -> None:
-    plan = CorePlanner(ROOT).plan(scope="group", group=CORE_GROUP, language="both")
 
-    assert plan.scope == {"kind": "group", "group": CORE_GROUP}
-    assert plan.languages == ("zh-cn", "en-us")
-    assert tuple(item.item_id for item in plan.items) == CORE_ITEM_IDS
-    assert plan.summary == {
-        "total": 8,
-        "runnable": 8,
-        "skipped": 0,
-        "known_unsupported": 0,
-        "source_unavailable": 0,
-    }
+def test_historical_v04_core_planner_fails_closed_on_successor_inputs() -> None:
+    with pytest.raises(CoreRegressionError, match="fixture manifest drifted"):
+        CorePlanner(ROOT).plan(
+            scope="group", group=CORE_GROUP, language="both"
+        )
 
 
 @pytest.mark.parametrize(
@@ -165,7 +170,7 @@ def test_candidate_schema_is_closed_world() -> None:
 
 
 def test_committed_core_baselines_are_complete_and_self_consistent() -> None:
-    manifest = verify_baseline(ROOT)
+    manifest = verify_baseline(ROOT, verify_current_inputs=False)
 
     assert manifest["source_batch_id"] == CORE_BASELINE_BATCH_ID
     assert [item["item_id"] for item in manifest["items"]] == list(CORE_ITEM_IDS)
@@ -186,23 +191,21 @@ def test_committed_core_baselines_are_complete_and_self_consistent() -> None:
     )
 
 
-def test_core_baseline_batch_rebuilds_committed_baseline_documents() -> None:
+def test_historical_core_batch_rejects_successor_input_substitution() -> None:
     run_dir = ROOT / "runs" / CORE_BASELINE_BATCH_ID
     if not run_dir.is_dir():
         pytest.skip(f"Core baseline batch is not present locally: {CORE_BASELINE_BATCH_ID}")
 
-    expected = {
-        path.relative_to(ROOT / BASELINE_ROOT).as_posix(): read_json(path)
-        for path in sorted((ROOT / BASELINE_ROOT).rglob("*.json"))
-    }
-    actual = build_baseline_documents(
-        ROOT,
-        runs_dir=Path("runs"),
-        batch_id=CORE_BASELINE_BATCH_ID,
-        reason="establish-v0.4-step6-core-baseline",
-    )
-
-    assert actual == expected
+    with pytest.raises(
+        ManifestValidationError,
+        match="Frozen soft-category input SHA-256 drifted",
+    ):
+        build_baseline_documents(
+            ROOT,
+            runs_dir=Path("runs"),
+            batch_id=CORE_BASELINE_BATCH_ID,
+            reason="establish-v0.4-step6-core-baseline",
+        )
 
 
 def test_service_bus_baseline_declares_sampling_not_applicable() -> None:

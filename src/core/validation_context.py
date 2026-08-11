@@ -1,4 +1,4 @@
-"""Frozen v0.4 planning and validation context identities.
+"""Versioned planning and validation context identities.
 
 New batches bind the exact baseline/profile/map bytes that governed planning.
 Historical replay verifies those frozen references instead of silently loading
@@ -48,6 +48,12 @@ P2_PLANNING_BASELINE_SPEC = _ArtifactSpec(
     "baseline_id",
     "data/baselines/v0.4/p2-product-definition-identity-overlay.json",
     "schemas/planning-baseline-identity-overlay-1.0.schema.json",
+)
+V05_PLANNING_BASELINE_SPEC = _ArtifactSpec(
+    "planning_baseline",
+    "baseline_id",
+    "data/baselines/v0.5/planning-baseline.json",
+    "schemas/planning-baseline-manifest-2.0.schema.json",
 )
 P1_VALIDATION_PROFILE_SPEC = _ArtifactSpec(
     "validation_profile",
@@ -113,6 +119,7 @@ CONTEXT_ARTIFACT_SPECS = (
 ARTIFACT_SPECS = (
     P1_PLANNING_BASELINE_SPEC,
     P2_PLANNING_BASELINE_SPEC,
+    V05_PLANNING_BASELINE_SPEC,
     P1_VALIDATION_PROFILE_SPEC,
     P2_VALIDATION_PROFILE_SPEC,
     P3_VALIDATION_PROFILE_SPEC,
@@ -122,7 +129,7 @@ ARTIFACT_SPECS = (
     *NON_PROFILE_CONTEXT_ARTIFACT_SPECS,
 )
 SPECS_BY_KEY = {spec.key: spec for spec in CONTEXT_ARTIFACT_SPECS}
-SPECS_BY_KEY["planning_baseline"] = P2_PLANNING_BASELINE_SPEC
+SPECS_BY_KEY["planning_baseline"] = V05_PLANNING_BASELINE_SPEC
 SPECS_BY_KEY["content_sampling_profile"] = CONTENT_SAMPLING_PROFILE_SPEC
 SPECS_BY_KEY["finding_code_policy"] = FINDING_CODE_POLICY_SPEC
 
@@ -135,6 +142,11 @@ P2_PLANNING_IDENTITY = (
     "v0.4-p2-product-definition-identity-overlay",
     "1.0",
     P2_PLANNING_BASELINE_SPEC.relative_path,
+)
+V05_PLANNING_IDENTITY = (
+    "v0.5.1-planning-baseline",
+    "2.0",
+    V05_PLANNING_BASELINE_SPEC.relative_path,
 )
 P1_VALIDATION_PROFILE_IDENTITY = (
     "v0.4-validation-p1",
@@ -236,6 +248,12 @@ P2_AMENDED_ITEM_IDS = (
     "zh-cn/cloud-services",
     "zh-cn/service-bus",
 )
+V05_CHANGED_ITEM_IDS = (
+    "en-us/cdn",
+    "en-us/data-transfer",
+    "zh-cn/cdn",
+    "zh-cn/data-transfer",
+)
 
 
 class ValidationContextRegistry:
@@ -255,13 +273,13 @@ class ValidationContextRegistry:
     ) -> dict[str, Any]:
         """Freeze the active context, or an explicitly requested profile.
 
-        Historical P1/P2 replay remains available by explicit selector even
-        after the active default advances to P3.
+        Historical Planning P1/P2 and Validation P1/P2/P3 replay remain
+        available by explicit identity after the active defaults advance.
         """
 
-        baseline_identity = self._identity(P2_PLANNING_BASELINE_SPEC)
+        baseline_identity = self._identity(V05_PLANNING_BASELINE_SPEC)
         baseline = self._effective_planning_baseline(
-            P2_PLANNING_BASELINE_SPEC
+            V05_PLANNING_BASELINE_SPEC
         )
         validation_profile_spec = self._validation_profile_spec_for_id(
             validation_profile_id
@@ -284,7 +302,9 @@ class ValidationContextRegistry:
         return {
             "planning": {
                 "baseline": baseline_identity,
-                "baseline_accounting": dict(baseline["accounting"]),
+                "baseline_accounting": self._batch_planning_accounting(
+                    baseline
+                ),
             },
             "validation_context": identities,
         }
@@ -329,13 +349,15 @@ class ValidationContextRegistry:
                 P3_SUCCESSOR_VALIDATION_PROFILE_SPEC,
             ):
                 self._verify_p3_family_profile(document)
-        if dict(planning.get("baseline_accounting", {})) != baseline["accounting"]:
+        if dict(planning.get("baseline_accounting", {})) != (
+            self._batch_planning_accounting(baseline)
+        ):
             raise ValidationContextError("Frozen baseline accounting does not match its artifact")
 
     def document(self, key: str) -> dict[str, Any]:
         if key == "planning_baseline":
             return self._effective_planning_baseline(
-                P2_PLANNING_BASELINE_SPEC
+                V05_PLANNING_BASELINE_SPEC
             )
         if key not in SPECS_BY_KEY:
             raise ValidationContextError(f"Unknown validation context artifact: {key}")
@@ -357,6 +379,18 @@ class ValidationContextRegistry:
         ):
             self._verify_p3_family_profile(value)
         return copy.deepcopy(value)
+
+    def planning_baseline_for_identity(
+        self,
+        identity: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        """Resolve one historical or active Planning authority explicitly."""
+
+        spec = self._planning_spec_for_identity(identity)
+        value = self._verify_identity(spec, identity)
+        return copy.deepcopy(
+            self._effective_planning_baseline(spec, document=value)
+        )
 
     def content_sampling_profile_for(
         self,
@@ -424,9 +458,9 @@ class ValidationContextRegistry:
         }
 
     def effective_planning_baseline(self) -> dict[str, Any]:
-        """Return the current approved baseline after applying its overlay."""
+        """Return the current approved Planning Baseline authority."""
         return self._effective_planning_baseline(
-            P2_PLANNING_BASELINE_SPEC
+            V05_PLANNING_BASELINE_SPEC
         )
 
     @property
@@ -462,12 +496,12 @@ class ValidationContextRegistry:
             expected_ids = {
                 item["item_id"]
                 for item in baseline["items"]
-                if item["identity"]["language"] in selected_languages
+                if item["language"] in selected_languages
             }
             for item_id in sorted(expected_ids - current_ids):
                 errors.append(f"{item_id}: missing from current plan")
         for item_id in sorted(current_ids - baseline_ids):
-            errors.append(f"{item_id}: absent from v0.4 Planning Baseline")
+            errors.append(f"{item_id}: absent from v0.5 Planning Baseline")
         for item in plan.items:
             frozen = indexed.get(item.item_id)
             if frozen is None:
@@ -477,7 +511,7 @@ class ValidationContextRegistry:
                 if item.runnable
                 else str(item.skip_reason["code"]).lower()
             )
-            expected_state = frozen["v03_state"]
+            expected_state = frozen["planned_state"]
             if current_state != expected_state:
                 errors.append(
                     f"{item.item_id}: baseline={expected_state}, current={current_state}"
@@ -487,36 +521,6 @@ class ValidationContextRegistry:
                     f"{item.item_id}: strategy baseline={frozen['semantic_strategy']}, "
                     f"current={item.strategy}"
                 )
-            current_source = (
-                {
-                    "path": item.source_path,
-                    "sha256": item.source_sha256,
-                }
-                if item.source_path is not None and item.source_sha256 is not None
-                else None
-            )
-            current_normalized = (
-                {
-                    "path": item.normalized_path,
-                    "sha256": item.normalized_sha256,
-                }
-                if (
-                    frozen["normalized_input"] is not None
-                    and item.normalized_sha256 is not None
-                )
-                else None
-            )
-            current_definition = {
-                "path": item.config_path,
-                "sha256": item.config_sha256,
-            }
-            for label, current, expected in (
-                ("source", current_source, frozen["source"]),
-                ("normalized input", current_normalized, frozen["normalized_input"]),
-                ("Product Definition", current_definition, frozen["product_definition"]),
-            ):
-                if current != expected:
-                    errors.append(f"{item.item_id}: {label} identity drifted")
             if (
                 item.product_key != frozen["product_key"]
                 or item.resource_kind != frozen["resource_kind"]
@@ -524,9 +528,26 @@ class ValidationContextRegistry:
                 errors.append(f"{item.item_id}: resource identity drifted")
         if errors:
             raise ValidationContextError(
-                "Plan differs from the reviewed v0.4 Planning Baseline:\n- "
+                "Plan differs from the reviewed v0.5 Planning Baseline:\n- "
                 + "\n- ".join(errors)
             )
+
+    @staticmethod
+    def _batch_planning_accounting(
+        baseline: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        """Project v0.5 accounting into the existing Manifest 2.0 shape."""
+
+        if baseline.get("schema_version") == "2.0":
+            runnable = int(baseline["summary"]["runnable"])
+            return {
+                "denominator": runnable,
+                "retained_runnable": runnable,
+                "reviewed_non_runnable": 0,
+                "accounted": runnable,
+                "coverage": f"{runnable}/{runnable}",
+            }
+        return dict(baseline["accounting"])
 
     def capability_delta_proposals(self, plan: Any) -> list[dict[str, Any]]:
         proposals: list[dict[str, Any]] = []
@@ -604,6 +625,8 @@ class ValidationContextRegistry:
             return P1_PLANNING_BASELINE_SPEC
         if discriminator == P2_PLANNING_IDENTITY:
             return P2_PLANNING_BASELINE_SPEC
+        if discriminator == V05_PLANNING_IDENTITY:
+            return V05_PLANNING_BASELINE_SPEC
         raise ValidationContextError(
             "Frozen planning_baseline identity is not in the closed-world registry"
         )
@@ -814,6 +837,9 @@ class ValidationContextRegistry:
         if spec == P1_PLANNING_BASELINE_SPEC:
             self._validate_baseline_semantics(raw)
             return raw
+        if spec == V05_PLANNING_BASELINE_SPEC:
+            self._validate_v05_baseline_semantics(raw)
+            return raw
         if spec != P2_PLANNING_BASELINE_SPEC:
             raise ValidationContextError(
                 "Unknown planning baseline authority"
@@ -970,6 +996,8 @@ class ValidationContextRegistry:
             )
         if spec == P1_PLANNING_BASELINE_SPEC:
             self._validate_baseline_semantics(value)
+        elif spec == V05_PLANNING_BASELINE_SPEC:
+            self._validate_v05_baseline_semantics(value)
         self._documents[cache_key] = (
             artifact_sha256,
             schema_sha256,
@@ -1043,3 +1071,76 @@ class ValidationContextRegistry:
             raise ValidationContextError(
                 f"Planning Baseline accounting mismatch: expected {expected}, found {accounting}"
             )
+
+    @staticmethod
+    def _validate_v05_baseline_semantics(
+        value: Mapping[str, Any],
+    ) -> None:
+        items = value["items"]
+        item_ids = [item["item_id"] for item in items]
+        if len(item_ids) != len(set(item_ids)):
+            raise ValidationContextError(
+                "v0.5 Planning Baseline contains duplicate item_id values"
+            )
+        counts = {
+            "total": len(items),
+            "runnable": sum(
+                item["planned_state"] == "runnable" for item in items
+            ),
+            "known_unsupported": sum(
+                item["planned_state"] == "known_unsupported"
+                for item in items
+            ),
+            "source_unavailable": sum(
+                item["planned_state"] == "source_unavailable"
+                for item in items
+            ),
+        }
+        counts["skipped"] = (
+            counts["known_unsupported"] + counts["source_unavailable"]
+        )
+        expected_summary = {
+            "total": 434,
+            "runnable": 383,
+            "skipped": 51,
+            "known_unsupported": 50,
+            "source_unavailable": 1,
+        }
+        if counts != expected_summary or value["summary"] != expected_summary:
+            raise ValidationContextError(
+                "v0.5 Planning Baseline summary does not match item states"
+            )
+        if value["accounting"] != {
+            "reviewed_items": 434,
+            "coverage": "434/434",
+            "runnable": 383,
+            "skipped": 51,
+        }:
+            raise ValidationContextError(
+                "v0.5 Planning Baseline closed-world accounting drifted"
+            )
+
+        changes = value["changes"]
+        changed_ids = tuple(change["item_id"] for change in changes)
+        if changed_ids != V05_CHANGED_ITEM_IDS:
+            raise ValidationContextError(
+                "v0.5 Planning Baseline changes are not the reviewed four-item set"
+            )
+        changes_by_id = {change["item_id"]: change for change in changes}
+        for item in items:
+            changed = item["predecessor_state"] != item["planned_state"]
+            change = changes_by_id.get(item["item_id"])
+            if changed:
+                if (
+                    change is None
+                    or item["change_id"] != change["change_id"]
+                    or item["predecessor_state"] != "known_unsupported"
+                    or item["planned_state"] != "runnable"
+                ):
+                    raise ValidationContextError(
+                        f"v0.5 Planning Baseline delta binding drifted: {item['item_id']}"
+                    )
+            elif item["change_id"] is not None or change is not None:
+                raise ValidationContextError(
+                    f"v0.5 Planning Baseline unchanged item has delta: {item['item_id']}"
+                )

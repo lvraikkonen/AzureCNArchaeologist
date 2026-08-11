@@ -16,8 +16,9 @@ from src.core.product_catalog import sha256_file
 from src.pipeline.provenance import ProvenanceProvider
 from src.pipeline.state_store import StateStore
 from src.regression.core import (
-    CORE_GROUP,
     CORE_ITEM_IDS,
+    V04_CORE_SPEC,
+    CoreSpecification,
     CoreRegressionError,
     json_sha256,
     read_json,
@@ -328,6 +329,7 @@ def load_core_run_snapshot(
     *,
     runs_dir: Path,
     batch_id: str,
+    specification: CoreSpecification = V04_CORE_SPEC,
 ) -> dict[str, Any]:
     root = root.resolve()
     runs_dir = runs_dir.resolve() if runs_dir.is_absolute() else root / runs_dir
@@ -340,7 +342,10 @@ def load_core_run_snapshot(
 
     if manifest["status"] != "completed":
         raise CoreRegressionError(f"Core determinism run is not completed: {batch_id}")
-    if input_manifest["scope"] != {"kind": "group", "group": CORE_GROUP}:
+    if input_manifest["scope"] != {
+        "kind": "group",
+        "group": specification.group,
+    }:
         raise CoreRegressionError(f"Batch is not a Core batch: {batch_id}")
     if list(input_manifest["languages"]) != ["zh-cn", "en-us"]:
         raise CoreRegressionError(f"Batch is not bilingual: {batch_id}")
@@ -486,7 +491,12 @@ def load_core_run_snapshot(
     }
 
 
-def _compare_snapshots(left: Mapping[str, Any], right: Mapping[str, Any]) -> dict[str, Any]:
+def _compare_snapshots(
+    left: Mapping[str, Any],
+    right: Mapping[str, Any],
+    *,
+    specification: CoreSpecification = V04_CORE_SPEC,
+) -> dict[str, Any]:
     if left["batch_id"] == right["batch_id"]:
         raise CoreRegressionError("Core determinism comparison requires two distinct batch IDs")
     for key in ("git_commit", "worktree_fingerprint", "immutable_fingerprint"):
@@ -550,13 +560,26 @@ def build_determinism_record(
     left_batch_id: str,
     right_batch_id: str,
     require_current_clean_context: bool = True,
+    specification: CoreSpecification = V04_CORE_SPEC,
 ) -> dict[str, Any]:
     root = root.resolve()
-    left = load_core_run_snapshot(root, runs_dir=runs_dir, batch_id=left_batch_id)
-    right = load_core_run_snapshot(root, runs_dir=runs_dir, batch_id=right_batch_id)
+    left = load_core_run_snapshot(
+        root,
+        runs_dir=runs_dir,
+        batch_id=left_batch_id,
+        specification=specification,
+    )
+    right = load_core_run_snapshot(
+        root,
+        runs_dir=runs_dir,
+        batch_id=right_batch_id,
+        specification=specification,
+    )
     if require_current_clean_context:
         _verify_current_clean_context(root, left)
-    comparison = _compare_snapshots(left, right)
+    comparison = _compare_snapshots(
+        left, right, specification=specification
+    )
     record = {
         "schema_version": "1.0",
         "record_type": COMPARATOR_ID,
@@ -615,12 +638,14 @@ def create_determinism_record(
     left_batch_id: str,
     right_batch_id: str,
     output_path: Path,
+    specification: CoreSpecification = V04_CORE_SPEC,
 ) -> dict[str, Any]:
     record = build_determinism_record(
         root,
         runs_dir=runs_dir,
         left_batch_id=left_batch_id,
         right_batch_id=right_batch_id,
+        specification=specification,
     )
     write_determinism_record(output_path, record)
     return record
@@ -631,6 +656,7 @@ def verify_determinism_record(
     *,
     runs_dir: Path,
     record_path: Path,
+    specification: CoreSpecification = V04_CORE_SPEC,
 ) -> dict[str, Any]:
     record = read_json(record_path)
     _validate_schema(root, DETERMINISM_RECORD_SCHEMA, record)
@@ -645,6 +671,7 @@ def verify_determinism_record(
         left_batch_id=record["left"]["batch_id"],
         right_batch_id=record["right"]["batch_id"],
         require_current_clean_context=False,
+        specification=specification,
     )
     if rebuilt != record:
         raise CoreRegressionError("Determinism record no longer matches its run evidence")

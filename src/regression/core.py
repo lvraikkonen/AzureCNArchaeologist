@@ -14,6 +14,7 @@ import difflib
 import hashlib
 import json
 import shutil
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
@@ -31,11 +32,81 @@ from src.pipeline.planner import PipelinePlanner
 from src.pipeline.state_store import StateStore
 
 
-CORE_GROUP = "v0.4-core-strategy-matrix"
-FIXTURE_MANIFEST_PATH = Path("tests/fixtures/v0.4/core/fixture-manifest.json")
-BASELINE_ROOT = Path("tests/fixtures/v0.4/core/baselines")
-BASELINE_MANIFEST_PATH = BASELINE_ROOT / "baseline-manifest.json"
-CANDIDATE_ROOT = Path("output/v0.4-core-baseline-candidates")
+
+@dataclass(frozen=True)
+class CoreSpecification:
+    group: str
+    fixture_manifest_path: Path
+    baseline_root: Path
+    candidate_root: Path
+    fixture_manifest_id: str
+    baseline_id: str
+    description: str
+    fixture_schema: str
+    baseline_manifest_schema: str
+    baseline_candidate_schema: str
+    determinism_record_path: Path
+    required_planning_baseline_id: str | None = None
+    predecessor_fixture_path: Path | None = None
+    predecessor_baseline_path: Path | None = None
+
+    @property
+    def baseline_manifest_path(self) -> Path:
+        return self.baseline_root / "baseline-manifest.json"
+
+
+V04_CORE_SPEC = CoreSpecification(
+    group="v0.4-core-strategy-matrix",
+    fixture_manifest_path=Path(
+        "tests/fixtures/v0.4/core/fixture-manifest.json"
+    ),
+    baseline_root=Path("tests/fixtures/v0.4/core/baselines"),
+    candidate_root=Path("output/v0.4-core-baseline-candidates"),
+    fixture_manifest_id="v0.4-step6-core-fixture",
+    baseline_id="v0.4-step6-core-baseline",
+    description="Step 6 Slice A bilingual Core matrix fixture.",
+    fixture_schema="schemas/step6-core-fixture-manifest-1.0.schema.json",
+    baseline_manifest_schema=(
+        "schemas/step6-core-baseline-manifest-1.0.schema.json"
+    ),
+    baseline_candidate_schema=(
+        "schemas/step6-core-baseline-candidate-1.0.schema.json"
+    ),
+    determinism_record_path=Path(
+        "reports/v0.4/core-determinism-comparison.json"
+    ),
+)
+V05_CORE_SPEC = CoreSpecification(
+    group="v0.5-core-strategy-matrix",
+    fixture_manifest_path=Path(
+        "tests/fixtures/v0.5/core/fixture-manifest.json"
+    ),
+    baseline_root=Path("tests/fixtures/v0.5/core/baselines"),
+    candidate_root=Path("output/v0.5-core-baseline-candidates"),
+    fixture_manifest_id="v0.5.1-core-fixture",
+    baseline_id="v0.5.1-core-baseline",
+    description="v0.5.1 bilingual four-family Core successor fixture.",
+    fixture_schema="schemas/v05-core-fixture-manifest-1.0.schema.json",
+    baseline_manifest_schema=(
+        "schemas/v05-core-baseline-manifest-1.0.schema.json"
+    ),
+    baseline_candidate_schema=(
+        "schemas/v05-core-baseline-candidate-1.0.schema.json"
+    ),
+    determinism_record_path=Path(
+        "reports/v0.5.1/core-determinism-comparison.json"
+    ),
+    required_planning_baseline_id="v0.5.1-planning-baseline",
+    predecessor_fixture_path=V04_CORE_SPEC.fixture_manifest_path,
+    predecessor_baseline_path=V04_CORE_SPEC.baseline_manifest_path,
+)
+
+# Historical public constants stay stable for v0.4 callers.
+CORE_GROUP = V04_CORE_SPEC.group
+FIXTURE_MANIFEST_PATH = V04_CORE_SPEC.fixture_manifest_path
+BASELINE_ROOT = V04_CORE_SPEC.baseline_root
+BASELINE_MANIFEST_PATH = V04_CORE_SPEC.baseline_manifest_path
+CANDIDATE_ROOT = V04_CORE_SPEC.candidate_root
 CORE_ITEM_IDS = (
     "zh-cn/api-management",
     "en-us/api-management",
@@ -219,7 +290,137 @@ def _item_fixture(root: Path, item: BatchItem) -> dict[str, Any]:
     return value
 
 
-def build_fixture_manifest(root: Path) -> dict[str, Any]:
+def _artifact_identity(
+    root: Path,
+    relative_path: Path,
+    *,
+    identifier_field: str,
+) -> dict[str, str]:
+    document = read_json(root / relative_path)
+    return {
+        "id": str(document[identifier_field]),
+        "schema_version": str(document["schema_version"]),
+        "path": relative_path.as_posix(),
+        "sha256": sha256_file(root / relative_path),
+    }
+
+
+def _reviewed_successor_changes(
+    root: Path,
+    actual: Mapping[str, Any],
+    specification: CoreSpecification,
+) -> list[dict[str, Any]]:
+    predecessor_path = specification.predecessor_fixture_path
+    if predecessor_path is None:
+        return []
+    predecessor = read_json(root / predecessor_path)
+    predecessor_items = {
+        item["item_id"]: item for item in predecessor["items"]
+    }
+    actual_items = {item["item_id"]: item for item in actual["items"]}
+    changes = [
+        {
+            "change_id": "V051-CORE-PLANNING-SUCCESSOR",
+            "kind": "planning_baseline",
+            "item_ids": list(CORE_ITEM_IDS),
+            "prior": predecessor["frozen_inputs"]["planning_baseline"],
+            "successor": actual["frozen_inputs"]["planning_baseline"],
+            "rationale": (
+                "Core now binds the reviewed v0.5 Planning Baseline successor."
+            ),
+        },
+        {
+            "change_id": "V051-CORE-SOFT-CATEGORY",
+            "kind": "soft_category",
+            "item_ids": [
+                "zh-cn/cloud-services",
+                "en-us/cloud-services",
+            ],
+            "prior": predecessor["frozen_inputs"]["soft_category"],
+            "successor": actual["frozen_inputs"]["soft_category"],
+            "rationale": (
+                "The reviewed upstream repair removes duplicate exact mappings "
+                "while retaining the required Databricks table rules."
+            ),
+        },
+    ]
+    for language in ("en-us", "zh-cn"):
+        item_id = f"{language}/cloud-services"
+        prior = predecessor_items[item_id]
+        successor = actual_items[item_id]
+        if prior["source"]["path"] != successor["source"]["path"]:
+            raise CoreRegressionError(
+                f"Cloud Services successor changed source path: {item_id}"
+            )
+        if prior["normalized_input"]["path"] != successor[
+            "normalized_input"
+        ]["path"]:
+            raise CoreRegressionError(
+                f"Cloud Services successor changed normalized path: {item_id}"
+            )
+        if successor["source"]["sha256"] != successor[
+            "normalized_input"
+        ]["sha256"]:
+            raise CoreRegressionError(
+                f"Cloud Services source/normalized bytes differ: {item_id}"
+            )
+        changes.append(
+            {
+                "change_id": f"V051-CORE-CLOUD-SERVICES-{language.upper()}",
+                "kind": "source_snapshot",
+                "item_ids": [item_id],
+                "prior": {
+                    "path": prior["source"]["path"],
+                    "sha256": prior["source"]["sha256"],
+                },
+                "successor": {
+                    "path": successor["source"]["path"],
+                    "sha256": successor["source"]["sha256"],
+                },
+                "rationale": (
+                    "The current reviewed Cloud Services source snapshot replaces "
+                    "the accepted v0.4 fixture bytes; normalized input remains a "
+                    "byte-identical copy."
+                ),
+            }
+        )
+
+    normalized = copy.deepcopy(actual)
+    normalized["manifest_id"] = predecessor["manifest_id"]
+    normalized["matrix_id"] = predecessor["matrix_id"]
+    normalized["description"] = predecessor["description"]
+    normalized["frozen_inputs"]["planning_baseline"] = copy.deepcopy(
+        predecessor["frozen_inputs"]["planning_baseline"]
+    )
+    normalized["frozen_inputs"]["soft_category"] = copy.deepcopy(
+        predecessor["frozen_inputs"]["soft_category"]
+    )
+    normalized_by_id = {
+        item["item_id"]: item for item in normalized["items"]
+    }
+    for language in ("en-us", "zh-cn"):
+        item_id = f"{language}/cloud-services"
+        normalized_by_id[item_id]["source"] = copy.deepcopy(
+            predecessor_items[item_id]["source"]
+        )
+        normalized_by_id[item_id]["normalized_input"] = copy.deepcopy(
+            predecessor_items[item_id]["normalized_input"]
+        )
+    if normalized != predecessor:
+        raise CoreRegressionError(
+            "v0.5 Core fixture contains an unreviewed successor change"
+        )
+    if any(change["prior"] == change["successor"] for change in changes):
+        raise CoreRegressionError(
+            "v0.5 Core reviewed change does not change an identity"
+        )
+    return changes
+
+
+def build_fixture_manifest(
+    root: Path,
+    specification: CoreSpecification = V04_CORE_SPEC,
+) -> dict[str, Any]:
     global CURRENT_ROOT
     root = root.resolve()
     CURRENT_ROOT = root
@@ -227,11 +428,11 @@ def build_fixture_manifest(root: Path) -> dict[str, Any]:
     selected = _core_items_from_full_plan(full_plan)
     registry = ValidationContextRegistry(root)
     frozen = registry.freeze()
-    return {
+    manifest = {
         "schema_version": "1.0",
-        "manifest_id": "v0.4-step6-core-fixture",
-        "matrix_id": CORE_GROUP,
-        "description": "Step 6 Slice A bilingual Core matrix fixture.",
+        "manifest_id": specification.fixture_manifest_id,
+        "matrix_id": specification.group,
+        "description": specification.description,
         "languages": ["zh-cn", "en-us"],
         "expected_item_ids": list(CORE_ITEM_IDS),
         "items": [_item_fixture(root, item) for item in selected],
@@ -253,6 +454,23 @@ def build_fixture_manifest(root: Path) -> dict[str, Any]:
             "The reuse is a language-routing workaround, not English translation validation.",
         ],
     }
+    if specification.required_planning_baseline_id is not None:
+        actual_id = manifest["frozen_inputs"]["planning_baseline"]["id"]
+        if actual_id != specification.required_planning_baseline_id:
+            raise CoreRegressionError(
+                "v0.5 Core fixture requires the promoted v0.5 Planning Baseline"
+            )
+    if specification.predecessor_fixture_path is not None:
+        reviewed_changes = _reviewed_successor_changes(
+            root, manifest, specification
+        )
+        manifest["predecessor_fixture"] = _artifact_identity(
+            root,
+            specification.predecessor_fixture_path,
+            identifier_field="manifest_id",
+        )
+        manifest["reviewed_input_changes"] = reviewed_changes
+    return manifest
 
 
 def _identity_for_spec(root: Path, relative_path: str) -> dict[str, Any]:
@@ -272,22 +490,102 @@ def _identity_for_spec(root: Path, relative_path: str) -> dict[str, Any]:
     }
 
 
-def load_fixture_manifest(root: Path, fixture_path: Path | None = None) -> dict[str, Any]:
-    path = root / (fixture_path or FIXTURE_MANIFEST_PATH)
+def load_fixture_manifest(
+    root: Path,
+    fixture_path: Path | None = None,
+    specification: CoreSpecification = V04_CORE_SPEC,
+) -> dict[str, Any]:
+    path = root / (fixture_path or specification.fixture_manifest_path)
     if not path.is_file():
         raise CoreRegressionError(f"Core fixture manifest is missing: {path}")
     value = read_json(path)
-    _validate_schema(root, "schemas/step6-core-fixture-manifest-1.0.schema.json", value)
+    _validate_schema(root, specification.fixture_schema, value)
     return value
 
 
-def verify_fixture_manifest(root: Path, fixture_path: Path | None = None) -> dict[str, Any]:
+def verify_fixture_manifest(
+    root: Path,
+    fixture_path: Path | None = None,
+    specification: CoreSpecification = V04_CORE_SPEC,
+) -> dict[str, Any]:
     root = root.resolve()
-    expected = load_fixture_manifest(root, fixture_path)
-    actual = build_fixture_manifest(root)
+    expected = load_fixture_manifest(root, fixture_path, specification)
+    actual = build_fixture_manifest(root, specification)
     if expected != actual:
         raise CoreRegressionError("Core fixture manifest drifted from repository inputs")
     return expected
+
+
+def create_fixture_candidate(
+    root: Path,
+    *,
+    specification: CoreSpecification = V04_CORE_SPEC,
+) -> tuple[Path, dict[str, Any]]:
+    root = root.resolve()
+    manifest = build_fixture_manifest(root, specification)
+    _validate_schema(root, specification.fixture_schema, manifest)
+    output = (
+        root
+        / specification.candidate_root
+        / "fixture-manifest.candidate.json"
+    )
+    write_json(output, manifest)
+    predecessor_path = specification.predecessor_fixture_path
+    old = (
+        (root / predecessor_path).read_text(encoding="utf-8")
+        if predecessor_path is not None
+        else (
+            (root / specification.fixture_manifest_path).read_text(
+                encoding="utf-8"
+            )
+            if (root / specification.fixture_manifest_path).is_file()
+            else ""
+        )
+    )
+    diff = _unified_diff(
+        old,
+        render_json(manifest),
+        fromfile=(
+            predecessor_path.as_posix()
+            if predecessor_path is not None
+            else specification.fixture_manifest_path.as_posix()
+        ),
+        tofile=specification.fixture_manifest_path.as_posix(),
+    )
+    (output.parent / "fixture-manifest.diff").write_text(
+        diff, encoding="utf-8"
+    )
+    return output, manifest
+
+
+def promote_fixture_candidate(
+    root: Path,
+    *,
+    candidate_path: Path,
+    expected_sha256: str,
+    specification: CoreSpecification = V04_CORE_SPEC,
+) -> dict[str, Any]:
+    root = root.resolve()
+    candidate_path = candidate_path.resolve()
+    candidate = read_json(candidate_path)
+    _validate_schema(root, specification.fixture_schema, candidate)
+    if json_sha256(candidate) != expected_sha256:
+        raise CoreRegressionError("Fixture candidate SHA does not match expected SHA")
+    if candidate != build_fixture_manifest(root, specification):
+        raise CoreRegressionError(
+            "Fixture candidate no longer matches current repository inputs"
+        )
+    target = root / specification.fixture_manifest_path
+    rendered = render_json(candidate).encode("utf-8")
+    if target.exists():
+        if target.is_symlink() or not target.is_file():
+            raise CoreRegressionError("Core fixture target is not a regular file")
+        if target.read_bytes() != rendered:
+            raise CoreRegressionError("A different Core fixture already exists")
+        return candidate
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(rendered)
+    return candidate
 
 
 class CorePlanner:
@@ -296,33 +594,43 @@ class CorePlanner:
     def __init__(
         self,
         root: str | Path = ".",
-        fixture_path: str | Path = FIXTURE_MANIFEST_PATH,
+        fixture_path: str | Path | None = None,
+        specification: CoreSpecification = V04_CORE_SPEC,
     ) -> None:
         self.root = Path(root).resolve()
-        self.fixture_path = Path(fixture_path)
+        self.specification = specification
+        self.fixture_path = Path(
+            fixture_path or specification.fixture_manifest_path
+        )
         self._planner = PipelinePlanner(self.root)
 
     def plan(
         self,
         scope: str = "group",
         *,
-        group: str | None = CORE_GROUP,
+        group: str | None = None,
         language: str = "both",
     ) -> PipelinePlan:
-        if scope != "group" or group != CORE_GROUP:
+        group = group or self.specification.group
+        if scope != "group" or group != self.specification.group:
             raise CoreRegressionError(
-                f"CorePlanner only supports group={CORE_GROUP!r}"
+                "CorePlanner only supports "
+                f"group={self.specification.group!r}"
             )
         if language != "both":
             raise CoreRegressionError("CorePlanner requires language='both'")
-        fixture = verify_fixture_manifest(self.root, self.fixture_path)
+        fixture = verify_fixture_manifest(
+            self.root,
+            self.fixture_path,
+            self.specification,
+        )
         full_plan = self._planner.plan(language="both")
         by_id = {item.item_id: item for item in full_plan.items}
         items = tuple(by_id[item_id] for item_id in fixture["expected_item_ids"])
         if len(items) != len(CORE_ITEM_IDS) or not items:
             raise CoreRegressionError("CorePlanner selected an invalid item count")
         return PipelinePlan(
-            scope={"kind": "group", "group": CORE_GROUP},
+            scope={"kind": "group", "group": self.specification.group},
             languages=("zh-cn", "en-us"),
             items=items,
             frozen_inputs=full_plan.frozen_inputs,
@@ -334,14 +642,15 @@ def run_core_batch(
     *,
     runs_dir: Path,
     parallel_jobs: int,
+    specification: CoreSpecification = V04_CORE_SPEC,
 ) -> PipelineOutcome:
     coordinator = PipelineCoordinator(
         root,
         runs_dir,
-        planner=CorePlanner(root),
+        planner=CorePlanner(root, specification=specification),
     )
     return coordinator.run(
-        group=CORE_GROUP,
+        group=specification.group,
         language="both",
         parallel_jobs=parallel_jobs,
     )
@@ -479,11 +788,15 @@ def build_baseline_documents(
     runs_dir: Path,
     batch_id: str,
     reason: str,
+    specification: CoreSpecification = V04_CORE_SPEC,
 ) -> dict[str, dict[str, Any]]:
     root = root.resolve()
     run_dir, manifest, input_manifest = _load_run(root, runs_dir, batch_id)
-    fixture = verify_fixture_manifest(root)
-    if input_manifest["scope"] != {"kind": "group", "group": CORE_GROUP}:
+    fixture = verify_fixture_manifest(root, specification=specification)
+    if input_manifest["scope"] != {
+        "kind": "group",
+        "group": specification.group,
+    }:
         raise CoreRegressionError(f"Batch is not a Core batch: {batch_id}")
     if list(input_manifest["languages"]) != ["zh-cn", "en-us"]:
         raise CoreRegressionError(f"Batch is not bilingual: {batch_id}")
@@ -539,17 +852,25 @@ def build_baseline_documents(
 
     baseline_manifest = {
         "schema_version": "1.0",
-        "baseline_id": "v0.4-step6-core-baseline",
-        "matrix_id": CORE_GROUP,
+        "baseline_id": specification.baseline_id,
+        "matrix_id": specification.group,
         "source_batch_id": batch_id,
         "reason": reason,
         "generated_at": input_manifest["created_at"],
-        "fixture_manifest_sha256": sha256_file(root / FIXTURE_MANIFEST_PATH),
+        "fixture_manifest_sha256": sha256_file(
+            root / specification.fixture_manifest_path
+        ),
         "planning": copy.deepcopy(input_manifest["planning"]),
         "validation_context": copy.deepcopy(input_manifest["validation_context"]),
         "frozen_inputs": copy.deepcopy(fixture["frozen_inputs"]),
         "items": manifest_entries,
     }
+    if specification.predecessor_baseline_path is not None:
+        baseline_manifest["predecessor_baseline"] = _artifact_identity(
+            root,
+            specification.predecessor_baseline_path,
+            identifier_field="baseline_id",
+        )
     files["baseline-manifest.json"] = baseline_manifest
     return files
 
@@ -571,11 +892,19 @@ def create_baseline_candidate(
     runs_dir: Path,
     batch_id: str,
     reason: str,
-    candidate_root: Path = CANDIDATE_ROOT,
+    candidate_root: Path | None = None,
+    specification: CoreSpecification = V04_CORE_SPEC,
 ) -> dict[str, Any]:
     documents = build_baseline_documents(
-        root, runs_dir=runs_dir, batch_id=batch_id, reason=reason
+        root,
+        runs_dir=runs_dir,
+        batch_id=batch_id,
+        reason=reason,
+        specification=specification,
     )
+    candidate_root = Path(candidate_root or specification.candidate_root)
+    if not candidate_root.is_absolute():
+        candidate_root = root / candidate_root
     file_entries = []
     diff_parts = []
     proposed_root = candidate_root / f"{batch_id}-{json_sha256(documents['baseline-manifest.json'])[:12]}"
@@ -583,7 +912,7 @@ def create_baseline_candidate(
         shutil.rmtree(proposed_root)
     for relative_path, document in sorted(documents.items()):
         rendered = render_json(document)
-        target = root / BASELINE_ROOT / relative_path
+        target = root / specification.baseline_root / relative_path
         old = target.read_text(encoding="utf-8") if target.exists() else ""
         old_sha = hashlib.sha256(old.encode("utf-8")).hexdigest() if old else None
         new_sha = hashlib.sha256(rendered.encode("utf-8")).hexdigest()
@@ -610,11 +939,11 @@ def create_baseline_candidate(
     candidate = {
         "schema_version": "1.0",
         "candidate_id": proposed_root.name,
-        "baseline_id": "v0.4-step6-core-baseline",
+        "baseline_id": specification.baseline_id,
         "source_batch_id": batch_id,
         "reason": reason,
         "generated_at": documents["baseline-manifest.json"]["generated_at"],
-        "baseline_root": BASELINE_ROOT.as_posix(),
+        "baseline_root": specification.baseline_root.as_posix(),
         "files": file_entries,
         "candidate_sha256": "",
     }
@@ -623,7 +952,7 @@ def create_baseline_candidate(
     )
     _validate_schema(
         root,
-        "schemas/step6-core-baseline-candidate-1.0.schema.json",
+        specification.baseline_candidate_schema,
         candidate,
     )
     write_json(proposed_root / "candidate-manifest.json", candidate)
@@ -636,17 +965,20 @@ def promote_baseline_candidate(
     *,
     candidate_dir: Path,
     expected_sha256: str,
+    specification: CoreSpecification = V04_CORE_SPEC,
 ) -> dict[str, Any]:
     manifest_path = candidate_dir / "candidate-manifest.json"
     candidate = read_json(manifest_path)
-    _validate_schema(root, "schemas/step6-core-baseline-candidate-1.0.schema.json", candidate)
+    _validate_schema(root, specification.baseline_candidate_schema, candidate)
+    if candidate["baseline_id"] != specification.baseline_id:
+        raise CoreRegressionError("Candidate belongs to a different Core baseline")
     if candidate["candidate_sha256"] != expected_sha256:
         raise CoreRegressionError("Candidate SHA does not match expected SHA")
     proposed_root = candidate_dir / "proposed"
     for entry in candidate["files"]:
         relative_path = entry["path"]
         proposed = proposed_root / relative_path
-        target = root / BASELINE_ROOT / relative_path
+        target = root / specification.baseline_root / relative_path
         if proposed.is_symlink() or not proposed.is_file():
             raise CoreRegressionError(f"Missing proposed baseline file: {relative_path}")
         new_sha = hashlib.sha256(proposed.read_bytes()).hexdigest()
@@ -662,49 +994,67 @@ def promote_baseline_candidate(
     for entry in candidate["files"]:
         relative_path = entry["path"]
         proposed = proposed_root / relative_path
-        target = root / BASELINE_ROOT / relative_path
+        target = root / specification.baseline_root / relative_path
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(proposed.read_bytes())
     return candidate
 
 
-def verify_baseline(root: Path) -> dict[str, Any]:
-    fixture = verify_fixture_manifest(root)
-    manifest_path = root / BASELINE_MANIFEST_PATH
+def verify_baseline(
+    root: Path,
+    specification: CoreSpecification = V04_CORE_SPEC,
+    *,
+    verify_current_inputs: bool = True,
+) -> dict[str, Any]:
+    fixture = (
+        verify_fixture_manifest(root, specification=specification)
+        if verify_current_inputs
+        else load_fixture_manifest(root, specification=specification)
+    )
+    manifest_path = root / specification.baseline_manifest_path
     if not manifest_path.is_file():
         raise CoreRegressionError(f"Core baseline manifest is missing: {manifest_path}")
     manifest = read_json(manifest_path)
-    _validate_schema(root, "schemas/step6-core-baseline-manifest-1.0.schema.json", manifest)
+    _validate_schema(root, specification.baseline_manifest_schema, manifest)
     expected_ids = list(CORE_ITEM_IDS)
     if [item["item_id"] for item in manifest["items"]] != expected_ids:
         raise CoreRegressionError("Core baseline manifest item order drifted")
-    if manifest["fixture_manifest_sha256"] != sha256_file(root / FIXTURE_MANIFEST_PATH):
+    if manifest["fixture_manifest_sha256"] != sha256_file(
+        root / specification.fixture_manifest_path
+    ):
         raise CoreRegressionError("Core baseline is bound to a different fixture manifest")
     fixture_by_id = {item["item_id"]: item for item in fixture["items"]}
     for item in manifest["items"]:
         fixture_item = fixture_by_id[item["item_id"]]
         if item["source_sha256"] != fixture_item["source"]["sha256"]:
             raise CoreRegressionError(f"Baseline source hash drifted: {item['item_id']}")
-        payload_path = root / BASELINE_ROOT / item["payload_baseline"]
+        payload_path = root / specification.baseline_root / item[
+            "payload_baseline"
+        ]
         if payload_path.is_symlink() or not payload_path.is_file():
             raise CoreRegressionError(f"Baseline file is missing: {payload_path}")
         read_json(payload_path)
 
         for key in ("content_baseline",):
-            path = root / BASELINE_ROOT / item[key]
+            path = root / specification.baseline_root / item[key]
             if path.is_symlink() or not path.is_file():
                 raise CoreRegressionError(f"Baseline file is missing: {path}")
             read_json(path)
     return manifest
 
 
-def make_arg_parser() -> argparse.ArgumentParser:
+def make_arg_parser(
+    specification: CoreSpecification = V04_CORE_SPEC,
+) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Step 6 Core regression tooling")
     parser.add_argument("--root", default=".")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     subparsers.add_parser("verify-fixture")
     subparsers.add_parser("fixture-candidate")
+    fixture_promote = subparsers.add_parser("fixture-promote")
+    fixture_promote.add_argument("--candidate", required=True)
+    fixture_promote.add_argument("--expected-sha256", required=True)
 
     run = subparsers.add_parser("run")
     run.add_argument("--parallel-jobs", type=int, default=4)
@@ -725,13 +1075,13 @@ def make_arg_parser() -> argparse.ArgumentParser:
     compare.add_argument("--runs-dir", default="runs")
     compare.add_argument(
         "--output",
-        default="reports/v0.4/core-determinism-comparison.json",
+        default=specification.determinism_record_path.as_posix(),
     )
 
     verify = subparsers.add_parser("determinism-verify")
     verify.add_argument(
         "--record",
-        default="reports/v0.4/core-determinism-comparison.json",
+        default=specification.determinism_record_path.as_posix(),
     )
     verify.add_argument("--runs-dir", default="runs")
 
@@ -739,25 +1089,42 @@ def make_arg_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: Iterable[str] | None = None) -> int:
-    args = make_arg_parser().parse_args(list(argv) if argv is not None else None)
+def main(
+    argv: Iterable[str] | None = None,
+    *,
+    specification: CoreSpecification = V04_CORE_SPEC,
+) -> int:
+    args = make_arg_parser(specification).parse_args(
+        list(argv) if argv is not None else None
+    )
     root = Path(args.root).resolve()
     if args.command == "verify-fixture":
-        manifest = verify_fixture_manifest(root)
+        manifest = verify_fixture_manifest(root, specification=specification)
         print(f"fixture ok: {manifest['manifest_id']} items={len(manifest['items'])}")
         return 0
     if args.command == "fixture-candidate":
-        manifest = build_fixture_manifest(root)
-        output = root / CANDIDATE_ROOT / "fixture-manifest.candidate.json"
-        write_json(output, manifest)
+        output, manifest = create_fixture_candidate(
+            root, specification=specification
+        )
         print(f"fixture candidate: {output}")
-        print(f"sha256={json_sha256(manifest)}")
+        print(f"candidate_sha256={json_sha256(manifest)}")
+        print(f"candidate_file_sha256={sha256_file(output)}")
+        return 0
+    if args.command == "fixture-promote":
+        manifest = promote_fixture_candidate(
+            root,
+            candidate_path=Path(args.candidate),
+            expected_sha256=args.expected_sha256,
+            specification=specification,
+        )
+        print(f"fixture promoted: {manifest['manifest_id']}")
         return 0
     if args.command == "run":
         outcome = run_core_batch(
             root,
             runs_dir=Path(args.runs_dir),
             parallel_jobs=args.parallel_jobs,
+            specification=specification,
         )
         print(
             f"batch_id={outcome.batch_id} status={outcome.status} "
@@ -773,8 +1140,12 @@ def main(argv: Iterable[str] | None = None) -> int:
             runs_dir=Path(args.runs_dir),
             batch_id=args.batch_id,
             reason=args.reason,
+            specification=specification,
         )
-        print(f"candidate: {root / CANDIDATE_ROOT / candidate['candidate_id']}")
+        print(
+            "candidate: "
+            f"{root / specification.candidate_root / candidate['candidate_id']}"
+        )
         print(f"candidate_sha256={candidate['candidate_sha256']}")
         print(f"files={len(candidate['files'])}")
         return 0
@@ -783,6 +1154,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             root,
             candidate_dir=Path(args.candidate).resolve(),
             expected_sha256=args.expected_sha256,
+            specification=specification,
         )
         print(f"promoted: {candidate['candidate_id']}")
         return 0
@@ -795,6 +1167,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             left_batch_id=args.left_batch_id,
             right_batch_id=args.right_batch_id,
             output_path=(root / args.output).resolve(),
+            specification=specification,
         )
         print(f"determinism ok: {record['left']['batch_id']} vs {record['right']['batch_id']}")
         print(f"record: {(root / args.output).resolve()}")
@@ -807,12 +1180,13 @@ def main(argv: Iterable[str] | None = None) -> int:
             root,
             runs_dir=Path(args.runs_dir),
             record_path=(root / args.record).resolve(),
+            specification=specification,
         )
         print(f"determinism record ok: {record['record_sha256']}")
         print(f"left={record['left']['batch_id']} right={record['right']['batch_id']}")
         return 0
     if args.command == "verify-baseline":
-        manifest = verify_baseline(root)
+        manifest = verify_baseline(root, specification)
         print(f"baseline ok: {manifest['baseline_id']} items={len(manifest['items'])}")
         return 0
     raise AssertionError(args.command)

@@ -20,11 +20,14 @@ from src.core.validation_context import (
     P1_PLANNING_BASELINE_SPEC,
     P1_VALIDATION_PROFILE_SPEC,
     P2_AMENDED_ITEM_IDS,
+    P2_PLANNING_BASELINE_SPEC,
     P3_SUCCESSOR_VALIDATION_PROFILE_SPEC,
     P3_SUCCESSOR_VALIDATION_CONTRACT_SPECS,
     P2_VALIDATION_PROFILE_SPEC,
     P3_VALIDATION_CONTRACT_SPECS,
     P3_VALIDATION_PROFILE_SPEC,
+    V05_CHANGED_ITEM_IDS,
+    V05_PLANNING_BASELINE_SPEC,
     ValidationContextError,
     ValidationContextRegistry,
 )
@@ -107,6 +110,21 @@ def _copy_registry_artifacts(root: Path) -> None:
         target = root / relative_path
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(ROOT / relative_path, target)
+
+
+def _planning_identity(
+    root: Path,
+    specification: object,
+) -> dict[str, str]:
+    relative_path = getattr(specification, "relative_path")
+    path = root / relative_path
+    document = json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "id": document["baseline_id"],
+        "schema_version": document["schema_version"],
+        "path": relative_path,
+        "sha256": sha256_file(path),
+    }
 
 
 def test_real_manifest_20_round_trip_replays_frozen_context() -> None:
@@ -281,7 +299,7 @@ def test_planning_baseline_rejects_a_silently_shrunken_plan() -> None:
         registry.assert_plan_matches_baseline(shrunken)
 
 
-def test_planning_baseline_rejects_frozen_input_identity_drift() -> None:
+def test_v05_planning_baseline_leaves_input_sha_to_input_manifest() -> None:
     registry = ValidationContextRegistry(ROOT)
     plan = PipelinePlanner(ROOT).plan(
         "group", group="integration", language="zh-cn"
@@ -293,11 +311,21 @@ def test_planning_baseline_rejects_frozen_input_identity_drift() -> None:
         items=(changed, *plan.items[1:]),
     )
 
-    with pytest.raises(
-        ValidationContextError,
-        match="source identity drifted",
-    ):
-        registry.assert_plan_matches_baseline(drifted)
+    # Planning owns eligibility, state, denominator, and strategy. Exact input
+    # bytes remain owned by input-manifest.json rather than being duplicated in
+    # the v0.5 Planning Baseline.
+    registry.assert_plan_matches_baseline(drifted)
+    frozen = registry.freeze()
+    manifest = InputManifest.from_plan(
+        BATCH_ID,
+        drifted,
+        FROZEN_PROVENANCE,
+        created_at=CREATED_AT,
+        planning=frozen["planning"],
+        validation_context=frozen["validation_context"],
+    ).to_dict()
+    indexed = {item["item_id"]: item for item in manifest["items"]}
+    assert indexed[changed.item_id]["source"]["sha256"] == "0" * 64
 
 
 def test_p2_effective_baseline_changes_exactly_four_definition_hashes() -> None:
@@ -306,7 +334,10 @@ def test_p2_effective_baseline_changes_exactly_four_definition_hashes() -> None:
         "47e721642df8bdbab16eb62643dcb64aff0578fa8685bd8ab4b8070d1f25f8c8"
     )
     p1 = json.loads(p1_path.read_text(encoding="utf-8"))
-    effective = ValidationContextRegistry(ROOT).effective_planning_baseline()
+    registry = ValidationContextRegistry(ROOT)
+    effective = registry.planning_baseline_for_identity(
+        _planning_identity(ROOT, P2_PLANNING_BASELINE_SPEC)
+    )
     assert len(p1["items"]) == len(effective["items"]) == 434
     assert effective["accounting"] == p1["accounting"] == {
         "denominator": 379,
@@ -334,8 +365,18 @@ def test_freeze_defaults_to_successor_but_historical_p1_identity_replays() -> No
     registry = ValidationContextRegistry(ROOT)
     frozen = registry.freeze()
     assert frozen["planning"]["baseline"]["id"] == (
-        "v0.4-p2-product-definition-identity-overlay"
+        "v0.5.1-planning-baseline"
     )
+    assert frozen["planning"]["baseline"] == _planning_identity(
+        ROOT, V05_PLANNING_BASELINE_SPEC
+    )
+    assert frozen["planning"]["baseline_accounting"] == {
+        "denominator": 383,
+        "retained_runnable": 383,
+        "reviewed_non_runnable": 0,
+        "accounted": 383,
+        "coverage": "383/383",
+    }
     assert frozen["validation_context"]["validation_profile"] == {
         "id": "v0.4-validation-p3-successor",
         "schema_version": "1.3",
@@ -409,7 +450,9 @@ def test_overlay_rejects_bilingual_transition_drift() -> None:
             ValidationContextError,
             match="differs by language",
         ):
-            ValidationContextRegistry(root).effective_planning_baseline()
+            ValidationContextRegistry(root).planning_baseline_for_identity(
+                _planning_identity(root, P2_PLANNING_BASELINE_SPEC)
+            )
 
 
 def test_warm_overlay_cache_cannot_conceal_nested_p1_drift() -> None:
@@ -417,7 +460,8 @@ def test_warm_overlay_cache_cannot_conceal_nested_p1_drift() -> None:
         root = Path(directory)
         _copy_registry_artifacts(root)
         registry = ValidationContextRegistry(root)
-        frozen = registry.freeze()
+        p2_identity = _planning_identity(root, P2_PLANNING_BASELINE_SPEC)
+        registry.planning_baseline_for_identity(p2_identity)
         p1_path = root / P1_PLANNING_BASELINE_SPEC.relative_path
         p1_path.write_text(
             p1_path.read_text(encoding="utf-8") + " ",
@@ -425,9 +469,29 @@ def test_warm_overlay_cache_cannot_conceal_nested_p1_drift() -> None:
         )
 
         with pytest.raises(ValidationContextError, match="SHA-256 drifted"):
-            registry.verify_frozen(
-                frozen["planning"], frozen["validation_context"]
-            )
+            registry.planning_baseline_for_identity(p2_identity)
+
+
+def test_v05_baseline_changes_exactly_the_reviewed_four_states() -> None:
+    baseline = ValidationContextRegistry(ROOT).effective_planning_baseline()
+    assert baseline["summary"] == {
+        "total": 434,
+        "runnable": 383,
+        "skipped": 51,
+        "known_unsupported": 50,
+        "source_unavailable": 1,
+    }
+    changes = {change["item_id"]: change for change in baseline["changes"]}
+    assert tuple(changes) == V05_CHANGED_ITEM_IDS
+    indexed = {item["item_id"]: item for item in baseline["items"]}
+    for item_id in V05_CHANGED_ITEM_IDS:
+        item = indexed[item_id]
+        change = changes[item_id]
+        assert item["predecessor_state"] == change["prior_state"] == (
+            "known_unsupported"
+        )
+        assert item["planned_state"] == change["proposed_state"] == "runnable"
+        assert item["change_id"] == change["change_id"]
 
 
 def test_warm_profile_cache_cannot_conceal_historical_p1_drift() -> None:
