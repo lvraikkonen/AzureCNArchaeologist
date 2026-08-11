@@ -13,12 +13,14 @@ from src.regression.core import (
     CORE_ITEM_IDS,
     V04_CORE_SPEC,
     V05_CORE_SPEC,
+    CorePlanner,
     CoreRegressionError,
     build_fixture_manifest,
     json_sha256,
     promote_fixture_candidate,
     read_json,
     render_json,
+    verify_fixture_manifest,
 )
 
 
@@ -83,6 +85,32 @@ def test_v05_core_fixture_candidate_declares_only_four_reviewed_changes() -> Non
     assert all(
         change["prior"] != change["successor"] for change in changes
     )
+
+
+def test_promoted_v05_core_fixture_is_exact_and_current() -> None:
+    fixture_path = ROOT / V05_CORE_SPEC.fixture_manifest_path
+    assert sha256_file(fixture_path) == (
+        "881ca58bf893d5fe32e2bd65d6e508cf21fa72e5fec0ad35ff09a97eea0cdd67"
+    )
+    fixture = verify_fixture_manifest(ROOT, specification=V05_CORE_SPEC)
+    assert json_sha256(fixture) == (
+        "f6f8f82224408472aff308abd399ae00857d62bab2960d650cb888d0638dbb5c"
+    )
+
+    plan = CorePlanner(ROOT, specification=V05_CORE_SPEC).plan()
+    assert plan.scope == {
+        "kind": "group",
+        "group": V05_CORE_SPEC.group,
+    }
+    assert plan.languages == ("zh-cn", "en-us")
+    assert tuple(item.item_id for item in plan.items) == CORE_ITEM_IDS
+    assert plan.summary == {
+        "total": 8,
+        "runnable": 8,
+        "skipped": 0,
+        "known_unsupported": 0,
+        "source_unavailable": 0,
+    }
 
 
 def test_v05_fixture_promotion_requires_exact_candidate_sha(
