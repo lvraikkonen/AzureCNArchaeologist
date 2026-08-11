@@ -1,0 +1,259 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azure.cn/archaeologist/schemas/planning-baseline-manifest-2.0.schema.json",
+  "title": "v0.5 Planning Baseline Manifest 2.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "baseline_id",
+    "predecessor",
+    "scope",
+    "summary",
+    "items",
+    "changes",
+    "accounting"
+  ],
+  "properties": {
+    "schema_version": { "const": "2.0" },
+    "baseline_id": { "const": "v0.5.1-planning-baseline" },
+    "predecessor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accepted_version",
+        "accepted_tag",
+        "planning_baseline",
+        "accepted_batch_id",
+        "accepted_batch_report",
+        "qualification_report",
+        "entry_decision"
+      ],
+      "properties": {
+        "accepted_version": { "const": "0.4.1" },
+        "accepted_tag": { "const": "v0.4.1" },
+        "planning_baseline": { "$ref": "#/$defs/identity" },
+        "accepted_batch_id": {
+          "const": "20260809T030936Z-ce23e678"
+        },
+        "accepted_batch_report": { "$ref": "#/$defs/pathSha" },
+        "qualification_report": { "$ref": "#/$defs/pathSha" },
+        "entry_decision": { "$ref": "#/$defs/pathSha" }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "languages", "item_count"],
+      "properties": {
+        "kind": { "const": "all" },
+        "languages": {
+          "type": "array",
+          "prefixItems": [
+            { "const": "zh-cn" },
+            { "const": "en-us" }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "item_count": { "const": 434 }
+      }
+    },
+    "summary": { "$ref": "#/$defs/summary" },
+    "items": {
+      "type": "array",
+      "minItems": 434,
+      "maxItems": 434,
+      "items": { "$ref": "#/$defs/item" }
+    },
+    "changes": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/change" }
+    },
+    "accounting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewed_items",
+        "coverage",
+        "runnable",
+        "skipped"
+      ],
+      "properties": {
+        "reviewed_items": { "const": 434 },
+        "coverage": { "const": "434/434" },
+        "runnable": { "const": 383 },
+        "skipped": { "const": 51 }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": { "pattern": "^/" }
+    },
+    "pathSha": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/relativePath" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "schema_version", "path", "sha256"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "schema_version": { "type": "string", "minLength": 1 },
+        "path": { "$ref": "#/$defs/relativePath" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total",
+        "runnable",
+        "skipped",
+        "known_unsupported",
+        "source_unavailable"
+      ],
+      "properties": {
+        "total": { "const": 434 },
+        "runnable": { "const": 383 },
+        "skipped": { "const": 51 },
+        "known_unsupported": { "const": 50 },
+        "source_unavailable": { "const": 1 }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "language",
+        "resource_key",
+        "product_key",
+        "resource_kind",
+        "semantic_strategy",
+        "planned_state",
+        "state_reason_code",
+        "predecessor_state",
+        "change_id"
+      ],
+      "properties": {
+        "item_id": {
+          "type": "string",
+          "pattern": "^(?:zh-cn|en-us)/.+"
+        },
+        "language": { "enum": ["zh-cn", "en-us"] },
+        "resource_key": { "type": "string", "minLength": 1 },
+        "product_key": { "type": "string", "minLength": 1 },
+        "resource_kind": {
+          "enum": ["current", "historical_version"]
+        },
+        "semantic_strategy": {
+          "enum": [
+            "simple_static",
+            "region_filter",
+            "complex",
+            "support_article"
+          ]
+        },
+        "planned_state": { "$ref": "#/$defs/state" },
+        "state_reason_code": {
+          "enum": [
+            "reviewed_supported",
+            "known_unsupported",
+            "source_unavailable"
+          ]
+        },
+        "predecessor_state": { "$ref": "#/$defs/state" },
+        "change_id": {
+          "type": ["string", "null"],
+          "pattern": "^V051-PLAN-DELTA-"
+        }
+      }
+    },
+    "state": {
+      "enum": ["runnable", "known_unsupported", "source_unavailable"]
+    },
+    "change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "change_id",
+        "item_id",
+        "prior_state",
+        "proposed_state",
+        "reason_code",
+        "qualification_evidence",
+        "product_definition_decision",
+        "denominator_impact",
+        "rationale",
+        "review"
+      ],
+      "properties": {
+        "change_id": {
+          "type": "string",
+          "pattern": "^V051-PLAN-DELTA-"
+        },
+        "item_id": {
+          "enum": [
+            "en-us/cdn",
+            "en-us/data-transfer",
+            "zh-cn/cdn",
+            "zh-cn/data-transfer"
+          ]
+        },
+        "prior_state": { "const": "known_unsupported" },
+        "proposed_state": { "const": "runnable" },
+        "reason_code": {
+          "const": "independently_qualified_bilingual_source_boundary"
+        },
+        "qualification_evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["artifact", "section"],
+          "properties": {
+            "artifact": { "$ref": "#/$defs/pathSha" },
+            "section": { "type": "string", "minLength": 1 }
+          }
+        },
+        "product_definition_decision": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "capability_status", "decision"],
+          "properties": {
+            "path": { "$ref": "#/$defs/relativePath" },
+            "capability_status": { "const": "supported" },
+            "decision": { "const": "accepted_for_v0.5_successor" }
+          }
+        },
+        "denominator_impact": { "const": 1 },
+        "rationale": { "type": "string", "minLength": 1 },
+        "review": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "decision_id", "accepted_at"],
+          "properties": {
+            "status": { "const": "accepted" },
+            "decision_id": { "const": "V050-ENTRY-20260811" },
+            "accepted_at": { "const": "2026-08-11" }
+          }
+        }
+      }
+    }
+  }
+}
