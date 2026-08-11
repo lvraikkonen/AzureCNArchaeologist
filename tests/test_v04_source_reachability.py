@@ -359,6 +359,96 @@ def test_azure_firewall_zh_extracts_region_only_payload(
 
 
 @pytest.mark.parametrize("language", ["zh-cn", "en-us"])
+def test_round_two_region_sources_reflect_latest_upstream_repairs(
+    language: str,
+) -> None:
+    manager = ProductManager(str(ROOT / "data" / "configs"))
+    loader = CanonicalInputLoader(ROOT, manager)
+    resolver = SourceReachabilityResolver(ROOT)
+
+    automation = resolver.resolve(loader.load("automation", language))
+    assert tuple(
+        len(definition.options)
+        for definition in automation.filter_definitions_union
+    ) == (4,)
+    assert len(automation.ordered_states) == 4
+    assert automation.findings == ()
+
+    key_vault = resolver.resolve(loader.load("key-vault", language))
+    assert len(key_vault.ordered_states) == 6
+    assert key_vault.default_state == CmsState((
+        ("region", "east-china3"),
+    ))
+    assert {
+        finding.code for finding in key_vault.findings
+    } == {"filter_machine_value_target_drift"}
+
+    container_instances = resolver.resolve(
+        loader.load("container-instances", language)
+    )
+    assert len(container_instances.ordered_states) == 3
+    assert container_instances.default_state == CmsState((
+        ("region", "north-china3"),
+    ))
+
+
+def test_latest_event_hubs_responsive_drift_is_bounded() -> None:
+    manager = ProductManager(str(ROOT / "data" / "configs"))
+    loader = CanonicalInputLoader(ROOT, manager)
+    resolver = SourceReachabilityResolver(ROOT)
+
+    chinese = resolver.resolve(loader.load("event-hubs", "zh-cn"))
+    assert len(chinese.ordered_states) == 6
+    assert {finding.code for finding in chinese.findings} == {
+        "responsive_filter_target_position_drift",
+        "hidden_software_machine_value_product_drift",
+    }
+
+    english = resolver.resolve(loader.load("event-hubs", "en-us"))
+    assert len(english.ordered_states) == 6
+    assert {finding.code for finding in english.findings} == {
+        "responsive_filter_label_drift",
+        "hidden_software_machine_value_product_drift",
+    }
+    assert all(
+        state.source_evidence.software_value == "event-hubs"
+        and state.source_evidence.software_panel_id == "tabContent1"
+        for result in (chinese, english)
+        for state in result.ordered_states
+    )
+
+
+@pytest.mark.parametrize("language", ["zh-cn", "en-us"])
+def test_monitor_latest_source_has_only_live_category_panels(
+    language: str,
+) -> None:
+    manager = ProductManager(str(ROOT / "data" / "configs"))
+    loader = CanonicalInputLoader(ROOT, manager)
+    result = SourceReachabilityResolver(ROOT).resolve(
+        loader.load("monitor", language)
+    )
+
+    assert tuple(
+        (definition.filter_key, len(definition.options))
+        for definition in result.filter_definitions_union
+    ) == (("region", 6), ("category", 5))
+    assert len(result.ordered_states) == 30
+    assert result.suppressed_options == ()
+    assert all(
+        state.source_evidence.software_scoped_prefix is not None
+        and state.source_evidence.software_scoped_prefix.category_panel_ids
+        == (
+            "tabContent1-1",
+            "tabContent1-2",
+            "tabContent1-3",
+            "tabContent1-4",
+            "tabContent1-5",
+        )
+        for state in result.ordered_states
+    )
+
+
+@pytest.mark.parametrize("language", ["zh-cn", "en-us"])
 def test_machine_learning_only_traverses_linux_panel(
     real_reachability: dict[tuple[str, str], SourceReachability],
     language: str,

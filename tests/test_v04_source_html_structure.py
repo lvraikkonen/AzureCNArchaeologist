@@ -63,29 +63,51 @@ def _canonical_repo_source(
     )
 
 
+@pytest.mark.parametrize("language", ("zh-cn", "en-us"))
+def test_latest_service_fabric_has_no_structure_audit_findings(
+    language: str,
+) -> None:
+    result = SourceHtmlStructureAuditor(ROOT).audit(
+        _canonical_repo_source("service-fabric", language)
+    )
+
+    assert result.passed is True
+    assert result.findings == ()
+
+
 @pytest.mark.parametrize(
-    ("product", "language"),
+    ("product", "language", "expected_lines"),
     (
-        ("dns", "zh-cn"),
-        ("dns", "en-us"),
-        ("service-fabric", "zh-cn"),
-        ("service-fabric", "en-us"),
-        ("virtual-wan", "zh-cn"),
-        ("virtual-wan", "en-us"),
+        ("virtual-wan", "zh-cn", (149, 351)),
+        ("virtual-wan", "en-us", (152, 367)),
     ),
 )
-def test_real_repaired_static_page_global_ids_are_no_longer_blocking(
+def test_latest_static_duplicate_ids_are_blocking(
     product: str,
     language: str,
+    expected_lines: tuple[int, ...],
 ) -> None:
     result = SourceHtmlStructureAuditor(ROOT).audit(
         _canonical_repo_source(product, language)
     )
 
+    assert result.passed is False
+    finding = next(
+        finding
+        for finding in result.blocking_findings
+        if finding.code == "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT"
+    )
+    assert tuple(item.line for item in finding.evidence) == expected_lines
+
+
+@pytest.mark.parametrize("language", ("zh-cn", "en-us"))
+def test_latest_dns_duplicate_ids_are_fixed(language: str) -> None:
+    result = SourceHtmlStructureAuditor(ROOT).audit(
+        _canonical_repo_source("dns", language)
+    )
+
     assert result.passed is True
-    assert "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT" not in {
-        finding.code for finding in result.findings
-    }
+    assert result.findings == ()
 
 
 @pytest.mark.parametrize("product", ("route-server", "sql-edge"))
@@ -110,10 +132,10 @@ def test_unproven_simple_boundaries_are_not_misclassified_as_confirmed(
             "data-lake-storage",
             "zh-cn",
             {
-                "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT": (
-                    8167,
-                    8168,
-                    8207,
+                    "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT": (
+                        8167,
+                        8168,
+                        8208,
                 ),
             },
         ),
@@ -200,20 +222,35 @@ def test_real_blocking_source_structure_findings_are_exact(
     Draft202012Validator(schema).validate(result.to_dict())
 
 
-def test_event_hubs_en_common_sections_are_outside_formal_selector() -> None:
+@pytest.mark.parametrize(
+    ("language", "expected_line"),
+    (("zh-cn", 506), ("en-us", 496)),
+)
+def test_latest_event_hubs_footnote_outside_selector_is_blocking(
+    language: str,
+    expected_line: int,
+) -> None:
     result = SourceHtmlStructureAuditor(ROOT).audit(
-        _canonical_repo_source("event-hubs", "en-us")
+        _canonical_repo_source("event-hubs", language)
     )
 
-    assert result.passed is True
-    assert result.findings == ()
+    assert result.passed is False
+    finding = next(
+        finding
+        for finding in result.blocking_findings
+        if finding.code == "SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION"
+    )
+    assert tuple(item.line for item in finding.evidence) == (expected_line,)
 
 
 @pytest.mark.parametrize(
-    "product",
-    ("managed-instance", "sql-database"),
+    ("product", "language"),
+    (
+        ("managed-instance", "en-us"),
+        ("sql-database", "zh-cn"),
+        ("sql-database", "en-us"),
+    ),
 )
-@pytest.mark.parametrize("language", ("zh-cn", "en-us"))
 def test_real_faq_documentation_link_wrapper_is_exact(
     product: str,
     language: str,
@@ -224,6 +261,25 @@ def test_real_faq_documentation_link_wrapper_is_exact(
 
     assert result.passed is True
     assert result.findings == ()
+
+
+def test_latest_managed_instance_zh_faq_wrapper_is_blocking() -> None:
+    result = SourceHtmlStructureAuditor(ROOT).audit(
+        _canonical_repo_source("managed-instance", "zh-cn")
+    )
+
+    assert result.passed is False
+    finding = next(
+        finding
+        for finding in result.blocking_findings
+        if finding.code == "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT"
+    )
+    assert tuple(item.line for item in finding.evidence) == (
+        5893,
+        5895,
+        6704,
+        6713,
+    )
 
 
 @pytest.mark.parametrize(

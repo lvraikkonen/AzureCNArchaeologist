@@ -20,6 +20,7 @@ from src.core.source_reachability import (
     ReachableCmsState,
     SourceReachabilityError,
 )
+from src.core.soft_category_config import load_soft_category_config
 from src.core.strict_soft_category_projection import (
     EVIDENCE_SCHEMA_VERSION,
     PROJECTION_ALGORITHM,
@@ -31,6 +32,35 @@ from src.strategies.strategy_factory import StrategyFactory
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_latest_soft_category_duplicate_pairs_are_resolved_authoritatively() -> None:
+    config = load_soft_category_config(ROOT)
+
+    for region in ("east-china", "north-china"):
+        entries = config.matching_entries("Managed Instance", region)
+        assert len(entries) == 1
+        assert (
+            "sqldb-managed-instance-business-premium-serries-2"
+            not in entries[0].table_ids
+        )
+
+    search_entries = config.matching_entries(
+        "Azure AI Search",
+        "north-china",
+    )
+    assert len(search_entries) == 1
+    assert search_entries[0].table_ids == (
+        "Azure-Cognitive-Search1",
+        "Azure-Cognitive-Search2",
+    )
+
+    assert not any(
+        finding.code == "SOFT_CATEGORY_DUPLICATE_EXACT_PAIR"
+        for finding in StrictSoftCategoryProjector(
+            ROOT
+        ).configuration_findings()
+    )
 
 
 def test_sidecar_strict_projection_metadata_is_closed_world() -> None:
@@ -896,6 +926,51 @@ def test_formal_complex_state_uses_frozen_projection_not_legacy_processor(
     ]
 
 
+def test_strategy_replay_preserves_exact_canonical_table_whitespace(
+    tmp_path: Path,
+) -> None:
+    projector = _projector(tmp_path, [_row(["#drop"])])
+    soup = _soup(
+        '<table id="drop"><thead><tr><td>drop</td></tr>\n\n</thead></table>'
+        '<table id="keep"><tr><td>keep</td></tr></table>'
+    )
+    projection = projector.project(
+        soup,
+        source_panel_id="state",
+        region_value="region-a",
+        software_value="Software",
+    )
+    state = ReachableCmsState(
+        cms_state=CmsState((("region", "region-a"), ("software", "Software"))),
+        state_label_segments=("Region A", "Software"),
+        mapping_key="region-a_Software",
+        source_evidence=ReachabilitySourceEvidence(
+            region_value="region-a",
+            region_href="#region-a",
+            software_value="Software",
+            software_href="#software",
+            software_panel_id="state",
+            software_visible=True,
+            category_value=None,
+            category_href=None,
+            category_panel_id=None,
+            strict_soft_category_projection=projection,
+        ),
+        is_default=True,
+    )
+
+    resolved = ComplexContentStrategy({"product_key": "sample"})._find_reachable_content(
+        soup,
+        state,
+        expected_category_panel_ids=(),
+        region_projected_shared_content_by_software={},
+    )
+
+    assert resolved["content"] == projection.output_html
+    assert 'id="drop"' not in resolved["content"]
+    assert 'id="keep"' in resolved["content"]
+
+
 def test_experimental_region_processor_is_lazy_and_cached(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -936,7 +1011,7 @@ def test_real_cloud_services_memory_state_uses_strict_projection(
         software_value="Cloud Services",
     )
 
-    assert evidence.matching_entry_indices == (40,)
+    assert evidence.matching_entry_indices == (42,)
     assert evidence.config_path == "data/configs/soft-category.json"
     assert evidence.removed_table_ids == (
         "cloudservice-table-memoryintensive-A5-A7",

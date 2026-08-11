@@ -4,8 +4,8 @@ Status: **PASS**
 
 | Language | Snapshots | Explained | Unknown |
 |---|---:|---:|---:|
-| zh-cn | 240 | 240 | 0 |
-| en-us | 240 | 240 | 0 |
+| zh-cn | 241 | 241 | 0 |
+| en-us | 239 | 239 | 0 |
 
 ## Unknown snapshots
 

@@ -54,8 +54,8 @@ _CATEGORY_PANEL_IDS = (
 )
 _REGION_VALUES = ("north-china3", "east-china2", "north-china2")
 _SOFT_CATEGORY_SHA256 = (
-    "246ff13a504281d0b0cc23a581d8bd30"
-    "582e6c1c242b57e3f2848e05e0c6d218"
+    "3c930c6e163f27bbbbc4e44c8597feb3"
+    "d112518ffcc309ee5b7bc007978f02d8"
 )
 _BASE_TABLE = "databricks-data-analysis"
 _NORTH_3_TABLE = "databricks-data-analysis-n3"
@@ -63,8 +63,8 @@ _NORTH_3_TABLE = "databricks-data-analysis-n3"
 _DATABRICKS_EVIDENCE: dict[str, dict[str, Any]] = {
     "zh-cn": {
         "source_sha256": (
-            "cbef235d09d2b8cc530efcc65d44f98e"
-            "31fe258c44b880e9c6f161f85e0022fe"
+            "77011f5a4a025dd000152241490a8be03"
+            "6b3e128061aed72a69058dace30e2c5"
         ),
         "fragment_count": 2,
         "source_html_sha256": (
@@ -73,12 +73,12 @@ _DATABRICKS_EVIDENCE: dict[str, dict[str, Any]] = {
         ),
         "source_table_ids": (_NORTH_3_TABLE, _BASE_TABLE),
         "evidence_sha256": (
-            "090c7cb3ff78cf3c2d126c16dd181502"
-            "6fb9586ccf29110897d7bfeed59b5d08"
+            "67e130282c95953a0312bd4414738316"
+            "d87e335bee41f52deecdca6aea15b799"
         ),
         "aggregate_sha256": (
-            "be572f6a710f9d27154a8dd17e7412b7"
-            "d5391e41018fc796aac6912af1130f50"
+            "14b005e0a6728e6e802aff82420a66a3"
+            "347f9ce47f179c8fcdbd29e9c4b99264"
         ),
         "projection_sha256": {
             "north-china3": (
@@ -111,49 +111,49 @@ _DATABRICKS_EVIDENCE: dict[str, dict[str, Any]] = {
     },
     "en-us": {
         "source_sha256": (
-            "f893b335f25c53f70209f37b8f141d91"
-            "6aff76af0c86e55742e667b1be308e2b"
+            "362309cbfe97297291411dc4c7dff34a"
+            "c1ef1f4745b4a4b89a336487b61fa3f4"
         ),
         "fragment_count": 6,
         "source_html_sha256": (
-            "3e969e5ebaf202d30b81d152fb308445"
-            "6087786ed7a1a7064f5b88ac80d52e1b"
+            "07e5da835e8ccb9e644b0e245c051b30"
+            "46a4bc57c447a1aea6afdd07f1953dcf"
         ),
         "source_table_ids": (_BASE_TABLE, _NORTH_3_TABLE),
         "evidence_sha256": (
-            "6a07c85cda94db90eaa5b12fe82da8ca"
-            "4e415f07cb8eb194a4bcd975d46d7b93"
+            "1594b686c36baec6f8c466a96bf49f2"
+            "aea2b114ceec8da6ca4517399253a007e"
         ),
         "aggregate_sha256": (
-            "9cef048d0434bf8f7c96de0a7b4979e7"
-            "d080623e70f57efa1eb118c26145ddf3"
+            "08dbafd28fe3f94dffa1d5a6717280dd"
+            "197a5241bce73bf1249d161e9696dba8"
         ),
         "projection_sha256": {
             "north-china3": (
-                "817bfba2e3cb984eef7ba17e51417247"
-                "c13103f568a5ce2f883f79273652edea"
+                "bfe74679c59294fe39f15fada933744c"
+                "ae452ed19c05b64114d23d256ed6a429"
             ),
             "east-china2": (
-                "893fc5bfabd561c13f783407a6f6ebeb"
-                "d1e29717b0409c0910c874610df17411"
+                "2d1c197492a3d745cb3943cce7979f10"
+                "5a21a0815354ca8e66b0066cdcd38c90"
             ),
             "north-china2": (
-                "893fc5bfabd561c13f783407a6f6ebeb"
-                "d1e29717b0409c0910c874610df17411"
+                "2d1c197492a3d745cb3943cce7979f10"
+                "5a21a0815354ca8e66b0066cdcd38c90"
             ),
         },
         "wire_sha256": {
             "north-china3": (
-                "cc69b3425ebd3f8dee8b5d830af4f931"
-                "e13e8c3afb1870dd01eb6239ecc901ef"
+                "74847289535a3dc067ce11ca84bcfe65"
+                "f1e898c9519c3d83e68022ca271db506"
             ),
             "east-china2": (
-                "c056fc041b553b281990b95e7ab63e55"
-                "dc600db145152c701ca8b6c0deabdd8d"
+                "7671c1a0d5b0bbff7de35805592eb046"
+                "1b25071e134d5b6e943b6aef12b18e76"
             ),
             "north-china2": (
-                "c056fc041b553b281990b95e7ab63e55"
-                "dc600db145152c701ca8b6c0deabdd8d"
+                "7671c1a0d5b0bbff7de35805592eb046"
+                "1b25071e134d5b6e943b6aef12b18e76"
             ),
         },
     },
@@ -171,6 +171,7 @@ _CONFIG_RULE_TABLE_IDS = {
         "job-computation-memory-eadsv5",
         "databricks-data-memory-eadsv5",
         "databricks-General-all-NCas_T4_v3",
+        "databricks-General-all-Nvads_A10_v5",
         "databricks-data-NCas_T4_v3",
         "databricks-light-job-computation-NCas_T4_v3",
         "databricks-Compute-Photon-NCas_T4_v3",
@@ -183,6 +184,7 @@ _CONFIG_RULE_TABLE_IDS = {
         "job-computation-memory-eadsv5",
         "databricks-data-memory-eadsv5",
         "databricks-General-all-NCas_T4_v3",
+        "databricks-General-all-Nvads_A10_v5",
         "databricks-data-NCas_T4_v3",
         "databricks-light-job-computation-NCas_T4_v3",
         "databricks-Compute-Photon-NCas_T4_v3",
@@ -368,7 +370,7 @@ def test_databricks_bilingual_machine_scope_ignores_localized_html_identity(
     )
 
 
-def test_current_databricks_duplicate_table_id_blocks_payload(
+def test_current_databricks_repaired_table_ids_allow_payload(
     tmp_path: Path,
 ) -> None:
     coordinator = ExtractionCoordinator(
@@ -380,15 +382,16 @@ def test_current_databricks_duplicate_table_id_blocks_payload(
         "zh-cn",
         strategy="complex",
     )
-    assert not extracted.execution_succeeded
-    assert extracted.exit_code == 1
-    assert extracted.payload is None
-    assert extracted.payload_path is None
-    assert extracted.sidecar["payload"] is None
-    assert extracted.sidecar["error"]["code"] == (
-        "soft_category_duplicate_source_table_id"
-    )
-    assert extracted.sidecar["error"]["stage"] == "source_reachability"
+    assert extracted.execution_succeeded
+    assert extracted.exit_code == 2
+    assert extracted.payload is not None
+    assert extracted.payload_path is not None
+    assert len(extracted.payload["contentGroups"]) == 27
+
+    validated = coordinator.validate_persisted_payload(extracted)
+
+    assert validated.succeeded
+    assert validated.sidecar["status"]["validation"] == "passed"
 
 
 def test_real_synapse_missing_state_content_has_stable_reachability_error(

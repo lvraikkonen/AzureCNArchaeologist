@@ -3,13 +3,13 @@
   "passed": true,
   "counts": {
     "zh-cn": {
-      "snapshots": 240,
-      "explained": 240,
+      "snapshots": 241,
+      "explained": 241,
       "unknown": 0
     },
     "en-us": {
-      "snapshots": 240,
-      "explained": 240,
+      "snapshots": 239,
+      "explained": 239,
       "unknown": 0
     }
   },

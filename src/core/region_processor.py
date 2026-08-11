@@ -534,13 +534,59 @@ class RegionProcessor:
         # 查找主要内容区域
         content_html = ""
         
-        # 方案1: 查找tab-content结构
-        tab_content = soup.find(class_='tab-content')
+        # 方案1: 在正式定价selector的直接内容范围内查找tab-content。
+        # 全页递归首个tab-content可能属于导航或嵌套category，不能作为
+        # RegionFilter主体边界。
+        pricing_root = soup.select_one(
+            "div.technical-azure-selector.pricing-detail-tab"
+        )
+        tab_content = (
+            pricing_root.find(
+                "div", class_="tab-content", recursive=False
+            )
+            if pricing_root is not None
+            else None
+        )
         if tab_content:
             content_html = str(tab_content)
             logger.debug("✓ 使用tab-content结构")
         else:
-            # 方案2: 查找pricing-page-section
+            # 方案2: 某些Region页只有一个无id的静态tab-control-container
+            # 作为所有区域共享的价格主体（例如Event Hubs）。只有在正式
+            # selector下恰好一个此类直接容器时才采用，避免跨scope猜测。
+            direct_static_bodies = (
+                [
+                    child
+                    for child in pricing_root.find_all(
+                        "div", recursive=False
+                    )
+                    if (
+                        "tab-control-container"
+                        in (child.get("class") or ())
+                        and (
+                            child.get_text(" ", strip=True)
+                            or child.find(
+                                [
+                                    "img",
+                                    "video",
+                                    "audio",
+                                    "table",
+                                    "iframe",
+                                ]
+                            )
+                            is not None
+                        )
+                    )
+                ]
+                if pricing_root is not None
+                else []
+            )
+            if len(direct_static_bodies) == 1:
+                content_html = str(direct_static_bodies[0])
+                logger.debug("✓ 使用唯一静态tab-control-container结构")
+
+        if not content_html:
+            # 方案3: 查找pricing-page-section
             pricing_sections = soup.find_all(class_='pricing-page-section')
             if pricing_sections:
                 # 排除FAQ部分
@@ -549,7 +595,7 @@ class RegionProcessor:
                     content_html = ''.join(str(section) for section in non_faq_sections)
                     logger.debug(f"✓ 使用 {len(non_faq_sections)} 个pricing-page-section")
             else:
-                # 方案3: 返回整个body内容（最后的回退）
+                # 方案4: 返回整个body内容（最后的回退）
                 if soup.body:
                     content_html = str(soup.body)
                     logger.debug("✓ 使用完整body内容作为回退")

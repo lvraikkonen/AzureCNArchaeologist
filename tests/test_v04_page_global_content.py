@@ -489,29 +489,25 @@ def test_api_management_current_page_global_content_is_empty(
 
 
 @pytest.mark.parametrize("language", ["zh-cn", "en-us"])
-def test_dns_static_page_global_content_has_globally_unique_source_ids(
+def test_dns_latest_source_has_unique_business_ids(
     language: str,
 ) -> None:
     manager = ProductManager()
-    definition = manager.get_product_config("dns")
     source_path = manager.get_html_file_path("dns", language)
     assert source_path is not None
     soup = BeautifulSoup(Path(source_path).read_bytes(), "html.parser")
 
-    identified = soup.select("[id]")
-    assert len(identified) == len(
-        {str(node.get("id", "")).strip() for node in identified}
-    )
-    assert resolve_page_global_base_content(
-        soup,
-        definition,
-        language=language,
-    )
+    identified = [
+        str(node.get("id", "")).strip()
+        for node in soup.select("[id]")
+    ]
+    assert "tabContent1" not in identified
+    assert len(identified) == len(set(identified))
 
 
 @pytest.mark.parametrize("product_key", ["advisor", "azure-policy"])
 @pytest.mark.parametrize("language", ["zh-cn", "en-us"])
-def test_simple_pages_without_proven_business_boundary_fail_closed(
+def test_unheaded_simple_price_statement_is_base_content_not_description(
     product_key: str,
     language: str,
 ) -> None:
@@ -521,21 +517,190 @@ def test_simple_pages_without_proven_business_boundary_fail_closed(
     assert source_path is not None
     soup = BeautifulSoup(Path(source_path).read_bytes(), "html.parser")
 
-    # These historical pages expose only a broad page container. Treating it
-    # as baseContent would duplicate common Banner/ProductDescription/Qa data.
-    assert soup.select_one(".common-banner") is not None
-    with pytest.raises(
-        ScopedSourceContentError,
-        match=(
-            "^Unable to prove an intrinsic Simple page-global "
-            "business-content boundary$"
-        ),
+    price_statement = soup.select(
+        ".pure-content > div.pricing-page-section"
+    )[0]
+    expected = clean_html_content(str(price_statement))
+
+    base_content = resolve_page_global_base_content(
+        soup,
+        definition,
+        language=language,
+    )
+    assert base_content == expected
+    assert base_content
+
+    common_sections = SectionExtractor().extract_all_sections(soup)
+    assert [section["sectionType"] for section in common_sections] == [
+        "Banner",
+        "Qa",
+    ]
+    assert all(
+        section["content"] != base_content
+        for section in common_sections
+    )
+
+
+@pytest.mark.parametrize(
+    ("product_key", "expected_table_count"),
+    [("traffic-manager", 2), ("container-registry", 3), ("cdn", 1)],
+)
+@pytest.mark.parametrize("language", ["zh-cn", "en-us"])
+def test_static_simple_selector_preserves_every_price_table(
+    product_key: str,
+    expected_table_count: int,
+    language: str,
+) -> None:
+    manager = ProductManager()
+    definition = manager.get_product_config(product_key)
+    source_path = manager.get_html_file_path(product_key, language)
+    assert source_path is not None
+    soup = BeautifulSoup(Path(source_path).read_bytes(), "html.parser")
+
+    selector = soup.select_one(
+        ".pure-content > div.technical-azure-selector"
+    )
+    assert selector is not None
+    assert len(selector.select("table")) == expected_table_count
+    assert definition["extraction"]["page_global_content"][
+        "source_boundary"
+    ] == STATIC_FORMAL_SELECTOR_PAGE_GLOBAL_BOUNDARY
+
+    base_content = resolve_page_global_base_content(
+        soup,
+        definition,
+        language=language,
+    )
+    assert base_content == clean_html_content(str(selector))
+    assert len(
+        BeautifulSoup(base_content, "html.parser").select("table")
+    ) == expected_table_count
+
+
+@pytest.mark.parametrize("language", ["zh-cn", "en-us"])
+def test_data_transfer_text_only_pricing_details_is_base_content(
+    language: str,
+) -> None:
+    manager = ProductManager()
+    definition = manager.get_product_config("data-transfer")
+    source_path = manager.get_html_file_path("data-transfer", language)
+    assert source_path is not None
+    soup = BeautifulSoup(Path(source_path).read_bytes(), "html.parser")
+
+    pricing_sections = []
+    for section in soup.select(
+        ".pure-content > div.pricing-page-section"
     ):
-        resolve_page_global_base_content(
-            soup,
-            definition,
-            language=language,
+        heading = section.find("h2")
+        heading_text = (
+            heading.get_text(" ", strip=True).casefold()
+            if heading is not None
+            else ""
         )
+        if "pricing" in heading_text or "定价" in heading_text:
+            pricing_sections.append(section)
+    assert len(pricing_sections) == 1
+    expected = clean_html_content(str(pricing_sections[0]))
+
+    base_content = resolve_page_global_base_content(
+        soup,
+        definition,
+        language=language,
+    )
+    assert base_content == expected
+    assert not BeautifulSoup(base_content, "html.parser").find_all("table")
+    assert "0.67" in BeautifulSoup(base_content, "html.parser").get_text(" ")
+
+    common_sections = SectionExtractor().extract_all_sections(soup)
+    assert [section["sectionType"] for section in common_sections] == ["Qa"]
+
+
+@pytest.mark.parametrize(
+    ("product_key", "expected_table_count"),
+    [("cdn", 1), ("data-transfer", 0)],
+)
+@pytest.mark.parametrize("language", ["zh-cn", "en-us"])
+def test_promoted_simple_products_extract_and_validate_bilingually(
+    product_key: str,
+    expected_table_count: int,
+    language: str,
+    tmp_path: Path,
+) -> None:
+    definition = ProductManager().get_product_config(product_key)
+    assert definition["capability_status"] == "supported"
+
+    result = ExtractionCoordinator(str(tmp_path)).coordinate_extraction(
+        product_key,
+        language,
+    )
+
+    assert result.exit_code == 0
+    assert result.payload is not None
+    assert result.sidecar["status"]["execution"] == "succeeded"
+    assert result.sidecar["status"]["validation"] == "passed"
+    base_soup = BeautifulSoup(
+        result.payload["baseContent"],
+        "html.parser",
+    )
+    assert len(base_soup.select("table")) == expected_table_count
+    if product_key == "data-transfer":
+        assert "0.67" in base_soup.get_text(" ", strip=True)
+
+
+@pytest.mark.parametrize("language", ["zh-cn", "en-us"])
+def test_azure_migrate_uses_root_pricing_heading_through_table(
+    language: str,
+) -> None:
+    manager = ProductManager()
+    definition = manager.get_product_config("azure-migrate")
+    source_path = manager.get_html_file_path("azure-migrate", language)
+    assert source_path is not None
+    soup = BeautifulSoup(Path(source_path).read_bytes(), "html.parser")
+
+    base_content = resolve_page_global_base_content(
+        soup,
+        definition,
+        language=language,
+    )
+    base_soup = BeautifulSoup(base_content, "html.parser")
+    assert len(base_soup.select("table")) == 1
+    assert base_soup.find("h2") is not None
+    assert "Azure Migrate" in base_soup.get_text(" ", strip=True)
+
+    common_sections = SectionExtractor().extract_all_sections(soup)
+    assert [section["sectionType"] for section in common_sections] == [
+        "Banner",
+        "ProductDescription",
+    ]
+    assert all(
+        section["content"] != base_content
+        for section in common_sections
+    )
+
+
+@pytest.mark.parametrize("language", ["zh-cn", "en-us"])
+def test_container_instances_post_selector_content_is_frozen(
+    language: str,
+) -> None:
+    manager = ProductManager()
+    definition = manager.get_product_config("container-instances")
+    source_path = manager.get_html_file_path(
+        "container-instances", language
+    )
+    assert source_path is not None
+    soup = BeautifulSoup(Path(source_path).read_bytes(), "html.parser")
+
+    fragment = extract_post_selector_page_global_content(soup)
+    assert fragment is not None
+    assert fragment.fragment_count == 2
+    assert definition["extraction"]["page_global_content"][
+        "source_boundary"
+    ] == POST_SELECTOR_PAGE_GLOBAL_BOUNDARY
+    assert resolve_page_global_base_content(
+        soup,
+        definition,
+        language=language,
+    ) == clean_html_content(fragment.source_html)
 
 
 @pytest.mark.parametrize("language", ["zh-cn", "en-us"])

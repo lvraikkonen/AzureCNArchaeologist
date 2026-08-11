@@ -211,7 +211,7 @@
                                         facilitates persistent data storage.
                                     </h4>
                                     <div class="updatetime">
-                                        Updated on：2026/3/20
+                                        Updated on：2026/8/10
                                     </div>
                                 </div>
                             </div>
@@ -2016,24 +2016,59 @@
                                                             of data is added to the disk. Now, the second
                                                             incremental snapshot is billed for only 20 GB.
                                                         </p>
-                                                    </div>
-                                                    <div class="notn3">
-                                                        <h4>
-                                                            Snapshots
-                                                        </h4>
                                                         <p>
-                                                            You can store incremental snapshots for Premium SSD v2 only
-                                                            on Standard storage. They are charged at ￥0.3/GB per month
-                                                            for Standard LRS snapshot option
-                                                            of the storage occupied by the delta changes since the last
-                                                            snapshot. For example, you are using a managed disk with
-                                                            provisioned size of 128 GB and a used size of 10 GB.
-                                                            The first incremental snapshot is billed only for the used
-                                                            size of 10 GB. Before you create the second snapshot, 20 GB
-                                                            of data is added to the disk. Now, the second
-                                                            incremental snapshot is billed for only 20 GB.
+                                                            When creating an instant access incremental snapshots from a Premium SSD v2 disk, two charges apply:
+                                                        </p>
+                                                        <ol>
+                                                            <li>
+                                                                Storage Charge: You are billed only for the additional storage consumed by the snapshot.
+                                                            </li>
+                                                            <li>
+                                                                Restore Charge: A one-time restore fee is charged each time you restore a disk from an instant access incremental snapshot. This fee is calculated based on the provisioned capacity of the disk at the time of restoration.
+                                                            </li>
+                                                        </ol>
+                                                        <p>
+                                                            For more information, see 
+                                                            <a href="https://docs.microsoft.com/en-us/azure/virtual-machines/disks-instant-access-snapshots?tabs=azure-cli%2Cazure-cli-snapshot-state">
+                                                            here
+                                                            </a>.
+                                                        </p>
+                                                        <p>
+                                                            As part of a limited-time offering, you are not charged for the additional storage consumed by instant access incremental snapshots through January 2027.
                                                         </p>
                                                     </div>
+
+                                                    <table cellpadding="0" cellspacing="0" id="managed-disks-SSD-V2-snapshots-north-china3" width="100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    <strong>Instant Access Charges</strong>
+                                                                </th>
+                                                                <th>
+                                                                    <strong>Price</strong>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    Storage Charge
+                                                                </td>
+                                                                <th>
+                                                                    ￥0.00164 per GB/hour
+                                                                </th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    Restore Operation Charge
+                                                                </td>
+                                                                <th>
+                                                                    ￥4.07 per provisioned TiB per disk restore
+                                                                </th>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    
                                                     <h4>
                                                         Pricing
                                                     </h4>
@@ -4895,6 +4930,76 @@
                                                         its performance configuration and will be affected by
                                                         the number of disks.
                                                     </p>
+
+                                                    <div class="isn3">
+                                                        <h4>
+                                                            Snapshots
+                                                        </h4>
+                                                        <p>
+                                                            You can store incremental snapshots for Premium SSD v2 only
+                                                            on Standard storage. They are charged at ￥0.3/GB per month
+                                                            for Standard LRS snapshot option
+                                                            of the storage occupied by the delta changes since the last
+                                                            snapshot. For example, you are using a managed disk with
+                                                            provisioned size of 128 GB and a used size of 10 GB.
+                                                            The first incremental snapshot is billed only for the used
+                                                            size of 10 GB. Before you create the second snapshot, 20 GB
+                                                            of data is added to the disk. Now, the second
+                                                            incremental snapshot is billed for only 20 GB.
+                                                        </p>
+                                                        <p>
+                                                            When creating an instant access incremental snapshots from a Premium SSD v2 disk, two charges apply:
+                                                        </p>
+                                                        <ol>
+                                                            <li>
+                                                                Storage Charge: You are billed only for the additional storage consumed by the snapshot.
+                                                            </li>
+                                                            <li>
+                                                                Restore Charge: A one-time restore fee is charged each time you restore a disk from an instant access incremental snapshot. This fee is calculated based on the provisioned capacity of the disk at the time of restoration.
+                                                            </li>
+                                                        </ol>
+                                                        <p>
+                                                            For more information, see 
+                                                            <a href="https://docs.microsoft.com/en-us/azure/virtual-machines/disks-instant-access-snapshots?tabs=azure-cli%2Cazure-cli-snapshot-state">
+                                                            here
+                                                            </a>.
+                                                        </p>
+                                                        <p>
+                                                            As part of a limited-time offering, you are not charged for the additional storage consumed by instant access incremental snapshots through January 2027.
+                                                        </p>
+                                                    </div>
+
+                                                    <table cellpadding="0" cellspacing="0" id="managed-disks-ultra-disk-snapshots-north-china3" width="100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    <strong>Instant Access Charges</strong>
+                                                                </th>
+                                                                <th>
+                                                                    <strong>Price</strong>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    Storage Charge
+                                                                </td>
+                                                                <th>
+                                                                    ￥0.00164 per GB/hour
+                                                                </th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    Restore Operation Charge
+                                                                </td>
+                                                                <th>
+                                                                    ￥4.07 per provisioned TiB per disk restore
+                                                                </th>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+
                                                     <p>
                                                         Ultra Disk is available in different sizes that provide a
                                                         configurable range of input/output operations per sec

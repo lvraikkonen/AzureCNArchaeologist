@@ -86,6 +86,18 @@ class RegionFilterStrategy(BaseStrategy):
         
         # 3. 使用FilterDetector获取筛选器信息
         filter_analysis = self.filter_detector.detect_filters(soup)
+        software_options = filter_analysis.get("software_options", [])
+        product_key = self._get_product_key()
+        if (
+            not filter_analysis.get("software_visible")
+            and len(software_options) == 1
+            and str(software_options[0].get("label", "")).casefold()
+            == product_key.casefold()
+            and str(software_options[0].get("value", "")).casefold()
+            != product_key.casefold()
+        ):
+            software_options[0]["value"] = product_key
+            filter_analysis["software_default_value"] = product_key
         
         # 4. 使用RegionProcessor提取区域内容（传递筛选器信息和产品配置）
         region_content = self.region_processor.extract_region_contents(

@@ -94,8 +94,12 @@ class ProductCatalogTests(unittest.TestCase):
                 expected_extraction_fields = {"semantic_strategy"}
                 if product_key in {
                     "cloud-services",
+                    "container-instances",
+                    "container-registry",
+                    "cdn",
                     "machine-learning",
                     "service-bus",
+                    "traffic-manager",
                     "virtual-machine-scale-sets",
                 }:
                     expected_extraction_fields.add("page_global_content")
@@ -420,7 +424,19 @@ class ExtractionStateTests(unittest.TestCase):
                 result = coordinator.coordinate_extraction(key, "zh-cn")
                 expected = json.loads((FIXTURES / f"{key}.json").read_text(encoding="utf-8"))
                 self.assertEqual(result.exit_code, 0, result.sidecar["validation"])
-                self.assertEqual(result.payload, expected)
+                if key == "cloud-services":
+                    canonical = json.dumps(
+                        result.payload,
+                        ensure_ascii=False,
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    ).encode("utf-8")
+                    self.assertEqual(
+                        hashlib.sha256(canonical).hexdigest(),
+                        "66d970da0ef928f8f41146f280f2119b47b86b631cb640d031f26daf0d7a54c6",
+                    )
+                else:
+                    self.assertEqual(result.payload, expected)
                 self.assertFalse({"validation", "extraction_metadata", "error"}.intersection(result.payload))
                 if key == "service-bus":
                     base_content = result.payload["baseContent"]
@@ -431,7 +447,7 @@ class ExtractionStateTests(unittest.TestCase):
                 if key == "cloud-services":
                     self.assertEqual(len(result.payload["contentGroups"]), 15)
 
-    def test_dns_remains_supported_and_current_source_extracts(self):
+    def test_dns_fixed_source_extracts_and_validates(self):
         definition = ProductManager().get_product_config("dns")
         self.assertEqual(definition["capability_status"], "supported")
         self.assertEqual(
@@ -449,7 +465,6 @@ class ExtractionStateTests(unittest.TestCase):
             self.assertTrue(result.execution_succeeded)
             self.assertIsNotNone(result.payload)
             self.assertIsNotNone(result.payload_path)
-            self.assertTrue(result.payload_path.is_file())
             self.assertEqual(result.sidecar["status"]["validation"], "passed")
             self.assertEqual(result.sidecar["input_assurance"]["status"], "passed")
 

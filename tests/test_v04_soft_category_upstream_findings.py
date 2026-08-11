@@ -18,6 +18,7 @@ from scripts.build_v04_soft_category_findings import (
 
 ROOT = Path(__file__).resolve().parents[1]
 
+
 def _normalize(value: str) -> str:
     return value.strip().removeprefix("#").strip()
 
@@ -84,6 +85,60 @@ def test_current_snapshot_has_no_duplicate_exact_pair():
     assert report["summary"]["duplicate_pair_entries"] == 0
 
 
+def test_upstream_quick_fix_keeps_one_authoritative_target_pair() -> None:
+    rows = json.loads(
+        (ROOT / CONFIG_RELATIVE_PATH).read_text(encoding="utf-8-sig")
+    )
+    expected_regions = {
+        "Managed Instance": {
+            "east-china",
+            "north-china",
+            "east-china2",
+            "north-china2",
+            "east-china3",
+            "north-china3",
+        },
+        "Azure AI Search": {
+            "east-china",
+            "north-china",
+            "east-china2",
+            "north-china2",
+            "north-china3",
+        },
+        "Cloud Services": {
+            "east-china",
+            "north-china",
+            "east-china2",
+            "north-china2",
+            "east-china3",
+            "north-china3",
+        },
+    }
+
+    for software, regions in expected_regions.items():
+        matching = [row for row in rows if row["os"] == software]
+        pairs = [(row["os"], row["region"]) for row in matching]
+        assert len(pairs) == len(set(pairs))
+        assert {row["region"] for row in matching} == regions
+
+
+def test_cloud_services_row_internal_redundancy_remains_visible() -> None:
+    report = json.loads(REPORT_JSON.read_text(encoding="utf-8"))
+    cloud_findings = [
+        finding
+        for finding in report["row_duplicate_table_id_findings"]
+        if finding["software_value"] == "Cloud Services"
+    ]
+
+    assert {finding["region_value"] for finding in cloud_findings} == {
+        "east-china",
+        "north-china",
+        "east-china2",
+        "north-china2",
+    }
+    assert all(finding["blocking"] is False for finding in cloud_findings)
+
+
 def test_duplicate_exact_pair_remains_blocking(tmp_path: Path) -> None:
     config_path = tmp_path / CONFIG_RELATIVE_PATH
     config_path.parent.mkdir(parents=True)
@@ -133,11 +188,11 @@ def test_row_duplicate_table_ids_are_nonblocking_ordered_unique():
         "configuration_entries_surveyed": 325,
         "duplicate_software_region_pairs": 0,
         "duplicate_pair_entries": 0,
-        "row_duplicate_table_id_entries": 32,
-        "row_duplicate_distinct_table_ids": 300,
-        "row_duplicate_extra_occurrences": 311,
+        "row_duplicate_table_id_entries": 38,
+        "row_duplicate_distinct_table_ids": 310,
+        "row_duplicate_extra_occurrences": 321,
     }
-    assert len(findings) == 32
+    assert len(findings) == 38
     assert all(
         finding["finding_code"] == ROW_FINDING_CODE
         and finding["status"] == "nonblocking_redundancy"

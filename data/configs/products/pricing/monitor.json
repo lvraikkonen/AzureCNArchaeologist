@@ -21,6 +21,6 @@
     }
   },
   "extraction": {
-    "semantic_strategy": "region_filter"
+    "semantic_strategy": "complex"
   }
 }

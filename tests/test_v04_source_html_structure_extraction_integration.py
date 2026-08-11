@@ -281,15 +281,11 @@ def test_blocking_structure_finding_stops_before_payload_generation(
 @pytest.mark.parametrize(
     ("product", "language"),
     (
-        ("dns", "zh-cn"),
-        ("dns", "en-us"),
-        ("service-fabric", "zh-cn"),
-        ("service-fabric", "en-us"),
         ("virtual-wan", "zh-cn"),
         ("virtual-wan", "en-us"),
     ),
 )
-def test_real_repaired_static_base_content_allows_payload_generation(
+def test_latest_static_duplicate_ids_stop_payload_generation(
     tmp_path: Path,
     product: str,
     language: str,
@@ -302,15 +298,17 @@ def test_real_repaired_static_base_content_allows_payload_generation(
         strategy="simple_static",
     )
 
-    assert result.execution_succeeded
-    assert result.payload is not None
-    assert result.payload_path is not None
-    assert result.payload_path.is_file()
-    assert result.sidecar["payload"] is not None
-    assert result.sidecar["input_assurance"]["status"] == "passed"
-    assert "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT" not in {
+    assert not result.execution_succeeded
+    assert result.exit_code == 1
+    assert result.payload is None
+    assert result.payload_path is None
+    assert result.sidecar["payload"] is None
+    assert result.sidecar["input_assurance"]["status"] == "failed"
+    assert result.sidecar["status"]["validation"] == "failed"
+    assert "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT" in {
         issue["code"] for issue in result.sidecar["validation"]["errors"]
     }
+    assert result.sidecar["error"]["code"] == "SOURCE_HTML_STRUCTURE_BLOCKED"
 
     evidence_path = Path(
         result.sidecar["input_assurance"]["source_html_structure"][
@@ -318,8 +316,56 @@ def test_real_repaired_static_base_content_allows_payload_generation(
         ]["path"]
     )
     evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
-    assert "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT" not in {
+    assert "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT" in {
         finding["code"] for finding in evidence["findings"]
+    }
+
+
+@pytest.mark.parametrize("language", ("zh-cn", "en-us"))
+def test_latest_dns_fixed_source_generates_payload(
+    tmp_path: Path,
+    language: str,
+) -> None:
+    result = _coordinator(tmp_path).coordinate_extraction(
+        "dns",
+        language,
+        strategy="simple_static",
+    )
+
+    assert result.execution_succeeded
+    assert result.payload is not None
+    assert result.payload_path is not None
+    assert result.sidecar["input_assurance"]["status"] == "passed"
+    assert result.sidecar["status"]["validation"] == "not_run"
+
+
+@pytest.mark.parametrize("language", ("zh-cn", "en-us"))
+def test_latest_service_fabric_missing_intrinsic_boundary_fails_closed(
+    tmp_path: Path,
+    language: str,
+) -> None:
+    coordinator = _coordinator(tmp_path)
+
+    result = coordinator.coordinate_extraction(
+        "service-fabric",
+        language,
+        strategy="simple_static",
+    )
+
+    assert not result.execution_succeeded
+    assert result.exit_code == 1
+    assert result.payload is None
+    assert result.payload_path is None
+    assert result.sidecar["payload"] is None
+    assert result.sidecar["input_assurance"]["status"] == "passed"
+    assert result.sidecar["status"]["validation"] == "not_run"
+    assert result.sidecar["error"] == {
+        "code": "ScopedSourceContentError",
+        "stage": "extraction",
+        "message": (
+            "Unable to prove an intrinsic Simple page-global "
+            "business-content boundary"
+        ),
     }
 
 
@@ -398,25 +444,26 @@ def test_real_blocking_structure_finding_exits_without_payload(
     )
 
 
-def test_event_hubs_current_source_reachability_blocks_payload(
+@pytest.mark.parametrize("language", ("zh-cn", "en-us"))
+def test_latest_event_hubs_footnote_stops_payload_generation(
     tmp_path: Path,
+    language: str,
 ) -> None:
     coordinator = _coordinator(tmp_path)
 
-    result = coordinator.coordinate_extraction("event-hubs", "zh-cn")
+    result = coordinator.coordinate_extraction("event-hubs", language)
 
     assert not result.execution_succeeded
     assert result.exit_code == 1
     assert result.payload is None
     assert result.payload_path is None
     assert result.sidecar["payload"] is None
-    assert result.sidecar["input_assurance"]["status"] == "passed"
-    assert result.sidecar["status"]["validation"] == "not_run"
-    assert result.sidecar["error"] == {
-        "code": "duplicate_filter_target",
-        "stage": "source_reachability",
-        "message": "region desktop href values must be unique",
-    }
+    assert result.sidecar["input_assurance"]["status"] == "failed"
+    assert result.sidecar["status"]["validation"] == "failed"
+    assert {
+        issue["code"] for issue in result.sidecar["validation"]["errors"]
+    } == {"SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION"}
+    assert result.sidecar["error"]["code"] == "SOURCE_HTML_STRUCTURE_BLOCKED"
 
 
 def test_persisted_replay_cannot_bypass_a_new_blocking_finding(

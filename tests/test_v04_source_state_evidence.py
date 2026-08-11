@@ -813,7 +813,7 @@ def test_real_cloud_memory_direct_projection_is_non_price_bearing(
         .source_evidence.strict_soft_category_projection
     )
     assert projection is not None
-    assert projection.matching_entry_indices == (40,)
+    assert projection.matching_entry_indices == (42,)
     assert projection.removed_table_ids == (
         "cloudservice-table-memoryintensive-A5-A7",
     )
@@ -852,7 +852,7 @@ def test_bilingual_cloud_direct_evidence_uses_same_frozen_config() -> None:
 
     assert zh.config_path == en.config_path
     assert zh.config_sha256 == en.config_sha256
-    assert zh.config_entry_index == en.config_entry_index == 40
+    assert zh.config_entry_index == en.config_entry_index == 42
     assert zh.source_path != en.source_path
     assert zh.source_sha256 != en.source_sha256
     assert zh.to_cms_state() == en.to_cms_state()

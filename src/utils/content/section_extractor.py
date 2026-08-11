@@ -10,13 +10,14 @@ import copy
 import re
 from pathlib import Path
 from typing import Dict, List, Any, Optional
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, Comment, Tag
 
 # 添加项目根目录到Python路径
 project_root = Path(__file__).parent.parent.parent.parent
 sys.path.append(str(project_root))
 
 from src.core.logging import get_logger
+from src.core.html_price_bearing import is_price_bearing_html
 from src.utils.html.cleaner import clean_html_content
 
 logger = get_logger(__name__)
@@ -63,17 +64,17 @@ def owns_sla_heading(section: Tag) -> bool:
 
 
 def is_price_bearing_pricing_details_section(section: Tag) -> bool:
-    """Return whether one exact section owns a titled pricing table."""
+    """Return whether one exact section owns a titled price-bearing body."""
 
     if (
         section.name != "div"
         or set(section.get("class") or ()) != {"pricing-page-section"}
-        or section.find("table") is None
         or section.select_one(
             ".more-detail, .technical-azure-selector, .pricing-detail-tab"
         )
         is not None
         or owns_sla_heading(section)
+        or not is_price_bearing_html(str(section))
     ):
         return False
 
@@ -208,6 +209,85 @@ def is_exact_common_section_boundary(node: Tag) -> bool:
         and len(material_children) == 1
         and material_children == exact_children
     )
+
+
+def is_intrinsic_unheaded_simple_pricing_body(section: Tag) -> bool:
+    """Return whether one unheaded section is the whole Simple price body.
+
+    This historical layout is used by free/no-additional-charge pages. The
+    section must directly follow the Banner, contain no table, heading,
+    selector, or interaction, and every later visible sibling must be an exact
+    FAQ/SLA boundary. In that closed shape the statement belongs to
+    ``baseContent`` rather than ``ProductDescription``.
+    """
+
+    if (
+        section.name != "div"
+        or set(section.get("class") or ()) != {"pricing-page-section"}
+        or not section.get_text(" ", strip=True)
+        or section.find(
+            [
+                "h1",
+                "h2",
+                "h3",
+                "h4",
+                "h5",
+                "h6",
+                "table",
+                "nav",
+                "form",
+                "select",
+                "button",
+                "iframe",
+            ]
+        )
+        is not None
+        or section.select_one(
+            ".technical-azure-selector, .pricing-detail-tab, .more-detail"
+        )
+        is not None
+    ):
+        return False
+    parent = section.parent
+    if (
+        not isinstance(parent, Tag)
+        or "pure-content" not in (parent.get("class") or ())
+    ):
+        return False
+
+    previous_material = section.find_previous_sibling(
+        lambda node: isinstance(node, Tag)
+        and (
+            node.get_text(" ", strip=True)
+            or node.find(["img", "video", "audio", "table", "iframe"])
+            is not None
+        )
+        and node.name not in {"script", "style", "template", "tags"}
+    )
+    if (
+        not isinstance(previous_material, Tag)
+        or "common-banner" not in (previous_material.get("class") or ())
+    ):
+        return False
+
+    common_count = 0
+    for sibling in section.next_siblings:
+        if isinstance(sibling, Comment):
+            continue
+        if not isinstance(sibling, Tag):
+            if str(sibling).strip():
+                return False
+            continue
+        if sibling.name in {"script", "style", "template", "tags"}:
+            continue
+        if not sibling.get_text(" ", strip=True) and sibling.find(
+            ["img", "video", "audio", "table", "iframe"]
+        ) is None:
+            continue
+        if not is_exact_common_section_boundary(sibling):
+            return False
+        common_count += 1
+    return common_count > 0
 
 
 class CommonSectionBoundaryError(ValueError):
@@ -450,6 +530,14 @@ class SectionExtractor:
                     continue
                 if (
                     isinstance(current, Tag)
+                    and is_intrinsic_unheaded_simple_pricing_body(current)
+                ):
+                    logger.info(
+                        "⏩ 跳过由Simple baseContent拥有的无标题定价主体"
+                    )
+                    continue
+                if (
+                    isinstance(current, Tag)
                     and is_exact_common_section_boundary(current)
                 ):
                     continue
@@ -522,6 +610,11 @@ class SectionExtractor:
                 if (
                     isinstance(current, Tag)
                     and is_price_bearing_pricing_details_section(current)
+                ):
+                    continue
+                if (
+                    isinstance(current, Tag)
+                    and is_intrinsic_unheaded_simple_pricing_body(current)
                 ):
                     continue
                 if (

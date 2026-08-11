@@ -601,6 +601,7 @@ class SourceReachabilityResolver:
             container_class="region-container",
             select_selector="select#region-box, select.region-box",
             fallback_display_name="Region",
+            product_key=canonical_input.product_key,
             findings=findings,
         )
         software = self._parse_dropdown_control(
@@ -609,11 +610,17 @@ class SourceReachabilityResolver:
             container_class="software-kind-container",
             select_selector="select#software-box, select.software-box",
             fallback_display_name="Software category",
+            product_key=canonical_input.product_key,
             findings=findings,
         )
 
         panels = self._top_level_panels(root)
-        scopes = self._software_scopes(root, panels, software)
+        scopes = self._software_scopes(
+            root,
+            panels,
+            software,
+            findings=findings,
+        )
         reachable_panel_ids = {
             panel_id
             for scope in scopes
@@ -919,6 +926,8 @@ class SourceReachabilityResolver:
         root: Tag,
         panels: dict[str, Tag],
         software: _ParsedControl | None,
+        *,
+        findings: list[SourceReachabilityFinding],
     ) -> tuple[_SoftwareScope, ...]:
         if software is not None:
             options = (
@@ -930,6 +939,50 @@ class SourceReachabilityResolver:
             for option in options:
                 panel_id = option.href.removeprefix("#")
                 panel = panels.get(panel_id)
+                if (
+                    panel is None
+                    and not software.visible
+                    and len(software.options) == 1
+                ):
+                    implicit_panels = [
+                        child
+                        for child in root.find_all("div", recursive=False)
+                        if (
+                            "tab-control-container"
+                            in (child.get("class") or ())
+                            and self._tag_id(child) is None
+                            and (
+                                self._text(child)
+                                or child.find(
+                                    [
+                                        "img",
+                                        "video",
+                                        "audio",
+                                        "table",
+                                        "iframe",
+                                    ]
+                                )
+                                is not None
+                            )
+                        )
+                    ]
+                    if len(implicit_panels) == 1:
+                        panel = implicit_panels[0]
+                        findings.append(SourceReachabilityFinding(
+                            code="implicit_hidden_software_scope",
+                            message=(
+                                "A hidden singleton software control targets "
+                                "a missing id, but the selector owns exactly "
+                                "one id-less static content container."
+                            ),
+                            evidence={
+                                "software_value": option.value,
+                                "declared_href": option.href,
+                                "implicit_classes": list(
+                                    panel.get("class") or ()
+                                ),
+                            },
+                        ))
                 if panel is None:
                     self._fail(
                         "missing_software_target",
@@ -965,18 +1018,34 @@ class SourceReachabilityResolver:
     def _top_level_panels(self, root: Tag) -> dict[str, Tag]:
         """Index direct software targets without crossing nested tab scopes."""
 
-        tab_content = root.find("div", class_="tab-content")
-        if tab_content is None:
-            return {}
         panels: list[tuple[str, Tag]] = []
-        # Frozen sources use tab-panel, tab-control-container, and tab-content
-        # for software targets.  Direct-child placement plus tabContentN is the
-        # common identity; a class-only recursive search misclassifies nested
-        # content panels that reuse the outer software id.
-        for panel in tab_content.find_all("div", recursive=False):
-            panel_id = self._tag_id(panel)
-            if panel_id is not None and _PANEL_ID.fullmatch(panel_id):
-                panels.append((panel_id, panel))
+        # Frozen sources place software targets in one of three equivalent
+        # direct scopes: directly under the pricing selector, under its direct
+        # tab-content wrapper, or under a direct nested static tab selector.
+        # Never search deeper than this: category panels reuse tabContentN
+        # prefixes and some pages even duplicate the outer id in a descendant.
+        for child in root.find_all("div", recursive=False):
+            child_id = self._tag_id(child)
+            if child_id is not None and _PANEL_ID.fullmatch(child_id):
+                panels.append((child_id, child))
+
+            classes = set(child.get("class") or ())
+            owns_direct_software_panels = (
+                "tab-content" in classes
+                or {
+                    "technical-azure-selector",
+                    "tab-control-selector",
+                }.issubset(classes)
+            )
+            if not owns_direct_software_panels:
+                continue
+            for panel in child.find_all("div", recursive=False):
+                panel_id = self._tag_id(panel)
+                if (
+                    panel_id is not None
+                    and _PANEL_ID.fullmatch(panel_id)
+                ):
+                    panels.append((panel_id, panel))
         self._require_unique(
             (panel_id for panel_id, _ in panels),
             "duplicate_software_panel",
@@ -1087,6 +1156,7 @@ class SourceReachabilityResolver:
         container_class: str,
         select_selector: str,
         fallback_display_name: str,
+        product_key: str,
         findings: list[SourceReachabilityFinding],
     ) -> _ParsedControl | None:
         containers = root.select(
@@ -1107,6 +1177,7 @@ class SourceReachabilityResolver:
                 f"Expected one mobile {filter_key} control, found {len(selects)}",
             )
 
+        control_visible = not self._effectively_hidden(container, root)
         mobile_rows: list[tuple[str, str, str, bool, int]] = []
         for index, option in enumerate(selects[0].find_all(
             "option", recursive=False
@@ -1124,6 +1195,29 @@ class SourceReachabilityResolver:
                 if filter_key == "region"
                 else raw_value
             )
+            if (
+                filter_key == "software"
+                and not control_visible
+                and len(selects[0].find_all("option", recursive=False)) == 1
+                and raw_value.casefold() != product_key.casefold()
+                and label.casefold() == product_key.casefold()
+            ):
+                value = product_key
+                findings.append(SourceReachabilityFinding(
+                    code="hidden_software_machine_value_product_drift",
+                    message=(
+                        "A hidden singleton software machine value differs "
+                        "from the matching Product Definition identity; the "
+                        "product identity is authoritative for internal "
+                        "applicability lookup."
+                    ),
+                    evidence={
+                        "source_value": raw_value,
+                        "canonical_value": product_key,
+                        "label": label,
+                        "href": href,
+                    },
+                ))
             if filter_key == "region" and raw_value != value:
                 findings.append(SourceReachabilityFinding(
                     code="filter_machine_value_target_drift",
@@ -1167,10 +1261,8 @@ class SourceReachabilityResolver:
                 "missing_desktop_filter",
                 f"{filter_key} has no desktop interaction options",
             )
-        desktop_hrefs: list[str] = []
-        desktop_labels: dict[str, str] = {}
-        desktop_defaults: list[str] = []
-        for link in desktop_links:
+        desktop_rows: list[tuple[str, str, bool, int]] = []
+        for index, link in enumerate(desktop_links):
             href = self._fragment_href(link.get("data-href"), filter_key)
             label = self._text(link)
             if not label:
@@ -1178,15 +1270,26 @@ class SourceReachabilityResolver:
                     "invalid_filter_option",
                     f"{filter_key} desktop options require labels",
                 )
-            desktop_hrefs.append(href)
-            desktop_labels[href] = label
             parent = link.find_parent("li")
-            if parent is not None and {
-                "active",
-                "selected",
-                "selected-item",
-            }.intersection(parent.get("class", [])):
-                desktop_defaults.append(href)
+            is_default = bool(
+                parent is not None
+                and {
+                    "active",
+                    "selected",
+                    "selected-item",
+                }.intersection(parent.get("class", []))
+            )
+            desktop_rows.append((href, label, is_default, index))
+
+        desktop_rows = self._reconcile_desktop_rows(
+            filter_key,
+            desktop_rows,
+            mobile_rows,
+            findings,
+        )
+        desktop_hrefs = [row[0] for row in desktop_rows]
+        desktop_labels = {row[0]: row[1] for row in desktop_rows}
+        desktop_defaults = [row[0] for row in desktop_rows if row[2]]
 
         self._require_unique(
             desktop_hrefs,
@@ -1229,6 +1332,40 @@ class SourceReachabilityResolver:
             for href, label in desktop_labels.items()
             if selected_item_label and label == selected_item_label
         ]
+        mobile_defaults = [row[0] for row in mobile_rows if row[3]]
+        unique_mobile_defaults = list(dict.fromkeys(mobile_defaults))
+        unique_desktop_defaults = list(dict.fromkeys(desktop_defaults))
+        if len(unique_desktop_defaults) > 1:
+            corroborated_default = (
+                unique_mobile_defaults[0]
+                if (
+                    len(unique_mobile_defaults) == 1
+                    and summary_matches == [unique_mobile_defaults[0]]
+                    and unique_mobile_defaults[0]
+                    in unique_desktop_defaults
+                )
+                else None
+            )
+            if corroborated_default is not None:
+                stale_defaults = [
+                    href
+                    for href in unique_desktop_defaults
+                    if href != corroborated_default
+                ]
+                findings.append(SourceReachabilityFinding(
+                    code="stale_desktop_default_marker",
+                    message=(
+                        f"{filter_key} has extra desktop active markers; "
+                        "the unique mobile selection and desktop summary "
+                        "agree on the canonical default."
+                    ),
+                    evidence={
+                        "filter_key": filter_key,
+                        "canonical_default_href": corroborated_default,
+                        "stale_default_hrefs": stale_defaults,
+                    },
+                ))
+                desktop_defaults = [corroborated_default]
         desktop_default = self._declared_default(
             filter_key,
             desktop_defaults,
@@ -1248,10 +1385,6 @@ class SourceReachabilityResolver:
                 "missing_filter_default",
                 f"{filter_key} desktop control has no unambiguous default",
             )
-        mobile_defaults = [
-            row[0] for row in mobile_rows if row[3]
-        ]
-        unique_mobile_defaults = list(dict.fromkeys(mobile_defaults))
         if len(unique_mobile_defaults) > 1:
             if not desktop_is_unambiguous:
                 self._single_default(
@@ -1320,10 +1453,112 @@ class SourceReachabilityResolver:
             filter_key=filter_key,
             filter_type="dropdown",
             display_name=display_name,
-            visible=not self._effectively_hidden(container, root),
+            visible=control_visible,
             options=options,
             selected_item_label=selected_item_label,
         )
+
+    def _reconcile_desktop_rows(
+        self,
+        filter_key: str,
+        desktop_rows: list[tuple[str, str, bool, int]],
+        mobile_rows: list[tuple[str, str, str, bool, int]],
+        findings: list[SourceReachabilityFinding],
+    ) -> list[tuple[str, str, bool, int]]:
+        """Repair only source-proven responsive markup drift.
+
+        The mobile control owns the unique interaction-target domain. Desktop
+        labels and ordering remain authoritative. A target can be repaired by
+        position only when equal-length controls otherwise align and the raw
+        desktop target is duplicated while the mobile target is absent. An
+        extra duplicate desktop row can be suppressed only when exactly one
+        row in that duplicate group has the mobile label and no dropped row is
+        marked as a default.
+        """
+
+        reconciled = list(desktop_rows)
+        raw_hrefs = [row[0] for row in reconciled]
+        if len(reconciled) == len(mobile_rows):
+            mismatch_indexes = [
+                index
+                for index, (desktop, mobile) in enumerate(
+                    zip(reconciled, mobile_rows, strict=True)
+                )
+                if desktop[0] != mobile[0]
+            ]
+            position_repair_is_proven = bool(mismatch_indexes) and all(
+                raw_hrefs.count(reconciled[index][0]) > 1
+                and mobile_rows[index][0] not in raw_hrefs
+                for index in mismatch_indexes
+            )
+            if position_repair_is_proven:
+                for index in mismatch_indexes:
+                    source_href, label, is_default, source_index = (
+                        reconciled[index]
+                    )
+                    canonical_href = mobile_rows[index][0]
+                    reconciled[index] = (
+                        canonical_href,
+                        label,
+                        is_default,
+                        source_index,
+                    )
+                    findings.append(SourceReachabilityFinding(
+                        code="responsive_filter_target_position_drift",
+                        message=(
+                            f"{filter_key} desktop target is a duplicated "
+                            "stale value; equal-length responsive controls "
+                            "prove the mobile target at the same position."
+                        ),
+                        evidence={
+                            "filter_key": filter_key,
+                            "source_index": source_index,
+                            "source_href": source_href,
+                            "canonical_href": canonical_href,
+                            "desktop_label": label,
+                        },
+                    ))
+
+        href_groups: dict[str, list[tuple[str, str, bool, int]]] = {}
+        for row in reconciled:
+            href_groups.setdefault(row[0], []).append(row)
+        mobile_by_href = {row[0]: row for row in mobile_rows}
+        suppressed_indexes: set[int] = set()
+        for href, rows in href_groups.items():
+            if len(rows) < 2 or href not in mobile_by_href:
+                continue
+            mobile_label = mobile_by_href[href][2]
+            label_matches = [
+                row
+                for row in rows
+                if row[1] == mobile_label
+            ]
+            if len(label_matches) != 1:
+                continue
+            retained = label_matches[0]
+            discarded = [row for row in rows if row[3] != retained[3]]
+            if any(row[2] for row in discarded):
+                continue
+            for row in discarded:
+                suppressed_indexes.add(row[3])
+                findings.append(SourceReachabilityFinding(
+                    code="suppressed_stale_desktop_filter_option",
+                    message=(
+                        f"{filter_key} has an extra desktop row reusing a "
+                        "mobile target; the row whose label matches the "
+                        "mobile option is the only reachable presentation."
+                    ),
+                    evidence={
+                        "filter_key": filter_key,
+                        "href": href,
+                        "suppressed_label": row[1],
+                        "retained_label": retained[1],
+                        "source_index": row[3],
+                    },
+                ))
+        return [
+            row for row in reconciled if row[3] not in suppressed_indexes
+        ]
 
     def _parse_category_branch(
         self,
@@ -1459,7 +1694,8 @@ class SourceReachabilityResolver:
         )
 
         concrete_hrefs: list[str] = []
-        suppressed_rows: list[tuple[str, bool]] = []
+        layout_hrefs: list[str] = []
+        suppressed_rows: list[tuple[str, bool, str]] = []
         for href in desktop_hrefs:
             target_id = href.removeprefix("#")
             global_matches = soup.find_all(id=target_id)
@@ -1476,12 +1712,31 @@ class SourceReachabilityResolver:
                 )
             if not global_matches:
                 if desktop_labels[href].casefold() in AGGREGATE_LABELS:
-                    suppressed_rows.append((href, href == raw_default))
+                    suppressed_rows.append((
+                        href,
+                        href == raw_default,
+                        "missing_aggregate_target",
+                    ))
                     continue
                 self._fail(
                     "missing_category_target",
                     f"Category target {href} does not exist",
                 )
+            layout_hrefs.append(href)
+            target = global_matches[0]
+            if (
+                not self._text(target)
+                and target.find(
+                    ["img", "video", "audio", "table", "iframe"]
+                )
+                is None
+            ):
+                suppressed_rows.append((
+                    href,
+                    href == raw_default,
+                    "empty_category_target",
+                ))
+                continue
             concrete_hrefs.append(href)
 
         if not concrete_hrefs:
@@ -1522,7 +1777,7 @@ class SourceReachabilityResolver:
                 href=href,
                 parent_value=parent_value,
                 parent_panel_id=parent_panel_id,
-                reason="missing_aggregate_target",
+                reason=reason,
                 was_default=was_default,
                 replacement_default_value=(
                     default_href.removeprefix("#")
@@ -1530,7 +1785,7 @@ class SourceReachabilityResolver:
                     else None
                 ),
             )
-            for href, was_default in suppressed_rows
+            for href, was_default, reason in suppressed_rows
         )
 
         if selected_item_label:
@@ -1569,7 +1824,7 @@ class SourceReachabilityResolver:
             )
         try:
             category_panel_ids = tuple(
-                option.value for option in options
+                href.removeprefix("#") for href in layout_hrefs
             )
             ancestor_fragment = extract_category_ancestor_fragment(
                 soup,

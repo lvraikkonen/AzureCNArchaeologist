@@ -3,27 +3,98 @@
   "report_scope": "v0.4_upstream_source_html_structure_findings_inventory",
   "generator": "scripts/build_v04_source_html_findings.py",
   "auditor_version": "exact-owned-boundaries-static-page-global-ids-and-post-selector-scope-v4",
-  "product_index_source_digest": "sha256:06853dee2b4b03b4d08ca56be12eb096878e8c4a5e52f712a5754f20e8e6ac30",
+  "product_index_source_digest": "sha256:a293ec6a4f52ce18e651a9facd2113b2adfe68771e811e9a2985c6519e70af1a",
   "survey": {
-    "supported_product_definitions": 184,
+    "supported_product_definitions": 186,
     "languages": [
       "zh-cn",
       "en-us"
     ],
-    "canonical_sources_surveyed": 368,
-    "simple_static_sources_surveyed": 62,
-    "source_inventory_sha256": "5f974a63918b21fc50b46bfe9e63bc195f432d3ef4b36c829be4640f0a81b710",
+    "canonical_sources_surveyed": 372,
+    "simple_static_sources_surveyed": 66,
+    "source_inventory_sha256": "e0c6da2f1f563095d836fa84a09e57ce2b33a3caa2e2ec17410c875bb5692ef5",
     "all_auditor_findings_by_code": {
-      "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT": 1,
+      "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT": 2,
       "SOURCE_HTML_CONTENT_WITHOUT_EXACT_COMMON_BOUNDARY": 1,
-      "SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION": 1,
+      "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT": 2,
+      "SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION": 3,
       "SOURCE_HTML_POST_SELECTOR_SUPPORT_SECTION_UNCLASSIFIED": 1,
-      "SOURCE_HTML_PRICING_SECTION_OVERWRAPS_SELECTOR_AND_QA": 11,
-      "SOURCE_HTML_PRICING_TABLE_SECTION_WITHOUT_OWN_HEADING": 1
+      "SOURCE_HTML_PRICING_SECTION_OVERWRAPS_SELECTOR_AND_QA": 12,
+      "SOURCE_HTML_PRICING_TABLE_SECTION_WITHOUT_OWN_HEADING": 1,
+      "SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL": 1
     },
     "cross_state_duplicate_ids_are_not_treated_as_page_global_duplicates": true
   },
-  "confirmed_blocking_findings": [],
+  "confirmed_blocking_findings": [
+    {
+      "status": "confirmed_blocking",
+      "product_key": "virtual-wan",
+      "display_name": "Virtual WAN",
+      "language": "zh-cn",
+      "source": {
+        "path": "data/prod-html/zh-cn/pricing/virtual-wan.html",
+        "sha256": "8f5511f5649fc2affdc76adb1ac4b4c0c6c5d5c4c23b387f4af6ba8f18e1ec62",
+        "size_bytes": 20696
+      },
+      "finding_code": "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT",
+      "duplicate_id": "tabContent1",
+      "occurrence_count": 2,
+      "lines": [
+        149,
+        351
+      ],
+      "reference_count": 0,
+      "references": [],
+      "confirmation_basis": [
+        "sole_static_formal_selector_scope",
+        "no_active_filter_controls",
+        "exact_following_common_section_boundary",
+        "duplicate_id_occurs_within_one_page_global_fragment",
+        "no_dom_target_references_found"
+      ],
+      "upstream_suggestion": {
+        "action": "remove_redundant_or_make_id_unique",
+        "description": "Upstream should remove redundant 'tabContent1' id attributes when they are not referenced, or assign a unique id to every occurrence and update all href, aria-controls, aria-labelledby, for, and data-* references targeting #tabContent1.",
+        "from_line": 351,
+        "before_line": 149
+      },
+      "payload_generation_allowed": false
+    },
+    {
+      "status": "confirmed_blocking",
+      "product_key": "virtual-wan",
+      "display_name": "Virtual WAN",
+      "language": "en-us",
+      "source": {
+        "path": "data/prod-html/en-us/pricing/virtual-wan.html",
+        "sha256": "a3b9f1e90a4730f3ab53f3f80cf8445caf622a29afd567e872a04e4e9ed1fbac",
+        "size_bytes": 29083
+      },
+      "finding_code": "SOURCE_HTML_DUPLICATE_ID_IN_BUSINESS_CONTENT",
+      "duplicate_id": "tabContent1",
+      "occurrence_count": 2,
+      "lines": [
+        152,
+        367
+      ],
+      "reference_count": 0,
+      "references": [],
+      "confirmation_basis": [
+        "sole_static_formal_selector_scope",
+        "no_active_filter_controls",
+        "exact_following_common_section_boundary",
+        "duplicate_id_occurs_within_one_page_global_fragment",
+        "no_dom_target_references_found"
+      ],
+      "upstream_suggestion": {
+        "action": "remove_redundant_or_make_id_unique",
+        "description": "Upstream should remove redundant 'tabContent1' id attributes when they are not referenced, or assign a unique id to every occurrence and update all href, aria-controls, aria-labelledby, for, and data-* references targeting #tabContent1.",
+        "from_line": 367,
+        "before_line": 152
+      },
+      "payload_generation_allowed": false
+    }
+  ],
   "blocking_source_structure_findings": [
     {
       "status": "confirmed_blocking",
@@ -178,8 +249,8 @@
       "language": "zh-cn",
       "source": {
         "path": "data/prod-html/zh-cn/pricing/data-lake-storage.html",
-        "sha256": "c43dddf726af711bf18206e83b518f87fec8527d048aee8ab64410434feea7c3",
-        "size_bytes": 625018
+        "sha256": "d581fe4e768eb62a706d968063f26a2ff727b7594406c92de9904512bdd8ca48",
+        "size_bytes": 625037
       },
       "finding_code": "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT",
       "message": "A direct post-selector node contains FAQ/SLA content plus additional material, so it cannot be classified as one exact common-section boundary.",
@@ -195,7 +266,7 @@
           "description": "Embedded style is a sibling of exact FAQ content inside the same pricing-page-section."
         },
         {
-          "line": 8207,
+          "line": 8208,
           "dom_path": "html > body.zh-cn > div.content:nth-of-type(2) > div.container > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div.pricing-page-section:nth-of-type(6) > div.more-detail",
           "description": "Exact div.more-detail FAQ follows embedded stylesheet content in the same boundary."
         }
@@ -203,7 +274,7 @@
       "lines": [
         8167,
         8168,
-        8207
+        8208
       ],
       "safety_checks": [
         "direct_sibling_after_final_formal_selector",
@@ -216,7 +287,137 @@
         "action": "separate_embedded_style_from_common_section",
         "description": "Move the embedded stylesheet out of the business-content pricing-page-section and into the page stylesheet or an explicit non-business template scope, leaving div.more-detail as an exact common-section boundary.",
         "from_line": 8168,
-        "before_line": 8207
+        "before_line": 8208
+      },
+      "payload_generation_allowed": false
+    },
+    {
+      "status": "confirmed_blocking",
+      "product_key": "event-hubs",
+      "display_name": "Event Hubs",
+      "language": "zh-cn",
+      "source": {
+        "path": "data/prod-html/zh-cn/pricing/event-hubs.html",
+        "sha256": "b20aab3729ca17b56ef4302d1690bb0b94a18184c4a9fece0b6fd4e6fb8fc00a",
+        "size_bytes": 35527
+      },
+      "finding_code": "SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION",
+      "message": "A pricing footnote sits outside the selector state that provides its pricing-table context.",
+      "evidence": [
+        {
+          "line": 506,
+          "dom_path": "html > body.zh-cn > div.content:nth-of-type(2) > div.container > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div.tags-date:nth-of-type(4)",
+          "description": "Pricing footnote is a page-level sibling outside the formal selector and before the exact FAQ/SLA boundary."
+        }
+      ],
+      "lines": [
+        506
+      ],
+      "safety_checks": [
+        "direct_sibling_after_final_formal_selector",
+        "post_selector_tags_date_footnote",
+        "exact_following_common_section_boundary",
+        "pricing_context_requires_state_ownership",
+        "raw_balanced_target_element"
+      ],
+      "upstream_suggestion": {
+        "action": "return_footnote_to_state_panel",
+        "description": "Move the tags-date pricing footnote back into the specific selector state/table panel whose markers it explains; do not relabel it as page-global content.",
+        "from_line": 506,
+        "before_line": 504
+      },
+      "payload_generation_allowed": false
+    },
+    {
+      "status": "confirmed_blocking",
+      "product_key": "event-hubs",
+      "display_name": "Event Hubs",
+      "language": "en-us",
+      "source": {
+        "path": "data/prod-html/en-us/pricing/event-hubs.html",
+        "sha256": "7e58ed08f23901f20c31a0e0cfadb963df50ad2bd46d4978ad2251c80a79c7bd",
+        "size_bytes": 55257
+      },
+      "finding_code": "SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION",
+      "message": "A pricing footnote sits outside the selector state that provides its pricing-table context.",
+      "evidence": [
+        {
+          "line": 496,
+          "dom_path": "html > body.en-us > div.content:nth-of-type(2) > div.container > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div.tags-date:nth-of-type(4)",
+          "description": "Pricing footnote is a page-level sibling outside the formal selector and before the exact FAQ/SLA boundary."
+        }
+      ],
+      "lines": [
+        496
+      ],
+      "safety_checks": [
+        "direct_sibling_after_final_formal_selector",
+        "post_selector_tags_date_footnote",
+        "exact_following_common_section_boundary",
+        "pricing_context_requires_state_ownership",
+        "raw_balanced_target_element"
+      ],
+      "upstream_suggestion": {
+        "action": "return_footnote_to_state_panel",
+        "description": "Move the tags-date pricing footnote back into the specific selector state/table panel whose markers it explains; do not relabel it as page-global content.",
+        "from_line": 496,
+        "before_line": 495
+      },
+      "payload_generation_allowed": false
+    },
+    {
+      "status": "confirmed_blocking",
+      "product_key": "managed-instance",
+      "display_name": "Azure SQL Managed Instance",
+      "language": "zh-cn",
+      "source": {
+        "path": "data/prod-html/zh-cn/pricing/managed-instance.html",
+        "sha256": "c2c6e4d2bf4bd8a2e596ef8184bd2972ea1ac0d56e924d66b89d326e3b139612",
+        "size_bytes": 616445
+      },
+      "finding_code": "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT",
+      "message": "A direct post-selector node contains FAQ/SLA content plus additional material, so it cannot be classified as one exact common-section boundary.",
+      "evidence": [
+        {
+          "line": 5893,
+          "dom_path": "html > body.zh-cn > div.content:nth-of-type(2) > div.container > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div:nth-of-type(6)",
+          "description": "Direct post-selector node contains a common-section boundary but is not itself one exact FAQ/SLA boundary."
+        },
+        {
+          "line": 5895,
+          "dom_path": "html > body.zh-cn > div.content:nth-of-type(2) > div.container > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div:nth-of-type(6) > div.pricing-page-section:nth-of-type(1) > div.more-detail",
+          "description": "Exact div.more-detail FAQ is nested in a classless wrapper."
+        },
+        {
+          "line": 6704,
+          "dom_path": "html > body.zh-cn > div.content:nth-of-type(2) > div.container > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div:nth-of-type(6) > div.pricing-page-section:nth-of-type(1) > p",
+          "description": "FAQ documentation link is visible outside div.more-detail."
+        },
+        {
+          "line": 6713,
+          "dom_path": "html > body.zh-cn > div.content:nth-of-type(2) > div.container > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div:nth-of-type(6) > div.pricing-page-section:nth-of-type(2)",
+          "description": "Owned SLA section shares the same classless wrapper with FAQ."
+        }
+      ],
+      "lines": [
+        5893,
+        5895,
+        6704,
+        6713
+      ],
+      "safety_checks": [
+        "direct_sibling_after_final_formal_selector",
+        "contains_exact_common_section_boundary",
+        "common_section_boundary_not_exact",
+        "visible_content_outside_owned_faq",
+        "wrapper_spans_multiple_common_sections",
+        "raw_balanced_target_element"
+      ],
+      "upstream_suggestion": {
+        "action": "split_ambiguous_common_section_wrapper",
+        "description": "Remove or split the classless wrapper so FAQ and SLA are separate exact page-level common-section boundaries, and move the FAQ documentation-link paragraph inside div.more-detail before its closing tag.",
+        "from_line": 5893,
+        "before_line": 5895
       },
       "payload_generation_allowed": false
     },
@@ -273,6 +474,61 @@
         "description": "Upstream must declare whether this section is pricing business content or a common SLA/Qa section. If it is SLA content, use the agreed exact heading/wrapper and include the owned SLA material; otherwise move it into an explicit business-content boundary. Do not broaden matching to every heading named Support.",
         "from_line": 370,
         "before_line": 364
+      },
+      "payload_generation_allowed": false
+    },
+    {
+      "status": "confirmed_blocking",
+      "product_key": "ssis",
+      "display_name": "SQL Server Integration Services",
+      "language": "zh-cn",
+      "source": {
+        "path": "data/prod-html/zh-cn/pricing/ssis.html",
+        "sha256": "cc756826bb461a7e27174db4f67ca0dca1127737fc2f357998e1d86bdd0e4a4c",
+        "size_bytes": 62391
+      },
+      "finding_code": "SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL",
+      "message": "A formal pricing selector remains open past END: TAB-CONTROL and contains an exact FAQ/SLA section.",
+      "evidence": [
+        {
+          "line": 216,
+          "dom_path": "html > body.zh-cn > div.content:nth-of-type(2) > div.container:nth-of-type(1) > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div.pricing-detail-tab.tab-dropdown.technical-azure-selector:nth-of-type(5)",
+          "description": "Formal pricing selector starts here."
+        },
+        {
+          "line": 1829,
+          "dom_path": "html > body.zh-cn > div.content:nth-of-type(2) > div.container:nth-of-type(1) > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div.pricing-detail-tab.tab-dropdown.technical-azure-selector:nth-of-type(5)",
+          "description": "END: TAB-CONTROL occurs while the selector is still open."
+        },
+        {
+          "line": 1831,
+          "dom_path": "html > body.zh-cn > div.content:nth-of-type(2) > div.container:nth-of-type(1) > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div.pricing-detail-tab.tab-dropdown.technical-azure-selector:nth-of-type(5) > div.pricing-page-section:nth-of-type(3) > div.more-detail",
+          "description": "Exact div.more-detail FAQ is nested across the expected boundary."
+        },
+        {
+          "line": 1936,
+          "dom_path": "html > body.zh-cn > div.content:nth-of-type(2) > div.container:nth-of-type(1) > div.single-page:nth-of-type(2) > div.row > div.col-md-10.pure-content:nth-of-type(2) > div.pricing-detail-tab.tab-dropdown.technical-azure-selector:nth-of-type(5)",
+          "description": "Observed selector closing boundary."
+        }
+      ],
+      "lines": [
+        216,
+        1829,
+        1831,
+        1936
+      ],
+      "safety_checks": [
+        "dom_exact_qa_or_owned_sla",
+        "tab_control_boundary_comment",
+        "raw_balanced_target_element",
+        "standalone_closing_tag_line",
+        "relocation_preserves_content_order"
+      ],
+      "upstream_suggestion": {
+        "action": "relocate_existing_closing_tag",
+        "description": "Move the selector's existing closing </div> before the first exact FAQ/SLA section following END: TAB-CONTROL.",
+        "from_line": 1936,
+        "before_line": 1830
       },
       "payload_generation_allowed": false
     },
@@ -350,6 +606,52 @@
       "status": "needs_upstream_structure_review",
       "product_key": "route-server",
       "display_name": "Route Server",
+      "language": "zh-cn",
+      "source": {
+        "path": "data/prod-html/zh-cn/pricing/route-server.html",
+        "sha256": "cc634af89a1b3639c5b8d71304b6054fc4d756ac776dadc3602348dc9afdfe18",
+        "size_bytes": 23469
+      },
+      "finding_code": "SOURCE_HTML_DUPLICATE_ID_SCOPE_NEEDS_REVIEW",
+      "duplicate_id": "tabContent1",
+      "occurrence_count": 2,
+      "lines": [
+        204,
+        205
+      ],
+      "reference_count": 2,
+      "references": [
+        {
+          "line": 151,
+          "element": "a",
+          "attribute": "data-href",
+          "value": "#tabContent1"
+        },
+        {
+          "line": 157,
+          "element": "option",
+          "attribute": "data-href",
+          "value": "#tabContent1"
+        }
+      ],
+      "outermost_formal_selector_count": 1,
+      "occurrence_selector_indexes": [
+        1,
+        1
+      ],
+      "review_reasons": [
+        "duplicate_id_has_dom_target_references",
+        "single_static_base_content_boundary_not_proven"
+      ],
+      "upstream_suggestion": {
+        "action": "clarify_boundary_then_make_id_unique",
+        "description": "Upstream should first confirm which formal selector and element owns target #tabContent1, then remove or rename every redundant id and update all target references. Extraction must not guess the ownership boundary."
+      }
+    },
+    {
+      "status": "needs_upstream_structure_review",
+      "product_key": "route-server",
+      "display_name": "Route Server",
       "language": "en-us",
       "source": {
         "path": "data/prod-html/en-us/pricing/route-server.html",
@@ -386,6 +688,54 @@
         1
       ],
       "review_reasons": [
+        "duplicate_id_has_dom_target_references",
+        "single_static_base_content_boundary_not_proven"
+      ],
+      "upstream_suggestion": {
+        "action": "clarify_boundary_then_make_id_unique",
+        "description": "Upstream should first confirm which formal selector and element owns target #tabContent1, then remove or rename every redundant id and update all target references. Extraction must not guess the ownership boundary."
+      }
+    },
+    {
+      "status": "needs_upstream_structure_review",
+      "product_key": "sql-edge",
+      "display_name": "Azure SQL Edge",
+      "language": "zh-cn",
+      "source": {
+        "path": "data/prod-html/zh-cn/pricing/sql-edge.html",
+        "sha256": "061b16ee2be433ec9deaaf879211579dbc7d7cad00229b58f60ba880882ebad2",
+        "size_bytes": 28630
+      },
+      "finding_code": "SOURCE_HTML_DUPLICATE_ID_SCOPE_NEEDS_REVIEW",
+      "duplicate_id": "tabContent1",
+      "occurrence_count": 2,
+      "lines": [
+        353,
+        394
+      ],
+      "reference_count": 2,
+      "references": [
+        {
+          "line": 267,
+          "element": "a",
+          "attribute": "data-href",
+          "value": "#tabContent1"
+        },
+        {
+          "line": 276,
+          "element": "option",
+          "attribute": "data-href",
+          "value": "#tabContent1"
+        }
+      ],
+      "outermost_formal_selector_count": 2,
+      "occurrence_selector_indexes": [
+        1,
+        2
+      ],
+      "review_reasons": [
+        "multiple_outermost_formal_selectors",
+        "duplicate_id_spans_formal_selectors",
         "duplicate_id_has_dom_target_references",
         "single_static_base_content_boundary_not_proven"
       ],
@@ -444,27 +794,33 @@
     }
   ],
   "summary": {
-    "confirmed_product_keys": [],
-    "confirmed_language_findings": 0,
+    "confirmed_product_keys": [
+      "virtual-wan"
+    ],
+    "confirmed_language_findings": 2,
     "blocking_structure_product_keys": [
       "container-apps",
       "data-lake-storage",
+      "event-hubs",
+      "managed-instance",
       "sql-edge",
+      "ssis",
       "storage-files"
     ],
-    "blocking_structure_language_items": 4,
-    "blocking_structure_findings": 5,
+    "blocking_structure_language_items": 8,
+    "blocking_structure_findings": 9,
     "blocking_structure_findings_by_code": {
-      "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT": 1,
+      "SOURCE_HTML_COMMON_SECTION_BOUNDARY_NOT_EXACT": 2,
       "SOURCE_HTML_CONTENT_WITHOUT_EXACT_COMMON_BOUNDARY": 1,
-      "SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION": 1,
+      "SOURCE_HTML_POST_SELECTOR_CONTENT_NOT_EXACT_SECTION": 3,
       "SOURCE_HTML_POST_SELECTOR_SUPPORT_SECTION_UNCLASSIFIED": 1,
-      "SOURCE_HTML_PRICING_TABLE_SECTION_WITHOUT_OWN_HEADING": 1
+      "SOURCE_HTML_PRICING_TABLE_SECTION_WITHOUT_OWN_HEADING": 1,
+      "SOURCE_HTML_SELECTOR_EXTENDS_PAST_TAB_CONTROL": 1
     },
     "needs_review_product_keys": [
       "route-server",
       "sql-edge"
     ],
-    "needs_review_language_items": 2
+    "needs_review_language_items": 4
   }
 }

@@ -243,9 +243,9 @@ class PipelinePlannerTests(unittest.TestCase):
             plan.summary,
             {
                 "total": 434,
-                "runnable": 379,
-                "skipped": 55,
-                "known_unsupported": 54,
+                "runnable": 383,
+                "skipped": 51,
+                "known_unsupported": 50,
                 "source_unavailable": 1,
             },
         )

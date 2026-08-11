@@ -247,10 +247,9 @@ class FilterDetector:
         desktop_links = container.select(
             ".dropdown-box.os-tab-nav .tab-items a"
         )
-        desktop_values: list[str] = []
-        desktop_labels: dict[str, str] = {}
+        desktop_rows: list[dict[str, Any]] = []
         desktop_defaults: list[str] = []
-        for link in desktop_links:
+        for index, link in enumerate(desktop_links):
             link_id = str(link.get("id", "")).strip()
             link_href = str(link.get("data-href", "")).strip()
             option = by_value.get(link_id) or by_href.get(link_href)
@@ -263,17 +262,76 @@ class FilterDetector:
                 raise ValueError(
                     "Desktop filter option requires a display label"
                 )
-            desktop_values.append(option["value"])
-            desktop_labels[option["value"]] = desktop_label
             parent = link.find_parent("li")
-            if parent is not None and {
-                "active",
-                "selected",
-                "selected-item",
-            }.intersection(parent.get("class", [])):
-                desktop_defaults.append(option["value"])
+            desktop_rows.append({
+                "value": option["value"],
+                "label": desktop_label,
+                "is_default": bool(
+                    parent is not None
+                    and {
+                        "active",
+                        "selected",
+                        "selected-item",
+                    }.intersection(parent.get("class", []))
+                ),
+                "source_index": index,
+            })
 
-        if desktop_values:
+        if desktop_rows:
+            raw_values = [row["value"] for row in desktop_rows]
+            if len(desktop_rows) == len(options):
+                mismatch_indexes = [
+                    index
+                    for index, row in enumerate(desktop_rows)
+                    if row["value"] != options[index]["value"]
+                ]
+                if mismatch_indexes and all(
+                    raw_values.count(desktop_rows[index]["value"]) > 1
+                    and options[index]["value"] not in raw_values
+                    for index in mismatch_indexes
+                ):
+                    for index in mismatch_indexes:
+                        desktop_rows[index]["value"] = options[index]["value"]
+
+            grouped: dict[str, list[dict[str, Any]]] = {}
+            for row in desktop_rows:
+                grouped.setdefault(row["value"], []).append(row)
+            suppressed_indexes: set[int] = set()
+            for value, rows in grouped.items():
+                if len(rows) < 2 or value not in by_value:
+                    continue
+                label_matches = [
+                    row
+                    for row in rows
+                    if row["label"] == by_value[value]["label"]
+                ]
+                if len(label_matches) != 1:
+                    continue
+                retained = label_matches[0]
+                discarded = [
+                    row
+                    for row in rows
+                    if row["source_index"] != retained["source_index"]
+                ]
+                if any(row["is_default"] for row in discarded):
+                    continue
+                suppressed_indexes.update(
+                    row["source_index"] for row in discarded
+                )
+            desktop_rows = [
+                row
+                for row in desktop_rows
+                if row["source_index"] not in suppressed_indexes
+            ]
+            desktop_values = [row["value"] for row in desktop_rows]
+            desktop_labels = {
+                row["value"]: row["label"] for row in desktop_rows
+            }
+            desktop_defaults = [
+                row["value"]
+                for row in desktop_rows
+                if row["is_default"]
+            ]
             if (
                 len(desktop_values) != len(set(desktop_values))
                 or set(desktop_values) != set(values)
@@ -291,18 +349,37 @@ class FilterDetector:
                 by_value[value]["label"] = label
             options = [by_value[value] for value in desktop_values]
 
+        selected_item = container.select_one(".selected-item")
+        selected_label = (
+            selected_item.get_text(" ", strip=True)
+            if selected_item
+            else ""
+        )
+        unique_selected_values = list(dict.fromkeys(selected_values))
+        unique_desktop_defaults = list(dict.fromkeys(desktop_defaults))
+        if (
+            len(unique_desktop_defaults) > 1
+            and len(unique_selected_values) == 1
+        ):
+            selected_value = unique_selected_values[0]
+            summary_matches = [
+                option["value"]
+                for option in options
+                if selected_label
+                and " ".join(option["label"].split()) == selected_label
+            ]
+            if (
+                summary_matches == [selected_value]
+                and selected_value in unique_desktop_defaults
+            ):
+                desktop_defaults = [selected_value]
+
         explicit_defaults = list(dict.fromkeys(
             selected_values + desktop_defaults
         ))
         if explicit_defaults:
             distinct_defaults = explicit_defaults
         else:
-            selected_item = container.select_one(".selected-item")
-            selected_label = (
-                selected_item.get_text(" ", strip=True)
-                if selected_item
-                else ""
-            )
             label_matches = [
                 option["value"]
                 for option in options

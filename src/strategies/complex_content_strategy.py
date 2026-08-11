@@ -620,12 +620,18 @@ class ComplexContentStrategy(BaseStrategy):
                     ).projected_html
                 )
             else:
+                expected_prefix = evidence.software_scoped_prefix
+                replay_category_panel_ids = (
+                    expected_prefix.category_panel_ids
+                    if expected_prefix is not None
+                    else expected_category_panel_ids
+                )
                 try:
                     prefix_fragment = extract_software_scoped_prefix(
                         soup,
                         evidence.software_panel_id,
                         expected_category_panel_ids=(
-                            expected_category_panel_ids
+                            replay_category_panel_ids
                         ),
                     )
                 except ScopedSourceContentError as error:
@@ -633,8 +639,6 @@ class ComplexContentStrategy(BaseStrategy):
                         "Unable to resolve source-proven software-scoped "
                         f"prefix: {error}"
                     ) from error
-
-                expected_prefix = evidence.software_scoped_prefix
                 if (prefix_fragment is None) != (expected_prefix is None):
                     raise ValueError(
                         "Software-scoped prefix presence differs from "
@@ -651,7 +655,7 @@ class ComplexContentStrategy(BaseStrategy):
                         or expected_prefix.software_panel_id
                         != evidence.software_panel_id
                         or expected_prefix.category_panel_ids
-                        != expected_category_panel_ids
+                        != replay_category_panel_ids
                         or expected_prefix.fragment_count
                         != prefix_fragment.fragment_count
                         or expected_prefix.source_html_sha256
@@ -717,41 +721,47 @@ class ComplexContentStrategy(BaseStrategy):
                     ),
                 },
             }
-            # SourceReachability was resolved from the canonical input. Formal
-            # extraction receives the deterministic image-path projection of
-            # that input, so compare the same projection before emitting the
-            # frozen table projection.
-            expected_input_soup = BeautifulSoup(
-                strict_projection.input_html,
-                "html.parser",
-            )
-            preprocess_image_paths(expected_input_soup)
-            expected_input = expected_input_soup.find(id=panel_id)
-            if (
-                not isinstance(expected_input, Tag)
-                or str(expected_input) != str(base_content)
-            ):
-                raise StrictSoftCategoryProjectionError(
-                    "soft_category_projection_replay_mismatch",
-                    (
-                        "Extraction input differs from the frozen strict "
-                        f"projection source for panel {panel_id!r}"
-                    ),
-                    evidence=replay_error_evidence,
+            # SourceReachability froze the exact serialization produced by the
+            # canonical parser.  Prefer that byte-for-byte replay identity: a
+            # fragment-only parser round trip may legally move whitespace
+            # inside table markup even when the live canonical Tag is exact.
+            # Only use the legacy fragment replay when coordinator-level media
+            # projection actually changed the live panel.
+            live_input_html = str(base_content)
+            if strict_projection.input_html == live_input_html:
+                final_content = strict_projection.output_html
+            else:
+                expected_input_soup = BeautifulSoup(
+                    strict_projection.input_html,
+                    "html.parser",
                 )
-            projected_soup = BeautifulSoup(
-                strict_projection.output_html,
-                "html.parser",
-            )
-            preprocess_image_paths(projected_soup)
-            projected_panel = projected_soup.find(id=panel_id)
-            if not isinstance(projected_panel, Tag):
-                raise StrictSoftCategoryProjectionError(
-                    "soft_category_projection_replay_mismatch",
-                    "Frozen projection output lost its source panel",
-                    evidence=replay_error_evidence,
+                preprocess_image_paths(expected_input_soup)
+                expected_input = expected_input_soup.find(id=panel_id)
+                if (
+                    not isinstance(expected_input, Tag)
+                    or str(expected_input) != live_input_html
+                ):
+                    raise StrictSoftCategoryProjectionError(
+                        "soft_category_projection_replay_mismatch",
+                        (
+                            "Extraction input differs from the frozen strict "
+                            f"projection source for panel {panel_id!r}"
+                        ),
+                        evidence=replay_error_evidence,
+                    )
+                projected_soup = BeautifulSoup(
+                    strict_projection.output_html,
+                    "html.parser",
                 )
-            final_content = str(projected_panel)
+                preprocess_image_paths(projected_soup)
+                projected_panel = projected_soup.find(id=panel_id)
+                if not isinstance(projected_panel, Tag):
+                    raise StrictSoftCategoryProjectionError(
+                        "soft_category_projection_replay_mismatch",
+                        "Frozen projection output lost its source panel",
+                        evidence=replay_error_evidence,
+                    )
+                final_content = str(projected_panel)
         else:
             if strict_projection is not None:
                 raise ValueError(

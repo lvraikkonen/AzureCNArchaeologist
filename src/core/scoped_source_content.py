@@ -11,11 +11,12 @@ from bs4 import BeautifulSoup, Comment, Tag
 
 from src.utils.content.content_utils import (
     classify_pricing_section,
-    filter_sections_by_type,
 )
 from src.utils.content.section_extractor import (
+    PRICING_DETAILS_HEADING_PATTERN,
     contains_common_section_boundary,
     is_exact_common_section_boundary,
+    is_intrinsic_unheaded_simple_pricing_body,
     is_price_bearing_pricing_details_section,
 )
 from src.utils.html.cleaner import (
@@ -364,32 +365,36 @@ def extract_intrinsic_simple_page_global_content(
     """Resolve a Simple business body only from a proven structural boundary."""
 
     try:
-        technical_selector = soup.find(
-            "div", class_=_FORMAL_SELECTOR_CLASS
+        static_selector = (
+            extract_static_formal_selector_page_global_content(soup)
         )
-        if technical_selector:
-            pricing_sections = technical_selector.find_all(
-                "div", class_=_PAGE_GLOBAL_SECTION_CLASS
-            )
-            if pricing_sections:
-                content_sections = filter_sections_by_type(
-                    pricing_sections,
-                    include_types=["content"],
-                )
-                if content_sections:
-                    for section in content_sections:
-                        _validate_globally_unique_ids(soup, section)
-                    return clean_html_content(
-                        "".join(str(section) for section in content_sections)
-                    )
-            _validate_globally_unique_ids(soup, technical_selector)
-            return clean_html_content(str(technical_selector))
+        if static_selector is not None:
+            return clean_html_content(static_selector.source_html)
 
         direct_pricing_details = (
             _extract_direct_pricing_details_page_global_content(soup)
         )
         if direct_pricing_details is not None:
             return direct_pricing_details
+
+        direct_heading_body = (
+            _extract_direct_pricing_heading_page_global_content(soup)
+        )
+        if direct_heading_body is not None:
+            return direct_heading_body
+
+        unheaded_bodies = [
+            section
+            for section in soup.select("div.pricing-page-section")
+            if is_intrinsic_unheaded_simple_pricing_body(section)
+        ]
+        if len(unheaded_bodies) == 1:
+            _validate_globally_unique_ids(soup, unheaded_bodies[0])
+            return clean_html_content(str(unheaded_bodies[0]))
+        if len(unheaded_bodies) > 1:
+            raise ScopedSourceContentError(
+                "Multiple unheaded Simple pricing bodies are ambiguous"
+            )
 
         all_pricing_sections = soup.find_all(
             "div", class_=_PAGE_GLOBAL_SECTION_CLASS
@@ -449,37 +454,195 @@ def extract_intrinsic_simple_page_global_content(
         ) from error
 
 
-def _extract_direct_pricing_details_page_global_content(
+def _extract_direct_pricing_heading_page_global_content(
     soup: BeautifulSoup,
 ) -> str | None:
-    """Resolve one price-bearing section directly between Banner and FAQ/SLA.
+    """Resolve a root-level Pricing Details heading through its final body.
 
-    Some Simple pages do not use a ``technical-azure-selector``.  Their pricing
-    body is still intrinsic page-global content when the source itself proves a
-    closed boundary: one exact, titled pricing-table section directly follows
-    the Banner, and every later visible sibling is an exact common section.
+    A few historical Simple pages do not wrap their pricing body in either a
+    formal selector or a pricing-page-section. They still expose an intrinsic
+    boundary when one exact Pricing Details heading is a direct child of the
+    page-level pure-content container and the following safe siblings contain
+    a price table up to either the first exact common section or end of page.
     """
 
-    banners = soup.select("div.common-banner")
-    if len(banners) != 1:
+    pure_contents = soup.select("div.pure-content")
+    if len(pure_contents) != 1:
         return None
-    banner = banners[0]
-    parent = banner.parent
-    if (
-        not isinstance(parent, Tag)
-        or "pure-content" not in (parent.get("class") or ())
-    ):
+    pure_content = pure_contents[0]
+    headings = [
+        child
+        for child in pure_content.find_all(
+            ["h1", "h2", "h3", "h4", "h5", "h6"],
+            recursive=False,
+        )
+        if PRICING_DETAILS_HEADING_PATTERN.fullmatch(
+            child.get_text(" ", strip=True).strip(" \t\r\n:：")
+        )
+    ]
+    if len(headings) != 1:
         return None
 
-    candidate: Tag | None = None
+    heading = headings[0]
+    fragments: list[Tag] = []
     found_common_boundary = False
-    for sibling in banner.next_siblings:
+    current: object | None = heading
+    while current is not None:
+        sibling = current
+        current = getattr(current, "next_sibling", None)
         if isinstance(sibling, Comment):
             continue
         if not isinstance(sibling, Tag):
             if str(sibling).strip():
-                if candidate is None:
+                raise ScopedSourceContentError(
+                    "Non-whitespace text crosses the direct Simple pricing "
+                    "heading boundary"
+                )
+            continue
+        if sibling.name in {"script", "style", "template", "tags"}:
+            continue
+
+        text = sibling.get_text(" ", strip=True)
+        has_visible_structure = sibling.find(
+            ["img", "video", "audio", "table", "iframe"]
+        ) is not None
+        if not text and not has_visible_structure:
+            continue
+
+        if contains_common_section_boundary(sibling):
+            if not is_exact_common_section_boundary(sibling):
+                raise ScopedSourceContentError(
+                    "A common section after the direct Simple pricing "
+                    "heading also contains unclassified visible content"
+                )
+            found_common_boundary = True
+            continue
+        if found_common_boundary:
+            raise ScopedSourceContentError(
+                "Unclassified visible content follows the direct Simple "
+                "common-section boundary"
+            )
+        if sibling.find(
+            [
+                "script",
+                "style",
+                "noscript",
+                "template",
+                "nav",
+                "form",
+                "select",
+                "button",
+                "iframe",
+            ]
+        ) is not None:
+            raise ScopedSourceContentError(
+                "Direct Simple pricing content contains executable, "
+                "interactive, or navigation content"
+            )
+        if sibling.select_one(
+            ".technical-azure-selector, .pricing-detail-tab, .more-detail"
+        ) is not None:
+            raise ScopedSourceContentError(
+                "Direct Simple pricing content crosses a formal selector or "
+                "common-section boundary"
+            )
+        _validate_globally_unique_ids(soup, sibling)
+        fragments.append(sibling)
+
+    if not fragments or not any(
+        fragment.name == "table" or fragment.find("table") is not None
+        for fragment in fragments
+    ):
+        return None
+    return clean_html_content(
+        "".join(str(fragment) for fragment in fragments)
+    )
+
+
+def _extract_direct_pricing_details_page_global_content(
+    soup: BeautifulSoup,
+) -> str | None:
+    """Resolve one direct price-bearing section before exact FAQ/SLA.
+
+    Some Simple pages do not use a ``technical-azure-selector``.  Their pricing
+    body is still intrinsic page-global content when the source itself proves a
+    closed boundary: the page-level container owns exactly one titled,
+    price-bearing section and every later visible sibling is an exact common
+    section.  A page may identify itself either with the normal Banner or with
+    one exact direct ``h1`` introduction immediately before the pricing body.
+    """
+
+    pure_contents = soup.select("div.pure-content")
+    if len(pure_contents) != 1:
+        return None
+    pure_content = pure_contents[0]
+    candidates = [
+        child
+        for child in pure_content.find_all("div", recursive=False)
+        if is_price_bearing_pricing_details_section(child)
+    ]
+    if len(candidates) != 1:
+        return None
+    candidate = candidates[0]
+
+    direct_banners = [
+        child
+        for child in pure_content.find_all("div", recursive=False)
+        if "common-banner" in (child.get("class") or ())
+    ]
+    if direct_banners:
+        if len(direct_banners) != 1:
+            return None
+        preceding_nodes = list(candidate.previous_siblings)
+        if direct_banners[0] not in preceding_nodes:
+            return None
+    else:
+        preceding_material = []
+        for sibling in candidate.previous_siblings:
+            if isinstance(sibling, Comment):
+                continue
+            if not isinstance(sibling, Tag):
+                if str(sibling).strip():
                     return None
+                continue
+            if sibling.name in {"script", "style", "template", "tags"}:
+                continue
+            if "left-navigation-select" in (sibling.get("class") or ()):
+                continue
+            if sibling.get_text(" ", strip=True) or sibling.find(
+                ["img", "video", "audio", "table", "iframe"]
+            ) is not None:
+                preceding_material.append(sibling)
+        if len(preceding_material) != 1:
+            return None
+        introduction = preceding_material[0]
+        if (
+            introduction.name != "div"
+            or len(introduction.find_all("h1", recursive=False)) != 1
+            or introduction.find(
+                [
+                    "table",
+                    "nav",
+                    "form",
+                    "select",
+                    "button",
+                    "iframe",
+                ]
+            )
+            is not None
+            or introduction.select_one(
+                ".technical-azure-selector, .pricing-detail-tab, .more-detail"
+            )
+            is not None
+        ):
+            return None
+
+    found_common_boundary = False
+    for sibling in candidate.next_siblings:
+        if isinstance(sibling, Comment):
+            continue
+        if not isinstance(sibling, Tag):
+            if str(sibling).strip():
                 raise ScopedSourceContentError(
                     "Non-whitespace text crosses the direct Simple pricing "
                     "boundary"
@@ -496,20 +659,12 @@ def _extract_direct_pricing_details_page_global_content(
             continue
 
         if contains_common_section_boundary(sibling):
-            if candidate is None:
-                return None
             if not is_exact_common_section_boundary(sibling):
                 raise ScopedSourceContentError(
                     "A common section after the direct Simple pricing body "
                     "also contains unclassified visible content"
                 )
             found_common_boundary = True
-            continue
-
-        if candidate is None:
-            if not is_price_bearing_pricing_details_section(sibling):
-                return None
-            candidate = sibling
             continue
 
         boundary_location = (
@@ -520,7 +675,7 @@ def _extract_direct_pricing_details_page_global_content(
             f"{boundary_location} the direct Simple common-section boundary"
         )
 
-    if candidate is None or not found_common_boundary:
+    if not found_common_boundary:
         return None
 
     classes = {

@@ -1,5 +1,9 @@
 # 中文 DOM 与 CMS payload 对比实验
 
+v0.4.1 两轮实验的方法、结果、限制和 v0.5.0 建议已汇总到
+`reports/post-v0.4/v041-experiments-v050-handoff.md`。本目录是该方法向 v0.5.0
+扩展的先导实验，不替代冻结的 v0.4.1 oracle 或历史报告。
+
 这个实验只检查中文页面，包含：
 
 - `service-bus`：比较源页面主体与 `baseContent`；

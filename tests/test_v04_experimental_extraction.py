@@ -238,7 +238,7 @@ class ExperimentalCliTests(unittest.TestCase):
 
 
 class ExperimentalConfigurationTests(unittest.TestCase):
-    def test_shipped_exception_is_expired_and_real_source_identity_remains_frozen(self):
+    def test_shipped_exception_is_expired_and_rejects_refreshed_source_identity(self):
         with self.assertRaisesRegex(ExperimentalExtractionError, "expired at project version 0.4.0"):
             load_exception(ROOT)
 
@@ -253,15 +253,36 @@ class ExperimentalConfigurationTests(unittest.TestCase):
             project_version="0.4.0",
         )
         self.assertEqual(set(loaded.value["sources"]), {"zh-cn", "en-us"})
-        expected = {
+        frozen = {
             "zh-cn": (8064052, "b1eedddb9020c94399063f95cc746609c1c86ec658fba5457d8d84197a2ea19f"),
             "en-us": (7239577, "8d0167fe4aa7e196b1879941d6830b3ef30f7e448501e53706823d736e827ea1"),
         }
-        for language, identity in expected.items():
+        refreshed = {
+            "zh-cn": (8112366, "b7bd237c2b11a1dfd92ed782187f3ef4f077cd2ffb1768cae11f3a559eb4a3a1"),
+            "en-us": (7898183, "f4beb0d3fdd8dc9bf4043a2a3e215802ac5afea7295a2f381c95a71d7f38b6b9"),
+        }
+        for language, frozen_identity in frozen.items():
             with self.subTest(language=language):
-                context = _preflight_source(ROOT, loaded, language)
-                self.assertEqual((context.source_bytes, context.source_sha256), identity)
-                self.assertEqual(context.definition["capability_status"], "known_unsupported")
+                source = ROOT / loaded.value["sources"][language]["resolved_path"]
+                current_identity = (source.stat().st_size, sha256_file(source))
+                self.assertEqual(current_identity, refreshed[language])
+                self.assertNotEqual(current_identity, frozen_identity)
+                self.assertEqual(
+                    (
+                        loaded.value["sources"][language]["bytes"],
+                        loaded.value["sources"][language]["sha256"],
+                    ),
+                    frozen_identity,
+                )
+                with self.assertRaisesRegex(
+                    ExperimentalExtractionError,
+                    "source byte count changed",
+                ):
+                    _preflight_source(ROOT, loaded, language)
+                self.assertEqual(
+                    loaded.value["required_capability_status"],
+                    "known_unsupported",
+                )
                 self.assertFalse(
                     (ROOT / "data/prod-html" / language / "pricing/virtual-machines.html").exists()
                 )

@@ -21,9 +21,27 @@
     },
     {
       "language": "zh-cn",
+      "snapshot_path": "pricing/details/managed-instance/index2.html",
+      "reason_code": "backup",
+      "reason": "Source-system backup page."
+    },
+    {
+      "language": "zh-cn",
       "snapshot_path": "pricing/details/metrics-advisor/test.html",
       "reason_code": "test_fixture",
       "reason": "Source-system test page."
+    },
+    {
+      "language": "zh-cn",
+      "snapshot_path": "pricing/details/sql-database/index_bak.html",
+      "reason_code": "backup",
+      "reason": "Source-system backup page."
+    },
+    {
+      "language": "zh-cn",
+      "snapshot_path": "pricing/details/storage/managed-disks/indexs2.html",
+      "reason_code": "backup",
+      "reason": "Source-system backup page."
     },
     {
       "language": "zh-cn",
