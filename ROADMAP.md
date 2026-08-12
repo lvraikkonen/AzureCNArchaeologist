@@ -1,14 +1,14 @@
 # AzureCNArchaeologist v0.1 → v1.0 路线图
 
 > 文档状态：当前项目路线图  
-> 最新稳定版本：v0.5.2
-> 当前开发阶段：v0.5.3 Execution Plan 已冻结；尚未开始 v0.5.3 编码
+> 最新稳定版本：v0.5.3
+> 当前开发阶段：v0.5.3 已完成实施与技术验收；下一阶段为 v0.5.4 Execution Plan
 > 基线日期：2026-08-12
 > 适用范围：Azure 中国区产品 HTML 标准化、策略化解析、CMS JSON 导出与质量验证
 
 ## 1. 路线图目的
 
-AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流；v0.4.0 完成可信验证、人工审核、不可变 Release、Release-only upload gate 和冻结验收基线；v0.4.1 随后完成已知问题修复、重新裁决和新基线冻结。Post-v0.4 Roadmap Re-baseline Gate 已于 2026-08-08 获接受，v0.4.1 后的两轮独立 DOM 保真实验和 `V050-ENTRY-20260811` 又于 2026-08-11 关闭 v0.5.0 可行性探索。v0.5.1 已按最终冻结计划完成入口 Planning/Core successor、最小 L3a/L3b 契约、轻量独立性保护、反证和只读 Evidence 投影，并通过完整 reference Batch 技术验收；v0.5.2 随后完成 `zh-cn/api-management` 首个正式 L3b 证据闭环、immutable Evidence、逐状态 inert review 和 exact-identity 人工接受，不回开 v0.4/v0.4.1 scope，也不提前激活 Machine Gate、Review、Release 或 upload。
+AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流；v0.4.0 完成可信验证、人工审核、不可变 Release、Release-only upload gate 和冻结验收基线；v0.4.1 随后完成已知问题修复、重新裁决和新基线冻结。Post-v0.4 Roadmap Re-baseline Gate 已于 2026-08-08 获接受，v0.4.1 后的两轮独立 DOM 保真实验和 `V050-ENTRY-20260811` 又于 2026-08-11 关闭 v0.5.0 可行性探索。v0.5.1 已按最终冻结计划完成入口 Planning/Core successor、最小 L3a/L3b 契约、轻量独立性保护、反证和只读 Evidence 投影，并通过完整 reference Batch 技术验收；v0.5.2 随后完成 `zh-cn/api-management` 首个正式 L3b 证据闭环；v0.5.3 又在同一新双语 Batch 上形成 Core 8 的完整正负 Evidence 覆盖、Workbench L3b 面板、accepted `parallel_only` Machine Gate decision 和当前残余问题地图。两项 ICP 负证据被保留并升为 v0.5.4 第一优先问题，不回开历史 scope，也不提前激活 Machine Gate、L4 Review、Release 或 upload。
 
 从 v0.1 到 v1.0 的核心目标不是继续堆叠功能，而是把现有能力收敛为一套：
 
@@ -131,10 +131,10 @@ v1.0 中需要清晰区分：
 | v0.5.1 | 入口基线与最小 L3b 契约 | 冻结 v0.5 Planning/Core successor、最小 Profile/Basis/Evidence 契约、三类算法版本、item verdict 聚合、semantic/projection identity、轻量独立性保护、五项反证和 inert 只读 Evidence 投影 |
 | v0.5.2 | `zh-cn/api-management` 单项首个正式 L3b 证据闭环 | 对 reference Batch 的单一语言级 item 产生首份正式 L3b Evidence 和逐状态只读并排报告；不进入 L4/Release/Publication |
 | v0.5.3 | 四类双语 L3b 证据覆盖、Workbench 与 Machine Gate 裁定 | 在同一新的 current full bilingual Batch 上覆盖 Core 8，并单列两个 carry-over；Workbench 展示 L3a/L3b Evidence；依据真实证据裁定 Machine Gate policy，但本版本不激活运行时；形成当前问题地图并重排后续版本 |
-| v0.5.4 | 第一优先残余问题组 | 由 v0.5.3 当前 Batch 选择；旧 C2 是候选，不是预先承诺 |
-| v0.5.5 | 第二优先残余问题组 | 由 v0.5.3 当前 Batch 选择；旧 C1 是候选，不是预先承诺 |
-| v0.5.6 | 剩余优先组与 v0.5 收口 | 处理经审核的剩余 v0.5 问题组，拆分 C4，冻结 v0.5 acceptance baseline |
-| v0.6 | 后续结构问题与 CMS 暂存检查 | 推进重排后剩余问题组，并验证 Release 在 staging CMS 往返后的结构化内容一致性 |
+| v0.5.4 | SupportArticle mixed/direct-text preservation | 修复两项 ICP Evidence 证明的共享静默正文丢失，保留历史负证据并生成新的双语正/负 Evidence |
+| v0.5.5 | Simple page-global boundary 与策略分类 | 对当前 16 个 fail-closed items 先归因/拆分，再以可证明边界恢复适用项 |
+| v0.5.6 | Filter-control truth 拆分、安全修复与 v0.5 收口 | 拆分当前 31 个 detector/target/default/domain 问题，只修复可证明的共享实现问题并冻结 v0.5 acceptance baseline |
+| v0.6 | 剩余结构/config 问题与 CMS 暂存检查 | 处理 R4–R6 残余组，并验证 Release 在 staging CMS 往返后的结构化内容一致性 |
 | v0.7 | 长尾与生产化 | 只在真实证据支持时建设 streaming、真实发布和长尾支持 |
 | v0.8 | 架构清理 | 删除 stale 代码，收缩 CLI、依赖和重复职责 |
 | v0.9 | 发布候选 | 全量演练、缺陷收敛、文档重建和发布冻结 |
@@ -142,7 +142,7 @@ v1.0 中需要清晰区分：
 
 版本号表示能力和质量门槛，不表示固定日历日期。后续版本只有在当前版本验收条件全部满足后才能升级。
 
-2026-08-11 的 v0.5 入口总体方向已经人工接受，详细依据见 `reports/post-v0.4/v050-entry-decision.md`。`plans/v0.5.1-execution-plan.md` 已按最终评审意见实施完成；技术验收和 v0.5.2 交接见 `reports/v0.5.1/acceptance-status.md` 与 `reports/v0.5.1/v0.5.2-handoff.md`。`plans/v0.5.2-execution-plan.md` 也已按冻结范围完成实施与技术验收；正式 identities、完整 inventory、人工复核和 v0.5.3 交接见 `reports/v0.5.2/acceptance-status.*` 与 `reports/v0.5.2/v0.5.3-handoff.md`。`plans/v0.5.3-execution-plan.md` 已于 2026-08-12 获人工接受并冻结：它选择在同一新的 current full bilingual Batch 上重新绑定 `zh-cn/api-management`，由该 Batch 的 Source-proven universe 决定正式 scope 分母，并把 Machine Gate 限定为 `runtime_effective=false` 的 policy 裁定；Plan freeze 只授权后续按 P0–P5 实施，不包含编码或正式 Evidence。
+2026-08-11 的 v0.5 入口总体方向已经人工接受，详细依据见 `reports/post-v0.4/v050-entry-decision.md`。`plans/v0.5.1-execution-plan.md` 与 `plans/v0.5.2-execution-plan.md` 均已按冻结范围完成实施与技术验收，对应 handoff 保持历史有效。`plans/v0.5.3-execution-plan.md` 也已于 2026-08-12 完成实施与人工技术验收：formal Batch `20260812T125640Z-e5aa4b3f` 在 clean producer commit `de7ea08518bb54e180e059007a9522d8301e2371` 上产生 Core 8 的 8/8 bundles 和 46/46 scopes；用户接受 candidate commit `2393f30cec6476fd2edc4bc1342643e8eb2f9a96` 的 exact identities、两项 ICP failed Evidence、carry-over、`parallel_only` / `runtime_effective=false` decision 及 residual problem map。权威状态和下一阶段输入见 `reports/v0.5.3/acceptance-status.md`、`machine-gate-decision.md`、`residual-problem-map.md` 与 `v0.5.4-handoff.md`。
 
 ## 5. 分版本路线图
 
@@ -386,7 +386,7 @@ v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管�
 - 删除无证据的遗留 `sharedContent` 生产和兼容逻辑：global 内容进入 `baseContent` 或 `commonSections`，state-specific 内容进入对应 group，无法安全确定 ownership 的源片段形成 Source Finding。若源在一个 Software panel 内、首个 concrete Category panel 之前声明不随其他 active filter 改变的 Software-scoped Prefix Content，则以 panel、scope 和源 HTML 指纹证明其身份，并前置投影到该 software 下每个源证明可达状态的 `content`。唯一允许的 `sharedContent` 是 Region-Projected Shared Content：源 ancestor fragment 必须 price-bearing、由 active region 与冻结 `soft-category.json` 证明确切投影，并在每个适用 descendant state 上逐项绑定 source/config/projected hash；禁止无证据字段、跨 region 泄漏、提升为全页 common content或只归入首个 Category。
 - `soft-category.json` 只选择具有非空 `id` 的表；无 ID 表属于其源状态的无条件内容，必须原样保留，并冻结物理表序、规范化 HTML SHA 与聚合身份。重复 `(os, region)` 条目或单条目内重复 normalized table ID 都写入确定性上游配置报告；后者虽不改变 selector set，也不得在运行时静默去重。仅当重复 ID 与当前可达状态相关时在 Payload 前阻断，状态无关时保持 report-only。
 
-> **Post-v0.4 successor clarification**：上段记录 v0.4 已冻结的历史语义；既有 v0.4/v0.4.1 Batch、Validation Evidence 和历史 artifacts 保持原义，不回写、不重新裁决。从 v0.5.2 Independent Fidelity successor 开始，唯一 exact `(os, region)` 配置记录内部的重复 normalized table ID 按第一次物理出现执行 ordered-unique，并形成确定性配置卫生 warning；它不改变 selector set、coverage 或 L3b verdict，也不单独阻断 L3b。重复 exact rows、缺失 Source table、重复 DOM ID 或 ownership 歧义仍然 fail-closed。HTML hidden software 值映射到配置真实字段 `os`，两者是同一个 ownership key，不是两个维度。v0.5.2 先在独立 L3b consumer 落实该 successor policy；v0.5.3 必须核对生产抽取/L3a 是否已有等价行为，若两条 machine lane 仍不同，必须显式记录并通过后续 ADR/profile 决策对齐，不能静默漂移。
+> **Post-v0.4 successor clarification**：上段记录 v0.4 已冻结的历史语义；既有 v0.4/v0.4.1 Batch、Validation Evidence 和历史 artifacts 保持原义，不回写、不重新裁决。从 v0.5.2 Independent Fidelity successor 开始，唯一 exact `(os, region)` 配置记录内部的重复 normalized table ID 按第一次物理出现执行 ordered-unique，并形成确定性配置卫生 warning；它不改变 selector set、coverage 或 L3b verdict，也不单独阻断 L3b。重复 exact rows、缺失 Source table、重复 DOM ID 或 ownership 歧义仍然 fail-closed。HTML hidden software 值映射到配置真实字段 `os`，两者是同一个 ownership key，不是两个维度。v0.5.2 先在独立 L3b consumer 落实该 successor policy；v0.5.3 已核对生产 extraction/L3a/L3b，当前 formal targets 的 verdict-relevant content semantics 对齐，RegionFilter 仅有 diagnostic asymmetry，详见 `reports/v0.5.3/l3a-l3b-soft-category-alignment.md`。
 
 ##### P3：全状态结构契约、抽样内容一致性与最小交付闭环
 
@@ -518,7 +518,7 @@ Review 至少使用：
 - `plans/v0.5.1-execution-plan.md`；
 - `reports/post-v0.4/roadmap-rebaseline.md` 第 8 节追加裁定。
 
-生效后的新顺序是：v0.5.0 由既有实验关闭可行性问题；v0.5.1 建立当前入口基线并冻结最小正式契约；v0.5.2 为 `zh-cn/api-management` 建立单项首个正式 L3b 证据闭环和只读并排报告；v0.5.3 完成双语四类 Core 8、单列裁定两个 carry-over qualification items、接入现有 Workbench，并用正式证据裁定 L3b 是否及如何进入 Machine Gate。v0.5.3 当前完整 Batch 之后再冻结 v0.5.4–v0.6 的具体问题组顺序。Report 2.0、正式 Disposition、复杂视觉审核、完整 evidence lifecycle 和 Dashboard 多用户化仍不进入 v0.5.1。
+已完成的顺序是：v0.5.0 由既有实验关闭可行性问题；v0.5.1 建立入口基线并冻结最小正式契约；v0.5.2 为 `zh-cn/api-management` 建立单项首个正式 L3b 证据闭环和只读并排报告；v0.5.3 完成双语四类 Core 8、两个 carry-over qualification、现有 Workbench Evidence panel，并接受 `parallel_only` / `runtime_effective=false` Machine Gate decision。v0.5.3 当前完整 Batch 又冻结了后续顺序：v0.5.4 SupportArticle direct-text、v0.5.5 Simple boundary、v0.5.6 filter-control truth，R4–R6 进入 v0.6。
 
 ### v0.4.1：修复已知问题并建立新基线
 
@@ -538,7 +538,7 @@ Review 至少使用：
 - `container-registry` 提供真实反证：现有策略重放检查通过，但独立 oracle 识别出截断的 `baseContent`；
 - `soft-category` 投影、`css-generated-semantics-v1`、输入不足时 fail-closed 和冻结算法盲区均有可审计证据。
 
-这些证据已经回答“独立定位是否可行”。旧清单中的 `en-us/time-series-insights` 和 `zh-cn/sla-sql-data` 没有按原身份全部执行；它们明确由 **v0.5.3** 作为 Core 8 分母之外的单列 carry-over qualification items 处理，而不是再建一次性原型，也不进入 v0.5.2 的中文单项切片。
+这些证据已经回答“独立定位是否可行”。旧清单中的 `en-us/time-series-insights` 和 `zh-cn/sla-sql-data` 随后由 **v0.5.3** 作为 Core 8 分母之外的单列 carry-over qualification items 处理：`zh-cn/sla-sql-data` qualified 并通过 1/1，`en-us/time-series-insights` 因缺少唯一 exact soft-category row 而 `not_qualified`；两者都没有再建一次性原型，也没有进入 v0.5.2 的中文单项切片。
 
 既有实验仍只属于探索：不得进入正式 Review、Release 或 Publication，不得标记为 L3b，不修改历史报告。权威总结见 `reports/post-v0.4/v041-experiments-v050-handoff.md` 和 `reports/post-v0.4/v050-entry-decision.md`。
 
@@ -579,39 +579,39 @@ Review 至少使用：
 
 ### v0.5.3：覆盖四类核心页面并裁定 Machine Gate
 
-> 状态：Execution Plan 已冻结（2026-08-12）；Plan freeze 只授权后续按 P0–P5 实施，不包含编码或正式 Evidence。
+> 状态：已完成实施与技术验收（2026-08-12）。正式状态见 `reports/v0.5.3/acceptance-status.md`。
 
-在同一个新的 current full bilingual Batch 上，将独立核对扩展到完整双语 Core 8：**4 个 Core 产品 × 2 种语言 = 8 个 language-level items**，覆盖 SimpleStatic、RegionFilter、ComplexContent 和 SupportArticle。`zh-cn/api-management` 在该新 Batch 上重新绑定并生成 Evidence；v0.5.2 accepted bundle 保持历史不可变且不混入新分母。当前 snapshot 预期共有 46 个 Core scopes，正式 denominator 由新 Batch Source 按冻结的 scope 推导规则确定；正常上游变化不通过手工 Source/config hash 表固化进路线图。
+formal Batch `20260812T125640Z-e5aa4b3f` 在同一个 clean producer commit 上覆盖完整双语 Core 8：**4 个 Core 产品 × 2 种语言 = 8 个 language-level items**，覆盖 SimpleStatic、RegionFilter、ComplexContent 和 SupportArticle。Core 8 形成 8/8 canonical bundles、46/46 completed scopes，item distribution 为 6 passed / 2 failed / 0 blocked，scope distribution 为 44 passed / 2 failed / 0 blocked。v0.5.2 accepted bundle 保持历史不可变且不混入新分母。
 
-`en-us/time-series-insights` 与 `zh-cn/sla-sql-data` 作为 Core 8 分母之外的两个 carry-over qualification items，分别获得明确结论和后续 owner。两个 carry-over 表中的当前 scope 数只作为 preflight 预期；若 qualified，其正式 scope 同样由新 Batch 实际绑定 Source 按页面族规则推导并完整覆盖，但始终与 Core denominator 分开记录。`en-us/icp-faq` 复用中文 Source 的 `claim_limitations` 必须随 Evidence 展示：它只能证明 payload 与实际绑定 Source 一致，不能证明英文翻译或本地化质量。v0.5.3 同时核对生产 extraction/L3a/L3b 的 duplicate-ID ordered-unique 行为，差异必须明示而不能静默漂移。
+分母外 carry-over 中，`zh-cn/sla-sql-data` qualified 并通过 1/1；`en-us/time-series-insights` 因当前 binding 缺少唯一 exact soft-category row 而 `not_qualified`，按契约没有伪造 bundle。`en-us/icp-faq` 的 persisted `claim_limitations` 明示其复用中文 Source，只能证明 payload 与实际 binding 一致，不能证明英文翻译或本地化质量。生产 extraction/L3a/L3b 的 duplicate-ID ordered-unique 内容语义已在当前 formal targets 上证明对齐，RegionFilter 只保留 diagnostic asymmetry。
 
-现有 Workbench 展示 L3a/L3b、Source、Expected、Payload 和可读 diff，但不建立第二套人工审核 lifecycle，也不改变现有 L4 Review Decision、Approval、Release 或 upload 行为。Machine Gate 裁定必须基于全部 formal actual Core scopes 和所有已生成 carry-over scopes 的人工只读复核，不得只接受聚合通过率或总称式 Evidence set；决策同时考虑失败分布、`claim_limitations` 和 lane disagreement。合法结论包括继续并行、建议限定范围启用或建议分阶段启用，但 v0.5.3 固定 `runtime_effective=false`。
+Workbench 已展示 L3a/L3b、Source、Expected、Payload 和可读 diff；用户完成 47/47 formal scopes 的只读复核并接受 exact identities，没有建立第二套人工审核 lifecycle，也没有写 L4 Review Decision。两项 `icp-faq` 均表现为 L3a passed / L3b failed，证明现有 replay lane 会漏掉静默直接文本丢失。accepted Machine Gate decision 因此为 `parallel_only`，固定 `runtime_effective=false`，不改变 Approval、Release 或 upload 行为。
 
-本阶段以该当前完整双语 Batch 的真实结果，按风险、项数、共享根因和可安全修复性形成残余问题地图。只有 Machine Gate decision 与该地图均获人工接受后，才冻结 v0.5.4–v0.6 的具体问题组名称与顺序。
+accepted residual problem map 按静默准确性风险、项数、共享根因和可安全修复性冻结后续顺序：v0.5.4 处理 SupportArticle mixed/direct-text loss，v0.5.5 处理 Simple page-global boundary/classification，v0.5.6 拆分并安全修复 filter-control truth，R4–R6 留给 v0.6。
 
-### v0.5.4：第一优先残余问题组
+### v0.5.4：SupportArticle mixed/direct-text preservation
 
-v0.5.4 默认承接 v0.5.3 accepted residual problem map 的第一优先组。旧 C2 `missing_software_target` 是候选，但旧 15 项数字不是完成目标。选择记录必须说明完整受影响单项、共享根因假设、风险、预期通用修复点和未选择其他组的理由。若 accepted Machine Gate decision 认为 activation prerequisite 应优先，必须先在 v0.5.3 收口时更新并人工接受本路线图的版本主题和顺序；后续 execution plan 不得单方面改写已冻结的 v0.5.4 主题。
+v0.5.4 承接 `zh-cn/icp-faq` 与 `en-us/icp-faq` 的两份 immutable failed Evidence。两项均在 `<h3>18...` / `<br/>` 与 `<h3>19...` 之间丢失 direct text，raw、DOM 与 visible-text 比较失败而 L3a 通过，构成当前最高优先级的静默内容准确性风险。
 
-实施仍遵循问题组纪律：先归因和必要拆分，只修改共享 detector、reachability、状态对应或其他通用实现，禁止产品名硬编码；增加真实 Frozen HTML、L3b、针对性错误注入、双语代表人工审核和完整 Batch 防回退。
+实施必须先证明 SupportArticle mixed-content extraction/serialization 的共享根因，再在通用边界保留 direct text、元素顺序和有意义 URL；禁止按产品名或问题编号硬编码。必须增加真实双语 Frozen HTML、遗漏/重排反证、所有 SupportArticle family 回归、新 current Evidence 和完整 Batch 防回退，并保持 v0.5.3 两份负证据不可变。详细输入见 `reports/v0.5.3/v0.5.4-handoff.md`。
 
-### v0.5.5：第二优先残余问题组
+### v0.5.5：Simple page-global boundary 与策略分类
 
-按 v0.5.3 冻结的问题地图选择第二优先组。旧 C1 SimpleStatic 正文边界是候选，但实验期间已经恢复多个旧 C1 项，必须重新列出当前单项和共享结构后才能进入实现。
+处理当前 Batch 的 16 个 Simple items：`azure-defender`、`batch`、`bot-services`、`core-control-plane`、`firewall-manager`、`frontdoor`、`service-fabric`、`virtual-network` 的双语项。当前包含 intrinsic boundary、active-filter/static classification、FAQ/SLA boundary 和 direct-child 四种签名，必须先归因并按真实结构拆分，不能沿用旧 C1 数字假设一个根因。
 
-若最终选择 C1，仍要求可证明的正文边界；无法证明时继续阻断，并测试边界过宽、过窄和误收相邻组件。若选择其他组，使用同一问题组验收纪律，不得为了保留旧标题强行归类。
+正文边界只能来自 DOM 内在事实或 Product Definition 明确声明；无法证明时继续阻断。测试必须覆盖边界过宽、过窄、误收相邻组件和 active controls，不得回退到 `.pure-content`/`body` 猜测正文。
 
-### v0.5.6：剩余优先组与 v0.5 收口
+### v0.5.6：Filter-control truth 拆分、安全修复与 v0.5 收口
 
-处理经审核后仍属于 v0.5 的剩余优先组；旧 C9 RegionFilter/Complex 正文边界是候选，但不预设与旧 C1 共用实现。无论选择哪组，都要检查 page-global 与 state-specific 内容无重复、漏失或错误归属。
+处理当前 31 个 filter-control failures，先拆为 R3a detector/target/root availability 16 项和 R3b default/domain disagreement 15 项。某些项属于上游 Source truth，而不是 extractor defect；只修复有 Source 证据的共享 detector/target/default 实现问题，矛盾控件继续 fail-closed，不得为提高成功数而强制归一化。
 
-C4 在本阶段至少形成基于当前 Batch 的子问题地图、优先级和代表样例；未被明确纳入本版本的修复进入 v0.6。最终以 accepted v0.5 Planning Baseline 为分母、以 accepted v0.4.1 Batch 为历史参照运行完整防回退，冻结 v0.5 acceptance Batch、问题组完成记录和下一阶段 handoff。
+最终以 accepted v0.5 Planning Baseline 为分母、以 accepted v0.4.1 与 v0.5.3 Batches 为历史参照运行完整防回退，冻结 v0.5 acceptance Batch、问题组完成记录和下一阶段 handoff。未证明可安全修复的结构或 Source disagreement 明确进入 v0.6。
 
 支持级别首先属于单个 `language × product/resource` Batch Item：L1 已路由、L2 已提取、L3a 策略重放一致、L3b 独立核对通过、L4 人工批准、L5 进入 sealed Release、L6 CMS staging 往返通过。产品状态从语言单项汇总；问题组完成状态单独记录。L3a/L3b 都不能简写成“内容最终正确”。
 
-### v0.6：第二批结构问题与 CMS 暂存环境往返检查
+### v0.6：剩余结构/config 问题与 CMS 暂存环境往返检查
 
-处理 v0.5.3 当前问题地图中经审核留给 v0.6 的结构组，包括 C4 已拆分子组和需要走重建依据变更流程的配置问题；旧 C3/C5/C6/C7/C8 只作为历史候选，不自动继承原项数或优先级。对至少 3 个进入 sealed Release 的代表单项执行 staging CMS import → export，并与 Release Payload 做语义比较。该往返是生产发布前最后一道**结构化内容检查**，不证明模板、CSS glyph、JavaScript 交互、最终渲染或真实 publish 工作流正确。
+处理 accepted map 的 R4 ambiguous content ownership、R5 Complex/state/config mapping 与 page-global gaps、R6 parser/validation narrow residuals，以及 v0.5.6 明确延后的 Source disagreement。`en-us/time-series-insights` 的 unqualified soft-category boundary 属于 R5；不得伪造 bundle 或靠缩小分母解决。旧 C3/C5/C6/C7/C8 只作历史比较，不继承旧项数。对至少 3 个进入 sealed Release 的代表单项执行 staging CMS import → export，并与 Release Payload 做语义比较。该往返是生产发布前最后一道**结构化内容检查**，不证明模板、CSS glyph、JavaScript 交互、最终渲染或真实 publish 工作流正确。
 
 覆盖率使用 accepted Planning Baseline 中经审核保留的 runnable 单项作为固定分母；分母变化必须单独审核和记录：
 
@@ -622,7 +622,7 @@ L3b 资格覆盖率 = fidelity_qualified / retained_runnable_items
 L3b 资格内通过率 = fidelity_passed / fidelity_qualified
 ```
 
-候选最低目标是提取成功率 ≥95%、按 v0.5.3 accepted policy 计算的 Machine Gate 通过率 ≥90%，且每个已处理的同类结构问题组都有人工批准样例。若 v0.5.3 裁定 L3b 继续并行而不进入 gate，`machine_gate_passed` 不得偷偷把 L3b 当作已激活条件；L3b 覆盖与通过率继续单列。不得通过缩小 `fidelity_qualified`、删除单项或改成 `known_unsupported` 改善数字。
+候选最低目标是提取成功率 ≥95%、按 v0.5.3 accepted policy 计算的 Machine Gate 通过率 ≥90%，且每个已处理的同类结构问题组都有人工批准样例。v0.5.3 已裁定 L3b 继续并行而不进入 gate，因此 `machine_gate_passed` 不得偷偷把 L3b 当作已激活条件；L3b 覆盖与通过率继续单列。不得通过缩小 `fidelity_qualified`、删除单项或改成 `known_unsupported` 改善数字。
 
 ### v0.7：长尾与生产化（按证据启动）
 
@@ -913,12 +913,12 @@ v1.0 不表示所有 Azure 页面都已经被完美解析，而表示项目对�
 - 上游新快照和配置更新是正常输入变化，由 Batch manifest 冻结实际 binding；只有 item membership、页面族、scope 语义或 claim 边界变化才要求修订 execution plan。
 - 每个新增 hash、Schema、identity、compatibility layer、状态或安全检查都必须说明当前消费者和它阻止的真实故障；仅为理论完整性而增加的机制不进入当前版本。
 - L3a、L3b 和 Machine Gate 必须分别说明 claim、coverage、bindings 和 policy；不得把 `blocked`、`not_qualified` 或 `not_run` 汇总为 passed。
-- v0.5.1 冻结 L3b 与现有机器验证并行存在的声明关系、契约和证据形式；从 v0.5.2 开始，对正式 Batch 并行记录 L3b；v0.5.3 扩大正式覆盖，并裁定 L3b 未来是否及如何进入 Machine Gate，本版本不激活运行时。
-- v0.5.2 的 Desktop Authority、soft-category 唯一行内 duplicate-ID warning-only 和 immutable negative bundle 都是 Independent Fidelity successor 规则，不回写或重新裁决 v0.4/v0.4.1/v0.5.1 历史 artifacts；v0.5.3 负责核对生产 L3a lane 的行为并显式处理差异。
+- v0.5.1 冻结 L3b 与现有机器验证并行存在的声明关系、契约和证据形式；从 v0.5.2 开始，对正式 Batch 并行记录 L3b；v0.5.3 已扩大正式覆盖并接受 `parallel_only` policy，本版本未激活运行时。
+- v0.5.2 的 Desktop Authority、soft-category 唯一行内 duplicate-ID warning-only 和 immutable negative bundle 都是 Independent Fidelity successor 规则，不回写或重新裁决 v0.4/v0.4.1/v0.5.1 历史 artifacts；v0.5.3 已核对生产 L3a lane 并记录 content-equivalent / diagnostic-asymmetric 结果。
 - 双语 Core 8 始终指 4 个 Core 产品 × 2 种语言的 8 个 items，包含 `zh-cn/api-management`；`en-us/time-series-insights` 与 `zh-cn/sla-sql-data` 是 v0.5.3 的单列 carry-over qualification items，不计入 Core 8 分母。
 - 并排报告和 Workbench 入口只投影 Evidence；人工结论继续由现有 L4 Review Decision 与 `inspected_states` 承载，不新增 `manual_l3b_*` lifecycle。
-- v0.5.4–v0.6 的具体问题组只有在 v0.5.3 当前完整双语 Batch 和人工审核后才能冻结；旧 C1–C9 数量只作为历史比较。
-- v0.5.4 默认实现 accepted residual problem map 的第一优先组；若 accepted Machine Gate decision 要求 activation prerequisite 优先，必须先在 v0.5.3 收口阶段更新并人工接受本路线图，后续 execution plan 不得单方面改变版本主题。
+- v0.5.4–v0.6 的具体问题组已由 v0.5.3 当前完整双语 Batch、47/47 scope 人工审核和 accepted residual problem map 冻结；旧 C1–C9 数量只作为历史比较。
+- v0.5.4 固定实现 SupportArticle mixed/direct-text preservation；后续 execution plan 不得单方面改写该主题或借 v0.5.3 接受扩大范围。
 - 任何版本主题、顺序或验收范围变化都应同步更新本路线图、对应 ADR、execution plan、handoff 和必要的 README；不得只修改其中一份文档。
 
 ---

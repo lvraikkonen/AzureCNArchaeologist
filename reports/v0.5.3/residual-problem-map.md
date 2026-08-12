@@ -1,6 +1,6 @@
-# v0.5.3 residual problem map candidate
+# v0.5.3 residual problem map
 
-> Candidate status: `pending_human_acceptance`
+> Map status: `accepted`
 >
 > Source Batch: `20260812T125640Z-e5aa4b3f`
 >
@@ -50,7 +50,7 @@ Risk is currently fail-closed. Some cases may be upstream Source truth rather th
 - `en-us/managed-instance`, `en-us/database-migration`: invalid software-scoped prefix layouts.
 - `zh-cn/synapse-analytics`: one missing/placeholder CMS state.
 - both `azure-functions` items: unclassified content after the final formal selector.
-- `en-us/time-series-insights`: carry-over `not_qualified` because the exact required soft-category row is absent. Its frozen target-set owner label is `v0.5.4 residual problem map`; this candidate map proposes R5/v0.6 as the implementation lane, subject to explicit acceptance.
+- `en-us/time-series-insights`: carry-over `not_qualified` because the exact required soft-category row is absent. Its frozen target-set owner label is `v0.5.4 residual problem map`; this accepted map assigns R5/v0.6 as the implementation lane.
 
 These symptoms do not yet prove one root. Resolve through detector/reachability/config ownership or an explicit reconstruction-basis change; do not invent an Evidence bundle for an unqualified binding.
 
@@ -60,11 +60,11 @@ These symptoms do not yet prove one root. Resolve through detector/reachability/
 - `en-us/cache`: extraction succeeded but L3a validation failed because one state was not price-bearing.
 - 50 `known_unsupported` and 1 `source_unavailable` items remain explicit exclusions; they are not silently counted as fixed and default to the evidence-driven long-tail work of v0.7 unless a later accepted plan names a narrower owner.
 
-## Proposed roadmap order
+## Accepted roadmap order
 
 1. v0.5.4 — R1 SupportArticle mixed/direct-text preservation.
 2. v0.5.5 — R2 Simple page-global boundary and classification.
 3. v0.5.6 — R3 filter-control truth split, applicable safe fixes, and v0.5 closure.
 4. v0.6 — R4–R6 structural/config residuals plus the already planned CMS staging round-trip checks.
 
-This order is a candidate until the user accepts the full Evidence identities, all negative scopes, the Machine Gate decision and this map.
+The user accepted this order together with the full Evidence identities, both negative scopes and the Machine Gate decision, bound to candidate commit `2393f30cec6476fd2edc4bc1342643e8eb2f9a96`.

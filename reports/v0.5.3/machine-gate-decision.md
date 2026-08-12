@@ -1,6 +1,6 @@
-# v0.5.3 Machine Gate decision candidate
+# v0.5.3 Machine Gate decision
 
-> Candidate status: `pending_human_acceptance`
+> Decision status: `accepted`
 >
 > Policy decision: `parallel_only`
 >
@@ -16,11 +16,11 @@ This decision is bound to formal Batch `20260812T125640Z-e5aa4b3f` and producer 
 | Qualified carry-over | 1 bundle | 1/1 completed | `zh-cn/sla-sql-data`: passed |
 | Not-qualified carry-over | 1 qualification | no bundle by contract | `en-us/time-series-insights`: `not_qualified` |
 
-All eight Core items passed L3a. Both `zh-cn/icp-faq` and `en-us/icp-faq` therefore form a real L3a/L3b disagreement: L3a replay passed while independent L3b found the same missing direct text after question 18. The two failed bundles are accepted as immutable negative candidates, not removed from the denominator.
+All eight Core items passed L3a. Both `zh-cn/icp-faq` and `en-us/icp-faq` therefore form a real L3a/L3b disagreement: L3a replay passed while independent L3b found the same missing direct text after question 18. The two failed bundles are accepted as immutable negative Evidence, not removed from the denominator.
 
 `en-us/icp-faq` also carries this mandatory limitation: its English item reuses the Chinese Source snapshot, so its Evidence proves fidelity only to that actual binding; it does not prove English translation, language correctness or localization quality.
 
-The qualified carry-over `zh-cn/sla-sql-data` passed 1/1. `en-us/time-series-insights` passed L3a 4/4 but is not L3b-qualified because the current binding has no unique exact soft-category row for `('Time Series Insights', 'east-china2')`; no canonical bundle was fabricated. Both retain the frozen target-set owner label `v0.5.4 residual problem map`; the candidate map closes the SLA qualification and proposes the unresolved Time Series implementation work in R5/v0.6.
+The qualified carry-over `zh-cn/sla-sql-data` passed 1/1. `en-us/time-series-insights` passed L3a 4/4 but is not L3b-qualified because the current binding has no unique exact soft-category row for `('Time Series Insights', 'east-china2')`; no canonical bundle was fabricated. Both retain the frozen target-set owner label `v0.5.4 residual problem map`; the accepted map closes the SLA qualification and assigns the unresolved Time Series implementation work to R5/v0.6.
 
 ## Decision
 
@@ -44,4 +44,4 @@ A future version may propose activation only after all of the following are sati
 - state the exact included/excluded profiles, items or scopes and the treatment of L3a/L3b disagreement;
 - define runtime behavior, migration, observability and rollback, then obtain separate human acceptance.
 
-Human acceptance of this policy candidate is still pending. Viewing the Workbench does not write an L4 Review Decision.
+The user accepted this decision with candidate commit `2393f30cec6476fd2edc4bc1342643e8eb2f9a96` after reviewing 47/47 formal scopes. Viewing and accepting this Evidence set did not write an L4 Review Decision.

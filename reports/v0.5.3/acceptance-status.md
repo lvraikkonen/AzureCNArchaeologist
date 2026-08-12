@@ -1,15 +1,17 @@
-# v0.5.3 acceptance status candidate
+# v0.5.3 acceptance status
 
-**Current conclusion: evidence/decision candidate complete; human acceptance pending.** No version bump, ROADMAP acceptance edit or `v0.5.3` tag is authorized by this candidate.
+**Conclusion: technical acceptance passed.** The user reviewed all 47/47 formal scopes and explicitly accepted candidate commit `2393f30cec6476fd2edc4bc1342643e8eb2f9a96`, all nine exact Evidence identities/paths, both immutable ICP failures, the claim limitation, both carry-over qualifications, the Machine Gate decision and the residual problem map.
+
+This acceptance keeps L3b parallel, records the credible negative Evidence without rewriting it, and updates the project version to `0.5.3`. The local annotated `v0.5.3` tag may be created only after the acceptance/version commit passes the complete gates and the worktree is clean.
 
 ## Required status separation
 
 | Summary | Current value | Meaning |
 |---|---|---|
 | `implementation_status` | `passed` | P1–P3 code/tests are committed; full and targeted implementation gates passed from a clean worktree |
-| `evidence_coverage_status` | `complete_candidate_pending_review` | Core 8 has 8/8 bundles and 46/46 completed scopes; one qualified carry-over has 1/1; human reviewed/total is currently 0/47 |
+| `evidence_coverage_status` | `accepted_complete` | Core 8 has 8/8 bundles and 46/46 completed scopes; one qualified carry-over has 1/1; human reviewed/total is 47/47 |
 | `core_l3b_verdict_distribution` | items `6 passed / 2 failed / 0 blocked`; scopes `44 passed / 2 failed / 0 blocked` | Trusted negative Evidence remains in the denominator and is immutable |
-| `machine_gate_decision` | candidate `parallel_only`; `runtime_effective=false` | L3b remains parallel and does not alter current runtime policy |
+| `machine_gate_decision` | accepted `parallel_only`; `runtime_effective=false` | L3b remains parallel and does not alter current runtime policy |
 
 ## Formal binding and Batch result
 
@@ -21,7 +23,7 @@
 
 Implementation gates passed with `1087 passed, 229 subtests passed`; the independent static/runtime/formal firewalls, fixture/baseline/determinism gates, v0.5.1 reference Batch, historical v0.5.2 bundle verification, catalog/source/config checks, Dashboard lint/build/tests, lock check and clean-tree gate all passed before formal recording.
 
-## Exact canonical Evidence candidate
+## Accepted exact canonical Evidence
 
 Coverage columns are `required/completed/passed/failed/blocked`.
 
@@ -49,9 +51,9 @@ Both failed scopes show the same omitted direct text between questions 18 and 19
 
 Immediate `verify-set` validated all 9 generated bundles. A second record returned `existing-current/read-only` for every bundle and left the target-only inventory unchanged. The accepted v0.5.2 historical bundle also remained byte-stable and verified successfully.
 
-## Human acceptance still required
+## Human acceptance result
 
-In the open Workbench, review all 46 actual Core scopes and the 1 generated carry-over scope. Acceptance must explicitly cover:
+On 2026-08-12, the user completed a read-only Workbench review of all 46 actual Core scopes and the 1 generated SLA carry-over scope, then explicitly accepted:
 
 - Batch ID and producer commit;
 - all eight Core item verdicts/coverage and the nine exact Evidence IDs/paths above;
@@ -60,4 +62,4 @@ In the open Workbench, review all 46 actual Core scopes and the 1 generated carr
 - both carry-over qualification outcomes;
 - `reports/v0.5.3/machine-gate-decision.md` and `reports/v0.5.3/residual-problem-map.md`.
 
-This is a read-only L3a/L3b review. Do not submit the existing L4 Review Decision form merely to accept this candidate. After explicit user acceptance, this file will record 47/47 human review and the accepted candidate commit; only then may version/ROADMAP/handoff updates, final gates and the local annotated tag proceed.
+The acceptance is bound to candidate commit `2393f30cec6476fd2edc4bc1342643e8eb2f9a96` and was recorded at `2026-08-12T13:52:59Z`. It did not submit the existing L4 Review Decision form and did not create a second manual L3b lifecycle. No Release was built, and nothing was uploaded, published, pushed, merged or opened as a PR.
