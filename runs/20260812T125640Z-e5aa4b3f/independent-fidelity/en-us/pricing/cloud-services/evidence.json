@@ -1,0 +1,1415 @@
+{
+  "blocked_reason": null,
+  "blocking_errors": [],
+  "claim": "independent_source_content_fidelity",
+  "claim_limitations": [],
+  "comparison_version": "independent-content-comparison-v2",
+  "coverage": {
+    "blocked": 0,
+    "completed": 16,
+    "failed": 0,
+    "passed": 16,
+    "required": 16
+  },
+  "evidence_semantic_identity": {
+    "algorithm": "sha256-canonical-json-v1",
+    "sha256": "140564f1681d8559a6183047f910dd8f49081178b090fa12ec7f6f8ca6b0e453"
+  },
+  "identity": {
+    "batch_id": "20260812T125640Z-e5aa4b3f",
+    "item_id": "en-us/cloud-services",
+    "language": "en-us",
+    "page_family": "complex",
+    "product_key": "cloud-services",
+    "resource_key": "cloud-services"
+  },
+  "mismatches": [],
+  "reconstruction_basis": {
+    "basis_id": "v0.5.3-20260812T125640Z-e5aa4b3f-en-us-cloud-services-basis",
+    "basis_semantic_identity": {
+      "algorithm": "sha256-canonical-json-v1",
+      "sha256": "aecd9308df421c4406c75821bf28b2aa1e54508b5eae15e8d787a59d772a5e49"
+    },
+    "batch_binding": {
+      "batch_id": "20260812T125640Z-e5aa4b3f",
+      "batch_manifest": {
+        "path": "runs/20260812T125640Z-e5aa4b3f/batch-manifest.json",
+        "revision": 1483,
+        "sha256": "0c23600632c2e49e8d142ab648b9e2cdeb2b3946b469894ff6354df591a3d893"
+      },
+      "input_manifest": {
+        "path": "runs/20260812T125640Z-e5aa4b3f/input-manifest.json",
+        "sha256": "efc296cf59bdaa861953fc8cfa8371e82e32950a4537b43d5a024644d0b592b8"
+      },
+      "producer_commit": "de7ea08518bb54e180e059007a9522d8301e2371"
+    },
+    "comparison_version": "independent-content-comparison-v2",
+    "item_identity": {
+      "item_id": "en-us/cloud-services",
+      "language": "en-us",
+      "page_family": "complex",
+      "product_key": "cloud-services",
+      "resource_key": "cloud-services",
+      "resource_kind": "current"
+    },
+    "persisted_payload_identity": {
+      "batch_revision": 1483,
+      "path": "runs/20260812T125640Z-e5aa4b3f/outputs/en-us/pricing/cloud-services.json",
+      "sha256": "fc3d1010361a4020602e1fc69b4710cf05a0e6622ce7a1825216db47aad82c5c"
+    },
+    "product_definition_identity": {
+      "path": "data/configs/products/pricing/cloud-services.json",
+      "sha256": "51bc6cc2d0e49c047026d63efcaf1d50f1725cc50508ce6f13c3708c3ab09872"
+    },
+    "reconstruction_profile_version": "independent-four-family-reconstruction-v1",
+    "route_map_basis": null,
+    "schema_version": "1.1",
+    "scopes": [
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "east-china2"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-1"
+          }
+        ],
+        "expected_group_name": "China East 2 - General Purpose",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "cloudservice-table-generalpurpose-A1v2-A8mv2",
+          "cloudservice-table-generalpurpose-A1v2-north3",
+          "cloudservice-table-generalpurpose-A1v2-east3-east3"
+        ],
+        "retained_table_ids": [
+          "cloudservice-table-generalpurpose-A0-A4",
+          "cloudservice-table-generalpurpose-A1v2-A8mv2-region2"
+        ],
+        "scope_key": "interactive:region=east-china2|category=tabContent1-1",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-1"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "east-china2"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-2"
+          }
+        ],
+        "expected_group_name": "China East 2 - Memory Intensive",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [],
+        "retained_table_ids": [
+          "cloudservice-table-memoryintensive-A5-A7"
+        ],
+        "scope_key": "interactive:region=east-china2|category=tabContent1-2",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-2"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "east-china2"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-3"
+          }
+        ],
+        "expected_group_name": "China East 2 - Compute Intensive",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1-D4",
+          "cloudsiervice-table-computeintensive-optimizedcompute-memoryintensive-D11-D14",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-east3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-north3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-east3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-north3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-region",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-east3",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-north3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-north3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-region"
+        ],
+        "retained_table_ids": [
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3",
+          "cloudservice-table-computeoptimized-F2v2-F72v2"
+        ],
+        "scope_key": "interactive:region=east-china2|category=tabContent1-3",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-3"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "north-china3"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-1"
+          }
+        ],
+        "expected_group_name": "China North 3 - General Purpose",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "cloudservice-table-generalpurpose-A0-A4",
+          "cloudservice-table-generalpurpose-A1v2-A8mv2-region2",
+          "cloudservice-table-generalpurpose-A1v2-A8mv2",
+          "cloudservice-table-generalpurpose-A1v2-east3-east3"
+        ],
+        "retained_table_ids": [
+          "cloudservice-table-generalpurpose-A1v2-north3"
+        ],
+        "scope_key": "interactive:region=north-china3|category=tabContent1-1",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-1"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "north-china3"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-2"
+          }
+        ],
+        "expected_group_name": "China North 3 - Memory Intensive",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "cloudservice-table-memoryintensive-A5-A7"
+        ],
+        "retained_table_ids": [],
+        "scope_key": "interactive:region=north-china3|category=tabContent1-2",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-2"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "north-china3"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-3"
+          }
+        ],
+        "expected_group_name": "China North 3 - Compute Intensive",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1-D4",
+          "cloudsiervice-table-computeintensive-optimizedcompute-memoryintensive-D11-D14",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-east3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-east3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-region",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-east3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-region",
+          "cloudservice-table-computeoptimized-F2v2-F72v2"
+        ],
+        "retained_table_ids": [
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-north3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-north3",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-north3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-north3"
+        ],
+        "scope_key": "interactive:region=north-china3|category=tabContent1-3",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-3"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "north-china2"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-1"
+          }
+        ],
+        "expected_group_name": "China North 2 - General Purpose",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "cloudservice-table-generalpurpose-A1v2-A8mv2",
+          "cloudservice-table-generalpurpose-A1v2-north3",
+          "cloudservice-table-generalpurpose-A1v2-east3-east3"
+        ],
+        "retained_table_ids": [
+          "cloudservice-table-generalpurpose-A0-A4",
+          "cloudservice-table-generalpurpose-A1v2-A8mv2-region2"
+        ],
+        "scope_key": "interactive:region=north-china2|category=tabContent1-1",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-1"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "north-china2"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-2"
+          }
+        ],
+        "expected_group_name": "China North 2 - Memory Intensive",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [],
+        "retained_table_ids": [
+          "cloudservice-table-memoryintensive-A5-A7"
+        ],
+        "scope_key": "interactive:region=north-china2|category=tabContent1-2",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-2"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "north-china2"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-3"
+          }
+        ],
+        "expected_group_name": "China North 2 - Compute Intensive",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1-D4",
+          "cloudsiervice-table-computeintensive-optimizedcompute-memoryintensive-D11-D14",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-east3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-north3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-east3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-north3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-region",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-east3",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-north3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-north3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-region"
+        ],
+        "retained_table_ids": [
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3",
+          "cloudservice-table-computeoptimized-F2v2-F72v2"
+        ],
+        "scope_key": "interactive:region=north-china2|category=tabContent1-3",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-3"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "east-china"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-1"
+          }
+        ],
+        "expected_group_name": "China East - General Purpose",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "cloudservice-table-generalpurpose-A1v2-A8mv2-region2",
+          "cloudservice-table-generalpurpose-A1v2-north3",
+          "cloudservice-table-generalpurpose-A1v2-east3-east3"
+        ],
+        "retained_table_ids": [
+          "cloudservice-table-generalpurpose-A0-A4",
+          "cloudservice-table-generalpurpose-A1v2-A8mv2"
+        ],
+        "scope_key": "interactive:region=east-china|category=tabContent1-1",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-1"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "east-china"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-2"
+          }
+        ],
+        "expected_group_name": "China East - Memory Intensive",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [],
+        "retained_table_ids": [
+          "cloudservice-table-memoryintensive-A5-A7"
+        ],
+        "scope_key": "interactive:region=east-china|category=tabContent1-2",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-2"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "east-china"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-3"
+          }
+        ],
+        "expected_group_name": "China East - Compute Intensive",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-east3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-north3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-east3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-north3",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-east3",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-north3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-north3",
+          "cloudservice-table-computeoptimized-F2v2-F72v2"
+        ],
+        "retained_table_ids": [
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1-D4",
+          "cloudsiervice-table-computeintensive-optimizedcompute-memoryintensive-D11-D14",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-region",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-region"
+        ],
+        "scope_key": "interactive:region=east-china|category=tabContent1-3",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-3"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "north-china"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-1"
+          }
+        ],
+        "expected_group_name": "China North - General Purpose",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "cloudservice-table-generalpurpose-A1v2-A8mv2-region2",
+          "cloudservice-table-generalpurpose-A1v2-north3",
+          "cloudservice-table-generalpurpose-A1v2-east3-east3"
+        ],
+        "retained_table_ids": [
+          "cloudservice-table-generalpurpose-A0-A4",
+          "cloudservice-table-generalpurpose-A1v2-A8mv2"
+        ],
+        "scope_key": "interactive:region=north-china|category=tabContent1-1",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-1"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "north-china"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-2"
+          }
+        ],
+        "expected_group_name": "China North - Memory Intensive",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [],
+        "retained_table_ids": [
+          "cloudservice-table-memoryintensive-A5-A7"
+        ],
+        "scope_key": "interactive:region=north-china|category=tabContent1-2",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-2"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "north-china"
+          },
+          {
+            "filterKey": "category",
+            "matchValues": "tabContent1-3"
+          }
+        ],
+        "expected_group_name": "China North - Compute Intensive",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-east3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-north3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-east3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-north3",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-region",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-east3",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-north3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-north3",
+          "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-region",
+          "cloudservice-table-computeoptimized-F2v2-F72v2"
+        ],
+        "retained_table_ids": [
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1-D4",
+          "cloudsiervice-table-computeintensive-optimizedcompute-memoryintensive-D11-D14",
+          "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2",
+          "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2"
+        ],
+        "scope_key": "interactive:region=north-china|category=tabContent1-3",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "category_panel_with_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "#tabContent1-3"
+        }
+      },
+      {
+        "criteria": [],
+        "expected_group_name": null,
+        "payload_locator": "baseContent",
+        "removed_table_ids": [],
+        "retained_table_ids": [],
+        "scope_key": "page_global",
+        "scope_kind": "page_global",
+        "source_locator": {
+          "boundary": "after_final_formal_selector_before_common_sections",
+          "kind": "post_selector_siblings",
+          "selector": null
+        }
+      }
+    ],
+    "soft_category_identity": {
+      "path": "data/configs/soft-category.json",
+      "sha256": "3c930c6e163f27bbbbc4e44c8597feb3d112518ffcc309ee5b7bc007978f02d8"
+    },
+    "source_identity": {
+      "path": "data/current_prod_html/en-us/pricing/details/cloud-services/index.html",
+      "sha256": "fd0266473d6b79c22444e9a48d6751c2290ecc996a486efed80755a839b52f12"
+    },
+    "verifier_profile": {
+      "id": "v0.5.3-independent-fidelity-four-family",
+      "path": "data/configs/independent-fidelity-profiles/v0.5.3-four-family.json",
+      "sha256": "6a3c6c0fcb93105e2540a88229c302317ae48b4b5d8ea2a1fcf75f196b029f0c",
+      "version": "0.5.3"
+    },
+    "wire_transform_version": "independent-cms-wire-v2"
+  },
+  "reconstruction_profile_version": "independent-four-family-reconstruction-v1",
+  "schema_version": "1.1",
+  "scopes": [
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "east-china2"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-1"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-001.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-001.expected.html.txt",
+        "sha256": "9dd5c5d872531cf2fb985325d5574a1317dd104f9b88b9d28eac136392657561"
+      },
+      "expected_group_name": "China East 2 - General Purpose",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-001.payload.html.txt",
+        "sha256": "9dd5c5d872531cf2fb985325d5574a1317dd104f9b88b9d28eac136392657561"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "cloudservice-table-generalpurpose-A1v2-A8mv2",
+        "cloudservice-table-generalpurpose-A1v2-north3",
+        "cloudservice-table-generalpurpose-A1v2-east3-east3"
+      ],
+      "retained_table_ids": [
+        "cloudservice-table-generalpurpose-A0-A4",
+        "cloudservice-table-generalpurpose-A1v2-A8mv2-region2"
+      ],
+      "scope_key": "interactive:region=east-china2|category=tabContent1-1",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-001.source.html.txt",
+        "sha256": "7780d91e7261fba87d4c82066706003543b922a493623e39529ac467ff0329f9"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-1"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "east-china2"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-2"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-002.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-002.expected.html.txt",
+        "sha256": "c7e0b177732501c71f345fa00ae527648214eef0d3a2ec33553db925ae8b1d59"
+      },
+      "expected_group_name": "China East 2 - Memory Intensive",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-002.payload.html.txt",
+        "sha256": "c7e0b177732501c71f345fa00ae527648214eef0d3a2ec33553db925ae8b1d59"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [],
+      "retained_table_ids": [
+        "cloudservice-table-memoryintensive-A5-A7"
+      ],
+      "scope_key": "interactive:region=east-china2|category=tabContent1-2",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-002.source.html.txt",
+        "sha256": "cae66d152a8e0f6532f734e1e10ddcd9037836d65a0bba170cb89ccb3f9d3378"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-2"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "east-china2"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-3"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-003.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-003.expected.html.txt",
+        "sha256": "5025a0cd0fdd7013625716020839c908c0cda59f7c0a8a0778fa3766e817f227"
+      },
+      "expected_group_name": "China East 2 - Compute Intensive",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-003.payload.html.txt",
+        "sha256": "5025a0cd0fdd7013625716020839c908c0cda59f7c0a8a0778fa3766e817f227"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1-D4",
+        "cloudsiervice-table-computeintensive-optimizedcompute-memoryintensive-D11-D14",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-east3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-north3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-east3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-north3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-region",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-east3",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-north3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-north3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-region"
+      ],
+      "retained_table_ids": [
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3",
+        "cloudservice-table-computeoptimized-F2v2-F72v2"
+      ],
+      "scope_key": "interactive:region=east-china2|category=tabContent1-3",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-003.source.html.txt",
+        "sha256": "da7ffb87078723550fca0ee024380940c113ab4bc0b60b4f46262da786271d82"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-3"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "north-china3"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-1"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-004.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-004.expected.html.txt",
+        "sha256": "f5ededf4ef991a73c6a2ac1436721816a9450244dd6e78ed448e71e94034f298"
+      },
+      "expected_group_name": "China North 3 - General Purpose",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-004.payload.html.txt",
+        "sha256": "f5ededf4ef991a73c6a2ac1436721816a9450244dd6e78ed448e71e94034f298"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "cloudservice-table-generalpurpose-A0-A4",
+        "cloudservice-table-generalpurpose-A1v2-A8mv2-region2",
+        "cloudservice-table-generalpurpose-A1v2-A8mv2",
+        "cloudservice-table-generalpurpose-A1v2-east3-east3"
+      ],
+      "retained_table_ids": [
+        "cloudservice-table-generalpurpose-A1v2-north3"
+      ],
+      "scope_key": "interactive:region=north-china3|category=tabContent1-1",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-004.source.html.txt",
+        "sha256": "7780d91e7261fba87d4c82066706003543b922a493623e39529ac467ff0329f9"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-1"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "north-china3"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-2"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-005.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-005.expected.html.txt",
+        "sha256": "8d0afdeedf578c74b2e04b4b06f1220bd8ed9a22ea240ae2814a1e3969b25a54"
+      },
+      "expected_group_name": "China North 3 - Memory Intensive",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-005.payload.html.txt",
+        "sha256": "8d0afdeedf578c74b2e04b4b06f1220bd8ed9a22ea240ae2814a1e3969b25a54"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "cloudservice-table-memoryintensive-A5-A7"
+      ],
+      "retained_table_ids": [],
+      "scope_key": "interactive:region=north-china3|category=tabContent1-2",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-005.source.html.txt",
+        "sha256": "cae66d152a8e0f6532f734e1e10ddcd9037836d65a0bba170cb89ccb3f9d3378"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-2"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "north-china3"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-3"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-006.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-006.expected.html.txt",
+        "sha256": "e7b1d4585dc900cf4f0f3ead59095612037fbe31ae84f72e4f9a14873275829e"
+      },
+      "expected_group_name": "China North 3 - Compute Intensive",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-006.payload.html.txt",
+        "sha256": "e7b1d4585dc900cf4f0f3ead59095612037fbe31ae84f72e4f9a14873275829e"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1-D4",
+        "cloudsiervice-table-computeintensive-optimizedcompute-memoryintensive-D11-D14",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-east3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-east3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-region",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-east3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-region",
+        "cloudservice-table-computeoptimized-F2v2-F72v2"
+      ],
+      "retained_table_ids": [
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-north3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-north3",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-north3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-north3"
+      ],
+      "scope_key": "interactive:region=north-china3|category=tabContent1-3",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-006.source.html.txt",
+        "sha256": "da7ffb87078723550fca0ee024380940c113ab4bc0b60b4f46262da786271d82"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-3"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "north-china2"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-1"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-007.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-007.expected.html.txt",
+        "sha256": "9dd5c5d872531cf2fb985325d5574a1317dd104f9b88b9d28eac136392657561"
+      },
+      "expected_group_name": "China North 2 - General Purpose",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-007.payload.html.txt",
+        "sha256": "9dd5c5d872531cf2fb985325d5574a1317dd104f9b88b9d28eac136392657561"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "cloudservice-table-generalpurpose-A1v2-A8mv2",
+        "cloudservice-table-generalpurpose-A1v2-north3",
+        "cloudservice-table-generalpurpose-A1v2-east3-east3"
+      ],
+      "retained_table_ids": [
+        "cloudservice-table-generalpurpose-A0-A4",
+        "cloudservice-table-generalpurpose-A1v2-A8mv2-region2"
+      ],
+      "scope_key": "interactive:region=north-china2|category=tabContent1-1",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-007.source.html.txt",
+        "sha256": "7780d91e7261fba87d4c82066706003543b922a493623e39529ac467ff0329f9"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-1"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "north-china2"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-2"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-008.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-008.expected.html.txt",
+        "sha256": "c7e0b177732501c71f345fa00ae527648214eef0d3a2ec33553db925ae8b1d59"
+      },
+      "expected_group_name": "China North 2 - Memory Intensive",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-008.payload.html.txt",
+        "sha256": "c7e0b177732501c71f345fa00ae527648214eef0d3a2ec33553db925ae8b1d59"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [],
+      "retained_table_ids": [
+        "cloudservice-table-memoryintensive-A5-A7"
+      ],
+      "scope_key": "interactive:region=north-china2|category=tabContent1-2",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-008.source.html.txt",
+        "sha256": "cae66d152a8e0f6532f734e1e10ddcd9037836d65a0bba170cb89ccb3f9d3378"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-2"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "north-china2"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-3"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-009.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-009.expected.html.txt",
+        "sha256": "5025a0cd0fdd7013625716020839c908c0cda59f7c0a8a0778fa3766e817f227"
+      },
+      "expected_group_name": "China North 2 - Compute Intensive",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-009.payload.html.txt",
+        "sha256": "5025a0cd0fdd7013625716020839c908c0cda59f7c0a8a0778fa3766e817f227"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1-D4",
+        "cloudsiervice-table-computeintensive-optimizedcompute-memoryintensive-D11-D14",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-east3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-north3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-east3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-north3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-region",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-east3",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-north3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-north3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-region"
+      ],
+      "retained_table_ids": [
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3",
+        "cloudservice-table-computeoptimized-F2v2-F72v2"
+      ],
+      "scope_key": "interactive:region=north-china2|category=tabContent1-3",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-009.source.html.txt",
+        "sha256": "da7ffb87078723550fca0ee024380940c113ab4bc0b60b4f46262da786271d82"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-3"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "east-china"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-1"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-010.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-010.expected.html.txt",
+        "sha256": "e74cf7481e4c761eee817907d7dd8ada8f8404243251a5730b9b4fdfe44abbf3"
+      },
+      "expected_group_name": "China East - General Purpose",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-010.payload.html.txt",
+        "sha256": "e74cf7481e4c761eee817907d7dd8ada8f8404243251a5730b9b4fdfe44abbf3"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "cloudservice-table-generalpurpose-A1v2-A8mv2-region2",
+        "cloudservice-table-generalpurpose-A1v2-north3",
+        "cloudservice-table-generalpurpose-A1v2-east3-east3"
+      ],
+      "retained_table_ids": [
+        "cloudservice-table-generalpurpose-A0-A4",
+        "cloudservice-table-generalpurpose-A1v2-A8mv2"
+      ],
+      "scope_key": "interactive:region=east-china|category=tabContent1-1",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-010.source.html.txt",
+        "sha256": "7780d91e7261fba87d4c82066706003543b922a493623e39529ac467ff0329f9"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-1"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "east-china"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-2"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-011.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-011.expected.html.txt",
+        "sha256": "c7e0b177732501c71f345fa00ae527648214eef0d3a2ec33553db925ae8b1d59"
+      },
+      "expected_group_name": "China East - Memory Intensive",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-011.payload.html.txt",
+        "sha256": "c7e0b177732501c71f345fa00ae527648214eef0d3a2ec33553db925ae8b1d59"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [],
+      "retained_table_ids": [
+        "cloudservice-table-memoryintensive-A5-A7"
+      ],
+      "scope_key": "interactive:region=east-china|category=tabContent1-2",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-011.source.html.txt",
+        "sha256": "cae66d152a8e0f6532f734e1e10ddcd9037836d65a0bba170cb89ccb3f9d3378"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-2"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "east-china"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-3"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-012.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-012.expected.html.txt",
+        "sha256": "2a3b77846c3548ad614be442ff6aa9752031b65afa983b432669611ddd9399df"
+      },
+      "expected_group_name": "China East - Compute Intensive",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-012.payload.html.txt",
+        "sha256": "2a3b77846c3548ad614be442ff6aa9752031b65afa983b432669611ddd9399df"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-east3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-north3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-east3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-north3",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-east3",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-north3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-north3",
+        "cloudservice-table-computeoptimized-F2v2-F72v2"
+      ],
+      "retained_table_ids": [
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1-D4",
+        "cloudsiervice-table-computeintensive-optimizedcompute-memoryintensive-D11-D14",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-region",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-region"
+      ],
+      "scope_key": "interactive:region=east-china|category=tabContent1-3",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-012.source.html.txt",
+        "sha256": "da7ffb87078723550fca0ee024380940c113ab4bc0b60b4f46262da786271d82"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-3"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "north-china"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-1"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-013.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-013.expected.html.txt",
+        "sha256": "e74cf7481e4c761eee817907d7dd8ada8f8404243251a5730b9b4fdfe44abbf3"
+      },
+      "expected_group_name": "China North - General Purpose",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-013.payload.html.txt",
+        "sha256": "e74cf7481e4c761eee817907d7dd8ada8f8404243251a5730b9b4fdfe44abbf3"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "cloudservice-table-generalpurpose-A1v2-A8mv2-region2",
+        "cloudservice-table-generalpurpose-A1v2-north3",
+        "cloudservice-table-generalpurpose-A1v2-east3-east3"
+      ],
+      "retained_table_ids": [
+        "cloudservice-table-generalpurpose-A0-A4",
+        "cloudservice-table-generalpurpose-A1v2-A8mv2"
+      ],
+      "scope_key": "interactive:region=north-china|category=tabContent1-1",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-013.source.html.txt",
+        "sha256": "7780d91e7261fba87d4c82066706003543b922a493623e39529ac467ff0329f9"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-1"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "north-china"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-2"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-014.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-014.expected.html.txt",
+        "sha256": "c7e0b177732501c71f345fa00ae527648214eef0d3a2ec33553db925ae8b1d59"
+      },
+      "expected_group_name": "China North - Memory Intensive",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-014.payload.html.txt",
+        "sha256": "c7e0b177732501c71f345fa00ae527648214eef0d3a2ec33553db925ae8b1d59"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [],
+      "retained_table_ids": [
+        "cloudservice-table-memoryintensive-A5-A7"
+      ],
+      "scope_key": "interactive:region=north-china|category=tabContent1-2",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-014.source.html.txt",
+        "sha256": "cae66d152a8e0f6532f734e1e10ddcd9037836d65a0bba170cb89ccb3f9d3378"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-2"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "north-china"
+        },
+        {
+          "filterKey": "category",
+          "matchValues": "tabContent1-3"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-015.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-015.expected.html.txt",
+        "sha256": "fa83695d81fe7ef8f6cf7e511ccc8a9399b081162a6ed21fc9cb8f507d549d54"
+      },
+      "expected_group_name": "China North - Compute Intensive",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-015.payload.html.txt",
+        "sha256": "fa83695d81fe7ef8f6cf7e511ccc8a9399b081162a6ed21fc9cb8f507d549d54"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-east3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2-north3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-east3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-north3",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D2v3-D64v3-region",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-east3",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2-north3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-north3",
+        "cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-region",
+        "cloudservice-table-computeoptimized-F2v2-F72v2"
+      ],
+      "retained_table_ids": [
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1-D4",
+        "cloudsiervice-table-computeintensive-optimizedcompute-memoryintensive-D11-D14",
+        "cloudservice-table-computeintensive-optimizedcompute-generalpurpose-D1v2-D5v2",
+        "cloudservice-table-optimizedcompute-memoryintensive-D11v2-D15v2"
+      ],
+      "scope_key": "interactive:region=north-china|category=tabContent1-3",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-015.source.html.txt",
+        "sha256": "da7ffb87078723550fca0ee024380940c113ab4bc0b60b4f46262da786271d82"
+      },
+      "source_locator": {
+        "boundary": "category_panel_with_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "#tabContent1-3"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [],
+      "diff": {
+        "path": "fragments/scope-016.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-016.expected.html.txt",
+        "sha256": "0ab769fa88a4d9d8578d73f612bd43b92cde53c39d0a3ffb8a8640384655c2fb"
+      },
+      "expected_group_name": null,
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-016.payload.html.txt",
+        "sha256": "0ab769fa88a4d9d8578d73f612bd43b92cde53c39d0a3ffb8a8640384655c2fb"
+      },
+      "payload_locator": "baseContent",
+      "removed_table_ids": [],
+      "retained_table_ids": [],
+      "scope_key": "page_global",
+      "scope_kind": "page_global",
+      "source": {
+        "path": "fragments/scope-016.source.html.txt",
+        "sha256": "872768eb38de2257d1d56fd6aa2b9b895497885a3c17ebc22947f1b41fff6819"
+      },
+      "source_locator": {
+        "boundary": "after_final_formal_selector_before_common_sections",
+        "kind": "post_selector_siblings",
+        "selector": null
+      },
+      "verdict": "passed"
+    }
+  ],
+  "verdict": "passed",
+  "verifier_profile": {
+    "id": "v0.5.3-independent-fidelity-four-family",
+    "path": "data/configs/independent-fidelity-profiles/v0.5.3-four-family.json",
+    "sha256": "6a3c6c0fcb93105e2540a88229c302317ae48b4b5d8ea2a1fcf75f196b029f0c",
+    "version": "0.5.3"
+  },
+  "wire_transform_version": "independent-cms-wire-v2"
+}

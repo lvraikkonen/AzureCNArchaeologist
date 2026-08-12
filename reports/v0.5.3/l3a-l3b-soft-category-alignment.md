@@ -22,9 +22,8 @@ Targeted tests prove the common ordered sequence and verify that both the strict
 
 The current preflight input has no duplicate exact `(os, region)` rows. Four Cloud Services rows contain one later duplicate of `cloudservice-table-optimizedcompute-memoryintensive-E2v3-E64v3-east3`: `east-china2`, `north-china2`, `east-china`, and `north-china`. The table belongs to Category `tabContent1-3`; therefore the directly relevant preflight scopes are eight interactive scopes (four Regions × two languages) across `zh-cn/cloud-services` and `en-us/cloud-services`. All three verdict-relevant lanes project the same content for those scopes. API Management has no current row-level duplicate, and SimpleStatic/SupportArticle targets do not consume soft-category truth.
 
-The formal Batch must rebind this conclusion to its actual `soft-category.json` and Source. Any new duplicate exact row remains blocking. Any new relevant row-level duplicate outside the behaviors tested here is not silently gate-ready; it must be displayed as a lane-alignment finding.
+Formal Batch `20260812T125640Z-e5aa4b3f` rebound this conclusion to producer commit `de7ea08518bb54e180e059007a9522d8301e2371`, its actual `soft-category.json`, Source snapshots and persisted payloads. Both Cloud Services items produced current canonical Evidence with 16/16 scopes passed; the eight interactive scopes affected by the four row-level duplicate IDs remained content-equivalent across the three lanes. Immediate `verify-set` and the second no-overwrite record confirmed the same bindings and identities. Any future duplicate exact row remains blocking. Any new relevant row-level duplicate outside the behaviors tested here is not silently gate-ready; it must be displayed as a lane-alignment finding.
 
 ## Policy consequence
 
 There is no current affected scope that needs exclusion for a content-semantic disagreement. v0.5.3 nevertheless stays `parallel_only` and `runtime_effective=false` as frozen. The RegionFilter diagnostic asymmetry is a residual cleanup opportunity, not evidence that a duplicate occurrence changes the persisted content claim.
-

@@ -1,0 +1,437 @@
+{
+  "blocked_reason": null,
+  "blocking_errors": [],
+  "claim": "independent_source_content_fidelity",
+  "claim_limitations": [],
+  "comparison_version": "independent-content-comparison-v2",
+  "coverage": {
+    "blocked": 0,
+    "completed": 5,
+    "failed": 0,
+    "passed": 5,
+    "required": 5
+  },
+  "evidence_semantic_identity": {
+    "algorithm": "sha256-canonical-json-v1",
+    "sha256": "d7d88768e9219a054b8f3b8a2b58de34d33f60afde940c01af0976ab5164df98"
+  },
+  "identity": {
+    "batch_id": "20260812T125640Z-e5aa4b3f",
+    "item_id": "zh-cn/api-management",
+    "language": "zh-cn",
+    "page_family": "region_filter",
+    "product_key": "api-management",
+    "resource_key": "api-management"
+  },
+  "mismatches": [],
+  "reconstruction_basis": {
+    "basis_id": "v0.5.3-20260812T125640Z-e5aa4b3f-zh-cn-api-management-basis",
+    "basis_semantic_identity": {
+      "algorithm": "sha256-canonical-json-v1",
+      "sha256": "fe2ae5815cb872f761f93b155203c4a90c05f83b58520257e9e78bd32bee6b94"
+    },
+    "batch_binding": {
+      "batch_id": "20260812T125640Z-e5aa4b3f",
+      "batch_manifest": {
+        "path": "runs/20260812T125640Z-e5aa4b3f/batch-manifest.json",
+        "revision": 1483,
+        "sha256": "0c23600632c2e49e8d142ab648b9e2cdeb2b3946b469894ff6354df591a3d893"
+      },
+      "input_manifest": {
+        "path": "runs/20260812T125640Z-e5aa4b3f/input-manifest.json",
+        "sha256": "efc296cf59bdaa861953fc8cfa8371e82e32950a4537b43d5a024644d0b592b8"
+      },
+      "producer_commit": "de7ea08518bb54e180e059007a9522d8301e2371"
+    },
+    "comparison_version": "independent-content-comparison-v2",
+    "item_identity": {
+      "item_id": "zh-cn/api-management",
+      "language": "zh-cn",
+      "page_family": "region_filter",
+      "product_key": "api-management",
+      "resource_key": "api-management",
+      "resource_kind": "current"
+    },
+    "persisted_payload_identity": {
+      "batch_revision": 1483,
+      "path": "runs/20260812T125640Z-e5aa4b3f/outputs/zh-cn/pricing/api-management.json",
+      "sha256": "0bec4742b1f735d0b267e98c89820d95bf469a3ba6b9715b856d6dd387cecd59"
+    },
+    "product_definition_identity": {
+      "path": "data/configs/products/pricing/api-management.json",
+      "sha256": "8210aefca6560368c5571ccd9e2431eb04ac0ce3bd4ad6e47f8518e4f7513676"
+    },
+    "reconstruction_profile_version": "independent-four-family-reconstruction-v1",
+    "route_map_basis": null,
+    "schema_version": "1.1",
+    "scopes": [
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "east-china2"
+          }
+        ],
+        "expected_group_name": "中国东部 2",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "API-Management-preview2"
+        ],
+        "retained_table_ids": [
+          "API-Management-preview",
+          "API-Management-gateway"
+        ],
+        "scope_key": "interactive:region=east-china2",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "region_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "div.technical-azure-selector.pricing-detail-tab > div.tab-content"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "north-china3"
+          }
+        ],
+        "expected_group_name": "中国北部3",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "API-Management-preview2"
+        ],
+        "retained_table_ids": [
+          "API-Management-preview",
+          "API-Management-gateway"
+        ],
+        "scope_key": "interactive:region=north-china3",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "region_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "div.technical-azure-selector.pricing-detail-tab > div.tab-content"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "north-china2"
+          }
+        ],
+        "expected_group_name": "中国北部 2",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "API-Management-preview2"
+        ],
+        "retained_table_ids": [
+          "API-Management-preview",
+          "API-Management-gateway"
+        ],
+        "scope_key": "interactive:region=north-china2",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "region_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "div.technical-azure-selector.pricing-detail-tab > div.tab-content"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "east-china"
+          }
+        ],
+        "expected_group_name": "中国东部",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "API-Management-preview",
+          "API-Management-gateway"
+        ],
+        "retained_table_ids": [
+          "API-Management-preview2"
+        ],
+        "scope_key": "interactive:region=east-china",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "region_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "div.technical-azure-selector.pricing-detail-tab > div.tab-content"
+        }
+      },
+      {
+        "criteria": [
+          {
+            "filterKey": "region",
+            "matchValues": "north-china"
+          }
+        ],
+        "expected_group_name": "中国北部",
+        "payload_locator": "contentGroups[].content",
+        "removed_table_ids": [
+          "API-Management-preview",
+          "API-Management-gateway"
+        ],
+        "retained_table_ids": [
+          "API-Management-preview2"
+        ],
+        "scope_key": "interactive:region=north-china",
+        "scope_kind": "interactive",
+        "source_locator": {
+          "boundary": "region_soft_category_table_ownership",
+          "kind": "selector",
+          "selector": "div.technical-azure-selector.pricing-detail-tab > div.tab-content"
+        }
+      }
+    ],
+    "soft_category_identity": {
+      "path": "data/configs/soft-category.json",
+      "sha256": "3c930c6e163f27bbbbc4e44c8597feb3d112518ffcc309ee5b7bc007978f02d8"
+    },
+    "source_identity": {
+      "path": "data/current_prod_html/zh-cn/pricing/details/api-management/index.html",
+      "sha256": "2ff654ac44611f422bdcc7113fba03b7293a1f4c1f2e51b118db8568e7eb45b4"
+    },
+    "verifier_profile": {
+      "id": "v0.5.3-independent-fidelity-four-family",
+      "path": "data/configs/independent-fidelity-profiles/v0.5.3-four-family.json",
+      "sha256": "6a3c6c0fcb93105e2540a88229c302317ae48b4b5d8ea2a1fcf75f196b029f0c",
+      "version": "0.5.3"
+    },
+    "wire_transform_version": "independent-cms-wire-v2"
+  },
+  "reconstruction_profile_version": "independent-four-family-reconstruction-v1",
+  "schema_version": "1.1",
+  "scopes": [
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "east-china2"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-001.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-001.expected.html.txt",
+        "sha256": "2092d7f2f7a184fbda197692f9ccc81abccd16f5a7c4f536282b83e53539623f"
+      },
+      "expected_group_name": "中国东部 2",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-001.payload.html.txt",
+        "sha256": "2092d7f2f7a184fbda197692f9ccc81abccd16f5a7c4f536282b83e53539623f"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "API-Management-preview2"
+      ],
+      "retained_table_ids": [
+        "API-Management-preview",
+        "API-Management-gateway"
+      ],
+      "scope_key": "interactive:region=east-china2",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-001.source.html.txt",
+        "sha256": "7fbd9f129fe9205d0edf47bddca4f13d930afdcaba5a9fa72517822e12ca3d2e"
+      },
+      "source_locator": {
+        "boundary": "region_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "div.technical-azure-selector.pricing-detail-tab > div.tab-content"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "north-china3"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-002.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-002.expected.html.txt",
+        "sha256": "2092d7f2f7a184fbda197692f9ccc81abccd16f5a7c4f536282b83e53539623f"
+      },
+      "expected_group_name": "中国北部3",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-002.payload.html.txt",
+        "sha256": "2092d7f2f7a184fbda197692f9ccc81abccd16f5a7c4f536282b83e53539623f"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "API-Management-preview2"
+      ],
+      "retained_table_ids": [
+        "API-Management-preview",
+        "API-Management-gateway"
+      ],
+      "scope_key": "interactive:region=north-china3",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-002.source.html.txt",
+        "sha256": "7fbd9f129fe9205d0edf47bddca4f13d930afdcaba5a9fa72517822e12ca3d2e"
+      },
+      "source_locator": {
+        "boundary": "region_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "div.technical-azure-selector.pricing-detail-tab > div.tab-content"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "north-china2"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-003.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-003.expected.html.txt",
+        "sha256": "2092d7f2f7a184fbda197692f9ccc81abccd16f5a7c4f536282b83e53539623f"
+      },
+      "expected_group_name": "中国北部 2",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-003.payload.html.txt",
+        "sha256": "2092d7f2f7a184fbda197692f9ccc81abccd16f5a7c4f536282b83e53539623f"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "API-Management-preview2"
+      ],
+      "retained_table_ids": [
+        "API-Management-preview",
+        "API-Management-gateway"
+      ],
+      "scope_key": "interactive:region=north-china2",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-003.source.html.txt",
+        "sha256": "7fbd9f129fe9205d0edf47bddca4f13d930afdcaba5a9fa72517822e12ca3d2e"
+      },
+      "source_locator": {
+        "boundary": "region_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "div.technical-azure-selector.pricing-detail-tab > div.tab-content"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "east-china"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-004.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-004.expected.html.txt",
+        "sha256": "0fc0683c5904a7de7214244aaa197e456da5ce1995a1ab359b56222086730c94"
+      },
+      "expected_group_name": "中国东部",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-004.payload.html.txt",
+        "sha256": "0fc0683c5904a7de7214244aaa197e456da5ce1995a1ab359b56222086730c94"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "API-Management-preview",
+        "API-Management-gateway"
+      ],
+      "retained_table_ids": [
+        "API-Management-preview2"
+      ],
+      "scope_key": "interactive:region=east-china",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-004.source.html.txt",
+        "sha256": "7fbd9f129fe9205d0edf47bddca4f13d930afdcaba5a9fa72517822e12ca3d2e"
+      },
+      "source_locator": {
+        "boundary": "region_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "div.technical-azure-selector.pricing-detail-tab > div.tab-content"
+      },
+      "verdict": "passed"
+    },
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [
+        {
+          "filterKey": "region",
+          "matchValues": "north-china"
+        }
+      ],
+      "diff": {
+        "path": "fragments/scope-005.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-005.expected.html.txt",
+        "sha256": "0fc0683c5904a7de7214244aaa197e456da5ce1995a1ab359b56222086730c94"
+      },
+      "expected_group_name": "中国北部",
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-005.payload.html.txt",
+        "sha256": "0fc0683c5904a7de7214244aaa197e456da5ce1995a1ab359b56222086730c94"
+      },
+      "payload_locator": "contentGroups[].content",
+      "removed_table_ids": [
+        "API-Management-preview",
+        "API-Management-gateway"
+      ],
+      "retained_table_ids": [
+        "API-Management-preview2"
+      ],
+      "scope_key": "interactive:region=north-china",
+      "scope_kind": "interactive",
+      "source": {
+        "path": "fragments/scope-005.source.html.txt",
+        "sha256": "7fbd9f129fe9205d0edf47bddca4f13d930afdcaba5a9fa72517822e12ca3d2e"
+      },
+      "source_locator": {
+        "boundary": "region_soft_category_table_ownership",
+        "kind": "selector",
+        "selector": "div.technical-azure-selector.pricing-detail-tab > div.tab-content"
+      },
+      "verdict": "passed"
+    }
+  ],
+  "verdict": "passed",
+  "verifier_profile": {
+    "id": "v0.5.3-independent-fidelity-four-family",
+    "path": "data/configs/independent-fidelity-profiles/v0.5.3-four-family.json",
+    "sha256": "6a3c6c0fcb93105e2540a88229c302317ae48b4b5d8ea2a1fcf75f196b029f0c",
+    "version": "0.5.3"
+  },
+  "wire_transform_version": "independent-cms-wire-v2"
+}

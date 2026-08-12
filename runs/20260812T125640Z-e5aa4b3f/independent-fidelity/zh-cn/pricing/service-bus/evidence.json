@@ -1,0 +1,144 @@
+{
+  "blocked_reason": null,
+  "blocking_errors": [],
+  "claim": "independent_source_content_fidelity",
+  "claim_limitations": [],
+  "comparison_version": "independent-content-comparison-v2",
+  "coverage": {
+    "blocked": 0,
+    "completed": 1,
+    "failed": 0,
+    "passed": 1,
+    "required": 1
+  },
+  "evidence_semantic_identity": {
+    "algorithm": "sha256-canonical-json-v1",
+    "sha256": "c6c416734a682e9bae17cd55b13af570a9a1c3aa943a828205a3b90e15b82b3c"
+  },
+  "identity": {
+    "batch_id": "20260812T125640Z-e5aa4b3f",
+    "item_id": "zh-cn/service-bus",
+    "language": "zh-cn",
+    "page_family": "simple_static",
+    "product_key": "service-bus",
+    "resource_key": "service-bus"
+  },
+  "mismatches": [],
+  "reconstruction_basis": {
+    "basis_id": "v0.5.3-20260812T125640Z-e5aa4b3f-zh-cn-service-bus-basis",
+    "basis_semantic_identity": {
+      "algorithm": "sha256-canonical-json-v1",
+      "sha256": "4231cdf1b67d748a545d244345db300bd307b06ce2e83245a3fbf8c74c1e722f"
+    },
+    "batch_binding": {
+      "batch_id": "20260812T125640Z-e5aa4b3f",
+      "batch_manifest": {
+        "path": "runs/20260812T125640Z-e5aa4b3f/batch-manifest.json",
+        "revision": 1483,
+        "sha256": "0c23600632c2e49e8d142ab648b9e2cdeb2b3946b469894ff6354df591a3d893"
+      },
+      "input_manifest": {
+        "path": "runs/20260812T125640Z-e5aa4b3f/input-manifest.json",
+        "sha256": "efc296cf59bdaa861953fc8cfa8371e82e32950a4537b43d5a024644d0b592b8"
+      },
+      "producer_commit": "de7ea08518bb54e180e059007a9522d8301e2371"
+    },
+    "comparison_version": "independent-content-comparison-v2",
+    "item_identity": {
+      "item_id": "zh-cn/service-bus",
+      "language": "zh-cn",
+      "page_family": "simple_static",
+      "product_key": "service-bus",
+      "resource_key": "service-bus",
+      "resource_kind": "current"
+    },
+    "persisted_payload_identity": {
+      "batch_revision": 1483,
+      "path": "runs/20260812T125640Z-e5aa4b3f/outputs/zh-cn/pricing/service-bus.json",
+      "sha256": "102fe284acfb7bc9a05b057fe70ed9fc0c04adce28948fe53626dc5c5f1720ee"
+    },
+    "product_definition_identity": {
+      "path": "data/configs/products/pricing/service-bus.json",
+      "sha256": "7dad4a1ba650a9394c6fb099cd3883ef1e4761e920329a706053c53ae48a7989"
+    },
+    "reconstruction_profile_version": "independent-four-family-reconstruction-v1",
+    "route_map_basis": null,
+    "schema_version": "1.1",
+    "scopes": [
+      {
+        "criteria": [],
+        "expected_group_name": null,
+        "payload_locator": "baseContent",
+        "removed_table_ids": [],
+        "retained_table_ids": [],
+        "scope_key": "full_content",
+        "scope_kind": "full_content",
+        "source_locator": {
+          "boundary": "sole_static_formal_selector_before_common_sections",
+          "kind": "selector",
+          "selector": "div.technical-azure-selector"
+        }
+      }
+    ],
+    "soft_category_identity": null,
+    "source_identity": {
+      "path": "data/current_prod_html/zh-cn/pricing/details/service-bus/index.html",
+      "sha256": "72c8ff0a1a64e9a29e91b32cf0b463269f3fd9dc662e1ec064b3bdab0d1d3d32"
+    },
+    "verifier_profile": {
+      "id": "v0.5.3-independent-fidelity-four-family",
+      "path": "data/configs/independent-fidelity-profiles/v0.5.3-four-family.json",
+      "sha256": "6a3c6c0fcb93105e2540a88229c302317ae48b4b5d8ea2a1fcf75f196b029f0c",
+      "version": "0.5.3"
+    },
+    "wire_transform_version": "independent-cms-wire-v2"
+  },
+  "reconstruction_profile_version": "independent-four-family-reconstruction-v1",
+  "schema_version": "1.1",
+  "scopes": [
+    {
+      "applied_transform_rule_ids": [
+        "css-generated-semantics-v1"
+      ],
+      "blocking_errors": [],
+      "criteria": [],
+      "diff": {
+        "path": "fragments/scope-001.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-001.expected.html.txt",
+        "sha256": "be16aa693da63b364093256528454a1f16b96fdca711b7be20523f243bcd83e4"
+      },
+      "expected_group_name": null,
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-001.payload.html.txt",
+        "sha256": "be16aa693da63b364093256528454a1f16b96fdca711b7be20523f243bcd83e4"
+      },
+      "payload_locator": "baseContent",
+      "removed_table_ids": [],
+      "retained_table_ids": [],
+      "scope_key": "full_content",
+      "scope_kind": "full_content",
+      "source": {
+        "path": "fragments/scope-001.source.html.txt",
+        "sha256": "95f29033d0c710e71260fdc926f96c885c124dabb16672939a5a832fd7b9ede5"
+      },
+      "source_locator": {
+        "boundary": "sole_static_formal_selector_before_common_sections",
+        "kind": "selector",
+        "selector": "div.technical-azure-selector"
+      },
+      "verdict": "passed"
+    }
+  ],
+  "verdict": "passed",
+  "verifier_profile": {
+    "id": "v0.5.3-independent-fidelity-four-family",
+    "path": "data/configs/independent-fidelity-profiles/v0.5.3-four-family.json",
+    "sha256": "6a3c6c0fcb93105e2540a88229c302317ae48b4b5d8ea2a1fcf75f196b029f0c",
+    "version": "0.5.3"
+  },
+  "wire_transform_version": "independent-cms-wire-v2"
+}

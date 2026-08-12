@@ -1,0 +1,8 @@
+<div class="pricing-page-section">
+<h2>
+         IP 地址选项
+        </h2>
+<p>
+         为您的云服务部署保留公共 IP 地址。
+        </p>
+</div>
