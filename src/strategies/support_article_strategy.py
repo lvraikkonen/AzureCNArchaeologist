@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 from src.core.logging import get_logger
 from src.strategies.base_strategy import BaseStrategy
@@ -107,6 +107,12 @@ class SupportArticleStrategy(BaseStrategy):
                 clone = BeautifulSoup(str(current), "html.parser").find()
                 if clone:
                     wrapper.append(clone)
+            elif (
+                isinstance(current, NavigableString)
+                and not isinstance(current, Comment)
+                and str(current).strip()
+            ):
+                wrapper.append(NavigableString(str(current)))
             current = current.next_sibling
         self._clean_fragment(wrapper, source_url)
         if not wrapper.get_text(" ", strip=True) and not wrapper.select("img, video, audio, table, iframe"):

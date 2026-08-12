@@ -5,7 +5,7 @@ from dataclasses import replace
 from pathlib import Path
 
 import pytest
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, NavigableString, Tag
 
 from src.independent_fidelity.contracts import (
     validate_basis,
@@ -317,4 +317,60 @@ def test_support_boundary_preserves_visible_direct_text(
     assert any(
         mismatch["dimension"] == "visible_text"
         for mismatch in run.evidence["mismatches"]
+    )
+
+
+def test_support_direct_text_omission_and_reordering_fail_independently(
+    v053_reference_target_factory,
+) -> None:
+    target = v053_reference_target_factory("zh-cn/icp-faq")
+    reconstruction = reconstruct_bound_target(target)
+    expected = reconstruction.scopes[0].expected_fragment
+    corrected = copy.deepcopy(target.payload)
+    corrected["mainContent"] = expected
+    assert verify_reconstruction(
+        target, reconstruction, payload=corrected
+    ).evidence["verdict"] == "passed"
+
+    omitted_soup = BeautifulSoup(expected, "html.parser")
+    omitted_node = next(
+        node
+        for node in omitted_soup.find_all(string=True)
+        if "域名证书一般在域名注册平台下载" in str(node)
+    )
+    omitted_node.extract()
+    omitted = copy.deepcopy(corrected)
+    omitted["mainContent"] = omitted_soup.decode()
+    omitted_run = verify_reconstruction(
+        target, reconstruction, payload=omitted
+    )
+    assert omitted_run.evidence["verdict"] == "failed"
+    assert any(
+        mismatch["dimension"] == "visible_text"
+        for mismatch in omitted_run.evidence["mismatches"]
+    )
+
+    reordered_soup = BeautifulSoup(expected, "html.parser")
+    reordered_node = next(
+        node
+        for node in reordered_soup.find_all(string=True)
+        if "域名证书一般在域名注册平台下载" in str(node)
+    )
+    reordered_text = str(reordered_node)
+    reordered_node.extract()
+    question_19 = next(
+        heading
+        for heading in reordered_soup.find_all("h3")
+        if heading.get_text(" ", strip=True).startswith("19.")
+    )
+    question_19.insert_after(NavigableString(reordered_text))
+    reordered = copy.deepcopy(corrected)
+    reordered["mainContent"] = reordered_soup.decode()
+    reordered_run = verify_reconstruction(
+        target, reconstruction, payload=reordered
+    )
+    assert reordered_run.evidence["verdict"] == "failed"
+    assert any(
+        mismatch["dimension"] == "visible_text"
+        for mismatch in reordered_run.evidence["mismatches"]
     )

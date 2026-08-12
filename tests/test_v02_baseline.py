@@ -10,7 +10,7 @@ import unittest
 from dataclasses import replace
 from pathlib import Path
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment, NavigableString
 from jsonschema import Draft202012Validator
 
 from scripts.auto_copy_html import HTMLFileCopier, file_sha256
@@ -435,6 +435,42 @@ class ExtractionStateTests(unittest.TestCase):
                         hashlib.sha256(canonical).hexdigest(),
                         "66d970da0ef928f8f41146f280f2119b47b86b631cb640d031f26daf0d7a54c6",
                     )
+                elif key == "icp-faq":
+                    source_path = (
+                        ROOT
+                        / "data/prod-html/zh-cn/SupportArticles/ICP/icp-faq.html"
+                    )
+                    source = BeautifulSoup(
+                        source_path.read_bytes().decode("utf-8-sig"),
+                        "html.parser",
+                    )
+                    content = source.select_one("div.pure-content")
+                    self.assertIsNotNone(content)
+                    first_h2 = content.find("h2")
+                    self.assertIsNotNone(first_h2)
+                    direct_nodes = []
+                    current = first_h2
+                    while current is not None:
+                        if (
+                            isinstance(current, NavigableString)
+                            and not isinstance(current, Comment)
+                            and str(current).strip()
+                        ):
+                            direct_nodes.append(str(current))
+                        current = current.next_sibling
+                    self.assertEqual(len(direct_nodes), 1)
+                    direct_text = direct_nodes[0]
+                    self.assertIn(
+                        "域名证书一般在域名注册平台下载", direct_text
+                    )
+                    candidate = copy.deepcopy(result.payload)
+                    self.assertEqual(
+                        candidate["mainContent"].count(direct_text), 1
+                    )
+                    candidate["mainContent"] = candidate[
+                        "mainContent"
+                    ].replace(direct_text, "", 1)
+                    self.assertEqual(candidate, expected)
                 else:
                     self.assertEqual(result.payload, expected)
                 self.assertFalse({"validation", "extraction_metadata", "error"}.intersection(result.payload))
