@@ -3,10 +3,12 @@ import { readdir, readFile } from "node:fs/promises";
 import test from "node:test";
 
 import {
+  assertIndependentFidelityView,
   assertItemEvidence,
   assertWorkbenchProjection,
   defaultReviewFilters,
   filterReviewItems,
+  l3aClaimLabel,
 } from "../app/review-model.ts";
 
 const SHA = "a".repeat(64);
@@ -206,6 +208,59 @@ function evidence(overrides = {}) {
   };
 }
 
+function independentFidelity(overrides = {}) {
+  return {
+    schema_version: "1.0",
+    batch_id: "20260803T120000Z-deadbeef",
+    item_id: "zh-cn/fixture",
+    status: "failed",
+    evidence_identity: {
+      basis_id: "fixture-basis",
+      path: "runs/20260803T120000Z-deadbeef/independent-fidelity/zh-cn/pricing/fixture/evidence.json",
+      artifact_sha256: SHA,
+      semantic_sha256: SHA,
+      producer_commit: "c".repeat(40),
+    },
+    l3b: {
+      claim: "independent_source_content_fidelity",
+      verdict: "failed",
+      coverage: { required: 1, completed: 1, passed: 0, failed: 1, blocked: 0 },
+      reason: "Canonical Evidence contains failed scope results.",
+      claim_limitations: ["Does not prove localization quality."],
+    },
+    scopes: [{
+      scope_key: "full_content",
+      scope_kind: "full_content",
+      criteria: [],
+      source_locator: {
+        kind: "support_main_content",
+        selector: "div.pure-content h2:first-of-type",
+        boundary: "first_h2_through_parent_end_excluding_ui_nodes",
+      },
+      payload_locator: "mainContent",
+      expected_group_name: null,
+      verdict: "failed",
+      source: "<h2>trusted source text</h2>",
+      expected: "<h2>expected text</h2>",
+      payload: "<script>alert('must stay text')</script>",
+      diff: "--- expected\n+++ payload",
+      applied_transform_rule_ids: ["support-url-resolution-v1"],
+      retained_table_ids: [],
+      removed_table_ids: [],
+      mismatches: [{
+        code: "content_mismatch",
+        dimension: "visible_text",
+        expected_sha256: SHA,
+        actual_sha256: SHA,
+        message: "visible_text comparison differs",
+      }],
+      blocking_errors: [],
+      reason: "visible_text: visible_text comparison differs",
+    }],
+    ...overrides,
+  };
+}
+
 test("review workbench projection boundary accepts canonical payload and rejects unknown item fields", () => {
   assert.doesNotThrow(() => assertWorkbenchProjection(projection()));
 
@@ -226,6 +281,52 @@ test("review item evidence boundary accepts escaped comparison data and rejects 
     () => assertItemEvidence(malformed),
     /\$\.manual_preview\.states\[0\]\.comparison\.payload_fingerprint/,
   );
+});
+
+test("independent fidelity boundary distinguishes negative, missing, and invalid evidence", () => {
+  assert.doesNotThrow(() => assertIndependentFidelityView(independentFidelity()));
+  assert.doesNotThrow(() => assertIndependentFidelityView(independentFidelity({
+    status: "not_recorded",
+    evidence_identity: null,
+    l3b: {
+      claim: "independent_source_content_fidelity",
+      verdict: "not_recorded",
+      coverage: null,
+      reason: "No canonical Evidence bundle is recorded.",
+      claim_limitations: [],
+    },
+    scopes: [],
+  })));
+
+  const malformed = independentFidelity();
+  malformed.l3b.verdict = "passed";
+  assert.throws(
+    () => assertIndependentFidelityView(malformed),
+    /\$\.l3b\.verdict/,
+  );
+});
+
+test("L3b fragments are rendered as React text without raw HTML sinks", async () => {
+  const source = await readFile(
+    new URL("../app/review/ReviewWorkbench.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(source, /<pre>\{scope\.source\}<\/pre>/);
+  assert.match(source, /<pre>\{scope\.expected\}<\/pre>/);
+  assert.match(source, /<pre>\{scope\.payload\}<\/pre>/);
+  assert.match(source, /<pre>\{scope\.diff \|\|/);
+  assert.match(source, /L3a Evidence/);
+  assert.match(source, /L3b Evidence/);
+  assert.match(source, /validation_summary\.evidence_sha256/);
+  assert.doesNotMatch(source, /dangerouslySetInnerHTML|<iframe/i);
+});
+
+test("L3a claim label comes from the validation Evidence assurance", () => {
+  assert.equal(
+    l3aClaimLabel({ assurance: "sampled_state_content_consistency" }),
+    "sampled_state_content_consistency",
+  );
+  assert.equal(l3aClaimLabel({}), "sampled_state_content_consistency");
 });
 
 test("review filters keep formal approval separate from capability dashboard filters", () => {

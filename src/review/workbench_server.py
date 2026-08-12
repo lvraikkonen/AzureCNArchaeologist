@@ -116,6 +116,23 @@ class ReviewWorkbenchRequestHandler(BaseHTTPRequestHandler):
                         )
                     )
                     return
+                if (
+                    len(parts) == 7
+                    and parts[0] == "v1"
+                    and parts[1] == "batches"
+                    and parts[3] == "items"
+                    and parts[6] == "independent-fidelity"
+                ):
+                    batch_id, language, resource_key = parts[2], parts[4], parts[5]
+                    self._assert_allowed_batch(batch_id)
+                    self._send_json(
+                        self.server.service.get_independent_fidelity(
+                            batch_id,
+                            language=language,
+                            resource_key=resource_key,
+                        )
+                    )
+                    return
             self._send_error(HTTPStatus.NOT_FOUND, "not_found", "Unknown endpoint")
         except Exception as error:
             self._send_exception(error)

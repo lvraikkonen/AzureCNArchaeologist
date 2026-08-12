@@ -30,6 +30,7 @@ from src.pipeline.models import BatchItem, items_from_dicts, utc_now
 from src.pipeline.state_store import StateStore
 from src.release.contracts import ReleaseContractError, evaluate_release_item
 from src.review.accounting import finding_summary, merge_item_accounting, summarize_review_items
+from src.review.independent_fidelity import build_independent_fidelity_view
 from src.review.service import ReviewService, ReviewServiceError
 
 
@@ -393,6 +394,45 @@ class ReviewWorkbenchService:
                 "history": self._decision_history(batch_id, item, manifest_item),
             },
         }
+
+    def get_independent_fidelity(
+        self,
+        batch_id: str,
+        *,
+        language: str,
+        resource_key: str,
+    ) -> dict[str, Any]:
+        """Return the GET-only L3b panel model for one existing Batch item."""
+
+        item_id = f"{language}/{resource_key}"
+        manifest = self.store.read_manifest(batch_id)
+        manifest_item = manifest["items"].get(item_id)
+        if not isinstance(manifest_item, Mapping):
+            raise _error("unknown_item", f"Unknown Batch Item: {item_id}")
+        payload = manifest_item.get("artifacts", {}).get("payload")
+        if not isinstance(payload, Mapping):
+            return {
+                "schema_version": "1.0",
+                "batch_id": batch_id,
+                "item_id": item_id,
+                "status": "invalid",
+                "evidence_identity": None,
+                "l3b": {
+                    "claim": "independent_source_content_fidelity",
+                    "verdict": "invalid",
+                    "coverage": None,
+                    "reason": "Batch item has no persisted payload binding.",
+                    "claim_limitations": [],
+                },
+                "scopes": [],
+            }
+        return build_independent_fidelity_view(
+            self.root,
+            run_dir=self.store.run_dir(batch_id),
+            batch_id=batch_id,
+            item_id=item_id,
+            payload_artifact=payload,
+        )
 
     def _manual_preview(
         self,

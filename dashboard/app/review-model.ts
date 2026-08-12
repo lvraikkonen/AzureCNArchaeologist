@@ -202,6 +202,73 @@ export interface ItemEvidence {
   };
 }
 
+export type IndependentFidelityStatus =
+  | "passed"
+  | "failed"
+  | "blocked"
+  | "not_recorded"
+  | "invalid";
+
+export interface DirectCoverage {
+  required: number;
+  completed: number;
+  passed: number;
+  failed: number;
+  blocked: number;
+}
+
+export interface IndependentFidelityScope {
+  scope_key: string;
+  scope_kind: "interactive" | "page_global" | "full_content";
+  criteria: { filterKey: string; matchValues: string }[];
+  source_locator: {
+    kind: "selector" | "post_selector_siblings" | "support_main_content";
+    selector: string | null;
+    boundary: string;
+  };
+  payload_locator: "contentGroups[].content" | "baseContent" | "mainContent";
+  expected_group_name: string | null;
+  verdict: "passed" | "failed" | "blocked";
+  source: string;
+  expected: string;
+  payload: string;
+  diff: string;
+  applied_transform_rule_ids: string[];
+  retained_table_ids: string[];
+  removed_table_ids: string[];
+  mismatches: {
+    code: string;
+    dimension: string;
+    expected_sha256: string;
+    actual_sha256: string;
+    message: string;
+  }[];
+  blocking_errors: ReviewBlocker[];
+  reason: string;
+}
+
+export interface IndependentFidelityView {
+  schema_version: "1.0";
+  batch_id: string;
+  item_id: string;
+  status: IndependentFidelityStatus;
+  evidence_identity: {
+    basis_id: string;
+    path: string;
+    artifact_sha256: string;
+    semantic_sha256: string;
+    producer_commit: string;
+  } | null;
+  l3b: {
+    claim: "independent_source_content_fidelity";
+    verdict: IndependentFidelityStatus;
+    coverage: DirectCoverage | null;
+    reason: string;
+    claim_limitations: string[];
+  };
+  scopes: IndependentFidelityScope[];
+}
+
 export interface ReviewFilters {
   query: string;
   language: "all" | ReviewLanguage;
@@ -223,6 +290,7 @@ export const defaultReviewFilters: ReviewFilters = {
 };
 
 const SHA256 = /^[a-f0-9]{64}$/;
+const GIT_OBJECT_ID = /^(?:[a-f0-9]{40}|[a-f0-9]{64})$/;
 
 function fail(path: string, expectation: string): never {
   throw new TypeError(`Invalid review workbench payload at ${path}: ${expectation}`);
@@ -580,6 +648,125 @@ export function assertItemEvidence(value: unknown): asserts value is ItemEvidenc
   arrayValue(decisions.history, "$.decisions.history").forEach((value, index) => decisionSummary(value, `$.decisions.history[${index}]`, true));
 }
 
+function directCoverage(value: unknown, path: string): void {
+  const coverage = record(value, path);
+  exact(coverage, ["required", "completed", "passed", "failed", "blocked"], path);
+  Object.entries(coverage).forEach(([key, count]) => numberValue(count, `${path}.${key}`));
+}
+
+export function assertIndependentFidelityView(
+  value: unknown,
+): asserts value is IndependentFidelityView {
+  const root = record(value, "$");
+  exact(root, ["schema_version", "batch_id", "item_id", "status", "evidence_identity", "l3b", "scopes"], "$");
+  enumValue(root.schema_version, ["1.0"], "$.schema_version");
+  stringValue(root.batch_id, "$.batch_id", true);
+  stringValue(root.item_id, "$.item_id", true);
+  const statuses = ["passed", "failed", "blocked", "not_recorded", "invalid"] as const;
+  const status = enumValue(root.status, statuses, "$.status");
+
+  if (root.evidence_identity !== null) {
+    const identity = record(root.evidence_identity, "$.evidence_identity");
+    exact(identity, ["basis_id", "path", "artifact_sha256", "semantic_sha256", "producer_commit"], "$.evidence_identity");
+    stringValue(identity.basis_id, "$.evidence_identity.basis_id", true);
+    stringValue(identity.path, "$.evidence_identity.path", true);
+    sha(identity.artifact_sha256, "$.evidence_identity.artifact_sha256");
+    sha(identity.semantic_sha256, "$.evidence_identity.semantic_sha256");
+    if (typeof identity.producer_commit !== "string" || !GIT_OBJECT_ID.test(identity.producer_commit)) {
+      fail("$.evidence_identity.producer_commit", "expected a lowercase Git object ID");
+    }
+  }
+
+  const l3b = record(root.l3b, "$.l3b");
+  exact(l3b, ["claim", "verdict", "coverage", "reason", "claim_limitations"], "$.l3b");
+  enumValue(l3b.claim, ["independent_source_content_fidelity"], "$.l3b.claim");
+  const verdict = enumValue(l3b.verdict, statuses, "$.l3b.verdict");
+  if (verdict !== status) fail("$.l3b.verdict", "must equal $.status");
+  if (l3b.coverage !== null) directCoverage(l3b.coverage, "$.l3b.coverage");
+  stringValue(l3b.reason, "$.l3b.reason", true);
+  arrayValue(l3b.claim_limitations, "$.l3b.claim_limitations").forEach((entry, index) =>
+    stringValue(entry, `$.l3b.claim_limitations[${index}]`, true),
+  );
+
+  const scopes = arrayValue(root.scopes, "$.scopes");
+  scopes.forEach((value, index) => {
+    const path = `$.scopes[${index}]`;
+    const scope = record(value, path);
+    exact(
+      scope,
+      [
+        "scope_key",
+        "scope_kind",
+        "criteria",
+        "source_locator",
+        "payload_locator",
+        "expected_group_name",
+        "verdict",
+        "source",
+        "expected",
+        "payload",
+        "diff",
+        "applied_transform_rule_ids",
+        "retained_table_ids",
+        "removed_table_ids",
+        "mismatches",
+        "blocking_errors",
+        "reason",
+      ],
+      path,
+    );
+    stringValue(scope.scope_key, `${path}.scope_key`, true);
+    enumValue(scope.scope_kind, ["interactive", "page_global", "full_content"], `${path}.scope_kind`);
+    arrayValue(scope.criteria, `${path}.criteria`).forEach((entry, criterionIndex) => {
+      const criterionPath = `${path}.criteria[${criterionIndex}]`;
+      const criterion = record(entry, criterionPath);
+      exact(criterion, ["filterKey", "matchValues"], criterionPath);
+      stringValue(criterion.filterKey, `${criterionPath}.filterKey`, true);
+      stringValue(criterion.matchValues, `${criterionPath}.matchValues`, true);
+    });
+    const locator = record(scope.source_locator, `${path}.source_locator`);
+    exact(locator, ["kind", "selector", "boundary"], `${path}.source_locator`);
+    enumValue(locator.kind, ["selector", "post_selector_siblings", "support_main_content"], `${path}.source_locator.kind`);
+    nullableString(locator.selector, `${path}.source_locator.selector`);
+    stringValue(locator.boundary, `${path}.source_locator.boundary`, true);
+    enumValue(scope.payload_locator, ["contentGroups[].content", "baseContent", "mainContent"], `${path}.payload_locator`);
+    nullableString(scope.expected_group_name, `${path}.expected_group_name`);
+    enumValue(scope.verdict, ["passed", "failed", "blocked"], `${path}.verdict`);
+    ["source", "expected", "payload", "diff", "reason"].forEach((field) =>
+      stringValue(scope[field], `${path}.${field}`, field === "reason"),
+    );
+    ["applied_transform_rule_ids", "retained_table_ids", "removed_table_ids"].forEach((field) =>
+      arrayValue(scope[field], `${path}.${field}`).forEach((entry, entryIndex) =>
+        stringValue(entry, `${path}.${field}[${entryIndex}]`, true),
+      ),
+    );
+    arrayValue(scope.mismatches, `${path}.mismatches`).forEach((entry, mismatchIndex) => {
+      const mismatchPath = `${path}.mismatches[${mismatchIndex}]`;
+      const mismatch = record(entry, mismatchPath);
+      exact(mismatch, ["code", "dimension", "expected_sha256", "actual_sha256", "message"], mismatchPath);
+      stringValue(mismatch.code, `${mismatchPath}.code`, true);
+      stringValue(mismatch.dimension, `${mismatchPath}.dimension`, true);
+      sha(mismatch.expected_sha256, `${mismatchPath}.expected_sha256`);
+      sha(mismatch.actual_sha256, `${mismatchPath}.actual_sha256`);
+      stringValue(mismatch.message, `${mismatchPath}.message`, true);
+    });
+    arrayValue(scope.blocking_errors, `${path}.blocking_errors`).forEach((entry, blockerIndex) =>
+      blocker(entry, `${path}.blocking_errors[${blockerIndex}]`),
+    );
+  });
+
+  const recorded = status === "passed" || status === "failed" || status === "blocked";
+  if (recorded) {
+    if (root.evidence_identity === null) fail("$.evidence_identity", "is required for recorded Evidence");
+    if (l3b.coverage === null) fail("$.l3b.coverage", "is required for recorded Evidence");
+    if (scopes.length === 0) fail("$.scopes", "must contain recorded scopes");
+  } else {
+    if (root.evidence_identity !== null) fail("$.evidence_identity", "must be null without trusted Evidence");
+    if (l3b.coverage !== null) fail("$.l3b.coverage", "must be null without trusted Evidence");
+    if (scopes.length !== 0) fail("$.scopes", "must be empty without trusted Evidence");
+  }
+}
+
 export function filterReviewItems(
   items: ReviewQueueItem[],
   filters: ReviewFilters,
@@ -618,6 +805,12 @@ export function bindingLabel(status: EvidenceBinding): string {
     bound: "已绑定",
     stale: "已漂移",
   }[status];
+}
+
+export function l3aClaimLabel(coverage: Record<string, unknown>): string {
+  return typeof coverage.assurance === "string" && coverage.assurance.length > 0
+    ? coverage.assurance
+    : "sampled_state_content_consistency";
 }
 
 export function shortSha(value: string | null | undefined): string {

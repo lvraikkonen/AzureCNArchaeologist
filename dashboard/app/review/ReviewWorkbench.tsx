@@ -4,16 +4,19 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
 import {
+  IndependentFidelityView,
   ItemEvidence,
   ReviewFilters,
   ReviewQueueItem,
   WorkbenchProjection,
+  assertIndependentFidelityView,
   assertItemEvidence,
   assertWorkbenchProjection,
   bindingLabel,
   decisionLabel,
   defaultReviewFilters,
   filterReviewItems,
+  l3aClaimLabel,
   shortSha,
 } from "../review-model";
 
@@ -46,9 +49,9 @@ function formatJson(value: unknown): string {
 }
 
 function statusTone(value: string): string {
-  if (value === "approved" || value === "eligible" || value === "bound") return "emerald";
-  if (value === "rejected" || value === "stale" || value === "blocked") return "coral";
-  if (value === "pending" || value === "not_applicable") return "amber";
+  if (value === "approved" || value === "eligible" || value === "bound" || value === "passed") return "emerald";
+  if (value === "rejected" || value === "stale" || value === "blocked" || value === "failed" || value === "invalid") return "coral";
+  if (value === "pending" || value === "not_applicable" || value === "not_recorded") return "amber";
   return "slate";
 }
 
@@ -125,6 +128,131 @@ function EvidenceBlock({
   );
 }
 
+function coverageLabel(value: object | null): string {
+  if (!value) return "—";
+  const coverage = value as Record<string, unknown>;
+  if (typeof coverage.required === "number") {
+    return `${String(coverage.completed ?? 0)}/${coverage.required} completed`;
+  }
+  if (typeof coverage.universe_count === "number") {
+    return `${String(coverage.selected_count ?? 0)}/${coverage.universe_count} sampled`;
+  }
+  return "recorded";
+}
+
+function IndependentFidelityPanel({
+  l3a,
+  l3b,
+}: {
+  l3a: ItemEvidence;
+  l3b: IndependentFidelityView;
+}) {
+  return (
+    <section className="review-l3-panel" aria-label="L3a and L3b evidence">
+      <header className="review-l3-head">
+        <div>
+          <p className="eyebrow">Machine evidence · read only</p>
+          <h3>L3a / L3b claims</h3>
+        </div>
+        <Pill label={l3b.status.replace("_", "-")} tone={statusTone(l3b.status)} />
+      </header>
+
+      <div className="review-l3-summary-grid">
+        <article>
+          <span>L3a</span>
+          <strong>{l3aClaimLabel(l3a.coverage)}</strong>
+          <Pill
+            label={l3a.validation_summary.status}
+            tone={statusTone(l3a.validation_summary.status)}
+          />
+          <small>{coverageLabel(l3a.coverage)}</small>
+          <small>binding {l3a.status.evidence_binding}</small>
+          <pre>{formatJson(l3a.coverage)}</pre>
+        </article>
+        <article>
+          <span>L3b</span>
+          <strong>{l3b.l3b.claim}</strong>
+          <Pill label={l3b.l3b.verdict.replace("_", "-")} tone={statusTone(l3b.l3b.verdict)} />
+          <small>{coverageLabel(l3b.l3b.coverage)}</small>
+          <small>binding {l3b.evidence_identity ? "bound" : l3b.status.replace("_", "-")}</small>
+          <p>{l3b.l3b.reason}</p>
+        </article>
+      </div>
+
+      <dl className="review-l3-identity">
+        <dt>L3a Evidence</dt>
+        <dd>
+          <code>
+            {l3a.artifacts.validation
+              ? `runs/${l3a.batch_id}/${l3a.artifacts.validation.path}`
+              : "not recorded"}
+          </code>
+        </dd>
+        <dt>L3a ID</dt>
+        <dd><code>{l3a.validation_summary.evidence_sha256}</code></dd>
+        <dt>L3b Evidence</dt>
+        <dd><code>{l3b.evidence_identity?.path ?? "not recorded"}</code></dd>
+        <dt>L3b ID</dt>
+        <dd><code>{l3b.evidence_identity?.semantic_sha256 ?? "not recorded"}</code></dd>
+        {l3b.evidence_identity ? (
+          <>
+            <dt>Producer</dt>
+            <dd><code>{l3b.evidence_identity.producer_commit}</code></dd>
+          </>
+        ) : null}
+      </dl>
+
+      {l3b.l3b.claim_limitations.length ? (
+        <aside className="review-l3-limitations">
+          <strong>Claim limitations</strong>
+          {l3b.l3b.claim_limitations.map((limitation) => (
+            <p key={limitation}>{limitation}</p>
+          ))}
+        </aside>
+      ) : null}
+
+      <div className="review-l3-scopes">
+        {l3b.scopes.map((scope, index) => (
+          <details key={scope.scope_key} open={index === 0}>
+            <summary>
+              <span>
+                <strong>{scope.scope_key}</strong>
+                <small>{scope.scope_kind} · {scope.payload_locator}</small>
+              </span>
+              <Pill label={scope.verdict} tone={statusTone(scope.verdict)} />
+            </summary>
+            <p className="review-l3-reason">{scope.reason}</p>
+            <div className="review-l3-metadata">
+              <div>
+                <span>Criteria</span>
+                <pre>{formatJson(scope.criteria)}</pre>
+              </div>
+              <div>
+                <span>Locator</span>
+                <pre>{formatJson(scope.source_locator)}</pre>
+              </div>
+              <div>
+                <span>Ownership</span>
+                <pre>{formatJson({ retained: scope.retained_table_ids, removed: scope.removed_table_ids })}</pre>
+              </div>
+              <div>
+                <span>Transforms</span>
+                <pre>{formatJson(scope.applied_transform_rule_ids)}</pre>
+              </div>
+            </div>
+            <div className="review-l3-fragments">
+              <div><span>Source</span><pre>{scope.source}</pre></div>
+              <div><span>Expected</span><pre>{scope.expected}</pre></div>
+              <div><span>Payload</span><pre>{scope.payload}</pre></div>
+              <div><span>Diff</span><pre>{scope.diff || "(no differences)"}</pre></div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function QueueTable({
   items,
   selectedItemId,
@@ -192,6 +320,7 @@ export default function ReviewWorkbench() {
   const [projection, setProjection] = useState<WorkbenchProjection | null>(null);
   const [selectedItem, setSelectedItem] = useState<ReviewQueueItem | null>(null);
   const [evidence, setEvidence] = useState<ItemEvidence | null>(null);
+  const [independentFidelity, setIndependentFidelity] = useState<IndependentFidelityView | null>(null);
   const [filters, setFilters] = useState<ReviewFilters>(defaultReviewFilters);
   const [reviewer, setReviewer] = useState("");
   const [notes, setNotes] = useState("");
@@ -240,13 +369,26 @@ export default function ReviewWorkbench() {
   const loadEvidence = useCallback(
     async (batchId: string, item: ReviewQueueItem) => {
       setEvidence(null);
+      setIndependentFidelity(null);
       setSelectedStates([]);
       setPageGlobal(false);
-      const payload = await authFetch(
-        `/v1/batches/${encodeURIComponent(batchId)}/items/${item.language}/${encodeURIComponent(item.resource_key)}/evidence`,
-      );
+      const base = `/v1/batches/${encodeURIComponent(batchId)}/items/${item.language}/${encodeURIComponent(item.resource_key)}`;
+      const [payload, l3bPayload] = await Promise.all([
+        authFetch(`${base}/evidence`),
+        authFetch(`${base}/independent-fidelity`),
+      ]);
       assertItemEvidence(payload);
+      assertIndependentFidelityView(l3bPayload);
+      if (
+        payload.batch_id !== batchId ||
+        payload.item_id !== item.item_id ||
+        l3bPayload.batch_id !== batchId ||
+        l3bPayload.item_id !== item.item_id
+      ) {
+        throw new TypeError("Workbench Evidence response identity differs from the selected item");
+      }
       setEvidence(payload);
+      setIndependentFidelity(l3bPayload);
     },
     [authFetch],
   );
@@ -400,6 +542,7 @@ export default function ReviewWorkbench() {
             onChange={(value) => {
               setSelectedItem(null);
               setEvidence(null);
+              setIndependentFidelity(null);
               loadProjection(value).catch((caught: Error) => setError(caught.message));
             }}
           />
@@ -550,6 +693,10 @@ export default function ReviewWorkbench() {
                         </article>
                       ))}
                     </section>
+                  ) : null}
+
+                  {evidence && independentFidelity ? (
+                    <IndependentFidelityPanel l3a={evidence} l3b={independentFidelity} />
                   ) : null}
 
                   {evidence?.manual_preview.status === "available" && evidence.manual_preview.page_global ? (
