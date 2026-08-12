@@ -424,3 +424,4 @@ def test_static_firewall_and_runtime_sentinel_pass() -> None:
     assert result.returncode == 0, result.stderr
     assert "static_dependency_firewall=passed" in result.stdout
     assert "runtime_sentinel=passed" in result.stdout
+    assert "formal_runtime_sentinel=passed" in result.stdout

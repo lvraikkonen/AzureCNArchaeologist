@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import stat
 from dataclasses import dataclass
 from pathlib import Path
@@ -285,18 +286,59 @@ def _safe_repository_path(root: Path, relative: Path) -> Path:
         raise FormalBindingError(
             "unsafe_frozen_path", f"Frozen path is not repository-relative: {relative}"
         )
-    resolved = (root / relative).resolve()
+    candidate = root / relative
+    cursor = root
+    for part in relative.parts:
+        cursor = cursor / part
+        try:
+            metadata = cursor.lstat()
+        except OSError as error:
+            raise FormalBindingError(
+                "frozen_file_missing",
+                f"Frozen path cannot be inspected: {relative.as_posix()}: {error}",
+            ) from error
+        if stat.S_ISLNK(metadata.st_mode):
+            raise FormalBindingError(
+                "frozen_path_symlink_forbidden",
+                f"Frozen path contains a symbolic link: {relative.as_posix()}",
+            )
+    resolved = candidate.resolve()
     try:
         resolved.relative_to(root)
     except ValueError as error:
         raise FormalBindingError(
             "unsafe_frozen_path", f"Frozen path escapes repository: {relative}"
         ) from error
-    if resolved.is_symlink() or not resolved.is_file():
+    if not stat.S_ISREG(candidate.lstat().st_mode):
         raise FormalBindingError(
             "frozen_file_missing", f"Frozen file is missing: {relative.as_posix()}"
         )
-    return resolved
+    return candidate
+
+
+def _read_regular_bytes(path: Path) -> bytes:
+    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        descriptor = os.open(path, flags)
+    except OSError as error:
+        raise FormalBindingError(
+            "frozen_file_unreadable", f"Cannot open frozen file {path}: {error}"
+        ) from error
+    try:
+        metadata = os.fstat(descriptor)
+        if not stat.S_ISREG(metadata.st_mode):
+            raise FormalBindingError(
+                "frozen_file_missing", f"Frozen path is not a regular file: {path}"
+            )
+        chunks: list[bytes] = []
+        while True:
+            chunk = os.read(descriptor, 1024 * 1024)
+            if not chunk:
+                break
+            chunks.append(chunk)
+        return b"".join(chunks)
+    finally:
+        os.close(descriptor)
 
 
 def _frozen_bytes(root: Path, relative: Path, *, run_dir: Path) -> bytes:
@@ -304,7 +346,8 @@ def _frozen_bytes(root: Path, relative: Path, *, run_dir: Path) -> bytes:
         path = _safe_repository_path(run_dir, relative)
     else:
         path = _safe_repository_path(root, relative)
-    actual = _sha256_file(path)
+    data = _read_regular_bytes(path)
+    actual = bytes_sha256(data)
     expected = FROZEN_SHA256[relative.as_posix()]
     if actual != expected:
         raise FormalBindingError(
@@ -312,7 +355,7 @@ def _frozen_bytes(root: Path, relative: Path, *, run_dir: Path) -> bytes:
             f"Frozen SHA-256 drifted for {relative.as_posix()}: "
             f"expected={expected}, actual={actual}",
         )
-    return path.read_bytes()
+    return data
 
 
 def _object_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:

@@ -25,6 +25,10 @@ class EvidenceBundleError(ValueError):
     """An Evidence bundle path, hash, or projection is unsafe or inconsistent."""
 
 
+class _DuplicateJsonKey(ValueError):
+    pass
+
+
 _CSP = (
     "default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; "
     "img-src 'none'; media-src 'none'; font-src 'none'; connect-src 'none'; "
@@ -37,6 +41,35 @@ def _safe_relative(value: str) -> Path:
     if path.is_absolute() or ".." in path.parts or not path.parts:
         raise EvidenceBundleError(f"Unsafe Evidence reference: {value}")
     return path
+
+
+def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise _DuplicateJsonKey(key)
+        result[key] = value
+    return result
+
+
+def _reject_json_constant(value: str) -> None:
+    raise ValueError(f"Non-finite JSON number is forbidden: {value}")
+
+
+def _load_evidence_json(path: Path) -> dict[str, Any]:
+    try:
+        value = json.loads(
+            path.read_bytes().decode("utf-8"),
+            object_pairs_hook=_unique_object,
+            parse_constant=_reject_json_constant,
+        )
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError) as error:
+        raise EvidenceBundleError(
+            f"Evidence JSON is not strict closed-world JSON: {error}"
+        ) from error
+    if not isinstance(value, dict):
+        raise EvidenceBundleError("Evidence JSON root must be an object")
+    return value
 
 
 def _write_new(path: Path, value: bytes) -> None:
@@ -391,6 +424,15 @@ def _verify_inert_document(path: Path, *, allow_anchors: bool) -> None:
             f"Projection document contains active/resource tags: {path.name}: {forbidden}"
         )
     for tag in soup.find_all(True):
+        if (
+            tag.name == "meta"
+            and tag.has_attr("http-equiv")
+            and str(tag.get("http-equiv")).lower()
+            != "content-security-policy"
+        ):
+            raise EvidenceBundleError(
+                f"Projection document contains active meta http-equiv: {path.name}"
+            )
         if tag.name == "style" and any(
             token in tag.get_text().lower() for token in ("url(", "@import")
         ):
@@ -444,7 +486,7 @@ def verify_evidence_bundle(
     repository_root = Path(repository_root).resolve()
     bundle_root = Path(bundle_root).resolve()
     evidence_path = _bound_file(bundle_root, "evidence.json")
-    evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+    evidence = _load_evidence_json(evidence_path)
     try:
         validated = validate_evidence(repository_root, evidence)
     except ContractError as error:

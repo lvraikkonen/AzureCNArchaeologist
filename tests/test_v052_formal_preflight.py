@@ -149,6 +149,48 @@ def test_current_manifest_drift_is_fatal_before_reconstruction(
     assert BATCH_MANIFEST_PATH.as_posix() in str(raised.value)
 
 
+@pytest.mark.parametrize(
+    ("relative", "batch_relative"),
+    [
+        (INPUT_MANIFEST_PATH, False),
+        (NORMALIZED_INPUT_PATH, False),
+        (PRODUCT_DEFINITION_PATH, False),
+        (SOFT_CATEGORY_PATH, False),
+        (PROFILE_PATH, False),
+        (PAYLOAD_PATH, True),
+        (VALIDATION_PATH, True),
+        (SAMPLING_PLAN_PATH, True),
+        (SAMPLED_EVIDENCE_PATH, True),
+    ],
+)
+def test_every_other_frozen_identity_drift_is_fatal(
+    tmp_path: Path,
+    relative: Path,
+    batch_relative: bool,
+) -> None:
+    _copy_preflight_fixture(tmp_path)
+    path = (
+        tmp_path / "runs" / TARGET_BATCH_ID / relative
+        if batch_relative
+        else tmp_path / relative
+    )
+    path.write_bytes(path.read_bytes() + b" ")
+    with pytest.raises(FormalBindingError) as raised:
+        bind_formal_target(tmp_path)
+    assert raised.value.code == "frozen_sha256_mismatch"
+    assert relative.as_posix() in str(raised.value)
+
+
+def test_frozen_identity_paths_cannot_use_symlinks(tmp_path: Path) -> None:
+    _copy_preflight_fixture(tmp_path)
+    source = tmp_path / SOURCE_PATH
+    source.unlink()
+    source.symlink_to((tmp_path / NORMALIZED_INPUT_PATH).resolve())
+    with pytest.raises(FormalBindingError) as raised:
+        bind_formal_target(tmp_path)
+    assert raised.value.code == "frozen_path_symlink_forbidden"
+
+
 def test_closed_world_inventory_allows_only_new_canonical_bundle_files(
     tmp_path: Path,
 ) -> None:

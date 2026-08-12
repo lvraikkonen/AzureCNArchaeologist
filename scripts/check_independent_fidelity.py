@@ -42,6 +42,27 @@ def main() -> int:
         if verdict != "passed":
             raise RuntimeError(f"runtime smoke verdict was {verdict}")
         print("runtime_sentinel=passed")
+
+        from src.independent_fidelity.formal_target import bind_formal_target
+        from src.independent_fidelity.formal_verifier import (
+            verify_bound_api_management,
+        )
+        from src.independent_fidelity.recorder import record_formal_target
+
+        target = bind_formal_target(ROOT)
+        formal_run = verify_bound_api_management(target)
+        if formal_run.evidence["verdict"] != "passed":
+            raise RuntimeError(
+                "formal runtime sentinel did not reconstruct 5/5 passed"
+            )
+        scope_guard = record_formal_target(
+            ROOT,
+            item_id="en-us/api-management",
+            require_clean_repository=False,
+        )
+        if scope_guard.outcome != "scope_guard" or scope_guard.exit_code != 2:
+            raise RuntimeError("formal recorder scope guard sentinel failed")
+        print("formal_runtime_sentinel=passed")
     return 0
 
 

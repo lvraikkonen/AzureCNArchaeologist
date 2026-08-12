@@ -24,7 +24,14 @@ def forbidden_prefixes(root: str | Path) -> tuple[str, ...]:
 
 
 def _forbidden(module: str, prefixes: tuple[str, ...]) -> bool:
-    return any(module == prefix or module.startswith(f"{prefix}.") for prefix in prefixes)
+    production_source = module.startswith("src.") and not (
+        module == "src.independent_fidelity"
+        or module.startswith("src.independent_fidelity.")
+    )
+    return production_source or any(
+        module == prefix or module.startswith(f"{prefix}.")
+        for prefix in prefixes
+    )
 
 
 def check_static_dependencies(root: str | Path) -> list[str]:
