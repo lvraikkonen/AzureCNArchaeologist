@@ -31,6 +31,7 @@ class VerificationRun:
 
     evidence: dict[str, Any]
     fragments: dict[str, str]
+    projection_warnings: tuple[Mapping[str, Any], ...] = ()
 
 
 def apply_wire_transforms(
@@ -212,9 +213,9 @@ def verify_fixture_states(
         scope_verdicts.append(verdict)
         aggregate_mismatches.extend(mismatches)
         aggregate_errors.extend(blocking_errors)
-        source_path = f"fragments/{prefix}.source.html"
-        expected_path = f"fragments/{prefix}.expected.html"
-        payload_path = f"fragments/{prefix}.payload.html"
+        source_path = f"fragments/{prefix}.source.html.txt"
+        expected_path = f"fragments/{prefix}.expected.html.txt"
+        payload_path = f"fragments/{prefix}.payload.html.txt"
         diff_path = f"fragments/{prefix}.diff.html"
         fragments[source_path] = source_fragment
         fragments[expected_path] = expected_fragment
