@@ -6,7 +6,9 @@ import difflib
 import html
 import json
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
+
+from bs4 import BeautifulSoup
 
 from src.independent_fidelity.contracts import (
     ContractError,
@@ -24,9 +26,9 @@ class EvidenceBundleError(ValueError):
 
 
 _CSP = (
-    "default-src 'none'; img-src 'none'; media-src 'none'; object-src 'none'; "
-    "frame-src 'none'; form-action 'none'; base-uri 'none'; "
-    "connect-src 'none'; style-src 'unsafe-inline'"
+    "default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; "
+    "img-src 'none'; media-src 'none'; font-src 'none'; connect-src 'none'; "
+    "object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none';"
 )
 
 
@@ -48,7 +50,7 @@ def _diff_document(expected: str, payload: str, *, state_id: str) -> str:
     diff = _diff_text(expected, payload, state_id=state_id)
     return (
         "<!doctype html><html><head><meta charset=\"utf-8\">"
-        f"<meta http-equiv=\"Content-Security-Policy\" content=\"{html.escape(_CSP, quote=True)}\">"
+        f"<meta http-equiv=\"Content-Security-Policy\" content=\"{html.escape(_CSP, quote=False)}\">"
         "<title>Inert evidence diff</title></head><body>"
         f"<pre>{html.escape(diff)}</pre></body></html>"
     )
@@ -74,16 +76,67 @@ def _criteria_text(criteria: list[Mapping[str, Any]]) -> str:
     ) or "(unfiltered)"
 
 
+def _coverage_text(value: Any) -> str:
+    if not isinstance(value, Mapping):
+        return str(value)
+    if {"universe_count", "selected_count", "untested_count"}.issubset(value):
+        return (
+            f"{value['selected_count']}/{value['universe_count']} selected; "
+            f"untested={value['untested_count']}"
+        )
+    if {"required", "completed", "passed", "failed", "blocked"}.issubset(value):
+        return (
+            f"required={value['required']}; completed={value['completed']}; "
+            f"passed={value['passed']}; failed={value['failed']}; "
+            f"blocked={value['blocked']}"
+        )
+    return json.dumps(value, ensure_ascii=False, sort_keys=True)
+
+
+def _l3a_artifact_rows(summary: Mapping[str, Any]) -> str:
+    labels = (
+        ("validation", "Validation"),
+        ("sampling_plan", "Sampling Plan"),
+        ("sampled_content_evidence", "Sampled Content Evidence"),
+    )
+    rows: list[str] = []
+    for key, label in labels:
+        reference = summary.get(key)
+        if not isinstance(reference, Mapping):
+            continue
+        details = [
+            f"path={reference.get('path', 'N/A')}",
+            f"sha256={reference.get('sha256', 'N/A')}",
+        ]
+        for identity_key in ("evidence_sha256", "plan_sha256"):
+            if identity_key in reference:
+                details.append(f"{identity_key}={reference[identity_key]}")
+        rows.append(
+            f"<dt>{html.escape(label)}</dt><dd><code>"
+            f"{html.escape('; '.join(str(value) for value in details))}"
+            "</code></dd>"
+        )
+    legacy = summary.get("evidence_reference")
+    if legacy is not None and not rows:
+        rows.append(
+            "<dt>Evidence reference</dt>"
+            f"<dd><code>{html.escape(str(legacy))}</code></dd>"
+        )
+    return "".join(rows)
+
+
 def _render_review(
     evidence: Mapping[str, Any],
     fragments: Mapping[str, str],
     *,
     l3a_summary: Mapping[str, Any],
     style_variant: str,
+    projection_warnings: Sequence[Mapping[str, Any]] = (),
 ) -> str:
     base_style = """
 body{font-family:ui-sans-serif,system-ui,sans-serif;margin:1rem;color:#18202a}
 nav a{margin-right:.6rem}.claims,.meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+.claim-card,.hygiene{border:1px solid #d0d5dd;padding:.75rem}.hygiene{margin:1rem 0;background:#fffaeb}
 .state{border-top:2px solid #667085;margin-top:1.5rem;padding-top:1rem}
 .compare{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}
 pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f6f8;padding:.75rem;border:1px solid #d0d5dd}
@@ -153,18 +206,54 @@ dt{font-weight:700}dd{margin:0 0 .45rem}.verdict{font-weight:700}
         )
     qualification = evidence["qualification_limitation"] or "—"
     blocked = evidence["blocked_reason"] or "—"
+    basis = evidence["reconstruction_basis"]
+    profile = evidence["verifier_profile"]
+    l3a_coverage = _coverage_text(l3a_summary.get("coverage", "N/A"))
+    l3b_coverage = _coverage_text(evidence["coverage"])
+    hygiene = ""
+    if projection_warnings:
+        warning_text = html.escape(
+            json.dumps(
+                list(projection_warnings),
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        hygiene = f"""
+<section class="hygiene" id="configuration-hygiene">
+  <h2>Configuration Hygiene</h2>
+  <p>Nonblocking deterministic configuration findings; verdict effect: none.</p>
+  <pre>{warning_text}</pre>
+</section>"""
     return f"""<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="{html.escape(_CSP, quote=True)}">
+<meta http-equiv="Content-Security-Policy" content="{html.escape(_CSP, quote=False)}">
 <meta name="referrer" content="no-referrer"><title>Independent Fidelity Evidence Review</title>
 <style>{style}</style></head><body>
 <h1>Independent Fidelity Evidence Review</h1>
 <p>{html.escape(identity['product_key'])} · {html.escape(identity['language'])} · {html.escape(identity['item_id'])}</p>
 <div class="claims">
-  <section><h2>L3a</h2><p>{html.escape(str(l3a_summary['claim']))}: <strong>{html.escape(str(l3a_summary['verdict']))}</strong></p></section>
-  <section><h2>L3b</h2><p>{html.escape(str(evidence['claim']))}: <strong>{html.escape(str(evidence['verdict']))}</strong></p></section>
+  <section class="claim-card"><h2>L3a / current Machine Validation</h2>
+    <p>Stored claim: <code>{html.escape(str(l3a_summary['claim']))}</code><br>
+    Verdict: <strong>{html.escape(str(l3a_summary['verdict']))}</strong><br>
+    Coverage: {html.escape(l3a_coverage)}</p>
+    <dl>{_l3a_artifact_rows(l3a_summary)}</dl>
+  </section>
+  <section class="claim-card"><h2>L3b / Independent Fidelity</h2>
+    <p>Claim: <code>{html.escape(str(evidence['claim']))}</code><br>
+    Verdict: <strong>{html.escape(str(evidence['verdict']))}</strong><br>
+    Coverage: {html.escape(l3b_coverage)}</p>
+    <dl>
+      <dt>Reconstruction Basis</dt><dd><code>{html.escape(str(basis['basis_id']))}; semantic_sha256={basis['basis_semantic_identity']['sha256']}</code></dd>
+      <dt>Verifier Profile</dt><dd><code>id={html.escape(str(profile['id']))}; version={html.escape(str(profile['version']))}; path={html.escape(str(profile['path']))}; sha256={profile['sha256']}</code></dd>
+      <dt>Algorithm identities</dt><dd><code>reconstruction={html.escape(str(evidence['reconstruction_profile_version']))}; wire={html.escape(str(evidence['wire_transform_version']))}; comparison={html.escape(str(evidence['comparison_version']))}</code></dd>
+      <dt>Evidence semantic identity</dt><dd><code>{evidence['evidence_semantic_identity']['algorithm']}={evidence['evidence_semantic_identity']['sha256']}</code></dd>
+    </dl>
+  </section>
 </div>
 <p>Qualification limitation: {html.escape(str(qualification))}<br>Blocked reason: {html.escape(str(blocked))}</p>
+{hygiene}
 <nav aria-label="状态选择器">{state_links}</nav>
 {''.join(sections)}
 </body></html>"""
@@ -206,6 +295,7 @@ def build_evidence_bundle(
         run.fragments,
         l3a_summary=l3a_summary,
         style_variant=style_variant,
+        projection_warnings=run.projection_warnings,
     )
     review_bytes = review.encode("utf-8")
     _write_new(root / "review.html", review_bytes)
@@ -234,16 +324,117 @@ def build_evidence_bundle(
 
 def _bound_file(bundle_root: Path, relative_path: str) -> Path:
     relative = _safe_relative(relative_path)
-    path = (bundle_root / relative).resolve()
+    root = bundle_root.resolve()
+    if bundle_root.is_symlink():
+        raise EvidenceBundleError("Evidence bundle root cannot be a symbolic link")
+    candidate = bundle_root / relative
+    cursor = bundle_root
+    for part in relative.parts:
+        cursor = cursor / part
+        if cursor.is_symlink():
+            raise EvidenceBundleError(
+                f"Evidence reference contains a symbolic link: {relative_path}"
+            )
+    path = candidate.resolve()
     try:
-        path.relative_to(bundle_root.resolve())
+        path.relative_to(root)
     except ValueError as error:
         raise EvidenceBundleError(
             f"Evidence reference escapes bundle: {relative_path}"
         ) from error
-    if path.is_symlink() or not path.is_file():
+    if not candidate.is_file():
         raise EvidenceBundleError(f"Evidence artifact is missing: {relative_path}")
-    return path
+    return candidate
+
+
+_FORBIDDEN_PROJECTION_TAGS = {
+    "script",
+    "form",
+    "img",
+    "video",
+    "audio",
+    "iframe",
+    "object",
+    "embed",
+    "link",
+    "base",
+    "source",
+    "track",
+}
+_URL_ATTRIBUTES = {
+    "src",
+    "srcset",
+    "action",
+    "formaction",
+    "poster",
+    "data",
+    "ping",
+}
+
+
+def _verify_inert_document(path: Path, *, allow_anchors: bool) -> None:
+    try:
+        document = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as error:
+        raise EvidenceBundleError(
+            f"Projection document is not strict UTF-8: {path.name}: {error}"
+        ) from error
+    soup = BeautifulSoup(document, "html.parser")
+    csp = soup.select('meta[http-equiv="Content-Security-Policy"]')
+    if len(csp) != 1 or csp[0].get("content") != _CSP:
+        raise EvidenceBundleError(
+            f"Projection document does not contain the exact inert CSP: {path.name}"
+        )
+    forbidden = [tag.name for tag in soup.find_all(_FORBIDDEN_PROJECTION_TAGS)]
+    if forbidden:
+        raise EvidenceBundleError(
+            f"Projection document contains active/resource tags: {path.name}: {forbidden}"
+        )
+    for tag in soup.find_all(True):
+        if tag.name == "style" and any(
+            token in tag.get_text().lower() for token in ("url(", "@import")
+        ):
+            raise EvidenceBundleError(
+                f"Projection stylesheet can request an external resource: {path.name}"
+            )
+        for attribute, value in tag.attrs.items():
+            lowered = str(attribute).lower()
+            if lowered.startswith("on") or lowered in _URL_ATTRIBUTES:
+                raise EvidenceBundleError(
+                    f"Projection document contains active URL/event attribute: "
+                    f"{path.name}: {tag.name}[{attribute}]"
+                )
+            if lowered == "style" and any(
+                token in str(value).lower() for token in ("url(", "@import")
+            ):
+                raise EvidenceBundleError(
+                    f"Projection inline style can request an external resource: "
+                    f"{path.name}: {tag.name}[style]"
+                )
+            if lowered != "href":
+                continue
+            if not allow_anchors or not isinstance(value, str) or not value.startswith("#"):
+                raise EvidenceBundleError(
+                    f"Projection navigation must be a same-document anchor: "
+                    f"{path.name}: {value!r}"
+                )
+
+
+def verify_inert_projection(
+    bundle_root: str | Path,
+    evidence: Mapping[str, Any],
+) -> None:
+    """Verify review/diff documents are inert even when opened directly."""
+
+    root = Path(bundle_root).resolve()
+    _verify_inert_document(
+        _bound_file(root, "review.html"), allow_anchors=True
+    )
+    for state in evidence["states"]:
+        _verify_inert_document(
+            _bound_file(root, state["diff"]["path"]),
+            allow_anchors=False,
+        )
 
 
 def verify_evidence_bundle(
@@ -261,6 +452,11 @@ def verify_evidence_bundle(
     for state in validated["states"]:
         for key in ("source", "expected", "payload"):
             reference = state[key]
+            if not reference["path"].endswith(".html.txt"):
+                raise EvidenceBundleError(
+                    "Raw Source/Expected/Payload fragments must use .html.txt: "
+                    f"{reference['path']}"
+                )
             path = _bound_file(bundle_root, reference["path"])
             if bytes_sha256(path.read_bytes()) != reference["sha256"]:
                 raise EvidenceBundleError(
@@ -281,4 +477,5 @@ def verify_evidence_bundle(
         )
     if semantic_sha256(actual_artifacts) != projection["sha256"]:
         raise EvidenceBundleError("Review projection artifact identity drifted")
+    verify_inert_projection(bundle_root, validated)
     return validated

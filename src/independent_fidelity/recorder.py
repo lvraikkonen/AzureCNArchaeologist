@@ -90,6 +90,16 @@ class OperationResult:
             if self.l3a_summary is not None
             else N_A
         )
+        warning_details = (
+            json.dumps(
+                list(self.warnings),
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+            if self.warnings
+            else N_A
+        )
         return (
             ("action", self.action),
             ("outcome", self.outcome),
@@ -124,6 +134,7 @@ class OperationResult:
             ),
             ("repository_head", self.repository_head or N_A),
             ("configuration_hygiene_warnings", str(len(self.warnings))),
+            ("configuration_hygiene_warning_details", warning_details),
         )
 
 
@@ -247,7 +258,7 @@ def _compute_run(
 def _verify_current_bundle(
     target: BoundFormalTarget,
     bundle_root: Path,
-) -> dict[str, Any]:
+) -> tuple[dict[str, Any], tuple[Mapping[str, Any], ...]]:
     if bundle_root.is_symlink() or not bundle_root.is_dir():
         raise EvidenceBundleError(
             f"Canonical Evidence bundle is not a regular directory: {bundle_root}"
@@ -277,7 +288,7 @@ def _verify_current_bundle(
         raise EvidenceBundleError(
             "Existing Evidence differs from deterministic replay for the same binding"
         )
-    return evidence
+    return evidence, tuple(fresh_run.projection_warnings)
 
 
 def _result_from_bundle(
@@ -431,7 +442,7 @@ def verify_formal_target(
             repository_head=_git_head(target.repository_root),
         )
     try:
-        evidence = _verify_current_bundle(target, bundle)
+        evidence, warnings = _verify_current_bundle(target, bundle)
     except (EvidenceBundleError, ApiManagementReconstructionError) as error:
         return _no_bundle_result(
             action="verify",
@@ -452,6 +463,7 @@ def verify_formal_target(
         bundle_root=bundle,
         evidence=evidence,
         repository_head=_git_head(target.repository_root),
+        warnings=warnings,
     )
 
 
