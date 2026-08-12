@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "target_set_id": "v0.5.3-four-family-core-and-carry-over",
+  "core_items": [
+    { "item_id": "zh-cn/api-management", "page_family": "region_filter" },
+    { "item_id": "en-us/api-management", "page_family": "region_filter" },
+    { "item_id": "zh-cn/cloud-services", "page_family": "complex" },
+    { "item_id": "en-us/cloud-services", "page_family": "complex" },
+    { "item_id": "zh-cn/service-bus", "page_family": "simple_static" },
+    { "item_id": "en-us/service-bus", "page_family": "simple_static" },
+    { "item_id": "zh-cn/icp-faq", "page_family": "support_article" },
+    {
+      "item_id": "en-us/icp-faq",
+      "page_family": "support_article",
+      "claim_limitations": [
+        "The English item reuses the Chinese Source snapshot; this Evidence proves fidelity to that binding, not English translation, language correctness, or localization quality."
+      ]
+    }
+  ],
+  "carry_over_items": [
+    {
+      "item_id": "en-us/time-series-insights",
+      "page_family": "complex",
+      "owner": "v0.5.4 residual problem map"
+    },
+    {
+      "item_id": "zh-cn/sla-sql-data",
+      "page_family": "support_article",
+      "owner": "v0.5.4 residual problem map"
+    }
+  ]
+}

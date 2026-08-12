@@ -9,3 +9,15 @@ ALGORITHM_VERSIONS = {
     "wire_transform_version": WIRE_TRANSFORM_VERSION,
     "comparison_version": COMPARISON_VERSION,
 }
+
+V053_RECONSTRUCTION_PROFILE_VERSION = (
+    "independent-four-family-reconstruction-v1"
+)
+V053_WIRE_TRANSFORM_VERSION = "independent-cms-wire-v2"
+V053_COMPARISON_VERSION = "independent-content-comparison-v2"
+
+V053_ALGORITHM_VERSIONS = {
+    "reconstruction_profile_version": V053_RECONSTRUCTION_PROFILE_VERSION,
+    "wire_transform_version": V053_WIRE_TRANSFORM_VERSION,
+    "comparison_version": V053_COMPARISON_VERSION,
+}

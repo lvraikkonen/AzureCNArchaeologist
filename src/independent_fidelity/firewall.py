@@ -13,14 +13,23 @@ class IndependenceViolation(RuntimeError):
 
 def forbidden_prefixes(root: str | Path) -> tuple[str, ...]:
     root = Path(root)
-    profile = json.loads(
-        (
-            root
-            / "data/configs/independent-fidelity-profiles/"
-            "v0.5.1-minimal.json"
-        ).read_text(encoding="utf-8")
-    )
-    return tuple(profile["forbidden_dependency_prefixes"])
+    profiles = [
+        root
+        / "data/configs/independent-fidelity-profiles/"
+        "v0.5.1-minimal.json",
+        root
+        / "data/configs/independent-fidelity-profiles/"
+        "v0.5.3-four-family.json",
+    ]
+    prefixes: list[str] = []
+    for path in profiles:
+        if not path.is_file():
+            continue
+        profile = json.loads(path.read_text(encoding="utf-8"))
+        for prefix in profile["forbidden_dependency_prefixes"]:
+            if prefix not in prefixes:
+                prefixes.append(prefix)
+    return tuple(prefixes)
 
 
 def _forbidden(module: str, prefixes: tuple[str, ...]) -> bool:
