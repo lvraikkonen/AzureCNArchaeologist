@@ -1,8 +1,8 @@
-# v0.5.2 验收候选状态
+# v0.5.2 验收状态
 
-**当前结论：P0–P5 implementation gates 与正式 `zh-cn/api-management` L3b 均已通过；版本验收仍等待人工逐状态复核和 exact Evidence identities 接受。**
+**结论：技术验收通过。** P0–P5 implementation gates 与正式 `zh-cn/api-management` L3b 均已通过；人工已逐状态复核并接受 exact Evidence identities 与 candidate commit。
 
-这不是 accepted 状态。项目版本仍为 `0.5.1`，计划状态尚未改为“已实施/技术验收通过”，本地 `v0.5.2` tag 尚未创建。
+本结论只接受 v0.5.2 冻结的单项正式 L3b 闭环，不扩大 Machine Gate、Workbench、L4 Review、Release、upload 或 Approval Eligibility policy。项目版本更新为 `0.5.2`；本地 annotated `v0.5.2` tag 只能在 acceptance/version commit 的全部门禁与 clean-tree gate 再次通过后创建并指向该 commit。
 
 ## 三项状态必须分开解释
 
@@ -10,7 +10,7 @@
 |---|---|---|
 | `implementation_gate_status` | `passed` | clean implementation commit 上的全量、定向和冻结回归门禁通过 |
 | `formal_item_l3b_verdict` | `passed` | formal target 五个状态全部完成并通过独立四层比较 |
-| `version_acceptance_status` | `pending` | 尚缺人工逐状态复核与 exact identities/candidate commit 明确接受 |
+| `version_acceptance_status` | `accepted` | 人工逐状态复核并接受 exact identities 与 candidate commit |
 
 verifier implementation commit 为 `873eeac3ddd7070d468c64926c1ff8f6962b5395`。正式 Evidence 只在该 commit 已提交且 worktree clean 后生成。
 
@@ -28,19 +28,19 @@ verifier implementation commit 为 `873eeac3ddd7070d468c64926c1ff8f6962b5395`。
 
 `record` 返回 `canonical_bundle_recorded`，紧接着的 deterministic replay 返回 `canonical_bundle_verified`；两次输出的 semantic、artifact、projection identities 完全相同，Configuration Hygiene warning 数量均为 0。
 
-## 人工复核清单（当前全部 pending）
+## 人工复核结果
 
 打开 canonical `review.html`，对每个状态查看 Source、Expected、Payload、diff、table ownership，并查看 Configuration Hygiene 区域和报告直接打开时的 inert 行为。
 
 | # | Region | State ID | 应保留 table IDs | 应移除 table IDs | 人工状态 |
 |---:|---|---|---|---|---|
-| 1 | `east-china2` | `c3e7e8a69bf19f9b0d77b3e5fcfdb8dcb1d19414ca7e9df55eb284a16a3325b0` | `API-Management-preview`, `API-Management-gateway` | `API-Management-preview2` | pending |
-| 2 | `north-china3` | `8e15cb882ef50f91a8d1498533b306d61029e6d713fae0eeb2a1787359bfa7dd` | `API-Management-preview`, `API-Management-gateway` | `API-Management-preview2` | pending |
-| 3 | `north-china2` | `e377a15171c6eb6f9cff5af0d96c1ddfbbd2d63499fdc94b3a9e69dbedba100a` | `API-Management-preview`, `API-Management-gateway` | `API-Management-preview2` | pending |
-| 4 | `east-china` | `a60111cd8c5abf40957dd689b9d60ba8a76f8262059b595354f32da191f514d0` | `API-Management-preview2` | `API-Management-preview`, `API-Management-gateway` | pending |
-| 5 | `north-china` | `f29a755dfdc00825e89fb791672bde6ec5a2a60505496acf95c3d68cef7d274c` | `API-Management-preview2` | `API-Management-preview`, `API-Management-gateway` | pending |
+| 1 | `east-china2` | `c3e7e8a69bf19f9b0d77b3e5fcfdb8dcb1d19414ca7e9df55eb284a16a3325b0` | `API-Management-preview`, `API-Management-gateway` | `API-Management-preview2` | passed |
+| 2 | `north-china3` | `8e15cb882ef50f91a8d1498533b306d61029e6d713fae0eeb2a1787359bfa7dd` | `API-Management-preview`, `API-Management-gateway` | `API-Management-preview2` | passed |
+| 3 | `north-china2` | `e377a15171c6eb6f9cff5af0d96c1ddfbbd2d63499fdc94b3a9e69dbedba100a` | `API-Management-preview`, `API-Management-gateway` | `API-Management-preview2` | passed |
+| 4 | `east-china` | `a60111cd8c5abf40957dd689b9d60ba8a76f8262059b595354f32da191f514d0` | `API-Management-preview2` | `API-Management-preview`, `API-Management-gateway` | passed |
+| 5 | `north-china` | `f29a755dfdc00825e89fb791672bde6ec5a2a60505496acf95c3d68cef7d274c` | `API-Management-preview2` | `API-Management-preview`, `API-Management-gateway` | passed |
 
-本次人工查看不写 L4 Review Decision，不创建 `manual_l3b_*` 生命周期状态。接受动作需要明确绑定上述 Evidence semantic SHA、Projection SHA，以及提交本文件与 immutable bundle 的 acceptance candidate commit。
+人工于 2026-08-11 本地打开 canonical `review.html`，检查内容并明确审核通过；该接受绑定上述 Evidence semantic SHA、Projection SHA 与 candidate commit `c9eadcb06841308c9a1c96e25f83ff828902b83e`。本次查看不写 L4 Review Decision，不创建 `manual_l3b_*` 生命周期状态。
 
 ## Closed-world inventory
 
@@ -48,7 +48,7 @@ record 前 reference Batch 有 2185 个 regular files，inventory semantic SHA �
 
 record 后有 2207 个 regular files，inventory semantic SHA 为 `12c98caf9af9ce54ac84654e593c28b3e4b5e5ecadd0ecdc83d3d5be98078f67`。唯一新增 22 个文件均在 `independent-fidelity/zh-cn/pricing/api-management/`：`evidence.json`、`review.html`，以及五个状态各自的 Source/Expected/Payload `.html.txt` 和 diff。没有越界新增、删除、重命名或既有文件字节变化。逐文件 path/SHA 列表保存在 `acceptance-status.json`。
 
-仓库根 `.gitattributes` 对该唯一 canonical bundle 使用精确路径的 `-text -whitespace` 规则，避免 Git 文本规范化改变已录制 bytes，也避免把 raw Source 中有意保留的 CRLF/空白误报为源码空白问题；提交前会验证 index bytes 与上述 artifact SHA 一致。
+仓库根 `.gitattributes` 对该唯一 canonical bundle 使用精确路径的 `-text -whitespace` 规则，避免 Git 文本规范化改变已录制 bytes，也避免把 raw Source 中有意保留的 CRLF/空白误报为源码空白问题；candidate 提交前已验证 index bytes 与上述 artifact SHA 一致。
 
 ## 自动门禁与反证
 
@@ -72,4 +72,4 @@ record 后有 2207 个 regular files，inventory semantic SHA 为 `12c98caf9af9c
 - Machine Gate、Workbench、L4 Review、Release、upload 和 Approval Eligibility policy 均未改变。
 - 没有 push、merge、PR、Release build 或 upload。
 
-机器可读候选见 `reports/v0.5.2/acceptance-status.json`；v0.5.3 边界见 `reports/v0.5.2/v0.5.3-handoff.md`。
+机器可读验收状态见 `reports/v0.5.2/acceptance-status.json`；v0.5.3 边界见 `reports/v0.5.2/v0.5.3-handoff.md`。

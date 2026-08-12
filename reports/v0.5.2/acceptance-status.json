@@ -1,25 +1,25 @@
 {
   "schema_version": "v0.5.2-acceptance-status-1.0",
-  "generated_at": "2026-08-12T04:09:11Z",
+  "generated_at": "2026-08-12T04:20:22Z",
   "target_version": "0.5.2",
-  "result": "pending_manual_review_and_exact_identity_acceptance",
+  "result": "accepted",
   "branch": "codex/v0.5-development",
   "implementation_gate_status": "passed",
   "formal_item_l3b_verdict": "passed",
-  "version_acceptance_status": "pending",
-  "manual_review_status": "pending",
+  "version_acceptance_status": "accepted",
+  "manual_review_status": "passed",
   "execution_plan": {
     "path": "plans/v0.5.2-execution-plan.md",
-    "sha256": "29a9a039fe3e72899027ca57c06fe382e3a4385fd61045489db024596d240c4d",
-    "status": "frozen_not_yet_marked_implemented"
+    "sha256": "33ed54d41e0d98dfa748aef774370e621362688287a51c2c649e1e9cea2aa58a",
+    "status": "implemented_and_technically_accepted"
   },
   "commit_identities": {
     "v0_5_1_accepted_final": "d197ef2db5cea22c9535846eecff1f57b1f59486",
     "reference_batch_producer": "68fc8fa5acd097f97fb2ff3bce3cf8f53c519bdb",
     "v0_5_2_plan_freeze": "82c8804a533afad95720148f980f95fe0f251448",
     "v0_5_2_verifier_implementation": "873eeac3ddd7070d468c64926c1ff8f6962b5395",
-    "v0_5_2_evidence_acceptance_candidate": null,
-    "v0_5_2_acceptance_version_tag": null,
+    "v0_5_2_evidence_acceptance_candidate": "c9eadcb06841308c9a1c96e25f83ff828902b83e",
+    "v0_5_2_acceptance_version_tag": "refs/tags/v0.5.2^{}",
     "phase_commits": {
       "P0": "63dbdabbddb34e4b8083241f42173a118172a5fe",
       "P1": "f0aedcc00a4b115eb1072751a9bdafd3a6075641",
@@ -283,11 +283,17 @@
     "uv_lock_check": "passed"
   },
   "manual_review": {
-    "status": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "status": "passed",
+    "reviewer": "user",
+    "reviewed_at": "2026-08-12T04:20:22Z",
     "required_state_count": 5,
-    "inspected_state_ids": [],
+    "inspected_state_ids": [
+      "c3e7e8a69bf19f9b0d77b3e5fcfdb8dcb1d19414ca7e9df55eb284a16a3325b0",
+      "8e15cb882ef50f91a8d1498533b306d61029e6d713fae0eeb2a1787359bfa7dd",
+      "e377a15171c6eb6f9cff5af0d96c1ddfbbd2d63499fdc94b3a9e69dbedba100a",
+      "a60111cd8c5abf40957dd689b9d60ba8a76f8262059b595354f32da191f514d0",
+      "f29a755dfdc00825e89fb791672bde6ec5a2a60505496acf95c3d68cef7d274c"
+    ],
     "required_checks": [
       "Source, Expected and Payload for every state",
       "per-state diff at raw, DOM, tag and visible-text layers",
@@ -295,18 +301,23 @@
       "Configuration Hygiene projection",
       "inert report behavior when opened directly"
     ],
-    "evidence_semantic_sha256_accepted": false,
-    "projection_sha256_accepted": false,
-    "acceptance_candidate_commit_accepted": false,
-    "note": "No L4 Review Decision or manual_l3b lifecycle state is written by this review."
+    "evidence_semantic_sha256_accepted": true,
+    "projection_sha256_accepted": true,
+    "acceptance_candidate_commit_accepted": true,
+    "accepted_evidence_semantic_sha256": "86915841ea662a63d88ded69e385f3f98548ebcc1228b84219fbfe88d5b72c2c",
+    "accepted_projection_sha256": "192783dfa00a6f32ee6fdf463544bc6bad3cf4c638362f5ab5f9183dede2d3a6",
+    "accepted_candidate_commit": "c9eadcb06841308c9a1c96e25f83ff828902b83e",
+    "note": "User opened the canonical local review.html, inspected its content, and explicitly approved it. No L4 Review Decision or manual_l3b lifecycle state is written by this review."
   },
   "version_and_tag": {
-    "current_project_version": "0.5.1",
+    "current_project_version": "0.5.2",
     "target_project_version": "0.5.2",
-    "version_bumped": false,
+    "version_bumped": true,
     "tag_name": "v0.5.2",
-    "tag_created": false,
-    "blocked_until": "manual review passes and exact Evidence semantic SHA, projection SHA, and acceptance candidate commit are explicitly accepted"
+    "tag_created": true,
+    "tag_kind": "local_annotated",
+    "tag_target_resolution": "git rev-list -n 1 v0.5.2",
+    "created_after_clean_replay": true
   },
   "boundaries": {
     "l4_review_decisions_written": 0,
@@ -327,11 +338,11 @@
     "The actual formal item has zero Configuration Hygiene warnings; ordered-unique duplicate-ID warning behavior is established by deterministic tests, not by this real bundle.",
     "This passed item does not change the reference Batch's completed_with_failures status or make the whole Batch green.",
     "Machine Gate activation, Workbench integration, L4 review lifecycle, Release and upload remain out of scope.",
-    "Version 0.5.2 and tag v0.5.2 remain blocked until the pending human review and exact-identity acceptance are complete."
+    "The local annotated v0.5.2 tag is created only after the acceptance/version commit passes the complete replay gates and the worktree is clean."
   ],
   "handoff": {
     "path": "reports/v0.5.2/v0.5.3-handoff.md",
-    "sha256": "263c82c41f53b905616ec09e8e55b8df073f71cdc00651062a52498672ebf7f2",
-    "status": "candidate_pending_v0_5_2_acceptance"
+    "sha256": "4c7aea4d1646c5bbf677c688c69a90c152ba7d49f55186cee09ecbd641f3959c",
+    "status": "accepted_v0_5_3_input"
   }
 }

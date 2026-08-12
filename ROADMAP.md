@@ -1,14 +1,14 @@
 # AzureCNArchaeologist v0.1 → v1.0 路线图
 
 > 文档状态：当前项目路线图  
-> 最新稳定版本：v0.5.1
-> 当前开发阶段：v0.5.2 Execution Plan 已最终冻结；实现尚未开始
+> 最新稳定版本：v0.5.2
+> 当前开发阶段：v0.5.2 已完成实施与技术验收；下一阶段为 v0.5.3 Execution Plan
 > 基线日期：2026-08-11
 > 适用范围：Azure 中国区产品 HTML 标准化、策略化解析、CMS JSON 导出与质量验证
 
 ## 1. 路线图目的
 
-AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流；v0.4.0 完成可信验证、人工审核、不可变 Release、Release-only upload gate 和冻结验收基线；v0.4.1 随后完成已知问题修复、重新裁决和新基线冻结。Post-v0.4 Roadmap Re-baseline Gate 已于 2026-08-08 获接受，v0.4.1 后的两轮独立 DOM 保真实验和 `V050-ENTRY-20260811` 又于 2026-08-11 关闭 v0.5.0 可行性探索。v0.5.1 已按最终冻结计划完成入口 Planning/Core successor、最小 L3a/L3b 契约、轻量独立性保护、反证和只读 Evidence 投影，并通过完整 reference Batch 技术验收；v0.5.2 Execution Plan 已按有条件接受意见补齐冻结前定义并最终冻结，当前只完成规划，不回开 v0.4/v0.4.1 scope，也尚未开始实现。
+AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流；v0.4.0 完成可信验证、人工审核、不可变 Release、Release-only upload gate 和冻结验收基线；v0.4.1 随后完成已知问题修复、重新裁决和新基线冻结。Post-v0.4 Roadmap Re-baseline Gate 已于 2026-08-08 获接受，v0.4.1 后的两轮独立 DOM 保真实验和 `V050-ENTRY-20260811` 又于 2026-08-11 关闭 v0.5.0 可行性探索。v0.5.1 已按最终冻结计划完成入口 Planning/Core successor、最小 L3a/L3b 契约、轻量独立性保护、反证和只读 Evidence 投影，并通过完整 reference Batch 技术验收；v0.5.2 随后完成 `zh-cn/api-management` 首个正式 L3b 证据闭环、immutable Evidence、逐状态 inert review 和 exact-identity 人工接受，不回开 v0.4/v0.4.1 scope，也不提前激活 Machine Gate、Review、Release 或 upload。
 
 从 v0.1 到 v1.0 的核心目标不是继续堆叠功能，而是把现有能力收敛为一套：
 
@@ -142,7 +142,7 @@ v1.0 中需要清晰区分：
 
 版本号表示能力和质量门槛，不表示固定日历日期。后续版本只有在当前版本验收条件全部满足后才能升级。
 
-2026-08-11 的 v0.5 入口总体方向已经人工接受，详细依据见 `reports/post-v0.4/v050-entry-decision.md`。`plans/v0.5.1-execution-plan.md` 已按最终评审意见实施完成；技术验收和 v0.5.2 交接见 `reports/v0.5.1/acceptance-status.md` 与 `reports/v0.5.1/v0.5.2-handoff.md`。`plans/v0.5.2-execution-plan.md` 已按有条件接受意见完成精确定义补丁并最终冻结，实现尚未开始。
+2026-08-11 的 v0.5 入口总体方向已经人工接受，详细依据见 `reports/post-v0.4/v050-entry-decision.md`。`plans/v0.5.1-execution-plan.md` 已按最终评审意见实施完成；技术验收和 v0.5.2 交接见 `reports/v0.5.1/acceptance-status.md` 与 `reports/v0.5.1/v0.5.2-handoff.md`。`plans/v0.5.2-execution-plan.md` 也已按冻结范围完成实施与技术验收；正式 identities、完整 inventory、人工复核和 v0.5.3 交接见 `reports/v0.5.2/acceptance-status.*` 与 `reports/v0.5.2/v0.5.3-handoff.md`。
 
 ## 5. 分版本路线图
 
@@ -544,7 +544,7 @@ Review 至少使用：
 
 ### v0.5.1：冻结入口基线与最小 L3b 契约
 
-状态：**已完成实施与技术验收（2026-08-11）；v0.5.2 Execution Plan 已最终冻结，实现尚未开始。**
+状态：**已完成实施与技术验收（2026-08-11）；v0.5.2 也已完成实施与技术验收。**
 
 详细实施以 `plans/v0.5.1-execution-plan.md` 为准。范围只包括：
 
@@ -565,7 +565,7 @@ Review 至少使用：
 
 ### v0.5.2：`zh-cn/api-management` 单项首个正式 L3b 证据闭环
 
-状态：**Execution Plan 已最终冻结（2026-08-11）；实现尚未开始。** 详细冻结范围见 `plans/v0.5.2-execution-plan.md`。
+状态：**已完成实施与技术验收（2026-08-11）。** 详细冻结范围见 `plans/v0.5.2-execution-plan.md`，正式验收见 `reports/v0.5.2/acceptance-status.*`。
 
 冻结计划显式选择复用 v0.5.1 reference Batch `20260811T171630Z-e80afabe`，只以 `zh-cn/api-management` 作为首个正式语言级 item；不重新运行生产抽取。L3b bundle add-only 写入该 run 的 `independent-fidelity/zh-cn/pricing/api-management/` subtree。record 前后必须枚举该 Batch 全部既有 regular files 的 `relative_path + sha256` closed-world inventory；除上述唯一新前缀外不得新增、删除、重命名或改变任何既有字节，也不新增第三份 run manifest。英文、其他 Core items 和两个 carry-over items 均不进入本切片。
 

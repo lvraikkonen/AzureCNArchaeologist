@@ -11,12 +11,47 @@ import pytest
 from src.regression.reference_batch_v051 import (
     ReferenceBatchError,
     _materialize_planned_artifact,
+    _verify_post_v051_successor_namespace,
     compare_batch_documents,
     failure_groups,
     load_regression_rationales,
     semantic_sha256,
     verify_review_queue_projection,
 )
+
+
+def test_reference_audit_allows_safe_post_v051_successor_namespace(
+    tmp_path: Path,
+) -> None:
+    run_dir = tmp_path / "run"
+    run_dir.mkdir()
+    _verify_post_v051_successor_namespace(run_dir)
+
+    evidence = run_dir / "independent-fidelity" / "zh-cn" / "pricing" / "item"
+    evidence.mkdir(parents=True)
+    (evidence / "evidence.json").write_text("{}\n", encoding="utf-8")
+
+    _verify_post_v051_successor_namespace(run_dir)
+
+
+def test_reference_audit_rejects_unsafe_post_v051_successor_namespace(
+    tmp_path: Path,
+) -> None:
+    file_run = tmp_path / "file-run"
+    file_run.mkdir()
+    (file_run / "independent-fidelity").write_text("not a directory\n", encoding="utf-8")
+    with pytest.raises(ReferenceBatchError, match="namespace is unsafe"):
+        _verify_post_v051_successor_namespace(file_run)
+
+    symlink_run = tmp_path / "symlink-run"
+    symlink_run.mkdir()
+    successor = symlink_run / "independent-fidelity"
+    successor.mkdir()
+    target = symlink_run / "outside.json"
+    target.write_text("{}\n", encoding="utf-8")
+    (successor / "evidence.json").symlink_to(target)
+    with pytest.raises(ReferenceBatchError, match="successor path is unsafe"):
+        _verify_post_v051_successor_namespace(symlink_run)
 
 
 def _input_item(

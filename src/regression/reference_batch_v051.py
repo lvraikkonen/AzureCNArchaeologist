@@ -571,6 +571,32 @@ def _expected_planning_identity(root: Path) -> dict[str, str]:
     }
 
 
+def _verify_post_v051_successor_namespace(run_dir: Path) -> None:
+    """Keep the v0.5.1 audit historical while rejecting unsafe successor paths.
+
+    The accepted v0.5.1 report truthfully records zero formal L3b artifacts at
+    its acceptance point.  Later versions are explicitly allowed to add their
+    own evidence below ``independent-fidelity/`` without mutating any v0.5.1
+    authority.  The historical accounting therefore ignores that successor
+    namespace, but still requires it and every descendant to be a real
+    directory or regular file rather than a symbolic-link escape.
+    """
+
+    successor = run_dir / "independent-fidelity"
+    if not successor.exists() and not successor.is_symlink():
+        return
+    if successor.is_symlink() or not successor.is_dir():
+        raise ReferenceBatchError(
+            "Post-v0.5.1 independent-fidelity successor namespace is unsafe"
+        )
+    for path in successor.rglob("*"):
+        if path.is_symlink() or not (path.is_dir() or path.is_file()):
+            raise ReferenceBatchError(
+                "Post-v0.5.1 independent-fidelity successor path is unsafe: "
+                f"{path.relative_to(run_dir).as_posix()}"
+            )
+
+
 def _verify_reference_accounting(
     current: Mapping[str, Any],
     *,
@@ -822,8 +848,7 @@ def _verify_reference_accounting(
         raise ReferenceBatchError("Reference Batch unexpectedly registered a Release")
     if batch_manifest.get("publication_receipts") != []:
         raise ReferenceBatchError("Reference Batch unexpectedly registered a Publication")
-    if (run_dir / "independent-fidelity").exists():
-        raise ReferenceBatchError("v0.5.1 reference Batch unexpectedly contains formal L3b")
+    _verify_post_v051_successor_namespace(run_dir)
 
     input_records = [
         {"item_id": item_id, "identity": _input_identity(input_items[item_id])}
