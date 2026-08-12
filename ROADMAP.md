@@ -2,13 +2,13 @@
 
 > 文档状态：当前项目路线图  
 > 最新稳定版本：v0.5.1
-> 当前开发阶段：v0.5.1 已完成技术验收；下一阶段为 v0.5.2 Execution Plan 评审，尚未开始编码
+> 当前开发阶段：v0.5.2 Execution Plan 已最终冻结；实现尚未开始
 > 基线日期：2026-08-11
 > 适用范围：Azure 中国区产品 HTML 标准化、策略化解析、CMS JSON 导出与质量验证
 
 ## 1. 路线图目的
 
-AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流；v0.4.0 完成可信验证、人工审核、不可变 Release、Release-only upload gate 和冻结验收基线；v0.4.1 随后完成已知问题修复、重新裁决和新基线冻结。Post-v0.4 Roadmap Re-baseline Gate 已于 2026-08-08 获接受，v0.4.1 后的两轮独立 DOM 保真实验和 `V050-ENTRY-20260811` 又于 2026-08-11 关闭 v0.5.0 可行性探索。v0.5.1 已按最终冻结计划完成入口 Planning/Core successor、最小 L3a/L3b 契约、轻量独立性保护、反证和只读 Evidence 投影，并通过完整 reference Batch 技术验收；下一步是评审 v0.5.2 Execution Plan，不回开 v0.4/v0.4.1 scope。
+AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流；v0.4.0 完成可信验证、人工审核、不可变 Release、Release-only upload gate 和冻结验收基线；v0.4.1 随后完成已知问题修复、重新裁决和新基线冻结。Post-v0.4 Roadmap Re-baseline Gate 已于 2026-08-08 获接受，v0.4.1 后的两轮独立 DOM 保真实验和 `V050-ENTRY-20260811` 又于 2026-08-11 关闭 v0.5.0 可行性探索。v0.5.1 已按最终冻结计划完成入口 Planning/Core successor、最小 L3a/L3b 契约、轻量独立性保护、反证和只读 Evidence 投影，并通过完整 reference Batch 技术验收；v0.5.2 Execution Plan 已按有条件接受意见补齐冻结前定义并最终冻结，当前只完成规划，不回开 v0.4/v0.4.1 scope，也尚未开始实现。
 
 从 v0.1 到 v1.0 的核心目标不是继续堆叠功能，而是把现有能力收敛为一套：
 
@@ -129,8 +129,8 @@ v1.0 中需要清晰区分：
 | v0.4.1 | 已知缺陷修复与新基线 | 修复 SLA route map 路径不一致、已确认的桌面/移动默认项问题、错误分类、日志与文档问题，冻结新的 accepted Batch |
 | v0.5.0 | 独立内容核对探索（已关闭） | 既有实验已完成方法可行性决策；不重复建设原型，也不把实验输出升级为正式 L3b |
 | v0.5.1 | 入口基线与最小 L3b 契约 | 冻结 v0.5 Planning/Core successor、最小 Profile/Basis/Evidence 契约、三类算法版本、item verdict 聚合、semantic/projection identity、轻量独立性保护、五项反证和 inert 只读 Evidence 投影 |
-| v0.5.2 | 单产品正式闭环 | 以 `api-management` 产生首份正式 L3b Evidence 和逐状态只读并排报告 |
-| v0.5.3 | 双语四类覆盖、Workbench 与门禁裁定 | Core 页面产生 L3a/L3b，现有 Workbench 提供证据入口；根据正式证据裁定是否及如何启用 L3b Machine Gate，并冻结后续问题组顺序 |
+| v0.5.2 | `zh-cn/api-management` 单项首个正式 L3b 证据闭环 | 对 reference Batch 的单一语言级 item 产生首份正式 L3b Evidence 和逐状态只读并排报告；不进入 L4/Release/Publication |
+| v0.5.3 | 双语四类覆盖、Workbench 与门禁裁定 | 完成 4 产品 × 2 语言的 Core 8，并单列裁定两个不计入该分母的 carry-over items；现有 Workbench 提供证据入口，根据正式证据裁定是否及如何启用 L3b Machine Gate，并冻结后续问题组顺序 |
 | v0.5.4 | 第一优先残余问题组 | 由 v0.5.3 当前 Batch 选择；旧 C2 是候选，不是预先承诺 |
 | v0.5.5 | 第二优先残余问题组 | 由 v0.5.3 当前 Batch 选择；旧 C1 是候选，不是预先承诺 |
 | v0.5.6 | 剩余优先组与 v0.5 收口 | 处理经审核的剩余 v0.5 问题组，拆分 C4，冻结 v0.5 acceptance baseline |
@@ -142,7 +142,7 @@ v1.0 中需要清晰区分：
 
 版本号表示能力和质量门槛，不表示固定日历日期。后续版本只有在当前版本验收条件全部满足后才能升级。
 
-2026-08-11 的 v0.5 入口总体方向已经人工接受，详细依据见 `reports/post-v0.4/v050-entry-decision.md`。`plans/v0.5.1-execution-plan.md` 已按最终评审意见实施完成；技术验收和 v0.5.2 交接见 `reports/v0.5.1/acceptance-status.md` 与 `reports/v0.5.1/v0.5.2-handoff.md`。
+2026-08-11 的 v0.5 入口总体方向已经人工接受，详细依据见 `reports/post-v0.4/v050-entry-decision.md`。`plans/v0.5.1-execution-plan.md` 已按最终评审意见实施完成；技术验收和 v0.5.2 交接见 `reports/v0.5.1/acceptance-status.md` 与 `reports/v0.5.1/v0.5.2-handoff.md`。`plans/v0.5.2-execution-plan.md` 已按有条件接受意见完成精确定义补丁并最终冻结，实现尚未开始。
 
 ## 5. 分版本路线图
 
@@ -386,6 +386,8 @@ v0.4 不包含 GitHub Actions、required branch checks、Dashboard 公共托管�
 - 删除无证据的遗留 `sharedContent` 生产和兼容逻辑：global 内容进入 `baseContent` 或 `commonSections`，state-specific 内容进入对应 group，无法安全确定 ownership 的源片段形成 Source Finding。若源在一个 Software panel 内、首个 concrete Category panel 之前声明不随其他 active filter 改变的 Software-scoped Prefix Content，则以 panel、scope 和源 HTML 指纹证明其身份，并前置投影到该 software 下每个源证明可达状态的 `content`。唯一允许的 `sharedContent` 是 Region-Projected Shared Content：源 ancestor fragment 必须 price-bearing、由 active region 与冻结 `soft-category.json` 证明确切投影，并在每个适用 descendant state 上逐项绑定 source/config/projected hash；禁止无证据字段、跨 region 泄漏、提升为全页 common content或只归入首个 Category。
 - `soft-category.json` 只选择具有非空 `id` 的表；无 ID 表属于其源状态的无条件内容，必须原样保留，并冻结物理表序、规范化 HTML SHA 与聚合身份。重复 `(os, region)` 条目或单条目内重复 normalized table ID 都写入确定性上游配置报告；后者虽不改变 selector set，也不得在运行时静默去重。仅当重复 ID 与当前可达状态相关时在 Payload 前阻断，状态无关时保持 report-only。
 
+> **Post-v0.4 successor clarification**：上段记录 v0.4 已冻结的历史语义；既有 v0.4/v0.4.1 Batch、Validation Evidence 和历史 artifacts 保持原义，不回写、不重新裁决。从 v0.5.2 Independent Fidelity successor 开始，唯一 exact `(os, region)` 配置记录内部的重复 normalized table ID 按第一次物理出现执行 ordered-unique，并形成确定性配置卫生 warning；它不改变 selector set、coverage 或 L3b verdict，也不单独阻断 L3b。重复 exact rows、缺失 Source table、重复 DOM ID 或 ownership 歧义仍然 fail-closed。HTML hidden software 值映射到配置真实字段 `os`，两者是同一个 ownership key，不是两个维度。v0.5.2 先在独立 L3b consumer 落实该 successor policy；v0.5.3 必须核对生产抽取/L3a 是否已有等价行为，若两条 machine lane 仍不同，必须显式记录并通过后续 ADR/profile 决策对齐，不能静默漂移。
+
 ##### P3：全状态结构契约、抽样内容一致性与最小交付闭环
 
 - 复用 P2 的完整 Source-proven Reachability Relation；所有状态继续执行 filter topology、criteria、唯一 contentGroup、默认状态、missing/extra/duplicate、inactive/placeholder 和 ownership 结构验证，结构层不抽样；
@@ -516,7 +518,7 @@ Review 至少使用：
 - `plans/v0.5.1-execution-plan.md`；
 - `reports/post-v0.4/roadmap-rebaseline.md` 第 8 节追加裁定。
 
-生效后的新顺序是：v0.5.0 由既有实验关闭可行性问题；v0.5.1 建立当前入口基线并冻结最小正式契约；v0.5.2 为 `api-management` 建立首个正式闭环和只读并排报告；v0.5.3 扩展到双语四类 Core、接入现有 Workbench，并用正式证据裁定 L3b 是否及如何进入 Machine Gate。v0.5.3 当前完整 Batch 之后再冻结 v0.5.4–v0.6 的具体问题组顺序。Report 2.0、正式 Disposition、复杂视觉审核、完整 evidence lifecycle 和 Dashboard 多用户化仍不进入 v0.5.1。
+生效后的新顺序是：v0.5.0 由既有实验关闭可行性问题；v0.5.1 建立当前入口基线并冻结最小正式契约；v0.5.2 为 `zh-cn/api-management` 建立单项首个正式 L3b 证据闭环和只读并排报告；v0.5.3 完成双语四类 Core 8、单列裁定两个 carry-over qualification items、接入现有 Workbench，并用正式证据裁定 L3b 是否及如何进入 Machine Gate。v0.5.3 当前完整 Batch 之后再冻结 v0.5.4–v0.6 的具体问题组顺序。Report 2.0、正式 Disposition、复杂视觉审核、完整 evidence lifecycle 和 Dashboard 多用户化仍不进入 v0.5.1。
 
 ### v0.4.1：修复已知问题并建立新基线
 
@@ -536,13 +538,13 @@ Review 至少使用：
 - `container-registry` 提供真实反证：现有策略重放检查通过，但独立 oracle 识别出截断的 `baseContent`；
 - `soft-category` 投影、`css-generated-semantics-v1`、输入不足时 fail-closed 和冻结算法盲区均有可审计证据。
 
-这些证据已经回答“独立定位是否可行”。旧清单中的 `en-us/time-series-insights` 和 `zh-cn/sla-sql-data` 没有按原身份全部执行；入口裁定显式把它们移入 v0.5.2–v0.5.3 的正式双语覆盖，而不是再建一次性原型。
+这些证据已经回答“独立定位是否可行”。旧清单中的 `en-us/time-series-insights` 和 `zh-cn/sla-sql-data` 没有按原身份全部执行；它们明确由 **v0.5.3** 作为 Core 8 分母之外的单列 carry-over qualification items 处理，而不是再建一次性原型，也不进入 v0.5.2 的中文单项切片。
 
 既有实验仍只属于探索：不得进入正式 Review、Release 或 Publication，不得标记为 L3b，不修改历史报告。权威总结见 `reports/post-v0.4/v041-experiments-v050-handoff.md` 和 `reports/post-v0.4/v050-entry-decision.md`。
 
 ### v0.5.1：冻结入口基线与最小 L3b 契约
 
-状态：**已完成实施与技术验收（2026-08-11）；v0.5.2 尚未开始。**
+状态：**已完成实施与技术验收（2026-08-11）；v0.5.2 Execution Plan 已最终冻结，实现尚未开始。**
 
 详细实施以 `plans/v0.5.1-execution-plan.md` 为准。范围只包括：
 
@@ -561,17 +563,25 @@ Review 至少使用：
 
 验收证据：最终 reference Batch `20260811T171630Z-e80afabe` 在 clean commit `68fc8fa5acd097f97fb2ff3bce3cf8f53c519bdb` 上完成 434 / 383 / 51 对账；reference audit 为 `qualified`、0 queue gap、0 unexplained regression。完整结果见 `reports/v0.5.1/acceptance-status.md`。
 
-### v0.5.2：用一个产品跑通生产闭环
+### v0.5.2：`zh-cn/api-management` 单项首个正式 L3b 证据闭环
 
-以 `api-management` 为首个正式样例，同时引用 immutable `input-manifest.json` 输入身份和 current `batch-manifest.json` revision/output record 中已经冻结 SHA 的 persisted payload，独立定位区域源内容、执行独立实现的 `soft-category` 保留/排除、与 `contentGroups[].content` 比较，并分别保存 L3a 和 L3b 结论。至少有一个受控错误证明策略重放可以一致而独立核对会报警。
+状态：**Execution Plan 已最终冻结（2026-08-11）；实现尚未开始。** 详细冻结范围见 `plans/v0.5.2-execution-plan.md`。
 
-本阶段同时为该 Batch Item 生成第一份只读、逐状态的静态 `review.html`：可选择上一/下一状态，在 Source/Expected 与 Persisted Payload 之间并排查看，并显示 diff、criteria、locator、retained/removed table IDs、转换规则、SHA 和 L3a/L3b verdict。报告引用分离的片段文件，不把大段 HTML 内嵌进 `evidence.json`。
+冻结计划显式选择复用 v0.5.1 reference Batch `20260811T171630Z-e80afabe`，只以 `zh-cn/api-management` 作为首个正式语言级 item；不重新运行生产抽取。L3b bundle add-only 写入该 run 的 `independent-fidelity/zh-cn/pricing/api-management/` subtree。record 前后必须枚举该 Batch 全部既有 regular files 的 `relative_path + sha256` closed-world inventory；除上述唯一新前缀外不得新增、删除、重命名或改变任何既有字节，也不新增第三份 run manifest。英文、其他 Core items 和两个 carry-over items 均不进入本切片。
 
-该报告以 escaped text 或等价 inert/sandboxed 方式展示 fragment，不执行 script、事件处理器、表单、导航或外部请求；同时不修改 Batch、不写 Review Decision、不改变 Approval Eligibility、不激活 Release gate、不引入数据库、复杂前端或新生命周期状态。旧实验输出不迁入 `runs/`，本阶段只为该正式样例并行记录 L3b。
+以 `zh-cn/api-management` 为首个正式样例，同时引用 immutable `input-manifest.json` 输入身份和 current `batch-manifest.json` revision/output record 中已经冻结 SHA 的 persisted payload，独立定位区域源内容、执行独立实现的 `soft-category` 保留/排除、与 `contentGroups[].content` 比较，并分别保存 L3a 和 L3b 结论。Desktop Source control 独占 state label、顺序和 default；mobile 只核对 scoped machine option domain/targets，其缺失、重复或冲突的 default marker 被忽略且不产生 warning。Desktop default 不明确或 mobile domain/target drift 时 fail-closed。至少有一个 common-mode 受控状态交换证明 L3a projection/replay 与 payload 可共享错误 mapping 而保持一致，L3b 仍从原始 Source 独立重建并报警。
+
+`soft-category.json` 使用真实字段 `os`、`region`、`tableIDs`，hidden software 映射到 `os` ownership key。重复 exact `(os, region)` rows 为 `blocked`；唯一行内重复 normalized table ID 按第一次物理出现 ordered-unique，形成确定性 warning-only，不改变 selector set、coverage 或 L3b verdict；缺失 Source table、重复 DOM ID 或 wrapper ownership 歧义仍为 `blocked`。warning 的既有确定性配置卫生 owner/参照是 `reports/v0.4/soft-category-upstream-findings.*`，历史 artifact 不回写；运行时明细同时投影到控制台、`review.html` Configuration Hygiene 和 `reports/v0.5.2/acceptance-status.*`，不向 closed-world Evidence 1.0 增加字段。
+
+本阶段同时为该 Batch Item 生成第一份只读、逐状态的静态 `review.html`：可选择上一/下一状态，在 Source/Expected 与 Persisted Payload 之间并排查看，并显示 diff、criteria、locator、retained/removed table IDs、转换规则、SHA、Configuration Hygiene 和 L3a/L3b verdict。Source/Expected/Payload raw fragments 使用 `.html.txt`，diff/review 只渲染 escaped text；CSP 禁止 script、image/media/font/connect/object/frame/form/base，除 inline CSS 外不加载资源，只允许同文档 `#anchor` navigation。报告引用分离的片段文件，不把大段 HTML 内嵌进 `evidence.json`。
+
+`record`/`verify` 对 allowlist、profile `not_qualified`、fatal、`blocked`、`failed`、`passed`、existing-current 和 stale/corrupt bundle 分别冻结 bundle/exit/output 行为；无 bundle 时 identities/path 为 `N/A`，可信 `failed`/`blocked` bundle 作为 immutable 负证据保留。该报告不修改 Batch、不写 Review Decision、不改变 Approval Eligibility、不激活 Release gate、不引入数据库、复杂前端或新生命周期状态。旧实验输出不迁入 `runs/`，本阶段只为该正式样例并行记录 L3b。即使 formal item 5/5 `passed`，也不表示 L4 Review、Release 或 publication 已完成。
 
 ### v0.5.3：覆盖四类核心页面并裁定 Machine Gate
 
-将独立核对扩展到双语 Core 8，覆盖 SimpleStatic、RegionFilter、ComplexContent、SupportArticle；从现有 Workbench 提供已经由 `api-management` 验证过的只读 Evidence 入口，分开显示 L3a/L3b、Source、Expected、Payload 和 diff，并说明它们与现有 L4 Review Decision 的关系。不得另建第二套人工审核系统。人工继续负责重建依据的业务意图、CSS/JavaScript 语义、CMS 可移植性和最终批准。
+将独立核对扩展到完整双语 Core 8：**4 个 Core 产品 × 2 种语言 = 8 个 language-level items**，覆盖 SimpleStatic、RegionFilter、ComplexContent、SupportArticle，并明确包含 v0.5.2 已首次 formalize 的 `zh-cn/api-management`。其余 7 个 Core items 包含 `en-us/api-management`，不得写成“英文 item + 其余 Core 8”而造成 9-item 歧义。未来 v0.5.3 Execution Plan 冻结 `zh-cn/api-management` 是复用既有 Evidence、对同一 binding 重放，还是绑定新的 Batch/current output 重新生成。现有 Workbench 提供已经由该单项验证过的只读 Evidence 入口，分开显示 L3a/L3b、Source、Expected、Payload 和 diff，并说明它们与现有 L4 Review Decision 的关系。不得另建第二套人工审核系统。人工继续负责重建依据的业务意图、CSS/JavaScript 语义、CMS 可移植性和最终批准。
+
+`en-us/time-series-insights` 与 `zh-cn/sla-sql-data` 作为 **Core 8 分母之外**的两个单列 carry-over qualification items，由 v0.5.3 分别给出明确的 `passed` / `failed` / `blocked` / `not_qualified` 资格结论和后续 owner，不得再次悬空。v0.5.3 同时核对生产抽取/L3a 是否已采用与 v0.5.2 L3b successor 相同的唯一行内 duplicate-ID ordered-unique 行为；若两条 machine lane 不同，必须记录差异并通过后续 ADR/profile 决策对齐，不能静默漂移。
 
 本阶段根据正式覆盖率、失败类型、`blocked/not_qualified` 分布和人工复核结果，裁定是否、何时以及对哪些 qualified items 启用 L3b Machine Gate；合法结论包括暂不启用、限定范围启用或分阶段启用，不预设全局强制门禁。
 
@@ -869,8 +879,8 @@ v1.0 不表示所有 Azure 页面都已经被完美解析，而表示项目对�
 → v0.4.1 后置实验完成 v0.5.0 可行性决策
 → v0.5 入口裁定获接受与瘦身版 v0.5.1 plan 冻结
 → v0.5.1 Planning/Core successor、最小 L3a/L3b 契约、轻量防火墙和只读 Evidence 投影
-→ v0.5.2 `api-management` 正式闭环与第一份逐状态只读并排报告
-→ v0.5.3 双语四类覆盖、现有 Workbench 入口、Machine Gate 裁定和当前问题地图
+→ v0.5.2 `zh-cn/api-management` 单项首个正式 L3b 证据闭环与逐状态只读并排报告
+→ v0.5.3 完整双语 Core 8、两个单列 carry-over qualification items、现有 Workbench 入口、Machine Gate 裁定和当前问题地图
 → v0.5.4–v0.6 按当前完整 Batch 重排后的同类结构问题扩大覆盖
 → 经真实证据证明必要的 CMS、性能与稳定性工作
 → stale 代码清理
@@ -891,6 +901,8 @@ v1.0 不表示所有 Azure 页面都已经被完美解析，而表示项目对�
 - accepted v0.4/v0.4.1 baseline 和 evidence 保持历史有效；新输入使用 successor artifact，不通过覆盖旧路径制造“同一基线已更新”的假象。
 - L3a、L3b 和 Machine Gate 必须分别说明 claim、coverage、bindings 和 policy；不得把 `blocked`、`not_qualified` 或 `not_run` 汇总为 passed。
 - v0.5.1 冻结 L3b 与现有机器验证并行存在的声明关系、契约和证据形式；从 v0.5.2 开始，对正式 Batch 并行记录 L3b；v0.5.3 扩大正式覆盖，并裁定 L3b 是否进入 Machine Gate。
+- v0.5.2 的 Desktop Authority、soft-category 唯一行内 duplicate-ID warning-only 和 immutable negative bundle 都是 Independent Fidelity successor 规则，不回写或重新裁决 v0.4/v0.4.1/v0.5.1 历史 artifacts；v0.5.3 负责核对生产 L3a lane 的行为并显式处理差异。
+- 双语 Core 8 始终指 4 个 Core 产品 × 2 种语言的 8 个 items，包含 `zh-cn/api-management`；`en-us/time-series-insights` 与 `zh-cn/sla-sql-data` 是 v0.5.3 的单列 carry-over qualification items，不计入 Core 8 分母。
 - 并排报告和 Workbench 入口只投影 Evidence；人工结论继续由现有 L4 Review Decision 与 `inspected_states` 承载，不新增 `manual_l3b_*` lifecycle。
 - v0.5.4–v0.6 的具体问题组只有在 v0.5.3 当前完整双语 Batch 和人工审核后才能冻结；旧 C1–C9 数量只作为历史比较。
 - 任何版本主题、顺序或验收范围变化都应同步更新本路线图、对应 ADR、execution plan、handoff 和必要的 README；不得只修改其中一份文档。
