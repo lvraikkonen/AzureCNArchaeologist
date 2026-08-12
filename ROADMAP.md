@@ -2,7 +2,7 @@
 
 > 文档状态：当前项目路线图  
 > 最新稳定版本：v0.5.3
-> 当前开发阶段：v0.5.3 已完成实施与技术验收；下一阶段为 v0.5.4 Execution Plan
+> 当前开发阶段：v0.5.4 architecture preflight 与 Execution Plan 已接受，进入 P0–P3 实施
 > 基线日期：2026-08-12
 > 适用范围：Azure 中国区产品 HTML 标准化、策略化解析、CMS JSON 导出与质量验证
 
@@ -594,6 +594,8 @@ accepted residual problem map 按静默准确性风险、项数、共享根因�
 v0.5.4 承接 `zh-cn/icp-faq` 与 `en-us/icp-faq` 的两份 immutable failed Evidence。两项均在 `<h3>18...` / `<br/>` 与 `<h3>19...` 之间丢失 direct text，raw、DOM 与 visible-text 比较失败而 L3a 通过，构成当前最高优先级的静默内容准确性风险。
 
 实施必须先证明 SupportArticle mixed-content extraction/serialization 的共享根因，再在通用边界保留 direct text、元素顺序和有意义 URL；禁止按产品名或问题编号硬编码。必须增加真实双语 Frozen HTML、遗漏/重排反证、所有 SupportArticle family 回归、新 current Evidence 和完整 Batch 防回退，并保持 v0.5.3 两份负证据不可变。详细输入见 `reports/v0.5.3/v0.5.4-handoff.md`。
+
+轻量 architecture preflight 已确认当前 accepted inputs 的同签名影响面只有双语 `icp-faq`，并提出 v0.5.4 不新增 `v054_*` 平行 verifier、复用现有四页面族 Profile/adapter、保持生产实现与 L3b oracle 独立的设计约束。检查结果见 `reports/v0.5.4/architecture-preflight.md`；冻结实施计划见 `plans/v0.5.4-execution-plan.md`。正式 Batch 与 canonical Evidence 仍须等 P0–P3 全部完成、提交且 worktree clean 后才能开始。
 
 ### v0.5.5：Simple page-global boundary 与策略分类
 
