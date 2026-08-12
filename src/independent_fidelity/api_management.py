@@ -29,14 +29,14 @@ SOURCE_TABLE_IDS = (
 )
 ROW_WARNING_CODE = "SOFT_CATEGORY_DUPLICATE_TABLE_ID_IN_ROW"
 
-_EXPECTED_CONFIG_ENTRY_INDEX = {
+EXPECTED_CONFIG_ENTRY_INDEX = {
     "north-china": 233,
     "east-china": 234,
     "north-china2": 235,
     "east-china2": 236,
     "north-china3": 237,
 }
-_EXPECTED_REMOVED = {
+EXPECTED_REMOVED_TABLE_IDS = {
     "east-china2": ("API-Management-preview2",),
     "north-china3": ("API-Management-preview2",),
     "north-china2": ("API-Management-preview2",),
@@ -49,7 +49,7 @@ _EXPECTED_REMOVED = {
         "API-Management-gateway",
     ),
 }
-_EXPECTED_RETAINED = {
+EXPECTED_RETAINED_TABLE_IDS = {
     "east-china2": (
         "API-Management-preview",
         "API-Management-gateway",
@@ -616,9 +616,9 @@ def reconstruct_api_management(
                 f"State {region!r} removed tables differ from its exact config row",
             )
         if enforce_frozen_state_specs and (
-            entry_index != _EXPECTED_CONFIG_ENTRY_INDEX[region]
-            or tuple(removed) != _EXPECTED_REMOVED[region]
-            or retained != _EXPECTED_RETAINED[region]
+            entry_index != EXPECTED_CONFIG_ENTRY_INDEX[region]
+            or tuple(removed) != EXPECTED_REMOVED_TABLE_IDS[region]
+            or retained != EXPECTED_RETAINED_TABLE_IDS[region]
         ):
             raise _blocked(
                 "frozen_state_ownership_mismatch",

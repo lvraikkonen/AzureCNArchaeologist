@@ -10,6 +10,9 @@ from bs4 import BeautifulSoup
 
 from src.independent_fidelity.api_management import (
     ApiManagementReconstruction,
+    EXPECTED_REMOVED_TABLE_IDS,
+    EXPECTED_RETAINED_TABLE_IDS,
+    LOCATOR,
     ReconstructedState,
     derive_state_id,
     reconstruct_bound_api_management,
@@ -35,6 +38,8 @@ from src.independent_fidelity.formal_target import (
     TARGET_PRODUCT_KEY,
     TARGET_RESOURCE_KEY,
     BoundFormalTarget,
+    EXPECTED_REGIONS,
+    EXPECTED_STATE_IDS,
 )
 from src.independent_fidelity.verdict import aggregate_item_verdict
 from src.independent_fidelity.verifier import VerificationRun, compare_html
@@ -252,6 +257,179 @@ def build_api_management_basis(
     }
     return validate_basis(
         target.repository_root, with_basis_semantic_identity(basis)
+    )
+
+
+def _blocked_basis(target: BoundFormalTarget) -> dict[str, Any]:
+    """Use the trusted L3a/frozen required set when reconstruction blocks."""
+
+    synthetic_states = []
+    for state_id, region in zip(EXPECTED_STATE_IDS, EXPECTED_REGIONS, strict=True):
+        synthetic_states.append(
+            {
+                "state_id": state_id,
+                "criteria": [
+                    {"filterKey": "region", "matchValues": region}
+                ],
+                "locator": {
+                    "container_selector": LOCATOR["container_selector"],
+                    "content_selectors": list(LOCATOR["content_selectors"]),
+                    "append_selectors": list(LOCATOR["append_selectors"]),
+                },
+                "retained_table_ids": list(
+                    EXPECTED_RETAINED_TABLE_IDS[region]
+                ),
+                "removed_table_ids": list(
+                    EXPECTED_REMOVED_TABLE_IDS[region]
+                ),
+            }
+        )
+    basis = {
+        "schema_version": "1.0",
+        "basis_id": "v0.5.2-zh-cn-api-management-formal-basis",
+        "batch_binding": {
+            "batch_id": TARGET_BATCH_ID,
+            "input_manifest": {
+                "path": INPUT_MANIFEST_PATH.as_posix(),
+                "sha256": FROZEN_SHA256[INPUT_MANIFEST_PATH.as_posix()],
+            },
+            "batch_manifest": {
+                "path": BATCH_MANIFEST_PATH.as_posix(),
+                "sha256": FROZEN_SHA256[BATCH_MANIFEST_PATH.as_posix()],
+                "revision": TARGET_BATCH_REVISION,
+            },
+        },
+        "item_identity": {
+            "item_id": TARGET_ITEM_ID,
+            "language": TARGET_LANGUAGE,
+            "resource_key": TARGET_RESOURCE_KEY,
+            "product_key": TARGET_PRODUCT_KEY,
+            "resource_kind": "current",
+        },
+        "source_identity": {
+            "path": SOURCE_PATH.as_posix(),
+            "sha256": FROZEN_SHA256[SOURCE_PATH.as_posix()],
+        },
+        "product_definition_identity": {
+            "path": PRODUCT_DEFINITION_PATH.as_posix(),
+            "sha256": FROZEN_SHA256[PRODUCT_DEFINITION_PATH.as_posix()],
+        },
+        "soft_category_identity": {
+            "path": SOFT_CATEGORY_PATH.as_posix(),
+            "sha256": FROZEN_SHA256[SOFT_CATEGORY_PATH.as_posix()],
+        },
+        "route_map_identity": None,
+        "persisted_payload_identity": {
+            "path": PAYLOAD_PATH.as_posix(),
+            "sha256": FROZEN_SHA256[PAYLOAD_PATH.as_posix()],
+            "batch_revision": TARGET_BATCH_REVISION,
+        },
+        "verifier_profile": dict(target.profile_identity),
+        **ALGORITHM_VERSIONS,
+        "states": synthetic_states,
+    }
+    return validate_basis(
+        target.repository_root, with_basis_semantic_identity(basis)
+    )
+
+
+def blocked_verification_run(
+    target: BoundFormalTarget,
+    error: Exception,
+    *,
+    reconstruction: ApiManagementReconstruction | None = None,
+) -> VerificationRun:
+    """Express a trustworthy post-binding inability as immutable Evidence."""
+
+    code = str(getattr(error, "code", "independent_reconstruction_blocked"))
+    message = str(error)
+    basis = (
+        build_api_management_basis(target, reconstruction)
+        if reconstruction is not None
+        else _blocked_basis(target)
+    )
+    states: list[dict[str, Any]] = []
+    fragments: dict[str, str] = {}
+    for index, basis_state in enumerate(basis["states"], start=1):
+        prefix = f"state-{index:03d}"
+        source_path = f"fragments/{prefix}.source.html.txt"
+        expected_path = f"fragments/{prefix}.expected.html.txt"
+        payload_path = f"fragments/{prefix}.payload.html.txt"
+        diff_path = f"fragments/{prefix}.diff.html"
+        source_fragment = ""
+        if reconstruction is not None:
+            source_fragment = reconstruction.states[index - 1].source_fragment
+        fragments[source_path] = source_fragment
+        fragments[expected_path] = ""
+        fragments[payload_path] = ""
+        states.append(
+            {
+                "state_id": basis_state["state_id"],
+                "criteria": list(basis_state["criteria"]),
+                "locator": dict(basis_state["locator"]),
+                "verdict": "blocked",
+                "source": {
+                    "path": source_path,
+                    "sha256": bytes_sha256(source_fragment.encode("utf-8")),
+                },
+                "expected": {
+                    "path": expected_path,
+                    "sha256": bytes_sha256(b""),
+                },
+                "payload": {
+                    "path": payload_path,
+                    "sha256": bytes_sha256(b""),
+                },
+                "diff": {"path": diff_path},
+                "applied_transform_rule_ids": [],
+                "retained_table_ids": list(
+                    basis_state["retained_table_ids"]
+                ),
+                "removed_table_ids": list(
+                    basis_state["removed_table_ids"]
+                ),
+                "mismatches": [],
+                "blocking_errors": [{"code": code, "message": message}],
+            }
+        )
+    blocking_errors = [
+        item for state in states for item in state["blocking_errors"]
+    ]
+    evidence = {
+        "schema_version": "1.0",
+        "claim": "independent_source_content_fidelity",
+        "verdict": "blocked",
+        "coverage": {
+            "required": len(states),
+            "completed": 0,
+            "passed": 0,
+            "failed": 0,
+            "blocked": len(states),
+        },
+        "identity": {
+            "batch_id": TARGET_BATCH_ID,
+            "item_id": TARGET_ITEM_ID,
+            "language": TARGET_LANGUAGE,
+            "resource_key": TARGET_RESOURCE_KEY,
+            "product_key": TARGET_PRODUCT_KEY,
+        },
+        "reconstruction_basis": basis,
+        "verifier_profile": dict(target.profile_identity),
+        **ALGORITHM_VERSIONS,
+        "states": states,
+        "mismatches": [],
+        "blocking_errors": blocking_errors,
+        "qualification_limitation": None,
+        "blocked_reason": message,
+    }
+    return VerificationRun(
+        evidence=evidence,
+        fragments=fragments,
+        projection_warnings=(
+            tuple(reconstruction.hygiene_warnings)
+            if reconstruction is not None
+            else ()
+        ),
     )
 
 
