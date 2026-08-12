@@ -2,8 +2,8 @@
 
 > 文档状态：当前项目路线图  
 > 最新稳定版本：v0.5.2
-> 当前开发阶段：v0.5.2 已完成实施与技术验收；下一阶段为 v0.5.3 Execution Plan
-> 基线日期：2026-08-11
+> 当前开发阶段：v0.5.3 Execution Plan 已冻结；尚未开始 v0.5.3 编码
+> 基线日期：2026-08-12
 > 适用范围：Azure 中国区产品 HTML 标准化、策略化解析、CMS JSON 导出与质量验证
 
 ## 1. 路线图目的
@@ -130,7 +130,7 @@ v1.0 中需要清晰区分：
 | v0.5.0 | 独立内容核对探索（已关闭） | 既有实验已完成方法可行性决策；不重复建设原型，也不把实验输出升级为正式 L3b |
 | v0.5.1 | 入口基线与最小 L3b 契约 | 冻结 v0.5 Planning/Core successor、最小 Profile/Basis/Evidence 契约、三类算法版本、item verdict 聚合、semantic/projection identity、轻量独立性保护、五项反证和 inert 只读 Evidence 投影 |
 | v0.5.2 | `zh-cn/api-management` 单项首个正式 L3b 证据闭环 | 对 reference Batch 的单一语言级 item 产生首份正式 L3b Evidence 和逐状态只读并排报告；不进入 L4/Release/Publication |
-| v0.5.3 | 双语四类覆盖、Workbench 与门禁裁定 | 完成 4 产品 × 2 语言的 Core 8，并单列裁定两个不计入该分母的 carry-over items；现有 Workbench 提供证据入口，根据正式证据裁定是否及如何启用 L3b Machine Gate，并冻结后续问题组顺序 |
+| v0.5.3 | 四类双语 L3b 证据覆盖、Workbench 与 Machine Gate 裁定 | 在同一新的 current full bilingual Batch 上覆盖 Core 8，并单列两个 carry-over；Workbench 展示 L3a/L3b Evidence；依据真实证据裁定 Machine Gate policy，但本版本不激活运行时；形成当前问题地图并重排后续版本 |
 | v0.5.4 | 第一优先残余问题组 | 由 v0.5.3 当前 Batch 选择；旧 C2 是候选，不是预先承诺 |
 | v0.5.5 | 第二优先残余问题组 | 由 v0.5.3 当前 Batch 选择；旧 C1 是候选，不是预先承诺 |
 | v0.5.6 | 剩余优先组与 v0.5 收口 | 处理经审核的剩余 v0.5 问题组，拆分 C4，冻结 v0.5 acceptance baseline |
@@ -142,7 +142,7 @@ v1.0 中需要清晰区分：
 
 版本号表示能力和质量门槛，不表示固定日历日期。后续版本只有在当前版本验收条件全部满足后才能升级。
 
-2026-08-11 的 v0.5 入口总体方向已经人工接受，详细依据见 `reports/post-v0.4/v050-entry-decision.md`。`plans/v0.5.1-execution-plan.md` 已按最终评审意见实施完成；技术验收和 v0.5.2 交接见 `reports/v0.5.1/acceptance-status.md` 与 `reports/v0.5.1/v0.5.2-handoff.md`。`plans/v0.5.2-execution-plan.md` 也已按冻结范围完成实施与技术验收；正式 identities、完整 inventory、人工复核和 v0.5.3 交接见 `reports/v0.5.2/acceptance-status.*` 与 `reports/v0.5.2/v0.5.3-handoff.md`。
+2026-08-11 的 v0.5 入口总体方向已经人工接受，详细依据见 `reports/post-v0.4/v050-entry-decision.md`。`plans/v0.5.1-execution-plan.md` 已按最终评审意见实施完成；技术验收和 v0.5.2 交接见 `reports/v0.5.1/acceptance-status.md` 与 `reports/v0.5.1/v0.5.2-handoff.md`。`plans/v0.5.2-execution-plan.md` 也已按冻结范围完成实施与技术验收；正式 identities、完整 inventory、人工复核和 v0.5.3 交接见 `reports/v0.5.2/acceptance-status.*` 与 `reports/v0.5.2/v0.5.3-handoff.md`。`plans/v0.5.3-execution-plan.md` 已于 2026-08-12 获人工接受并冻结：它选择在同一新的 current full bilingual Batch 上重新绑定 `zh-cn/api-management`，由该 Batch 的 Source-proven universe 决定正式 scope 分母，并把 Machine Gate 限定为 `runtime_effective=false` 的 policy 裁定；Plan freeze 只授权后续按 P0–P5 实施，不包含编码或正式 Evidence。
 
 ## 5. 分版本路线图
 
@@ -579,17 +579,19 @@ Review 至少使用：
 
 ### v0.5.3：覆盖四类核心页面并裁定 Machine Gate
 
-将独立核对扩展到完整双语 Core 8：**4 个 Core 产品 × 2 种语言 = 8 个 language-level items**，覆盖 SimpleStatic、RegionFilter、ComplexContent、SupportArticle，并明确包含 v0.5.2 已首次 formalize 的 `zh-cn/api-management`。其余 7 个 Core items 包含 `en-us/api-management`，不得写成“英文 item + 其余 Core 8”而造成 9-item 歧义。未来 v0.5.3 Execution Plan 冻结 `zh-cn/api-management` 是复用既有 Evidence、对同一 binding 重放，还是绑定新的 Batch/current output 重新生成。现有 Workbench 提供已经由该单项验证过的只读 Evidence 入口，分开显示 L3a/L3b、Source、Expected、Payload 和 diff，并说明它们与现有 L4 Review Decision 的关系。不得另建第二套人工审核系统。人工继续负责重建依据的业务意图、CSS/JavaScript 语义、CMS 可移植性和最终批准。
+> 状态：Execution Plan 已冻结（2026-08-12）；Plan freeze 只授权后续按 P0–P5 实施，不包含编码或正式 Evidence。
 
-`en-us/time-series-insights` 与 `zh-cn/sla-sql-data` 作为 **Core 8 分母之外**的两个单列 carry-over qualification items，由 v0.5.3 分别给出明确的 `passed` / `failed` / `blocked` / `not_qualified` 资格结论和后续 owner，不得再次悬空。v0.5.3 同时核对生产抽取/L3a 是否已采用与 v0.5.2 L3b successor 相同的唯一行内 duplicate-ID ordered-unique 行为；若两条 machine lane 不同，必须记录差异并通过后续 ADR/profile 决策对齐，不能静默漂移。
+在同一个新的 current full bilingual Batch 上，将独立核对扩展到完整双语 Core 8：**4 个 Core 产品 × 2 种语言 = 8 个 language-level items**，覆盖 SimpleStatic、RegionFilter、ComplexContent 和 SupportArticle。`zh-cn/api-management` 在该新 Batch 上重新绑定并生成 Evidence；v0.5.2 accepted bundle 保持历史不可变且不混入新分母。当前 snapshot 预期共有 46 个 Core scopes，正式 denominator 由新 Batch Source 按冻结的 scope 推导规则确定；正常上游变化不通过手工 Source/config hash 表固化进路线图。
 
-本阶段根据正式覆盖率、失败类型、`blocked/not_qualified` 分布和人工复核结果，裁定是否、何时以及对哪些 qualified items 启用 L3b Machine Gate；合法结论包括暂不启用、限定范围启用或分阶段启用，不预设全局强制门禁。
+`en-us/time-series-insights` 与 `zh-cn/sla-sql-data` 作为 Core 8 分母之外的两个 carry-over qualification items，分别获得明确结论和后续 owner。两个 carry-over 表中的当前 scope 数只作为 preflight 预期；若 qualified，其正式 scope 同样由新 Batch 实际绑定 Source 按页面族规则推导并完整覆盖，但始终与 Core denominator 分开记录。`en-us/icp-faq` 复用中文 Source 的 `claim_limitations` 必须随 Evidence 展示：它只能证明 payload 与实际绑定 Source 一致，不能证明英文翻译或本地化质量。v0.5.3 同时核对生产 extraction/L3a/L3b 的 duplicate-ID ordered-unique 行为，差异必须明示而不能静默漂移。
 
-本阶段结束时在 accepted v0.5 Planning Baseline 上运行当前完整双语 Batch，按风险、项数、共享根因和可安全修复性生成新的残余问题地图。只有 Machine Gate 裁定和该地图都获审核后，才冻结 v0.5.4–v0.6 的具体问题组名称与顺序。
+现有 Workbench 展示 L3a/L3b、Source、Expected、Payload 和可读 diff，但不建立第二套人工审核 lifecycle，也不改变现有 L4 Review Decision、Approval、Release 或 upload 行为。Machine Gate 裁定必须基于全部 formal actual Core scopes 和所有已生成 carry-over scopes 的人工只读复核，不得只接受聚合通过率或总称式 Evidence set；决策同时考虑失败分布、`claim_limitations` 和 lane disagreement。合法结论包括继续并行、建议限定范围启用或建议分阶段启用，但 v0.5.3 固定 `runtime_effective=false`。
+
+本阶段以该当前完整双语 Batch 的真实结果，按风险、项数、共享根因和可安全修复性形成残余问题地图。只有 Machine Gate decision 与该地图均获人工接受后，才冻结 v0.5.4–v0.6 的具体问题组名称与顺序。
 
 ### v0.5.4：第一优先残余问题组
 
-由 v0.5.3 当前完整 Batch 选择第一优先问题组。旧 C2 `missing_software_target` 是候选，但旧 15 项数字不是完成目标。选择记录必须说明完整受影响单项、共享根因假设、风险、预期通用修复点和未选择其他组的理由。
+v0.5.4 默认承接 v0.5.3 accepted residual problem map 的第一优先组。旧 C2 `missing_software_target` 是候选，但旧 15 项数字不是完成目标。选择记录必须说明完整受影响单项、共享根因假设、风险、预期通用修复点和未选择其他组的理由。若 accepted Machine Gate decision 认为 activation prerequisite 应优先，必须先在 v0.5.3 收口时更新并人工接受本路线图的版本主题和顺序；后续 execution plan 不得单方面改写已冻结的 v0.5.4 主题。
 
 实施仍遵循问题组纪律：先归因和必要拆分，只修改共享 detector、reachability、状态对应或其他通用实现，禁止产品名硬编码；增加真实 Frozen HTML、L3b、针对性错误注入、双语代表人工审核和完整 Batch 防回退。
 
@@ -861,6 +863,15 @@ v1.0 不表示所有 Azure 页面都已经被完美解析，而表示项目对�
 - CMS 上游契约说明、本地机器契约、产品配置和状态枚举均应有明确且唯一的事实来源。
 - 代码、测试和文档必须在同一变更中保持同步。
 
+### 简化与可信边界
+
+- 内容正确性优先通过规范化 DOM、结构、文本和业务语义对象直接比较；hash 主要用于 provenance 和文件完整性，不以多层 SHA 代替内容证据。
+- 选择满足当前版本需求的最简单实现；没有当前消费者时，不新增 Schema、renderer、lifecycle、兼容层、插件框架或通用 DSL。
+- 防御性检查集中在外部输入、持久化 artifact、路径安全、历史不可变和发布边界；内部已验证对象不重复做同类检查。
+- accepted 历史 artifact 必须保持不可变并继续可读，但不为旧内部 API、CLI、HTTP response 或 helper 建设泛化 backward-compatibility framework。
+- 优先复用项目现有能力和成熟、维护良好的库，不重复实现 parser、URL resolver、Schema validator、canonical serializer 或 diff engine。
+- 抽象必须由至少两个当前真实调用点证明；一次性报告或单版本决策优先使用简单 Markdown/JSON，而不是新平台。
+
 ## 8. 推荐实施顺序
 
 路线图的关键依赖关系是：
@@ -880,7 +891,7 @@ v1.0 不表示所有 Azure 页面都已经被完美解析，而表示项目对�
 → v0.5 入口裁定获接受与瘦身版 v0.5.1 plan 冻结
 → v0.5.1 Planning/Core successor、最小 L3a/L3b 契约、轻量防火墙和只读 Evidence 投影
 → v0.5.2 `zh-cn/api-management` 单项首个正式 L3b 证据闭环与逐状态只读并排报告
-→ v0.5.3 完整双语 Core 8、两个单列 carry-over qualification items、现有 Workbench 入口、Machine Gate 裁定和当前问题地图
+→ v0.5.3 在同一新 Batch 上完成 Core 8 与两个 carry-over 的 L3b 裁定、Workbench Evidence 展示、runtime-inert Machine Gate decision 和当前问题地图
 → v0.5.4–v0.6 按当前完整 Batch 重排后的同类结构问题扩大覆盖
 → 经真实证据证明必要的 CMS、性能与稳定性工作
 → stale 代码清理
@@ -899,12 +910,15 @@ v1.0 不表示所有 Azure 页面都已经被完美解析，而表示项目对�
 - 新发现的严重数据准确性问题优先于功能开发。
 - 如果某个目标无法在当前版本安全完成，应显式延后，不能通过静默回退宣布完成。
 - accepted v0.4/v0.4.1 baseline 和 evidence 保持历史有效；新输入使用 successor artifact，不通过覆盖旧路径制造“同一基线已更新”的假象。
+- 上游新快照和配置更新是正常输入变化，由 Batch manifest 冻结实际 binding；只有 item membership、页面族、scope 语义或 claim 边界变化才要求修订 execution plan。
+- 每个新增 hash、Schema、identity、compatibility layer、状态或安全检查都必须说明当前消费者和它阻止的真实故障；仅为理论完整性而增加的机制不进入当前版本。
 - L3a、L3b 和 Machine Gate 必须分别说明 claim、coverage、bindings 和 policy；不得把 `blocked`、`not_qualified` 或 `not_run` 汇总为 passed。
-- v0.5.1 冻结 L3b 与现有机器验证并行存在的声明关系、契约和证据形式；从 v0.5.2 开始，对正式 Batch 并行记录 L3b；v0.5.3 扩大正式覆盖，并裁定 L3b 是否进入 Machine Gate。
+- v0.5.1 冻结 L3b 与现有机器验证并行存在的声明关系、契约和证据形式；从 v0.5.2 开始，对正式 Batch 并行记录 L3b；v0.5.3 扩大正式覆盖，并裁定 L3b 未来是否及如何进入 Machine Gate，本版本不激活运行时。
 - v0.5.2 的 Desktop Authority、soft-category 唯一行内 duplicate-ID warning-only 和 immutable negative bundle 都是 Independent Fidelity successor 规则，不回写或重新裁决 v0.4/v0.4.1/v0.5.1 历史 artifacts；v0.5.3 负责核对生产 L3a lane 的行为并显式处理差异。
 - 双语 Core 8 始终指 4 个 Core 产品 × 2 种语言的 8 个 items，包含 `zh-cn/api-management`；`en-us/time-series-insights` 与 `zh-cn/sla-sql-data` 是 v0.5.3 的单列 carry-over qualification items，不计入 Core 8 分母。
 - 并排报告和 Workbench 入口只投影 Evidence；人工结论继续由现有 L4 Review Decision 与 `inspected_states` 承载，不新增 `manual_l3b_*` lifecycle。
 - v0.5.4–v0.6 的具体问题组只有在 v0.5.3 当前完整双语 Batch 和人工审核后才能冻结；旧 C1–C9 数量只作为历史比较。
+- v0.5.4 默认实现 accepted residual problem map 的第一优先组；若 accepted Machine Gate decision 要求 activation prerequisite 优先，必须先在 v0.5.3 收口阶段更新并人工接受本路线图，后续 execution plan 不得单方面改变版本主题。
 - 任何版本主题、顺序或验收范围变化都应同步更新本路线图、对应 ADR、execution plan、handoff 和必要的 README；不得只修改其中一份文档。
 
 ---
