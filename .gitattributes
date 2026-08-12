@@ -2,3 +2,6 @@
 docs/cms-json-new-schema/FlexibleContentPage-JSON-Schema-1.1.md text eol=lf
 docs/cms-json-new-schema/SupportArticlePage-JSON-schema.md text eol=lf
 docs/cms-json-new-schema/CONTRACT-CONFIRMATIONS.md text eol=lf
+
+# Preserve immutable formal Evidence bytes; raw fragments intentionally retain source whitespace.
+runs/20260811T171630Z-e80afabe/independent-fidelity/zh-cn/pricing/api-management/** -text -whitespace

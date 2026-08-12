@@ -1,0 +1,3751 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src 'none'; media-src 'none'; font-src 'none'; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none';">
+<meta name="referrer" content="no-referrer"><title>Independent Fidelity Evidence Review</title>
+<style>
+body{font-family:ui-sans-serif,system-ui,sans-serif;margin:1rem;color:#18202a}
+nav a{margin-right:.6rem}.claims,.meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+.claim-card,.hygiene{border:1px solid #d0d5dd;padding:.75rem}.hygiene{margin:1rem 0;background:#fffaeb}
+.state{border-top:2px solid #667085;margin-top:1.5rem;padding-top:1rem}
+.compare{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f6f8;padding:.75rem;border:1px solid #d0d5dd}
+dt{font-weight:700}dd{margin:0 0 .45rem}.verdict{font-weight:700}
+
+/* projection-variant:v0.5.2-formal-v1 */
+</style></head><body>
+<h1>Independent Fidelity Evidence Review</h1>
+<p>api-management · zh-cn · zh-cn/api-management</p>
+<div class="claims">
+  <section class="claim-card"><h2>L3a / current Machine Validation</h2>
+    <p>Stored claim: <code>sampled_state_content_consistency</code><br>
+    Verdict: <strong>passed</strong><br>
+    Coverage: 5/5 selected; untested=0</p>
+    <dl><dt>Validation</dt><dd><code>path=validation/zh-cn/pricing/api-management.validation.json; sha256=c20a9ff2c1be1b4f2a31442198d4367db9bed5ae69628d40bb1207a07ed60e24; evidence_sha256=adb472c988944e30ecda54164ba64ca2b2b31553842537179a0256c85825b987</code></dd><dt>Sampling Plan</dt><dd><code>path=validation/zh-cn/pricing/api-management.sampling-plan.json; sha256=940682a36b3d0652c2a252c725ce76a3ce7ecb99903b6220e03cf60aac75ee31; plan_sha256=a9ab493c28b709886b674a35a5ba95d2799aad84a06c6e34a9b50380141f4bf6</code></dd><dt>Sampled Content Evidence</dt><dd><code>path=validation/zh-cn/pricing/api-management.sampled-content-evidence.json; sha256=24c28ecff425242e1e350e0483e87bdceec484719dcc16364dbefe8bfef49f76; evidence_sha256=e8474bd2e20025ea9755b52abf55d2f7304c488a505db2cae1dd247a48711d21</code></dd></dl>
+  </section>
+  <section class="claim-card"><h2>L3b / Independent Fidelity</h2>
+    <p>Claim: <code>independent_source_content_fidelity</code><br>
+    Verdict: <strong>passed</strong><br>
+    Coverage: required=5; completed=5; passed=5; failed=0; blocked=0</p>
+    <dl>
+      <dt>Reconstruction Basis</dt><dd><code>v0.5.2-zh-cn-api-management-formal-basis; semantic_sha256=df43667829458078e9fecfa2ad59e601d91b19f0ff82fe4c72a3ad40e15f9537</code></dd>
+      <dt>Verifier Profile</dt><dd><code>id=v0.5.1-independent-fidelity-minimal; version=0.5.1; path=data/configs/independent-fidelity-profiles/v0.5.1-minimal.json; sha256=7a21615b2a6aea0321b95f666843beee481faa2368b6bffd2c75a02e70a628ba</code></dd>
+      <dt>Algorithm identities</dt><dd><code>reconstruction=independent-state-reconstruction-v1; wire=independent-cms-wire-v1; comparison=independent-html-comparison-v1</code></dd>
+      <dt>Evidence semantic identity</dt><dd><code>sha256-canonical-json-v1=86915841ea662a63d88ded69e385f3f98548ebcc1228b84219fbfe88d5b72c2c</code></dd>
+    </dl>
+  </section>
+</div>
+<p>Qualification limitation: —<br>Blocked reason: —</p>
+
+<nav aria-label="状态选择器"><a href="#state-001">c3e7e8a69bf19f9b0d77b3e5fcfdb8dcb1d19414ca7e9df55eb284a16a3325b0</a> <a href="#state-002">8e15cb882ef50f91a8d1498533b306d61029e6d713fae0eeb2a1787359bfa7dd</a> <a href="#state-003">e377a15171c6eb6f9cff5af0d96c1ddfbbd2d63499fdc94b3a9e69dbedba100a</a> <a href="#state-004">a60111cd8c5abf40957dd689b9d60ba8a76f8262059b595354f32da191f514d0</a> <a href="#state-005">f29a755dfdc00825e89fb791672bde6ec5a2a60505496acf95c3d68cef7d274c</a></nav>
+
+<section class="state" id="state-001">
+  <nav><span>上一状态</span> | <a href="#state-002">下一状态</a></nav>
+  <h2>c3e7e8a69bf19f9b0d77b3e5fcfdb8dcb1d19414ca7e9df55eb284a16a3325b0</h2>
+  <p class="verdict">L3b: passed</p>
+  <dl class="meta">
+    <div><dt>Filter criteria</dt><dd>region=east-china2</dd></div>
+    <div><dt>Locator</dt><dd><code>{&quot;append_selectors&quot;: [], &quot;container_selector&quot;: &quot;div.technical-azure-selector.pricing-detail-tab&quot;, &quot;content_selectors&quot;: [&quot;div.tab-content&quot;]}</code></dd></div>
+    <div><dt>Retained tables</dt><dd>API-Management-preview, API-Management-gateway</dd></div>
+    <div><dt>Removed tables</dt><dd>API-Management-preview2</dd></div>
+    <div><dt>Applied transforms</dt><dd>—</dd></div>
+    <div><dt>SHA</dt><dd>source=7fbd9f129fe9205d0edf47bddca4f13d930afdcaba5a9fa72517822e12ca3d2e<br>expected=2092d7f2f7a184fbda197692f9ccc81abccd16f5a7c4f536282b83e53539623f<br>payload=2092d7f2f7a184fbda197692f9ccc81abccd16f5a7c4f536282b83e53539623f</dd></div>
+  </dl>
+  <div class="compare">
+    <article><h3>原始 Source</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;
+&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;
+&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;
+&lt;!-- BEGIN: Table1-Content--&gt;
+&lt;h2&gt;
+            API 管理
+           &lt;/h2&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+             *以下价格均为含税价格。
+            &lt;/div&gt;
+&lt;br/&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+             *每月价格估算基于每个月 744 小时的使用量。
+            &lt;/div&gt;
+&lt;br/&gt;
+&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;
+&lt;/div&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               开发人员
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               基本
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               标准
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               高级
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              用途
+             &lt;/td&gt;
+&lt;td&gt;
+              非生产用例和评估
+             &lt;/td&gt;
+&lt;td&gt;
+              入门级的生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              中等数量生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              大批量或企业生产用例
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              价格 (每单位)
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 0.5022/ 小时 （约￥ 373.6368 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 29.2229/ 小时 （约￥ 21,741.8376 /月）
+              &lt;br/&gt;
+              增量单位（大于 1 个）的单位成本
+              &lt;br/&gt;
+              是所购买的第一个单位的价格的 50%
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存（每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              10 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              50 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              1 GB
+             &lt;/td&gt;
+&lt;td&gt;
+              5 GB
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              横向扩展（单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              1
+             &lt;/td&gt;
+&lt;td&gt;
+              2
+             &lt;/td&gt;
+&lt;td&gt;
+              4
+             &lt;/td&gt;
+&lt;td&gt;
+              每个区域 10 个（调用支持添加更多）
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              SLA
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.95%
+              &lt;sup&gt;
+               1
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              使用限制
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存，外部
+              &lt;sup&gt;
+               6
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              开发人员门户
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多个自定义域名
+              &lt;sup&gt;
+               5
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              Azure Active Directory 集成
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              虚拟网络支持
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多区域部署
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              自托管网关
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               3
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               4
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                 工作区
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 是
+                &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              预计最大吞吐量
+              &lt;sup&gt;
+               2
+              &lt;/sup&gt;
+              （每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              1,000 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              2,500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              4,000 个请求/秒
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview2&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               开发人员
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               基本
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               标准
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              用途
+             &lt;/td&gt;
+&lt;td&gt;
+              非生产用例和评估
+             &lt;/td&gt;
+&lt;td&gt;
+              入门级的生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              中等数量生产用例
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              价格 (每单位)
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 0.5022/ 小时 （约￥ 373.6368 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月）
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存（每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              10 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              50 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              1 GB
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              横向扩展（单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              1
+             &lt;/td&gt;
+&lt;td&gt;
+              2
+             &lt;/td&gt;
+&lt;td&gt;
+              4
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              SLA
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              使用限制
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存，外部
+              &lt;sup&gt;
+               6
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              开发人员门户
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多个自定义域名
+              &lt;sup&gt;
+               5
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              Azure Active Directory 集成
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              虚拟网络支持
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多区域部署
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              自托管网关
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               3
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              预计最大吞吐量
+              &lt;sup&gt;
+               2
+              &lt;/sup&gt;
+              （每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              1,000 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              2,500 个请求/秒
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             1
+            &lt;/sup&gt;
+            要求在两个或更多区域至少部署一个单位。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             2
+            &lt;/sup&gt;
+            吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             3
+            &lt;/sup&gt;
+            在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             4
+            &lt;/sup&gt;
+            在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             5
+            &lt;/sup&gt;
+            仅适用于网关。每个实例限制为 20 个域名。请 
+            &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;
+             致电支持人员
+            &lt;/a&gt;
+            以添加更多内容。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             6
+            &lt;/sup&gt;
+            请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2&gt;Gateway&lt;/h2&gt;
+&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. 
+                &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;
+&lt;/p&gt;
+&lt;br/&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-gateway&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+                    Workspace gateway premium
+                  &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+                    自托管网关
+                  &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                  用途
+                 &lt;/td&gt;
+&lt;td&gt;
+                    Use as a managed data plane for workspaces in the Premium tier.
+                 &lt;/td&gt;
+&lt;td&gt;
+                    Use as a self-hosted data plane for APIs deployed on premises or in other private and public clouds.
+                 &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                  价格
+                 &lt;/td&gt;
+&lt;td&gt;
+                  ￥ 12,235.08 per month per gateway unit
+                 &lt;/td&gt;
+&lt;td&gt;
+                  ￥ 2,060.88/月/网关部署
+                  &lt;sup&gt;1&lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                    Workspaces
+                 &lt;/td&gt;
+&lt;td&gt;
+                    ￥647.28 for 5 workspaces per month&lt;sup&gt;2&lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+                    不适用
+                 &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+                 1
+                &lt;/sup&gt;
+                Developer tier deployments are free of charge.
+                &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+                            2
+                           &lt;/sup&gt;
+                           The first five workspaces are included at no additional cost.
+                    &lt;/div&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;pricing-page-section&quot;&gt;
+&lt;!-- BEGIN: Table1-Content--&gt;
+&lt;!--            &lt;h2&gt;
+            自托管网关
+           &lt;/h2&gt; --&gt;
+&lt;!--            &lt;p&gt;
+            自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。
+           &lt;/p&gt; --&gt;
+&lt;!--            &lt;div class=&quot;tags-date&quot;&gt;
+            &lt;div class=&quot;ms-date&quot;&gt;
+             *以下价格均为含税价格。
+            &lt;/div&gt;
+            &lt;br/&gt;
+            &lt;div class=&quot;ms-date&quot;&gt;
+             *每月价格估算基于每个月 744 小时的使用量。
+            &lt;/div&gt;
+            &lt;br/&gt;
+             &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; 
+           &lt;/div&gt; --&gt;
+&lt;!--            &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;
+            &lt;tr&gt;
+             &lt;th align=&quot;left&quot;&gt;
+              价格
+             &lt;/th&gt;
+             &lt;th align=&quot;left&quot;&gt;
+              ￥8.71/小时/网关部署
+             &lt;/th&gt;
+            &lt;/tr&gt;
+           &lt;/table&gt; --&gt;
+&lt;!--            &lt;p&gt;
+            以上价格将于2020年7月1日开始生效。
+           &lt;/p&gt; --&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</code></pre></article>
+    <article><h3>转换后 Expected</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;h2&gt; API 管理 &lt;/h2&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;&lt;/div&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 开发人员 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 基本 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 标准 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 高级 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; 非生产用例和评估 &lt;/td&gt;&lt;td&gt; 入门级的生产用例 &lt;/td&gt;&lt;td&gt; 中等数量生产用例 &lt;/td&gt;&lt;td&gt; 大批量或企业生产用例 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 (每单位) &lt;/td&gt;&lt;td&gt; ￥ 0.5022/ 小时 （约￥ 373.6368 /月） &lt;/td&gt;&lt;td&gt; ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月） &lt;/td&gt;&lt;td&gt; ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月） &lt;/td&gt;&lt;td&gt; ￥ 29.2229/ 小时 （约￥ 21,741.8376 /月） &lt;br/&gt; 增量单位（大于 1 个）的单位成本 &lt;br/&gt; 是所购买的第一个单位的价格的 50% &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存（每单位） &lt;/td&gt;&lt;td&gt; 10 MB &lt;/td&gt;&lt;td&gt; 50 MB &lt;/td&gt;&lt;td&gt; 1 GB &lt;/td&gt;&lt;td&gt; 5 GB &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 横向扩展（单位） &lt;/td&gt;&lt;td&gt; 1 &lt;/td&gt;&lt;td&gt; 2 &lt;/td&gt;&lt;td&gt; 4 &lt;/td&gt;&lt;td&gt; 每个区域 10 个（调用支持添加更多） &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; SLA &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.95% &lt;sup&gt; 1 &lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 使用限制 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存，外部 &lt;sup&gt; 6 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 开发人员门户 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多个自定义域名 &lt;sup&gt; 5 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Azure Active Directory 集成 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 虚拟网络支持 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多区域部署 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 自托管网关 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 3 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 4 &lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 工作区 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 预计最大吞吐量 &lt;sup&gt; 2 &lt;/sup&gt; （每单位） &lt;/td&gt;&lt;td&gt; 500 个请求/秒 &lt;/td&gt;&lt;td&gt; 1,000 个请求/秒 &lt;/td&gt;&lt;td&gt; 2,500 个请求/秒 &lt;/td&gt;&lt;td&gt; 4,000 个请求/秒 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; 要求在两个或更多区域至少部署一个单位。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; 吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 3 &lt;/sup&gt; 在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 4 &lt;/sup&gt; 在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 5 &lt;/sup&gt; 仅适用于网关。每个实例限制为 20 个域名。请 &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt; 致电支持人员 &lt;/a&gt; 以添加更多内容。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 6 &lt;/sup&gt; 请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。 &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;h2&gt;Gateway&lt;/h2&gt;&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;&lt;/p&gt;&lt;br/&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-gateway&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; Workspace gateway premium &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 自托管网关 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; Use as a managed data plane for workspaces in the Premium tier. &lt;/td&gt;&lt;td&gt; Use as a self-hosted data plane for APIs deployed on premises or in other private and public clouds. &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 &lt;/td&gt;&lt;td&gt; ￥ 12,235.08 per month per gateway unit &lt;/td&gt;&lt;td&gt; ￥ 2,060.88/月/网关部署 &lt;sup&gt;1&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Workspaces &lt;/td&gt;&lt;td&gt; ￥647.28 for 5 workspaces per month&lt;sup&gt;2&lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 不适用 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; Developer tier deployments are free of charge. &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; The first five workspaces are included at no additional cost. &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;pricing-page-section&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;!-- &lt;h2&gt; 自托管网关 &lt;/h2&gt; --&gt;&lt;!-- &lt;p&gt; 自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。 &lt;/p&gt; --&gt;&lt;!-- &lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt;&lt;/div&gt; --&gt;&lt;!-- &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt; 价格 &lt;/th&gt;&lt;th align=&quot;left&quot;&gt; ￥8.71/小时/网关部署 &lt;/th&gt;&lt;/tr&gt;&lt;/table&gt; --&gt;&lt;!-- &lt;p&gt; 以上价格将于2020年7月1日开始生效。 &lt;/p&gt; --&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></article>
+    <article><h3>Persisted Payload</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;h2&gt; API 管理 &lt;/h2&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;&lt;/div&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 开发人员 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 基本 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 标准 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 高级 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; 非生产用例和评估 &lt;/td&gt;&lt;td&gt; 入门级的生产用例 &lt;/td&gt;&lt;td&gt; 中等数量生产用例 &lt;/td&gt;&lt;td&gt; 大批量或企业生产用例 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 (每单位) &lt;/td&gt;&lt;td&gt; ￥ 0.5022/ 小时 （约￥ 373.6368 /月） &lt;/td&gt;&lt;td&gt; ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月） &lt;/td&gt;&lt;td&gt; ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月） &lt;/td&gt;&lt;td&gt; ￥ 29.2229/ 小时 （约￥ 21,741.8376 /月） &lt;br/&gt; 增量单位（大于 1 个）的单位成本 &lt;br/&gt; 是所购买的第一个单位的价格的 50% &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存（每单位） &lt;/td&gt;&lt;td&gt; 10 MB &lt;/td&gt;&lt;td&gt; 50 MB &lt;/td&gt;&lt;td&gt; 1 GB &lt;/td&gt;&lt;td&gt; 5 GB &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 横向扩展（单位） &lt;/td&gt;&lt;td&gt; 1 &lt;/td&gt;&lt;td&gt; 2 &lt;/td&gt;&lt;td&gt; 4 &lt;/td&gt;&lt;td&gt; 每个区域 10 个（调用支持添加更多） &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; SLA &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.95% &lt;sup&gt; 1 &lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 使用限制 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存，外部 &lt;sup&gt; 6 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 开发人员门户 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多个自定义域名 &lt;sup&gt; 5 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Azure Active Directory 集成 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 虚拟网络支持 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多区域部署 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 自托管网关 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 3 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 4 &lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 工作区 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 预计最大吞吐量 &lt;sup&gt; 2 &lt;/sup&gt; （每单位） &lt;/td&gt;&lt;td&gt; 500 个请求/秒 &lt;/td&gt;&lt;td&gt; 1,000 个请求/秒 &lt;/td&gt;&lt;td&gt; 2,500 个请求/秒 &lt;/td&gt;&lt;td&gt; 4,000 个请求/秒 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; 要求在两个或更多区域至少部署一个单位。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; 吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 3 &lt;/sup&gt; 在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 4 &lt;/sup&gt; 在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 5 &lt;/sup&gt; 仅适用于网关。每个实例限制为 20 个域名。请 &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt; 致电支持人员 &lt;/a&gt; 以添加更多内容。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 6 &lt;/sup&gt; 请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。 &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;h2&gt;Gateway&lt;/h2&gt;&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;&lt;/p&gt;&lt;br/&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-gateway&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; Workspace gateway premium &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 自托管网关 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; Use as a managed data plane for workspaces in the Premium tier. &lt;/td&gt;&lt;td&gt; Use as a self-hosted data plane for APIs deployed on premises or in other private and public clouds. &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 &lt;/td&gt;&lt;td&gt; ￥ 12,235.08 per month per gateway unit &lt;/td&gt;&lt;td&gt; ￥ 2,060.88/月/网关部署 &lt;sup&gt;1&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Workspaces &lt;/td&gt;&lt;td&gt; ￥647.28 for 5 workspaces per month&lt;sup&gt;2&lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 不适用 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; Developer tier deployments are free of charge. &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; The first five workspaces are included at no additional cost. &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;pricing-page-section&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;!-- &lt;h2&gt; 自托管网关 &lt;/h2&gt; --&gt;&lt;!-- &lt;p&gt; 自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。 &lt;/p&gt; --&gt;&lt;!-- &lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt;&lt;/div&gt; --&gt;&lt;!-- &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt; 价格 &lt;/th&gt;&lt;th align=&quot;left&quot;&gt; ￥8.71/小时/网关部署 &lt;/th&gt;&lt;/tr&gt;&lt;/table&gt; --&gt;&lt;!-- &lt;p&gt; 以上价格将于2020年7月1日开始生效。 &lt;/p&gt; --&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></article>
+  </div>
+  <h3>Diff</h3><pre>No differences.
+</pre>
+  <h3>Comparison mismatches</h3><pre>[]</pre>
+  <h3>Blocking errors</h3><pre>[]</pre>
+</section>
+<section class="state" id="state-002">
+  <nav><a href="#state-001">上一状态</a> | <a href="#state-003">下一状态</a></nav>
+  <h2>8e15cb882ef50f91a8d1498533b306d61029e6d713fae0eeb2a1787359bfa7dd</h2>
+  <p class="verdict">L3b: passed</p>
+  <dl class="meta">
+    <div><dt>Filter criteria</dt><dd>region=north-china3</dd></div>
+    <div><dt>Locator</dt><dd><code>{&quot;append_selectors&quot;: [], &quot;container_selector&quot;: &quot;div.technical-azure-selector.pricing-detail-tab&quot;, &quot;content_selectors&quot;: [&quot;div.tab-content&quot;]}</code></dd></div>
+    <div><dt>Retained tables</dt><dd>API-Management-preview, API-Management-gateway</dd></div>
+    <div><dt>Removed tables</dt><dd>API-Management-preview2</dd></div>
+    <div><dt>Applied transforms</dt><dd>—</dd></div>
+    <div><dt>SHA</dt><dd>source=7fbd9f129fe9205d0edf47bddca4f13d930afdcaba5a9fa72517822e12ca3d2e<br>expected=2092d7f2f7a184fbda197692f9ccc81abccd16f5a7c4f536282b83e53539623f<br>payload=2092d7f2f7a184fbda197692f9ccc81abccd16f5a7c4f536282b83e53539623f</dd></div>
+  </dl>
+  <div class="compare">
+    <article><h3>原始 Source</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;
+&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;
+&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;
+&lt;!-- BEGIN: Table1-Content--&gt;
+&lt;h2&gt;
+            API 管理
+           &lt;/h2&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+             *以下价格均为含税价格。
+            &lt;/div&gt;
+&lt;br/&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+             *每月价格估算基于每个月 744 小时的使用量。
+            &lt;/div&gt;
+&lt;br/&gt;
+&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;
+&lt;/div&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               开发人员
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               基本
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               标准
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               高级
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              用途
+             &lt;/td&gt;
+&lt;td&gt;
+              非生产用例和评估
+             &lt;/td&gt;
+&lt;td&gt;
+              入门级的生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              中等数量生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              大批量或企业生产用例
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              价格 (每单位)
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 0.5022/ 小时 （约￥ 373.6368 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 29.2229/ 小时 （约￥ 21,741.8376 /月）
+              &lt;br/&gt;
+              增量单位（大于 1 个）的单位成本
+              &lt;br/&gt;
+              是所购买的第一个单位的价格的 50%
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存（每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              10 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              50 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              1 GB
+             &lt;/td&gt;
+&lt;td&gt;
+              5 GB
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              横向扩展（单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              1
+             &lt;/td&gt;
+&lt;td&gt;
+              2
+             &lt;/td&gt;
+&lt;td&gt;
+              4
+             &lt;/td&gt;
+&lt;td&gt;
+              每个区域 10 个（调用支持添加更多）
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              SLA
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.95%
+              &lt;sup&gt;
+               1
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              使用限制
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存，外部
+              &lt;sup&gt;
+               6
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              开发人员门户
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多个自定义域名
+              &lt;sup&gt;
+               5
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              Azure Active Directory 集成
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              虚拟网络支持
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多区域部署
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              自托管网关
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               3
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               4
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                 工作区
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 是
+                &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              预计最大吞吐量
+              &lt;sup&gt;
+               2
+              &lt;/sup&gt;
+              （每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              1,000 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              2,500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              4,000 个请求/秒
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview2&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               开发人员
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               基本
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               标准
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              用途
+             &lt;/td&gt;
+&lt;td&gt;
+              非生产用例和评估
+             &lt;/td&gt;
+&lt;td&gt;
+              入门级的生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              中等数量生产用例
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              价格 (每单位)
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 0.5022/ 小时 （约￥ 373.6368 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月）
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存（每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              10 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              50 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              1 GB
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              横向扩展（单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              1
+             &lt;/td&gt;
+&lt;td&gt;
+              2
+             &lt;/td&gt;
+&lt;td&gt;
+              4
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              SLA
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              使用限制
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存，外部
+              &lt;sup&gt;
+               6
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              开发人员门户
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多个自定义域名
+              &lt;sup&gt;
+               5
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              Azure Active Directory 集成
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              虚拟网络支持
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多区域部署
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              自托管网关
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               3
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              预计最大吞吐量
+              &lt;sup&gt;
+               2
+              &lt;/sup&gt;
+              （每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              1,000 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              2,500 个请求/秒
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             1
+            &lt;/sup&gt;
+            要求在两个或更多区域至少部署一个单位。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             2
+            &lt;/sup&gt;
+            吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             3
+            &lt;/sup&gt;
+            在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             4
+            &lt;/sup&gt;
+            在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             5
+            &lt;/sup&gt;
+            仅适用于网关。每个实例限制为 20 个域名。请 
+            &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;
+             致电支持人员
+            &lt;/a&gt;
+            以添加更多内容。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             6
+            &lt;/sup&gt;
+            请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2&gt;Gateway&lt;/h2&gt;
+&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. 
+                &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;
+&lt;/p&gt;
+&lt;br/&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-gateway&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+                    Workspace gateway premium
+                  &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+                    自托管网关
+                  &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                  用途
+                 &lt;/td&gt;
+&lt;td&gt;
+                    Use as a managed data plane for workspaces in the Premium tier.
+                 &lt;/td&gt;
+&lt;td&gt;
+                    Use as a self-hosted data plane for APIs deployed on premises or in other private and public clouds.
+                 &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                  价格
+                 &lt;/td&gt;
+&lt;td&gt;
+                  ￥ 12,235.08 per month per gateway unit
+                 &lt;/td&gt;
+&lt;td&gt;
+                  ￥ 2,060.88/月/网关部署
+                  &lt;sup&gt;1&lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                    Workspaces
+                 &lt;/td&gt;
+&lt;td&gt;
+                    ￥647.28 for 5 workspaces per month&lt;sup&gt;2&lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+                    不适用
+                 &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+                 1
+                &lt;/sup&gt;
+                Developer tier deployments are free of charge.
+                &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+                            2
+                           &lt;/sup&gt;
+                           The first five workspaces are included at no additional cost.
+                    &lt;/div&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;pricing-page-section&quot;&gt;
+&lt;!-- BEGIN: Table1-Content--&gt;
+&lt;!--            &lt;h2&gt;
+            自托管网关
+           &lt;/h2&gt; --&gt;
+&lt;!--            &lt;p&gt;
+            自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。
+           &lt;/p&gt; --&gt;
+&lt;!--            &lt;div class=&quot;tags-date&quot;&gt;
+            &lt;div class=&quot;ms-date&quot;&gt;
+             *以下价格均为含税价格。
+            &lt;/div&gt;
+            &lt;br/&gt;
+            &lt;div class=&quot;ms-date&quot;&gt;
+             *每月价格估算基于每个月 744 小时的使用量。
+            &lt;/div&gt;
+            &lt;br/&gt;
+             &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; 
+           &lt;/div&gt; --&gt;
+&lt;!--            &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;
+            &lt;tr&gt;
+             &lt;th align=&quot;left&quot;&gt;
+              价格
+             &lt;/th&gt;
+             &lt;th align=&quot;left&quot;&gt;
+              ￥8.71/小时/网关部署
+             &lt;/th&gt;
+            &lt;/tr&gt;
+           &lt;/table&gt; --&gt;
+&lt;!--            &lt;p&gt;
+            以上价格将于2020年7月1日开始生效。
+           &lt;/p&gt; --&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</code></pre></article>
+    <article><h3>转换后 Expected</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;h2&gt; API 管理 &lt;/h2&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;&lt;/div&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 开发人员 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 基本 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 标准 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 高级 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; 非生产用例和评估 &lt;/td&gt;&lt;td&gt; 入门级的生产用例 &lt;/td&gt;&lt;td&gt; 中等数量生产用例 &lt;/td&gt;&lt;td&gt; 大批量或企业生产用例 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 (每单位) &lt;/td&gt;&lt;td&gt; ￥ 0.5022/ 小时 （约￥ 373.6368 /月） &lt;/td&gt;&lt;td&gt; ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月） &lt;/td&gt;&lt;td&gt; ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月） &lt;/td&gt;&lt;td&gt; ￥ 29.2229/ 小时 （约￥ 21,741.8376 /月） &lt;br/&gt; 增量单位（大于 1 个）的单位成本 &lt;br/&gt; 是所购买的第一个单位的价格的 50% &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存（每单位） &lt;/td&gt;&lt;td&gt; 10 MB &lt;/td&gt;&lt;td&gt; 50 MB &lt;/td&gt;&lt;td&gt; 1 GB &lt;/td&gt;&lt;td&gt; 5 GB &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 横向扩展（单位） &lt;/td&gt;&lt;td&gt; 1 &lt;/td&gt;&lt;td&gt; 2 &lt;/td&gt;&lt;td&gt; 4 &lt;/td&gt;&lt;td&gt; 每个区域 10 个（调用支持添加更多） &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; SLA &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.95% &lt;sup&gt; 1 &lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 使用限制 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存，外部 &lt;sup&gt; 6 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 开发人员门户 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多个自定义域名 &lt;sup&gt; 5 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Azure Active Directory 集成 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 虚拟网络支持 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多区域部署 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 自托管网关 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 3 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 4 &lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 工作区 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 预计最大吞吐量 &lt;sup&gt; 2 &lt;/sup&gt; （每单位） &lt;/td&gt;&lt;td&gt; 500 个请求/秒 &lt;/td&gt;&lt;td&gt; 1,000 个请求/秒 &lt;/td&gt;&lt;td&gt; 2,500 个请求/秒 &lt;/td&gt;&lt;td&gt; 4,000 个请求/秒 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; 要求在两个或更多区域至少部署一个单位。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; 吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 3 &lt;/sup&gt; 在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 4 &lt;/sup&gt; 在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 5 &lt;/sup&gt; 仅适用于网关。每个实例限制为 20 个域名。请 &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt; 致电支持人员 &lt;/a&gt; 以添加更多内容。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 6 &lt;/sup&gt; 请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。 &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;h2&gt;Gateway&lt;/h2&gt;&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;&lt;/p&gt;&lt;br/&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-gateway&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; Workspace gateway premium &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 自托管网关 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; Use as a managed data plane for workspaces in the Premium tier. &lt;/td&gt;&lt;td&gt; Use as a self-hosted data plane for APIs deployed on premises or in other private and public clouds. &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 &lt;/td&gt;&lt;td&gt; ￥ 12,235.08 per month per gateway unit &lt;/td&gt;&lt;td&gt; ￥ 2,060.88/月/网关部署 &lt;sup&gt;1&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Workspaces &lt;/td&gt;&lt;td&gt; ￥647.28 for 5 workspaces per month&lt;sup&gt;2&lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 不适用 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; Developer tier deployments are free of charge. &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; The first five workspaces are included at no additional cost. &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;pricing-page-section&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;!-- &lt;h2&gt; 自托管网关 &lt;/h2&gt; --&gt;&lt;!-- &lt;p&gt; 自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。 &lt;/p&gt; --&gt;&lt;!-- &lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt;&lt;/div&gt; --&gt;&lt;!-- &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt; 价格 &lt;/th&gt;&lt;th align=&quot;left&quot;&gt; ￥8.71/小时/网关部署 &lt;/th&gt;&lt;/tr&gt;&lt;/table&gt; --&gt;&lt;!-- &lt;p&gt; 以上价格将于2020年7月1日开始生效。 &lt;/p&gt; --&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></article>
+    <article><h3>Persisted Payload</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;h2&gt; API 管理 &lt;/h2&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;&lt;/div&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 开发人员 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 基本 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 标准 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 高级 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; 非生产用例和评估 &lt;/td&gt;&lt;td&gt; 入门级的生产用例 &lt;/td&gt;&lt;td&gt; 中等数量生产用例 &lt;/td&gt;&lt;td&gt; 大批量或企业生产用例 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 (每单位) &lt;/td&gt;&lt;td&gt; ￥ 0.5022/ 小时 （约￥ 373.6368 /月） &lt;/td&gt;&lt;td&gt; ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月） &lt;/td&gt;&lt;td&gt; ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月） &lt;/td&gt;&lt;td&gt; ￥ 29.2229/ 小时 （约￥ 21,741.8376 /月） &lt;br/&gt; 增量单位（大于 1 个）的单位成本 &lt;br/&gt; 是所购买的第一个单位的价格的 50% &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存（每单位） &lt;/td&gt;&lt;td&gt; 10 MB &lt;/td&gt;&lt;td&gt; 50 MB &lt;/td&gt;&lt;td&gt; 1 GB &lt;/td&gt;&lt;td&gt; 5 GB &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 横向扩展（单位） &lt;/td&gt;&lt;td&gt; 1 &lt;/td&gt;&lt;td&gt; 2 &lt;/td&gt;&lt;td&gt; 4 &lt;/td&gt;&lt;td&gt; 每个区域 10 个（调用支持添加更多） &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; SLA &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.95% &lt;sup&gt; 1 &lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 使用限制 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存，外部 &lt;sup&gt; 6 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 开发人员门户 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多个自定义域名 &lt;sup&gt; 5 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Azure Active Directory 集成 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 虚拟网络支持 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多区域部署 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 自托管网关 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 3 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 4 &lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 工作区 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 预计最大吞吐量 &lt;sup&gt; 2 &lt;/sup&gt; （每单位） &lt;/td&gt;&lt;td&gt; 500 个请求/秒 &lt;/td&gt;&lt;td&gt; 1,000 个请求/秒 &lt;/td&gt;&lt;td&gt; 2,500 个请求/秒 &lt;/td&gt;&lt;td&gt; 4,000 个请求/秒 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; 要求在两个或更多区域至少部署一个单位。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; 吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 3 &lt;/sup&gt; 在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 4 &lt;/sup&gt; 在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 5 &lt;/sup&gt; 仅适用于网关。每个实例限制为 20 个域名。请 &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt; 致电支持人员 &lt;/a&gt; 以添加更多内容。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 6 &lt;/sup&gt; 请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。 &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;h2&gt;Gateway&lt;/h2&gt;&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;&lt;/p&gt;&lt;br/&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-gateway&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; Workspace gateway premium &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 自托管网关 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; Use as a managed data plane for workspaces in the Premium tier. &lt;/td&gt;&lt;td&gt; Use as a self-hosted data plane for APIs deployed on premises or in other private and public clouds. &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 &lt;/td&gt;&lt;td&gt; ￥ 12,235.08 per month per gateway unit &lt;/td&gt;&lt;td&gt; ￥ 2,060.88/月/网关部署 &lt;sup&gt;1&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Workspaces &lt;/td&gt;&lt;td&gt; ￥647.28 for 5 workspaces per month&lt;sup&gt;2&lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 不适用 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; Developer tier deployments are free of charge. &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; The first five workspaces are included at no additional cost. &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;pricing-page-section&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;!-- &lt;h2&gt; 自托管网关 &lt;/h2&gt; --&gt;&lt;!-- &lt;p&gt; 自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。 &lt;/p&gt; --&gt;&lt;!-- &lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt;&lt;/div&gt; --&gt;&lt;!-- &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt; 价格 &lt;/th&gt;&lt;th align=&quot;left&quot;&gt; ￥8.71/小时/网关部署 &lt;/th&gt;&lt;/tr&gt;&lt;/table&gt; --&gt;&lt;!-- &lt;p&gt; 以上价格将于2020年7月1日开始生效。 &lt;/p&gt; --&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></article>
+  </div>
+  <h3>Diff</h3><pre>No differences.
+</pre>
+  <h3>Comparison mismatches</h3><pre>[]</pre>
+  <h3>Blocking errors</h3><pre>[]</pre>
+</section>
+<section class="state" id="state-003">
+  <nav><a href="#state-002">上一状态</a> | <a href="#state-004">下一状态</a></nav>
+  <h2>e377a15171c6eb6f9cff5af0d96c1ddfbbd2d63499fdc94b3a9e69dbedba100a</h2>
+  <p class="verdict">L3b: passed</p>
+  <dl class="meta">
+    <div><dt>Filter criteria</dt><dd>region=north-china2</dd></div>
+    <div><dt>Locator</dt><dd><code>{&quot;append_selectors&quot;: [], &quot;container_selector&quot;: &quot;div.technical-azure-selector.pricing-detail-tab&quot;, &quot;content_selectors&quot;: [&quot;div.tab-content&quot;]}</code></dd></div>
+    <div><dt>Retained tables</dt><dd>API-Management-preview, API-Management-gateway</dd></div>
+    <div><dt>Removed tables</dt><dd>API-Management-preview2</dd></div>
+    <div><dt>Applied transforms</dt><dd>—</dd></div>
+    <div><dt>SHA</dt><dd>source=7fbd9f129fe9205d0edf47bddca4f13d930afdcaba5a9fa72517822e12ca3d2e<br>expected=2092d7f2f7a184fbda197692f9ccc81abccd16f5a7c4f536282b83e53539623f<br>payload=2092d7f2f7a184fbda197692f9ccc81abccd16f5a7c4f536282b83e53539623f</dd></div>
+  </dl>
+  <div class="compare">
+    <article><h3>原始 Source</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;
+&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;
+&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;
+&lt;!-- BEGIN: Table1-Content--&gt;
+&lt;h2&gt;
+            API 管理
+           &lt;/h2&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+             *以下价格均为含税价格。
+            &lt;/div&gt;
+&lt;br/&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+             *每月价格估算基于每个月 744 小时的使用量。
+            &lt;/div&gt;
+&lt;br/&gt;
+&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;
+&lt;/div&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               开发人员
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               基本
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               标准
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               高级
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              用途
+             &lt;/td&gt;
+&lt;td&gt;
+              非生产用例和评估
+             &lt;/td&gt;
+&lt;td&gt;
+              入门级的生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              中等数量生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              大批量或企业生产用例
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              价格 (每单位)
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 0.5022/ 小时 （约￥ 373.6368 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 29.2229/ 小时 （约￥ 21,741.8376 /月）
+              &lt;br/&gt;
+              增量单位（大于 1 个）的单位成本
+              &lt;br/&gt;
+              是所购买的第一个单位的价格的 50%
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存（每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              10 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              50 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              1 GB
+             &lt;/td&gt;
+&lt;td&gt;
+              5 GB
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              横向扩展（单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              1
+             &lt;/td&gt;
+&lt;td&gt;
+              2
+             &lt;/td&gt;
+&lt;td&gt;
+              4
+             &lt;/td&gt;
+&lt;td&gt;
+              每个区域 10 个（调用支持添加更多）
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              SLA
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.95%
+              &lt;sup&gt;
+               1
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              使用限制
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存，外部
+              &lt;sup&gt;
+               6
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              开发人员门户
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多个自定义域名
+              &lt;sup&gt;
+               5
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              Azure Active Directory 集成
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              虚拟网络支持
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多区域部署
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              自托管网关
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               3
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               4
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                 工作区
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 是
+                &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              预计最大吞吐量
+              &lt;sup&gt;
+               2
+              &lt;/sup&gt;
+              （每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              1,000 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              2,500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              4,000 个请求/秒
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview2&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               开发人员
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               基本
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               标准
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              用途
+             &lt;/td&gt;
+&lt;td&gt;
+              非生产用例和评估
+             &lt;/td&gt;
+&lt;td&gt;
+              入门级的生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              中等数量生产用例
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              价格 (每单位)
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 0.5022/ 小时 （约￥ 373.6368 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月）
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存（每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              10 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              50 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              1 GB
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              横向扩展（单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              1
+             &lt;/td&gt;
+&lt;td&gt;
+              2
+             &lt;/td&gt;
+&lt;td&gt;
+              4
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              SLA
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              使用限制
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存，外部
+              &lt;sup&gt;
+               6
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              开发人员门户
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多个自定义域名
+              &lt;sup&gt;
+               5
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              Azure Active Directory 集成
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              虚拟网络支持
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多区域部署
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              自托管网关
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               3
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              预计最大吞吐量
+              &lt;sup&gt;
+               2
+              &lt;/sup&gt;
+              （每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              1,000 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              2,500 个请求/秒
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             1
+            &lt;/sup&gt;
+            要求在两个或更多区域至少部署一个单位。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             2
+            &lt;/sup&gt;
+            吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             3
+            &lt;/sup&gt;
+            在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             4
+            &lt;/sup&gt;
+            在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             5
+            &lt;/sup&gt;
+            仅适用于网关。每个实例限制为 20 个域名。请 
+            &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;
+             致电支持人员
+            &lt;/a&gt;
+            以添加更多内容。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             6
+            &lt;/sup&gt;
+            请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2&gt;Gateway&lt;/h2&gt;
+&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. 
+                &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;
+&lt;/p&gt;
+&lt;br/&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-gateway&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+                    Workspace gateway premium
+                  &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+                    自托管网关
+                  &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                  用途
+                 &lt;/td&gt;
+&lt;td&gt;
+                    Use as a managed data plane for workspaces in the Premium tier.
+                 &lt;/td&gt;
+&lt;td&gt;
+                    Use as a self-hosted data plane for APIs deployed on premises or in other private and public clouds.
+                 &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                  价格
+                 &lt;/td&gt;
+&lt;td&gt;
+                  ￥ 12,235.08 per month per gateway unit
+                 &lt;/td&gt;
+&lt;td&gt;
+                  ￥ 2,060.88/月/网关部署
+                  &lt;sup&gt;1&lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                    Workspaces
+                 &lt;/td&gt;
+&lt;td&gt;
+                    ￥647.28 for 5 workspaces per month&lt;sup&gt;2&lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+                    不适用
+                 &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+                 1
+                &lt;/sup&gt;
+                Developer tier deployments are free of charge.
+                &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+                            2
+                           &lt;/sup&gt;
+                           The first five workspaces are included at no additional cost.
+                    &lt;/div&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;pricing-page-section&quot;&gt;
+&lt;!-- BEGIN: Table1-Content--&gt;
+&lt;!--            &lt;h2&gt;
+            自托管网关
+           &lt;/h2&gt; --&gt;
+&lt;!--            &lt;p&gt;
+            自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。
+           &lt;/p&gt; --&gt;
+&lt;!--            &lt;div class=&quot;tags-date&quot;&gt;
+            &lt;div class=&quot;ms-date&quot;&gt;
+             *以下价格均为含税价格。
+            &lt;/div&gt;
+            &lt;br/&gt;
+            &lt;div class=&quot;ms-date&quot;&gt;
+             *每月价格估算基于每个月 744 小时的使用量。
+            &lt;/div&gt;
+            &lt;br/&gt;
+             &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; 
+           &lt;/div&gt; --&gt;
+&lt;!--            &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;
+            &lt;tr&gt;
+             &lt;th align=&quot;left&quot;&gt;
+              价格
+             &lt;/th&gt;
+             &lt;th align=&quot;left&quot;&gt;
+              ￥8.71/小时/网关部署
+             &lt;/th&gt;
+            &lt;/tr&gt;
+           &lt;/table&gt; --&gt;
+&lt;!--            &lt;p&gt;
+            以上价格将于2020年7月1日开始生效。
+           &lt;/p&gt; --&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</code></pre></article>
+    <article><h3>转换后 Expected</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;h2&gt; API 管理 &lt;/h2&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;&lt;/div&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 开发人员 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 基本 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 标准 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 高级 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; 非生产用例和评估 &lt;/td&gt;&lt;td&gt; 入门级的生产用例 &lt;/td&gt;&lt;td&gt; 中等数量生产用例 &lt;/td&gt;&lt;td&gt; 大批量或企业生产用例 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 (每单位) &lt;/td&gt;&lt;td&gt; ￥ 0.5022/ 小时 （约￥ 373.6368 /月） &lt;/td&gt;&lt;td&gt; ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月） &lt;/td&gt;&lt;td&gt; ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月） &lt;/td&gt;&lt;td&gt; ￥ 29.2229/ 小时 （约￥ 21,741.8376 /月） &lt;br/&gt; 增量单位（大于 1 个）的单位成本 &lt;br/&gt; 是所购买的第一个单位的价格的 50% &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存（每单位） &lt;/td&gt;&lt;td&gt; 10 MB &lt;/td&gt;&lt;td&gt; 50 MB &lt;/td&gt;&lt;td&gt; 1 GB &lt;/td&gt;&lt;td&gt; 5 GB &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 横向扩展（单位） &lt;/td&gt;&lt;td&gt; 1 &lt;/td&gt;&lt;td&gt; 2 &lt;/td&gt;&lt;td&gt; 4 &lt;/td&gt;&lt;td&gt; 每个区域 10 个（调用支持添加更多） &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; SLA &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.95% &lt;sup&gt; 1 &lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 使用限制 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存，外部 &lt;sup&gt; 6 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 开发人员门户 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多个自定义域名 &lt;sup&gt; 5 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Azure Active Directory 集成 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 虚拟网络支持 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多区域部署 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 自托管网关 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 3 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 4 &lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 工作区 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 预计最大吞吐量 &lt;sup&gt; 2 &lt;/sup&gt; （每单位） &lt;/td&gt;&lt;td&gt; 500 个请求/秒 &lt;/td&gt;&lt;td&gt; 1,000 个请求/秒 &lt;/td&gt;&lt;td&gt; 2,500 个请求/秒 &lt;/td&gt;&lt;td&gt; 4,000 个请求/秒 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; 要求在两个或更多区域至少部署一个单位。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; 吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 3 &lt;/sup&gt; 在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 4 &lt;/sup&gt; 在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 5 &lt;/sup&gt; 仅适用于网关。每个实例限制为 20 个域名。请 &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt; 致电支持人员 &lt;/a&gt; 以添加更多内容。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 6 &lt;/sup&gt; 请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。 &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;h2&gt;Gateway&lt;/h2&gt;&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;&lt;/p&gt;&lt;br/&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-gateway&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; Workspace gateway premium &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 自托管网关 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; Use as a managed data plane for workspaces in the Premium tier. &lt;/td&gt;&lt;td&gt; Use as a self-hosted data plane for APIs deployed on premises or in other private and public clouds. &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 &lt;/td&gt;&lt;td&gt; ￥ 12,235.08 per month per gateway unit &lt;/td&gt;&lt;td&gt; ￥ 2,060.88/月/网关部署 &lt;sup&gt;1&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Workspaces &lt;/td&gt;&lt;td&gt; ￥647.28 for 5 workspaces per month&lt;sup&gt;2&lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 不适用 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; Developer tier deployments are free of charge. &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; The first five workspaces are included at no additional cost. &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;pricing-page-section&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;!-- &lt;h2&gt; 自托管网关 &lt;/h2&gt; --&gt;&lt;!-- &lt;p&gt; 自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。 &lt;/p&gt; --&gt;&lt;!-- &lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt;&lt;/div&gt; --&gt;&lt;!-- &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt; 价格 &lt;/th&gt;&lt;th align=&quot;left&quot;&gt; ￥8.71/小时/网关部署 &lt;/th&gt;&lt;/tr&gt;&lt;/table&gt; --&gt;&lt;!-- &lt;p&gt; 以上价格将于2020年7月1日开始生效。 &lt;/p&gt; --&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></article>
+    <article><h3>Persisted Payload</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;h2&gt; API 管理 &lt;/h2&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;&lt;/div&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 开发人员 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 基本 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 标准 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 高级 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; 非生产用例和评估 &lt;/td&gt;&lt;td&gt; 入门级的生产用例 &lt;/td&gt;&lt;td&gt; 中等数量生产用例 &lt;/td&gt;&lt;td&gt; 大批量或企业生产用例 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 (每单位) &lt;/td&gt;&lt;td&gt; ￥ 0.5022/ 小时 （约￥ 373.6368 /月） &lt;/td&gt;&lt;td&gt; ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月） &lt;/td&gt;&lt;td&gt; ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月） &lt;/td&gt;&lt;td&gt; ￥ 29.2229/ 小时 （约￥ 21,741.8376 /月） &lt;br/&gt; 增量单位（大于 1 个）的单位成本 &lt;br/&gt; 是所购买的第一个单位的价格的 50% &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存（每单位） &lt;/td&gt;&lt;td&gt; 10 MB &lt;/td&gt;&lt;td&gt; 50 MB &lt;/td&gt;&lt;td&gt; 1 GB &lt;/td&gt;&lt;td&gt; 5 GB &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 横向扩展（单位） &lt;/td&gt;&lt;td&gt; 1 &lt;/td&gt;&lt;td&gt; 2 &lt;/td&gt;&lt;td&gt; 4 &lt;/td&gt;&lt;td&gt; 每个区域 10 个（调用支持添加更多） &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; SLA &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.95% &lt;sup&gt; 1 &lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 使用限制 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存，外部 &lt;sup&gt; 6 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 开发人员门户 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多个自定义域名 &lt;sup&gt; 5 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Azure Active Directory 集成 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 虚拟网络支持 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多区域部署 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 自托管网关 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 3 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 4 &lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 工作区 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 预计最大吞吐量 &lt;sup&gt; 2 &lt;/sup&gt; （每单位） &lt;/td&gt;&lt;td&gt; 500 个请求/秒 &lt;/td&gt;&lt;td&gt; 1,000 个请求/秒 &lt;/td&gt;&lt;td&gt; 2,500 个请求/秒 &lt;/td&gt;&lt;td&gt; 4,000 个请求/秒 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; 要求在两个或更多区域至少部署一个单位。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; 吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 3 &lt;/sup&gt; 在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 4 &lt;/sup&gt; 在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 5 &lt;/sup&gt; 仅适用于网关。每个实例限制为 20 个域名。请 &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt; 致电支持人员 &lt;/a&gt; 以添加更多内容。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 6 &lt;/sup&gt; 请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。 &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;h2&gt;Gateway&lt;/h2&gt;&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;&lt;/p&gt;&lt;br/&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-gateway&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; Workspace gateway premium &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 自托管网关 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; Use as a managed data plane for workspaces in the Premium tier. &lt;/td&gt;&lt;td&gt; Use as a self-hosted data plane for APIs deployed on premises or in other private and public clouds. &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 &lt;/td&gt;&lt;td&gt; ￥ 12,235.08 per month per gateway unit &lt;/td&gt;&lt;td&gt; ￥ 2,060.88/月/网关部署 &lt;sup&gt;1&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Workspaces &lt;/td&gt;&lt;td&gt; ￥647.28 for 5 workspaces per month&lt;sup&gt;2&lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 不适用 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; Developer tier deployments are free of charge. &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; The first five workspaces are included at no additional cost. &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;pricing-page-section&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;!-- &lt;h2&gt; 自托管网关 &lt;/h2&gt; --&gt;&lt;!-- &lt;p&gt; 自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。 &lt;/p&gt; --&gt;&lt;!-- &lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt;&lt;/div&gt; --&gt;&lt;!-- &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt; 价格 &lt;/th&gt;&lt;th align=&quot;left&quot;&gt; ￥8.71/小时/网关部署 &lt;/th&gt;&lt;/tr&gt;&lt;/table&gt; --&gt;&lt;!-- &lt;p&gt; 以上价格将于2020年7月1日开始生效。 &lt;/p&gt; --&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></article>
+  </div>
+  <h3>Diff</h3><pre>No differences.
+</pre>
+  <h3>Comparison mismatches</h3><pre>[]</pre>
+  <h3>Blocking errors</h3><pre>[]</pre>
+</section>
+<section class="state" id="state-004">
+  <nav><a href="#state-003">上一状态</a> | <a href="#state-005">下一状态</a></nav>
+  <h2>a60111cd8c5abf40957dd689b9d60ba8a76f8262059b595354f32da191f514d0</h2>
+  <p class="verdict">L3b: passed</p>
+  <dl class="meta">
+    <div><dt>Filter criteria</dt><dd>region=east-china</dd></div>
+    <div><dt>Locator</dt><dd><code>{&quot;append_selectors&quot;: [], &quot;container_selector&quot;: &quot;div.technical-azure-selector.pricing-detail-tab&quot;, &quot;content_selectors&quot;: [&quot;div.tab-content&quot;]}</code></dd></div>
+    <div><dt>Retained tables</dt><dd>API-Management-preview2</dd></div>
+    <div><dt>Removed tables</dt><dd>API-Management-preview, API-Management-gateway</dd></div>
+    <div><dt>Applied transforms</dt><dd>—</dd></div>
+    <div><dt>SHA</dt><dd>source=7fbd9f129fe9205d0edf47bddca4f13d930afdcaba5a9fa72517822e12ca3d2e<br>expected=0fc0683c5904a7de7214244aaa197e456da5ce1995a1ab359b56222086730c94<br>payload=0fc0683c5904a7de7214244aaa197e456da5ce1995a1ab359b56222086730c94</dd></div>
+  </dl>
+  <div class="compare">
+    <article><h3>原始 Source</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;
+&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;
+&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;
+&lt;!-- BEGIN: Table1-Content--&gt;
+&lt;h2&gt;
+            API 管理
+           &lt;/h2&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+             *以下价格均为含税价格。
+            &lt;/div&gt;
+&lt;br/&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+             *每月价格估算基于每个月 744 小时的使用量。
+            &lt;/div&gt;
+&lt;br/&gt;
+&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;
+&lt;/div&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               开发人员
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               基本
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               标准
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               高级
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              用途
+             &lt;/td&gt;
+&lt;td&gt;
+              非生产用例和评估
+             &lt;/td&gt;
+&lt;td&gt;
+              入门级的生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              中等数量生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              大批量或企业生产用例
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              价格 (每单位)
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 0.5022/ 小时 （约￥ 373.6368 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 29.2229/ 小时 （约￥ 21,741.8376 /月）
+              &lt;br/&gt;
+              增量单位（大于 1 个）的单位成本
+              &lt;br/&gt;
+              是所购买的第一个单位的价格的 50%
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存（每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              10 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              50 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              1 GB
+             &lt;/td&gt;
+&lt;td&gt;
+              5 GB
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              横向扩展（单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              1
+             &lt;/td&gt;
+&lt;td&gt;
+              2
+             &lt;/td&gt;
+&lt;td&gt;
+              4
+             &lt;/td&gt;
+&lt;td&gt;
+              每个区域 10 个（调用支持添加更多）
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              SLA
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.95%
+              &lt;sup&gt;
+               1
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              使用限制
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存，外部
+              &lt;sup&gt;
+               6
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              开发人员门户
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多个自定义域名
+              &lt;sup&gt;
+               5
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              Azure Active Directory 集成
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              虚拟网络支持
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多区域部署
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              自托管网关
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               3
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               4
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                 工作区
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 是
+                &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              预计最大吞吐量
+              &lt;sup&gt;
+               2
+              &lt;/sup&gt;
+              （每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              1,000 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              2,500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              4,000 个请求/秒
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview2&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               开发人员
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               基本
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               标准
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              用途
+             &lt;/td&gt;
+&lt;td&gt;
+              非生产用例和评估
+             &lt;/td&gt;
+&lt;td&gt;
+              入门级的生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              中等数量生产用例
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              价格 (每单位)
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 0.5022/ 小时 （约￥ 373.6368 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月）
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存（每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              10 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              50 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              1 GB
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              横向扩展（单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              1
+             &lt;/td&gt;
+&lt;td&gt;
+              2
+             &lt;/td&gt;
+&lt;td&gt;
+              4
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              SLA
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              使用限制
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存，外部
+              &lt;sup&gt;
+               6
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              开发人员门户
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多个自定义域名
+              &lt;sup&gt;
+               5
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              Azure Active Directory 集成
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              虚拟网络支持
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多区域部署
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              自托管网关
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               3
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              预计最大吞吐量
+              &lt;sup&gt;
+               2
+              &lt;/sup&gt;
+              （每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              1,000 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              2,500 个请求/秒
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             1
+            &lt;/sup&gt;
+            要求在两个或更多区域至少部署一个单位。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             2
+            &lt;/sup&gt;
+            吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             3
+            &lt;/sup&gt;
+            在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             4
+            &lt;/sup&gt;
+            在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             5
+            &lt;/sup&gt;
+            仅适用于网关。每个实例限制为 20 个域名。请 
+            &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;
+             致电支持人员
+            &lt;/a&gt;
+            以添加更多内容。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             6
+            &lt;/sup&gt;
+            请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2&gt;Gateway&lt;/h2&gt;
+&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. 
+                &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;
+&lt;/p&gt;
+&lt;br/&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-gateway&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+                    Workspace gateway premium
+                  &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+                    自托管网关
+                  &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                  用途
+                 &lt;/td&gt;
+&lt;td&gt;
+                    Use as a managed data plane for workspaces in the Premium tier.
+                 &lt;/td&gt;
+&lt;td&gt;
+                    Use as a self-hosted data plane for APIs deployed on premises or in other private and public clouds.
+                 &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                  价格
+                 &lt;/td&gt;
+&lt;td&gt;
+                  ￥ 12,235.08 per month per gateway unit
+                 &lt;/td&gt;
+&lt;td&gt;
+                  ￥ 2,060.88/月/网关部署
+                  &lt;sup&gt;1&lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                    Workspaces
+                 &lt;/td&gt;
+&lt;td&gt;
+                    ￥647.28 for 5 workspaces per month&lt;sup&gt;2&lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+                    不适用
+                 &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+                 1
+                &lt;/sup&gt;
+                Developer tier deployments are free of charge.
+                &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+                            2
+                           &lt;/sup&gt;
+                           The first five workspaces are included at no additional cost.
+                    &lt;/div&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;pricing-page-section&quot;&gt;
+&lt;!-- BEGIN: Table1-Content--&gt;
+&lt;!--            &lt;h2&gt;
+            自托管网关
+           &lt;/h2&gt; --&gt;
+&lt;!--            &lt;p&gt;
+            自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。
+           &lt;/p&gt; --&gt;
+&lt;!--            &lt;div class=&quot;tags-date&quot;&gt;
+            &lt;div class=&quot;ms-date&quot;&gt;
+             *以下价格均为含税价格。
+            &lt;/div&gt;
+            &lt;br/&gt;
+            &lt;div class=&quot;ms-date&quot;&gt;
+             *每月价格估算基于每个月 744 小时的使用量。
+            &lt;/div&gt;
+            &lt;br/&gt;
+             &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; 
+           &lt;/div&gt; --&gt;
+&lt;!--            &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;
+            &lt;tr&gt;
+             &lt;th align=&quot;left&quot;&gt;
+              价格
+             &lt;/th&gt;
+             &lt;th align=&quot;left&quot;&gt;
+              ￥8.71/小时/网关部署
+             &lt;/th&gt;
+            &lt;/tr&gt;
+           &lt;/table&gt; --&gt;
+&lt;!--            &lt;p&gt;
+            以上价格将于2020年7月1日开始生效。
+           &lt;/p&gt; --&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</code></pre></article>
+    <article><h3>转换后 Expected</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;h2&gt; API 管理 &lt;/h2&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;&lt;/div&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview2&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 开发人员 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 基本 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 标准 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; 非生产用例和评估 &lt;/td&gt;&lt;td&gt; 入门级的生产用例 &lt;/td&gt;&lt;td&gt; 中等数量生产用例 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 (每单位) &lt;/td&gt;&lt;td&gt; ￥ 0.5022/ 小时 （约￥ 373.6368 /月） &lt;/td&gt;&lt;td&gt; ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月） &lt;/td&gt;&lt;td&gt; ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月） &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存（每单位） &lt;/td&gt;&lt;td&gt; 10 MB &lt;/td&gt;&lt;td&gt; 50 MB &lt;/td&gt;&lt;td&gt; 1 GB &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 横向扩展（单位） &lt;/td&gt;&lt;td&gt; 1 &lt;/td&gt;&lt;td&gt; 2 &lt;/td&gt;&lt;td&gt; 4 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; SLA &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 使用限制 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存，外部 &lt;sup&gt; 6 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 开发人员门户 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多个自定义域名 &lt;sup&gt; 5 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Azure Active Directory 集成 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 虚拟网络支持 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多区域部署 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 自托管网关 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 3 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 预计最大吞吐量 &lt;sup&gt; 2 &lt;/sup&gt; （每单位） &lt;/td&gt;&lt;td&gt; 500 个请求/秒 &lt;/td&gt;&lt;td&gt; 1,000 个请求/秒 &lt;/td&gt;&lt;td&gt; 2,500 个请求/秒 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; 要求在两个或更多区域至少部署一个单位。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; 吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 3 &lt;/sup&gt; 在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 4 &lt;/sup&gt; 在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 5 &lt;/sup&gt; 仅适用于网关。每个实例限制为 20 个域名。请 &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt; 致电支持人员 &lt;/a&gt; 以添加更多内容。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 6 &lt;/sup&gt; 请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。 &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;h2&gt;Gateway&lt;/h2&gt;&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;&lt;/p&gt;&lt;br/&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; Developer tier deployments are free of charge. &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; The first five workspaces are included at no additional cost. &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;pricing-page-section&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;!-- &lt;h2&gt; 自托管网关 &lt;/h2&gt; --&gt;&lt;!-- &lt;p&gt; 自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。 &lt;/p&gt; --&gt;&lt;!-- &lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt;&lt;/div&gt; --&gt;&lt;!-- &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt; 价格 &lt;/th&gt;&lt;th align=&quot;left&quot;&gt; ￥8.71/小时/网关部署 &lt;/th&gt;&lt;/tr&gt;&lt;/table&gt; --&gt;&lt;!-- &lt;p&gt; 以上价格将于2020年7月1日开始生效。 &lt;/p&gt; --&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></article>
+    <article><h3>Persisted Payload</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;h2&gt; API 管理 &lt;/h2&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;&lt;/div&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview2&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 开发人员 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 基本 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 标准 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; 非生产用例和评估 &lt;/td&gt;&lt;td&gt; 入门级的生产用例 &lt;/td&gt;&lt;td&gt; 中等数量生产用例 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 (每单位) &lt;/td&gt;&lt;td&gt; ￥ 0.5022/ 小时 （约￥ 373.6368 /月） &lt;/td&gt;&lt;td&gt; ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月） &lt;/td&gt;&lt;td&gt; ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月） &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存（每单位） &lt;/td&gt;&lt;td&gt; 10 MB &lt;/td&gt;&lt;td&gt; 50 MB &lt;/td&gt;&lt;td&gt; 1 GB &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 横向扩展（单位） &lt;/td&gt;&lt;td&gt; 1 &lt;/td&gt;&lt;td&gt; 2 &lt;/td&gt;&lt;td&gt; 4 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; SLA &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 使用限制 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存，外部 &lt;sup&gt; 6 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 开发人员门户 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多个自定义域名 &lt;sup&gt; 5 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Azure Active Directory 集成 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 虚拟网络支持 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多区域部署 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 自托管网关 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 3 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 预计最大吞吐量 &lt;sup&gt; 2 &lt;/sup&gt; （每单位） &lt;/td&gt;&lt;td&gt; 500 个请求/秒 &lt;/td&gt;&lt;td&gt; 1,000 个请求/秒 &lt;/td&gt;&lt;td&gt; 2,500 个请求/秒 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; 要求在两个或更多区域至少部署一个单位。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; 吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 3 &lt;/sup&gt; 在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 4 &lt;/sup&gt; 在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 5 &lt;/sup&gt; 仅适用于网关。每个实例限制为 20 个域名。请 &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt; 致电支持人员 &lt;/a&gt; 以添加更多内容。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 6 &lt;/sup&gt; 请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。 &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;h2&gt;Gateway&lt;/h2&gt;&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;&lt;/p&gt;&lt;br/&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; Developer tier deployments are free of charge. &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; The first five workspaces are included at no additional cost. &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;pricing-page-section&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;!-- &lt;h2&gt; 自托管网关 &lt;/h2&gt; --&gt;&lt;!-- &lt;p&gt; 自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。 &lt;/p&gt; --&gt;&lt;!-- &lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt;&lt;/div&gt; --&gt;&lt;!-- &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt; 价格 &lt;/th&gt;&lt;th align=&quot;left&quot;&gt; ￥8.71/小时/网关部署 &lt;/th&gt;&lt;/tr&gt;&lt;/table&gt; --&gt;&lt;!-- &lt;p&gt; 以上价格将于2020年7月1日开始生效。 &lt;/p&gt; --&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></article>
+  </div>
+  <h3>Diff</h3><pre>No differences.
+</pre>
+  <h3>Comparison mismatches</h3><pre>[]</pre>
+  <h3>Blocking errors</h3><pre>[]</pre>
+</section>
+<section class="state" id="state-005">
+  <nav><a href="#state-004">上一状态</a> | <span>下一状态</span></nav>
+  <h2>f29a755dfdc00825e89fb791672bde6ec5a2a60505496acf95c3d68cef7d274c</h2>
+  <p class="verdict">L3b: passed</p>
+  <dl class="meta">
+    <div><dt>Filter criteria</dt><dd>region=north-china</dd></div>
+    <div><dt>Locator</dt><dd><code>{&quot;append_selectors&quot;: [], &quot;container_selector&quot;: &quot;div.technical-azure-selector.pricing-detail-tab&quot;, &quot;content_selectors&quot;: [&quot;div.tab-content&quot;]}</code></dd></div>
+    <div><dt>Retained tables</dt><dd>API-Management-preview2</dd></div>
+    <div><dt>Removed tables</dt><dd>API-Management-preview, API-Management-gateway</dd></div>
+    <div><dt>Applied transforms</dt><dd>—</dd></div>
+    <div><dt>SHA</dt><dd>source=7fbd9f129fe9205d0edf47bddca4f13d930afdcaba5a9fa72517822e12ca3d2e<br>expected=0fc0683c5904a7de7214244aaa197e456da5ce1995a1ab359b56222086730c94<br>payload=0fc0683c5904a7de7214244aaa197e456da5ce1995a1ab359b56222086730c94</dd></div>
+  </dl>
+  <div class="compare">
+    <article><h3>原始 Source</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;
+&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;
+&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;
+&lt;!-- BEGIN: Table1-Content--&gt;
+&lt;h2&gt;
+            API 管理
+           &lt;/h2&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+             *以下价格均为含税价格。
+            &lt;/div&gt;
+&lt;br/&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+             *每月价格估算基于每个月 744 小时的使用量。
+            &lt;/div&gt;
+&lt;br/&gt;
+&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;
+&lt;/div&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               开发人员
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               基本
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               标准
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               高级
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              用途
+             &lt;/td&gt;
+&lt;td&gt;
+              非生产用例和评估
+             &lt;/td&gt;
+&lt;td&gt;
+              入门级的生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              中等数量生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              大批量或企业生产用例
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              价格 (每单位)
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 0.5022/ 小时 （约￥ 373.6368 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 29.2229/ 小时 （约￥ 21,741.8376 /月）
+              &lt;br/&gt;
+              增量单位（大于 1 个）的单位成本
+              &lt;br/&gt;
+              是所购买的第一个单位的价格的 50%
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存（每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              10 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              50 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              1 GB
+             &lt;/td&gt;
+&lt;td&gt;
+              5 GB
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              横向扩展（单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              1
+             &lt;/td&gt;
+&lt;td&gt;
+              2
+             &lt;/td&gt;
+&lt;td&gt;
+              4
+             &lt;/td&gt;
+&lt;td&gt;
+              每个区域 10 个（调用支持添加更多）
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              SLA
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.95%
+              &lt;sup&gt;
+               1
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              使用限制
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存，外部
+              &lt;sup&gt;
+               6
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              开发人员门户
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多个自定义域名
+              &lt;sup&gt;
+               5
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              Azure Active Directory 集成
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              虚拟网络支持
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多区域部署
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              自托管网关
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               3
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               4
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                 工作区
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 否
+                &lt;/td&gt;
+&lt;td&gt;
+                 是
+                &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              预计最大吞吐量
+              &lt;sup&gt;
+               2
+              &lt;/sup&gt;
+              （每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              1,000 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              2,500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              4,000 个请求/秒
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview2&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               开发人员
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               基本
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+               标准
+              &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              用途
+             &lt;/td&gt;
+&lt;td&gt;
+              非生产用例和评估
+             &lt;/td&gt;
+&lt;td&gt;
+              入门级的生产用例
+             &lt;/td&gt;
+&lt;td&gt;
+              中等数量生产用例
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              价格 (每单位)
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 0.5022/ 小时 （约￥ 373.6368 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月）
+             &lt;/td&gt;
+&lt;td&gt;
+              ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月）
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存（每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              10 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              50 MB
+             &lt;/td&gt;
+&lt;td&gt;
+              1 GB
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              横向扩展（单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              1
+             &lt;/td&gt;
+&lt;td&gt;
+              2
+             &lt;/td&gt;
+&lt;td&gt;
+              4
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              SLA
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;td&gt;
+              99.9%
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              使用限制
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              缓存，外部
+              &lt;sup&gt;
+               6
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              开发人员门户
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多个自定义域名
+              &lt;sup&gt;
+               5
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              Azure Active Directory 集成
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              虚拟网络支持
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              多区域部署
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              自托管网关
+             &lt;/td&gt;
+&lt;td&gt;
+              是
+              &lt;sup&gt;
+               3
+              &lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;td&gt;
+              否
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+              预计最大吞吐量
+              &lt;sup&gt;
+               2
+              &lt;/sup&gt;
+              （每单位）
+             &lt;/td&gt;
+&lt;td&gt;
+              500 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              1,000 个请求/秒
+             &lt;/td&gt;
+&lt;td&gt;
+              2,500 个请求/秒
+             &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             1
+            &lt;/sup&gt;
+            要求在两个或更多区域至少部署一个单位。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             2
+            &lt;/sup&gt;
+            吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             3
+            &lt;/sup&gt;
+            在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             4
+            &lt;/sup&gt;
+            在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             5
+            &lt;/sup&gt;
+            仅适用于网关。每个实例限制为 20 个域名。请 
+            &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;
+             致电支持人员
+            &lt;/a&gt;
+            以添加更多内容。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+             6
+            &lt;/sup&gt;
+            请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。
+            &lt;/div&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2&gt;Gateway&lt;/h2&gt;
+&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. 
+                &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;
+&lt;/p&gt;
+&lt;br/&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-gateway&quot; width=&quot;100%&quot;&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+&lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+                    Workspace gateway premium
+                  &lt;/strong&gt;
+&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;
+&lt;strong&gt;
+                    自托管网关
+                  &lt;/strong&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                  用途
+                 &lt;/td&gt;
+&lt;td&gt;
+                    Use as a managed data plane for workspaces in the Premium tier.
+                 &lt;/td&gt;
+&lt;td&gt;
+                    Use as a self-hosted data plane for APIs deployed on premises or in other private and public clouds.
+                 &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                  价格
+                 &lt;/td&gt;
+&lt;td&gt;
+                  ￥ 12,235.08 per month per gateway unit
+                 &lt;/td&gt;
+&lt;td&gt;
+                  ￥ 2,060.88/月/网关部署
+                  &lt;sup&gt;1&lt;/sup&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+                    Workspaces
+                 &lt;/td&gt;
+&lt;td&gt;
+                    ￥647.28 for 5 workspaces per month&lt;sup&gt;2&lt;/sup&gt;
+&lt;/td&gt;
+&lt;td&gt;
+                    不适用
+                 &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;div class=&quot;tags-date&quot;&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+                 1
+                &lt;/sup&gt;
+                Developer tier deployments are free of charge.
+                &lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div class=&quot;ms-date&quot;&gt;
+&lt;sup&gt;
+                            2
+                           &lt;/sup&gt;
+                           The first five workspaces are included at no additional cost.
+                    &lt;/div&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;pricing-page-section&quot;&gt;
+&lt;!-- BEGIN: Table1-Content--&gt;
+&lt;!--            &lt;h2&gt;
+            自托管网关
+           &lt;/h2&gt; --&gt;
+&lt;!--            &lt;p&gt;
+            自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。
+           &lt;/p&gt; --&gt;
+&lt;!--            &lt;div class=&quot;tags-date&quot;&gt;
+            &lt;div class=&quot;ms-date&quot;&gt;
+             *以下价格均为含税价格。
+            &lt;/div&gt;
+            &lt;br/&gt;
+            &lt;div class=&quot;ms-date&quot;&gt;
+             *每月价格估算基于每个月 744 小时的使用量。
+            &lt;/div&gt;
+            &lt;br/&gt;
+             &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; 
+           &lt;/div&gt; --&gt;
+&lt;!--            &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;
+            &lt;tr&gt;
+             &lt;th align=&quot;left&quot;&gt;
+              价格
+             &lt;/th&gt;
+             &lt;th align=&quot;left&quot;&gt;
+              ￥8.71/小时/网关部署
+             &lt;/th&gt;
+            &lt;/tr&gt;
+           &lt;/table&gt; --&gt;
+&lt;!--            &lt;p&gt;
+            以上价格将于2020年7月1日开始生效。
+           &lt;/p&gt; --&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</code></pre></article>
+    <article><h3>转换后 Expected</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;h2&gt; API 管理 &lt;/h2&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;&lt;/div&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview2&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 开发人员 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 基本 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 标准 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; 非生产用例和评估 &lt;/td&gt;&lt;td&gt; 入门级的生产用例 &lt;/td&gt;&lt;td&gt; 中等数量生产用例 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 (每单位) &lt;/td&gt;&lt;td&gt; ￥ 0.5022/ 小时 （约￥ 373.6368 /月） &lt;/td&gt;&lt;td&gt; ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月） &lt;/td&gt;&lt;td&gt; ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月） &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存（每单位） &lt;/td&gt;&lt;td&gt; 10 MB &lt;/td&gt;&lt;td&gt; 50 MB &lt;/td&gt;&lt;td&gt; 1 GB &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 横向扩展（单位） &lt;/td&gt;&lt;td&gt; 1 &lt;/td&gt;&lt;td&gt; 2 &lt;/td&gt;&lt;td&gt; 4 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; SLA &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 使用限制 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存，外部 &lt;sup&gt; 6 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 开发人员门户 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多个自定义域名 &lt;sup&gt; 5 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Azure Active Directory 集成 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 虚拟网络支持 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多区域部署 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 自托管网关 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 3 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 预计最大吞吐量 &lt;sup&gt; 2 &lt;/sup&gt; （每单位） &lt;/td&gt;&lt;td&gt; 500 个请求/秒 &lt;/td&gt;&lt;td&gt; 1,000 个请求/秒 &lt;/td&gt;&lt;td&gt; 2,500 个请求/秒 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; 要求在两个或更多区域至少部署一个单位。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; 吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 3 &lt;/sup&gt; 在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 4 &lt;/sup&gt; 在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 5 &lt;/sup&gt; 仅适用于网关。每个实例限制为 20 个域名。请 &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt; 致电支持人员 &lt;/a&gt; 以添加更多内容。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 6 &lt;/sup&gt; 请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。 &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;h2&gt;Gateway&lt;/h2&gt;&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;&lt;/p&gt;&lt;br/&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; Developer tier deployments are free of charge. &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; The first five workspaces are included at no additional cost. &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;pricing-page-section&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;!-- &lt;h2&gt; 自托管网关 &lt;/h2&gt; --&gt;&lt;!-- &lt;p&gt; 自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。 &lt;/p&gt; --&gt;&lt;!-- &lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt;&lt;/div&gt; --&gt;&lt;!-- &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt; 价格 &lt;/th&gt;&lt;th align=&quot;left&quot;&gt; ￥8.71/小时/网关部署 &lt;/th&gt;&lt;/tr&gt;&lt;/table&gt; --&gt;&lt;!-- &lt;p&gt; 以上价格将于2020年7月1日开始生效。 &lt;/p&gt; --&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></article>
+    <article><h3>Persisted Payload</h3><pre><code>&lt;div class=&quot;tab-content&quot;&gt;&lt;div class=&quot;tab-panel&quot; id=&quot;tabContent1&quot;&gt;&lt;div class=&quot;pricing-page-section&quot; style=&quot;margin-top: 0px;&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;h2&gt; API 管理 &lt;/h2&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;!-- &lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt; --&gt;&lt;/div&gt;&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; id=&quot;API-Management-preview2&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt;&lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 开发人员 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 基本 &lt;/strong&gt;&lt;/th&gt;&lt;th align=&quot;left&quot;&gt;&lt;strong&gt; 标准 &lt;/strong&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 用途 &lt;/td&gt;&lt;td&gt; 非生产用例和评估 &lt;/td&gt;&lt;td&gt; 入门级的生产用例 &lt;/td&gt;&lt;td&gt; 中等数量生产用例 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 价格 (每单位) &lt;/td&gt;&lt;td&gt; ￥ 0.5022/ 小时 （约￥ 373.6368 /月） &lt;/td&gt;&lt;td&gt; ￥ 1.5386/ 小时 （约￥ 1,144.7184 /月） &lt;/td&gt;&lt;td&gt; ￥ 7.1794/ 小时 （约￥ 5,341.4736 /月） &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存（每单位） &lt;/td&gt;&lt;td&gt; 10 MB &lt;/td&gt;&lt;td&gt; 50 MB &lt;/td&gt;&lt;td&gt; 1 GB &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 横向扩展（单位） &lt;/td&gt;&lt;td&gt; 1 &lt;/td&gt;&lt;td&gt; 2 &lt;/td&gt;&lt;td&gt; 4 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; SLA &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;td&gt; 99.9% &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 使用限制 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 缓存，外部 &lt;sup&gt; 6 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 开发人员门户 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多个自定义域名 &lt;sup&gt; 5 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; Azure Active Directory 集成 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 虚拟网络支持 &lt;/td&gt;&lt;td&gt; 是 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 多区域部署 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 自托管网关 &lt;/td&gt;&lt;td&gt; 是 &lt;sup&gt; 3 &lt;/sup&gt;&lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;td&gt; 否 &lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; 预计最大吞吐量 &lt;sup&gt; 2 &lt;/sup&gt; （每单位） &lt;/td&gt;&lt;td&gt; 500 个请求/秒 &lt;/td&gt;&lt;td&gt; 1,000 个请求/秒 &lt;/td&gt;&lt;td&gt; 2,500 个请求/秒 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; 要求在两个或更多区域至少部署一个单位。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; 吞吐量数据仅供参考，不得作为容量和预算规划的依据。必须执行反映预期生产条件的负载测试，以准确确定预期吞吐量。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 3 &lt;/sup&gt; 在开发者层中，无需额外付费即可使用自承载网关功能。网关部署的数量不受限制，但每个部署只能使用一个网关副本(实例)。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 4 &lt;/sup&gt; 在高级层中，可以通过额外付费(见下文)使用自承载网关功能。每个部署中的网关副本数(实例)不受限制。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 5 &lt;/sup&gt; 仅适用于网关。每个实例限制为 20 个域名。请 &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://support.azure.cn/zh-cn/support/contact/&quot; style=&quot;float: none; font-size: 12px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt; 致电支持人员 &lt;/a&gt; 以添加更多内容。 &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 6 &lt;/sup&gt; 请使用自己的 Redis 兼容缓存，例如 Azure Redis 缓存。 &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;h2&gt;Gateway&lt;/h2&gt;&lt;p&gt;The gateway resource ensures runtime isolation and supports hybrid and multi-cloud API deployments. &lt;a aria-label=&quot;aLabel&quot; href=&quot;https://docs.azure.cn/zh-cn/api-management/api-management-gateways-overview&quot; style=&quot;float: none; font-size: 15px ; display: inline; background-color: white; margin:0; padding:0;&quot; target=&quot;_blank&quot;&gt;Learn more about gateways.&lt;/a&gt;&lt;/p&gt;&lt;br/&gt;&lt;div class=&quot;tags-date&quot;&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 1 &lt;/sup&gt; Developer tier deployments are free of charge. &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;div class=&quot;ms-date&quot;&gt;&lt;sup&gt; 2 &lt;/sup&gt; The first five workspaces are included at no additional cost. &lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;pricing-page-section&quot;&gt;&lt;!-- BEGIN: Table1-Content--&gt;&lt;!-- &lt;h2&gt; 自托管网关 &lt;/h2&gt; --&gt;&lt;!-- &lt;p&gt; 自托管网关功能扩展了对混合和多云环境的API管理支持。它允许客户通过一个API管理解决方案来管理所有API，而不会损害安全性、法规遵从性或性能。使用自托管网关功能，组织可以将容器化版本的API管理网关组件部署到托管其API的相同环境中，同时继续从Azure中关联的API管理服务管理它们。 &lt;/p&gt; --&gt;&lt;!-- &lt;div class=&quot;tags-date&quot;&gt;&lt;div class=&quot;ms-date&quot;&gt; *以下价格均为含税价格。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt; *每月价格估算基于每个月 744 小时的使用量。 &lt;/div&gt;&lt;br/&gt;&lt;div class=&quot;ms-date&quot;&gt;*以下价格表中的新价格及基本定价层将于 2018 年 3 月 1 日正式生效。 &lt;/div&gt;&lt;/div&gt; --&gt;&lt;!-- &lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;&gt;&lt;tr&gt;&lt;th align=&quot;left&quot;&gt; 价格 &lt;/th&gt;&lt;th align=&quot;left&quot;&gt; ￥8.71/小时/网关部署 &lt;/th&gt;&lt;/tr&gt;&lt;/table&gt; --&gt;&lt;!-- &lt;p&gt; 以上价格将于2020年7月1日开始生效。 &lt;/p&gt; --&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></article>
+  </div>
+  <h3>Diff</h3><pre>No differences.
+</pre>
+  <h3>Comparison mismatches</h3><pre>[]</pre>
+  <h3>Blocking errors</h3><pre>[]</pre>
+</section>
+</body></html>
