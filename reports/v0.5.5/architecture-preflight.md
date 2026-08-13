@@ -4,6 +4,8 @@
 >
 > 检查日期：2026-08-13
 >
+> Source identity amendment：**已于 2026-08-13 获用户明确接受**。原检查使用 `Path.read_text()`，其 universal-newline 行为把 canonical CRLF 转为 LF；下列第 4 节 Source fragment hashes 已改为正式 pipeline 的 canonical-bytes UTF-8 decode + existing image preprocessing + `str(Tag)` 身份。Normalized Input、boundary、fragment scope 与 Wire hashes 未改变。
+>
 > 正式基线：本地 annotated tag `v0.5.4` → `42ec86fbd715816892093e4db4be7080b7707d4b`
 >
 > 正式 Batch：`20260813T013534Z-b9e91703`，clean producer `658987d9ef221aeb29743bb3832a2aee064584b9`
@@ -126,8 +128,8 @@ left navigation UI
 
 | language | normalized input SHA-256 | source fragment SHA-256 | wire HTML SHA-256 |
 |---|---|---|---|
-| `zh-cn` | `f0b12ba8e2e984c5b96746c613da2a354be99ee8285cec4186be0d2fc09fe6a2` | `2326b021bc75c9b5b3c29743ea789f70ca2f28ac0bb9aadd365a4bac47cc08c0` | `c3c3545c5ba0d7f89a2e950318a180a40c17c82e90e7cb11843a484d3e0a5709` |
-| `en-us` | `25ef88c24aacf453a1799bc30fc679816b18e45bd5a0643343ca0f481783e468` | `709bb96ed24cf0e3fad8a9532b894811dbd8716d882ab4518c3ef2c3e4cad71e` | `d1c2b91607201cad1430c775d20b72da90e5f8de60f762fc3bb10da48e26e839` |
+| `zh-cn` | `f0b12ba8e2e984c5b96746c613da2a354be99ee8285cec4186be0d2fc09fe6a2` | `70b0a22305d1b0f247e2cee58316228dc95097738784746c191a292c12044774` | `c3c3545c5ba0d7f89a2e950318a180a40c17c82e90e7cb11843a484d3e0a5709` |
+| `en-us` | `25ef88c24aacf453a1799bc30fc679816b18e45bd5a0643343ca0f481783e468` | `b713ff78c7c33f0ed4eba52f33abd3ab483855283dc697cc4062de91453234e6` | `d1c2b91607201cad1430c775d20b72da90e5f8de60f762fc3bb10da48e26e839` |
 
 任一邻接关系、candidate 数、active control、全局 ID 或 exact hash 漂移都必须 fail-closed；不得按产品标题、正文文本、注释中的 `TAB-CONTAINER` 字样或 child 数硬编码。
 
@@ -149,8 +151,8 @@ left navigation UI
 
 | language | normalized input SHA-256 | source fragment SHA-256 | wire HTML SHA-256 |
 |---|---|---|---|
-| `zh-cn` | `877b8e9156774f46b01637072478db9e6370e9dc4ad97dbe83a9cf37fd5b89d0` | `f5ea0d21333208c21fd6a458302070a4cccab560bcec5709ae98729f964b5d1f` | `bba52ba3d5cd8c271c7664c794d690908df4ea3c2b6f0144e67edb75cbfc39ab` |
-| `en-us` | `166cf8b7be4a57911b1b5dd67fab92c3fc10ba94a4031ca51739e8d3d35671a0` | `a5e127813557f952fb47e9039464d08deddfccdd2c5fae679c7ce71cfbce3c61` | `96a0a041c890f322d6a71d77cf835c479f67424ff2ffca4c1f8001b58c3cb9bc` |
+| `zh-cn` | `877b8e9156774f46b01637072478db9e6370e9dc4ad97dbe83a9cf37fd5b89d0` | `8c54da45436efad13d21e4dc43d4c1761223521762881758049d2b9aca838878` | `bba52ba3d5cd8c271c7664c794d690908df4ea3c2b6f0144e67edb75cbfc39ab` |
+| `en-us` | `166cf8b7be4a57911b1b5dd67fab92c3fc10ba94a4031ca51739e8d3d35671a0` | `52f0906900bfd5471a084cdfbd641feb782afc14a43a6354c39a7fa5e9463e91` | `96a0a041c890f322d6a71d77cf835c479f67424ff2ffca4c1f8001b58c3cb9bc` |
 
 若任一 presentation 缺失、多于一个 option、selected/default 不唯一、desktop/mobile identity 不一致、target 缺失或重复、存在额外 material panel/control，必须继续报告 `ScopedSourceContentError`。不能因 `style="display:none"`、第一个 option 或第一个 target 猜默认值。
 
