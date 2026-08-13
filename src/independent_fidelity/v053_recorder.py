@@ -9,7 +9,11 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from src.independent_fidelity.contracts import bytes_sha256, evidence_is_current
-from src.independent_fidelity.targets import TargetSetError, load_target_set
+from src.independent_fidelity.targets import (
+    DEFAULT_TARGET_SET_ID,
+    TargetSetError,
+    load_target_set,
+)
 from src.independent_fidelity.v053_adapters import AdapterError
 from src.independent_fidelity.v053_bundle import (
     V053BundleError,
@@ -28,7 +32,6 @@ from src.independent_fidelity.v053_verifier import (
     reconstruct_bound_target,
     verify_reconstruction,
 )
-from src.independent_fidelity.versions import V053_ALGORITHM_VERSIONS
 
 
 @dataclass(frozen=True)
@@ -188,9 +191,15 @@ def _bind(
     action: str,
     batch_id: str,
     item_id: str,
+    target_set_id: str,
 ) -> BoundV053Target | V053OperationResult:
     try:
-        return bind_batch_item(root, batch_id=batch_id, item_id=item_id)
+        return bind_batch_item(
+            root,
+            batch_id=batch_id,
+            item_id=item_id,
+            target_set_id=target_set_id,
+        )
     except TargetSetError as error:
         return _result(
             action=action,
@@ -270,7 +279,7 @@ def _verify_current(
         evidence,
         current_basis,
         target.profile_identity,
-        V053_ALGORITHM_VERSIONS,
+        target.algorithm_versions,
     ):
         raise V053BundleError(
             "Existing Evidence is stale for the current Batch binding/profile/algorithms"
@@ -309,12 +318,14 @@ def verify_target(
     *,
     batch_id: str,
     item_id: str,
+    target_set_id: str = DEFAULT_TARGET_SET_ID,
 ) -> V053OperationResult:
     bound = _bind(
         repository_root,
         action="verify",
         batch_id=batch_id,
         item_id=item_id,
+        target_set_id=target_set_id,
     )
     if isinstance(bound, V053OperationResult):
         return bound
@@ -366,12 +377,14 @@ def record_target(
     batch_id: str,
     item_id: str,
     require_clean_repository: bool = True,
+    target_set_id: str = DEFAULT_TARGET_SET_ID,
 ) -> V053OperationResult:
     bound = _bind(
         repository_root,
         action="record",
         batch_id=batch_id,
         item_id=item_id,
+        target_set_id=target_set_id,
     )
     if isinstance(bound, V053OperationResult):
         return bound
@@ -466,11 +479,12 @@ def operate_target_set(
     action: str,
     batch_id: str,
     require_clean_repository: bool = True,
+    target_set_id: str = DEFAULT_TARGET_SET_ID,
 ) -> V053SetResult:
     if action not in {"record", "verify"}:
         raise ValueError(f"Unsupported target-set action: {action}")
     try:
-        targets = load_target_set(repository_root)
+        targets = load_target_set(repository_root, target_set_id)
     except Exception as error:
         result = _result(
             action=action,
@@ -490,12 +504,14 @@ def operate_target_set(
                 batch_id=batch_id,
                 item_id=target.item_id,
                 require_clean_repository=require_clean_repository,
+                target_set_id=target_set_id,
             )
         else:
             result = verify_target(
                 repository_root,
                 batch_id=batch_id,
                 item_id=target.item_id,
+                target_set_id=target_set_id,
             )
         results.append(result)
     exit_code = (

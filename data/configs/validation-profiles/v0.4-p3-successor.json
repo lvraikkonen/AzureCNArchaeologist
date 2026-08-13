@@ -6,7 +6,7 @@
     "id": "v0.4-validation-p3",
     "schema_version": "1.2",
     "path": "data/configs/validation-profiles/v0.4-p3.json",
-    "sha256": "fbbfa8bd937779748e86f48f738af5c561f164bf2e10615efe2515d45ba3ae1b"
+    "sha256": "7ac6efae5d4af9808696bf759602453678c7e4fe726836ccaf7d77f7e24607e7"
   },
   "content_sampling_profile": {
     "id": "v0.4-content-sampling-p3",
@@ -18,7 +18,7 @@
     "product_definition": {
       "schema_version": "1.1",
       "path": "schemas/product-definition-1.1.schema.json",
-      "sha256": "57a1fa0c49c07d021da2fed1f0b777fbb7f9534d68076ee35d496a2d2c2e42e4"
+      "sha256": "5fe685e3a9cc99b5bf99787621835a61269c8258a30d7fbd875bceb05f69d5d9"
     },
     "flexible_content": {
       "schema_version": "1.1",

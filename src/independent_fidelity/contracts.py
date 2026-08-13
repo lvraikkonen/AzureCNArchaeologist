@@ -16,14 +16,17 @@ EVIDENCE_SCHEMA = "schemas/independent-fidelity-evidence-1.0.schema.json"
 PROFILE_SCHEMAS = {
     "1.0": PROFILE_SCHEMA,
     "1.1": "schemas/independent-fidelity-profile-1.1.schema.json",
+    "1.2": "schemas/independent-fidelity-profile-1.2.schema.json",
 }
 BASIS_SCHEMAS = {
     "1.0": BASIS_SCHEMA,
     "1.1": "schemas/independent-fidelity-basis-1.1.schema.json",
+    "1.2": "schemas/independent-fidelity-basis-1.2.schema.json",
 }
 EVIDENCE_SCHEMAS = {
     "1.0": EVIDENCE_SCHEMA,
     "1.1": "schemas/independent-fidelity-evidence-1.1.schema.json",
+    "1.2": "schemas/independent-fidelity-evidence-1.2.schema.json",
 }
 SEMANTIC_IDENTITY_ALGORITHM = "sha256-canonical-json-v1"
 PROJECTION_IDENTITY_ALGORITHM = "sha256-projection-artifacts-v1"
@@ -110,7 +113,7 @@ def validate_basis(
     expected = semantic_sha256(_basis_semantic_object(validated))
     if validated["basis_semantic_identity"]["sha256"] != expected:
         raise ContractError("Reconstruction Basis semantic identity drifted")
-    if validated["schema_version"] == "1.1":
+    if validated["schema_version"] in {"1.1", "1.2"}:
         _validate_basis_v11_semantics(validated)
     return validated
 
@@ -259,7 +262,7 @@ def evidence_semantic_object(value: Mapping[str, Any]) -> dict[str, Any]:
     while report and diff rendering belong to the projection identity.
     """
 
-    if value.get("schema_version") == "1.1":
+    if value.get("schema_version") in {"1.1", "1.2"}:
         return _evidence_semantic_object_v11(value)
 
     states = []
@@ -369,7 +372,7 @@ def validate_evidence(
         ),
         value,
     )
-    if validated["schema_version"] == "1.1":
+    if validated["schema_version"] in {"1.1", "1.2"}:
         return _validate_evidence_v11(root, validated)
     return _validate_evidence_v10(root, validated)
 
@@ -464,8 +467,10 @@ def _validate_evidence_v11(
     root: str | Path, validated: dict[str, Any]
 ) -> dict[str, Any]:
     basis = validate_basis(root, validated["reconstruction_basis"])
-    if basis["schema_version"] != "1.1":
-        raise ContractError("Evidence 1.1 requires Reconstruction Basis 1.1")
+    if basis["schema_version"] != validated["schema_version"]:
+        raise ContractError(
+            "Evidence and Reconstruction Basis schema versions must match"
+        )
     expected = semantic_sha256(evidence_semantic_object(validated))
     if validated["evidence_semantic_identity"]["sha256"] != expected:
         raise ContractError("Independent Fidelity Evidence semantic identity drifted")

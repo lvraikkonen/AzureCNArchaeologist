@@ -19,15 +19,23 @@ def _print(value: object) -> None:
 
 
 def main() -> int:
+    from src.independent_fidelity.targets import DEFAULT_TARGET_SET_ID
+
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="action", required=True)
     for action in ("record", "verify"):
         command = subparsers.add_parser(action)
         command.add_argument("--batch-id", required=True)
         command.add_argument("--item-id", required=True)
+        command.add_argument(
+            "--target-set-id", default=DEFAULT_TARGET_SET_ID
+        )
     for action in ("record-set", "verify-set"):
         command = subparsers.add_parser(action)
         command.add_argument("--batch-id", required=True)
+        command.add_argument(
+            "--target-set-id", default=DEFAULT_TARGET_SET_ID
+        )
     args = parser.parse_args()
 
     from src.independent_fidelity.v053_recorder import (
@@ -41,18 +49,21 @@ def main() -> int:
             ROOT,
             batch_id=args.batch_id,
             item_id=args.item_id,
+            target_set_id=args.target_set_id,
         )
     elif args.action == "verify":
         result = verify_target(
             ROOT,
             batch_id=args.batch_id,
             item_id=args.item_id,
+            target_set_id=args.target_set_id,
         )
     else:
         result = operate_target_set(
             ROOT,
             action="record" if args.action == "record-set" else "verify",
             batch_id=args.batch_id,
+            target_set_id=args.target_set_id,
         )
     _print(result.as_dict())
     return result.exit_code
@@ -60,4 +71,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

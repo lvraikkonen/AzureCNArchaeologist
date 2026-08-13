@@ -32,10 +32,18 @@ STATIC_FORMAL_SELECTOR_PAGE_GLOBAL_BOUNDARY = (
 POST_SELECTOR_PAGE_GLOBAL_BOUNDARY = (
     "after_final_formal_selector_before_common_sections"
 )
+DIRECT_STATIC_BUSINESS_WRAPPER_PAGE_GLOBAL_BOUNDARY = (
+    "sole_direct_static_business_wrapper_before_common_sections"
+)
+INERT_SINGLETON_SELECTOR_TARGET_PAGE_GLOBAL_BOUNDARY = (
+    "sole_inert_singleton_selector_target_before_common_sections"
+)
 _PAGE_GLOBAL_BOUNDARIES = frozenset(
     {
         STATIC_FORMAL_SELECTOR_PAGE_GLOBAL_BOUNDARY,
         POST_SELECTOR_PAGE_GLOBAL_BOUNDARY,
+        DIRECT_STATIC_BUSINESS_WRAPPER_PAGE_GLOBAL_BOUNDARY,
+        INERT_SINGLETON_SELECTOR_TARGET_PAGE_GLOBAL_BOUNDARY,
     }
 )
 _FORMAL_SELECTOR_CLASS = "technical-azure-selector"
@@ -49,6 +57,9 @@ _FORBIDDEN_PAGE_GLOBAL_CLASSES = frozenset(
         "tab-panel",
         "technical-azure-selector",
     }
+)
+_LOCAL_FRAGMENT_REFERENCE = re.compile(
+    r"^#([A-Za-z][A-Za-z0-9_.:-]*)$"
 )
 
 
@@ -351,6 +362,310 @@ def extract_static_formal_selector_page_global_content(
         )
     return PageGlobalContentFragment(
         source_boundary=STATIC_FORMAL_SELECTOR_PAGE_GLOBAL_BOUNDARY,
+        fragment_count=1,
+        source_html=source_html,
+        source_html_sha256=hashlib.sha256(
+            source_html.encode("utf-8")
+        ).hexdigest(),
+    )
+
+
+def _has_visible_material(tag: Tag) -> bool:
+    return bool(
+        tag.get_text(" ", strip=True)
+        or tag.find(["img", "video", "audio", "table", "iframe"])
+        is not None
+    )
+
+
+def _direct_material_children(parent: Tag) -> list[Tag]:
+    """Scan one direct boundary with the frozen S5/S6 noise rules."""
+
+    material: list[Tag] = []
+    for child in parent.children:
+        if isinstance(child, Comment):
+            continue
+        if not isinstance(child, Tag):
+            if str(child).strip():
+                raise ScopedSourceContentError(
+                    "Visible direct text crosses a Simple page-global boundary"
+                )
+            continue
+        if child.name in {"script", "style", "template", "tags"}:
+            continue
+        if _has_visible_material(child):
+            material.append(child)
+    return material
+
+
+def _is_exact_product_description_boundary(tag: Tag) -> bool:
+    return (
+        tag.name == "div"
+        and set(tag.get("class") or ()) == {"pricing-page-section"}
+        and _has_visible_material(tag)
+        and not contains_common_section_boundary(tag)
+        and tag.find("table") is None
+        and tag.select_one(
+            ".technical-azure-selector, .pricing-detail-tab, "
+            "select, form, button"
+        )
+        is None
+    )
+
+
+def _is_exact_banner_boundary(tag: Tag) -> bool:
+    return tag.name == "div" and "common-banner" in (
+        tag.get("class") or ()
+    )
+
+
+def _contains_active_page_global_control(tag: Tag) -> bool:
+    if tag.select_one(
+        ".technical-azure-selector, .pricing-detail-tab, "
+        ".region-container, .software-kind-container, .category-container, "
+        "select, form, button"
+    ) is not None:
+        return True
+    if tag.find(
+        "input",
+        attrs={
+            "type": re.compile(
+                r"^(?:radio|checkbox)$", re.IGNORECASE
+            )
+        },
+    ) is not None:
+        return True
+    role_pattern = re.compile(
+        r"^(?:tab|tablist|radiogroup)$", re.IGNORECASE
+    )
+    if role_pattern.fullmatch(str(tag.get("role", ""))):
+        return True
+    return tag.find(attrs={"role": role_pattern}) is not None
+
+
+def extract_direct_static_business_wrapper_page_global_content(
+    soup: BeautifulSoup,
+) -> PageGlobalContentFragment:
+    """Resolve S5 from one exact direct ProductDescription/body/common triple."""
+
+    pure_contents = soup.select("div.pure-content")
+    if len(pure_contents) != 1:
+        raise ScopedSourceContentError(
+            "Direct static business content requires exactly one pure-content boundary"
+        )
+    material = _direct_material_children(pure_contents[0])
+    matches: list[Tag] = []
+    for index, candidate in enumerate(material):
+        if (
+            index < 2
+            or index + 1 >= len(material)
+            or candidate.name != "div"
+            or candidate.has_attr("class")
+            or not _is_exact_product_description_boundary(
+                material[index - 1]
+            )
+            or not _is_exact_banner_boundary(material[index - 2])
+            or not is_exact_common_section_boundary(material[index + 1])
+        ):
+            continue
+        matches.append(candidate)
+    if len(matches) != 1:
+        raise ScopedSourceContentError(
+            "Direct static business content requires exactly one unclassed "
+            "wrapper between ProductDescription and an exact common section"
+        )
+    wrapper = matches[0]
+    if (
+        contains_common_section_boundary(wrapper)
+        or _contains_active_page_global_control(wrapper)
+    ):
+        raise ScopedSourceContentError(
+            "Direct static business wrapper crosses a common or active-control boundary"
+        )
+    _validate_globally_unique_ids(soup, wrapper)
+    source_html = str(wrapper)
+    return PageGlobalContentFragment(
+        source_boundary=(
+            DIRECT_STATIC_BUSINESS_WRAPPER_PAGE_GLOBAL_BOUNDARY
+        ),
+        fragment_count=1,
+        source_html=source_html,
+        source_html_sha256=hashlib.sha256(
+            source_html.encode("utf-8")
+        ).hexdigest(),
+    )
+
+
+def _first_material_sibling(tag: Tag) -> Tag | None:
+    for sibling in tag.next_siblings:
+        if isinstance(sibling, Comment):
+            continue
+        if not isinstance(sibling, Tag):
+            if str(sibling).strip():
+                raise ScopedSourceContentError(
+                    "Visible direct text follows the singleton selector"
+                )
+            continue
+        if sibling.name in {"script", "style", "template", "tags"}:
+            continue
+        if _has_visible_material(sibling):
+            return sibling
+    return None
+
+
+def extract_inert_singleton_selector_target_page_global_content(
+    soup: BeautifulSoup,
+) -> PageGlobalContentFragment:
+    """Resolve S6 only when two singleton presentations own one target."""
+
+    pure_contents = soup.select("div.pure-content")
+    selectors = _outermost_formal_selectors(soup)
+    if len(pure_contents) != 1 or len(selectors) != 1:
+        raise ScopedSourceContentError(
+            "Inert singleton content requires one pure-content and one outermost selector"
+        )
+    pure_content = pure_contents[0]
+    selector = selectors[0]
+    if (
+        selector.parent is not pure_content
+        or selector not in pure_content.find_all("div", recursive=False)
+    ):
+        raise ScopedSourceContentError(
+            "Inert singleton selector must be a direct child of pure-content"
+        )
+
+    desktop_controls = list(selector.select("ol.tab-items"))
+    if len(desktop_controls) != 1:
+        raise ScopedSourceContentError(
+            "Inert singleton selector requires exactly one desktop control"
+        )
+    desktop_items = desktop_controls[0].find_all("li", recursive=False)
+    if len(desktop_items) != 1:
+        raise ScopedSourceContentError(
+            "Desktop singleton control must expose exactly one option"
+        )
+    desktop_item = desktop_items[0]
+    desktop_options = desktop_item.find_all("a", recursive=False)
+    if (
+        len(desktop_options) != 1
+        or "active" not in (desktop_item.get("class") or ())
+    ):
+        raise ScopedSourceContentError(
+            "Desktop singleton control must have one selected identity"
+        )
+    desktop_option = desktop_options[0]
+
+    mobile_controls = list(selector.select("select"))
+    if len(mobile_controls) != 1:
+        raise ScopedSourceContentError(
+            "Inert singleton selector requires exactly one mobile control"
+        )
+    mobile_control = mobile_controls[0]
+    mobile_options = mobile_control.find_all("option", recursive=False)
+    if len(mobile_options) != 1 or not mobile_options[0].has_attr(
+        "selected"
+    ):
+        raise ScopedSourceContentError(
+            "Mobile singleton control must have one explicitly selected identity"
+        )
+    mobile_option = mobile_options[0]
+    desktop_ref = desktop_option.get("data-href")
+    mobile_ref = mobile_option.get("data-href")
+    desktop_identity = " ".join(
+        desktop_option.get_text(" ", strip=True).split()
+    )
+    mobile_identity = " ".join(
+        mobile_option.get_text(" ", strip=True).split()
+    )
+    if (
+        not isinstance(desktop_ref, str)
+        or desktop_ref != mobile_ref
+        or not desktop_identity
+        or desktop_identity != mobile_identity
+    ):
+        raise ScopedSourceContentError(
+            "Desktop/mobile singleton identity or target reference differs"
+        )
+    local_reference = _LOCAL_FRAGMENT_REFERENCE.fullmatch(desktop_ref)
+    if local_reference is None:
+        raise ScopedSourceContentError(
+            "Inert singleton target reference must be a valid local fragment"
+        )
+    target_id = local_reference.group(1)
+    targets = soup.find_all(id=target_id)
+    if len(targets) != 1 or not isinstance(targets[0], Tag):
+        raise ScopedSourceContentError(
+            "Inert singleton target must be page-global unique"
+        )
+    target = targets[0]
+    if selector not in target.parents:
+        raise ScopedSourceContentError(
+            "Inert singleton target must remain inside its owning selector"
+        )
+    material_targets = list(selector.select(".tab-control-container"))
+    if material_targets != [target]:
+        raise ScopedSourceContentError(
+            "Inert singleton selector must own exactly one material business target"
+        )
+    tab_contents = selector.find_all(
+        "div", class_="tab-content", recursive=False
+    )
+    if (
+        len(tab_contents) != 1
+        or _direct_material_children(tab_contents[0]) != [target]
+    ):
+        raise ScopedSourceContentError(
+            "Singleton target container contains another material business body"
+        )
+
+    software_containers = list(selector.select(".software-kind-container"))
+    has_other_dimension = (
+        len(software_containers) != 1
+        or mobile_control not in software_containers[0].descendants
+        or selector.select_one(".region-container, .category-container")
+        is not None
+        or selector.select_one("form, button") is not None
+        or selector.find(
+            "input",
+            attrs={
+                "type": re.compile(
+                    r"^(?:radio|checkbox)$", re.IGNORECASE
+                )
+            },
+        )
+        is not None
+        or selector.find(
+            attrs={
+                "role": re.compile(
+                    r"^(?:tab|tablist|radiogroup)$", re.IGNORECASE
+                )
+            }
+        )
+        is not None
+        or selector.select_one("div.technical-azure-selector") is not None
+    )
+    if has_other_dimension:
+        raise ScopedSourceContentError(
+            "Inert singleton selector contains another reachable dimension or control"
+        )
+    first_material = _first_material_sibling(selector)
+    if (
+        first_material is None
+        or not is_exact_common_section_boundary(first_material)
+    ):
+        raise ScopedSourceContentError(
+            "The first material sibling after the singleton selector must be an exact common section"
+        )
+    if str(target.get("id", "")).strip() != target_id:
+        raise ScopedSourceContentError(
+            "Inert singleton target ID differs from its local reference"
+        )
+    _validate_globally_unique_ids(soup, target)
+    source_html = str(target)
+    return PageGlobalContentFragment(
+        source_boundary=(
+            INERT_SINGLETON_SELECTOR_TARGET_PAGE_GLOBAL_BOUNDARY
+        ),
         fragment_count=1,
         source_html=source_html,
         source_html_sha256=hashlib.sha256(
@@ -935,6 +1250,38 @@ def resolve_page_global_base_content(
                 f"candidate exists for {product_key!r}/{language}"
             )
         fragment = extract_static_formal_selector_page_global_content(soup)
+    elif (
+        source_boundary
+        == DIRECT_STATIC_BUSINESS_WRAPPER_PAGE_GLOBAL_BOUNDARY
+    ):
+        if semantic_strategy != "simple_static":
+            raise ScopedSourceContentError(
+                "The direct static business wrapper boundary is Simple-only"
+            )
+        if post_selector_fragment is not None:
+            raise ScopedSourceContentError(
+                "The direct static wrapper policy cannot coexist with a "
+                "post-selector page-global candidate"
+            )
+        fragment = (
+            extract_direct_static_business_wrapper_page_global_content(soup)
+        )
+    elif (
+        source_boundary
+        == INERT_SINGLETON_SELECTOR_TARGET_PAGE_GLOBAL_BOUNDARY
+    ):
+        if semantic_strategy != "simple_static":
+            raise ScopedSourceContentError(
+                "The inert singleton selector boundary is Simple-only"
+            )
+        if post_selector_fragment is not None:
+            raise ScopedSourceContentError(
+                "The inert singleton selector policy cannot coexist with a "
+                "post-selector page-global candidate"
+            )
+        fragment = (
+            extract_inert_singleton_selector_target_page_global_content(soup)
+        )
     else:
         raise ScopedSourceContentError(
             "Product Definition page-global source boundary is not supported"
@@ -980,7 +1327,12 @@ def resolve_page_global_base_content(
         )
     if (
         semantic_strategy == "simple_static"
-        and source_boundary != STATIC_FORMAL_SELECTOR_PAGE_GLOBAL_BOUNDARY
+        and source_boundary
+        not in {
+            STATIC_FORMAL_SELECTOR_PAGE_GLOBAL_BOUNDARY,
+            DIRECT_STATIC_BUSINESS_WRAPPER_PAGE_GLOBAL_BOUNDARY,
+            INERT_SINGLETON_SELECTOR_TARGET_PAGE_GLOBAL_BOUNDARY,
+        }
     ):
         intrinsic = extract_intrinsic_simple_page_global_content(soup)
         return materialize_css_generated_semantics(
@@ -1212,13 +1564,19 @@ def extract_category_ancestor_fragment(
 
 __all__ = [
     "CategoryAncestorFragment",
+    "DIRECT_STATIC_BUSINESS_WRAPPER_PAGE_GLOBAL_BOUNDARY",
+    "INERT_SINGLETON_SELECTOR_TARGET_PAGE_GLOBAL_BOUNDARY",
     "POST_SELECTOR_PAGE_GLOBAL_BOUNDARY",
+    "STATIC_FORMAL_SELECTOR_PAGE_GLOBAL_BOUNDARY",
     "PageGlobalContentFragment",
     "ScopedSourceContentError",
     "SoftwareScopedPrefixEvidence",
     "SoftwareScopedPrefixFragment",
     "extract_category_ancestor_fragment",
+    "extract_direct_static_business_wrapper_page_global_content",
+    "extract_inert_singleton_selector_target_page_global_content",
     "extract_post_selector_page_global_content",
+    "extract_static_formal_selector_page_global_content",
     "extract_software_scoped_prefix",
     "resolve_page_global_base_content",
 ]

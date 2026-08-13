@@ -21,3 +21,30 @@ V053_ALGORITHM_VERSIONS = {
     "wire_transform_version": V053_WIRE_TRANSFORM_VERSION,
     "comparison_version": V053_COMPARISON_VERSION,
 }
+
+V055_RECONSTRUCTION_PROFILE_VERSION = (
+    "independent-simple-page-global-reconstruction-v2"
+)
+V055_WIRE_TRANSFORM_VERSION = V053_WIRE_TRANSFORM_VERSION
+V055_COMPARISON_VERSION = V053_COMPARISON_VERSION
+
+V055_ALGORITHM_VERSIONS = {
+    "reconstruction_profile_version": V055_RECONSTRUCTION_PROFILE_VERSION,
+    "wire_transform_version": V055_WIRE_TRANSFORM_VERSION,
+    "comparison_version": V055_COMPARISON_VERSION,
+}
+
+
+def algorithm_versions_for_reconstruction(
+    reconstruction_profile_version: str,
+) -> dict[str, str]:
+    """Resolve only the two frozen four-family/simple-page contracts."""
+
+    if reconstruction_profile_version == V053_RECONSTRUCTION_PROFILE_VERSION:
+        return dict(V053_ALGORITHM_VERSIONS)
+    if reconstruction_profile_version == V055_RECONSTRUCTION_PROFILE_VERSION:
+        return dict(V055_ALGORITHM_VERSIONS)
+    raise ValueError(
+        "Unsupported Independent Fidelity reconstruction profile: "
+        f"{reconstruction_profile_version!r}"
+    )

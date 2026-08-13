@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import re
 import stat
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
@@ -13,9 +13,15 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 from src.independent_fidelity.contracts import bytes_sha256, validate_profile
 from src.independent_fidelity.targets import (
-    PROFILE_PATH_V11,
+    DEFAULT_TARGET_SET_ID,
     TargetDefinition,
+    TargetSetRegistration,
+    load_registered_target_sets,
     target_by_item_id,
+    target_set_registration,
+)
+from src.independent_fidelity.versions import (
+    algorithm_versions_for_reconstruction,
 )
 from src.independent_fidelity.v053_io import (
     SafeReadError,
@@ -71,6 +77,9 @@ class BoundV053Target:
     producer_commit: str
     batch_revision: int
     l3a_summary: Mapping[str, Any]
+    target_set: TargetSetRegistration = field(
+        default_factory=target_set_registration
+    )
 
     @property
     def canonical_bundle_root(self) -> Path:
@@ -81,6 +90,16 @@ class BoundV053Target:
     @property
     def target_batch_id(self) -> str:
         return str(self.batch_manifest["batch_id"])
+
+    @property
+    def contract_schema_version(self) -> str:
+        return self.target_set.contract_schema_version
+
+    @property
+    def algorithm_versions(self) -> Mapping[str, str]:
+        return algorithm_versions_for_reconstruction(
+            self.target_set.reconstruction_profile_version
+        )
 
 
 def _binding_error(code: str, message: str) -> V053BindingError:
@@ -305,13 +324,18 @@ def bind_batch_item(
     *,
     batch_id: str,
     item_id: str,
+    target_set_id: str = DEFAULT_TARGET_SET_ID,
 ) -> BoundV053Target:
     """Bind one target from current manifests without writing any artifact."""
 
     if _BATCH_ID.fullmatch(batch_id) is None:
         raise _binding_error("unsafe_batch_id", f"Invalid Batch ID: {batch_id!r}")
     root = Path(repository_root).resolve()
-    target = target_by_item_id(root, item_id)
+    load_registered_target_sets(root)
+    registration = target_set_registration(target_set_id)
+    target = target_by_item_id(
+        root, item_id, target_set_id=registration.target_set_id
+    )
     run_candidate = root / "runs" / batch_id
     for candidate in (root / "runs", run_candidate):
         try:
@@ -481,28 +505,52 @@ def bind_batch_item(
         "Product Definition differs from the target page family/model",
     )
 
+    target_set_bytes = _read(
+        root,
+        registration.target_set_path,
+        code="target_set_binding_mismatch",
+    )
+    target_set_sha = bytes_sha256(target_set_bytes)
     profile_bytes = _read(
-        root, PROFILE_PATH_V11, code="profile_binding_mismatch"
+        root, registration.profile_path, code="profile_binding_mismatch"
     )
     profile_sha = bytes_sha256(profile_bytes)
     profile = _json(
         profile_bytes,
-        description=PROFILE_PATH_V11.as_posix(),
+        description=registration.profile_path.as_posix(),
         expected_type=dict,
     )
     try:
         validate_profile(root, profile)
     except ValueError as error:
         raise _binding_error(
-            "profile_contract_invalid", f"Profile 1.1 is invalid: {error}"
+            "profile_contract_invalid",
+            f"Profile {registration.profile_schema_version} is invalid: {error}",
         ) from error
+    supported_families = profile.get("qualification", {}).get(
+        "supported_page_families"
+    )
+    _require(
+        profile.get("schema_version") == registration.profile_schema_version
+        and profile.get("profile_id") == registration.profile_id
+        and profile.get("profile_version") == registration.profile_version
+        and profile.get("reconstruction_profile_version")
+        == registration.reconstruction_profile_version
+        and isinstance(supported_families, list)
+        and target.page_family in supported_families,
+        "profile_identity_mismatch",
+        "Registered Profile identity/family differs from the selected target set",
+    )
     immutable_files = provenance.get("immutable_files", {})
     _require(
         isinstance(immutable_files, Mapping)
-        and immutable_files.get(PROFILE_PATH_V11.as_posix()) == profile_sha
+        and immutable_files.get(registration.target_set_path.as_posix())
+        == target_set_sha
+        and immutable_files.get(registration.profile_path.as_posix())
+        == profile_sha
         and immutable_files.get(config_path.as_posix()) == config_sha,
         "producer_immutable_binding_mismatch",
-        "Producer provenance does not bind Profile/Product Definition bytes",
+        "Producer provenance does not bind target set/Profile/Product Definition bytes",
     )
 
     frozen = input_manifest.get("frozen_inputs", {}).get("soft_category")
@@ -581,7 +629,7 @@ def bind_batch_item(
     profile_identity = {
         "id": str(profile["profile_id"]),
         "version": str(profile["profile_version"]),
-        "path": PROFILE_PATH_V11.as_posix(),
+        "path": registration.profile_path.as_posix(),
         "sha256": profile_sha,
     }
     return BoundV053Target(
@@ -621,4 +669,5 @@ def bind_batch_item(
             item_id=item_id,
             artifacts=artifacts,
         ),
+        target_set=registration,
     )

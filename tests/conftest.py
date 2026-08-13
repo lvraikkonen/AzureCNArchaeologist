@@ -111,7 +111,12 @@ def v053_reference_target_factory() -> Callable[[str], object]:
 def v053_binding_repository(tmp_path: Path) -> Path:
     """Copy one valid API item into a disposable manifest-bound repository."""
 
-    from src.independent_fidelity.targets import PROFILE_PATH_V11, TARGET_SET_PATH
+    from src.independent_fidelity.targets import (
+        PROFILE_PATH_V11,
+        PROFILE_PATH_V12,
+        TARGET_SET_PATH,
+        TARGET_SET_PATH_V055,
+    )
 
     batch_id = REFERENCE_BATCH_ID
     source_run = ROOT / "runs" / batch_id
@@ -134,7 +139,9 @@ def v053_binding_repository(tmp_path: Path) -> Path:
         Path(input_item["config"]["path"]),
         Path("data/configs/soft-category.json"),
         PROFILE_PATH_V11,
+        PROFILE_PATH_V12,
         TARGET_SET_PATH,
+        TARGET_SET_PATH_V055,
     ]
     schema_names = [
         "pipeline-input-manifest-2.0.schema.json",
@@ -143,6 +150,9 @@ def v053_binding_repository(tmp_path: Path) -> Path:
         "independent-fidelity-profile-1.1.schema.json",
         "independent-fidelity-basis-1.1.schema.json",
         "independent-fidelity-evidence-1.1.schema.json",
+        "independent-fidelity-profile-1.2.schema.json",
+        "independent-fidelity-basis-1.2.schema.json",
+        "independent-fidelity-evidence-1.2.schema.json",
     ]
     for relative in repository_paths:
         destination = tmp_path / relative
@@ -159,6 +169,7 @@ def v053_binding_repository(tmp_path: Path) -> Path:
         shutil.copy2(source_run / relative, destination)
 
     profile_bytes = (tmp_path / PROFILE_PATH_V11).read_bytes()
+    target_set_bytes = (tmp_path / TARGET_SET_PATH).read_bytes()
     input_manifest["items"] = [input_item]
     input_manifest["summary"] = {
         "total": 1,
@@ -174,6 +185,7 @@ def v053_binding_repository(tmp_path: Path) -> Path:
     input_manifest["provenance"]["immutable_files"] = {
         input_item["config"]["path"]: input_item["config"]["sha256"],
         PROFILE_PATH_V11.as_posix(): _sha(profile_bytes),
+        TARGET_SET_PATH.as_posix(): _sha(target_set_bytes),
     }
     input_text = json.dumps(
         input_manifest, ensure_ascii=False, sort_keys=True, indent=2

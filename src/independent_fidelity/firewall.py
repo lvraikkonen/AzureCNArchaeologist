@@ -20,6 +20,9 @@ def forbidden_prefixes(root: str | Path) -> tuple[str, ...]:
         root
         / "data/configs/independent-fidelity-profiles/"
         "v0.5.3-four-family.json",
+        root
+        / "data/configs/independent-fidelity-profiles/"
+        "v0.5.5-simple-page-global.json",
     ]
     prefixes: list[str] = []
     for path in profiles:

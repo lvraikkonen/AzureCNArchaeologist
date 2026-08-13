@@ -13,6 +13,10 @@ from src.independent_fidelity.api_management import (
     normalize_config_table_ids,
 )
 from src.independent_fidelity.verifier import apply_wire_transforms
+from src.independent_fidelity.versions import (
+    V053_RECONSTRUCTION_PROFILE_VERSION,
+    V055_RECONSTRUCTION_PROFILE_VERSION,
+)
 
 
 CSS_GENERATED_SEMANTICS_RULE = "css-generated-semantics-v1"
@@ -796,6 +800,461 @@ class ComplexAdapter:
         )
 
 
+_V055_S5_BOUNDARY = (
+    "sole_direct_static_business_wrapper_before_common_sections"
+)
+_V055_S6_BOUNDARY = (
+    "sole_inert_singleton_selector_target_before_common_sections"
+)
+_V055_LOCAL_FRAGMENT = re.compile(r"^#([A-Za-z][A-Za-z0-9_.:-]*)$")
+_V055_COMMON_HEADINGS = frozenset(
+    {
+        "常见问题",
+        "faq",
+        "frequently asked questions",
+        "支持和服务级别协议",
+        "support & sla",
+        "support and sla",
+        "support and service-level agreement",
+        "support and service level agreement",
+    }
+)
+
+
+def _v055_visible(tag: Tag) -> bool:
+    return bool(
+        _text(tag)
+        or tag.find(["img", "video", "audio", "table", "iframe"])
+        is not None
+    )
+
+
+def _v055_direct_material(parent: Tag) -> list[Tag]:
+    material: list[Tag] = []
+    for child in parent.children:
+        if isinstance(child, Comment):
+            continue
+        if not isinstance(child, Tag):
+            if str(child).strip():
+                raise _error(
+                    "simple_page_global_boundary_ambiguous",
+                    "Visible direct text crosses the Simple page-global boundary",
+                )
+            continue
+        if child.name in {"script", "style", "template", "tags"}:
+            continue
+        if _v055_visible(child):
+            material.append(child)
+    return material
+
+
+def _v055_exact_common(tag: Tag) -> bool:
+    if tag.name != "div" or set(tag.get("class") or []) != {
+        "pricing-page-section"
+    }:
+        return False
+    direct_material = [
+        child
+        for child in tag.children
+        if isinstance(child, Tag) and _v055_visible(child)
+    ]
+    if not direct_material:
+        return False
+    more_details = [
+        child
+        for child in direct_material
+        if child.name == "div"
+        and set(child.get("class") or []) == {"more-detail"}
+    ]
+    if more_details:
+        return len(direct_material) == 1 and len(more_details) == 1
+    heading = direct_material[0]
+    return (
+        heading.name in {"h2", "h3"}
+        and _text(heading).casefold() in _V055_COMMON_HEADINGS
+    )
+
+
+def _v055_contains_common(tag: Tag) -> bool:
+    if _v055_exact_common(tag) or tag.select_one(".more-detail") is not None:
+        return True
+    return any(
+        _text(heading).casefold() in _V055_COMMON_HEADINGS
+        for heading in tag.find_all(["h2", "h3"])
+    )
+
+
+def _v055_exact_description(tag: Tag) -> bool:
+    return (
+        tag.name == "div"
+        and set(tag.get("class") or []) == {"pricing-page-section"}
+        and _v055_visible(tag)
+        and not _v055_contains_common(tag)
+        and tag.find("table") is None
+        and tag.select_one(
+            ".technical-azure-selector, .pricing-detail-tab, select, form, button"
+        )
+        is None
+    )
+
+
+def _v055_banner(tag: Tag) -> bool:
+    return tag.name == "div" and "common-banner" in (
+        tag.get("class") or []
+    )
+
+
+def _v055_validate_retained_ids(
+    soup: BeautifulSoup,
+    retained: Tag,
+    *,
+    required_root_id: str | None = None,
+) -> None:
+    identified = (
+        ([retained] if retained.has_attr("id") else [])
+        + list(retained.find_all(id=True))
+    )
+    if required_root_id is not None and (
+        str(retained.get("id", "")).strip() != required_root_id
+    ):
+        raise _error(
+            "simple_page_global_target_identity_invalid",
+            "The retained singleton target does not own the control reference",
+        )
+    for tag in identified:
+        element_id = str(tag.get("id", "")).strip()
+        if not element_id or len(soup.find_all(id=element_id)) != 1:
+            raise _error(
+                "simple_page_global_retained_id_ambiguous",
+                "Every retained ID must be non-empty and page-global unique",
+            )
+
+
+def _v055_active_control(tag: Tag) -> bool:
+    if tag.select_one(
+        ".technical-azure-selector, .pricing-detail-tab, .region-container, "
+        ".software-kind-container, .category-container, select, form, button"
+    ) is not None:
+        return True
+    if tag.find(
+        "input",
+        attrs={"type": re.compile(r"^(?:radio|checkbox)$", re.IGNORECASE)},
+    ) is not None:
+        return True
+    return tag.find(
+        attrs={
+            "role": re.compile(
+                r"^(?:tab|tablist|radiogroup)$", re.IGNORECASE
+            )
+        }
+    ) is not None
+
+
+def _v055_frozen_scope(
+    *,
+    source: str,
+    source_locator: Mapping[str, Any],
+    retained: Tag,
+    configured: Mapping[str, Any],
+    language: str,
+) -> ScopeReconstruction:
+    expected_config = configured.get("expected_by_language", {}).get(language)
+    if not isinstance(expected_config, Mapping):
+        raise _error(
+            "simple_content_identity_missing",
+            f"Product Definition has no Simple page-global identity for {language}",
+        )
+    import hashlib
+
+    frozen_wire = _clean_html(source)
+    if (
+        expected_config.get("fragment_count") != 1
+        or expected_config.get("source_html_sha256")
+        != hashlib.sha256(source.encode("utf-8")).hexdigest()
+        or expected_config.get("wire_html_sha256")
+        != hashlib.sha256(frozen_wire.encode("utf-8")).hexdigest()
+    ):
+        raise _error(
+            "simple_content_identity_mismatch",
+            "Source-derived Simple page-global boundary differs from Product Definition",
+        )
+    expected, rules = _pricing_wire(source)
+    return ScopeReconstruction(
+        scope_key="full_content",
+        scope_kind="full_content",
+        criteria=(),
+        source_locator=source_locator,
+        payload_locator="baseContent",
+        expected_group_name=None,
+        source_fragment=source,
+        expected_fragment=expected,
+        applied_transform_rule_ids=rules,
+        retained_table_ids=_table_ids(retained, require_ids=False),
+    )
+
+
+def _v055_direct_static_wrapper(
+    soup: BeautifulSoup,
+    *,
+    configured: Mapping[str, Any],
+    language: str,
+) -> ScopeReconstruction:
+    pure = _one(
+        list(soup.select("div.pure-content")),
+        code="simple_page_global_root_ambiguous",
+        description="page-level pure-content boundary",
+    )
+    material = _v055_direct_material(pure)
+    matches: list[Tag] = []
+    for index, candidate in enumerate(material):
+        if (
+            index < 2
+            or index + 1 >= len(material)
+            or candidate.name != "div"
+            or candidate.has_attr("class")
+            or not _v055_exact_description(material[index - 1])
+            or not _v055_banner(material[index - 2])
+            or not _v055_exact_common(material[index + 1])
+        ):
+            continue
+        matches.append(candidate)
+    wrapper = _one(
+        matches,
+        code="simple_page_global_wrapper_ambiguous",
+        description=(
+            "unclassed direct business wrapper between ProductDescription "
+            "and an exact common section"
+        ),
+    )
+    if _v055_contains_common(wrapper) or _v055_active_control(wrapper):
+        raise _error(
+            "simple_page_global_wrapper_interactive",
+            "The retained direct wrapper crosses a common or active-control boundary",
+        )
+    _v055_validate_retained_ids(soup, wrapper)
+    source = str(wrapper)
+    return _v055_frozen_scope(
+        source=source,
+        source_locator={
+            "kind": "selector",
+            "selector": "div.pure-content > div:not([class])",
+            "boundary": _V055_S5_BOUNDARY,
+        },
+        retained=wrapper,
+        configured=configured,
+        language=language,
+    )
+
+
+def _v055_selected_singleton_target(
+    soup: BeautifulSoup,
+    *,
+    configured: Mapping[str, Any],
+    language: str,
+) -> ScopeReconstruction:
+    selector = _one(
+        _outermost_formal_selectors(soup),
+        code="simple_page_global_selector_ambiguous",
+        description="outermost formal selector",
+    )
+    pure = selector.parent
+    if (
+        not isinstance(pure, Tag)
+        or "pure-content" not in (pure.get("class") or [])
+        or selector not in pure.find_all("div", recursive=False)
+    ):
+        raise _error(
+            "simple_page_global_selector_ambiguous",
+            "Singleton selector must be a direct child of pure-content",
+        )
+
+    desktop = _one(
+        list(selector.select("ol.tab-items")),
+        code="simple_singleton_desktop_ambiguous",
+        description="desktop singleton control",
+    )
+    desktop_items = desktop.find_all("li", recursive=False)
+    desktop_item = _one(
+        list(desktop_items),
+        code="simple_singleton_desktop_domain_invalid",
+        description="desktop singleton option",
+    )
+    anchors = desktop_item.find_all("a", recursive=False)
+    desktop_option = _one(
+        list(anchors),
+        code="simple_singleton_desktop_domain_invalid",
+        description="desktop singleton option target",
+    )
+    if "active" not in (desktop_item.get("class") or []):
+        raise _error(
+            "simple_singleton_desktop_default_invalid",
+            "Desktop singleton option is not the unique selected identity",
+        )
+
+    mobile = _one(
+        list(selector.select("select")),
+        code="simple_singleton_mobile_ambiguous",
+        description="mobile singleton control",
+    )
+    mobile_options = mobile.find_all("option", recursive=False)
+    mobile_option = _one(
+        list(mobile_options),
+        code="simple_singleton_mobile_domain_invalid",
+        description="mobile singleton option",
+    )
+    if not mobile_option.has_attr("selected"):
+        raise _error(
+            "simple_singleton_mobile_default_invalid",
+            "Mobile singleton option is not explicitly selected",
+        )
+    desktop_ref = desktop_option.get("data-href")
+    mobile_ref = mobile_option.get("data-href")
+    if (
+        not isinstance(desktop_ref, str)
+        or desktop_ref != mobile_ref
+        or _text(desktop_option) != _text(mobile_option)
+        or not _text(desktop_option)
+    ):
+        raise _error(
+            "simple_singleton_presentation_mismatch",
+            "Desktop/mobile singleton identity or target differs",
+        )
+    local = _V055_LOCAL_FRAGMENT.fullmatch(desktop_ref)
+    if local is None:
+        raise _error(
+            "simple_singleton_target_ref_invalid",
+            "Singleton control target must be a valid local fragment",
+        )
+    target_id = local.group(1)
+    global_targets = soup.find_all(id=target_id)
+    target = _one(
+        list(global_targets),
+        code="simple_singleton_target_ambiguous",
+        description="page-global singleton target",
+    )
+    if selector not in target.parents:
+        raise _error(
+            "simple_singleton_target_outside_selector",
+            "Singleton target is outside the owning formal selector",
+        )
+    material_targets = list(selector.select(".tab-control-container"))
+    if material_targets != [target]:
+        raise _error(
+            "simple_singleton_business_target_ambiguous",
+            "Formal selector does not own exactly one material business target",
+        )
+    tab_content = _one(
+        list(selector.find_all("div", class_="tab-content", recursive=False)),
+        code="simple_singleton_business_target_ambiguous",
+        description="singleton business target container",
+    )
+    if _v055_direct_material(tab_content) != [target]:
+        raise _error(
+            "simple_singleton_business_target_ambiguous",
+            "Selector target container contains another material business body",
+        )
+    software_containers = list(selector.select(".software-kind-container"))
+    if (
+        len(software_containers) != 1
+        or mobile not in software_containers[0].descendants
+        or selector.select_one(".region-container, .category-container")
+        is not None
+        or selector.select_one("form, button") is not None
+        or selector.find(
+            "input",
+            attrs={
+                "type": re.compile(
+                    r"^(?:radio|checkbox)$", re.IGNORECASE
+                )
+            },
+        )
+        is not None
+        or selector.find(
+            attrs={
+                "role": re.compile(
+                    r"^(?:tab|tablist|radiogroup)$", re.IGNORECASE
+                )
+            }
+        )
+        is not None
+        or selector.select_one("div.technical-azure-selector") is not None
+    ):
+        raise _error(
+            "simple_singleton_reachable_dimension_present",
+            "Formal selector contains an additional reachable dimension/control",
+        )
+
+    first_material: Tag | None = None
+    for sibling in selector.next_siblings:
+        if isinstance(sibling, Comment):
+            continue
+        if not isinstance(sibling, Tag):
+            if str(sibling).strip():
+                raise _error(
+                    "simple_singleton_common_boundary_ambiguous",
+                    "Visible text follows the singleton selector",
+                )
+            continue
+        if sibling.name in {"script", "style", "template", "tags"}:
+            continue
+        if _v055_visible(sibling):
+            first_material = sibling
+            break
+    if first_material is None or not _v055_exact_common(first_material):
+        raise _error(
+            "simple_singleton_common_boundary_ambiguous",
+            "First material sibling after the singleton selector is not an exact common section",
+        )
+    _v055_validate_retained_ids(
+        soup, target, required_root_id=target_id
+    )
+    source = str(target)
+    return _v055_frozen_scope(
+        source=source,
+        source_locator={
+            "kind": "selector",
+            "selector": f"div.technical-azure-selector #{target_id}",
+            "boundary": _V055_S6_BOUNDARY,
+        },
+        retained=target,
+        configured=configured,
+        language=language,
+    )
+
+
+def _reconstruct_v055_simple_page_global(
+    *,
+    source_html: str,
+    product_definition: Mapping[str, Any],
+    language: str,
+) -> Reconstruction:
+    configured = product_definition.get("extraction", {}).get(
+        "page_global_content"
+    )
+    if not isinstance(configured, Mapping):
+        raise _error(
+            "simple_content_identity_missing",
+            "Profile 1.2 requires an explicit Simple page-global boundary",
+        )
+    soup = BeautifulSoup(source_html, "html.parser")
+    boundary = configured.get("source_boundary")
+    if boundary == _V055_S5_BOUNDARY:
+        scope = _v055_direct_static_wrapper(
+            soup, configured=configured, language=language
+        )
+    elif boundary == _V055_S6_BOUNDARY:
+        scope = _v055_selected_singleton_target(
+            soup, configured=configured, language=language
+        )
+    else:
+        raise _error(
+            "simple_content_boundary_not_qualified",
+            "Profile 1.2 supports only the two frozen Simple page-global boundaries",
+            qualification=True,
+        )
+    return Reconstruction(page_family="simple_static", scopes=(scope,))
+
+
 class SimpleStaticAdapter:
     page_family = "simple_static"
 
@@ -806,8 +1265,22 @@ class SimpleStaticAdapter:
         soft_category: Sequence[Mapping[str, Any]] | None,
         product_definition: Mapping[str, Any],
         language: str,
+        reconstruction_profile_version: str = (
+            V053_RECONSTRUCTION_PROFILE_VERSION
+        ),
     ) -> Reconstruction:
         del soft_category
+        if reconstruction_profile_version == V055_RECONSTRUCTION_PROFILE_VERSION:
+            return _reconstruct_v055_simple_page_global(
+                source_html=source_html,
+                product_definition=product_definition,
+                language=language,
+            )
+        if reconstruction_profile_version != V053_RECONSTRUCTION_PROFILE_VERSION:
+            raise _error(
+                "simple_reconstruction_profile_unknown",
+                "SimpleStatic reconstruction profile is not registered",
+            )
         soup = BeautifulSoup(source_html, "html.parser")
         selectors = _outermost_formal_selectors(soup)
         selector = _one(
@@ -1170,9 +1643,29 @@ def reconstruct_page_family(
     product_definition: Mapping[str, Any],
     language: str,
     soft_category: Sequence[Mapping[str, Any]] | None,
+    reconstruction_profile_version: str = (
+        V053_RECONSTRUCTION_PROFILE_VERSION
+    ),
 ) -> Reconstruction:
     """Dispatch across the four current adapters without a generic registry."""
 
+    if (
+        reconstruction_profile_version == V055_RECONSTRUCTION_PROFILE_VERSION
+        and page_family != "simple_static"
+    ):
+        raise _error(
+            "unsupported_profile_page_family",
+            "Profile 1.2 qualifies only simple_static targets",
+            qualification=True,
+        )
+    if reconstruction_profile_version not in {
+        V053_RECONSTRUCTION_PROFILE_VERSION,
+        V055_RECONSTRUCTION_PROFILE_VERSION,
+    }:
+        raise _error(
+            "unknown_reconstruction_profile",
+            f"Unknown reconstruction profile: {reconstruction_profile_version!r}",
+        )
     if page_family == "region_filter":
         if soft_category is None:
             raise _error(
@@ -1197,9 +1690,15 @@ def reconstruct_page_family(
             f"Unsupported page family: {page_family!r}",
             qualification=True,
         )
-    return adapter.reconstruct(
-        source_html=source_html,
-        soft_category=soft_category,
-        product_definition=product_definition,
-        language=language,
-    )
+    arguments = {
+        "source_html": source_html,
+        "soft_category": soft_category,
+        "product_definition": product_definition,
+        "language": language,
+    }
+    if isinstance(adapter, SimpleStaticAdapter):
+        return adapter.reconstruct(
+            **arguments,
+            reconstruction_profile_version=reconstruction_profile_version,
+        )
+    return adapter.reconstruct(**arguments)

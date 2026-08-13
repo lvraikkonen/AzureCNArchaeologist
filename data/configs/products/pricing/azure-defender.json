@@ -35,6 +35,21 @@
     }
   },
   "extraction": {
-    "semantic_strategy": "simple_static"
+    "semantic_strategy": "simple_static",
+    "page_global_content": {
+      "source_boundary": "sole_inert_singleton_selector_target_before_common_sections",
+      "expected_by_language": {
+        "zh-cn": {
+          "fragment_count": 1,
+          "source_html_sha256": "8c54da45436efad13d21e4dc43d4c1761223521762881758049d2b9aca838878",
+          "wire_html_sha256": "bba52ba3d5cd8c271c7664c794d690908df4ea3c2b6f0144e67edb75cbfc39ab"
+        },
+        "en-us": {
+          "fragment_count": 1,
+          "source_html_sha256": "52f0906900bfd5471a084cdfbd641feb782afc14a43a6354c39a7fa5e9463e91",
+          "wire_html_sha256": "96a0a041c890f322d6a71d77cf835c479f67424ff2ffca4c1f8001b58c3cb9bc"
+        }
+      }
+    }
   }
 }

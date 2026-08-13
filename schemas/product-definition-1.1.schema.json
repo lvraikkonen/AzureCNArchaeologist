@@ -107,7 +107,9 @@
         "source_boundary": {
           "enum": [
             "sole_static_formal_selector_before_common_sections",
-            "after_final_formal_selector_before_common_sections"
+            "after_final_formal_selector_before_common_sections",
+            "sole_direct_static_business_wrapper_before_common_sections",
+            "sole_inert_singleton_selector_target_before_common_sections"
           ]
         },
         "expected_by_language": {

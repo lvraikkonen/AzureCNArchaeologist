@@ -6,7 +6,11 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from src.independent_fidelity.contracts import bytes_sha256
-from src.independent_fidelity.targets import TargetSetError, target_by_item_id
+from src.independent_fidelity.targets import (
+    TargetMembershipAmbiguousError,
+    TargetSetError,
+    resolve_registered_target,
+)
 from src.independent_fidelity.v053_bundle import V053BundleError, verify_bundle
 from src.independent_fidelity.v053_io import (
     SafeReadError,
@@ -17,7 +21,6 @@ from src.independent_fidelity.v053_target import (
     V053BindingError,
     bind_batch_item,
 )
-from src.independent_fidelity.versions import V053_ALGORITHM_VERSIONS
 
 
 _DISPLAY_STATUSES = frozenset(
@@ -127,7 +130,7 @@ def _assert_current_binding(evidence: Mapping[str, Any], bound: Any) -> None:
             "Canonical Evidence is stale for current binding(s): "
             + ", ".join(drifted)
         )
-    for key, expected in V053_ALGORITHM_VERSIONS.items():
+    for key, expected in bound.algorithm_versions.items():
         if evidence.get(key) != expected or basis.get(key) != expected:
             raise V053BundleError(
                 f"Canonical Evidence uses a stale {key} identity"
@@ -183,7 +186,14 @@ def build_independent_fidelity_view(
     root = Path(repository_root).resolve()
     current_run = Path(run_dir).resolve()
     try:
-        target = target_by_item_id(root, item_id)
+        registration, target = resolve_registered_target(root, item_id)
+    except TargetMembershipAmbiguousError as error:
+        return _empty_view(
+            batch_id=batch_id,
+            item_id=item_id,
+            status="invalid",
+            reason=str(error),
+        )
     except TargetSetError as error:
         return _empty_view(
             batch_id=batch_id,
@@ -207,12 +217,17 @@ def build_independent_fidelity_view(
             batch_id=batch_id,
             item_id=item_id,
             status="not_recorded",
-            reason="No canonical v0.5.3 Evidence bundle is recorded for this item.",
+            reason="No canonical Independent Fidelity Evidence bundle is recorded for this item.",
             claim_limitations=target.claim_limitations,
         )
 
     try:
-        bound = bind_batch_item(root, batch_id=batch_id, item_id=item_id)
+        bound = bind_batch_item(
+            root,
+            batch_id=batch_id,
+            item_id=item_id,
+            target_set_id=registration.target_set_id,
+        )
         if bound.run_dir != current_run or bound.canonical_bundle_root != bundle_root:
             raise V053BundleError(
                 "Workbench Batch path differs from the canonical Evidence binding"

@@ -93,12 +93,14 @@ class ProductCatalogTests(unittest.TestCase):
                 self.assertEqual(record.definition["schema_version"], "1.1")
                 expected_extraction_fields = {"semantic_strategy"}
                 if product_key in {
+                    "azure-defender",
+                    "cdn",
                     "cloud-services",
                     "container-instances",
                     "container-registry",
-                    "cdn",
                     "machine-learning",
                     "service-bus",
+                    "service-fabric",
                     "traffic-manager",
                     "virtual-machine-scale-sets",
                 }:

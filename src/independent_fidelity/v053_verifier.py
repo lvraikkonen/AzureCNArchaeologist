@@ -26,7 +26,6 @@ from src.independent_fidelity.v053_adapters import (
 from src.independent_fidelity.v053_io import SafeReadError, strict_json_bytes
 from src.independent_fidelity.v053_target import BoundV053Target
 from src.independent_fidelity.verifier import VerificationRun
-from src.independent_fidelity.versions import V053_ALGORITHM_VERSIONS
 
 
 class V053VerificationBlocked(ValueError):
@@ -51,6 +50,9 @@ def reconstruct_bound_target(target: BoundV053Target) -> Reconstruction:
         product_definition=target.product_definition,
         language=target.target.language,
         soft_category=target.soft_category,
+        reconstruction_profile_version=(
+            target.target_set.reconstruction_profile_version
+        ),
     )
 
 
@@ -59,9 +61,9 @@ def build_basis(
     reconstruction: Reconstruction,
 ) -> dict[str, Any]:
     basis = {
-        "schema_version": "1.1",
+        "schema_version": target.contract_schema_version,
         "basis_id": (
-            f"v0.5.3-{target.target_batch_id}-"
+            f"v{target.target_set.profile_version}-{target.target_batch_id}-"
             f"{target.target.item_id.replace('/', '-')}-basis"
         ),
         "batch_binding": {
@@ -100,7 +102,7 @@ def build_basis(
             "batch_revision": target.batch_revision,
         },
         "verifier_profile": dict(target.profile_identity),
-        **V053_ALGORITHM_VERSIONS,
+        **target.algorithm_versions,
         "scopes": [scope.basis_dict() for scope in reconstruction.scopes],
     }
     return validate_basis(
@@ -566,7 +568,7 @@ def verify_reconstruction(
         for error in scope["blocking_errors"]
     ]
     evidence = {
-        "schema_version": "1.1",
+        "schema_version": target.contract_schema_version,
         "claim": "independent_source_content_fidelity",
         "verdict": verdict,
         "coverage": {
@@ -586,7 +588,7 @@ def verify_reconstruction(
         },
         "reconstruction_basis": basis,
         "verifier_profile": dict(target.profile_identity),
-        **V053_ALGORITHM_VERSIONS,
+        **target.algorithm_versions,
         "scopes": scope_evidence,
         "mismatches": mismatches,
         "blocking_errors": blocking_errors,

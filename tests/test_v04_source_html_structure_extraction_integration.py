@@ -340,11 +340,24 @@ def test_latest_dns_fixed_source_generates_payload(
 
 
 @pytest.mark.parametrize("language", ("zh-cn", "en-us"))
-def test_latest_service_fabric_missing_intrinsic_boundary_fails_closed(
+def test_service_fabric_without_configured_boundary_fails_closed(
     tmp_path: Path,
     language: str,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     coordinator = _coordinator(tmp_path)
+    get_product_config = coordinator.product_manager.get_product_config
+
+    def without_page_global_content(product_key: str) -> dict[str, Any]:
+        definition = copy.deepcopy(get_product_config(product_key))
+        definition["extraction"].pop("page_global_content", None)
+        return definition
+
+    monkeypatch.setattr(
+        coordinator.product_manager,
+        "get_product_config",
+        without_page_global_content,
+    )
 
     result = coordinator.coordinate_extraction(
         "service-fabric",

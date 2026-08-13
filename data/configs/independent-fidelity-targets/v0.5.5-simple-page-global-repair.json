@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "target_set_id": "v0.5.5-simple-page-global-repair",
+  "core_items": [
+    { "item_id": "zh-cn/service-fabric", "page_family": "simple_static" },
+    { "item_id": "en-us/service-fabric", "page_family": "simple_static" },
+    { "item_id": "zh-cn/azure-defender", "page_family": "simple_static" },
+    { "item_id": "en-us/azure-defender", "page_family": "simple_static" }
+  ],
+  "carry_over_items": []
+}

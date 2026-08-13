@@ -110,9 +110,9 @@ def verify_bundle(
         validated = validate_evidence(repository_root, evidence)
     except ValueError as error:
         raise V053BundleError(f"Evidence contract is invalid: {error}") from error
-    if validated.get("schema_version") != "1.1":
+    if validated.get("schema_version") not in {"1.1", "1.2"}:
         raise V053BundleError(
-            "v0.5.3 bundle verification requires Evidence schema_version 1.1"
+            "Formal bundle verification requires Evidence schema_version 1.1 or 1.2"
         )
     expected_files = _referenced_files(validated)
     actual_files = _physical_files(root)
