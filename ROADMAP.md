@@ -1,14 +1,14 @@
 # AzureCNArchaeologist v0.1 → v1.0 路线图
 
 > 文档状态：当前项目路线图  
-> 最新稳定版本：v0.5.4
-> 当前开发阶段：v0.5.5 architecture preflight 与 Execution Plan 已获接受；进入冻结计划的 P0–P4 实施
+> 最新稳定版本：v0.5.5
+> 当前开发阶段：v0.5.5 已完成实施与人工技术验收；下一阶段为 v0.5.6 architecture preflight 与独立 Execution Plan
 > 基线日期：2026-08-13
 > 适用范围：Azure 中国区产品 HTML 标准化、策略化解析、CMS JSON 导出与质量验证
 
 ## 1. 路线图目的
 
-AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流；v0.4.0 完成可信验证、人工审核、不可变 Release、Release-only upload gate 和冻结验收基线；v0.4.1 随后完成已知问题修复、重新裁决和新基线冻结。Post-v0.4 Roadmap Re-baseline Gate 已于 2026-08-08 获接受，v0.4.1 后的两轮独立 DOM 保真实验和 `V050-ENTRY-20260811` 又于 2026-08-11 关闭 v0.5.0 可行性探索。v0.5.1 已按最终冻结计划完成入口 Planning/Core successor、最小 L3a/L3b 契约、轻量独立性保护、反证和只读 Evidence 投影，并通过完整 reference Batch 技术验收；v0.5.2 随后完成 `zh-cn/api-management` 首个正式 L3b 证据闭环；v0.5.3 又在同一新双语 Batch 上形成 Core 8 的完整正负 Evidence 覆盖、Workbench L3b 面板、accepted `parallel_only` Machine Gate decision 和当前残余问题地图。v0.5.4 已在通用 SupportArticle serializer 修复两项 ICP 负证据揭示的 direct-text 静默丢失，新 Batch 的双语 ICP 与 SLA witness 3/3 scopes 全部通过，目录级回归只产生两个已解释 `mainContent` delta；历史负证据保持不可变，Machine Gate、L4、Release 和 upload 行为均未改变。
+AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流；v0.4.0 完成可信验证、人工审核、不可变 Release、Release-only upload gate 和冻结验收基线；v0.4.1 随后完成已知问题修复、重新裁决和新基线冻结。Post-v0.4 Roadmap Re-baseline Gate 已于 2026-08-08 获接受，v0.4.1 后的两轮独立 DOM 保真实验和 `V050-ENTRY-20260811` 又于 2026-08-11 关闭 v0.5.0 可行性探索。v0.5.1 已按最终冻结计划完成入口 Planning/Core successor、最小 L3a/L3b 契约、轻量独立性保护、反证和只读 Evidence 投影，并通过完整 reference Batch 技术验收；v0.5.2 随后完成 `zh-cn/api-management` 首个正式 L3b 证据闭环；v0.5.3 又在同一新双语 Batch 上形成 Core 8 的完整正负 Evidence 覆盖、Workbench L3b 面板、accepted `parallel_only` Machine Gate decision 和当前残余问题地图。v0.5.4 已在通用 SupportArticle serializer 修复两项 ICP 负证据揭示的 direct-text 静默丢失，新 Batch 的双语 ICP 与 SLA witness 3/3 scopes 全部通过，目录级回归只产生两个已解释 `mainContent` delta。v0.5.5 又以显式 S5/S6 page-global boundaries 修复双语 `service-fabric` 与 `azure-defender`，在 434-item 新 Batch 上保持 reference 319/319 payload exact bytes，并以 repair 4 + S1 witness 2 的 6/6 accepted Evidence 收口；历史证据保持不可变，Machine Gate、L4、Release 和 upload 行为均未改变。
 
 从 v0.1 到 v1.0 的核心目标不是继续堆叠功能，而是把现有能力收敛为一套：
 
@@ -146,7 +146,7 @@ v1.0 中需要清晰区分：
 
 `plans/v0.5.4-execution-plan.md` 随后完成实施与人工技术验收：formal Batch `20260813T013534Z-b9e91703` 绑定 clean producer `658987d9ef221aeb29743bb3832a2aee064584b9`，与 v0.5.3 reference 的 434-item membership、input bindings、status/error denominator 完全一致；319 份 persisted payload 中 317 份 byte-identical，仅双语 `icp-faq.mainContent` 恢复 Source direct text。用户复核 3/3 full-content scopes 并接受 candidate commit `9c16371aafc2720e9486f2bba120432d996b2697`、三项 exact Evidence、claim limitation、family/full-Batch regression、历史负证据与 unchanged Machine Gate。权威状态和下一阶段输入见 `reports/v0.5.4/acceptance-status.md`、`support-article-regression.md`、`full-batch-comparison.md` 与 `v0.5.5-handoff.md`。
 
-v0.5.4 handoff 接受后，用户以新的 16-product Simple Classification Inventory 修订 v0.5.5 实施清单，并确认 canonical key 为 `azure-migrate`。正式 preflight 将其展开为 32 个 language items：24 个当前 succeeded/L3a passed items 只做 exact-byte 防回退，双语 `service-fabric` 与双语 `azure-defender` 是 4 个窄 repair items，双语 `virtual-wan` 保持 Source structure blocked，双语 `event-grid` 保持 known-unsupported。该修订不回写已接受 handoff；权威架构检查与冻结计划分别见 `reports/v0.5.5/architecture-preflight.md`、`plans/v0.5.5-execution-plan.md`。
+v0.5.4 handoff 接受后，用户以新的 16-product Simple Classification Inventory 修订 v0.5.5 实施清单，并确认 canonical key 为 `azure-migrate`。正式 preflight 将其展开为 32 个 language items：24 个既有 succeeded/L3a passed items 只做 exact-byte 防回退，双语 `service-fabric` 与双语 `azure-defender` 是 4 个窄 repair items，双语 `virtual-wan` 保持 Source structure blocked，双语 `event-grid` 保持 known-unsupported。clean producer `55f8c5d6faa29587ee899f1fff2aabd687750c34` 生成 formal Batch `20260813T113000Z-b819c3f2`；用户接受 candidate commit `bbd73c98921b208c08c537987f50d45b73a6c599`、6/6 exact Evidence scopes、319/319 retained payload comparison、限制和 handoff。权威输入与结果见 `reports/v0.5.5/architecture-preflight.md`、`plans/v0.5.5-execution-plan.md` 与 `reports/v0.5.5/`。
 
 ## 5. 分版本路线图
 
@@ -603,7 +603,7 @@ formal Batch `20260813T013534Z-b9e91703` 的 item/status/error 与 accepted v0.5
 
 ### v0.5.5：Simple page-global boundary 与策略分类
 
-> 状态：architecture preflight 与 Execution Plan 已获用户接受并冻结；授权按 P0–P4 推进。
+> 状态：已完成实施与 6/6 scopes 人工技术验收（2026-08-13）。正式状态见 `reports/v0.5.5/acceptance-status.md`。
 
 v0.5.4 handoff 后，用户明确以以下 16 products 替换本版本实施 inventory：`ip-addresses`、`event-grid`、`service-bus`、`site-recovery`、`scheduler`、`traffic-manager`、`azure-policy`、`advisor`、`azure-update-management-center`、`azure-migrate`、`service-fabric`、`azure-defender`、`cdn`、`virtual-wan`、`active-directory-b2c`、`multi-factor-authentication`。每项展开双语后为 32 个 language items；`azure-migration` 是已纠正笔误，不建立 alias。
 
@@ -619,6 +619,8 @@ v0.5.4 handoff 后，用户明确以以下 16 products 替换本版本实施 inv
 formal L3b 采用比例化 slice：四个 repair items 使用 add-only Profile/Basis/Evidence 1.2 与新的 4-item target set；双语 `service-bus` 继续使用既有 Profile 1.1 作为 S1 witness。旧 Profile/Evidence 1.1 语义和历史 bytes 不得改变，Machine Gate 保持 `parallel_only` / `runtime_effective=false`。详细契约见 `reports/v0.5.5/architecture-preflight.md` 与 `plans/v0.5.5-execution-plan.md`。
 
 原 handoff 中未进入修订 inventory 的 items 有明确 owner：`firewall-manager` 进入 v0.5.6 R3a；用户确认非 Simple 的 `batch` 进入 v0.6 R5；`bot-services`、`core-control-plane`、`frontdoor`、`virtual-network` 的排除不构成非 Simple 结论，进入 v0.6 R5 boundary/classification。
+
+formal Batch `20260813T113000Z-b819c3f2` 保持 reference 的 434-item membership 与 383 runnable denominator；323 项 extraction succeeded，322 项 Validation 2.2 passed，60 项保留可信 execution failure，1 项保留 validation failure。reference 的 319/319 persisted Business Payload exact byte-identical，只新增 repair 4 payload；`virtual-wan` blocker 与 `event-grid` exclusion 不变。repair 4 的 Profile 1.2 Evidence 和双语 `service-bus` Profile 1.1 witnesses 共 6/6 scopes 均 current/hash-valid/passed，用户已接受 exact identities/paths、comparison 与 limitations。Machine Gate 仍为 `parallel_only` / `runtime_effective=false`，本版本未写 L4、未 build Release、未 upload 或 publish。权威报告与 v0.5.6 handoff 位于 `reports/v0.5.5/`。
 
 ### v0.5.6：Filter-control truth 拆分、安全修复与 v0.5 收口
 

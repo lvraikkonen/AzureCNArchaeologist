@@ -1,24 +1,24 @@
 # v0.5.5 Acceptance Status
 
-> 状态：`candidate_awaiting_human_review`
+> 状态：`accepted`
 
 ## 当前结论
 
-**机器与证据候选门禁已通过；人工验收尚未发生。** P0–P4 implementation 与 clean-producer gates 已完成，替代正式 Batch、全量 comparison、repair 4 + witness 2 canonical Evidence、immediate verify、second-record 幂等性和 Workbench GET-only readiness 均通过。当前 human reviewed / total 为 **0/6**，因此不得把 v0.5.5 标记为 accepted，不得进入 P6 版本/tag 收口。
+**v0.5.5 技术验收通过。** P0–P4 implementation 与 clean-producer gates、替代正式 Batch、全量 comparison、repair 4 + witness 2 canonical Evidence、immediate verify、second-record 幂等性和 Workbench GET-only reader 均通过。用户随后完成 6/6 actual scopes 的只读复核，并明确接受 candidate commit `bbd73c98921b208c08c537987f50d45b73a6c599`、exact identities/paths、comparison、limitations、blocker/exclusion 与 unchanged Machine Gate。human reviewed / total 为 **6/6**，已授权 P6 版本与 tag 收口。
 
 | 维度 | 当前状态 | 含义 |
 |---|---|---|
 | implementation | `passed` | clean producer `55f8c5d…` 通过完整 P4 |
 | formal Batch | `passed_with_expected_item_failures` | 434/383 分母不变，323/60/322/1 精确命中冻结预期 |
-| Batch comparison | `passed_candidate` | 319/319 retained payload exact bytes；唯一 delta 是 repair 4 |
-| repair Evidence | `4/4 passed_current` | Profile 1.2，四个独立 full-content scopes |
-| witness Evidence | `2/2 passed_current` | Profile 1.1，双语 `service-bus` S1 scopes |
+| Batch comparison | `accepted_passed` | 319/319 retained payload exact bytes；唯一 delta 是 repair 4 |
+| repair Evidence | `4/4 accepted_current` | Profile 1.2，四个独立 full-content scopes |
+| witness Evidence | `2/2 accepted_current` | Profile 1.1，双语 `service-bus` S1 scopes |
 | second record | `6/6 existing-current/read-only` | 30 files byte inventory 未改变 |
 | Workbench reader | `6/6 readable` | GET-only view 每项 1 个 passed scope |
-| human review | `0/6 pending` | 需要用户实际检查并明确接受 |
+| human review | `6/6 accepted` | 用户已完成只读检查并明确接受 |
 | Machine Gate | `parallel_only`, `runtime_effective=false` | 本版不激活 |
 
-## Formal candidate identity
+## Formal accepted identity
 
 - Producer：`55f8c5d6faa29587ee899f1fff2aabd687750c34`；
 - Batch：`20260813T113000Z-b819c3f2`；
@@ -39,7 +39,7 @@ Producer provenance 同时精确绑定两套 target/Profile：
 
 Repair 与 witness routing 已由正式 binder 证明唯一、互斥，六项 L3a 均为 passed。
 
-## 待人工复核的 6 个 exact scopes
+## Accepted 6 个 exact scopes
 
 ### Repair — Profile 1.2
 
@@ -59,9 +59,9 @@ Repair 与 witness routing 已由正式 binder 证明唯一、互斥，六项 L3
 
 每项 coverage 均为 1/1/1/0/0。六个 bundles 的 aggregate byte digest 为 `981c0a7a09e43d36f2efc4cffec5406b7bc32404554c6ac5e144556063f9bc9b`。
 
-## 人工接受清单
+## 人工接受结果
 
-用户需要在 Workbench 对 6/6 scopes 只读检查，并明确接受：
+2026-08-13，用户对 6/6 actual scopes 完成只读复核，并明确接受：
 
 1. 上述 Batch/producer/Input/Batch Manifest exact identities；
 2. repair 4 使用 Profile 1.2，witness 2 使用 Profile 1.1，且两套 target membership 不混用；
@@ -71,15 +71,4 @@ Repair 与 witness routing 已由正式 binder 证明唯一、互斥，六项 L3
 6. v0.5.3 expected-negative 与 v0.5.4 current Evidence 均保持历史 identity/verdict；
 7. Machine Gate 不变，且本接受不构成 L4、Release、upload 或 publication。
 
-Workbench 启动命令：
-
-```bash
-uv run cli.py pipeline-review-serve \
-  --batch-id 20260813T113000Z-b819c3f2 \
-  --dashboard-origin http://127.0.0.1:3000
-
-cd dashboard
-npm run dev
-```
-
-人工接受后才可进入 P6：把 candidate reports 改为 accepted，更新版本/ROADMAP/handoff，提交 acceptance/version commit，在 clean tree 上重跑完整门禁与 v0.5.3/v0.5.4/v0.5.5 Evidence read-only verification，最后创建本地 annotated `v0.5.5` tag。P6 不再次 record。
+该接受绑定 candidate commit `bbd73c98921b208c08c537987f50d45b73a6c599`。正式 Batch producer 继续绑定生成 Batch 时的 `0.5.4` version declaration；`pyproject.toml` 与 `uv.lock` bytes/SHA 已由 producer repository provenance 固定，不存在新增的 package-version identity。本次 P6 只推进 repository version declaration，不改写 producer、Batch 或任何 Evidence bundle，也不执行 `record` / `record-set`。

@@ -1,12 +1,14 @@
 # v0.5.5 Page-Global Regression
 
-> 状态：`candidate_awaiting_human_review`
+> 状态：`accepted`
 >
 > Formal Batch：`20260813T113000Z-b819c3f2`
 >
 > Producer：`55f8c5d6faa29587ee899f1fff2aabd687750c34`
 >
 > Reference Batch：`20260813T013534Z-b9e91703`
+>
+> Accepted candidate：`bbd73c98921b208c08c537987f50d45b73a6c599`
 
 ## 结论
 
@@ -67,13 +69,14 @@ Profile：`v0.5.5-independent-fidelity-simple-page-global` / schema 1.2；recons
 
 Profile：`v0.5.3-independent-fidelity-four-family` / schema 1.1；reconstruction：`independent-four-family-reconstruction-v1`。该 witness 没有被复制进 Profile 1.2 target set。
 
-## Idempotence 与 Workbench readiness
+## Idempotence 与人工接受
 
 - immediate verify：repair 4/4 与 witness 2/2 全部 `canonical_bundle_verified`；
 - second record：六项全部 `existing_current_bundle_verified` / `existing-current/read-only`；
 - 六个 closed-world bundles 共 30 files；second-record 前后 aggregate byte digest 均为 `981c0a7a09e43d36f2efc4cffec5406b7bc32404554c6ac5e144556063f9bc9b`；
 - Workbench 真实 GET-only reader 已读取 6/6 views，每项恰有 1 个 passed scope；未写 L4 Review Decision。
+- 用户已对这 6/6 actual scopes、两套 Profile/target routing、exact identities/paths、319/319 comparison 与保留限制完成只读复核并明确接受。
 
 ## Claim boundary
 
-这些结果证明四项 S5/S6 repair 与双语 S1 witness 对当前 frozen Source、Product Definition、payload 和 producer binding 的独立内容一致性。它不证明全部 Simple catalog 都已有 L3b，不解除 `virtual-wan` / `event-grid`，不激活 Machine Gate，也不构成 L4、Release 或 publication acceptance。
+用户接受的这些结果证明四项 S5/S6 repair 与双语 S1 witness 对当前 frozen Source、Product Definition、payload 和 producer binding 的独立内容一致性。它不证明全部 Simple catalog 都已有 L3b，不解除 `virtual-wan` / `event-grid`，不激活 Machine Gate，也不构成 L4、Release 或 publication acceptance。

@@ -1,10 +1,12 @@
 # v0.5.5 Full Batch Comparison
 
-> 状态：`candidate_awaiting_human_review`
+> 状态：`accepted`
 >
 > Candidate Batch：`20260813T113000Z-b819c3f2`
 >
 > Reference Batch：`20260813T013534Z-b9e91703`
+>
+> Accepted candidate：`bbd73c98921b208c08c537987f50d45b73a6c599`
 
 ## 结论
 
@@ -108,4 +110,4 @@ Review Queue 2.0 包含 322 个 pending items，repair 4 全部在队列中。�
 - `zh-cn/event-grid`、`en-us/event-grid`：仍为 `KNOWN_UNSUPPORTED` skip，无 payload/Evidence；
 - 没有通过缩小 434/383 分母、改 capability 或删除失败项获得上述结果。
 
-本 comparison 已通过机器逐项断言，但在用户明确接受六项 Workbench scopes 与本报告前仍是 candidate，不授权版本/tag/Release。
+本 comparison 已通过机器逐项断言，并随 6/6 Workbench scopes 由用户明确接受。该接受授权冻结计划中的版本/tag 收口，但仍不授权 Release、upload 或 publication。

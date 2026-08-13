@@ -1,14 +1,16 @@
 # v0.5.5 Simple Classification Map
 
-> 状态：`candidate_awaiting_human_review`
+> 状态：`accepted`
 >
 > Formal Batch：`20260813T113000Z-b819c3f2`
 >
 > Producer：`55f8c5d6faa29587ee899f1fff2aabd687750c34`
+>
+> Accepted candidate：`bbd73c98921b208c08c537987f50d45b73a6c599`
 
 ## 结论
 
-用户修订并冻结的清单是 16 个 products / 32 个 language items。它是分类分母，不等同于成功、repair 或 L3b 分母。正式 Batch 证明：28 个 items 已 succeeded + Validation 2.2 passed，双语 `virtual-wan` 继续 Source structure blocked，双语 `event-grid` 继续 known-unsupported。
+用户修订并冻结的清单是 16 个 products / 32 个 language items。它是分类分母，不等同于成功、repair 或 L3b 分母。正式 Batch 证明：28 个 items 已 succeeded + Validation 2.2 passed，双语 `virtual-wan` 继续 Source structure blocked，双语 `event-grid` 继续 known-unsupported。用户已接受 6/6 formal L3b scopes、该分类与限制边界。
 
 `azure-migrate` 是唯一 canonical key；未引入 `azure-migration` alias。
 
@@ -59,7 +61,7 @@
 
 | Product | Owner / status |
 |---|---|
-| `azure-defender`、`service-fabric` | v0.5.5 repair 已形成 candidate Evidence，等待人工接受 |
+| `azure-defender`、`service-fabric` | v0.5.5 repair Evidence 已由用户 6/6 接受 |
 | `firewall-manager` | v0.5.6 R3a detector/target/root truth |
 | `batch` | 已确认非 Simple；v0.6 R5 strategy/state/config mapping |
 | `bot-services`、`core-control-plane`、`frontdoor`、`virtual-network` | 本版未裁决；v0.6 R5 |
