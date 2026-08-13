@@ -6,6 +6,8 @@
 >
 > Source identity amendment：**已于 2026-08-13 获用户明确接受**。原检查使用 `Path.read_text()`，其 universal-newline 行为把 canonical CRLF 转为 LF；下列第 4 节 Source fragment hashes 已改为正式 pipeline 的 canonical-bytes UTF-8 decode + existing image preprocessing + `str(Tag)` 身份。Normalized Input、boundary、fragment scope 与 Wire hashes 未改变。
 >
+> Successor-contract amendment：**已于 2026-08-13 获用户明确接受**。首次 P4 clean-HEAD gate 在 `d263f709c152821d10458172030a55094445041f` 证明：原地修改 `product-definition-1.1.schema.json` 会破坏四代 frozen Validation Profile 与 v0.5.1 Core historical replay。修订后的架构恢复全部历史 contract/profile bytes，以 add-only Product Definition 1.2 + Validation Profile 1.4 successor 承载 S5/S6；该 commit 不是 formal producer。
+>
 > 正式基线：本地 annotated tag `v0.5.4` → `42ec86fbd715816892093e4db4be7080b7707d4b`
 >
 > 正式 Batch：`20260813T013534Z-b9e91703`，clean producer `658987d9ef221aeb29743bb3832a2aee064584b9`
@@ -156,17 +158,20 @@ left navigation UI
 
 若任一 presentation 缺失、多于一个 option、selected/default 不唯一、desktop/mobile identity 不一致、target 缺失或重复、存在额外 material panel/control，必须继续报告 `ScopedSourceContentError`。不能因 `style="display:none"`、第一个 option 或第一个 target 猜默认值。
 
-### 4.3 Product Definition 与 resolver 决策
+### 4.3 Product Definition successor 与 resolver 决策
 
 当前 `resolve_page_global_base_content()` 先执行 Product Definition 显式 policy，再使用 Simple intrinsic paths。v0.5.5 应：
 
-1. 在 Product Definition 1.1 的 `source_boundary` closed-world enum 中只增加上述两个值，不增加 selector DSL、XPath、产品名分支或任意 path expression；
-2. 只为 `service-fabric.json` 与 `azure-defender.json` 增加 `page_global_content`，使用第 4.1/4.2 节的双语 `fragment_count=1`、source hash 和 wire hash；
-3. 为两个 boundary 各实现一个独立窄 resolver，并且只有显式 policy 能调用；
-4. 把两者视为完整 Simple body，返回各自 wire HTML，不再与 intrinsic candidate 拼接；
-5. 保持 S1–S4 的执行顺序、predicate 和 wire bytes 不变；不得把新规则加入 broad intrinsic guessing。
+1. `schemas/product-definition-1.1.schema.json` 恢复并保持历史 SHA-256 `57a1fa0c49c07d021da2fed1f0b777fbb7f9534d68076ee35d496a2d2c2e42e4`；四个 frozen Validation Profiles、Validation Profile 1.1/1.2 schemas 与 v0.4/v0.5.1 Core fixtures 同样恢复历史 bytes；
+2. add-only 新建 `schemas/product-definition-1.2.schema.json`，保持 1.1 的 closed-world object shape，仅把 `schema_version` 升为 `1.2` 并在 `source_boundary` enum 增加 S5/S6；
+3. Product Catalog 使用 code-level closed registry 按 document `schema_version` 选择 1.1/1.2 schema；1.2 scope 精确限定为 `service-fabric`、`azure-defender`，其余 209 definitions 继续声明并通过 1.1；
+4. add-only 新建 `schemas/validation-profile-1.4.schema.json` 与 `data/configs/validation-profiles/v0.5.5-product-definition-successor.json`；Profile ID 为 `v0.5.5-validation-product-definition-successor`，直接绑定 frozen `v0.4-validation-p3-successor`，只把 active `product_definition` contract 推进到 1.2，其他 contract、sampling、finding-policy 与 validation semantics 不变；
+5. 新 Batch 默认冻结 Validation Profile 1.4；historical replay 仍可按 ID 解析 P1/P2/P3/P3-successor。v0.4/v0.5.1 Core specifications 必须显式固定 `v0.4-validation-p3-successor`，不得因 active default 推进而改写历史 fixture/baseline；
+6. 只为 `service-fabric.json` 与 `azure-defender.json` 增加 `page_global_content` 并把 document schema version 置为 1.2，使用第 4.1/4.2 节的双语 `fragment_count=1`、source hash 和 wire hash；
+7. 为两个 boundary 各实现一个独立窄 resolver，并且只有显式 policy 能调用；把两者视为完整 Simple body，返回各自 wire HTML，不再与 intrinsic candidate 拼接；
+8. 保持 S1–S4 的执行顺序、predicate 和 wire bytes 不变；不得把新规则加入 broad intrinsic guessing。
 
-Product Definition 1.1 已采用同一 `page_global_content` 对象表达 boundary + bilingual identity；本次只添加 enum members，没有新字段、条件或旧值语义变化。若实现发现必须改变对象形状或迁移全部 Product Definitions，则停止并重新评审 schema version，而不是在实施中扩大迁移。
+该 successor 是 contract-version correction，不是全 catalog migration：旧 Product Definition 1.1、旧 Validation Profiles、旧 Core fixtures/baselines、旧 Independent Fidelity 1.1 与历史 Evidence 必须 byte-stable。不得通过刷新历史 hash、重建历史 fixture 或更新历史 snapshot 来消除门禁失败。
 
 ## 5. 不进入本次修复的两个产品
 
