@@ -56,6 +56,7 @@ from src.review.contracts import (
     evaluate_source_findings,
     machine_approval_preconditions,
     source_approval_preconditions,
+    validation_schema_version_for_profile,
 )
 
 
@@ -434,7 +435,9 @@ class SampledValidationRuntime:
         source_preconditions = source_approval_preconditions(
             source_quality_findings
         )
-        validation_schema_version = "2.0"
+        validation_schema_version = validation_schema_version_for_profile(
+            validation_profile
+        )
         if finding_policy is not None:
             source_quality_findings = classify_source_quality_findings(
                 source_quality_findings,
@@ -444,7 +447,6 @@ class SampledValidationRuntime:
                 source_quality_findings,
                 finding_policy,
             )
-            validation_schema_version = "2.1"
         validation_status = (
             "failed"
             if structure_status == "failed" or content_status == "failed"

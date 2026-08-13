@@ -44,6 +44,28 @@ SUCCESSOR_P3_PROFILE_IDENTITY = {
     "path": "data/configs/validation-profiles/v0.4-p3-successor.json",
     "sha256": "e45ad2ba22c1a9ee91d735f18177f3e0824b01806793573112e8f15f26f94d82",
 }
+V055_P3_PROFILE_IDENTITY = {
+    "id": "v0.5.5-validation-product-definition-successor",
+    "schema_version": "1.4",
+    "path": (
+        "data/configs/validation-profiles/"
+        "v0.5.5-product-definition-successor.json"
+    ),
+    "sha256": "e3d0b3aa75c5c6afc76dc75f82b8602dd186aba7a18671a77ebe760e79970388",
+}
+SUCCESSOR_P3_PROFILE_IDENTITIES = (
+    SUCCESSOR_P3_PROFILE_IDENTITY,
+    V055_P3_PROFILE_IDENTITY,
+)
+P3_PROFILE_IDENTITIES = (
+    LEGACY_P3_PROFILE_IDENTITY,
+    *SUCCESSOR_P3_PROFILE_IDENTITIES,
+)
+P3_VALIDATION_SCHEMA_BINDINGS = (
+    (LEGACY_P3_PROFILE_IDENTITY, "2.0"),
+    (SUCCESSOR_P3_PROFILE_IDENTITY, "2.1"),
+    (V055_P3_PROFILE_IDENTITY, "2.2"),
+)
 FINDING_CODE_POLICY_IDENTITY = {
     "id": "v0.4-finding-code-policy-p4",
     "schema_version": "1.0",
@@ -63,6 +85,21 @@ class ReviewContractError(ValueError):
 
 def _contract_error(code: str, message: str) -> None:
     raise ReviewContractError(code, message)
+
+
+def validation_schema_version_for_profile(
+    validation_profile_identity: Mapping[str, Any],
+) -> str:
+    """Resolve the exact Validation Projection version for a P3 profile."""
+
+    profile = dict(validation_profile_identity)
+    for expected, version in P3_VALIDATION_SCHEMA_BINDINGS:
+        if profile == expected:
+            return version
+    _contract_error(
+        "validation_profile_identity_invalid",
+        "Validation Profile identity is not in the P3 closed-world registry",
+    )
 
 
 def _closed_mapping(
@@ -386,12 +423,12 @@ def resolve_finding_policy(
     """Resolve the only legal profile/policy combinations.
 
     Legacy P3 2.0 has no policy artifact and keeps the blanket blocker rule.
-    Successor P3 2.1 must bind the exact frozen policy identity.
+    Each successor envelope must bind its exact Profile and frozen policy.
     """
 
     version = _enum(
         validation_schema_version,
-        ("2.0", "2.1"),
+        ("2.0", "2.1", "2.2"),
         field="validation_schema_version",
     )
     profile = dict(validation_profile_identity)
@@ -405,6 +442,12 @@ def resolve_finding_policy(
     if (
         version == "2.1"
         and profile == SUCCESSOR_P3_PROFILE_IDENTITY
+        and policy == FINDING_CODE_POLICY_IDENTITY
+    ):
+        return str(FINDING_CODE_POLICY_IDENTITY["id"])
+    if (
+        version == "2.2"
+        and profile == V055_P3_PROFILE_IDENTITY
         and policy == FINDING_CODE_POLICY_IDENTITY
     ):
         return str(FINDING_CODE_POLICY_IDENTITY["id"])
@@ -1019,6 +1062,8 @@ __all__ = [
     "InspectedState",
     "LEGACY_FINDING_POLICY_ID",
     "LEGACY_P3_PROFILE_IDENTITY",
+    "P3_PROFILE_IDENTITIES",
+    "P3_VALIDATION_SCHEMA_BINDINGS",
     "PreconditionResult",
     "REJECTION_REASONS",
     "REVIEW_STATUSES",
@@ -1027,6 +1072,8 @@ __all__ = [
     "ReviewLifecycleState",
     "ReviewTransitionResult",
     "SUCCESSOR_P3_PROFILE_IDENTITY",
+    "SUCCESSOR_P3_PROFILE_IDENTITIES",
+    "V055_P3_PROFILE_IDENTITY",
     "apply_stale_review_state",
     "apply_stale_state",
     "apply_stale_batch_item",
@@ -1046,4 +1093,5 @@ __all__ = [
     "validate_inspected_states",
     "validate_review_transition",
     "validate_sampling_plan_binding_mode",
+    "validation_schema_version_for_profile",
 ]

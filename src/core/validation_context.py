@@ -183,6 +183,13 @@ V055_VALIDATION_PROFILE_IDENTITY = (
     "1.4",
     V055_VALIDATION_PROFILE_SPEC.relative_path,
 )
+P3_FAMILY_VALIDATION_PROFILE_IDS = frozenset(
+    {
+        P3_VALIDATION_PROFILE_IDENTITY[0],
+        P3_SUCCESSOR_VALIDATION_PROFILE_IDENTITY[0],
+        V055_VALIDATION_PROFILE_IDENTITY[0],
+    }
+)
 CONTENT_SAMPLING_PROFILE_IDENTITY = (
     "v0.4-content-sampling-p3",
     "1.0",
@@ -262,9 +269,13 @@ V055_VALIDATION_CONTRACT_SPECS = tuple(
         specification.name,
         "1.2"
         if specification.name == "product_definition"
+        else "2.2"
+        if specification.name == "pipeline_validation"
         else specification.schema_version,
         "schemas/product-definition-1.2.schema.json"
         if specification.name == "product_definition"
+        else "schemas/pipeline-validation-2.2.schema.json"
+        if specification.name == "pipeline_validation"
         else specification.relative_path,
     )
     for specification in P3_SUCCESSOR_VALIDATION_CONTRACT_SPECS

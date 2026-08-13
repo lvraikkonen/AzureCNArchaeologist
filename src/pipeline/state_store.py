@@ -26,7 +26,11 @@ from src.core.canonical_identity import (
     validation_evidence_sha256,
 )
 from src.core.product_catalog import sha256_file
-from src.core.validation_context import ValidationContextError, ValidationContextRegistry
+from src.core.validation_context import (
+    P3_FAMILY_VALIDATION_PROFILE_IDS,
+    ValidationContextError,
+    ValidationContextRegistry,
+)
 from src.content_sampling.artifacts import artifact_json_sha256, artifact_json_text
 from src.pipeline.models import BatchManifest, InputManifest, utc_now
 from src.release.contracts import (
@@ -36,14 +40,13 @@ from src.release.contracts import (
 )
 from src.review.accounting import legacy_review_summary, summarize_review_items
 from src.review.contracts import (
-    LEGACY_P3_PROFILE_IDENTITY,
     ReviewContractError,
-    SUCCESSOR_P3_PROFILE_IDENTITY,
     evaluate_source_findings,
     resolve_finding_policy,
     classify_source_quality_findings,
     machine_approval_preconditions,
     source_approval_preconditions,
+    validation_schema_version_for_profile,
 )
 
 try:  # pragma: no cover - exercised on the platform that provides it
@@ -411,6 +414,7 @@ class StateStore:
             "1.0": "pipeline-validation-1.0.schema.json",
             "2.0": "pipeline-validation-2.0.schema.json",
             "2.1": "pipeline-validation-2.1.schema.json",
+            "2.2": "pipeline-validation-2.2.schema.json",
         },
         "review": {
             "1.0": "pipeline-review-queue-1.0.schema.json",
@@ -769,12 +773,14 @@ class StateStore:
         if kind == "validation":
             manifest = self.read_manifest(batch_id)
             profile = dict(manifest["validation_context"]["validation_profile"])
-            if profile == SUCCESSOR_P3_PROFILE_IDENTITY:
-                expected_version = "2.1"
-            elif profile == LEGACY_P3_PROFILE_IDENTITY:
-                expected_version = "2.0"
-            else:
-                expected_version = "1.0"
+            try:
+                expected_version = (
+                    validation_schema_version_for_profile(profile)
+                    if profile.get("id") in P3_FAMILY_VALIDATION_PROFILE_IDS
+                    else "1.0"
+                )
+            except ReviewContractError as error:
+                raise StateStoreError(str(error)) from error
             if value.get("schema_version") != expected_version:
                 raise StateStoreError(
                     "Validation projection schema_version does not match the "
@@ -787,10 +793,7 @@ class StateStore:
             ]
             expected_version = (
                 "2.0"
-                if profile_id in (
-                    "v0.4-validation-p3",
-                    "v0.4-validation-p3-successor",
-                )
+                if profile_id in P3_FAMILY_VALIDATION_PROFILE_IDS
                 else "1.0"
             )
             if value.get("schema_version") != expected_version:
@@ -816,7 +819,11 @@ class StateStore:
         if value.get("batch_id") != batch_id:
             raise ManifestValidationError("Projection batch_id does not match its run directory")
         self._validate(value, kind)
-        if kind == "validation" and value.get("schema_version") in ("2.0", "2.1"):
+        if kind == "validation" and value.get("schema_version") in (
+            "2.0",
+            "2.1",
+            "2.2",
+        ):
             self._write_json_once(path, value, kind)
             return path
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -1128,7 +1135,11 @@ class StateStore:
                     bindings["content_sampling_profile"],
                 ),
             ))
-        elif kind == "validation" and value.get("schema_version") in ("2.0", "2.1"):
+        elif kind == "validation" and value.get("schema_version") in (
+            "2.0",
+            "2.1",
+            "2.2",
+        ):
             bindings = value["evidence"]["bindings"]
             identities.extend((
                 ("validation_profile", bindings["validation_profile"]),
@@ -1137,7 +1148,7 @@ class StateStore:
                     bindings["content_sampling_profile"],
                 ),
             ))
-            if value.get("schema_version") == "2.1":
+            if value.get("schema_version") in ("2.1", "2.2"):
                 identities.append((
                     "finding_code_policy",
                     bindings["finding_code_policy_identity"],
@@ -1160,7 +1171,10 @@ class StateStore:
                 self._validation_context.document_for_identity(key, identity)
             except ValidationContextError as error:
                 raise ManifestValidationError(str(error)) from error
-        if kind == "validation" and value.get("schema_version") == "2.1":
+        if kind == "validation" and value.get("schema_version") in (
+            "2.1",
+            "2.2",
+        ):
             bindings = value["evidence"]["bindings"]
             profile_identity = bindings["validation_profile"]
             expected_policy = self._validation_context.finding_code_policy_identity_for(
@@ -1168,7 +1182,8 @@ class StateStore:
             )
             if expected_policy != bindings["finding_code_policy_identity"]:
                 raise ManifestValidationError(
-                    "Validation 2.1 Finding Code Policy identity does not match "
+                    f"Validation {value.get('schema_version')} Finding Code Policy "
+                    "identity does not match "
                     "the frozen successor profile"
                 )
 
@@ -1610,7 +1625,11 @@ class StateStore:
                         raise ManifestValidationError(
                             "Full Review Queue items must not expose interactive states"
                         )
-        elif kind == "validation" and value.get("schema_version") in ("2.0", "2.1"):
+        elif kind == "validation" and value.get("schema_version") in (
+            "2.0",
+            "2.1",
+            "2.2",
+        ):
             version = str(value.get("schema_version"))
             if value["status"] != value["evidence"]["verdict"]:
                 raise ManifestValidationError(
@@ -1640,7 +1659,7 @@ class StateStore:
                 ).to_dict()
                 source_findings = value["evidence"]["source_quality_findings"]
                 bindings = value["evidence"]["bindings"]
-                if version == "2.1":
+                if version in ("2.1", "2.2"):
                     resolve_finding_policy(
                         validation_schema_version=version,
                         validation_profile_identity=bindings["validation_profile"],
@@ -1653,7 +1672,7 @@ class StateStore:
                     )
                     if finding_policy is None:
                         raise ManifestValidationError(
-                            "Validation 2.1 has no frozen Finding Code Policy"
+                            f"Validation {version} has no frozen Finding Code Policy"
                         )
                     expected_findings = classify_source_quality_findings(
                         source_findings,
@@ -1661,7 +1680,7 @@ class StateStore:
                     )
                     if source_findings != expected_findings:
                         raise ManifestValidationError(
-                            "Validation 2.1 Source Quality Finding classifications "
+                            f"Validation {version} Source Quality Finding classifications "
                             "are not canonical"
                         )
                     expected_source = evaluate_source_findings(
@@ -1693,7 +1712,7 @@ class StateStore:
                         "all unresolved Source Quality Findings"
                     )
                 raise ManifestValidationError(
-                    "Validation 2.1 Source approval preconditions are not canonical"
+                    f"Validation {version} Source approval preconditions are not canonical"
                 )
         elif kind == "release_manifest":
             try:

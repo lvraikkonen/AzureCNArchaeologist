@@ -16,6 +16,7 @@ from src.review.contracts import (
     LEGACY_FINDING_POLICY_ID,
     LEGACY_P3_PROFILE_IDENTITY,
     SUCCESSOR_P3_PROFILE_IDENTITY,
+    V055_P3_PROFILE_IDENTITY,
     ReviewContractError,
     classify_source_quality_findings,
     evaluate_source_findings,
@@ -211,13 +212,35 @@ def test_finding_policy_identity_matrix_is_closed_world() -> None:
         )
         == "v0.4-finding-code-policy-p4"
     )
+    assert (
+        resolve_finding_policy(
+            validation_schema_version="2.2",
+            validation_profile_identity=V055_P3_PROFILE_IDENTITY,
+            finding_code_policy_identity=FINDING_CODE_POLICY_IDENTITY,
+        )
+        == "v0.4-finding-code-policy-p4"
+    )
 
     illegal_pairs = (
         ("2.0", LEGACY_P3_PROFILE_IDENTITY, FINDING_CODE_POLICY_IDENTITY),
         ("2.1", LEGACY_P3_PROFILE_IDENTITY, None),
+        ("2.2", LEGACY_P3_PROFILE_IDENTITY, None),
         ("2.0", SUCCESSOR_P3_PROFILE_IDENTITY, FINDING_CODE_POLICY_IDENTITY),
         ("2.1", SUCCESSOR_P3_PROFILE_IDENTITY, None),
-        ("2.1", {**SUCCESSOR_P3_PROFILE_IDENTITY, "sha256": _sha("bad")}, FINDING_CODE_POLICY_IDENTITY),
+        ("2.2", SUCCESSOR_P3_PROFILE_IDENTITY, FINDING_CODE_POLICY_IDENTITY),
+        ("2.0", V055_P3_PROFILE_IDENTITY, FINDING_CODE_POLICY_IDENTITY),
+        ("2.1", V055_P3_PROFILE_IDENTITY, FINDING_CODE_POLICY_IDENTITY),
+        ("2.2", V055_P3_PROFILE_IDENTITY, None),
+        (
+            "2.1",
+            {**SUCCESSOR_P3_PROFILE_IDENTITY, "sha256": _sha("bad")},
+            FINDING_CODE_POLICY_IDENTITY,
+        ),
+        (
+            "2.2",
+            {**V055_P3_PROFILE_IDENTITY, "sha256": _sha("bad")},
+            FINDING_CODE_POLICY_IDENTITY,
+        ),
     )
     for version, profile, policy in illegal_pairs:
         with pytest.raises(ReviewContractError) as caught:

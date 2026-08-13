@@ -46,9 +46,9 @@
       "sha256": "bd9b877f21d323b518e92cda194411c73b4195c037bed5395f05cff383e6b122"
     },
     "pipeline_validation": {
-      "schema_version": "2.1",
-      "path": "schemas/pipeline-validation-2.1.schema.json",
-      "sha256": "6a3d842ba5f6e85426c855fdaf334d44b0cda9cf927283a95b7d2f816a3e1ff9"
+      "schema_version": "2.2",
+      "path": "schemas/pipeline-validation-2.2.schema.json",
+      "sha256": "e4868569fdf7487ba506fdf98926e404506ed1152dbc2128439b94ae53b016d2"
     },
     "batch_item_sampling_plan": {
       "schema_version": "1.0",

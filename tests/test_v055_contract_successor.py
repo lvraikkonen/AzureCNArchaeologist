@@ -4,6 +4,7 @@ import copy
 import json
 import shutil
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from jsonschema import Draft202012Validator, FormatChecker
@@ -16,16 +17,28 @@ from src.core.product_catalog import (
     sha256_file,
 )
 from src.core.validation_context import (
+    P3_FAMILY_VALIDATION_PROFILE_IDS,
     P3_SUCCESSOR_VALIDATION_PROFILE_SPEC,
     V055_VALIDATION_PROFILE_SPEC,
     ValidationContextRegistry,
 )
+from src.pipeline.coordinator import PipelineCoordinator
 from src.regression.core import (
     V04_CORE_SPEC,
     V05_CORE_SPEC,
     build_fixture_manifest,
     read_json,
 )
+from src.review.contracts import (
+    FINDING_CODE_POLICY_IDENTITY,
+    P3_PROFILE_IDENTITIES,
+    ReviewContractError,
+    SUCCESSOR_P3_PROFILE_IDENTITIES,
+    V055_P3_PROFILE_IDENTITY,
+    resolve_finding_policy,
+    validation_schema_version_for_profile,
+)
+from src.review.service import ReviewService
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,6 +52,9 @@ HISTORICAL_IDENTITIES = {
     ),
     "schemas/validation-profile-1.2.schema.json": (
         "9a4c7253dc82ce40023b2205f25934b2e578523801ffe8bd887196d0ccee4b6a"
+    ),
+    "schemas/pipeline-validation-2.1.schema.json": (
+        "6a3d842ba5f6e85426c855fdaf334d44b0cda9cf927283a95b7d2f816a3e1ff9"
     ),
     "data/configs/validation-profiles/v0.4.json": (
         "e314a973d7ed9eafd442ed34db1ec47452ad6c364dd092af608ba8cd71c6e602"
@@ -158,6 +174,13 @@ def test_active_profile_is_add_only_successor_and_old_profile_replays() -> None:
             ROOT / "schemas/product-definition-1.2.schema.json"
         ),
     }
+    expected_profile["contracts"]["pipeline_validation"] = {
+        "schema_version": "2.2",
+        "path": "schemas/pipeline-validation-2.2.schema.json",
+        "sha256": sha256_file(
+            ROOT / "schemas/pipeline-validation-2.2.schema.json"
+        ),
+    }
     assert active_profile == expected_profile
     assert active_profile["base_profile"] == registry._identity(
         P3_SUCCESSOR_VALIDATION_PROFILE_SPEC
@@ -202,3 +225,87 @@ def test_current_v05_core_fixture_remains_byte_stable() -> None:
     assert build_fixture_manifest(ROOT, V05_CORE_SPEC) == read_json(
         ROOT / V05_CORE_SPEC.fixture_manifest_path
     )
+
+
+def test_active_successor_routes_through_p3_validation_and_review(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    registry = ValidationContextRegistry(ROOT)
+    active_identity = registry.freeze()["validation_context"][
+        "validation_profile"
+    ]
+    assert active_identity == V055_P3_PROFILE_IDENTITY
+    assert V055_P3_PROFILE_IDENTITY in SUCCESSOR_P3_PROFILE_IDENTITIES
+    assert V055_P3_PROFILE_IDENTITY in P3_PROFILE_IDENTITIES
+    assert active_identity["id"] in P3_FAMILY_VALIDATION_PROFILE_IDS
+    assert validation_schema_version_for_profile(active_identity) == "2.2"
+    assert ReviewService._is_supported_review_profile(
+        {"validation_context": {"validation_profile": active_identity}}
+    )
+    assert resolve_finding_policy(
+        validation_schema_version="2.2",
+        validation_profile_identity=active_identity,
+        finding_code_policy_identity=FINDING_CODE_POLICY_IDENTITY,
+    ) == "v0.4-finding-code-policy-p4"
+    with pytest.raises(ReviewContractError, match="not a legal pair"):
+        resolve_finding_policy(
+            validation_schema_version="2.1",
+            validation_profile_identity=active_identity,
+            finding_code_policy_identity=FINDING_CODE_POLICY_IDENTITY,
+        )
+
+    coordinator = PipelineCoordinator.__new__(PipelineCoordinator)
+    coordinator.store = SimpleNamespace(
+        read_manifest=lambda _batch_id: {
+            "validation_context": {"validation_profile": active_identity}
+        }
+    )
+    calls: list[tuple[object, ...]] = []
+    monkeypatch.setattr(
+        coordinator,
+        "_run_p3_validation_stage",
+        lambda *args, **kwargs: calls.append((*args, kwargs)),
+    )
+    sentinel = object()
+    coordinator._run_validation_stage(
+        "successor-batch",
+        [sentinel],  # type: ignore[list-item]
+        2,
+        explicit=False,
+    )
+    assert calls == [
+        (
+            "successor-batch",
+            [sentinel],
+            2,
+            {"explicit": False},
+        )
+    ]
+
+
+def test_pipeline_validation_22_is_an_exact_profile_successor() -> None:
+    successor = read_json(ROOT / "schemas/pipeline-validation-2.2.schema.json")
+    historical = read_json(ROOT / "schemas/pipeline-validation-2.1.schema.json")
+    profile_identity = successor["$defs"]["profile_identity"]["properties"]
+    assert successor["properties"]["schema_version"] == {"const": "2.2"}
+    assert profile_identity["id"] == {
+        "const": "v0.5.5-validation-product-definition-successor"
+    }
+    assert profile_identity["schema_version"] == {"const": "1.4"}
+    assert profile_identity["path"] == {
+        "const": (
+            "data/configs/validation-profiles/"
+            "v0.5.5-product-definition-successor.json"
+        )
+    }
+
+    normalized = copy.deepcopy(successor)
+    normalized["$id"] = historical["$id"]
+    normalized["title"] = historical["title"]
+    normalized["properties"]["schema_version"] = historical["properties"][
+        "schema_version"
+    ]
+    normalized["$defs"]["profile_identity"] = historical["$defs"][
+        "profile_identity"
+    ]
+    assert normalized == historical

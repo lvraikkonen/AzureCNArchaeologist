@@ -34,6 +34,10 @@ from src.independent_fidelity.v053_io import (
 _BATCH_ID = re.compile(r"^[0-9]{8}T[0-9]{6}Z-[a-f0-9]{8}$")
 _GIT_OBJECT_ID = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
 _TERMINAL_BATCH_STATUSES = frozenset({"completed", "completed_with_failures"})
+_L3A_VALIDATION_SCHEMAS = {
+    "2.1": "pipeline-validation-2.1.schema.json",
+    "2.2": "pipeline-validation-2.2.schema.json",
+}
 
 
 class V053BindingError(RuntimeError):
@@ -280,10 +284,16 @@ def _l3a_summary(
         description=relative.as_posix(),
         expected_type=dict,
     )
+    validation_version = str(validation.get("schema_version", ""))
+    _require(
+        validation_version in _L3A_VALIDATION_SCHEMAS,
+        "l3a_validation_contract_unsupported",
+        "L3a Validation must use a registered 2.1 or 2.2 contract",
+    )
     _schema_validate(
         repository_root,
         validation,
-        "pipeline-validation-2.1.schema.json",
+        _L3A_VALIDATION_SCHEMAS[validation_version],
     )
     _require(
         validation.get("batch_id") == batch_id

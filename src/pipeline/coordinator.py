@@ -48,7 +48,10 @@ from src.core.strict_soft_category_projection import (
     StrictSoftCategoryProjectionError,
 )
 from src.core.strategy_manager import StrategyManager
-from src.core.validation_context import ValidationContextRegistry
+from src.core.validation_context import (
+    P3_FAMILY_VALIDATION_PROFILE_IDS,
+    ValidationContextRegistry,
+)
 from src.pipeline.models import (
     BatchItem,
     InputManifest,
@@ -597,7 +600,7 @@ class PipelineCoordinator:
             return
         manifest = self.store.read_manifest(batch_id)
         profile_id = manifest["validation_context"]["validation_profile"]["id"]
-        if profile_id in ("v0.4-validation-p3", "v0.4-validation-p3-successor"):
+        if profile_id in P3_FAMILY_VALIDATION_PROFILE_IDS:
             self._run_p3_validation_stage(
                 batch_id,
                 items,
@@ -1256,10 +1259,7 @@ class PipelineCoordinator:
             if isinstance(validation_context, dict)
             else {}
         )
-        if validation_profile.get("id") in (
-            "v0.4-validation-p3",
-            "v0.4-validation-p3-successor",
-        ):
+        if validation_profile.get("id") in P3_FAMILY_VALIDATION_PROFILE_IDS:
             return
         for item in items:
             current = manifest["items"][item.item_id]
@@ -1327,7 +1327,7 @@ class PipelineCoordinator:
         items = tuple(items)
         manifest = self.store.read_manifest(batch_id)
         profile_id = manifest["validation_context"]["validation_profile"]["id"]
-        if profile_id in ("v0.4-validation-p3", "v0.4-validation-p3-successor"):
+        if profile_id in P3_FAMILY_VALIDATION_PROFILE_IDS:
             checkpoints_complete = (
                 manifest["checkpoints"]["review"]["status"] == "succeeded"
                 and all(

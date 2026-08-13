@@ -30,9 +30,8 @@ from src.review.accounting import (
 from src.review.contracts import (
     ApprovalBlocker,
     EvidenceBindings,
-    LEGACY_P3_PROFILE_IDENTITY,
+    P3_PROFILE_IDENTITIES,
     ReviewContractError,
-    SUCCESSOR_P3_PROFILE_IDENTITY,
     derive_approval_eligibility,
     derive_evidence_binding,
     derive_review_decision_id,
@@ -545,10 +544,7 @@ class ReviewService:
         profile = cls._profile_identity(manifest)
         if profile is None:
             return False
-        return dict(profile) in (
-            LEGACY_P3_PROFILE_IDENTITY,
-            SUCCESSOR_P3_PROFILE_IDENTITY,
-        )
+        return dict(profile) in P3_PROFILE_IDENTITIES
 
     def _snapshot(
         self,
@@ -576,10 +572,10 @@ class ReviewService:
             "validation",
             relative_path=validation_path,
         )
-        if validation.get("schema_version") not in ("2.0", "2.1"):
+        if validation.get("schema_version") not in ("2.0", "2.1", "2.2"):
             raise _error(
                 "unsupported_validation_projection",
-                "Review Decisions require Validation Projection 2.0 or 2.1",
+                "Review Decisions require Validation Projection 2.0, 2.1, or 2.2",
             )
         manifest_profile = self._profile_identity(manifest)
         validation_profile = validation["evidence"]["bindings"]["validation_profile"]
