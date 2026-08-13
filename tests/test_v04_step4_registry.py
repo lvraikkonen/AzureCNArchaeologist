@@ -12,9 +12,9 @@ from src.core.validation_context import (
     ARTIFACT_SPECS,
     CONTENT_SAMPLING_PROFILE_SPEC,
     P2_VALIDATION_PROFILE_SPEC,
-    P3_SUCCESSOR_VALIDATION_PROFILE_SPEC,
     P3_VALIDATION_PROFILE_SPEC,
     P3_VALIDATION_CONTRACT_SPECS,
+    V055_VALIDATION_PROFILE_SPEC,
     ValidationContextError,
     ValidationContextRegistry,
 )
@@ -69,15 +69,15 @@ def _write_json(path: Path, value: object) -> None:
     )
 
 
-def test_p3_is_registered_and_active_after_slice_b() -> None:
+def test_p3_replays_and_v055_successor_is_active() -> None:
     registry = ValidationContextRegistry(ROOT)
 
     active = registry.freeze()
     assert active["validation_context"]["validation_profile"]["id"] == (
-        "v0.4-validation-p3-successor"
+        "v0.5.5-validation-product-definition-successor"
     )
     assert active["validation_context"]["validation_profile"] == registry._identity(
-        P3_SUCCESSOR_VALIDATION_PROFILE_SPEC
+        V055_VALIDATION_PROFILE_SPEC
     )
 
     p3 = registry.freeze(validation_profile_id="v0.4-validation-p3")
@@ -106,6 +106,8 @@ def test_explicit_profile_selection_is_closed_world() -> None:
         "v0.4-validation-p1",
         "v0.4-validation-p2",
         "v0.4-validation-p3",
+        "v0.4-validation-p3-successor",
+        "v0.5.5-validation-product-definition-successor",
     ),
 )
 def test_every_registered_profile_identity_replays(profile_id: str) -> None:

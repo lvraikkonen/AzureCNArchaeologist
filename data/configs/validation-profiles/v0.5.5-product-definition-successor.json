@@ -1,12 +1,12 @@
 {
-  "schema_version": "1.2",
-  "profile_id": "v0.4-validation-p3",
+  "schema_version": "1.4",
+  "profile_id": "v0.5.5-validation-product-definition-successor",
   "status": "frozen",
   "base_profile": {
-    "id": "v0.4-validation-p2",
-    "schema_version": "1.1",
-    "path": "data/configs/validation-profiles/v0.4-p2.json",
-    "sha256": "5a6baaea51f4c6fa2a5cb61b50af53c266455fe32475050309a9bef1a08b855a"
+    "id": "v0.4-validation-p3-successor",
+    "schema_version": "1.3",
+    "path": "data/configs/validation-profiles/v0.4-p3-successor.json",
+    "sha256": "e45ad2ba22c1a9ee91d735f18177f3e0824b01806793573112e8f15f26f94d82"
   },
   "content_sampling_profile": {
     "id": "v0.4-content-sampling-p3",
@@ -16,9 +16,9 @@
   },
   "contracts": {
     "product_definition": {
-      "schema_version": "1.1",
-      "path": "schemas/product-definition-1.1.schema.json",
-      "sha256": "57a1fa0c49c07d021da2fed1f0b777fbb7f9534d68076ee35d496a2d2c2e42e4"
+      "schema_version": "1.2",
+      "path": "schemas/product-definition-1.2.schema.json",
+      "sha256": "6289b3ecebd5313d745fd252ba9e1d24860481b530531ce6bf29c1920f5caa09"
     },
     "flexible_content": {
       "schema_version": "1.1",
@@ -46,9 +46,9 @@
       "sha256": "bd9b877f21d323b518e92cda194411c73b4195c037bed5395f05cff383e6b122"
     },
     "pipeline_validation": {
-      "schema_version": "2.0",
-      "path": "schemas/pipeline-validation-2.0.schema.json",
-      "sha256": "8cec1c71778d6b7317139557157bf2aadb5df4fe0e93f1db0bf8cff0620b3e09"
+      "schema_version": "2.1",
+      "path": "schemas/pipeline-validation-2.1.schema.json",
+      "sha256": "6a3d842ba5f6e85426c855fdaf334d44b0cda9cf927283a95b7d2f816a3e1ff9"
     },
     "batch_item_sampling_plan": {
       "schema_version": "1.0",
@@ -59,6 +59,11 @@
       "schema_version": "1.0",
       "path": "schemas/sampled-content-evidence-1.0.schema.json",
       "sha256": "d8107443584d9602a3fcb77e3c9cc98af6f44439af1707c21a80fd57c89f1e94"
+    },
+    "finding_code_policy": {
+      "schema_version": "1.0",
+      "path": "schemas/finding-code-policy-1.0.schema.json",
+      "sha256": "3b5587677deb1783bfad139f14f59f6726eca7cd73ed93816478b77d91ea7855"
     }
   },
   "input_assurance": {
@@ -320,5 +325,11 @@
     "virtual-wan": 100,
     "vpn-gateway": 100,
     "web-pubsub": 100
+  },
+  "finding_code_policy_identity": {
+    "id": "v0.4-finding-code-policy-p4",
+    "schema_version": "1.0",
+    "path": "data/configs/finding-code-policies/v0.4-p4.json",
+    "sha256": "bed3c18a753a7e3d7a3c00ec6d690a953e3794e1f43472508290637f9266a06b"
   }
 }

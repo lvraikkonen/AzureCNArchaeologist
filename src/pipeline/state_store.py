@@ -474,16 +474,23 @@ class StateStore:
             "validation_context"
         ]
         if validation_context != active_validation_context:
+            historical_validation_contexts: list[Mapping[str, Any]] = []
             try:
-                legacy_p3_validation_context = self._validation_context.freeze(
-                    validation_profile_id="v0.4-validation-p3"
-                )["validation_context"]
+                for profile_id in (
+                    "v0.4-validation-p3",
+                    "v0.4-validation-p3-successor",
+                ):
+                    historical_validation_contexts.append(
+                        self._validation_context.freeze(
+                            validation_profile_id=profile_id
+                        )["validation_context"]
+                    )
             except TypeError:
-                legacy_p3_validation_context = None
-            if validation_context != legacy_p3_validation_context:
+                historical_validation_contexts = []
+            if validation_context not in historical_validation_contexts:
                 raise ImmutableManifestError(
                     "New pipeline runs must use the active Validation Context "
-                    "or the explicit legacy P3 replay context"
+                    "or an explicit historical P3 replay context"
                 )
         batch_id = frozen["batch_id"]
         directory = self.run_dir(batch_id)

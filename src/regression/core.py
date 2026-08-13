@@ -47,6 +47,7 @@ class CoreSpecification:
     baseline_candidate_schema: str
     determinism_record_path: Path
     required_planning_baseline_id: str | None = None
+    required_validation_profile_id: str | None = None
     predecessor_fixture_path: Path | None = None
     predecessor_baseline_path: Path | None = None
 
@@ -75,6 +76,7 @@ V04_CORE_SPEC = CoreSpecification(
     determinism_record_path=Path(
         "reports/v0.4/core-determinism-comparison.json"
     ),
+    required_validation_profile_id="v0.4-validation-p3-successor",
 )
 V05_CORE_SPEC = CoreSpecification(
     group="v0.5-core-strategy-matrix",
@@ -97,6 +99,7 @@ V05_CORE_SPEC = CoreSpecification(
         "reports/v0.5.1/core-determinism-comparison.json"
     ),
     required_planning_baseline_id="v0.5.1-planning-baseline",
+    required_validation_profile_id="v0.4-validation-p3-successor",
     predecessor_fixture_path=V04_CORE_SPEC.fixture_manifest_path,
     predecessor_baseline_path=V04_CORE_SPEC.baseline_manifest_path,
 )
@@ -427,7 +430,11 @@ def build_fixture_manifest(
     full_plan = PipelinePlanner(root).plan(language="both")
     selected = _core_items_from_full_plan(full_plan)
     registry = ValidationContextRegistry(root)
-    frozen = registry.freeze()
+    frozen = registry.freeze(
+        validation_profile_id=(
+            specification.required_validation_profile_id
+        )
+    )
     manifest = {
         "schema_version": "1.0",
         "manifest_id": specification.fixture_manifest_id,
@@ -459,6 +466,12 @@ def build_fixture_manifest(
         if actual_id != specification.required_planning_baseline_id:
             raise CoreRegressionError(
                 "v0.5 Core fixture requires the promoted v0.5 Planning Baseline"
+            )
+    if specification.required_validation_profile_id is not None:
+        actual_id = manifest["frozen_inputs"]["validation_profile"]["id"]
+        if actual_id != specification.required_validation_profile_id:
+            raise CoreRegressionError(
+                "Core fixture Validation Profile identity drifted"
             )
     if specification.predecessor_fixture_path is not None:
         reviewed_changes = _reviewed_successor_changes(

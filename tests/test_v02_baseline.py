@@ -85,12 +85,20 @@ class ProductCatalogTests(unittest.TestCase):
         self.assertEqual(audit["counts"]["zh-cn"]["unknown"], 0)
         self.assertEqual(audit["counts"]["en-us"]["unknown"], 0)
 
-    def test_all_product_definitions_use_the_closed_world_v11_extraction_field(self):
+    def test_product_definitions_use_closed_versioned_extraction_fields(self):
         records = ProductCatalog(ROOT).load_definitions()
         self.assertEqual(len(records), 211)
         for product_key, record in records.items():
             with self.subTest(product_key=product_key):
-                self.assertEqual(record.definition["schema_version"], "1.1")
+                expected_schema_version = (
+                    "1.2"
+                    if product_key in {"azure-defender", "service-fabric"}
+                    else "1.1"
+                )
+                self.assertEqual(
+                    record.definition["schema_version"],
+                    expected_schema_version,
+                )
                 expected_extraction_fields = {"semantic_strategy"}
                 if product_key in {
                     "azure-defender",

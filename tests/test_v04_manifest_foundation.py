@@ -28,6 +28,8 @@ from src.core.validation_context import (
     P3_VALIDATION_PROFILE_SPEC,
     V05_CHANGED_ITEM_IDS,
     V05_PLANNING_BASELINE_SPEC,
+    V055_VALIDATION_CONTRACT_SPECS,
+    V055_VALIDATION_PROFILE_SPEC,
     ValidationContextError,
     ValidationContextRegistry,
 )
@@ -102,6 +104,7 @@ def _copy_registry_artifacts(root: Path) -> None:
     for specification in (
         *P3_VALIDATION_CONTRACT_SPECS,
         *P3_SUCCESSOR_VALIDATION_CONTRACT_SPECS,
+        *V055_VALIDATION_CONTRACT_SPECS,
     ):
         relative_path = specification.relative_path
         if relative_path in copied:
@@ -361,7 +364,7 @@ def test_p2_effective_baseline_changes_exactly_four_definition_hashes() -> None:
     assert tuple(changed) == P2_AMENDED_ITEM_IDS
 
 
-def test_freeze_defaults_to_successor_but_historical_p1_identity_replays() -> None:
+def test_freeze_defaults_to_v055_successor_but_historical_p1_replays() -> None:
     registry = ValidationContextRegistry(ROOT)
     frozen = registry.freeze()
     assert frozen["planning"]["baseline"]["id"] == (
@@ -378,11 +381,11 @@ def test_freeze_defaults_to_successor_but_historical_p1_identity_replays() -> No
         "coverage": "383/383",
     }
     assert frozen["validation_context"]["validation_profile"] == {
-        "id": "v0.4-validation-p3-successor",
-        "schema_version": "1.3",
-        "path": P3_SUCCESSOR_VALIDATION_PROFILE_SPEC.relative_path,
+        "id": "v0.5.5-validation-product-definition-successor",
+        "schema_version": "1.4",
+        "path": V055_VALIDATION_PROFILE_SPEC.relative_path,
         "sha256": sha256_file(
-            ROOT / P3_SUCCESSOR_VALIDATION_PROFILE_SPEC.relative_path
+            ROOT / V055_VALIDATION_PROFILE_SPEC.relative_path
         ),
     }
 

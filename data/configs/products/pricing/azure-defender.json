@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "product_key": "azure-defender",
   "display_name": "Microsoft Defender for Cloud",
   "slug": "azure-defender",

@@ -144,7 +144,7 @@ def _validation_21(source_findings: list[dict[str, str]]) -> dict[str, object]:
     return validation
 
 
-def test_successor_profile_is_active_and_legacy_p3_remains_explicit() -> None:
+def test_v055_is_active_and_historical_p3_profiles_remain_explicit() -> None:
     registry = ValidationContextRegistry(ROOT)
 
     active = registry.freeze()
@@ -152,7 +152,7 @@ def test_successor_profile_is_active_and_legacy_p3_remains_explicit() -> None:
     successor = registry.freeze(validation_profile_id="v0.4-validation-p3-successor")
 
     assert active["validation_context"]["validation_profile"]["id"] == (
-        "v0.4-validation-p3-successor"
+        "v0.5.5-validation-product-definition-successor"
     )
     assert legacy["validation_context"]["validation_profile"]["id"] == (
         "v0.4-validation-p3"

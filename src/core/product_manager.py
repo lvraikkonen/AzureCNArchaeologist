@@ -1,4 +1,4 @@
-"""Schema-validated Product Definition 1.1 runtime access.
+"""Schema-validated Product Definition 1.1/1.2 runtime access.
 
 The generated Product Index is the lookup accelerator; Product Definitions remain the
 authoritative source for identity, routing, and semantic extraction. Validation

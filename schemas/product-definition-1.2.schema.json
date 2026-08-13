@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://azure.cn/archaeologist/schemas/product-definition-1.1.schema.json",
-  "title": "Product Definition 1.1",
+  "$id": "https://azure.cn/archaeologist/schemas/product-definition-1.2.schema.json",
+  "title": "Product Definition 1.2",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -15,7 +15,7 @@
     "extraction"
   ],
   "properties": {
-    "schema_version": {"const": "1.1"},
+    "schema_version": {"const": "1.2"},
     "product_key": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
     "display_name": {"type": "string", "minLength": 1},
     "slug": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
@@ -107,7 +107,9 @@
         "source_boundary": {
           "enum": [
             "sole_static_formal_selector_before_common_sections",
-            "after_final_formal_selector_before_common_sections"
+            "after_final_formal_selector_before_common_sections",
+            "sole_direct_static_business_wrapper_before_common_sections",
+            "sole_inert_singleton_selector_target_before_common_sections"
           ]
         },
         "expected_by_language": {

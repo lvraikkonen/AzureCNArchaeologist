@@ -7,6 +7,7 @@ import json
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
+from types import MappingProxyType
 from typing import Any, Iterable
 
 from jsonschema import Draft202012Validator, FormatChecker
@@ -19,6 +20,14 @@ from src.core.support_article_versions import (
 
 
 LANGUAGES = ("zh-cn", "en-us")
+PRODUCT_DEFINITION_SCHEMA_PATHS = MappingProxyType({
+    "1.1": "schemas/product-definition-1.1.schema.json",
+    "1.2": "schemas/product-definition-1.2.schema.json",
+})
+PRODUCT_DEFINITION_12_PRODUCT_KEYS = frozenset({
+    "azure-defender",
+    "service-fabric",
+})
 SUPPORT_TYPE_DIRECTORIES = {
     "SLA": "SLA",
     "LEGAL": "Legal",
@@ -67,8 +76,7 @@ class ProductCatalog:
         self.schema_root = self.root / "schemas"
 
     def load_definitions(self) -> dict[str, ProductDefinitionRecord]:
-        schema = json.loads((self.schema_root / "product-definition-1.1.schema.json").read_text(encoding="utf-8"))
-        validator = Draft202012Validator(schema, format_checker=FormatChecker())
+        validators: dict[str, Draft202012Validator] = {}
         records: dict[str, ProductDefinitionRecord] = {}
         errors: list[str] = []
         primary_sources: dict[tuple[str, str], str] = {}
@@ -79,10 +87,65 @@ class ProductCatalog:
         for path in sorted(self.products_root.glob("*/*.json")):
             definition = json.loads(path.read_text(encoding="utf-8"))
             relative = path.relative_to(self.config_root).as_posix()
-            for error in sorted(validator.iter_errors(definition), key=lambda item: list(item.path)):
-                location = "/".join(str(part) for part in error.absolute_path) or "$"
-                errors.append(f"{relative}:{location}: {error.message}")
             product_key = definition.get("product_key", path.stem)
+            schema_version = definition.get("schema_version")
+            schema_relative = (
+                PRODUCT_DEFINITION_SCHEMA_PATHS.get(schema_version)
+                if isinstance(schema_version, str)
+                else None
+            )
+            if schema_relative is None:
+                errors.append(
+                    f"{relative}:schema_version: unknown Product Definition "
+                    f"schema version {schema_version!r}"
+                )
+            else:
+                validator = validators.get(schema_version)
+                if validator is None:
+                    schema_path = self.root / schema_relative
+                    try:
+                        schema = json.loads(
+                            schema_path.read_text(encoding="utf-8")
+                        )
+                    except (OSError, json.JSONDecodeError) as error:
+                        raise CatalogError(
+                            "Unable to load Product Definition schema "
+                            f"{schema_relative}: {error}"
+                        ) from error
+                    validator = Draft202012Validator(
+                        schema,
+                        format_checker=FormatChecker(),
+                    )
+                    validators[schema_version] = validator
+                for error in sorted(
+                    validator.iter_errors(definition),
+                    key=lambda item: list(item.path),
+                ):
+                    location = (
+                        "/".join(
+                            str(part) for part in error.absolute_path
+                        )
+                        or "$"
+                    )
+                    errors.append(
+                        f"{relative}:{location}: {error.message}"
+                    )
+            if (
+                schema_version == "1.2"
+                and product_key not in PRODUCT_DEFINITION_12_PRODUCT_KEYS
+            ):
+                errors.append(
+                    f"{relative}: Product Definition 1.2 is not authorized "
+                    f"for {product_key}"
+                )
+            if (
+                product_key in PRODUCT_DEFINITION_12_PRODUCT_KEYS
+                and schema_version != "1.2"
+            ):
+                errors.append(
+                    f"{relative}: {product_key} must use Product Definition "
+                    "1.2"
+                )
             if product_key in records:
                 errors.append(f"duplicate product_key {product_key}: {records[product_key].relative_path}, {relative}")
                 continue

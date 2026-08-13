@@ -356,7 +356,7 @@ def test_custom_new_batch_cannot_override_any_canonical_initial_state(
     assert not store.run_dir(BATCH_ID).exists()
 
 
-def test_new_run_uses_active_p3_after_slice_b(
+def test_new_run_uses_active_v055_validation_profile(
     tmp_path: Path,
 ) -> None:
     frozen = _input_manifest().to_dict()
@@ -366,7 +366,7 @@ def test_new_run_uses_active_p3_after_slice_b(
 
     batch = store.read_manifest(BATCH_ID)
     assert batch["validation_context"]["validation_profile"]["id"] == (
-        "v0.4-validation-p3-successor"
+        "v0.5.5-validation-product-definition-successor"
     )
 
 
