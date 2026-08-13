@@ -1,0 +1,142 @@
+{
+  "blocked_reason": null,
+  "blocking_errors": [],
+  "claim": "independent_source_content_fidelity",
+  "claim_limitations": [],
+  "comparison_version": "independent-content-comparison-v2",
+  "coverage": {
+    "blocked": 0,
+    "completed": 1,
+    "failed": 0,
+    "passed": 1,
+    "required": 1
+  },
+  "evidence_semantic_identity": {
+    "algorithm": "sha256-canonical-json-v1",
+    "sha256": "add2d10025da4d08fea1b77fe8014c3850d6e4838c090da0a232f5067729cff4"
+  },
+  "identity": {
+    "batch_id": "20260813T113000Z-b819c3f2",
+    "item_id": "en-us/service-fabric",
+    "language": "en-us",
+    "page_family": "simple_static",
+    "product_key": "service-fabric",
+    "resource_key": "service-fabric"
+  },
+  "mismatches": [],
+  "reconstruction_basis": {
+    "basis_id": "v0.5.5-20260813T113000Z-b819c3f2-en-us-service-fabric-basis",
+    "basis_semantic_identity": {
+      "algorithm": "sha256-canonical-json-v1",
+      "sha256": "bae968320c38e9cc1d81112ab64aac099f4a62254b4e9f9dfd3d3419de5c459e"
+    },
+    "batch_binding": {
+      "batch_id": "20260813T113000Z-b819c3f2",
+      "batch_manifest": {
+        "path": "runs/20260813T113000Z-b819c3f2/batch-manifest.json",
+        "revision": 1487,
+        "sha256": "422c140ad3d71f9ed2b32be2dff0b5e3886ef8e2fbf54db16815042609e3bed7"
+      },
+      "input_manifest": {
+        "path": "runs/20260813T113000Z-b819c3f2/input-manifest.json",
+        "sha256": "d25683cffb287fbd50a997b90e28d2d340e7fe1c527b5c1255963e2fabc55092"
+      },
+      "producer_commit": "55f8c5d6faa29587ee899f1fff2aabd687750c34"
+    },
+    "comparison_version": "independent-content-comparison-v2",
+    "item_identity": {
+      "item_id": "en-us/service-fabric",
+      "language": "en-us",
+      "page_family": "simple_static",
+      "product_key": "service-fabric",
+      "resource_key": "service-fabric",
+      "resource_kind": "current"
+    },
+    "persisted_payload_identity": {
+      "batch_revision": 1487,
+      "path": "runs/20260813T113000Z-b819c3f2/outputs/en-us/pricing/service-fabric.json",
+      "sha256": "df1ef1ced566eed04b34dcadca946688123bce8d9c7380f6679ca3672ed07108"
+    },
+    "product_definition_identity": {
+      "path": "data/configs/products/pricing/service-fabric.json",
+      "sha256": "55701cff54563cce8712f9c7b9f1d869bca02433343f85dd00adcb50b591fc63"
+    },
+    "reconstruction_profile_version": "independent-simple-page-global-reconstruction-v2",
+    "route_map_basis": null,
+    "schema_version": "1.2",
+    "scopes": [
+      {
+        "criteria": [],
+        "expected_group_name": null,
+        "payload_locator": "baseContent",
+        "removed_table_ids": [],
+        "retained_table_ids": [],
+        "scope_key": "full_content",
+        "scope_kind": "full_content",
+        "source_locator": {
+          "boundary": "sole_direct_static_business_wrapper_before_common_sections",
+          "kind": "selector",
+          "selector": "div.pure-content > div:not([class])"
+        }
+      }
+    ],
+    "soft_category_identity": null,
+    "source_identity": {
+      "path": "data/current_prod_html/en-us/pricing/details/service-fabric/index.html",
+      "sha256": "25ef88c24aacf453a1799bc30fc679816b18e45bd5a0643343ca0f481783e468"
+    },
+    "verifier_profile": {
+      "id": "v0.5.5-independent-fidelity-simple-page-global",
+      "path": "data/configs/independent-fidelity-profiles/v0.5.5-simple-page-global.json",
+      "sha256": "1d2bb8a3f12a39f6a4cc881595c653406dca24e8ea2feaa8bcbd87da48c03520",
+      "version": "0.5.5"
+    },
+    "wire_transform_version": "independent-cms-wire-v2"
+  },
+  "reconstruction_profile_version": "independent-simple-page-global-reconstruction-v2",
+  "schema_version": "1.2",
+  "scopes": [
+    {
+      "applied_transform_rule_ids": [],
+      "blocking_errors": [],
+      "criteria": [],
+      "diff": {
+        "path": "fragments/scope-001.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-001.expected.html.txt",
+        "sha256": "d1c2b91607201cad1430c775d20b72da90e5f8de60f762fc3bb10da48e26e839"
+      },
+      "expected_group_name": null,
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-001.payload.html.txt",
+        "sha256": "d1c2b91607201cad1430c775d20b72da90e5f8de60f762fc3bb10da48e26e839"
+      },
+      "payload_locator": "baseContent",
+      "removed_table_ids": [],
+      "retained_table_ids": [],
+      "scope_key": "full_content",
+      "scope_kind": "full_content",
+      "source": {
+        "path": "fragments/scope-001.source.html.txt",
+        "sha256": "b713ff78c7c33f0ed4eba52f33abd3ab483855283dc697cc4062de91453234e6"
+      },
+      "source_locator": {
+        "boundary": "sole_direct_static_business_wrapper_before_common_sections",
+        "kind": "selector",
+        "selector": "div.pure-content > div:not([class])"
+      },
+      "verdict": "passed"
+    }
+  ],
+  "verdict": "passed",
+  "verifier_profile": {
+    "id": "v0.5.5-independent-fidelity-simple-page-global",
+    "path": "data/configs/independent-fidelity-profiles/v0.5.5-simple-page-global.json",
+    "sha256": "1d2bb8a3f12a39f6a4cc881595c653406dca24e8ea2feaa8bcbd87da48c03520",
+    "version": "0.5.5"
+  },
+  "wire_transform_version": "independent-cms-wire-v2"
+}

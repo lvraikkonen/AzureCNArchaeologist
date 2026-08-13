@@ -1,0 +1,47 @@
+<div>
+<!-- BEGIN: TAB-CONTAINER-1 -->
+<div>
+<!-- BEGIN: Table1-Content-->
+<h3>
+                                    Azure 上的 Service Fabric
+                                </h3>
+<p>
+                                    Service Fabric 可用于任何标准大小的 Windows Server 虚拟机或 Linux 虚拟机（Linux 上的 Service Fabric
+                                    目前只提供预览版）。Service Fabric 在预览版下也可用，同时在 Azure 上运行 Ubuntu 映像。仅针对你选择的计算实例以及用于创建 Service
+                                    Fabric 群集的存储和网络资源向你收费。对 Service Fabric 服务本身不收取任何费用。有关必需资源的价格的详细信息，请访问以下页面：
+                                </p>
+<ul>
+<li>
+<a href="../virtual-machines/index.html" id="sla-Global-distribution01" target="_blank">
+                                            虚拟机定价
+                                        </a>
+</li>
+<li>
+<a href="../storage/index.html" id="sla-Global-distribution02" target="_blank">
+                                            存储定价
+                                        </a>
+</li>
+<li>
+<a href="../ip-addresses/index.html" id="sla-Global-distribution03" target="_blank">
+                                            IP 地址定价
+                                        </a>
+                                        （如果你的 Service Fabric 群集需要其他负载均衡器）。
+                                    </li>
+</ul>
+<!-- <p>为了更好地估算你所需的 Service Fabric 群集的成本，请使用 <a id="sla-Global-distribution04" style="color: #00a8d9;" href="../../calculator/index.html" target="_blank">Azure 价格估算器</a>。</p> -->
+<!-- END: Table1-Content-->
+</div>
+<!-- END: TAB-CONTAINER-1 -->
+<!-- BEGIN: TAB-CONTAINER-2 -->
+<div>
+<!-- BEGIN: Table1-Content-->
+<h3>
+                                    用于 Windows Server 的 Service Fabric
+                                </h3>
+<p>
+                                    Service Fabric 对于 Windows Server 还可免费下载，使你能够在本地或在其他云中创建 Service Fabric 群集。
+                                </p>
+<!-- END: Table1-Content-->
+</div>
+<!-- END: TAB-CONTAINER-2 -->
+</div>

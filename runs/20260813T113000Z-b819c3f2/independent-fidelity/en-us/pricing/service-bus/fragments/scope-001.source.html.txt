@@ -1,0 +1,550 @@
+<div class="technical-azure-selector tab-control-selector">
+<div class="tab-control-container tab-active">
+<h2>
+                                Pricing Details
+                            </h2>
+<p>
+                                Service Bus comes in Basic and Standard tiers, and premium tiers. Here’s how they compare:
+                            </p>
+<table cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<th align="left">
+<strong>
+                                            Features
+                                        </strong>
+</th>
+<th align="left">
+<strong>
+                                            Basic
+                                        </strong>
+</th>
+<th align="left">
+<strong>
+                                            Standard
+                                        </strong>
+</th>
+<th align="left">
+<strong>
+                                            Premium
+                                        </strong>
+</th>
+</tr>
+<tr>
+<td>
+                                        Queues
+                                    </td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+</tr>
+<tr>
+<td>
+                                        Scheduled messages
+                                    </td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+</tr>
+<tr>
+<td>
+                                        Topics
+                                    </td>
+<td>
+                                        -
+                                    </td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+</tr>
+<tr>
+<td>
+                                        Transactions
+                                    </td>
+<td>
+                                        -
+                                    </td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+</tr>
+<tr>
+<td>
+                                        De-duplication
+                                    </td>
+<td>
+                                        -
+                                    </td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+</tr>
+<tr>
+<td>
+                                        Sessions
+                                    </td>
+<td>
+                                        -
+                                    </td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+</tr>
+<tr>
+<td>
+                                        ForwardTo/SendVia
+                                    </td>
+<td>
+                                        -
+                                    </td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+</tr>
+<tr>
+<td>
+                                        Message size
+                                    </td>
+<td>
+                                        256 KB
+                                    </td>
+<td>
+                                        256 KB
+                                    </td>
+<td>
+                                        100 MB
+                                    </td>
+</tr>
+<!-- <tr>
+                                                  <td>中继</td>
+                                                  <td><i class="icon icon-tick"></i></td>
+                                                  <td><i class="icon icon-tick"></i></td>
+                                              </tr> -->
+<!-- <tr>
+                                                  <td>事件中心<sup> 1</sup></td>
+                                                  <td><i class="icon icon-tick"></i></td>
+                                                  <td><i class="icon icon-tick"></i></td>
+                                              </tr> -->
+<tr>
+<td>
+                                        Brokered connections included
+                                    </td>
+<td>
+                                        100
+                                    </td>
+<td>
+                                        1,000
+                                        <sup>
+                                            1
+                                        </sup>
+</td>
+<td>
+                                        1,000 per MU
+                                    </td>
+</tr>
+<tr>
+<td>
+                                        Brokered connections (overage allowed)
+                                    </td>
+<td>
+                                        -
+                                    </td>
+<td>
+<i class="icon icon-tick">
+</i>
+                                        (billable)
+                                    </td>
+<td>
+                                        Up to 1,000 per MU
+                                    </td>
+</tr>
+<tr>
+<td>
+                                        Resource isolation
+                                    </td>
+<td>
+</td>
+<td>
+</td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+</tr>
+<tr>
+<td>
+                                        Availability Zones (AZ) support
+                                    </td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+<td>
+<i class="icon icon-tick">
+</i>
+</td>
+</tr>
+</table>
+<!-- <p><sup>1</sup> 在服务使用过程中，事件中心的使用将单独计费，请访问<a id="service_bus_transfer_price-page-event-center" href="/en-us/pricing/details/event-hubs/" target="_blank">事件中心价格页面</a>了解相关费率。</p> -->
+<div class="tags-date">
+<div class="ms-date">
+                                    Service Bus premium runs in dedicated resources to provide higher throughput and more consistent
+                                    performance.
+                                </div>
+<div class="ms-date">
+<sup>
+                                        1
+                                    </sup>
+                                    1,000 brokered connections are included with the standard messaging tier (via the base
+                                    charge) and can be shared across all queues, topics, subscriptions, and event hubs within the associated Azure
+                                    subscription.
+                                </div>
+</div>
+<h2>
+                                Message Transfer Operations
+                            </h2>
+<p>
+                                An operation is any API call to the Service Bus service.
+                            </p>
+<p>
+                                Starting May 2, 2018, customers will be billed at an hourly rate for Service Bus standard base units. This replaces
+                                the current daily and monthly rate billing, making it more consistent with other Azure services. Your customers will
+                                pay only for the number of hours they use Service Bus rather than for a whole day or month.
+                            </p>
+<div class="tags-date">
+<div class="ms-date">
+                                    *The following prices are tax-inclusive.
+                                </div>
+<br/>
+<div class="ms-date">
+                                    *Monthly pricing estimates are based on 744 hours of usage per month.
+                                </div>
+</div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<th align="left">
+<strong>
+                                            Basic
+                                        </strong>
+</th>
+<th align="left">
+<strong>
+</strong>
+</th>
+</tr>
+<tr>
+<td>
+                                        Operations
+                                    </td>
+<td>
+                                        ￥0.31 per million operations
+                                    </td>
+</tr>
+</table>
+<table cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<th align="left">
+<strong>
+                                            Standard
+                                        </strong>
+</th>
+<th align="left">
+<strong>
+</strong>
+</th>
+</tr>
+<tr>
+<td>
+                                        Basic charge
+                                        <sup>
+                                            1
+                                            <sup>
+</sup>
+</sup>
+</td>
+<td>
+                                        ￥0.0851/hour (about￥63.3144/month)
+                                    </td>
+</tr>
+<tr>
+<td>
+                                        First 13M operations/month
+                                    </td>
+<td>
+                                        Included
+                                    </td>
+</tr>
+<tr>
+<td>
+                                        Next 88M operations (13M - 100M operations)/month
+                                    </td>
+<td>
+                                        ￥5.21 per million operations
+                                    </td>
+</tr>
+<tr>
+<td>
+                                        Next 2,400M operations (100M - 2,500M operations)/month
+                                    </td>
+<td>
+                                        ￥3.20 per million operations
+                                    </td>
+</tr>
+<tr>
+<td>
+                                        Over 2,500M operations/month
+                                    </td>
+<td>
+                                        ￥1.27 per million operations
+                                    </td>
+</tr>
+</table>
+<p>
+<sup>
+                                    1
+                                </sup>
+                                Allocated in proportion every hour, 744 hours every month.
+                            </p>
+<table cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<th align="left">
+<strong>
+                                            Premuim
+                                        </strong>
+</th>
+<th align="left">
+<strong>
+</strong>
+</th>
+</tr>
+<tr>
+<td>
+                                        Hourly
+                                    </td>
+<td>
+                                        ￥9.4382/hour (about￥7,022.0208/month)
+                                    </td>
+</tr>
+</table>
+<h2>
+                                Brokered connections
+                            </h2>
+<p>
+                                Number of AMQP connections or HTTP calls to Service Bus.
+                            </p>
+<!--<p>从2016年4月1日起，中转连接的价格会下调 28.4%，以下是下调后的新价格：</p>-->
+<div class="tags-date">
+<div class="ms-date">
+                                    *The following prices are tax-inclusive.
+                                </div>
+<br/>
+<div class="ms-date">
+                                    *Monthly pricing estimates are based on 744 hours of usage per month.
+                                </div>
+</div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<th align="left">
+<strong>
+                                            Standard Tier
+                                        </strong>
+</th>
+<th align="left">
+<strong>
+</strong>
+</th>
+</tr>
+<tr>
+<td>
+                                        First 1k/month
+                                    </td>
+<td>
+                                        Included
+                                    </td>
+</tr>
+<tr>
+<td>
+                                        Next 99K (1K – 100K)/month
+                                    </td>
+<td>
+                                        ￥0.18 per connection/month
+                                    </td>
+</tr>
+<tr>
+<td>
+                                        Next 400K (100K – 500K)/month
+                                    </td>
+<td>
+                                        ￥0.15 per connection/month
+                                    </td>
+</tr>
+<tr>
+<td>
+                                        Over 500K/month
+                                    </td>
+<td>
+                                        ￥0.10 per connection/month
+                                    </td>
+</tr>
+</table>
+<p>
+                                This will be charged by the peak amount of concurrent connections, and the expenses are allocated in proportion every hour, 744 hours
+                                every month.
+                            </p>
+<table cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<th align="left">
+<strong>
+                                            PREMIUM TIER
+                                        </strong>
+</th>
+<th align="left">
+<strong>
+</strong>
+</th>
+</tr>
+<tr>
+<td>
+                                        Brokered connections are not charged in the premium tier.
+                                    </td>
+</tr>
+</table>
+<h2>
+                                Hybrid connections
+                            </h2>
+<p>
+                                Mixed connection is charged per listener, including 5 GB/month of data transmission. In the event of excess of this
+                                limit, the extra parts will also be charged.
+                            </p>
+<table cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<th align="left">
+<strong>
+                                            Hybrid Connection Pricing
+                                        </strong>
+</th>
+<th align="left">
+<strong>
+</strong>
+</th>
+</tr>
+<tr>
+<td>
+                                        Connection charge (including 5 GB data/month)
+                                        <sup>
+                                            1
+                                        </sup>
+</td>
+<td>
+                                        ￥76.087/listener per month(￥0.102/listener per hour)
+                                    </td>
+</tr>
+<tr>
+<td>
+                                        Data transfer overage (data exceeding the included 5 GB/month)
+                                    </td>
+<td>
+                                        ￥13.398/GB
+                                    </td>
+</tr>
+</table>
+<div class="tags-date">
+<div class="ms-date">
+<sup>
+                                        1
+                                    </sup>
+                                    The data transfer limit of 5 GB covers total data transfer across all listener
+                                    units.
+                                </div>
+</div>
+<h2>
+                                Relay
+                            </h2>
+<!--<p>中继仅在标准级别中可用，按消息量和中继小时数收费。</p>-->
+<!--<p>从2016年4月1日起，中继的价格会下调 25.6%，以下是下调后的新价格：</p>-->
+<div class="tags-date">
+<div class="ms-date">
+                                    *The following prices are tax-inclusive.
+                                </div>
+<br/>
+<div class="ms-date">
+                                    *Monthly pricing estimates are based on 744 hours of usage per month.
+                                </div>
+</div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<th align="left">
+<strong>
+                                            Relay Pricing
+                                        </strong>
+</th>
+<th align="left">
+<strong>
+</strong>
+</th>
+</tr>
+<tr>
+<td>
+                                        Relay hours
+                                    </td>
+<td>
+                                        ￥0.52 for every 100 relay hours
+                                    </td>
+</tr>
+<tr>
+<td>
+                                        Messages
+                                    </td>
+<td>
+                                        ￥0.05 for every 10,000 messages
+                                    </td>
+</tr>
+</table>
+</div>
+</div>
