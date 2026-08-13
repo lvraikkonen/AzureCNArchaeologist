@@ -1,0 +1,149 @@
+{
+  "blocked_reason": null,
+  "blocking_errors": [],
+  "claim": "independent_source_content_fidelity",
+  "claim_limitations": [
+    "The English item reuses the Chinese Source snapshot; this Evidence proves fidelity to that binding, not English translation, language correctness, or localization quality."
+  ],
+  "comparison_version": "independent-content-comparison-v2",
+  "coverage": {
+    "blocked": 0,
+    "completed": 1,
+    "failed": 0,
+    "passed": 1,
+    "required": 1
+  },
+  "evidence_semantic_identity": {
+    "algorithm": "sha256-canonical-json-v1",
+    "sha256": "bee0d6b5c3920168ee47ebbde6913cbb45ad942ad1fd1ab863a7f8dc382f4e54"
+  },
+  "identity": {
+    "batch_id": "20260813T013534Z-b9e91703",
+    "item_id": "en-us/icp-faq",
+    "language": "en-us",
+    "page_family": "support_article",
+    "product_key": "icp-faq",
+    "resource_key": "icp-faq"
+  },
+  "mismatches": [],
+  "reconstruction_basis": {
+    "basis_id": "v0.5.3-20260813T013534Z-b9e91703-en-us-icp-faq-basis",
+    "basis_semantic_identity": {
+      "algorithm": "sha256-canonical-json-v1",
+      "sha256": "4b4bc2c8ecc787e4035f16744462278438a50c45f73ff6104b536a4d506276b2"
+    },
+    "batch_binding": {
+      "batch_id": "20260813T013534Z-b9e91703",
+      "batch_manifest": {
+        "path": "runs/20260813T013534Z-b9e91703/batch-manifest.json",
+        "revision": 1483,
+        "sha256": "dc92cb8fea3ac8390d3b41d47371a89e3f59429cfa8a7cdaed31726652439966"
+      },
+      "input_manifest": {
+        "path": "runs/20260813T013534Z-b9e91703/input-manifest.json",
+        "sha256": "4f2ea3c3fe3570626c32437315d1063a3c143e50a71f97797bf9026388c028d6"
+      },
+      "producer_commit": "658987d9ef221aeb29743bb3832a2aee064584b9"
+    },
+    "comparison_version": "independent-content-comparison-v2",
+    "item_identity": {
+      "item_id": "en-us/icp-faq",
+      "language": "en-us",
+      "page_family": "support_article",
+      "product_key": "icp-faq",
+      "resource_key": "icp-faq",
+      "resource_kind": "current"
+    },
+    "persisted_payload_identity": {
+      "batch_revision": 1483,
+      "path": "runs/20260813T013534Z-b9e91703/outputs/en-us/SupportArticles/ICP/icp-faq.json",
+      "sha256": "3b9ad2985c25416fdf523656b18daee4779d0c6ca66419dec1d20be98c081218"
+    },
+    "product_definition_identity": {
+      "path": "data/configs/products/support-articles/icp-faq.json",
+      "sha256": "ca84540ef9a649d50f2625e786f2d8752488adf6c9adc41b7b806f10cdce5f0f"
+    },
+    "reconstruction_profile_version": "independent-four-family-reconstruction-v1",
+    "route_map_basis": {
+      "entries": [],
+      "source_url": "https://www.azure.cn/en-us/support/icp/icp-faq/"
+    },
+    "schema_version": "1.1",
+    "scopes": [
+      {
+        "criteria": [],
+        "expected_group_name": null,
+        "payload_locator": "mainContent",
+        "removed_table_ids": [],
+        "retained_table_ids": [],
+        "scope_key": "full_content",
+        "scope_kind": "full_content",
+        "source_locator": {
+          "boundary": "first_h2_through_parent_end_excluding_ui_nodes",
+          "kind": "support_main_content",
+          "selector": "div.pure-content h2:first-of-type"
+        }
+      }
+    ],
+    "soft_category_identity": null,
+    "source_identity": {
+      "path": "data/current_prod_html/en-us/SupportArticles/ICP/icp-faq.html",
+      "sha256": "9dbebd434bbe067e88512503ce6235fe24341ae219fb025685e0d85b563cbf38"
+    },
+    "verifier_profile": {
+      "id": "v0.5.3-independent-fidelity-four-family",
+      "path": "data/configs/independent-fidelity-profiles/v0.5.3-four-family.json",
+      "sha256": "6a3c6c0fcb93105e2540a88229c302317ae48b4b5d8ea2a1fcf75f196b029f0c",
+      "version": "0.5.3"
+    },
+    "wire_transform_version": "independent-cms-wire-v2"
+  },
+  "reconstruction_profile_version": "independent-four-family-reconstruction-v1",
+  "schema_version": "1.1",
+  "scopes": [
+    {
+      "applied_transform_rule_ids": [
+        "support-url-resolution-v1"
+      ],
+      "blocking_errors": [],
+      "criteria": [],
+      "diff": {
+        "path": "fragments/scope-001.diff.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "path": "fragments/scope-001.expected.html.txt",
+        "sha256": "d5624cce8573fa80eaff18dfa7e0ec364e7e46ffd59506d43c77798431fd1952"
+      },
+      "expected_group_name": null,
+      "mismatches": [],
+      "payload": {
+        "path": "fragments/scope-001.payload.html.txt",
+        "sha256": "d5624cce8573fa80eaff18dfa7e0ec364e7e46ffd59506d43c77798431fd1952"
+      },
+      "payload_locator": "mainContent",
+      "removed_table_ids": [],
+      "retained_table_ids": [],
+      "scope_key": "full_content",
+      "scope_kind": "full_content",
+      "source": {
+        "path": "fragments/scope-001.source.html.txt",
+        "sha256": "aec350ea66d962003dc2758e1d4402906118beceb6cc249c1efc2c77623e3d2b"
+      },
+      "source_locator": {
+        "boundary": "first_h2_through_parent_end_excluding_ui_nodes",
+        "kind": "support_main_content",
+        "selector": "div.pure-content h2:first-of-type"
+      },
+      "verdict": "passed"
+    }
+  ],
+  "verdict": "passed",
+  "verifier_profile": {
+    "id": "v0.5.3-independent-fidelity-four-family",
+    "path": "data/configs/independent-fidelity-profiles/v0.5.3-four-family.json",
+    "sha256": "6a3c6c0fcb93105e2540a88229c302317ae48b4b5d8ea2a1fcf75f196b029f0c",
+    "version": "0.5.3"
+  },
+  "wire_transform_version": "independent-cms-wire-v2"
+}
