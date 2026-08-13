@@ -80,6 +80,14 @@ _Avoid_: Strategy-specific base content, Qa prefix, global `sharedContent`, repe
 A source layout from which the exact Page-Global Content ownership boundary cannot be established without guessing. It is a blocking reconstruction condition, not evidence that `baseContent` is empty and not permission to sweep a broader page container.
 _Avoid_: Empty base content, whole-page fallback, best-effort main content
 
+**Simple Classification Inventory**:
+A reviewed product-level list whose members are classified as Simple, expanded by language only for Batch accounting. Membership does not imply that a Source is trusted, the item is runnable or successful, L3a/L3b has passed, or the item belongs to a formal fidelity target set; those denominators remain separate.
+_Avoid_: Simple target set, successful Simple items, L3b denominator
+
+**Inert Singleton Selector**:
+Source selector markup whose independently parsed desktop and mobile presentations each expose exactly one selected identity, agree on one globally unique target, and provide no reachable alternative selection. It creates no CMS filter dimension; the selector UI is excluded from Page-Global Content, while its sole business target still requires an explicit, hash-bound content boundary.
+_Avoid_: Active filter, ignored control, first-option fallback
+
 **Content Ownership Overlap**:
 The same complete business fragment assigned to more than one CMS ownership field, such as both `baseContent` and a `commonSection` or state-scoped group. It is a reconstruction error even when each field is independently valid.
 _Avoid_: Shared applicability, harmless duplication, repeated wrapper

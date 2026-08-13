@@ -2,7 +2,7 @@
 
 > 文档状态：当前项目路线图  
 > 最新稳定版本：v0.5.4
-> 当前开发阶段：v0.5.4 已完成实施与人工技术验收；进入 v0.5.5 architecture preflight / Execution Plan 设计
+> 当前开发阶段：v0.5.5 architecture preflight 与 Execution Plan 已获接受；进入冻结计划的 P0–P4 实施
 > 基线日期：2026-08-13
 > 适用范围：Azure 中国区产品 HTML 标准化、策略化解析、CMS JSON 导出与质量验证
 
@@ -132,7 +132,7 @@ v1.0 中需要清晰区分：
 | v0.5.2 | `zh-cn/api-management` 单项首个正式 L3b 证据闭环 | 对 reference Batch 的单一语言级 item 产生首份正式 L3b Evidence 和逐状态只读并排报告；不进入 L4/Release/Publication |
 | v0.5.3 | 四类双语 L3b 证据覆盖、Workbench 与 Machine Gate 裁定 | 在同一新的 current full bilingual Batch 上覆盖 Core 8，并单列两个 carry-over；Workbench 展示 L3a/L3b Evidence；依据真实证据裁定 Machine Gate policy，但本版本不激活运行时；形成当前问题地图并重排后续版本 |
 | v0.5.4 | SupportArticle mixed/direct-text preservation | 修复两项 ICP Evidence 证明的共享静默正文丢失，保留历史负证据并生成新的双语 passed Evidence 与 SLA witness |
-| v0.5.5 | Simple page-global boundary 与策略分类 | 对当前 16 个 fail-closed items 先归因/拆分，再以可证明边界恢复适用项 |
+| v0.5.5 | Simple page-global boundary 与策略分类 | 固化 16 products / 32 language items 的分类清单，保护 24 个 current pass，只修复 4 个可证明 boundary items，并保留 4 个 blocker/exclusion |
 | v0.5.6 | Filter-control truth 拆分、安全修复与 v0.5 收口 | 拆分当前 31 个 detector/target/default/domain 问题，只修复可证明的共享实现问题并冻结 v0.5 acceptance baseline |
 | v0.6 | 剩余结构/config 问题与 CMS 暂存检查 | 处理 R4–R6 残余组，并验证 Release 在 staging CMS 往返后的结构化内容一致性 |
 | v0.7 | 长尾与生产化 | 只在真实证据支持时建设 streaming、真实发布和长尾支持 |
@@ -145,6 +145,8 @@ v1.0 中需要清晰区分：
 2026-08-11 的 v0.5 入口总体方向已经人工接受，详细依据见 `reports/post-v0.4/v050-entry-decision.md`。`plans/v0.5.1-execution-plan.md` 与 `plans/v0.5.2-execution-plan.md` 均已按冻结范围完成实施与技术验收，对应 handoff 保持历史有效。`plans/v0.5.3-execution-plan.md` 也已于 2026-08-12 完成实施与人工技术验收：formal Batch `20260812T125640Z-e5aa4b3f` 在 clean producer commit `de7ea08518bb54e180e059007a9522d8301e2371` 上产生 Core 8 的 8/8 bundles 和 46/46 scopes；用户接受 candidate commit `2393f30cec6476fd2edc4bc1342643e8eb2f9a96` 的 exact identities、两项 ICP failed Evidence、carry-over、`parallel_only` / `runtime_effective=false` decision 及 residual problem map。
 
 `plans/v0.5.4-execution-plan.md` 随后完成实施与人工技术验收：formal Batch `20260813T013534Z-b9e91703` 绑定 clean producer `658987d9ef221aeb29743bb3832a2aee064584b9`，与 v0.5.3 reference 的 434-item membership、input bindings、status/error denominator 完全一致；319 份 persisted payload 中 317 份 byte-identical，仅双语 `icp-faq.mainContent` 恢复 Source direct text。用户复核 3/3 full-content scopes 并接受 candidate commit `9c16371aafc2720e9486f2bba120432d996b2697`、三项 exact Evidence、claim limitation、family/full-Batch regression、历史负证据与 unchanged Machine Gate。权威状态和下一阶段输入见 `reports/v0.5.4/acceptance-status.md`、`support-article-regression.md`、`full-batch-comparison.md` 与 `v0.5.5-handoff.md`。
+
+v0.5.4 handoff 接受后，用户以新的 16-product Simple Classification Inventory 修订 v0.5.5 实施清单，并确认 canonical key 为 `azure-migrate`。正式 preflight 将其展开为 32 个 language items：24 个当前 succeeded/L3a passed items 只做 exact-byte 防回退，双语 `service-fabric` 与双语 `azure-defender` 是 4 个窄 repair items，双语 `virtual-wan` 保持 Source structure blocked，双语 `event-grid` 保持 known-unsupported。该修订不回写已接受 handoff；权威架构检查与冻结计划分别见 `reports/v0.5.5/architecture-preflight.md`、`plans/v0.5.5-execution-plan.md`。
 
 ## 5. 分版本路线图
 
@@ -601,13 +603,26 @@ formal Batch `20260813T013534Z-b9e91703` 的 item/status/error 与 accepted v0.5
 
 ### v0.5.5：Simple page-global boundary 与策略分类
 
-处理当前 Batch 的 16 个 Simple items：`azure-defender`、`batch`、`bot-services`、`core-control-plane`、`firewall-manager`、`frontdoor`、`service-fabric`、`virtual-network` 的双语项。当前包含 intrinsic boundary、active-filter/static classification、FAQ/SLA boundary 和 direct-child 四种签名，必须先归因并按真实结构拆分，不能沿用旧 C1 数字假设一个根因。
+> 状态：architecture preflight 与 Execution Plan 已获用户接受并冻结；授权按 P0–P4 推进。
 
-正文边界只能来自 DOM 内在事实或 Product Definition 明确声明；无法证明时继续阻断。测试必须覆盖边界过宽、过窄、误收相邻组件和 active controls，不得回退到 `.pure-content`/`body` 猜测正文。
+v0.5.4 handoff 后，用户明确以以下 16 products 替换本版本实施 inventory：`ip-addresses`、`event-grid`、`service-bus`、`site-recovery`、`scheduler`、`traffic-manager`、`azure-policy`、`advisor`、`azure-update-management-center`、`azure-migrate`、`service-fabric`、`azure-defender`、`cdn`、`virtual-wan`、`active-directory-b2c`、`multi-factor-authentication`。每项展开双语后为 32 个 language items；`azure-migration` 是已纠正笔误，不建立 alias。
+
+该清单只表达 reviewed Simple classification，不等于 support、execution、L3a 或 L3b denominator。正式 v0.5.4 Batch 的拆分是：
+
+- 24 items 已 extraction succeeded / L3a passed，v0.5.5 只做完整 Business Payload exact-byte 防回退；
+- 双语 `service-fabric` 与双语 `azure-defender` 共 4 items，分别以唯一 direct static business wrapper 和 Inert Singleton Selector target 的显式、逐语言 hash-bound Product Definition boundary 修复；
+- 双语 `virtual-wan` 继续 `SOURCE_HTML_STRUCTURE_BLOCKED`，不从两个 duplicate-ID material fragments 猜正文，owner 为 R4/v0.6 + upstream；
+- 双语 `event-grid` 继续 `known_unsupported`，当前 Source 已被 maintainer 确认为错误内容，不物化 normalized input、不生成 payload/Evidence。
+
+正文边界只能来自 DOM 内在事实和 Product Definition closed-world declaration；无法证明时继续阻断。测试必须覆盖边界过宽、过窄、误收相邻组件、active controls、desktop/mobile disagreement、duplicate target 和 identity drift，不得回退到 `.pure-content`/`body` 猜测正文。
+
+formal L3b 采用比例化 slice：四个 repair items 使用 add-only Profile/Basis/Evidence 1.2 与新的 4-item target set；双语 `service-bus` 继续使用既有 Profile 1.1 作为 S1 witness。旧 Profile/Evidence 1.1 语义和历史 bytes 不得改变，Machine Gate 保持 `parallel_only` / `runtime_effective=false`。详细契约见 `reports/v0.5.5/architecture-preflight.md` 与 `plans/v0.5.5-execution-plan.md`。
+
+原 handoff 中未进入修订 inventory 的 items 有明确 owner：`firewall-manager` 进入 v0.5.6 R3a；用户确认非 Simple 的 `batch` 进入 v0.6 R5；`bot-services`、`core-control-plane`、`frontdoor`、`virtual-network` 的排除不构成非 Simple 结论，进入 v0.6 R5 boundary/classification。
 
 ### v0.5.6：Filter-control truth 拆分、安全修复与 v0.5 收口
 
-处理当前 31 个 filter-control failures，先拆为 R3a detector/target/root availability 16 项和 R3b default/domain disagreement 15 项。某些项属于上游 Source truth，而不是 extractor defect；只修复有 Source 证据的共享 detector/target/default 实现问题，矛盾控件继续 fail-closed，不得为提高成功数而强制归一化。
+处理当前 31 个 filter-control failures，先拆为 R3a detector/target/root availability 16 项和 R3b default/domain disagreement 15 项；v0.5.5 scope amendment 明确移交的 `firewall-manager` 归入 R3a。某些项属于上游 Source truth，而不是 extractor defect；只修复有 Source 证据的共享 detector/target/default 实现问题，矛盾控件继续 fail-closed，不得为提高成功数而强制归一化。
 
 最终以 accepted v0.5 Planning Baseline 为分母、以 accepted v0.4.1 与 v0.5.3 Batches 为历史参照运行完整防回退，冻结 v0.5 acceptance Batch、问题组完成记录和下一阶段 handoff。未证明可安全修复的结构或 Source disagreement 明确进入 v0.6。
 
@@ -615,7 +630,7 @@ formal Batch `20260813T013534Z-b9e91703` 的 item/status/error 与 accepted v0.5
 
 ### v0.6：剩余结构/config 问题与 CMS 暂存环境往返检查
 
-处理 accepted map 的 R4 ambiguous content ownership、R5 Complex/state/config mapping 与 page-global gaps、R6 parser/validation narrow residuals，以及 v0.5.6 明确延后的 Source disagreement。`en-us/time-series-insights` 的 unqualified soft-category boundary 属于 R5；不得伪造 bundle 或靠缩小分母解决。旧 C3/C5/C6/C7/C8 只作历史比较，不继承旧项数。对至少 3 个进入 sealed Release 的代表单项执行 staging CMS import → export，并与 Release Payload 做语义比较。该往返是生产发布前最后一道**结构化内容检查**，不证明模板、CSS glyph、JavaScript 交互、最终渲染或真实 publish 工作流正确。
+处理 accepted map 的 R4 ambiguous content ownership、R5 Complex/state/config mapping 与 page-global gaps、R6 parser/validation narrow residuals，以及 v0.5.6 明确延后的 Source disagreement。v0.5.5 scope amendment 把 `virtual-wan` 的 duplicate-ID ownership blocker 交给 R4，把 `batch` 与尚未裁决的 `bot-services`、`core-control-plane`、`frontdoor`、`virtual-network` 交给 R5；移交不是预先裁决。`en-us/time-series-insights` 的 unqualified soft-category boundary 同属 R5；不得伪造 bundle 或靠缩小分母解决。旧 C3/C5/C6/C7/C8 只作历史比较，不继承旧项数。对至少 3 个进入 sealed Release 的代表单项执行 staging CMS import → export，并与 Release Payload 做语义比较。该往返是生产发布前最后一道**结构化内容检查**，不证明模板、CSS glyph、JavaScript 交互、最终渲染或真实 publish 工作流正确。
 
 覆盖率使用 accepted Planning Baseline 中经审核保留的 runnable 单项作为固定分母；分母变化必须单独审核和记录：
 
