@@ -1,6 +1,6 @@
-# v0.5.4 SupportArticle regression candidate
+# v0.5.4 SupportArticle regression
 
-> Status: `complete_candidate_pending_human_review`
+> Status: `accepted`
 >
 > Formal Batch: `20260813T013534Z-b9e91703`
 >
@@ -18,7 +18,7 @@ The shared SupportArticle direct-text loss is repaired at the production `mainCo
 - `zh-cn/icp-faq`, `en-us/icp-faq` and `zh-cn/sla-sql-data` each produced a current, hash-valid, 1/1 passed Evidence 1.1 bundle;
 - repeat recording was read-only and historical v0.5.3 Evidence remained current and immutable.
 
-This is an Evidence/report candidate, not human acceptance. It does not authorize a version bump or tag.
+The user accepted this regression result after reviewing all three formal scopes. Version closure and the local tag remain conditional on the acceptance/version commit passing the final complete gate with a clean worktree.
 
 ## Production behavior and regression gates
 
@@ -70,7 +70,7 @@ Both actual Source bindings contain exactly one non-empty top-level direct-text 
 
 The Evidence fragments retain the Source's original CRLF and indentation bytes. In each new payload the exact raw node occurs once; deleting that one node restores the accepted v0.5.3 `mainContent` exactly. It appears after question 18 and before question 19.
 
-## Exact formal Evidence candidate
+## Accepted exact formal Evidence
 
 All three actual scopes use `scope_key=full_content`, `scope_kind=full_content` and `payload_locator=mainContent`. Coverage is `required/completed/passed/failed/blocked`.
 
@@ -101,4 +101,4 @@ The exact persisted limitation for `en-us/icp-faq` is:
 
 > The English item reuses the Chinese Source snapshot; this Evidence proves fidelity to that binding, not English translation, language correctness, or localization quality.
 
-The candidate proves the repaired direct-text mechanism and the stated current regression denominator. It does not prove every possible SupportArticle fidelity property, expand L3b catalog coverage, create L4 approval, or activate the Machine Gate. The accepted policy remains `parallel_only` with `runtime_effective=false`.
+The accepted result proves the repaired direct-text mechanism and the stated current regression denominator. It does not prove every possible SupportArticle fidelity property, expand L3b catalog coverage, create L4 approval, or activate the Machine Gate. The accepted policy remains `parallel_only` with `runtime_effective=false`.

@@ -1,6 +1,6 @@
-# v0.5.4 full Batch comparison candidate
+# v0.5.4 full Batch comparison
 
-> Status: `complete_candidate_pending_human_acceptance`
+> Status: `accepted`
 >
 > Candidate Batch: `20260813T013534Z-b9e91703`
 >
@@ -10,11 +10,11 @@
 
 The new formal Batch has the same 434-item input membership, Source/config bindings, terminal status denominator, item/checkpoint statuses and structured errors as the accepted v0.5.3 Batch. Payload presence is unchanged. Of 319 persisted Business Payloads, 317 are byte-identical and the only two deltas are the intended `mainContent` repair for bilingual `icp-faq`.
 
-There is no Source, Product Definition, config or other input drift to share attribution. The two deltas are therefore producer-fix-only. No unexplained Batch regression remains, subject to human acceptance of this candidate.
+There is no Source, Product Definition, config or other input drift to share attribution. The two deltas are therefore producer-fix-only. The user accepted this comparison with no unexplained Batch regression remaining.
 
 ## Formal binding
 
-| Field | Candidate value |
+| Field | Formal value |
 |---|---|
 | Batch ID | `20260813T013534Z-b9e91703` |
 | Producer commit | `658987d9ef221aeb29743bb3832a2aee064584b9` |
@@ -74,7 +74,7 @@ Payload presence is identical for all 434 items. All 319 paths present in the re
 For each item:
 
 - the Source contains exactly one affected direct-text node;
-- the candidate `mainContent` contains that exact raw node exactly once;
+- the formal `mainContent` contains that exact raw node exactly once;
 - deleting the node once reconstructs the reference `mainContent` exactly;
 - every other Business Payload field is equal;
 - the node remains after question 18 and before question 19.
@@ -90,8 +90,8 @@ The formal producer was intentionally recorded before acceptance while the decla
 | `pyproject.toml` | `321be100215ecbd9d4c9e5801e625657c07b12d980d1065219dd721646bba0bb` |
 | `uv.lock` | `ff8a09b1ecde5b7c4987fb379d4dd41dfbdd72a080d8811d4a9eb40e78fabc70` |
 
-The current contract has no independent `package_version` producer identity and does not require the acceptance version to predate formal recording. No new package-version identity or compatibility mapping was introduced. If the candidate is accepted, P5 may update the declaration to `0.5.4`; that later commit does not rewrite this Batch's producer binding.
+The current contract has no independent `package_version` producer identity and does not require the acceptance version to predate formal recording. No new package-version identity or compatibility mapping was introduced. P5 updates the declaration to `0.5.4` in the acceptance/version commit; that later commit does not rewrite this Batch's producer binding.
 
-## Acceptance boundary
+## Human acceptance result
 
-Human acceptance must cover the formal Batch/producer binding, the zero status/error delta, the two explained payload deltas, and the absence of input drift. Until that occurs, this remains a candidate report; no ROADMAP acceptance state, package version or tag is changed.
+On 2026-08-13, the user accepted the formal Batch/producer binding, the zero status/error delta, the two explained payload deltas and the absence of input drift. The acceptance is bound to candidate commit `9c16371aafc2720e9486f2bba120432d996b2697`; it authorizes P5 version/ROADMAP closure but does not authorize Release, upload, publication or L4 approval.

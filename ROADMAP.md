@@ -1,14 +1,14 @@
 # AzureCNArchaeologist v0.1 → v1.0 路线图
 
 > 文档状态：当前项目路线图  
-> 最新稳定版本：v0.5.3
-> 当前开发阶段：v0.5.4 architecture preflight 与 Execution Plan 已接受，进入 P0–P3 实施
-> 基线日期：2026-08-12
+> 最新稳定版本：v0.5.4
+> 当前开发阶段：v0.5.4 已完成实施与人工技术验收；进入 v0.5.5 architecture preflight / Execution Plan 设计
+> 基线日期：2026-08-13
 > 适用范围：Azure 中国区产品 HTML 标准化、策略化解析、CMS JSON 导出与质量验证
 
 ## 1. 路线图目的
 
-AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流；v0.4.0 完成可信验证、人工审核、不可变 Release、Release-only upload gate 和冻结验收基线；v0.4.1 随后完成已知问题修复、重新裁决和新基线冻结。Post-v0.4 Roadmap Re-baseline Gate 已于 2026-08-08 获接受，v0.4.1 后的两轮独立 DOM 保真实验和 `V050-ENTRY-20260811` 又于 2026-08-11 关闭 v0.5.0 可行性探索。v0.5.1 已按最终冻结计划完成入口 Planning/Core successor、最小 L3a/L3b 契约、轻量独立性保护、反证和只读 Evidence 投影，并通过完整 reference Batch 技术验收；v0.5.2 随后完成 `zh-cn/api-management` 首个正式 L3b 证据闭环；v0.5.3 又在同一新双语 Batch 上形成 Core 8 的完整正负 Evidence 覆盖、Workbench L3b 面板、accepted `parallel_only` Machine Gate decision 和当前残余问题地图。两项 ICP 负证据被保留并升为 v0.5.4 第一优先问题，不回开历史 scope，也不提前激活 Machine Gate、L4 Review、Release 或 upload。
+AzureCNArchaeologist 已在 v0.3 形成并通过全量验收的统一、可追溯、可恢复批次工作流；v0.4.0 完成可信验证、人工审核、不可变 Release、Release-only upload gate 和冻结验收基线；v0.4.1 随后完成已知问题修复、重新裁决和新基线冻结。Post-v0.4 Roadmap Re-baseline Gate 已于 2026-08-08 获接受，v0.4.1 后的两轮独立 DOM 保真实验和 `V050-ENTRY-20260811` 又于 2026-08-11 关闭 v0.5.0 可行性探索。v0.5.1 已按最终冻结计划完成入口 Planning/Core successor、最小 L3a/L3b 契约、轻量独立性保护、反证和只读 Evidence 投影，并通过完整 reference Batch 技术验收；v0.5.2 随后完成 `zh-cn/api-management` 首个正式 L3b 证据闭环；v0.5.3 又在同一新双语 Batch 上形成 Core 8 的完整正负 Evidence 覆盖、Workbench L3b 面板、accepted `parallel_only` Machine Gate decision 和当前残余问题地图。v0.5.4 已在通用 SupportArticle serializer 修复两项 ICP 负证据揭示的 direct-text 静默丢失，新 Batch 的双语 ICP 与 SLA witness 3/3 scopes 全部通过，目录级回归只产生两个已解释 `mainContent` delta；历史负证据保持不可变，Machine Gate、L4、Release 和 upload 行为均未改变。
 
 从 v0.1 到 v1.0 的核心目标不是继续堆叠功能，而是把现有能力收敛为一套：
 
@@ -131,7 +131,7 @@ v1.0 中需要清晰区分：
 | v0.5.1 | 入口基线与最小 L3b 契约 | 冻结 v0.5 Planning/Core successor、最小 Profile/Basis/Evidence 契约、三类算法版本、item verdict 聚合、semantic/projection identity、轻量独立性保护、五项反证和 inert 只读 Evidence 投影 |
 | v0.5.2 | `zh-cn/api-management` 单项首个正式 L3b 证据闭环 | 对 reference Batch 的单一语言级 item 产生首份正式 L3b Evidence 和逐状态只读并排报告；不进入 L4/Release/Publication |
 | v0.5.3 | 四类双语 L3b 证据覆盖、Workbench 与 Machine Gate 裁定 | 在同一新的 current full bilingual Batch 上覆盖 Core 8，并单列两个 carry-over；Workbench 展示 L3a/L3b Evidence；依据真实证据裁定 Machine Gate policy，但本版本不激活运行时；形成当前问题地图并重排后续版本 |
-| v0.5.4 | SupportArticle mixed/direct-text preservation | 修复两项 ICP Evidence 证明的共享静默正文丢失，保留历史负证据并生成新的双语正/负 Evidence |
+| v0.5.4 | SupportArticle mixed/direct-text preservation | 修复两项 ICP Evidence 证明的共享静默正文丢失，保留历史负证据并生成新的双语 passed Evidence 与 SLA witness |
 | v0.5.5 | Simple page-global boundary 与策略分类 | 对当前 16 个 fail-closed items 先归因/拆分，再以可证明边界恢复适用项 |
 | v0.5.6 | Filter-control truth 拆分、安全修复与 v0.5 收口 | 拆分当前 31 个 detector/target/default/domain 问题，只修复可证明的共享实现问题并冻结 v0.5 acceptance baseline |
 | v0.6 | 剩余结构/config 问题与 CMS 暂存检查 | 处理 R4–R6 残余组，并验证 Release 在 staging CMS 往返后的结构化内容一致性 |
@@ -142,7 +142,9 @@ v1.0 中需要清晰区分：
 
 版本号表示能力和质量门槛，不表示固定日历日期。后续版本只有在当前版本验收条件全部满足后才能升级。
 
-2026-08-11 的 v0.5 入口总体方向已经人工接受，详细依据见 `reports/post-v0.4/v050-entry-decision.md`。`plans/v0.5.1-execution-plan.md` 与 `plans/v0.5.2-execution-plan.md` 均已按冻结范围完成实施与技术验收，对应 handoff 保持历史有效。`plans/v0.5.3-execution-plan.md` 也已于 2026-08-12 完成实施与人工技术验收：formal Batch `20260812T125640Z-e5aa4b3f` 在 clean producer commit `de7ea08518bb54e180e059007a9522d8301e2371` 上产生 Core 8 的 8/8 bundles 和 46/46 scopes；用户接受 candidate commit `2393f30cec6476fd2edc4bc1342643e8eb2f9a96` 的 exact identities、两项 ICP failed Evidence、carry-over、`parallel_only` / `runtime_effective=false` decision 及 residual problem map。权威状态和下一阶段输入见 `reports/v0.5.3/acceptance-status.md`、`machine-gate-decision.md`、`residual-problem-map.md` 与 `v0.5.4-handoff.md`。
+2026-08-11 的 v0.5 入口总体方向已经人工接受，详细依据见 `reports/post-v0.4/v050-entry-decision.md`。`plans/v0.5.1-execution-plan.md` 与 `plans/v0.5.2-execution-plan.md` 均已按冻结范围完成实施与技术验收，对应 handoff 保持历史有效。`plans/v0.5.3-execution-plan.md` 也已于 2026-08-12 完成实施与人工技术验收：formal Batch `20260812T125640Z-e5aa4b3f` 在 clean producer commit `de7ea08518bb54e180e059007a9522d8301e2371` 上产生 Core 8 的 8/8 bundles 和 46/46 scopes；用户接受 candidate commit `2393f30cec6476fd2edc4bc1342643e8eb2f9a96` 的 exact identities、两项 ICP failed Evidence、carry-over、`parallel_only` / `runtime_effective=false` decision 及 residual problem map。
+
+`plans/v0.5.4-execution-plan.md` 随后完成实施与人工技术验收：formal Batch `20260813T013534Z-b9e91703` 绑定 clean producer `658987d9ef221aeb29743bb3832a2aee064584b9`，与 v0.5.3 reference 的 434-item membership、input bindings、status/error denominator 完全一致；319 份 persisted payload 中 317 份 byte-identical，仅双语 `icp-faq.mainContent` 恢复 Source direct text。用户复核 3/3 full-content scopes 并接受 candidate commit `9c16371aafc2720e9486f2bba120432d996b2697`、三项 exact Evidence、claim limitation、family/full-Batch regression、历史负证据与 unchanged Machine Gate。权威状态和下一阶段输入见 `reports/v0.5.4/acceptance-status.md`、`support-article-regression.md`、`full-batch-comparison.md` 与 `v0.5.5-handoff.md`。
 
 ## 5. 分版本路线图
 
@@ -518,7 +520,7 @@ Review 至少使用：
 - `plans/v0.5.1-execution-plan.md`；
 - `reports/post-v0.4/roadmap-rebaseline.md` 第 8 节追加裁定。
 
-已完成的顺序是：v0.5.0 由既有实验关闭可行性问题；v0.5.1 建立入口基线并冻结最小正式契约；v0.5.2 为 `zh-cn/api-management` 建立单项首个正式 L3b 证据闭环和只读并排报告；v0.5.3 完成双语四类 Core 8、两个 carry-over qualification、现有 Workbench Evidence panel，并接受 `parallel_only` / `runtime_effective=false` Machine Gate decision。v0.5.3 当前完整 Batch 又冻结了后续顺序：v0.5.4 SupportArticle direct-text、v0.5.5 Simple boundary、v0.5.6 filter-control truth，R4–R6 进入 v0.6。
+已完成的顺序是：v0.5.0 由既有实验关闭可行性问题；v0.5.1 建立入口基线并冻结最小正式契约；v0.5.2 为 `zh-cn/api-management` 建立单项首个正式 L3b 证据闭环和只读并排报告；v0.5.3 完成双语四类 Core 8、两个 carry-over qualification、现有 Workbench Evidence panel，并接受 `parallel_only` / `runtime_effective=false` Machine Gate decision；v0.5.4 通用修复 SupportArticle direct-text preservation，并以新 Batch、三项 passed Evidence、全 family 回归和不可变历史负证据完成验收。后续顺序保持 v0.5.5 Simple boundary、v0.5.6 filter-control truth，R4–R6 进入 v0.6。
 
 ### v0.4.1：修复已知问题并建立新基线
 
@@ -591,11 +593,11 @@ accepted residual problem map 按静默准确性风险、项数、共享根因�
 
 ### v0.5.4：SupportArticle mixed/direct-text preservation
 
-v0.5.4 承接 `zh-cn/icp-faq` 与 `en-us/icp-faq` 的两份 immutable failed Evidence。两项均在 `<h3>18...` / `<br/>` 与 `<h3>19...` 之间丢失 direct text，raw、DOM 与 visible-text 比较失败而 L3a 通过，构成当前最高优先级的静默内容准确性风险。
+> 状态：已完成实施与人工技术验收（2026-08-13）。正式状态见 `reports/v0.5.4/acceptance-status.md`。
 
-实施必须先证明 SupportArticle mixed-content extraction/serialization 的共享根因，再在通用边界保留 direct text、元素顺序和有意义 URL；禁止按产品名或问题编号硬编码。必须增加真实双语 Frozen HTML、遗漏/重排反证、所有 SupportArticle family 回归、新 current Evidence 和完整 Batch 防回退，并保持 v0.5.3 两份负证据不可变。详细输入见 `reports/v0.5.3/v0.5.4-handoff.md`。
+v0.5.4 承接 `zh-cn/icp-faq` 与 `en-us/icp-faq` 的两份 immutable failed Evidence，证明并修复了生产 SupportArticle sibling serializer 跳过非空 direct text 的共享根因。修复位于通用 `mainContent` 边界，不含产品、语言或问题编号硬编码；生产实现与 L3b oracle 继续独立，既有 Profile、Schema、algorithm identities、targets 和 Workbench reader 均未改变，也未增加 `v054_*` 平行实现。
 
-轻量 architecture preflight 已确认当前 accepted inputs 的同签名影响面只有双语 `icp-faq`，并提出 v0.5.4 不新增 `v054_*` 平行 verifier、复用现有四页面族 Profile/adapter、保持生产实现与 L3b oracle 独立的设计约束。检查结果见 `reports/v0.5.4/architecture-preflight.md`；冻结实施计划见 `plans/v0.5.4-execution-plan.md`。正式 Batch 与 canonical Evidence 仍须等 P0–P3 全部完成、提交且 worktree clean 后才能开始。
+formal Batch `20260813T013534Z-b9e91703` 的 item/status/error 与 accepted v0.5.3 reference 完全一致；319 份 persisted payload 中 317 份 byte-identical，双语 ICP 只在 `mainContent` 恢复同一个 Source direct-text node。全部 199 个 executable SupportArticle items extraction/validation passed，9 个既有 exclusions 未被缩分母。双语 ICP 与 `zh-cn/sla-sql-data` 三项 Evidence 均为 1/1 passed，用户完成 3/3 scope 复核；v0.5.3 两份 ICP failed Evidence 继续不可变并可验证。`en-us/icp-faq` 仍不证明翻译或本地化质量，Machine Gate 仍为 `parallel_only` / `runtime_effective=false`。检查、计划和验收详见 `reports/v0.5.4/architecture-preflight.md`、`plans/v0.5.4-execution-plan.md` 与 `reports/v0.5.4/`。
 
 ### v0.5.5：Simple page-global boundary 与策略分类
 
@@ -894,7 +896,8 @@ v1.0 不表示所有 Azure 页面都已经被完美解析，而表示项目对�
 → v0.5.1 Planning/Core successor、最小 L3a/L3b 契约、轻量防火墙和只读 Evidence 投影
 → v0.5.2 `zh-cn/api-management` 单项首个正式 L3b 证据闭环与逐状态只读并排报告
 → v0.5.3 在同一新 Batch 上完成 Core 8 与两个 carry-over 的 L3b 裁定、Workbench Evidence 展示、runtime-inert Machine Gate decision 和当前问题地图
-→ v0.5.4–v0.6 按当前完整 Batch 重排后的同类结构问题扩大覆盖
+→ v0.5.4 完成 SupportArticle direct-text 通用修复、全 family 回归、新 passed Evidence 与历史负证据闭环
+→ v0.5.5–v0.6 按 accepted residual map 继续 Simple、filter-control 与剩余结构/config 问题
 → 经真实证据证明必要的 CMS、性能与稳定性工作
 → stale 代码清理
 → 文档重建
@@ -915,12 +918,12 @@ v1.0 不表示所有 Azure 页面都已经被完美解析，而表示项目对�
 - 上游新快照和配置更新是正常输入变化，由 Batch manifest 冻结实际 binding；只有 item membership、页面族、scope 语义或 claim 边界变化才要求修订 execution plan。
 - 每个新增 hash、Schema、identity、compatibility layer、状态或安全检查都必须说明当前消费者和它阻止的真实故障；仅为理论完整性而增加的机制不进入当前版本。
 - L3a、L3b 和 Machine Gate 必须分别说明 claim、coverage、bindings 和 policy；不得把 `blocked`、`not_qualified` 或 `not_run` 汇总为 passed。
-- v0.5.1 冻结 L3b 与现有机器验证并行存在的声明关系、契约和证据形式；从 v0.5.2 开始，对正式 Batch 并行记录 L3b；v0.5.3 已扩大正式覆盖并接受 `parallel_only` policy，本版本未激活运行时。
+- v0.5.1 冻结 L3b 与现有机器验证并行存在的声明关系、契约和证据形式；从 v0.5.2 开始，对正式 Batch 并行记录 L3b；v0.5.3 已扩大正式覆盖并接受 `parallel_only` policy，v0.5.4 修复真实 disagreement 但仍未激活运行时。
 - v0.5.2 的 Desktop Authority、soft-category 唯一行内 duplicate-ID warning-only 和 immutable negative bundle 都是 Independent Fidelity successor 规则，不回写或重新裁决 v0.4/v0.4.1/v0.5.1 历史 artifacts；v0.5.3 已核对生产 L3a lane 并记录 content-equivalent / diagnostic-asymmetric 结果。
 - 双语 Core 8 始终指 4 个 Core 产品 × 2 种语言的 8 个 items，包含 `zh-cn/api-management`；`en-us/time-series-insights` 与 `zh-cn/sla-sql-data` 是 v0.5.3 的单列 carry-over qualification items，不计入 Core 8 分母。
 - 并排报告和 Workbench 入口只投影 Evidence；人工结论继续由现有 L4 Review Decision 与 `inspected_states` 承载，不新增 `manual_l3b_*` lifecycle。
 - v0.5.4–v0.6 的具体问题组已由 v0.5.3 当前完整双语 Batch、47/47 scope 人工审核和 accepted residual problem map 冻结；旧 C1–C9 数量只作为历史比较。
-- v0.5.4 固定实现 SupportArticle mixed/direct-text preservation；后续 execution plan 不得单方面改写该主题或借 v0.5.3 接受扩大范围。
+- v0.5.4 已按冻结计划完成 SupportArticle mixed/direct-text preservation；后续 execution plan 不得回写其历史 Evidence、扩大已接受 claim，或把本次修复外推为所有 SupportArticle fidelity 属性均已证明。
 - 任何版本主题、顺序或验收范围变化都应同步更新本路线图、对应 ADR、execution plan、handoff 和必要的 README；不得只修改其中一份文档。
 
 ---
