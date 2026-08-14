@@ -30,3 +30,6 @@ talks/
 *.db
 
 .codegraph
+.pytest_cache/
+.uv-cache/
+review-work/
