@@ -1,6 +1,10 @@
 # v0.5.6 architecture preflight：Filter-control truth、可证明修复与 v0.5 收口边界
 
-> 状态：**只读预检已由用户接受（2026-08-13）；作为 frozen `plans/v0.5.6-execution-plan.md` 的架构输入；implementation 尚未开始**
+> 当前状态：**`superseded before implementation`（2026-08-13）**
+>
+> 原 Plan freeze：commit `7e8ab83bbd58cd6eed1b943bc83ff555c8b229e7`；本报告保留为历史分析，不再授权实施
+>
+> Supersession decision：`reports/v0.5.6/supersession-decision.md`
 >
 > 检查日期：2026-08-13
 >
@@ -9,6 +13,22 @@
 > 正式 Batch：`20260813T113000Z-b819c3f2`，clean producer `55f8c5d6faa29587ee899f1fff2aabd687750c34`
 >
 > 历史权威输入：`reports/v0.5.5/v0.5.6-handoff.md`、`reports/v0.5.3/residual-problem-map.md`
+
+## Supersession notice（当前裁决，优先于下方历史正文）
+
+用户在 Plan freeze 后、production implementation 前进一步人工核对了双语 `postgresql`、`hpc-cache` 与 `app-configuration` Source HTML。新的权威事实是：这些页面当前失败的主要原因来自历史遗留结构、异常嵌套、错误或无效控件，以及实际页面行为与 Source 结构不一致；上游 Source HTML 团队已确认将修正这些输入。因此，本 preflight 的 repair 6 Source 前提不再可靠。
+
+本报告的当前状态精确为 **`superseded before implementation`**。下方原始分析完整保留，作为当时 Plan freeze 的历史决策依据，但以下内容均已失去活动实施授权：
+
+- repair 6 及其 F1、F2、F3 repair authority；
+- F4 canonical/legacy reader bridge 实施；
+- 6 items / 20 scopes 的 Independent Fidelity 与 Workbench 流程；
+- 329 succeeded / 54 failed 等 full Batch projection；
+- ADR-0092、Profile、Target、Schema、reconstruction successor 或其他 canonical artifacts。
+
+F4 所揭示的 canonical/legacy reader duplication 只转为 Repository Rebaseline 的**待审查问题**；当前不预设它必须删除、合并或修改。corrected Source 到达后也不得直接恢复本 preflight：必须先完成 Repository Rebaseline、形成新的 accepted code baseline，再对实际页面和新 Source 重新人工核对并形成新的 architecture preflight。
+
+当前决定不证明 F1–F4 在技术上一定错误；它只裁定：在 Source 已确认异常且上游将修复的情况下，没有理由现在为这些异常增加生产复杂度。
 
 ## 1. 结论
 

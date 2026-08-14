@@ -2,7 +2,7 @@
 
 > 文档状态：当前项目路线图  
 > 最新稳定版本：v0.5.5
-> 当前开发阶段：v0.5.5 已完成实施、验收与本地 tag；v0.5.6 Architecture Preflight 与 Execution Plan 已由用户接受并冻结，implementation 尚未开始
+> 当前开发阶段：accepted functional baseline 为 v0.5.5；v0.5.6 已在实施前 supersede；当前进入 Repository Rebaseline preparation
 > 基线日期：2026-08-13
 > 适用范围：Azure 中国区产品 HTML 标准化、策略化解析、CMS JSON 导出与质量验证
 
@@ -133,9 +133,9 @@ v1.0 中需要清晰区分：
 | v0.5.3 | 四类双语 L3b 证据覆盖、Workbench 与 Machine Gate 裁定 | 在同一新的 current full bilingual Batch 上覆盖 Core 8，并单列两个 carry-over；Workbench 展示 L3a/L3b Evidence；依据真实证据裁定 Machine Gate policy，但本版本不激活运行时；形成当前问题地图并重排后续版本 |
 | v0.5.4 | SupportArticle mixed/direct-text preservation | 修复两项 ICP Evidence 证明的共享静默正文丢失，保留历史负证据并生成新的双语 passed Evidence 与 SLA witness |
 | v0.5.5 | Simple page-global boundary 与策略分类 | 固化 16 products / 32 language items 的分类清单，保护 24 个 current pass，只修复 4 个可证明 boundary items，并保留 4 个 blocker/exclusion |
-| v0.5.6 | Filter-control truth 拆分、安全修复与 v0.5 收口 | 审核 31 个 active language items，只修复 6 个可证明的共享实现问题；双语 `firewall-manager` 单列为 upstream Source blockers，最终冻结 v0.5 功能基线 |
-| Repository Rebaseline（pre-v0.6） | 代码库重基线 | v0.5.6 tag 后先只读审查必要/偶然复杂度，再对用户接受的 findings 另行计划重构并冻结新基线 |
-| v0.6 | blocked / not planned | entry condition 为 Repository Rebaseline accepted；新基线形成前 scope intentionally undefined |
+| v0.5.6 | `superseded before implementation` | Plan freeze 后的新人工 Source 检查推翻 repair authority；无 implementation、Batch、Evidence、版本或 tag |
+| Repository Rebaseline（pre-v0.6） | **next active phase：preparation** | 当前不执行审查或重构 |
+| v0.6 | blocked / unplanned / unauthorized | entry condition 为 Repository Rebaseline accepted；新基线形成前 scope intentionally undefined |
 | v0.7 | 长尾与生产化 | 只在真实证据支持时建设 streaming、真实发布和长尾支持 |
 | v0.8 | 架构清理 | 删除 stale 代码，收缩 CLI、依赖和重复职责 |
 | v0.9 | 发布候选 | 全量演练、缺陷收敛、文档重建和发布冻结 |
@@ -523,7 +523,7 @@ Review 至少使用：
 - `plans/v0.5.1-execution-plan.md`；
 - `reports/post-v0.4/roadmap-rebaseline.md` 第 8 节追加裁定。
 
-已完成的顺序是：v0.5.0 由既有实验关闭可行性问题；v0.5.1 建立入口基线并冻结最小正式契约；v0.5.2 为 `zh-cn/api-management` 建立单项首个正式 L3b 证据闭环和只读并排报告；v0.5.3 完成双语四类 Core 8、两个 carry-over qualification、现有 Workbench Evidence panel，并接受 `parallel_only` / `runtime_effective=false` Machine Gate decision；v0.5.4 通用修复 SupportArticle direct-text preservation，并以新 Batch、三项 passed Evidence、全 family 回归和不可变历史负证据完成验收。v0.5.5 已完成 Simple boundary，v0.5.6 收口 filter-control truth；其后不直接进入 v0.6，而进入独立 Repository Rebaseline，所有 residuals 等新基线形成后重新排序。
+已完成的顺序是：v0.5.0 由既有实验关闭可行性问题；v0.5.1 建立入口基线并冻结最小正式契约；v0.5.2 为 `zh-cn/api-management` 建立单项首个正式 L3b 证据闭环和只读并排报告；v0.5.3 完成双语四类 Core 8、两个 carry-over qualification、现有 Workbench Evidence panel，并接受 `parallel_only` / `runtime_effective=false` Machine Gate decision；v0.5.4 通用修复 SupportArticle direct-text preservation，并以新 Batch、三项 passed Evidence、全 family 回归和不可变历史负证据完成验收；v0.5.5 完成 Simple boundary 并成为当前 accepted functional baseline。v0.5.6 在 Plan freeze 后、implementation 前因新 Source 事实被 supersede；当前进入 Repository Rebaseline preparation，不直接进入 v0.6。
 
 ### v0.4.1：修复已知问题并建立新基线
 
@@ -592,7 +592,7 @@ formal Batch `20260812T125640Z-e5aa4b3f` 在同一个 clean producer commit 上�
 
 Workbench 已展示 L3a/L3b、Source、Expected、Payload 和可读 diff；用户完成 47/47 formal scopes 的只读复核并接受 exact identities，没有建立第二套人工审核 lifecycle，也没有写 L4 Review Decision。两项 `icp-faq` 均表现为 L3a passed / L3b failed，证明现有 replay lane 会漏掉静默直接文本丢失。accepted Machine Gate decision 因此为 `parallel_only`，固定 `runtime_effective=false`，不改变 Approval、Release 或 upload 行为。
 
-accepted residual problem map 当时按静默准确性风险、项数、共享根因和可安全修复性安排：v0.5.4 处理 SupportArticle mixed/direct-text loss，v0.5.5 处理 Simple page-global boundary/classification，v0.5.6 拆分并安全修复 filter-control truth。v0.5.6 planning 的 prospective amendment 已取消“R4–R6 自动进入 v0.6”；这些 residuals 在 Repository Rebaseline 后重新裁定版本 owner。
+accepted residual problem map 当时按静默准确性风险、项数、共享根因和可安全修复性安排：v0.5.4 处理 SupportArticle mixed/direct-text loss，v0.5.5 处理 Simple page-global boundary/classification，v0.5.6 原拟拆分并安全修复 filter-control truth。新人工 Source 检查已在 implementation 前 supersede 该 v0.5.6 plan；R4–R6 和其他 residuals 均不自动进入 v0.6，在 Repository Rebaseline 后重新裁定 owner。
 
 ### v0.5.4：SupportArticle mixed/direct-text preservation
 
@@ -625,28 +625,30 @@ formal Batch `20260813T113000Z-b819c3f2` 保持 reference 的 434-item membershi
 
 ### v0.5.6：Filter-control truth 拆分、安全修复与 v0.5 收口
 
-> 状态：Architecture Preflight 与独立 Execution Plan 已由用户接受并完成 Plan freeze（2026-08-13）；implementation、formal Batch 与 canonical Evidence 尚未开始。详见 `reports/v0.5.6/architecture-preflight.md` 与 `plans/v0.5.6-execution-plan.md`。
+> 状态：**`superseded before implementation`（2026-08-13）**。原 Plan freeze commit 为 `7e8ab83bbd58cd6eed1b943bc83ff555c8b229e7`；无 production implementation、formal Batch、canonical Evidence、版本升级或 `v0.5.6` tag。权威裁决见 `reports/v0.5.6/supersession-decision.md`。
 
-active filter-control inventory 与 accepted v0.5.3 R3 一致，为 **31 个 language items = R3a 16 + R3b 15**。v0.5.5 handoff 曾把双语 `firewall-manager` 移交 R3a；v0.5.6 freeze 前的后续人工页面验证确认其隐藏 singleton software filter 不能证明 user-visible state 或 CMS materialization，因此 prospective 地移到 active inventory 外，单列为两个 upstream Source HTML blockers。历史 accepted reports 保持不可变；31 是 active review denominator，434 才是完整 Batch membership。
+Plan freeze 后进一步人工检查双语 `postgresql`、`hpc-cache` 与 `app-configuration`，确认当前失败主要来自历史遗留结构、异常嵌套、错误或无效控件及实际页面与 Source 不一致；上游 Source HTML 团队已确认将修正这些输入。原 repair 6、F1–F4、20-scope Evidence/Workbench design 与 329/54 projection 因此前提失效，不再具有活动实施授权，也不自动继承到任何未来 preflight。
 
-只读全量 DOM、调用链和 current Batch preflight 将 31 项拆为：
+六个 language items 的当前 disposition 精确为：
 
-- repair 6：双语 `postgresql` 的 unique outermost filter owner / 有界 exact unselected mobile duplicate，双语 `hpc-cache` 的 singleton target triangulation，双语 `app-configuration` 的 canonical SourceReachability → RegionFilter bridge；
-- attribution-only 4：`en-us/mysql`、双语 `purview`、`en-us/storage-files` 从 broad root error 前进到更准确的 downstream fail-closed error，不生成 payload；
-- blocked/deferred 21：真实 Source default/domain/target disagreement、缺 desktop truth 和 `zh-cn/cache` state-body ownership；加上 attribution-only 4，active non-repair dispositions 为 25；
-- external Source blockers 2：双语 `firewall-manager` 不修复、不重新分类、不新增 hidden-filter analyzer；owner 为 upstream Source HTML，re-entry condition 为 corrected Source snapshot + new preflight。
+| item | disposition | owner | current behavior | re-entry |
+|---|---|---|---|---|
+| `en-us/postgresql` | `upstream-source-correction-pending` | upstream Source HTML team | 保持失败；无新 payload | corrected Source 后人工核对 + new preflight |
+| `zh-cn/postgresql` | `upstream-source-correction-pending` | upstream Source HTML team | 保持失败；无新 payload | corrected Source 后人工核对 + new preflight |
+| `en-us/hpc-cache` | `upstream-source-correction-pending` | upstream Source HTML team | 保持失败；无新 payload | corrected Source 后人工核对 + new preflight |
+| `zh-cn/hpc-cache` | `upstream-source-correction-pending` | upstream Source HTML team | 保持失败；无新 payload | corrected Source 后人工核对 + new preflight |
+| `en-us/app-configuration` | `upstream-source-correction-pending` | upstream Source HTML team | 保持失败；无新 payload | corrected Source 后人工核对 + new preflight |
+| `zh-cn/app-configuration` | `upstream-source-correction-pending` | upstream Source HTML team | 保持失败；无新 payload | corrected Source 后人工核对 + new preflight |
 
-如果 frozen inputs 不漂移，candidate full Batch projection 为 434 total / 383 runnable / 329 succeeded / 54 failed / 328 validation passed / 1 validation failed；accepted v0.5.5 的 323 persisted payload 必须 323/323 exact byte-identical，只新增 repair 6 payload。projection 只用于差异检查，实际 Batch 是报告事实，不得靠缩分母、DOM first、强制 default 或删除 option 达成。
+不为这六项新增产品特例或通用 Source 容错。F4 canonical/legacy reader duplication 只进入 Repository Rebaseline finding candidates，不预设删除、合并或修改。双语 `firewall-manager` 继续保持 active repair scope 外的 upstream Source blockers，不因本次裁决重新纳入 extractor repair。
 
-repair 6 的正式独立核对共 6 items / 20 interactive scopes。structural-delta gate 必须在三种互斥结果中择一：A `reuse-existing-schema-shape`（不建 1.3，但仍创建并由 producer provenance 绑定 v0.5.6 Profile/target/reconstruction）；B `new-schema-required`（tests 证明 required reconciliation fields 后 add-only 创建 1.3，并做同样的 Profile/target provenance binding）；C `no-honest-contract`（停止，不进入 production 或 canonical artifacts）。历史 artifacts 不改，双语 `api-management` Profile 1.1 Evidence 只做 read-only replay，不在新 Batch 重新 record。active Product Definition 1.2、Validation Profile 1.4、Pipeline Validation 2.2 与 Finding Policy 1.0 不升级，Machine Gate 保持 `parallel_only` / `runtime_effective=false`。
-
-最终以 accepted v0.5 Planning Baseline 为分母、以 accepted v0.5.5 Batch 为直接 reference 并保留 historical gates，运行完整防回退，冻结 v0.5 acceptance Batch、问题组 disposition 和 local annotated `v0.5.6` tag。v0.5.6 不生成 v0.6 handoff，也不固定 v0.6 scope；tag 后停止功能推进，进入独立 Repository Rebaseline。
-
-支持级别首先属于单个 `language × product/resource` Batch Item：L1 已路由、L2 已提取、L3a 策略重放一致、L3b 独立核对通过、L4 人工批准、L5 进入 sealed Release、L6 CMS staging 往返通过。产品状态从语言单项汇总；问题组完成状态单独记录。L3a/L3b 都不能简写成“内容最终正确”。
+accepted functional baseline 继续是 annotated tag `v0.5.5` → `fdf4461602875fcd97c8556b01118c1114e7c7b3`，accepted Batch 为 `20260813T113000Z-b819c3f2`。v0.5.6 原 31/6/4/21 accounting 只保留在 superseded 历史 Plan 中，不再是活动 implementation denominator；其他 residuals 也不自动归属 v0.6。
 
 ### Repository Rebaseline / 代码库重基线（pre-v0.6）
 
-> 状态：planned after v0.5.6 acceptance；尚未形成独立审查宪章或执行计划，当前不授权审查、重构或代码修改。
+> 状态：**next active phase — preparation**。审查宪章，当前只准备文档，尚未开始审核，也不授权重构或代码修改。
+
+重基线固定使用 v0.5.5 accepted code、inputs、Batch 与 Evidence。期间不得引入 corrected PostgreSQL、HPC Cache、App Configuration 或 Firewall Manager Source，避免代码变化与 Source 输入变化同时发生。
 
 #### 目标
 
@@ -676,7 +678,7 @@ repair 6 的正式独立核对共 6 items / 20 interactive scopes。structural-d
 
 该阶段的版本身份由后续独立计划决定，不预设为 `v0.5.7`、`v0.5.6.1` 或 `v0.6`。
 
-### v0.6：blocked / not planned
+### v0.6：blocked / unplanned / unauthorized
 
 > Entry condition：Repository Rebaseline accepted and a new baseline is frozen。
 
@@ -951,8 +953,9 @@ v1.0 不表示所有 Azure 页面都已经被完美解析，而表示项目对�
 → v0.5.2 `zh-cn/api-management` 单项首个正式 L3b 证据闭环与逐状态只读并排报告
 → v0.5.3 在同一新 Batch 上完成 Core 8 与两个 carry-over 的 L3b 裁定、Workbench Evidence 展示、runtime-inert Machine Gate decision 和当前问题地图
 → v0.5.4 完成 SupportArticle direct-text 通用修复、全 family 回归、新 passed Evidence 与历史负证据闭环
-→ v0.5.5–v0.5.6 完成 Simple、filter-control 安全修复并冻结 v0.5 功能基线
-→ Repository Rebaseline 只读审查、finding disposition、accepted refactor plan 与新基线
+→ v0.5.5 完成 Simple 安全修复并成为 accepted functional baseline
+→ v0.5.6 Plan 在 implementation 前因新 Source 事实被 supersede
+→ Repository Rebaseline preparation、只读审查、finding disposition、accepted refactor plan 与新基线
 → 在新基线上重新规划 v0.6 及后续能力
 → 经真实证据证明必要的 CMS、性能与稳定性工作
 → stale 代码清理
@@ -978,7 +981,7 @@ v1.0 不表示所有 Azure 页面都已经被完美解析，而表示项目对�
 - v0.5.2 的 Desktop Authority、soft-category 唯一行内 duplicate-ID warning-only 和 immutable negative bundle 都是 Independent Fidelity successor 规则，不回写或重新裁决 v0.4/v0.4.1/v0.5.1 历史 artifacts；v0.5.3 已核对生产 L3a lane 并记录 content-equivalent / diagnostic-asymmetric 结果。
 - 双语 Core 8 始终指 4 个 Core 产品 × 2 种语言的 8 个 items，包含 `zh-cn/api-management`；`en-us/time-series-insights` 与 `zh-cn/sla-sql-data` 是 v0.5.3 的单列 carry-over qualification items，不计入 Core 8 分母。
 - 并排报告和 Workbench 入口只投影 Evidence；人工结论继续由现有 L4 Review Decision 与 `inspected_states` 承载，不新增 `manual_l3b_*` lifecycle。
-- v0.5.4–v0.5.6 的具体问题组由 v0.5.3 当前完整双语 Batch、47/47 scope 人工审核和 accepted residual problem map 提供历史依据；v0.5.6 后的 residuals 不再预先绑定 v0.6，须在 Repository Rebaseline 的新 accepted baseline 上重新排序。旧 C1–C9 数量只作为历史比较。
+- v0.5.4–v0.5.5 的具体问题组由 v0.5.3 当前完整双语 Batch、47/47 scope 人工审核和 accepted residual problem map 提供历史依据；v0.5.6 Plan 已在 implementation 前 supersede，其 residuals 不预先绑定 v0.6，须在 Repository Rebaseline 的新 accepted baseline 上重新排序。旧 C1–C9 数量只作为历史比较。
 - v0.5.4 已按冻结计划完成 SupportArticle mixed/direct-text preservation；后续 execution plan 不得回写其历史 Evidence、扩大已接受 claim，或把本次修复外推为所有 SupportArticle fidelity 属性均已证明。
 - 任何版本主题、顺序或验收范围变化都应同步更新本路线图、对应 ADR、execution plan、handoff 和必要的 README；不得只修改其中一份文档。
 
