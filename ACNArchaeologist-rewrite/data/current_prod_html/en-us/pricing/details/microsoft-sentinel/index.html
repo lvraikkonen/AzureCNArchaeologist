@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=2.0" name="viewport" />
+    <meta content="Microsoft Sentinel" name="keywords" />
+    <meta content="Microsoft Sentinel" name="description" />
+    <title>
+        Microsoft Sentinel
+    </title>
+    <link href="/Static/Favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
+    <link href="/Static/Favicon/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="/Static/Favicon/favicon.ico" rel="icon" type="image/x-icon" />
+    <link href="/Static/Favicon/manifest.json" rel="manifest" />
+    <link color="#0078D4" href="/Static/Favicon/safari-pinned-tab.svg" rel="mask-icon" />
+    <meta content="/Static/Favicon/browserconfig.xml" name="msapplication-config" />
+    <meta content="#ffffff" name="theme-color" />
+    <link href="https://azure.microsoft.com/pricing/details/microsoft-sentinel/" rel="canonical" />
+    <!-- BEGIN: Azure UI Style -->
+    <link href="/Static/CSS/azureui.min.css" rel="stylesheet" />
+    <link href="/Static/CSS/common.min.css" rel="stylesheet" />
+    <!-- END: Azure UI Style -->
+    <!-- BEGIN: Page Style -->
+    <!-- END: Page Style -->
+    <!-- BEGIN: Minified Page Style -->
+    <link href="/Static/CSS/a05a0e4e99489d7b3cb548e24414e01adf779d77.css" rel="stylesheet" />
+    <!-- END: Minified Page Style -->
+    <link href="/StaticService/css/service.min.css" rel="stylesheet" />
+</head>
+
+<body class="zh-cn">
+    <script>
+        window.requireUrlArgs = "2019/12/9 7:37:32";
+        window.currentLocale = "en-US";
+        window.headerTimestamp = "2019/11/6 2:43:11";
+        window.footerTimestamp = "2019/11/6 2:43:11";
+        window.locFileTimestamp = "2019/11/6 2:43:05";
+
+        window.AcnHeaderFooter = {
+            IsEnableQrCode: true,
+            CurrentLang: window.currentLocale.toLowerCase(),
+        };
+    </script>
+    <style>
+        @media (min-width: 0) {
+            .acn-header-placeholder {
+                height: 48px;
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 980px) {
+            .acn-header-placeholder {
+                height: 89px;
+                width: 100%;
+            }
+        }
+
+        .acn-header-placeholder {
+            background-color: #1A1A1A;
+        }
+
+        .acn-header-service {
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+
+         .updatetime {
+            color: black;
+            text-align: right;
+            font-size: 12px;
+        }
+    </style>
+    <div class="acn-header-container">
+        <div class="acn-header-placeholder">
+        </div>
+        <div class="public_headerpage">
+        </div>
+    </div>
+    <!-- BEGIN: Documentation Content -->
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bread-crumb hidden-sm hidden-xs">
+                        <ul>
+                            <li>
+                                <span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="single-page">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+                            <div class="loader">
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-10 pure-content">
+                        <div class="select left-navigation-select hidden-md hidden-lg">
+                            <select>
+                                <option selected="selected">
+                                    加载中...
+                                </option>
+                            </select>
+                            <span class="icon icon-arrow-top">
+                            </span>
+                        </div>
+                        <tags ms.date="09/30/2015" ms.service="en-us-microsoft-sentinel" wacn.date="11/27/2015">
+                        </tags>
+                        <style type="text/css">
+                            .pricing-detail-tab .tab-nav {
+                                padding-left: 0 !important;
+                                margin-top: 5px;
+                                margin-bottom: 0;
+                                overflow: hidden;
+                            }
+
+                            .pricing-detail-tab .tab-nav li {
+                                list-style: none;
+                                float: left;
+                            }
+
+                            .pricing-detail-tab .tab-nav li.active a {
+                                border-bottom: 4px solid #00a3d9;
+                            }
+
+                            .pricing-detail-tab .tab-nav li.active a:hover {
+                                border-bottom: 4px solid #00a3d9;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel {
+                                display: none;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel.show-md {
+                                display: block;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel .tab-nav li a {
+                                padding-left: 5px;
+                                padding-right: 5px;
+                                color: #00a3d9;
+                                background-color: #FFF;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel .tab-nav li.active a {
+                                color: #FFF;
+                                background-color: #00a3d9;
+                            }
+
+                            .pricing-detail-tab .tab-content .tab-panel .tab-nav li a:hover {
+                                color: #FFF;
+                                background-color: #00a3d9;
+                            }
+
+                            .pure-content .technical-azure-selector .tags-date a,
+                            .pure-content .technical-azure-selector p a,
+                            .pure-content .technical-azure-selector table a {
+                                background: 0 0;
+                                padding: 0;
+                                margin: 0 6px;
+                                height: 21px;
+                                line-height: 22px;
+                                font-size: 14px;
+                                color: #00a3d9;
+                                float: none;
+                                display: inline;
+                            }
+                        </style>
+                        <div class="hide-info" style="display:none;">
+                            <div class="bg-box">
+                                <div class="cover-bg">
+                                </div>
+                            </div>
+                            <div class="msg-box">
+                                <div class="pricing-unavailable-message">
+                                    所选区域不可用
+                                </div>
+                            </div>
+                        </div>
+                        <div class="common-banner col-top-banner"
+                            data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'/Images/marketing-resource/css/signalr-service_banner.png','imageHeight':'auto'}">
+                            <div class="common-banner-image">
+                                <div class="common-banner-title">
+                                    <img src="/Images/marketing-resource/css/AzureSentinel.svg" />
+                                    <h2>
+                                        Microsoft Sentinel
+
+                                       <!--  <span>
+                                            Microsoft Sentinel
+                                        </span> -->
+                                    </h2>
+                                    <h4>
+                                        All Microsoft Sentinel features will be officially retired in Azure in China region on <strong>August 18, 2026</strong>. 
+                                        For more details, please click 
+                                        <a href="https://docs.azure.cn/en-us/sentinel/overview">HERE</a>.
+                                    </h4>
+                                    <h4>
+                                        Microsoft Sentinel brings together data, analytics, and workflows to unify and
+                                        accelerate threat detection and response across your enterprise.
+                                    </h4>
+                                    <div class = "updatetime">Updated on：2025/09/03</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pricing-page-section">
+                            <p>
+                                Microsoft Sentinel brings together data, analytics, and workflows to unify and
+                                accelerate threat detection and response across your
+                                enterprise. Data for security analysis is stored in an Azure Monitor Log Analytics
+                                workspace where Microsoft Sentinel analyzes, interacts and
+                                derives insights from large volumes of data in seconds. Microsoft Sentinel is billed for
+                                the volume of data stored in a Log Analytics
+                                workspace and analyzed in Microsoft Sentinel.
+                            </p>
+                            <!-- <h2>定价详细信息</h2> -->
+                        </div>
+                        <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
+                            <div class="tab-container-container">
+                                <div class="tab-container-box">
+                                    <div class="tab-container">
+                                        <div class="dropdown-container software-kind-container" style="display:none;">
+                                            <label>
+                                                OS/Software:
+                                            </label>
+                                            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                                <span class="selected-item">
+                                                    Logic Apps
+                                                </span>
+                                                <i class="icon">
+                                                </i>
+                                                <ol class="tab-items">
+                                                    <li class="active">
+                                                        <a data-href="#tabContent1" href="javascript:void(0)"
+                                                            id="home_logic-apps">
+                                                            Logic Apps
+                                                        </a>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <select class="dropdown-select software-box hidden-lg hidden-md"
+                                                id="software-box">
+                                                <option data-href="#tabContent1" selected="selected" value="Logic Apps">
+                                                    Logic Apps
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="dropdown-container region-container">
+                                            <label>
+                                                Region:
+                                            </label>
+                                            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                                <span class="selected-item"></span>
+                                                <i class="icon">
+                                                </i>
+                                                <ol class="tab-items">
+                                                    <li class="active" onclick="setregiontab('tab-1')">
+                                                        <a data-href="#east-china2" href="javascript:void(0)"
+                                                            id="east-china2">
+                                                            China East 3
+                                                        </a>
+                                                    </li>
+                                                    <li class="active" onclick="setregiontab('tab-2')">
+                                                        <a data-href="#east-china2" href="javascript:void(0)"
+                                                            id="east-china2">
+                                                            China North 3
+                                                        </a>
+                                                    </li>
+                                                    <li class="active" onclick="setregiontab('tab-3')">
+                                                        <a data-href="#east-china2" href="javascript:void(0)"
+                                                            id="east-china2">
+                                                            China East 2
+                                                        </a>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <style>
+                                                .hidden_tab {
+                                                    display: none;
+                                                }
+                                            </style>
+                                            <script>
+                                                function getSelectedValue(select) {
+                                                    const value = select.options[select.selectedIndex].value;
+                                                    setregiontab(value);
+                                                }
+                                                function setregiontab(id) {
+                                                    document.getElementById("tab-1").style.display = "none";
+                                                    document.getElementById("tab-2").style.display = "none";
+                                                    document.getElementById("tab-3").style.display = "none";
+                                                    document.getElementById(id).style.display = "block";
+                                                }
+                                            </script>
+                                            <select class="dropdown-select region-box hidden-lg hidden-md"
+                                                id="select-region-box">
+                                                <option selected value="tab-1">
+                                                    China East 3
+                                                </option>
+                                                <option data-href="#east-china2" selected="selected" value="tab-2">
+                                                    China North 3
+                                                </option>
+                                                <option data-href="#east-china2" selected="selected" value="tab-3">
+                                                    China East 2
+                                                </option>
+                                            </select>
+                                            <script>
+                                                setTimeout(() => {
+                                                    document.getElementById("select-region-box").selectedIndex = 0;
+                                                    document.getElementById("tab-1").style.display = "block";
+                                                    document.getElementById("tab-2").innerHTML = document.getElementById("tab-1").innerHTML;
+                                                    document.getElementById("tab-3").innerHTML = document.getElementById("tab-1").innerHTML;
+                                                }, 1000);
+                                            </script>
+                                        </div>
+                                        <div class="clearfix">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-content">
+                                <div class="tab-panel" id="tabContent1">
+                                    <div class="tab-content">
+                                        <div class="pricing-page-section hidden_tab" id="tab-1">
+                                            <!-- begin -->
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    Microsoft Sentinel Pricing
+                                                </h2>
+                                                <p>
+                                                    Microsoft Sentinel is billed for the volume of data analyzed in
+                                                    Microsoft Sentinel and stored in Azure Monitor Log Analytics
+                                                    workspace. Data can be ingested as two different types of logs:
+                                                    Analytics Logs and Basic Logs.
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    Analytics Logs
+                                                </h2>
+                                                <p>
+                                                    Analytics logs in Microsoft Sentinel support all data types offering
+                                                    full analytics, alerts and no query limits. Analytics
+                                                    logs include high value security data that reflect the status,
+                                                    usage,
+                                                    security posture and performance of your environment.
+                                                    Analytics Logs are best monitored proactively, with scheduled alerts
+                                                    and
+                                                    analytics, enabling security detections. There are
+                                                    two ways to pay for the Microsoft Sentinel Service: Pay-As-You-Go
+                                                    and
+                                                    Commitment Tiers.
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    Pay-As-You-Go
+                                                </h2>
+                                                <p>
+                                                    With Pay-As-You-Go pricing, you are billed per gigabyte (GB) for the
+                                                    volume of data ingested for security analysis in
+                                                    Microsoft Sentinel and stored in the Azure Monitor Log Analytics
+                                                    workspace. Data volume is measured by the volume of data that
+                                                    will be stored in GB (10^9 bytes).
+                                                </p>
+                                            </div>
+
+                                            <div class="technical-azure-selector tab-control-selector">
+                                                <h2>
+                                                    Commitment Tiers
+                                                </h2>
+                                                <div class="tab-control-container tab-active" id="tabContent1">
+                                                    <p>
+                                                        With Commitment tiers you are billed a fixed fee based on the
+                                                        selected tier, enabling a predictable total cost for
+                                                        Microsoft Sentinel. Commitment tiers provide you a discount on
+                                                        the
+                                                        cost based on your selected tier compared to
+                                                        Pay-As-You-Go pricing. You have the flexibility to opt out of
+                                                        the
+                                                        commitment tier any time after the first 31 days of
+                                                        commitment.
+                                                    </p>
+                                                    <p>
+                                                        Prices shown below reflect total cost for the analytics enabled
+                                                        by
+                                                        Microsoft Sentinel, including data ingestion charges
+                                                        for log analytics. Prices are calculated assuming the same
+                                                        commitment tiers are selected for Microsoft Sentinel and Azure
+                                                        Monitor Log Analytics. Customers have the flexibility to select
+                                                        different pricing tiers for Microsoft Sentinel and Azure
+                                                        Monitor Log Analytics based on their specific needs.
+                                                    </p>
+
+                                                    <div class="scroll-table has-scroll" style="display: block;">
+                                                        <div>
+                                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                Tier
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                Microsoft Sentinel Price
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                Effective Per GB Price
+                                                                                <sup>
+                                                                                    1
+                                                                                </sup>
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                Savings Over Pay-As-You-Go
+                                                                            </strong>
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            Pay-As-You-Go
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 43.75 per GB
+                                                                        </td>
+
+                                                                        <td>
+                                                                            ￥ 43.75 per GB
+                                                                        </td>
+                                                                        <td>
+                                                                            N/A
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            100 GB per day
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 3,012 per day
+                                                                        </td>
+
+                                                                        <td>
+                                                                            ￥ 30.12/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            31%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            200 GB per day
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 5,576 per day
+                                                                        </td>
+
+                                                                        <td>
+                                                                            ￥ 27.88/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            36%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            300 GB per day
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 8,140 per day
+                                                                        </td>
+
+                                                                        <td>
+                                                                            ￥ 27.13/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            38%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            400 GB per day
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 8,140 per day
+                                                                        </td>
+
+                                                                        <td>
+                                                                            ￥ 26.39/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            40%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            500 GB per day
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 12,873 per day
+                                                                        </td>
+
+                                                                        <td>
+                                                                            ￥ 25.75/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            41%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            1,000 GB per day
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 25,236 per day
+                                                                        </td>
+
+                                                                        <td>
+                                                                            ￥ 24.42/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            42%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            2,000 GB per day
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 48,845 per day
+                                                                        </td>
+
+                                                                        <td>
+                                                                            ￥ 24.42/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            44%
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            5,000 GB per day
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 117,532 per day
+                                                                        </td>
+
+                                                                        <td>
+                                                                            ￥ 23.5/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            46%
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr>
+                                                                        <td>
+                                                                            10,000 GB per day
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 226,314 per day
+                                                                        </td>
+
+                                                                        <td>
+                                                                            ￥ 22.63/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            48%
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr>
+                                                                        <td>
+                                                                            25,000 GB per day
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 543,907 per day
+                                                                        </td>
+
+                                                                        <td>
+                                                                            ￥ 21.76/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            50%
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr>
+                                                                        <td>
+                                                                            50,000 GB per day
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 1,044,058 per day
+                                                                        </td>
+
+                                                                        <td>
+                                                                            ￥ 20.88/GB
+                                                                        </td>
+                                                                        <td>
+                                                                            52%
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tags-date">
+                                                        <div class="ms-date">
+                                                            <sup>
+                                                                1
+                                                            </sup>
+                                                            Data ingested into Microsoft Sentinel exceeding the selected
+                                                            daily commitment tier is charged at the effective tier
+                                                            prices listed above.
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="technical-azure-selector tab-control-selector">
+                                                <h2>
+                                                    Basic Logs
+                                                </h2>
+
+                                                <div class="tab-control-container tab-active" id="tabContent1">
+                                                    <p>
+                                                        Basic Logs are usually verbose and contain a mix of high volume
+                                                        and
+                                                        low security value data without the full capabilities
+                                                        of analytics logs. They are not frequently used for deep
+                                                        analytics
+                                                        and alerts, and accessed on demand for ad-hoc querying,
+                                                        investigations and search. To help you reduce costs while you
+                                                        ingest
+                                                        more data, Microsoft Sentinel now offers a flexible
+                                                        pricing option for Basic Logs.
+                                                    </p>
+
+                                                    <div class="scroll-table has-scroll" style="display: block;">
+                                                        <div>
+                                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                Analytics Logs
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                Basic Logs
+                                                                            </strong>
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            Data Types
+                                                                        </td>
+                                                                        <td>
+                                                                            All
+                                                                        </td>
+                                                                        <td>
+                                                                            Custom Logs
+                                                                            <sup>
+                                                                                2
+                                                                            </sup>
+                                                                            , Container Logs, and AppTraces
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            KQL Querying Capabilities
+                                                                        </td>
+                                                                        <td>
+                                                                            Full
+                                                                        </td>
+                                                                        <td>
+                                                                            Reduced
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            Alerts support
+                                                                        </td>
+                                                                        <td>
+                                                                            Yes
+                                                                        </td>
+                                                                        <td>
+                                                                            No
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            Query concurrency limits
+                                                                        </td>
+                                                                        <td>
+                                                                            No
+                                                                        </td>
+                                                                        <td>
+                                                                            Yes
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tags-date">
+                                                        <div class="ms-date">
+                                                            <sup>
+                                                                2
+                                                            </sup>
+                                                            This only pertains to custom log tables created with the
+                                                            Data
+                                                            Collection Rule (DCR)-based custom logs API and
+                                                            <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/logs/basic-logs-configure?msclkid=3c629183cfef11ecbd520ceb6ff77849&amp;tabs=api-1%2cportal-1"
+                                                                style="font-size:12px;" aria-label="aLabel"
+                                                                target="_blank">
+                                                                configured to the Basic Log data plan
+                                                            </a>
+                                                            .
+                                                        </div>
+                                                    </div>
+                                                    <p>
+                                                        Basic Logs will be accessible for interactive queries for the
+                                                        first
+                                                        8 days. Afterwards archived logs can be enabled to
+                                                        store the data. Searching data in Basic Logs are subject to
+                                                        additional billing. Prices below are not inclusive of Log
+                                                        Analytics Basic Logs. Please refer to the Azure Monitor pricing
+                                                        for
+                                                        the related data ingestion charges.
+                                                    </p>
+
+                                                    <div class="scroll-table has-scroll" style="display: block;">
+                                                        <div>
+                                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                Feature
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                Price
+                                                                            </strong>
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            Basic Logs analysis
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥10.176 per GB of data ingested
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    Log Data Retention
+                                                </h2>
+                                                <p>
+                                                    Once Microsoft Sentinel is enabled on your Azure Monitor Log
+                                                    Analytics
+                                                    workspace, every GB of data ingested into the
+                                                    workspace, excluding Basic Logs, can be retained at no charge for
+                                                    the
+                                                    first 90 days. Retention beyond 90 days and up to 2
+                                                    years will be charged per the standard
+                                                    <a href="/en-us/pricing/details/monitor/index.html"
+                                                        aria-label="aLabel">
+                                                        Azure Monitor pricing
+                                                    </a>
+                                                    retention prices. Your data is accessible via interactive queries.
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    Log Data Archive
+                                                </h2>
+                                                <p>
+                                                    Microsoft Sentinel offers a fully managed, cost-effective data
+                                                    archiving
+                                                    solution for logs that need to be kept for several
+                                                    years for compliance and can be accessed to investigate an incident.
+                                                    You
+                                                    can store your archive data for up to 7 years.
+                                                    Searching archived logs is done using asynchronous search jobs which
+                                                    incur a cost for the data scanned. Archived logs can also
+                                                    be restored to enable full interactive analytics query capabilities.
+                                                    Please refer to the
+                                                    <a href="/en-us/pricing/details/monitor/index.html"
+                                                        aria-label="aLabel">
+                                                        Azure Monitor pricing
+                                                    </a>
+                                                    pricing for the related retention and query charges.
+                                                </p>
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    Microsoft Sentinel solution for SAP® applications
+                                                </h2>
+
+                                                <div class="tab-control-container tab-active" id="tabContent1">
+                                                    <p>
+                                                        The Microsoft Sentinel solution for SAP® applications can
+                                                        monitor,
+                                                        detect and respond to sophisticated threats throughout
+                                                        the business logic and application layers for SAP systems hosted
+                                                        on
+                                                        Azure, GCP, AWS, or on-premises. It collects
+                                                        application logs from across the entire SAP system and then
+                                                        sends
+                                                        those logs to an Azure Monitor Log Analytics workspace
+                                                        in Microsoft Sentinel for continuous threat monitoring.
+                                                    </p>
+                                                    <p>
+                                                        The Microsoft Sentinel solution for SAP® applications will be
+                                                        billed
+                                                        as an add-on charge from May 1, 2023 at ¥ 21.57 per
+                                                        system ID (production SID only) per hour in addition to the
+                                                        existing
+                                                        Microsoft Sentinel consumption-billing model. The
+                                                        solution will be free when a workspace is in a Microsoft
+                                                        Sentinel
+                                                        free trial.
+                                                    </p>
+                                                    <p>
+                                                        Please see
+                                                        <a href="https://azure.microsoft.com/zh-cn/pricing/offers/microsoft-sentinel-sap-promo/"
+                                                            aria-label="aLabel" target="_blank">
+                                                            offer page
+                                                        </a>
+                                                        for more details.
+                                                    </p>
+
+                                                    <div class="scroll-table has-scroll" style="display: block;">
+                                                        <div>
+                                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                Feature
+                                                                            </strong>
+                                                                        </th>
+                                                                        <th align="left">
+                                                                            <strong>
+                                                                                Price
+                                                                            </strong>
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            Solution for SAP Applications
+                                                                        </td>
+                                                                        <td>
+                                                                            ￥ 21.57 per SID hour
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="pricing-page-section">
+                                                <h2>
+                                                    Free trial
+                                                </h2>
+                                                <p>
+                                                    Try Microsoft Sentinel free for the first 31 days. Microsoft
+                                                    Sentinel
+                                                    can be enabled at no additional cost on an Azure Monitor
+                                                    Log Analytics workspace, subject to the limits stated below.
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                        New workspaces can ingest up to 10GB/day of log data for the
+                                                        first
+                                                        31-days at no cost. Both Log Analytics data ingestion
+                                                        and Microsoft Sentinel charges are waived during the 31-day
+                                                        trial
+                                                        period. This free trial is subject to a 20 workspace
+                                                        limit per Azure tenant.
+                                                    </li>
+                                                    <li>
+                                                        Existing workspaces can enable Microsoft Sentinel at no
+                                                        additional
+                                                        cost. Only the Microsoft Sentinel charges are waived
+                                                        during the 31-day trial period.
+                                                    </li>
+                                                </ul>
+                                                <p>
+                                                    Usage beyond these limits will be charged per pricing listed on this
+                                                    page. Charges related to additional capabilities for
+                                                    automation and bring your own machine learning are still applicable
+                                                    during the free trial.
+                                                </p>
+                                            </div>
+
+                                        </div>
+                                        <div class="pricing-page-section hidden_tab" id="tab-2">
+                                            <h2>
+                                                title2
+                                            </h2>
+                                            <p>
+                                                text
+                                            </p>
+                                        </div>
+                                        <div class="pricing-page-section hidden_tab" id="tab-3">
+                                            <h2>
+                                                title3
+                                            </h2>
+                                            <p>
+                                                text
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Documentation Content -->
+    <!-- BEGIN: Footer -->
+    <div class="public_footerpage">
+    </div>
+    <!--END: Common sidebar-->
+    <script type="text/javascript">
+        (function () {
+            if (typeof window.CustomEvent === "function") return false; //If not IE
+
+            function CustomEvent(event, params) {
+                params = params ||
+                {
+                    bubbles: false,
+                    cancelable: false,
+                    detail: undefined
+                };
+                var evt = document.createEvent('CustomEvent');
+                evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+                return evt;
+            }
+
+            CustomEvent.prototype = window.Event.prototype;
+
+            window.CustomEvent = CustomEvent;
+        })();
+    </script>
+    <link href="/Static/CSS/Localization/zh-cn.css" rel="stylesheet" />
+    <script src="/Static/Scripts/lib/jquery-1.12.3.min.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+        function getAntiForgeryToken() {
+            var token = '<input name="__RequestVerificationToken" type="hidden" value="OGT8btVYJJqM22ITgpOgfMq6Kft6pkqvN0U3Wu_OgsWek4u6H2s-GomzkVOW_vmh8A3ppTxx_DFGFSWaXyJKmDVrkebnO7G9B5EHg1VA4uo1" />';
+            token = $(token).val();
+            return token;
+        }
+
+        function setLocaleCookie(localeVal) {
+            var Days = 365 * 10; // Ten year expiration
+            var exp = new Date();
+
+            var hostName = window.location.hostname;
+            var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain + "; path=/;expires=" + exp.toGMTString();
+        }
+
+        setLocaleCookie(window.currentLocale);
+    </script>
+    <script type="text/javascript">
+        var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+        var TECHNICAL_STORAGE = '/blob/tech-content/';
+        var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+        var EnablePricingSync = 'false';
+    </script>
+    <!-- BEGIN: Minified RequireJs -->
+    <script src="/Static/Scripts/global.config.js" type="text/javascript">
+    </script>
+    <script src="/Static/Scripts/require.js" type="text/javascript">
+    </script>
+    <script src="/Static/Scripts/pricing-page-detail.js" type="text/javascript">
+    </script>
+    <!--<script src='/Static/Scripts/ef3815ab64d6cfe32680fc9c60373db97e92ccc1.js' type='text/javascript'></script>-->
+    <!-- END: Minified RequireJs -->
+    <!-- begin JSLL -->
+    <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js">
+    </script>
+    <script type="text/javascript">
+        (function () {
+            var config = {
+                cookiesToCollect: ["_mkto_trk"],
+                syncMuid: true,
+                ix: {
+                    a: true,
+                    g: true
+                },
+                coreData: {
+                    appId: 'AzureCN',
+                    market: 'zh-cn',
+                }
+            };
+            awa.init(config);
+        })();
+    </script>
+    <!-- end JSLL -->
+    <script src="/Static/Scripts/plugins/cookie/jquery.cookie.js" type="text/javascript">
+    </script>
+    <script src="/Static/Scripts/wacndatatracker.js" type="text/javascript">
+    </script>
+    <script src="/common/useCommon.js" type="text/javascript">
+    </script>
+</body>
+
+</html>

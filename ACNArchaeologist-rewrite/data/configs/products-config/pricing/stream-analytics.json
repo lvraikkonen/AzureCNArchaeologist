@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "stream-analytics",
+  "display_name": "Stream Analytics",
+  "slug": "stream-analytics",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "analysis"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/stream-analytics/index.html",
+      "url": "https://www.azure.cn/pricing/details/stream-analytics/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/stream-analytics/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/stream-analytics/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "simple_static"
+  }
+}

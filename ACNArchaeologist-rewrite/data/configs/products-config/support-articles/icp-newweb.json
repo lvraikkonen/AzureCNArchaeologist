@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.1",
+  "product_key": "icp-newweb",
+  "display_name": "ICP 备案操作解析",
+  "slug": "icp-newweb",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "ICP",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/ICP/icp-newweb.html",
+      "url": "https://www.azure.cn/support/icp/icp-newweb/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/ICP/icp-newweb.html",
+      "url": "https://www.azure.cn/en-us/support/icp/icp-newweb/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "support_article"
+  }
+}

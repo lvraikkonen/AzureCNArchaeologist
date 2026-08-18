@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "storage-files",
+  "display_name": "Storage Files",
+  "slug": "storage-files",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "storage"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/storage/files/index.html",
+      "url": "https://www.azure.cn/pricing/details/storage/files/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/storage/files/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/storage/files/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "region_filter"
+  }
+}

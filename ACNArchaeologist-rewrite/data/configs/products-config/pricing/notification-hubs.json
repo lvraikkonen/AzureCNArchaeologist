@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "notification-hubs",
+  "display_name": "Notification Hubs",
+  "slug": "notification-hubs",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "websites"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/notification-hubs/index.html",
+      "url": "https://www.azure.cn/pricing/details/notification-hubs/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/notification-hubs/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/notification-hubs/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "region_filter"
+  }
+}

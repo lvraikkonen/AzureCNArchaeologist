@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "app-service",
+  "display_name": "App Service",
+  "slug": "app-service",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "compute"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/app-service/index.html",
+      "url": "https://www.azure.cn/pricing/details/app-service/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/app-service/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/app-service/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "complex"
+  }
+}

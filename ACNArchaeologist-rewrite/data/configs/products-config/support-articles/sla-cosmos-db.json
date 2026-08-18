@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.1",
+  "product_key": "sla-cosmos-db",
+  "display_name": "Azure Cosmos DB 的服务级别协议",
+  "slug": "cosmos-db",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/cosmos-db/index.html",
+      "url": "https://www.azure.cn/support/sla/cosmos-db/",
+      "aliases": [
+        {
+          "snapshot_path": "SupportArticles/SLA/documentdb/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-cosmos-db"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/cosmos-db/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/cosmos-db/",
+      "aliases": [
+        {
+          "snapshot_path": "SupportArticles/SLA/documentdb/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "sla-cosmos-db"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "support_article"
+  }
+}

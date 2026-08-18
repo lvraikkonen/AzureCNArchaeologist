@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "purview",
+  "display_name": "Microsoft Purview",
+  "slug": "purview",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "analysis"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/purview/index.html",
+      "url": "https://www.azure.cn/pricing/details/purview/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/purview/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/purview/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "complex"
+  }
+}

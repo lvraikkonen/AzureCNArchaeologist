@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "microsoft-sentinel",
+  "display_name": "Microsoft Sentinel",
+  "slug": "microsoft-sentinel",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "security"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/microsoft-sentinel/index.html",
+      "url": "https://www.azure.cn/pricing/details/microsoft-sentinel/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/microsoft-sentinel/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/microsoft-sentinel/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "region_filter"
+  }
+}

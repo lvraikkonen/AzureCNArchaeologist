@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.1",
+  "product_key": "frontdoor",
+  "display_name": "Azure Front Door",
+  "slug": "frontdoor",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "networking",
+    "websites"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/frontdoor/index.html",
+      "url": "https://www.azure.cn/pricing/details/frontdoor/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/frontdoor/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/frontdoor/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "simple_static"
+  }
+}

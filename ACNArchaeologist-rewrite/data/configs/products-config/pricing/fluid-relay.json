@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "fluid-relay",
+  "display_name": "Azure Fluid Relay",
+  "slug": "fluid-relay",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "websites"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/fluid-relay/index.html",
+      "url": "https://www.azure.cn/pricing/details/fluid-relay/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/fluid-relay/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/fluid-relay/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "region_filter"
+  }
+}

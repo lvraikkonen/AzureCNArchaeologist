@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.1",
+  "product_key": "sla-event-grid",
+  "display_name": "事件网格的服务级别协议",
+  "slug": "event-grid",
+  "page_model": "SupportArticlePage",
+  "capability_status": "supported",
+  "support_article_type": "SLA",
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/event-grid/index.html",
+      "url": "https://www.azure.cn/support/sla/event-grid/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "SupportArticles/SLA/event-grid/index.html",
+      "url": "https://www.azure.cn/en-us/support/sla/event-grid/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "support_article"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "cosmos-db",
+  "display_name": "Azure Cosmos DB",
+  "slug": "cosmos-db",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "database"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/cosmos-db/index.html",
+      "url": "https://www.azure.cn/pricing/details/cosmos-db/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/cosmos-db/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/cosmos-db/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "complex"
+  }
+}

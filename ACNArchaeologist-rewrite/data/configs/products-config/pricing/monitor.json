@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "monitor",
+  "display_name": "Azure Monitor",
+  "slug": "monitor",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "management"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/monitor/index.html",
+      "url": "https://www.azure.cn/pricing/details/monitor/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/monitor/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/monitor/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "complex"
+  }
+}

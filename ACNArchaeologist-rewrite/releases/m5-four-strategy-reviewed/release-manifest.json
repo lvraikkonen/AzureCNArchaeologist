@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.0",
+  "release_id": "m5-four-strategy-reviewed",
+  "release_kind": "full",
+  "source_review": {
+    "review_id": "m5-full-review-workbench",
+    "review_queue_path": "reviews/m5-full-review-workbench/queue.json",
+    "run_name": "m4-full-acceptance-authoritative",
+    "run_manifest_path": "runs/m4-full-acceptance-authoritative/run.json"
+  },
+  "summary": {
+    "approved_products": 4,
+    "payload_items": 8,
+    "rejected_products": 0,
+    "awaiting_decision_products": 17,
+    "not_queued_items": 2
+  },
+  "products": [
+    {
+      "product_key": "api-management",
+      "display_name": "API Management",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "review": {
+        "reviewer": "claus lv",
+        "decision": "approved",
+        "inspection_scope": {
+          "languages": [
+            "zh-cn",
+            "en-us"
+          ],
+          "materials": [
+            "Frozen HTML",
+            "Business Payload",
+            "L3a 检查报告",
+            "L3b 检查报告"
+          ]
+        },
+        "notes": "人工审批通过，页面内容审批通过",
+        "source_decision_path": "reviews/m5-full-review-workbench/decisions/api-management.json",
+        "release_decision_path": "review-decisions/api-management.json"
+      },
+      "items": [
+        {
+          "item_id": "api-management/zh-cn",
+          "language": "zh-cn",
+          "frozen_html_path": "data/prod-html/zh-cn/pricing/api-management.html",
+          "source_payload_path": "runs/m4-full-acceptance-authoritative/payloads/zh-cn/pricing/api-management.json",
+          "release_payload_path": "payloads/zh-cn/pricing/api-management.json",
+          "l3a_report_path": "runs/m4-full-acceptance-authoritative/checks/zh-cn/pricing/api-management.l3a.json",
+          "l3b_report_path": "runs/m4-full-acceptance-authoritative/checks/zh-cn/pricing/api-management.l3b.json"
+        },
+        {
+          "item_id": "api-management/en-us",
+          "language": "en-us",
+          "frozen_html_path": "data/prod-html/en-us/pricing/api-management.html",
+          "source_payload_path": "runs/m4-full-acceptance-authoritative/payloads/en-us/pricing/api-management.json",
+          "release_payload_path": "payloads/en-us/pricing/api-management.json",
+          "l3a_report_path": "runs/m4-full-acceptance-authoritative/checks/en-us/pricing/api-management.l3a.json",
+          "l3b_report_path": "runs/m4-full-acceptance-authoritative/checks/en-us/pricing/api-management.l3b.json"
+        }
+      ]
+    },
+    {
+      "product_key": "databricks",
+      "display_name": "Azure Databricks",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "review": {
+        "reviewer": "claus lv",
+        "decision": "approved",
+        "inspection_scope": {
+          "languages": [
+            "zh-cn",
+            "en-us"
+          ],
+          "materials": [
+            "Frozen HTML",
+            "Business Payload",
+            "L3a 检查报告",
+            "L3b 检查报告"
+          ]
+        },
+        "notes": "人工审核通过，页面内容审核通过",
+        "source_decision_path": "reviews/m5-full-review-workbench/decisions/databricks.json",
+        "release_decision_path": "review-decisions/databricks.json"
+      },
+      "items": [
+        {
+          "item_id": "databricks/zh-cn",
+          "language": "zh-cn",
+          "frozen_html_path": "data/prod-html/zh-cn/pricing/databricks.html",
+          "source_payload_path": "runs/m4-full-acceptance-authoritative/payloads/zh-cn/pricing/databricks.json",
+          "release_payload_path": "payloads/zh-cn/pricing/databricks.json",
+          "l3a_report_path": "runs/m4-full-acceptance-authoritative/checks/zh-cn/pricing/databricks.l3a.json",
+          "l3b_report_path": "runs/m4-full-acceptance-authoritative/checks/zh-cn/pricing/databricks.l3b.json"
+        },
+        {
+          "item_id": "databricks/en-us",
+          "language": "en-us",
+          "frozen_html_path": "data/prod-html/en-us/pricing/databricks.html",
+          "source_payload_path": "runs/m4-full-acceptance-authoritative/payloads/en-us/pricing/databricks.json",
+          "release_payload_path": "payloads/en-us/pricing/databricks.json",
+          "l3a_report_path": "runs/m4-full-acceptance-authoritative/checks/en-us/pricing/databricks.l3a.json",
+          "l3b_report_path": "runs/m4-full-acceptance-authoritative/checks/en-us/pricing/databricks.l3b.json"
+        }
+      ]
+    },
+    {
+      "product_key": "icp-new",
+      "display_name": "ICP 备案操作解析",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "review": {
+        "reviewer": "claus lv",
+        "decision": "approved",
+        "inspection_scope": {
+          "languages": [
+            "zh-cn",
+            "en-us"
+          ],
+          "materials": [
+            "Frozen HTML",
+            "Business Payload",
+            "L3a 检查报告",
+            "L3b 检查报告"
+          ]
+        },
+        "notes": "人工审核通过，页面内容核验通过",
+        "source_decision_path": "reviews/m5-full-review-workbench/decisions/icp-new.json",
+        "release_decision_path": "review-decisions/icp-new.json"
+      },
+      "items": [
+        {
+          "item_id": "icp-new/zh-cn",
+          "language": "zh-cn",
+          "frozen_html_path": "data/prod-html/zh-cn/support-articles/ICP/icp-new.html",
+          "source_payload_path": "runs/m4-full-acceptance-authoritative/payloads/zh-cn/support-articles/ICP/icp-new.json",
+          "release_payload_path": "payloads/zh-cn/support-articles/ICP/icp-new.json",
+          "l3a_report_path": "runs/m4-full-acceptance-authoritative/checks/zh-cn/support-articles/ICP/icp-new.l3a.json",
+          "l3b_report_path": "runs/m4-full-acceptance-authoritative/checks/zh-cn/support-articles/ICP/icp-new.l3b.json"
+        },
+        {
+          "item_id": "icp-new/en-us",
+          "language": "en-us",
+          "frozen_html_path": "data/prod-html/en-us/support-articles/ICP/icp-new.html",
+          "source_payload_path": "runs/m4-full-acceptance-authoritative/payloads/en-us/support-articles/ICP/icp-new.json",
+          "release_payload_path": "payloads/en-us/support-articles/ICP/icp-new.json",
+          "l3a_report_path": "runs/m4-full-acceptance-authoritative/checks/en-us/support-articles/ICP/icp-new.l3a.json",
+          "l3b_report_path": "runs/m4-full-acceptance-authoritative/checks/en-us/support-articles/ICP/icp-new.l3b.json"
+        }
+      ]
+    },
+    {
+      "product_key": "service-bus",
+      "display_name": "Service Bus",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "review": {
+        "reviewer": "claus lv",
+        "decision": "approved",
+        "inspection_scope": {
+          "languages": [
+            "zh-cn",
+            "en-us"
+          ],
+          "materials": [
+            "Frozen HTML",
+            "Business Payload",
+            "L3a 检查报告",
+            "L3b 检查报告"
+          ]
+        },
+        "notes": "审批通过，中英页面验证通过",
+        "source_decision_path": "reviews/m5-full-review-workbench/decisions/service-bus.json",
+        "release_decision_path": "review-decisions/service-bus.json"
+      },
+      "items": [
+        {
+          "item_id": "service-bus/zh-cn",
+          "language": "zh-cn",
+          "frozen_html_path": "data/prod-html/zh-cn/pricing/service-bus.html",
+          "source_payload_path": "runs/m4-full-acceptance-authoritative/payloads/zh-cn/pricing/service-bus.json",
+          "release_payload_path": "payloads/zh-cn/pricing/service-bus.json",
+          "l3a_report_path": "runs/m4-full-acceptance-authoritative/checks/zh-cn/pricing/service-bus.l3a.json",
+          "l3b_report_path": "runs/m4-full-acceptance-authoritative/checks/zh-cn/pricing/service-bus.l3b.json"
+        },
+        {
+          "item_id": "service-bus/en-us",
+          "language": "en-us",
+          "frozen_html_path": "data/prod-html/en-us/pricing/service-bus.html",
+          "source_payload_path": "runs/m4-full-acceptance-authoritative/payloads/en-us/pricing/service-bus.json",
+          "release_payload_path": "payloads/en-us/pricing/service-bus.json",
+          "l3a_report_path": "runs/m4-full-acceptance-authoritative/checks/en-us/pricing/service-bus.l3a.json",
+          "l3b_report_path": "runs/m4-full-acceptance-authoritative/checks/en-us/pricing/service-bus.l3b.json"
+        }
+      ]
+    }
+  ],
+  "excluded": {
+    "rejected_product_keys": [],
+    "awaiting_decision_product_keys": [
+      "advisor",
+      "automation",
+      "azure-firewall",
+      "azure-migrate",
+      "azure-policy",
+      "azure-update-management-center",
+      "backup",
+      "database-migration",
+      "machine-learning",
+      "monitor",
+      "network-watcher",
+      "scheduler",
+      "site-recovery",
+      "sla-api-management",
+      "sla-databricks",
+      "sla-virtual-machines",
+      "traffic-manager"
+    ],
+    "not_queued_items": [
+      {
+        "item_id": "event-grid/zh-cn",
+        "reason": "event-grid/zh-cn 生产 Strategy 抽取失败：Filter declares duplicate machine values；抽取没有通过；L3a 没有通过；L3b 没有通过"
+      },
+      {
+        "item_id": "event-grid/en-us",
+        "reason": "event-grid/en-us 生产 Strategy 抽取失败：RegionFilter 页面没有可见区域筛选器。；抽取没有通过；L3a 没有通过；L3b 没有通过"
+      }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "firewall-manager",
+  "display_name": "Azure 防火墙管理器定价",
+  "slug": "firewall-manager",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "networking"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/firewall-manager/index.html",
+      "url": "https://www.azure.cn/pricing/details/firewall-manager/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/firewall-manager/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/firewall-manager/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "simple_static"
+  }
+}

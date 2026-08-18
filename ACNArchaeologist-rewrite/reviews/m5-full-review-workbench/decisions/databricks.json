@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "review_id": "m5-full-review-workbench",
+  "run_name": "m4-full-acceptance-authoritative",
+  "product_key": "databricks",
+  "reviewer": "claus lv",
+  "decision": "approved",
+  "inspection_scope": {
+    "languages": [
+      "zh-cn",
+      "en-us"
+    ],
+    "materials": [
+      "Frozen HTML",
+      "Business Payload",
+      "L3a 检查报告",
+      "L3b 检查报告"
+    ]
+  },
+  "notes": "人工审核通过，页面内容审核通过",
+  "reviewed_items": [
+    {
+      "item_id": "databricks/zh-cn",
+      "language": "zh-cn",
+      "frozen_html_path": "data/prod-html/zh-cn/pricing/databricks.html",
+      "payload_path": "runs/m4-full-acceptance-authoritative/payloads/zh-cn/pricing/databricks.json",
+      "l3a_report_path": "runs/m4-full-acceptance-authoritative/checks/zh-cn/pricing/databricks.l3a.json",
+      "l3b_report_path": "runs/m4-full-acceptance-authoritative/checks/zh-cn/pricing/databricks.l3b.json"
+    },
+    {
+      "item_id": "databricks/en-us",
+      "language": "en-us",
+      "frozen_html_path": "data/prod-html/en-us/pricing/databricks.html",
+      "payload_path": "runs/m4-full-acceptance-authoritative/payloads/en-us/pricing/databricks.json",
+      "l3a_report_path": "runs/m4-full-acceptance-authoritative/checks/en-us/pricing/databricks.l3a.json",
+      "l3b_report_path": "runs/m4-full-acceptance-authoritative/checks/en-us/pricing/databricks.l3b.json"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "virtual-wan",
+  "display_name": "Virtual WAN",
+  "slug": "virtual-wan",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "networking"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/virtual-wan/index.html",
+      "url": "https://www.azure.cn/pricing/details/virtual-wan/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/virtual-wan/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/virtual-wan/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "simple_static"
+  }
+}

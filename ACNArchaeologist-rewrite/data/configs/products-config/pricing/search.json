@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "search",
+  "display_name": "Azure AI Search",
+  "slug": "search",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "ai-ml"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/search/index.html",
+      "url": "https://www.azure.cn/pricing/details/search/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/search/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/search/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "region_filter"
+  }
+}

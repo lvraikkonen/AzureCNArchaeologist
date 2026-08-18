@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.1",
+  "product_key": "machine-learning",
+  "display_name": "Azure Machine Learning",
+  "slug": "machine-learning",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "ai-ml"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/machine-learning/index.html",
+      "url": "https://www.azure.cn/pricing/details/machine-learning/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/machine-learning/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/machine-learning/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "complex",
+    "page_global_content": {
+      "source_boundary": "after_final_formal_selector_before_common_sections",
+      "expected_by_language": {
+        "zh-cn": {
+          "fragment_count": 1,
+          "source_html_sha256": "602acf7a66f99a06baa640ecb7874fc33f6d747225d108d970d9a1a373aa3e73",
+          "wire_html_sha256": "1e630cd1326d8978b3eceaf922cdeb095d1183be6bcbed7d5647c8956d94042b"
+        },
+        "en-us": {
+          "fragment_count": 1,
+          "source_html_sha256": "6cc3b2aa0e551ae0303e39be6a152d02435aa9750dcf9da974ea15fbba9f6095",
+          "wire_html_sha256": "0be010ea99529cc4d3311e3dc2de71c8bb422b6a92a01f4267a3aed5cff91249"
+        }
+      }
+    }
+  }
+}

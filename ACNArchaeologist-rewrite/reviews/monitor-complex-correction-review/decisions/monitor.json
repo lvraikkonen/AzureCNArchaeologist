@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "review_id": "monitor-complex-correction-review",
+  "run_name": "monitor-complex-correction",
+  "batch_kind": "standard",
+  "incremental_run_name": null,
+  "product_key": "monitor",
+  "reviewer": "claus lv",
+  "decision": "approved",
+  "inspection_scope": {
+    "languages": [
+      "zh-cn",
+      "en-us"
+    ],
+    "materials": [
+      "Frozen HTML",
+      "Business Payload",
+      "L3a 检查报告",
+      "L3b 检查报告"
+    ]
+  },
+  "notes": "monitor 为Complex页面，页面内容人工审核通过",
+  "reviewed_items": [
+    {
+      "item_id": "monitor/zh-cn",
+      "language": "zh-cn",
+      "frozen_html_path": "data/prod-html/zh-cn/pricing/monitor.html",
+      "payload_path": "runs/monitor-complex-correction/payloads/zh-cn/pricing/monitor.json",
+      "l3a_report_path": "runs/monitor-complex-correction/checks/zh-cn/pricing/monitor.l3a.json",
+      "l3b_report_path": "runs/monitor-complex-correction/checks/zh-cn/pricing/monitor.l3b.json"
+    },
+    {
+      "item_id": "monitor/en-us",
+      "language": "en-us",
+      "frozen_html_path": "data/prod-html/en-us/pricing/monitor.html",
+      "payload_path": "runs/monitor-complex-correction/payloads/en-us/pricing/monitor.json",
+      "l3a_report_path": "runs/monitor-complex-correction/checks/en-us/pricing/monitor.l3a.json",
+      "l3b_report_path": "runs/monitor-complex-correction/checks/en-us/pricing/monitor.l3b.json"
+    }
+  ]
+}

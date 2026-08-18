@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "time-series-insights",
+  "display_name": "Azure Time Series Insights",
+  "slug": "time-series-insights",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "iot"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/time-series-insights/index.html",
+      "url": "https://www.azure.cn/pricing/details/time-series-insights/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/time-series-insights/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/time-series-insights/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "complex"
+  }
+}

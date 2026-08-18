@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "hub",
+  "display_name": "Azure Stack Hub",
+  "slug": "azure-stack-hub",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "hybrid-multicloud"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/azure-stack/hub/index.html",
+      "url": "https://www.azure.cn/pricing/details/azure-stack/hub/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/azure-stack/hub/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/azure-stack/hub/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "region_filter"
+  }
+}

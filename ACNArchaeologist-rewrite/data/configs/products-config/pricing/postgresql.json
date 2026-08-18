@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "postgresql",
+  "display_name": "Azure Database for PostgreSQL",
+  "slug": "postgresql",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "database"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/postgresql/index.html",
+      "url": "https://www.azure.cn/pricing/details/postgresql/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/postgresql/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/postgresql/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "region_filter"
+  }
+}

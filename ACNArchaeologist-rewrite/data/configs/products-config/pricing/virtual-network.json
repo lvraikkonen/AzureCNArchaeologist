@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "virtual-network",
+  "display_name": "Virtual Network",
+  "slug": "virtual-network",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "networking"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/virtual-network/index.html",
+      "url": "https://www.azure.cn/pricing/details/virtual-network/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/virtual-network/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/virtual-network/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "simple_static"
+  }
+}

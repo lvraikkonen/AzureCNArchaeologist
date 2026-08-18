@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "power-bi-embedded",
+  "display_name": "Power BI Embedded",
+  "slug": "power-bi-embedded",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "analysis"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/power-bi-embedded/index.html",
+      "url": "https://www.azure.cn/pricing/details/power-bi-embedded/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/power-bi-embedded/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/power-bi-embedded/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "region_filter"
+  }
+}

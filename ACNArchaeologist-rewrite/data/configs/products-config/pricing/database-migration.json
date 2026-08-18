@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "database-migration",
+  "display_name": "Database Migration Service",
+  "slug": "database-migration",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "database"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/database-migration/index.html",
+      "url": "https://www.azure.cn/pricing/details/database-migration/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/database-migration/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/database-migration/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "complex"
+  }
+}

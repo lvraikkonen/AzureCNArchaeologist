@@ -1,0 +1,210 @@
+{
+  "schema_version": "1.0",
+  "source_run_name": "event-grid-simple-incremental",
+  "ignored_fields": [
+    "capability_status",
+    "display_name",
+    "slug",
+    "catalog_categories"
+  ],
+  "products": [
+    {
+      "product_key": "advisor",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "sources": {
+        "zh-cn": "pricing/details/advisor/index.html",
+        "en-us": "pricing/details/advisor/index.html"
+      }
+    },
+    {
+      "product_key": "api-management",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "sources": {
+        "zh-cn": "pricing/details/api-management/index.html",
+        "en-us": "pricing/details/api-management/index.html"
+      }
+    },
+    {
+      "product_key": "automation",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "sources": {
+        "zh-cn": "pricing/details/automation/index.html",
+        "en-us": "pricing/details/automation/index.html"
+      }
+    },
+    {
+      "product_key": "azure-firewall",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "sources": {
+        "zh-cn": "pricing/details/azure-firewall/index.html",
+        "en-us": "pricing/details/azure-firewall/index.html"
+      }
+    },
+    {
+      "product_key": "azure-migrate",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "sources": {
+        "zh-cn": "pricing/details/azure-migrate/index.html",
+        "en-us": "pricing/details/azure-migrate/index.html"
+      }
+    },
+    {
+      "product_key": "azure-policy",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "sources": {
+        "zh-cn": "pricing/details/azure-policy/index.html",
+        "en-us": "pricing/details/azure-policy/index.html"
+      }
+    },
+    {
+      "product_key": "azure-update-management-center",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "sources": {
+        "zh-cn": "pricing/details/azure-update-management-center/index.html",
+        "en-us": "pricing/details/azure-update-management-center/index.html"
+      }
+    },
+    {
+      "product_key": "backup",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "sources": {
+        "zh-cn": "pricing/details/backup/index.html",
+        "en-us": "pricing/details/backup/index.html"
+      }
+    },
+    {
+      "product_key": "database-migration",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "sources": {
+        "zh-cn": "pricing/details/database-migration/index.html",
+        "en-us": "pricing/details/database-migration/index.html"
+      }
+    },
+    {
+      "product_key": "databricks",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "sources": {
+        "zh-cn": "pricing/details/databricks/index.html",
+        "en-us": "pricing/details/databricks/index.html"
+      }
+    },
+    {
+      "product_key": "event-grid",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "sources": {
+        "zh-cn": "pricing/details/event-grid/index.html",
+        "en-us": "pricing/details/event-grid/index.html"
+      }
+    },
+    {
+      "product_key": "icp-new",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "sources": {
+        "zh-cn": "SupportArticles/ICP/icp-new.html",
+        "en-us": "SupportArticles/ICP/icp-new.html"
+      }
+    },
+    {
+      "product_key": "machine-learning",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "sources": {
+        "zh-cn": "pricing/details/machine-learning/index.html",
+        "en-us": "pricing/details/machine-learning/index.html"
+      }
+    },
+    {
+      "product_key": "monitor",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "sources": {
+        "zh-cn": "pricing/details/monitor/index.html",
+        "en-us": "pricing/details/monitor/index.html"
+      }
+    },
+    {
+      "product_key": "network-watcher",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "sources": {
+        "zh-cn": "pricing/details/network-watcher/index.html",
+        "en-us": "pricing/details/network-watcher/index.html"
+      }
+    },
+    {
+      "product_key": "scheduler",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "sources": {
+        "zh-cn": "pricing/details/scheduler/index.html",
+        "en-us": "pricing/details/scheduler/index.html"
+      }
+    },
+    {
+      "product_key": "service-bus",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "sources": {
+        "zh-cn": "pricing/details/service-bus/index.html",
+        "en-us": "pricing/details/service-bus/index.html"
+      }
+    },
+    {
+      "product_key": "site-recovery",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "sources": {
+        "zh-cn": "pricing/details/site-recovery/index.html",
+        "en-us": "pricing/details/site-recovery/index.html"
+      }
+    },
+    {
+      "product_key": "sla-api-management",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/api-management/index.html",
+        "en-us": "SupportArticles/SLA/api-management/index.html"
+      }
+    },
+    {
+      "product_key": "sla-databricks",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/databricks/index.html",
+        "en-us": "SupportArticles/SLA/databricks/index.html"
+      }
+    },
+    {
+      "product_key": "sla-virtual-machines",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/virtual-machines/index.html",
+        "en-us": "SupportArticles/SLA/virtual-machines/index.html"
+      }
+    },
+    {
+      "product_key": "traffic-manager",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "sources": {
+        "zh-cn": "pricing/details/traffic-manager/index.html",
+        "en-us": "pricing/details/traffic-manager/index.html"
+      }
+    }
+  ]
+}

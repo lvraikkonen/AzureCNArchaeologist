@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "databricks",
+  "display_name": "Azure Databricks",
+  "slug": "databricks",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "ai-ml"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/databricks/index.html",
+      "url": "https://www.azure.cn/pricing/details/databricks/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/databricks/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/databricks/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "complex"
+  }
+}

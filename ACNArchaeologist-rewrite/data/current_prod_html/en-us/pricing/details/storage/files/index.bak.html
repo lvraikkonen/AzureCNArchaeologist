@@ -1,0 +1,2685 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=2.0" name="viewport" />
+    <meta content="Azure, storage, Files" name="keywords" />
+    <meta
+        content="Learn about the pricing details of Azure Storage. Azure Storage is a highly durable, available and scalable cloud storage enabling access anytime, anywhere. A 1RMB Trial gets you ¥ 1,500 in service credits. You can also make a direct purchase and become a Pay-in-Advance Azure customer to enjoy a Service Level Agreement of up to 99.99%."
+        name="description" />
+    <title>
+        Azure Cloud Storage_Files - Azure Cloud Computing
+    </title>
+    <link href="/Static/Favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
+    <link href="/Static/Favicon/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="/Static/Favicon/favicon.ico" rel="icon" type="image/x-icon" />
+    <link href="/Static/Favicon/manifest.json" rel="manifest" />
+    <link color="#0078D4" href="/Static/Favicon/safari-pinned-tab.svg" rel="mask-icon" />
+    <meta content="/Static/Favicon/browserconfig.xml" name="msapplication-config" />
+    <meta content="#ffffff" name="theme-color" />
+    <link href="https://azure.microsoft.com/pricing/details/storage/files/" rel="canonical" />
+    <!-- BEGIN: Azure UI Style -->
+    <link href="/Static/CSS/azureui.min.css" rel="stylesheet" />
+    <link href="/Static/CSS/common.min.css" rel="stylesheet" />
+    <!-- END: Azure UI Style -->
+    <!-- BEGIN: Page Style -->
+    <!-- END: Page Style -->
+    <!-- BEGIN: Minified Page Style -->
+    <link href="/Static/CSS/a05a0e4e99489d7b3cb548e24414e01adf779d77.css" rel="stylesheet" />
+    <!-- END: Minified Page Style -->
+    <link href="/StaticService/css/service.min.css" rel="stylesheet" />
+</head>
+
+<body class="en-us">
+    <script>
+        window.requireUrlArgs = "1/6/2020 11:41:53 AM";
+        window.currentLocale = "en-US";
+        window.headerTimestamp = "5/9/2019 9:29:29 AM";
+        window.footerTimestamp = "5/9/2019 9:29:29 AM";
+        window.locFileTimestamp = "5/9/2019 9:29:21 AM";
+
+        window.AcnHeaderFooter = {
+            IsEnableQrCode: true,
+            CurrentLang: window.currentLocale.toLowerCase(),
+        };
+    </script>
+    <style>
+        @media (min-width: 0) {
+            .acn-header-placeholder {
+                height: 48px;
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 980px) {
+            .acn-header-placeholder {
+                height: 89px;
+                width: 100%;
+            }
+        }
+
+        .acn-header-placeholder {
+            background-color: #1A1A1A;
+        }
+
+        .acn-header-service {
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+
+        .pricing-detail-tab .tab-nav {
+            padding-left: 0 !important;
+            margin-top: 5px;
+            margin-bottom: 0;
+            overflow: hidden;
+        }
+
+        .dricePrice {
+            margin-top: 10px;
+            float: left;
+        }
+
+        .pricing-detail-tab .tab-nav li {
+            list-style: none;
+            float: left;
+        }
+
+        .pricing-detail-tab .tab-nav li.active a {
+            border-bottom: 4px solid #00a3d9;
+        }
+
+        .pricing-detail-tab .tab-nav li.active a:hover {
+            border-bottom: 4px solid #00a3d9;
+        }
+
+        .pricing-detail-tab .tab-content .tab-panel {
+            display: none;
+        }
+
+        .pricing-detail-tab .tab-content .tab-panel.show-md {
+            display: block;
+        }
+
+        .alignwidth {
+            width: 53%;
+        }
+
+        .updatetime {
+            color: black;
+            text-align: right;
+            font-size: 12px;
+        }
+
+        .pure-content table.word-wrap tr th,
+        .pure-content table.word-wrap tr td {
+            white-space: nowrap;
+            word-break: normal;
+        }
+
+        .pure-content table.word-wrap tr td:first-child {
+            white-space: normal;
+            word-break: keep-all;
+        }
+    </style>
+    <div class="hide-info" style="display:none;">
+        <div class="bg-box">
+            <div class="cover-bg">
+            </div>
+        </div>
+        <div class="msg-box">
+            <div class="pricing-unavailable-message">
+                Not available in the selected region
+            </div>
+        </div>
+    </div>
+    <div class="acn-header-container">
+        <div class="acn-header-placeholder">
+        </div>
+        <div class="public_headerpage">
+        </div>
+    </div>
+    <!-- BEGIN: Documentation Content -->
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bread-crumb hidden-sm hidden-xs">
+                        <ul>
+                            <li>
+                                <span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="single-page">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+                            <div class="loader">
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                                <i class="circle">
+                                </i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-10 pure-content">
+                        <div class="select left-navigation-select hidden-md hidden-lg">
+                            <select>
+                                <option selected="selected">
+                                    加载中...
+                                </option>
+                            </select>
+                            <span class="icon icon-arrow-top">
+                            </span>
+                        </div>
+                        <tags ms.date="09/30/2015" ms.service="en-us-storage-files" wacn.date="11/27/2015">
+                        </tags>
+                        <div class="common-banner col-top-banner"
+                            data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'/Images/marketing-resource/css/storage.png','imageHeight':'auto'}">
+                            <div class="common-banner-image">
+                                <div class="common-banner-title">
+                                    <svg
+                                        style="display:none; visibility:hidden;float: left; margin-right: 10px;margin-top: 5px;width: 48px;">
+                                        <defs>
+                                            <symbol id="svg-storage\files" viewbox="0 0 50 50">
+                                                <path
+                                                    d="M0,45.1c0,1,0.8,1.9,1.8,1.9h46.3c1,0,1.9-0.8,1.9-1.9V12H0V45.1z"
+                                                    fill="#A0A1A2">
+                                                </path>
+                                                <path d="M48.1,4.1H1.8C0.8,4.1,0,5,0,6v6h50V6c0-1-0.8-1.6-1.9-1.6"
+                                                    fill="#7A7A7A">
+                                                </path>
+                                                <rect fill="#B8D432" height="7" width="42" x="4" y="25.5">
+                                                </rect>
+                                                <rect fill="#FFFFFF" height="7" width="42" x="4" y="15">
+                                                </rect>
+                                                <rect fill="#B8D432" height="7" width="42" x="4" y="36">
+                                                </rect>
+                                                <path d="M2,4C0.9,4,0,4.9,0,6v7.3v3.3v28c0,1.1,0.9,2,2,2h2.2L43.6,4H2z"
+                                                    fill="#FFFFFF" opacity="0.2">
+                                                </path>
+                                            </symbol>
+                                        </defs>
+                                    </svg>
+                                    <svg aria-hidden="true" role="presentation"
+                                        style="width: 48px;display: inline-block; height: 48px;float: left;margin-right: 10px;margin-top: 5px;">
+                                        <use xlink:href="#svg-storage\files">
+                                        </use>
+                                    </svg>
+                                    <h2>
+                                        Azure Files
+                                    </h2>
+                                    <h4>
+                                        File shares that use the standard SMB 3.0 protocol
+                                    </h4>
+                                    <div class="updatetime">
+                                        Updated on：2025/11/05
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pricing-page-section">
+                            <p>
+                                Azure Files offers serverless file shares, accessible via SMB, NFS and FileREST
+                                protocols.
+                                Azure file shares can be mounted concurrently by clients in Azure VMs or from
+                                on-premises
+                                workstations running Windows, macOS, and Linux. Additionally, Azure File Sync allows
+                                caching
+                                and synchronization of Azure File shares on Windows Servers for local access.
+                            </p>
+                            <div>
+                                <h2>
+                                    Pricing Details
+                                </h2>
+                            </div>
+                        </div>
+                        <!-- BEGIN: TAB-CONTROL -->
+                        <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
+                            <div class="tab-container-container">
+                                <div class="tab-container-box">
+                                    <div class="tab-container">
+                                        <div class="dropdown-container software-kind-container" style="display: none;">
+                                            <label>
+                                                OS/Software:
+                                            </label>
+                                            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                                <span class="selected-item">
+                                                    Storage Files
+                                                </span>
+                                                <i class="icon">
+                                                </i>
+                                                <ol class="tab-items">
+                                                    <li class="active">
+                                                        <a data-href="#tabContent1" href="javascript:void(0)"
+                                                            id="home_storage-files">
+                                                            Storage
+                                                            Files
+                                                        </a>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <select class="dropdown-select software-box hidden-lg hidden-md"
+                                                id="software-box">
+                                                <option data-href="#tabContent1" selected="selected"
+                                                    value="Storage Files">
+                                                    Storage Files
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="dropdown-container region-container">
+                                            <label>
+                                                Region：
+                                            </label>
+                                            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                                <span class="selected-item">
+                                                    China East 3
+                                                </span>
+                                                <i class="icon">
+                                                </i>
+                                                <ol class="tab-items">
+                                                    <li class="active">
+                                                        <a href="javascript:void(0)" data-href="#east-china3"
+                                                            id="east-china3">
+                                                            China East 3
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#north-china3" href="javascript:void(0)"
+                                                            id="north-china3">
+                                                            China North 3
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#east-china2" href="javascript:void(0)"
+                                                            id="east-china2">
+                                                            China East 2
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#north-china2" href="javascript:void(0)"
+                                                            id="north-china2">
+                                                            China North 2
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#east-china" href="javascript:void(0)"
+                                                            id="east-china">
+                                                            China East
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#north-china" href="javascript:void(0)"
+                                                            id="north-china">
+                                                            China North
+                                                        </a>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <select class="dropdown-select region-box hidden-lg hidden-md"
+                                                id="region-box">
+                                                <option selected="selected" data-href="#east-china3"
+                                                    value="east-china3">
+                                                    China East 3
+                                                </option>
+                                                <option data-href="#north-china3" value="north-china3">
+                                                    China North 3
+                                                </option>
+                                                <option data-href="#east-china2" selected="selected"
+                                                    value="east-china2">
+                                                    China East 2
+                                                </option>
+                                                <option data-href="#north-china2" value="north-china2">
+                                                    China North 2
+                                                </option>
+                                                <option data-href="#east-china" value="east-china">
+                                                    China East
+                                                </option>
+                                                <option data-href="#north-china" value="north-china">
+                                                    China North
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="clearfix">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- tab begin -->
+                            <div class="tab-content">
+                                <div class="tab-panel" id="tabContent1">
+                                    <div class="category-container-container">
+                                        <div class="category-container-box">
+                                            <div class="category-container">
+                                                <ul class="os-tab-nav category-tabs hidden-xs hidden-sm">
+
+                                                    <li>
+                                                        <a data-href="#tabContent1-1" href="javascript:void(0)"
+                                                            id="databricks_Engineering_Light">
+                                                            LRS
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#tabContent1-2" href="javascript:void(0)"
+                                                            id="databricks_Engineering_Light">
+                                                            GZRS
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#tabContent1-3" href="javascript:void(0)"
+                                                            id="databricks_Engineering_Light">
+                                                            ZRS
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#tabContent1-4" href="javascript:void(0)"
+                                                            id="databricks_Engineering_Light">
+                                                            GRS
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <!-- <select class="dropdown-select category-tabs hidden-lg hidden-md">
+                                                    
+                                                </select> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- tab end -->
+
+                            <div>
+                                <p>Azure Files supports two different media tiers of storage, SSD and HDD, which
+                                    allow you to tailor your file shares to the performance and price
+                                    requirements of your scenario:</p>
+                                <ul>
+                                    <li>
+                                        <strong>SSD (“premium”):</strong> File shares hosted on solid-state
+                                        drives (SSDs) provide consistent high performance and low latency,
+                                        within single-digit milliseconds for most IO operations.
+                                    </li>
+                                    <li>
+                                        <strong>HDD (“standard”): </strong>File shares hosted on hard disk
+                                        drives (HDDs) provide cost-effective storage for general purpose use.
+                                    </li>
+                                </ul>ultiple pr
+                                <p>Azure Files has micing models including provisioned and
+                                    pay-as-you-go options. The following sections detail the specifics of each
+                                    model to help you make a choice about which model works best for your
+                                    scenario.</p>
+                                <br>
+                                <br>
+
+                                <h3>Provisioned v2</h3>
+                                <p>In a provisioned model, the primary costs of the Azure file share are
+                                    based on the amount of storage, IOPS, and throughput
+                                    you provision when you create or update your file share, regardless of
+                                    how much you use. With the provisioned v2 billing model,
+                                    you have the ability to separately provision storage, IOPS, and
+                                    throughput, although we will recommend IOPS and throughput
+                                    provisioning to you based on the amount of provisioned storage you
+                                    select. We recommend provisioned v2 file shares for all
+                                    new Azure Files deployments. For more information on the provisioned v2
+                                    billing model, see
+                                    <a href="https://go.microsoft.com/fwlink/?linkid=2286278&clcid=0x804"
+                                        style="float: none;display: inline;background: none;padding: 0px;margin: 0px;">
+                                        the provisioned v2 billing model</a>.
+                                </p>
+
+                                <div>
+                                    <table cellpadding="0" cellspacing="0" id="storage-files-Provisioned-v2-LRS"
+                                        width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <th></th>
+                                                <th colspan="1"><strong>SSD</strong></th>
+                                                <th colspan="2"><strong>HDD</strong></th>
+                                            </tr>
+                                            <tr>
+                                                <th align="center" style="width: 600px;">
+                                                    <strong>Quantity</strong>
+                                                </th>
+                                                <th align="center" style="width: 600px;">
+                                                    <strong>LRS Price</strong>
+                                                </th>
+                                                <th align="center" style="width: 500px;">
+                                                    <strong>LRS Price</strong>
+                                                </th>
+                                                <th align="center" style="width: 500px;">
+                                                    <strong>GRS Price</strong>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Provisioned storage</strong>
+                                                    <br />The maximum storage size of the file share, specified
+                                                    in GiB. You are charged for the storage you’ve provision
+                                                    regardless of what you use. Provisioned storage can be
+                                                    changed after share creation.
+                                                </td>
+                                                <td>￥0.001392 per provisioned GiB per hour</td>
+                                                <td>￥0.000102 per provisioned GiB per hour</td>
+                                                <td>￥0.000204 per provisioned GiB per hour</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Provisioned IOPS</strong>
+                                                    <br />The maximum IOPS, or transactions per second, of the
+                                                    file share. You are charged for the IOPS you’ve provisioned
+                                                    regardless of how many IOs you use. Provisioned IOPS can be
+                                                    changed after share creation.
+                                                </td>
+                                                <td>
+                                                    ￥0.000378 per provisioned IO per sec per hour
+                                                    <p><i>First 3000 IOPS at no additional cost</i></p>
+                                                </td>
+                                                <td>￥0.000558 per provisioned IO per sec per hour</td>
+                                                <td>￥0.001122 per provisioned IO per sec per hour</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Provisioned throughput</strong>
+                                                    <br />The maximum amount of data that can be transferred per
+                                                    second of the file share. You are charged for the throughput
+                                                    you’ve provisioned regardless of what you use. Provisioned
+                                                    throughput can be changed after share creation.
+                                                </td>
+                                                <td>
+                                                    ￥0.000546 per provisioned MiB per sec per hour
+                                                    <p><i>First 3000 IOPS at no additional cost</i></p>
+                                                </td>
+                                                <td>￥0.000834 per provisioned MiB per sec per hour</td>
+                                                <td>￥0.001668 per provisioned MiB per sec per hour</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Overflow snapshot used storage</strong>
+                                                    <br />In the provisioned v2 billing model, snapshot usage
+                                                    that fits within the provisioned storage of the share is
+                                                    free. Any additional snapshot storage that doesn’t fit
+                                                    within the provisioned storage of the share is charged with
+                                                    a usage-based charge per GiB. All snapshots are differential
+                                                    from the live file share and from each other.
+                                                </td>
+                                                <td>
+                                                    ￥0.001392 per used GiB per hour
+                                                </td>
+                                                <td>
+                                                    ￥0.000102 per used GiB per hour
+                                                </td>
+                                                <td>
+                                                    ￥0.000204 per used GiB per hour
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Soft-deleted used storage</strong>
+                                                    <br />When a file share is soft-deleted, the used portion of
+                                                    the storage is charged for the indicated soft-deleted
+                                                    period. All other meters are not charged unless the share is
+                                                    restored.
+                                                </td>
+                                                <td>
+                                                    ￥0.001392 per used GiB per hour
+                                                </td>
+                                                <td>
+                                                    ￥0.000102 per used GiB per hour
+                                                </td>
+                                                <td>
+                                                    ￥0.000204 per used GiB per hour
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table cellpadding="0" cellspacing="0" id="storage-files-Provisioned-v2-LRS-ZRS"
+                                        width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <th></th>
+                                                <th colspan="2"><strong>SSD</strong></th>
+                                                <th colspan="4"><strong>HDD</strong></th>
+                                            </tr>
+                                            <tr>
+                                                <th align="center">
+                                                    <strong>Quantity</strong>
+                                                </th>
+                                                <th align="center">
+                                                    <strong>LRS Price</strong>
+                                                </th>
+                                                <th align="center">
+                                                    <strong>ZRS Price</strong>
+                                                </th>
+                                                <th align="center">
+                                                    <strong>LRS Price</strong>
+                                                </th>
+                                                <th align="center">
+                                                    <strong>GRS Price</strong>
+                                                </th>
+                                                <th align="center">
+                                                    <strong>ZRS Price</strong>
+                                                </th>
+                                                <th align="center">
+                                                    <strong>GZRS Price</strong>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Provisioned storage</strong>
+                                                    <br />The maximum storage size of the file share, specified
+                                                    in GiB. You are charged for the storage you’ve provision
+                                                    regardless of what you use. Provisioned storage can be
+                                                    changed after share creation.
+                                                </td>
+                                                <td>￥0.001392 per provisioned GiB per hour</td>
+                                                <td>￥0.00174 per provisioned GiB per hour</td>
+                                                <td>￥0.000102 per provisioned GiB per hour</td>
+                                                <td>￥0.000234 per provisioned GiB per hour</td>
+                                                <td>￥0.000126 per provisioned GiB per hour</td>
+                                                <td>￥0.00027 per provisioned GiB per hour</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Provisioned IOPS</strong>
+                                                    <br />The maximum IOPS, or transactions per second, of the
+                                                    file share. You are charged for the IOPS you’ve provisioned
+                                                    regardless of how many IOs you use. Provisioned IOPS can be
+                                                    changed after share creation.
+                                                </td>
+                                                <td>
+                                                    ￥0.000378 per provisioned IO per sec per hour
+                                                    <p><i>First 3000 IOPS at no additional cost</i></p>
+                                                </td>
+                                                <td>
+                                                    <span>￥0.000468 per provisioned IO per sec per hour</span>
+                                                    <span><i>First 3000 IOPS at no additional cost</i></span>
+                                                </td>
+                                                <td>￥0.000558 per provisioned IO per sec per hour</td>
+                                                <td>￥0.001284 per provisioned IO per sec per hour</td>
+                                                <td>￥0.000702 per provisioned IO per sec per hour</td>
+                                                <td>￥0.001422 per provisioned IO per sec per hour</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Provisioned throughput</strong>
+                                                    <br />The maximum amount of data that can be transferred per
+                                                    second of the file share. You are charged for the throughput
+                                                    you’ve provisioned regardless of what you use. Provisioned
+                                                    throughput can be changed after share creation.
+                                                </td>
+                                                <td>
+                                                    ￥0.000546 per provisioned MiB per sec per hour
+                                                    <p><i>First 3000 IOPS at no additional cost</i></p>
+                                                </td>
+                                                <td>
+                                                    <span>￥0.000696 per provisioned MiB per sec per hour</span>
+                                                    <span><i>First 3000 IOPS at no additional cost</i></span>
+                                                </td>
+                                                <td>￥0.000834 per provisioned MiB per sec per hour</td>
+                                                <td>￥0.00192 per provisioned MiB per sec per hour</td>
+                                                <td>￥0.001044 per provisioned MiB per sec per hour</td>
+                                                <td>￥0.002124 per provisioned MiB per sec per hour</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Overflow snapshot used storage</strong>
+                                                    <br />In the provisioned v2 billing model, snapshot usage
+                                                    that fits within the provisioned storage of the share is
+                                                    free. Any additional snapshot storage that doesn’t fit
+                                                    within the provisioned storage of the share is charged with
+                                                    a usage-based charge per GiB. All snapshots are differential
+                                                    from the live file share and from each other.
+                                                </td>
+                                                <td>￥0.001392 per used GiB per hour</td>
+                                                <td>￥0.00174 per used GiB per hour</td>
+                                                <td>￥0.000102 per used GiB per hour</td>
+                                                <td>￥0.000234 per used GiB per hour</td>
+                                                <td>￥0.000126 per used GiB per hour</td>
+                                                <td>￥0.00027 per used GiB per hour</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Soft-deleted used storage</strong>
+                                                    <br />When a file share is soft-deleted, the used portion of
+                                                    the storage is charged for the indicated soft-deleted
+                                                    period. All other meters are not charged unless the share is
+                                                    restored.
+                                                </td>
+                                                <td>￥0.001392 per used GiB per hour</td>
+                                                <td>￥0.00174 per used GiB per hour</td>
+                                                <td>￥0.000102 per used GiB per hour</td>
+                                                <td>￥0.000234 per used GiB per hour</td>
+                                                <td>￥0.000126 per used GiB per hour</td>
+                                                <td>￥0.00027 per used GiB per hour</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="tags-date">
+                                        <div class="ms-date">
+                                            Provisioned v2 file shares are billed hourly at an hourly rate.
+                                            <br>Monthly prices shown in the table above are based on a 744-hour
+                                            month.
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+
+                                <h3>Provisioned v1</h3>
+                                <p>In a provisioned model, the primary costs of the Azure file share are based
+                                    on
+                                    the amount of storage, IOPS, and throughput you provision when you create or
+                                    update your file share, regardless of how much you use. In the provisioned
+                                    v1
+                                    billing model, there is one provisioned quantity for which you will pay for
+                                    your file share: provisioned storage. When you create your file share, the
+                                    provisioned IOPS and throughput available on your share are determined based
+                                    on the amount of storage you provision. If you need more IOPS or throughput,
+                                    you’ll need to provision additional storage. The provisioned v1 model is
+                                    only
+                                    available for SSD file shares. We recommend using the provisioned v2 billing
+                                    model for new SSD file share deployments. For more information on the
+                                    provisioned v1 billing model, see
+                                    <a href="https://go.microsoft.com/fwlink/?linkid=2286610&clcid=0x804"
+                                        style="float: none;display: inline;background: none;padding: 0px;margin: 0px;">
+                                        understanding the provisioned v1 billing model</a>
+                                    .
+                                </p>
+
+                                <div>
+                                    <table cellpadding="0" cellspacing="0" id="storage-files-Provisioned-v1-LRS"
+                                        width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <th></th>
+                                                <th colspan="2"><strong>SSD</strong></th>
+                                            </tr>
+                                            <tr>
+                                                <th align="center" style="width: 600px;">
+                                                    <strong>Quantity</strong>
+                                                </th>
+                                                <th align="center" style="width: 400px;">
+                                                    <strong>LRS Price</strong>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Provisioned storage</strong>
+                                                    <br />The maximum storage size of the file share, specified
+                                                    in GiB. You are charged for the storage you’ve provision
+                                                    regardless of what you use. The provisioned IOPS and
+                                                    provisioned throughput capacity of the share is dependent on
+                                                    the amount of storage provisioned. Provisioning can be
+                                                    changed after share creation.
+                                                </td>
+                                                <td style="text-indent: 2em;">￥1.626 per provisioned GiB per
+                                                    month</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Snapshot used storage</strong>
+                                                    <br />In the provisioned v1 billing model, all snapshots are
+                                                    billed on a usage-based charge per GiB. All snapshots are
+                                                    differential from the live file share and from each other.
+                                                </td>
+                                                <td style="text-indent: 2em;">
+                                                    ￥1.386 per used GiB per month
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Paid bursting transactions</strong>
+                                                    <br />Paid bursting is an advanced feature of the
+                                                    provisioned v1 model that can optionally be enabled to
+                                                    support usage-based billing whenever the IOPS go over the
+                                                    provisioned amount. Provisioned v1 also supports
+                                                    credit-based bursting for IOPS based on the amount of
+                                                    storage provisioned.
+                                                </td>
+                                                <td style="text-indent: 2em;">
+                                                    ￥5.088 per 1M transactions per
+                                                    month
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table cellpadding="0" cellspacing="0" id="storage-files-Provisioned-v1-LRS-ZRS"
+                                        width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <th></th>
+                                                <th colspan="2"><strong>SSD</strong></th>
+                                            </tr>
+                                            <tr>
+                                                <th align="center" style="width: 600px;">
+                                                    <strong>Quantity</strong>
+                                                </th>
+                                                <th align="center" style="width: 400px;">
+                                                    <strong>LRS Price</strong>
+                                                </th>
+                                                <th align="center" style="width: 400px;">
+                                                    <strong>ZRS Price</strong>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Provisioned storage</strong>
+                                                    <br />The maximum storage size of the file share, specified
+                                                    in GiB. You are charged for the storage you’ve provision
+                                                    regardless of what you use. The provisioned IOPS and
+                                                    provisioned throughput capacity of the share is dependent on
+                                                    the amount of storage provisioned. Provisioning can be
+                                                    changed after share creation.
+                                                </td>
+                                                <td style="text-indent: 2em;">￥1.626 per provisioned GiB per
+                                                    month</td>
+                                                <td style="text-indent: 2em;">￥2.034 per provisioned GiB per
+                                                    month</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Snapshot used storage</strong>
+                                                    <br />In the provisioned v1 billing model, all snapshots are
+                                                    billed on a usage-based charge per GiB. All snapshots are
+                                                    differential from the live file share and from each other.
+                                                </td>
+                                                <td style="text-indent: 2em;">
+                                                    ￥1.386 per used GiB per month
+                                                </td>
+                                                <td style="text-indent: 2em;">
+                                                    ￥1.728 per used GiB per month
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Paid bursting transactions</strong>
+                                                    <br />Paid bursting is an advanced feature of the
+                                                    provisioned v1 model that can optionally be enabled to
+                                                    support usage-based billing whenever the IOPS go over the
+                                                    provisioned amount. Provisioned v1 also supports
+                                                    credit-based bursting for IOPS based on the amount of
+                                                    storage provisioned.
+                                                </td>
+                                                <td style="text-indent: 2em;">
+                                                    ￥5.088 per 1M transactions per
+                                                    month
+                                                </td>
+                                                <td style="text-indent: 2em;">
+                                                    ￥6.36 per 1M transactions per month
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <br />
+
+                                <h3>Pay-as-you-go</h3>
+                                <p>
+                                    In a pay-as-you-go model, the cost of the Azure file share is based on how
+                                    much you use the file share,
+                                    in the form of used storage, transaction, and data transfer costs. The
+                                    pay-as-you-go model offers three
+                                    “access tiers” on HDD storage which provide a way to balance the used
+                                    storage versus used transaction prices:
+                                </p>
+                                <ul>
+                                    <li>The transaction optimized access tier offers the lowest cost transaction
+                                        pricing for transaction heavy
+                                        workloads that don’t need the low latency offered by SSD file shares.
+                                        The transaction optimized access tier
+                                        is recommended for migrating data into file shares using the
+                                        pay-as-you-go billing model.</li>
+                                    <li>The hot access tier offers balanced storage and transaction pricing for
+                                        workloads that have a good measure of both.</li>
+                                    <li>The cool access tier offers the most cost-efficient storage pricing for
+                                        storage-intensive workloads.</li>
+                                </ul>
+                                <p>Pay-as-you-go is only available for HDD file shares. We recommend using the
+                                    provisioned v2 billing model for new
+                                    HDD file share deployments. For more information on the pay-as-you-go
+                                    billing model, see
+                                    <a href="https://docs.azure.cn/en-us/storage/files/understanding-billing"
+                                        style="float: none;display: inline;background: none;padding: 0px;margin: 0px;">
+                                        understanding the pay-as-you-go billing model. </a>
+                                </p>
+                            </div>
+
+                            <div class="tab-content">
+                                <div class="tab-panel" id="tabContent1-1">
+                                    <!-- LRS begin -->
+                                    <h3>
+                                        LRS
+                                    </h3>
+                                    <div class="scroll-table" style="display: block;">
+                                        <table cellpadding="0" cellspacing="0"
+                                            id="storage-files-data-storage-transactions-transfer-east3-LRS"
+                                            width="100%">
+                                            <tbody>
+                                                <tr>
+                                                    <th align="left" style="width: 420px;">
+                                                        <strong>
+                                                        </strong>
+                                                    </th>
+                                                    <th>
+                                                        <strong>
+                                                            TRANSACTION OPTIMIZED
+                                                        </strong>
+                                                    </th>
+                                                    <th>
+                                                        <strong>
+                                                            HOT
+                                                        </strong>
+                                                    </th>
+                                                    <th>
+                                                        <strong>
+                                                            COOL
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Used storage
+                                                        </strong>
+                                                        <br />
+                                                        The logical storage size of the files stored on the
+                                                        Azure file share.
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.612 per used GiB per month
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.193 per used GiB per month
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.114 per used GiB per month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Snapshot used storage
+                                                        </strong>
+                                                        <br />
+                                                        The physical storage size of the differential snapshots.
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.612 per used GiB per month
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.193 per used GiB per month
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.114 per used GiB per month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Soft-deleted used storage
+                                                        </strong>
+                                                        <br />
+                                                        When a file share is soft-deleted, the used portion of
+                                                        the storage is charged for the indicated soft-deleted
+                                                        period. All other meters are not charged unless the
+                                                        share is restored.
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.612 per used GiB per month
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.193 per used GiB per month
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.114 per used GiB per month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Metadata used storage
+                                                        </strong>
+                                                        <br />
+                                                        The file system metadata associated with files and
+                                                        directories such as access control lists (ACLs) or other
+                                                        properties.
+                                                    </td>
+                                                    <td align="center">
+                                                        Included
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.306
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.306
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Write transactions (per 10,000)
+                                                        </strong>
+                                                        <br />
+                                                        Write transactions are any operations which modify a
+                                                        file’s data stream. This category also includes file
+                                                        handle operations, such as opening a file handle, even
+                                                        if the file is being opened for read.
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.10
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.055809
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.675895
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            List transactions (per 10,000)
+                                                        </strong>
+                                                        <br />
+                                                        List transactions are any operations which enumerate
+                                                        parts of the file share, such as listing files and
+                                                        directories within a share.
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.10
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.055809
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.055809
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Read transactions (per 10,000)
+                                                        </strong>
+                                                        <br />
+                                                        Read transactions are any operations which read from a
+                                                        file’s data stream.
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.01
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.018603
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.067522
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            All other operations (per 10,000)
+                                                        </strong>
+                                                        <br />
+                                                        Any other operations associated with Azure Files (share,
+                                                        snapshot, directory, etc.), except for delete operations
+                                                        which are free.
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.01
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.018603
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.018603
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Data retrieval (per GiB)
+                                                        </strong>
+                                                        <br />
+                                                        Data retrieval is a special charge which applies only to
+                                                        retrieving data from cool storage.
+                                                    </td>
+                                                    <td align="center">
+                                                        N/A
+                                                    </td>
+                                                    <td align="center">
+                                                        N/A
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.087779
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Early deletion (per GiB)
+                                                        </strong>
+                                                        <br />
+                                                        Early deletion charge is a special charge which applies
+                                                        only to deleting data from cool storage within 30 days
+                                                        of initial creation. There is no charge for deleting
+                                                        files older than 30 days.
+                                                    </td>
+                                                    <td align="center">
+                                                        N/A
+                                                    </td>
+                                                    <td align="center">
+                                                        N/A
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.165
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="scroll-table" style="display: block;">
+                                        <table cellpadding="0" cellspacing="0"
+                                            id="storage-files-data-storage-transactions-transfer-eastnorth-LRS"
+                                            width="100%">
+                                            <tbody>
+                                                <tr>
+                                                    <th align="left" style="width: 420px;">
+                                                        <strong>
+                                                        </strong>
+                                                    </th>
+                                                    <th>
+                                                        <strong>
+                                                            TRANSACTION OPTIMIZED
+                                                        </strong>
+                                                    </th>
+                                                    <th>
+                                                        <strong>
+                                                            HOT
+                                                        </strong>
+                                                    </th>
+                                                    <th>
+                                                        <strong>
+                                                            COOL
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Used storage
+                                                        </strong>
+                                                        <br />
+                                                        The logical storage size of the files stored on the
+                                                        Azure file share.
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.612 per used GiB per month
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.224 per used GiB per month
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.165 per used GiB per month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Snapshot used storage
+                                                        </strong>
+                                                        <br />
+                                                        The physical storage size of the differential snapshots.
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.612 per used GiB per month
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.224 per used GiB per month
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.165 per used GiB per month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Soft-deleted used storage
+                                                        </strong>
+                                                        <br />
+                                                        When a file share is soft-deleted, the used portion of
+                                                        the storage is charged for the indicated soft-deleted
+                                                        period. All other meters are not charged unless the
+                                                        share is restored.
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.612 per used GiB per month
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.224 per used GiB per month
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.165 per used GiB per month
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Metadata used storage
+                                                        </strong>
+                                                        <br />
+                                                        The file system metadata associated with files and
+                                                        directories such as access control lists (ACLs) or other
+                                                        properties.
+                                                    </td>
+                                                    <td align="center">
+                                                        Included
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.306
+                                                    </td>
+                                                    <td align="center">
+                                                        ￥ 0.306
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Write transactions (per 10,000)
+                                                        </strong>
+                                                        <br />
+                                                        Write transactions are any operations which modify a
+                                                        file’s data stream. This category also includes file
+                                                        handle operations, such as opening a file handle, even
+                                                        if the file is being opened for read.
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.10
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.055809
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.675895
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            List transactions (per 10,000)
+                                                        </strong>
+                                                        <br />
+                                                        List transactions are any operations which enumerate
+                                                        parts of the file share, such as listing files and
+                                                        directories within a share.
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.10
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.055809
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.055809
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Read transactions (per 10,000)
+                                                        </strong>
+                                                        <br />
+                                                        Read transactions are any operations which read from a
+                                                        file’s data stream.
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.01
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.018603
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.067522
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            All other operations (per 10,000)
+                                                        </strong>
+                                                        <br />
+                                                        Any other operations associated with Azure Files (share,
+                                                        snapshot, directory, etc.), except for delete operations
+                                                        which are free.
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.01
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.018603
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.018603
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Data retrieval (per GiB)
+                                                        </strong>
+                                                        <br />
+                                                        Data retrieval is a special charge which applies only to
+                                                        retrieving data from cool storage.
+                                                    </td>
+                                                    <td align="center">
+                                                        N/A
+                                                    </td>
+                                                    <td align="center">
+                                                        N/A
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.087779
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Early deletion (per GiB)
+                                                        </strong>
+                                                        <br />
+                                                        Early deletion charge is a special charge which applies
+                                                        only to deleting data from cool storage within 30 days
+                                                        of initial creation. There is no charge for deleting
+                                                        files older than 30 days.
+                                                    </td>
+                                                    <td align="center">
+                                                        N/A
+                                                    </td>
+                                                    <td align="center">
+                                                        N/A
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥0.165
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- LRS end -->
+                                </div>
+                                <div class="tab-panel" id="tabContent1-2">
+                                    2
+                                </div>
+                                <div class="tab-panel" id="tabContent1-3">
+                                    3
+                                </div>
+                                <div class="tab-panel" id="tabContent1-4">
+                                    4
+                                </div>
+                            </div>
+
+                            <div class="tab-content">
+                                <div class="tab-panel" id="tabContent1">
+                                    <div class="technical-azure-selector pricing-detail-tab">
+                                        <div>
+                                            <div class="scroll-table" style="display: block;">
+                                                <h3>
+                                                    ZRS
+                                                </h3>
+                                                <table cellpadding="0" cellspacing="0"
+                                                    id="storage-files-data-storage-transactions-transfer-north3-ZRS"
+                                                    width="100%">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th align="left" style="width: 400px;">
+                                                                <strong>
+                                                                </strong>
+                                                            </th>
+                                                            <th>
+                                                                <strong>
+                                                                    HOT
+                                                                </strong>
+                                                            </th>
+                                                            <th>
+                                                                <strong>
+                                                                    COOL
+                                                                </strong>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Used storage
+                                                                </strong>
+                                                                <br />
+                                                                The logical storage size of the files stored on the
+                                                                Azure file share.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.24 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.14 per used GiB per month
+                                                            </td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Snapshot used storage
+                                                                </strong>
+                                                                <br />
+                                                                The physical storage size of the differential snapshots.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.24 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.14 per used GiB per month
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Soft-deleted used storage
+                                                                </strong>
+                                                                <br />
+                                                                When a file share is soft-deleted, the used portion of
+                                                                the storage is charged for the indicated soft-deleted
+                                                                period. All other meters are not charged unless the
+                                                                share is restored.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.24 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.14 per used GiB per month
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Metadata used storage
+                                                                </strong>
+                                                                <br />
+                                                                The file system metadata associated with files and
+                                                                directories such as access control lists (ACLs) or other
+                                                                properties.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.377
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.377
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Write transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Write transactions are any operations which modify a
+                                                                file’s data stream. This category also includes file
+                                                                handle operations, such as opening a file handle, even
+                                                                if the file is being opened for read.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.07
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.84
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    List transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                List transactions are any operations which enumerate
+                                                                parts of the file share, such as listing files and
+                                                                directories within a share.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.07
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.07
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Read transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Read transactions are any operations which read from a
+                                                                file’s data stream.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.0186
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.068
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    All other operations (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Any other operations associated with Azure Files (share,
+                                                                snapshot, directory, etc.), except for delete operations
+                                                                which are free.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.0186
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.0186
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Data retrieval (per GiB)
+                                                                </strong>
+                                                                <br />
+                                                                Data retrieval is a special charge which applies only to
+                                                                retrieving data from cool storage.
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.088
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Early deletion (per GiB)
+                                                                </strong>
+                                                                <br />
+                                                                Early deletion charge is a special charge which applies
+                                                                only to deleting data from cool storage within 30 days
+                                                                of initial creation. There is no charge for deleting
+                                                                files older than 30 days.
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <h3>
+                                                GRS
+                                            </h3>
+                                            <div class="scroll-table" style="display: block;">
+                                                <table class="word-wrap" style="overflow-x: auto;" cellpadding="0"
+                                                    cellspacing="0"
+                                                    id="storage-files-data-storage-transactions-transfer-east3-GRS"
+                                                    width="100%">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th align="left" style="width: 420px;">
+                                                                <strong>
+                                                                </strong>
+                                                            </th>
+                                                            <th>
+                                                                <strong>
+                                                                    TRANSACTION OPTIMIZED
+                                                                </strong>
+                                                            </th>
+                                                            <th>
+                                                                <strong>
+                                                                    HOT
+                                                                </strong>
+                                                            </th>
+                                                            <th>
+                                                                <strong>
+                                                                    COOL
+                                                                </strong>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Used storage
+                                                                </strong>
+                                                                <br />
+                                                                The logical storage size of the files stored on the
+                                                                Azure file share.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 1.75 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.386 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.227 per used GiB per month
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Snapshot used storage
+                                                                </strong>
+                                                                <br />
+                                                                The physical storage size of the differential snapshots.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 1.75 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.386 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.227 per used GiB per month
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Soft-deleted used storage
+                                                                </strong>
+                                                                <br />
+                                                                When a file share is soft-deleted, the used portion of
+                                                                the storage is charged for the indicated soft-deleted
+                                                                period. All other meters are not charged unless the
+                                                                share is restored.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 1.75 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.386 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.227 per used GiB per month
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Metadata used storage
+                                                                </strong>
+                                                                <br />
+                                                                The file system metadata associated with files and
+                                                                directories such as access control lists (ACLs) or other
+                                                                properties.
+                                                            </td>
+                                                            <td align="center">
+                                                                Included
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.7038
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.7038
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Write transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Write transactions are any operations which modify a
+                                                                file’s data stream. This category also includes file
+                                                                handle operations, such as opening a file handle, even
+                                                                if the file is being opened for read.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.20
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.128361
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥1.554559
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    List transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                List transactions are any operations which enumerate
+                                                                parts of the file share, such as listing files and
+                                                                directories within a share.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.10
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.128361
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.128361
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Read transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Read transactions are any operations which read from a
+                                                                file’s data stream.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.01
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.018603
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.067522
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    All other operations (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Any other operations associated with Azure Files (share,
+                                                                snapshot, directory, etc.), except for delete operations
+                                                                which are free.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.01
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.018603
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.018603
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Data retrieval (per GiB)
+                                                                </strong>
+                                                                <br />
+                                                                Data retrieval is a special charge which applies only to
+                                                                retrieving data from cool storage.
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.087779
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Early deletion (per GiB)
+                                                                </strong>
+                                                                <br />
+                                                                Early deletion charge is a special charge which applies
+                                                                only to deleting data from cool storage within 30 days
+                                                                of initial creation. There is no charge for deleting
+                                                                files older than 30 days.
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.33
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="scroll-table" style="display: block;">
+                                                <table class="word-wrap" style="overflow-x: auto;" cellpadding="0"
+                                                    cellspacing="0"
+                                                    id="storage-files-data-storage-transactions-transfer-east2north2-GRS"
+                                                    width="100%">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th align="left" style="width: 420px;">
+                                                                <strong>
+                                                                </strong>
+                                                            </th>
+                                                            <th>
+                                                                <strong>
+                                                                    TRANSACTION OPTIMIZED
+                                                                </strong>
+                                                            </th>
+                                                            <th>
+                                                                <strong>
+                                                                    HOT
+                                                                </strong>
+                                                            </th>
+                                                            <th>
+                                                                <strong>
+                                                                    COOL
+                                                                </strong>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Used storage
+                                                                </strong>
+                                                                <br />
+                                                                The logical storage size of the files stored on the
+                                                                Azure file share.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.762 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.447 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.33 per used GiB per month
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Snapshot used storage
+                                                                </strong>
+                                                                <br />
+                                                                The physical storage size of the differential snapshots.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.762 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.447 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.33 per used GiB per month
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Soft-deleted used storage
+                                                                </strong>
+                                                                <br />
+                                                                When a file share is soft-deleted, the used portion of
+                                                                the storage is charged for the indicated soft-deleted
+                                                                period. All other meters are not charged unless the
+                                                                share is restored.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.762 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.447 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.33 per used GiB per month
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Metadata used storage
+                                                                </strong>
+                                                                <br />
+                                                                The file system metadata associated with files and
+                                                                directories such as access control lists (ACLs) or other
+                                                                properties.
+                                                            </td>
+                                                            <td align="center">
+                                                                Included
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.7038
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.7038
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Write transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Write transactions are any operations which modify a
+                                                                file’s data stream. This category also includes file
+                                                                handle operations, such as opening a file handle, even
+                                                                if the file is being opened for read.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.20
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.128361
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥1.554559
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    List transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                List transactions are any operations which enumerate
+                                                                parts of the file share, such as listing files and
+                                                                directories within a share.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.10
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.128361
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.128361
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Read transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Read transactions are any operations which read from a
+                                                                file’s data stream.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.01
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.018603
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.067522
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    All other operations (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Any other operations associated with Azure Files (share,
+                                                                snapshot, directory, etc.), except for delete operations
+                                                                which are free.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.01
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.018603
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.018603
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Data retrieval (per GiB)
+                                                                </strong>
+                                                                <br />
+                                                                Data retrieval is a special charge which applies only to
+                                                                retrieving data from cool storage.
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.087779
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Early deletion (per GiB)
+                                                                </strong>
+                                                                <br />
+                                                                Early deletion charge is a special charge which applies
+                                                                only to deleting data from cool storage within 30 days
+                                                                of initial creation. There is no charge for deleting
+                                                                files older than 30 days.
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.33
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="scroll-table" style="display: block;">
+                                                <table class="word-wrap" style="overflow-x: auto;" cellpadding="0"
+                                                    cellspacing="0"
+                                                    id="storage-files-data-storage-transactions-transfer-eastnorth-GRS"
+                                                    width="100%">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th align="left" style="width: 420px;">
+                                                                <strong>
+                                                                </strong>
+                                                            </th>
+                                                            <th>
+                                                                <strong>
+                                                                    TRANSACTION OPTIMIZED
+                                                                </strong>
+                                                            </th>
+                                                            <th>
+                                                                <strong>
+                                                                    HOT
+                                                                </strong>
+                                                            </th>
+                                                            <th>
+                                                                <strong>
+                                                                    COOL
+                                                                </strong>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Used storage
+                                                                </strong>
+                                                                <br />
+                                                                The logical storage size of the files stored on the
+                                                                Azure file share.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 1.75 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.447 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.33 per used GiB per month
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Snapshot used storage
+                                                                </strong>
+                                                                <br />
+                                                                The physical storage size of the differential snapshots.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 1.75 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.447 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.33 per used GiB per month
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Soft-deleted used storage
+                                                                </strong>
+                                                                <br />
+                                                                When a file share is soft-deleted, the used portion of
+                                                                the storage is charged for the indicated soft-deleted
+                                                                period. All other meters are not charged unless the
+                                                                share is restored.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 1.75 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.447 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.33 per used GiB per month
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Metadata used storage
+                                                                </strong>
+                                                                <br />
+                                                                The file system metadata associated with files and
+                                                                directories such as access control lists (ACLs) or other
+                                                                properties.
+                                                            </td>
+                                                            <td align="center">
+                                                                Included
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.7038
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.7038
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Write transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Write transactions are any operations which modify a
+                                                                file’s data stream. This category also includes file
+                                                                handle operations, such as opening a file handle, even
+                                                                if the file is being opened for read.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.20
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.128361
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥1.554559
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    List transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                List transactions are any operations which enumerate
+                                                                parts of the file share, such as listing files and
+                                                                directories within a share.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.10
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.128361
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.128361
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Read transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Read transactions are any operations which read from a
+                                                                file’s data stream.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.01
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.018603
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.067522
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    All other operations (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Any other operations associated with Azure Files (share,
+                                                                snapshot, directory, etc.), except for delete operations
+                                                                which are free.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.01
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.018603
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.018603
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Data retrieval (per GiB)
+                                                                </strong>
+                                                                <br />
+                                                                Data retrieval is a special charge which applies only to
+                                                                retrieving data from cool storage.
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.087779
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Early deletion (per GiB)
+                                                                </strong>
+                                                                <br />
+                                                                Early deletion charge is a special charge which applies
+                                                                only to deleting data from cool storage within 30 days
+                                                                of initial creation. There is no charge for deleting
+                                                                files older than 30 days.
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.33
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="scroll-table" style="display: block;">
+                                                <H3>
+                                                    GZRS
+                                                </H3>
+                                                <table cellpadding="0" cellspacing="0"
+                                                    id="storage-files-data-storage-transactions-transfer-north3-GZRS"
+                                                    width="100%">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th align="left" style="width: 400px;">
+                                                                <strong>
+                                                                </strong>
+                                                            </th>
+                                                            <th>
+                                                                <strong>
+                                                                    HOT
+                                                                </strong>
+                                                            </th>
+                                                            <th>
+                                                                <strong>
+                                                                    COOL
+                                                                </strong>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Used storage
+                                                                </strong>
+                                                                <br />
+                                                                The logical storage size of the files stored on the
+                                                                Azure file share.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.66 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.52 per used GiB per month
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Snapshot used storage
+                                                                </strong>
+                                                                <br />
+                                                                The physical storage size of the differential snapshots.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.66 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.52 per used GiB per month
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Soft-deleted used storage
+                                                                </strong>
+                                                                <br />
+                                                                When a file share is soft-deleted, the used portion of
+                                                                the storage is charged for the indicated soft-deleted
+                                                                period. All other meters are not charged unless the
+                                                                share is restored.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.66 per used GiB per month
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.52 per used GiB per month
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Metadata used storage
+                                                                </strong>
+                                                                <br />
+                                                                The file system metadata associated with files and
+                                                                directories such as access control lists (ACLs) or other
+                                                                properties.
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.68
+                                                            </td>
+                                                            <td align="center">
+                                                                ￥ 0.68
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Write transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Write transactions are any operations which modify a
+                                                                file’s data stream. This category also includes file
+                                                                handle operations, such as opening a file handle, even
+                                                                if the file is being opened for read.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥1.55
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥2.64
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    List transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                List transactions are any operations which enumerate
+                                                                parts of the file share, such as listing files and
+                                                                directories within a share.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥1.55
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥1.55
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Read transactions (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Read transactions are any operations which read from a
+                                                                file’s data stream.
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.0186
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.068
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    All other operations (per 10,000)
+                                                                </strong>
+                                                                <br />
+                                                                Any other operations associated with Azure Files (share,
+                                                                snapshot, directory, etc.), except for delete operations
+                                                                which are free.。
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.11
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.11
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Data retrieval (per GiB)
+                                                                </strong>
+                                                                <br />
+                                                                Data retrieval is a special charge which applies only to
+                                                                retrieving data from cool storage.
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                ¥0.2
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>
+                                                                    Early deletion (per GiB)
+                                                                </strong>
+                                                                <br />
+                                                                Early deletion charge is a special charge which applies
+                                                                only to deleting data from cool storage within 30 days
+                                                                of initial creation. There is no charge for deleting
+                                                                files older than 30 days.
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                            <td align="center">
+                                                                N/A
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="tags-date">
+                                                <div class="ms-date">
+                                                    Prices marked as N/A indicate that the redundancy option is
+                                                    not available in the selected region. Note: File operations that
+                                                    result in
+                                                    data transfer outside of an Azure datacenter will incur additional
+                                                    <a href="../../bandwidth/index.html"
+                                                        style="float: none;display: inline;background: none;margin: 0px;padding: 0px;color: #006FC3; font-size: 12px;">
+                                                        outbound
+                                                        data transfer
+                                                    </a>
+                                                    charges.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- END: TAB-CONTROL -->
+                                        <div class="scroll-table" style="display: block;">
+                                            <h4>
+                                                File Sync Prices
+                                            </h4>
+                                            <p>
+                                                These are the costs of syncing your files from Windows servers to Azure
+                                                file
+                                                shares in the cloud.
+                                                <a href="https://docs.azure.cn/en-us/storage/file-sync/file-sync-introduction"
+                                                    style="float: none;display: inline;background-color: white; margin: 0;padding: 0;">
+                                                    Learn
+                                                    more about Azure File Sync.
+                                                </a>
+                                            </p>
+                                            <p>
+                                                The total cost of Azure File Sync services is determined by the number
+                                                of servers
+                                                that connect to the cloud endpoint (Azure file share) plus the
+                                                underlying costs
+                                                of Azure Files (including storage and access costs) and
+                                                <a href="../../bandwidth/index.html"
+                                                    style="float: none;display: inline;background-color: white; margin: 0;padding: 0;">
+                                                    outbound data transfer.
+                                                </a>
+                                            </p>
+                                            <p>
+                                                Below is the fixed monthly fee per server.
+                                            </p>
+                                            <table cellpadding="0" cellspacing="0"
+                                                id="storage-files-date-storage-price-table-new4s" width="100%">
+                                                <tr>
+                                                    <th align="center" style="width: 280px;">
+                                                    </th>
+                                                    <th align="center">
+                                                        <strong>
+                                                            PRICE PER MONTH
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td align="center">
+                                                        Sync Server*
+                                                    </td>
+                                                    <td align="center">
+                                                        ¥50.86
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <div class="tags-date">
+                                                <div class="ms-date">
+                                                    *One sync server free per storage sync service. Sync uses
+                                                    file operations to sync your data to the cloud and other servers,
+                                                    and you
+                                                    will be billed for any operations that are generated in the sync
+                                                    process.
+                                                    The number of file operations generated and the access costs scale
+                                                    with the
+                                                    number of file changes on the server and the number of servers that
+                                                    need to
+                                                    be kept in sync.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        666
+
+
+
+                        777
+
+                        <div class="pricing-page-section">
+                            <div class="more-detail">
+                                <h2>
+                                    FAQ
+                                </h2>
+                                <em>
+                                    Expand All
+                                </em>
+                                <ul>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="Storage_question14">
+                                                If I create sharing with a 5 TB limit, will I be
+                                                charged for the entire 5 TB or just the cost of the storage space used?
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    Only the storage space used is charged for standard file shares,
+                                                    rather
+                                                    than the allocated limit. Pricing for premium files shares is based
+                                                    on
+                                                    provisioned GiB and includes all transaction costs. You can
+                                                    configure
+                                                    your premium shares based on your storage size, IOPS, and throughput
+                                                    requirements.
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="pricing-page-section">
+                            <h2>
+                                Support &amp; SLA
+                            </h2>
+                            <p>
+                                If you have any questions or need help, please visit
+                                <a href="https://support.azure.cn/en-us/support/contact" id="storage-contact-page">
+                                    Azure Support
+                                </a>
+                                and select self-help service or any
+                                other method to contact us for support.
+                            </p>
+                            <p>
+                                We guarantee that we can successfully process data reading requests from an offsite
+                                redundant storage (RA-GRS)
+                                account at least 99.99% of the time (99.9% for the Cold Access Layer), provided that we
+                                will retry in the secondary
+                                zone from the data writing failure from the primary zone.
+                            </p>
+                            <p>
+                                We guarantee that we can successfully process data reading from local redundant storage
+                                (LRS) and offsite redundant
+                                storage (GRS) accounts at least 99.9% of the time (99% for the Cold Access Layer)
+                            </p>
+                            <p>
+                                We guarantee that we can successfully process data writing requests into onsite
+                                redundant
+                                storage (LRS) and
+                                geo-redundant storage (GRS) accounts and read and access geo-redundant storage (RA-GRS)
+                                accounts at least 99.9% of
+                                the time (99% for the Cold Access Layer).
+                            </p>
+                            <p>
+                                To learn more about the details of our Service Level Agreement, please visit the
+                                <a href="/en-us/support/sla/storage/" id="pricing_storage_sla">
+                                    Service Level
+                                    Agreements
+                                </a>
+                                page.
+                            </p>
+                            <p>
+                                The Managed Disk itself doesn’t provide a Service Level Agreement with financial
+                                support.
+                                The availability of a
+                                Managed Disk depends on the Service Level Agreement governing the basic storage used and
+                                the Virtual Machine it’s
+                                attached to. To learn more about the details of the Service Level Agreement of the
+                                Managed Disk, please visit the
+                                <a href="/en-us/support/sla/managed-disks/">
+                                    Managed Disk
+                                    Service Level Agreements
+                                </a>
+                                page.
+                            </p>
+                        </div>
+                        <!--BEGIN: Support and service code chunk-->
+
+                        <!--END: Support and service code chunk-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Documentation Content -->
+    <!-- BEGIN: Footer -->
+    <div class="public_footerpage">
+    </div>
+    <!--END: Common sidebar-->
+    <link href="/Static/CSS/Localization/en-us.css" rel="stylesheet" />
+    <script src="/Static/Scripts/lib/jquery-1.12.3.min.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+        function getAntiForgeryToken() {
+            var token =
+                '<input name="__RequestVerificationToken" type="hidden" value="uzp9b-W-yRfCXotmNTxe7gJ6mDvg0MCAMUP0NamHKu1GWRvP6Zn9u_UNIN4bjNDCnkMmUAo87-AUFHnXXoFOA1aWJXsa6GbciCVujc4WtrY1" />';
+            token = $(token).val();
+            return token;
+        }
+
+        function setLocaleCookie(localeVal) {
+            var Days = 365 * 10; // Ten year expiration
+            var exp = new Date();
+
+            var hostName = window.location.hostname;
+            var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain +
+                "; path=/;expires=" + exp.toGMTString();
+        }
+
+        setLocaleCookie(window.currentLocale);
+    </script>
+    <script type="text/javascript">
+        var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+        var TECHNICAL_STORAGE = '/blob/tech-content/';
+        var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+        var EnablePricingSync = 'false';
+    </script>
+    <!-- BEGIN: Minified RequireJs -->
+    <script src="/Static/Scripts/global.config.js" type="text/javascript">
+    </script>
+    <script src="/Static/Scripts/require.js" type="text/javascript">
+    </script>
+    <script src="/Static/Scripts/pricing-page-detail.js" type="text/javascript">
+    </script>
+    <script src="/Static/Scripts/2c76879c65af503b3c0d969c85243b9f28fdb5c1.js" type="text/javascript"></script>
+    <!-- END: Minified RequireJs -->
+    <!-- begin JSLL -->
+    <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js">
+    </script>
+    <script type="text/javascript">
+        (function () {
+            var config = {
+                cookiesToCollect: ["_mkto_trk"],
+                syncMuid: true,
+                ix: {
+                    a: true,
+                    g: true
+                },
+                coreData: {
+                    appId: 'AzureCN',
+                    market: 'zh-cn',
+                }
+            };
+            awa.init(config);
+        })();
+    </script>
+    <!-- end JSLL -->
+    <script src="/Static/Scripts/plugins/cookie/jquery.cookie.js" type="text/javascript">
+    </script>
+    <script src="/Static/Scripts/wacndatatracker.js" type="text/javascript">
+    </script>
+    <script src="/common/useCommon.js" type="text/javascript">
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,729 @@
+<html lang="zh-CN" class="desktop"><head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="无需 VM 上的公共 IP，Azure Bastion 服务就提供了到 Azure 虚拟机中的 Azure VM 的安全、无缝 RDP 和 SSH 连接。" name="description">
+    <title>
+     Azure Bastion - 云计算
+    </title>
+    <link href="../../../Static/Favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180">
+    <link href="../../../Static/Favicon/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="../../../Static/Favicon/favicon.ico" rel="icon" type="image/x-icon">
+    <link href="../../../Static/Favicon/manifest.json" rel="manifest">
+    <link color="#0078D4" href="../../../Static/Favicon/safari-pinned-tab.svg" rel="mask-icon">
+    <meta content="/Static/Favicon/browserconfig.xml" name="msapplication-config">
+    <meta content="#ffffff" name="theme-color">
+    <link href="https://azure.microsoft.com/pricing/details/storage/managed-disks/" rel="canonical">
+    <!-- BEGIN: Azure UI Style -->
+    <link href="../../../Static/CSS/azureui.min.css" rel="stylesheet">
+    <link href="../../../Static/CSS/common.min.css" rel="stylesheet">
+    <!-- END: Azure UI Style -->
+    <!-- BEGIN: Page Style -->
+    <!-- END: Page Style -->
+    <!-- BEGIN: Minified Page Style -->
+    <link href="../../../Static/CSS/a05a0e4e99489d7b3cb548e24414e01adf779d77.css" rel="stylesheet">
+    <!-- END: Minified Page Style -->
+    <link href="../../../StaticService/css/service.min.css" rel="stylesheet">
+   <script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="Common" src="/Static/Scripts/modules/common.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="Banner" src="/Static/Scripts/modules/banner-exchange.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="DocLeftNav" src="/Static/Scripts/modules/documentation-left-navigation.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="AccordianMenu" src="/Static/Scripts/modules/accordian-menu.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="Layout" src="/Static/Scripts/modules/layout.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="IsExternalLink" src="/Static/Scripts/modules/is-external-link.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="TabControl" src="/Static/Scripts/modules/tab-control.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="ToggleShow" src="/Static/Scripts/modules/toggle-showdetail.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="Table" src="/Static/Scripts/modules/table.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="TemporaryHide" src="/Static/Scripts/modules/temporary-hide.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="TabDropDown" src="/Static/Scripts/modules/tab-dropdown.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="jquery" src="/Static/Scripts/lib/jquery-1.12.3.min.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="AX" src="/Static/Scripts/lib/azurex.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="FastClick" src="/Static/Scripts/plugins/fastclick/fastclick.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="ScreenTest" src="/Static/Scripts/modules/screen-test.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="AutoScroll" src="/Static/Scripts/modules/auto-scroll.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="Tab" src="/Static/Scripts/modules/tab.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="Dialog" src="/Static/Scripts/modules/dialog.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="AutoHeight" src="/Static/Scripts/modules/auto-height.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="MobileDetect" src="/Static/Scripts/plugins/mobile-detect/mobile-detect.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="underscore" src="/Static/Scripts/lib/underscore-min.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="MediaTag" src="/Static/Scripts/modules/media-tag.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="HeaderFooterLinkCorrector" src="/Static/Scripts/modules/headerfooter-link-corrector.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="LocalizationLoader" src="/Static/Scripts/modules/localization-loader.js"></script><link rel="stylesheet" href="https://cnazuren3.blob.core.chinacloudapi.cn/marketing-resource/StaticService/css/dropkick.css"><script type="text/javascript" src="https://cnazuren3.blob.core.chinacloudapi.cn/marketing-resource/StaticService/js/dropkick.js"></script></head>
+   <body class="zh-cn">
+    <script>
+     window.requireUrlArgs = "2019/6/24 6:51:27";
+      window.currentLocale = "zh-CN";
+      window.headerTimestamp = "2019/1/23 8:25:24";
+      window.footerTimestamp = "2019/1/8 8:07:06";
+      window.locFileTimestamp = "2018/11/29 7:49:17";
+  
+      window.AcnHeaderFooter = {
+          IsEnableQrCode: true,
+          CurrentLang: window.currentLocale.toLowerCase(),
+      };
+    </script>
+    <style>
+     @media (min-width: 0) {
+          .acn-header-placeholder {
+              height: 48px;
+              width: 100%;
+          }
+      }
+  
+      @media (min-width: 980px) {
+          .acn-header-placeholder {
+              height: 89px;
+              width: 100%;
+          }
+      }
+  
+      .acn-header-placeholder {
+          background-color: #1A1A1A;
+      }
+  
+      .acn-header-service {
+          position: absolute;
+          top: 0;
+          width: 100%;
+      }
+    </style>
+    <div class="acn-header-container">
+     <div class="acn-header-placeholder">
+     </div>
+     <div class="public_headerpage"><div class="acn-header-service override zh-cn" style="background-color: #fff !important;">
+      <header class="header scroll">
+          <div class="azure-service-container">
+              <div class="brand clearfix">
+                  <div class="logo">
+                      <div class="azure-logo">
+                          <h1 class="logo-first-level">
+                              <a id="navigation-azure-logo-id" href="https://www.azure.cn/" title="Microsoft Azure" aria-label="Azure logo" target="_blank">
+                              </a>
+                          </h1>
+                      </div>
+                  </div>
+                  <div class="top-nav">
+                      <a class="search" href="#" title="搜索" id="navigation-search-button" aria-label="搜索按钮">
+                          <i class="icon icon-search-thick">
+                          </i>
+                      </a>
+                      <a class="nav-toggle" href="#" title="导航" aria-label="导航">
+                          <i class="icon icon-navigation-sharp">
+                          </i>
+                      </a>
+                  </div>
+              </div>
+              <nav class="nav auto-scroll" data-fullscreen="true" data-top="header" style="height: auto;">
+                  <ul class="accordian-menu" data-accordiandisabled="desktop" data-accordianinteraction="exclusive">
+                      <li>
+                          <a class="" id="nav_price" target="_blank" href="https://www.azure.cn/pricing/" title="产品和定价" aria-label="产品和定价">
+                              <span>产品和定价</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a class="" id="nav_documentation" target="_blank" href="https://docs.azure.cn/zh-cn/?product=popular" title="Azure 文档" aria-label="Azure 文档">
+                              <span>Azure 文档 &gt;</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a class="" id="nav_market-place" target="_blank" href="https://market.azure.cn" title="Azure 市场" aria-label="Azure 市场">
+                              <span>Azure 市场 &gt;</span>
+                          </a>
+                      </li>
+  
+                      <li>
+                          <a class="" id="nav_support" target="_blank" href="https://support.azure.cn/zh-cn/support/plans/" title="Azure 支持" aria-label="Azure 支持">
+                              <span>Azure 支持计划 &gt;</span>
+                          </a>
+                      </li>
+  
+                  </ul>
+                  <!--a id="homepage-top-1rmb" class="buy-it"
+                      href="https://www.microsoft.com/china/azure/index.html?fromtype=cn" title="申请使用" target="_blank">
+                      <span>申请使用</span>
+                      <span class="icon-arrow-right-thin2"></span>
+                  </a-->
+                  <a id="header-portal-azure-id" class="portal-link" href="https://portal.azure.cn/" title="登录 Azure 门户" target="_blank" aria-label="登录 Azure 门户">
+                      登录 Azure 门户
+                  </a>
+  
+              </nav>
+              <div class="search-panel auto-scroll" data-fullscreen="true" data-top="header" style="height: auto;">
+                  <div class="azure-service-container">
+                      <div class="row search-input">
+                          <div class="col-xs-12 col-sm-12">
+                              <div class="input-wrapper">
+                                  <input id="searchInput" class="text-input" aria-label="搜索" type="text" name="" value="" placeholder="请输入搜索关键词">
+                                  <a id="searchBtn" aria-label="搜索" href="#">
+                                      <i class="icon icon-search-thick">
+                                          <span class="icon-navigation-search icon-navigation-svg"></span>
+                                          <span class="icon-close-svg"></span>
+                                      </i>
+                                  </a>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row hidden-md hidden-lg">
+                          <div class="col-xs-12">
+                              <h3>热门搜索</h3>
+                          </div>
+                      </div>
+                      <div class="hot-tag row hidden-md hidden-lg">
+                      </div>
+                      <div class="row hidden-md hidden-lg">
+                          <div class="col-xs-12">
+                              <h3>最近搜索历史</h3>
+                          </div>
+                      </div>
+                      <div class="row search-history hidden-md hidden-lg">
+                          <div class="col-xs-12">
+                              <ul></ul>
+                          </div>
+                          <div class="col-xs-12">
+                              <a href="#" class="btn btn-link btn-block clear-btn" aria-label="btn btn-link btn-block clear-btn">
+                                  清除搜索记录
+                              </a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </header>
+  </div></div>
+    </div>
+    <!-- BEGIN: Documentation Content -->
+    <div class="content">
+     <div class="container">
+      <div class="row">
+       <div class="col-md-12">
+        <div class="bread-crumb hidden-sm hidden-xs">
+         <ul>
+          <li>
+           <span>
+           </span>
+          </li>
+         </ul>
+        </div>
+       </div>
+      </div>
+      <div class="single-page">
+       <div class="row">
+        <div class="col-md-2">
+         <div class="documentation-navigation left-navigation hidden-xs hidden-sm"><h3>Azure Bastion</h3><ul class="accordian-menu"><li><button id="leftnav_product_identity_details" class="menu-title expand" role="button" aria-expanded="true" title="产品"><span class="nav-title">产品</span><span class="icon icon-arrow-top"></span></button><ul class="menu-child accordian-menu" style="display: block;"><li><a href="https://azure.microsoft.com/zh-cn/services/azure-bastion/" id="leftnav_product_identity_function_产品功能" title="产品功能" target="_blank">产品功能</a></li><li class="active"><a href="/pricing/details/azure-bastion/" id="leftnav_product_identity_pricing_价格详情" title="价格详情">价格详情</a></li><li><a href="/support/sla/azure-bastion/v1_0/" id="leftnav_product_identity_sla_服务级别协议" title="服务级别协议">服务级别协议</a></li><li><a href="/pricing/calculator/" id="leftnav_product_container-instances_calculator_价格计算器" title="价格计算器">价格计算器</a></li><li><a href="https://docs.azure.cn/zh-cn/bastion/" id="leftnav_product_identity_documentation_文档" title="文档" target="_blank">文档</a></li></ul></li><li><button id="leftnav_product_identity_related" class="menu-title" role="button" aria-expanded="true" title="相关产品"><span class="nav-title">相关产品</span><span class="icon icon-arrow-top"></span></button><ul class="menu-child accordian-menu" style=""><li><a href="https://azure.microsoft.com/zh-cn/services/virtual-machines/" id="leftnav_product_virtual-machines_function_虚拟机" title="虚拟机" target="_blank">虚拟机</a></li><li><a href="https://azure.microsoft.com/zh-cn/services/storage/" id="leftnav_product_storage_function_存储" title="存储" target="_blank">存储</a></li><li><a href="https://azure.microsoft.com/zh-cn/services/sql-database/" id="leftnav_product_sql_storage_function_SQL 数据库" title="SQL 数据库" target="_blank">SQL 数据库</a></li><li><a href="https://azure.microsoft.com/zh-cn/services/vpn-gateway/" id="leftnav_product_vpn-gateway_function_应用程序网关" title="应用程序网关" target="_blank">应用程序网关</a></li><li><a href="https://azure.microsoft.com/zh-cn/services/load-balancer/" id="leftnav_product_load-balancer_function_负载均衡器" title="负载均衡器" target="_blank">负载均衡器</a></li></ul></li><li><button id="leftnav_product_identity_others" class="menu-title" role="button" aria-expanded="true" title="相关文档和链接"><span class="nav-title">相关文档和链接</span><span class="icon icon-arrow-top"></span></button><ul class="menu-child accordian-menu" style=""><li><a href="https://docs.microsoft.com/zh-cn/azure/bastion/bastion-overview" id="leftnav_product_identity_articles_active-directory-b2c-overview_什么是 Azure Bastion？" title="什么是 Azure Bastion？" target="_blank">什么是 Azure Bastion？</a></li><li><a href="https://docs.microsoft.com/zh-cn/azure/bastion/quickstart-host-portal" id="leftnav_product_identity_active-directory-b2c-solution-articles_通过 VM 设置创建 Bastion 主机" title="通过 VM 设置创建 Bastion 主机" target="_blank">通过 VM 设置创建 Bastion 主机</a></li><li><a href="https://docs.microsoft.com/zh-cn/azure/bastion/bastion-create-host-portal" id="leftnav_product_identity_articles_active-directory-b2c-code-samples_创建 Bastion 主机" title="创建 Bastion 主机" target="_blank">创建 Bastion 主机</a></li><li><a href="https://www.microsoft.com/videoplayer/embed/RE39WT5" id="leftnav_product_identity_articles_active-directory-b2c-faq_使用 Azure Bastion" title="使用 Azure Bastion" target="_blank">使用 Azure Bastion</a></li></ul></li></ul></div>
+        </div>
+        <div class="pure-content col-md-10">
+         <div class="select left-navigation-select hidden-md hidden-lg">
+          <select aria-label="leftNavSelect">
+           
+          <optgroup label="产品"><option id="leftnav_product_identity_function_产品功能_mobile" value="https://azure.microsoft.com/zh-cn/services/azure-bastion/">产品功能</option><option id="leftnav_product_identity_pricing_价格详情_mobile" value="/pricing/details/azure-bastion/">价格详情</option><option id="leftnav_product_identity_sla_服务级别协议_mobile" value="/support/sla/azure-bastion/v1_0/">服务级别协议</option><option id="leftnav_product_container-instances_calculator_价格计算器_mobile" value="/pricing/calculator/">价格计算器</option><option id="leftnav_product_identity_documentation_文档_mobile" value="https://docs.azure.cn/zh-cn/bastion/">文档</option></optgroup><optgroup label="相关产品"><option id="leftnav_product_virtual-machines_function_虚拟机_mobile" value="https://azure.microsoft.com/zh-cn/services/virtual-machines/">虚拟机</option><option id="leftnav_product_storage_function_存储_mobile" value="https://azure.microsoft.com/zh-cn/services/storage/">存储</option><option id="leftnav_product_sql_storage_function_SQL 数据库_mobile" value="https://azure.microsoft.com/zh-cn/services/sql-database/">SQL 数据库</option><option id="leftnav_product_vpn-gateway_function_应用程序网关_mobile" value="https://azure.microsoft.com/zh-cn/services/vpn-gateway/">应用程序网关</option><option id="leftnav_product_load-balancer_function_负载均衡器_mobile" value="https://azure.microsoft.com/zh-cn/services/load-balancer/">负载均衡器</option></optgroup><optgroup label="相关文档和链接"><option id="leftnav_product_identity_articles_active-directory-b2c-overview_什么是 Azure Bastion？_mobile" value="https://docs.microsoft.com/zh-cn/azure/bastion/bastion-overview">什么是 Azure Bastion？</option><option id="leftnav_product_identity_active-directory-b2c-solution-articles_通过 VM 设置创建 Bastion 主机_mobile" value="https://docs.microsoft.com/zh-cn/azure/bastion/quickstart-host-portal">通过 VM 设置创建 Bastion 主机</option><option id="leftnav_product_identity_articles_active-directory-b2c-code-samples_创建 Bastion 主机_mobile" value="https://docs.microsoft.com/zh-cn/azure/bastion/bastion-create-host-portal">创建 Bastion 主机</option><option id="leftnav_product_identity_articles_active-directory-b2c-faq_使用 Azure Bastion_mobile" value="https://www.microsoft.com/videoplayer/embed/RE39WT5">使用 Azure Bastion</option></optgroup></select>
+          <span class="icon icon-arrow-top">
+          </span>
+         </div>
+         <tags ms.date="24/07/2020" ms.service="azure-bastion" wacn.date="24/07/2020">
+         </tags>
+         <style type="text/css">
+          .pricing-detail-tab .tab-nav {
+                              padding-left: 0 !important;
+                              margin-top: 5px;
+                              margin-bottom: 0;
+                              overflow: hidden;
+                          }
+  
+                          .pricing-detail-tab .tab-nav li {
+                              list-style: none;
+                              float: left;
+                          }
+  
+                          .pricing-detail-tab .tab-nav li.active a {
+                              border-bottom: 4px solid #00a3d9;
+                          }
+  
+                          .pricing-detail-tab .tab-nav li.active a:hover {
+                              border-bottom: 4px solid #00a3d9;
+                          }
+  
+                          .pricing-detail-tab .tab-content .tab-panel {
+                              display: none;
+                          }
+  
+                          .pricing-detail-tab .tab-content .tab-panel.show-md {
+                              display: block;
+                          }
+  
+                          .pricing-detail-tab .tab-content .tab-panel .tab-nav li a {
+                              padding-left: 5px;
+                              padding-right: 5px;
+                              color: #00a3d9;
+                              background-color: #FFF;
+                          }
+  
+                          .pricing-detail-tab .tab-content .tab-panel .tab-nav li.active a {
+                              color: #FFF;
+                              background-color: #00a3d9;
+                          }
+  
+                          .pricing-detail-tab .tab-content .tab-panel .tab-nav li a:hover {
+                              color: #FFF;
+                              background-color: #00a3d9;
+                          }
+  
+                          .pure-content .technical-azure-selector p a,
+                          .pure-content .technical-azure-selector table a {
+                              background: 0 0;
+                              padding: 0;
+                              margin: 0 6px;
+                              height: 21px;
+                              line-height: 22px;
+                              font-size: 14px;
+                              color: #00a3d9;
+                              float: none;
+                              display: inline;
+                          }
+  
+                          .svg {
+                              width: 50px;
+                              float: left;
+                              margin-right: 10px;
+                          }
+         </style>
+         <div class="hide-info" style="display:none;">
+          <div class="bg-box">
+           <div class="cover-bg">
+           </div>
+          </div>
+          <div class="msg-box">
+           <div class="pricing-unavailable-message">
+            所选区域不可用
+           </div>
+          </div>
+         </div>
+         <div class="common-banner col-top-banner" data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'','imageHeight':'auto'}" style="background-color: rgb(227, 244, 255);">
+          <div class="common-banner-image" style="background-image: url(&quot;&quot;);">
+           <div class="common-banner-title">
+            <div class="svg">
+             <svg aria-hidden="true" data-slug-id="azure-bastion" role="presentation" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+              <path d="M49,1v48H1V1H49 M50,0H0v50h50V0L50,0z" style="opacity:1.000000e-02;fill:none;stroke:#FFFFFF;stroke-width:1.000000e-03;stroke-miterlimit:10;">
+              </path>
+              <path d="M22.3,37.3C15.8,41.8,5.4,48.7,4.4,49.5c-1.3,0.9-3.2,0.5-3.8-0.3C0,48.3,0,46.4,1.3,45.5
+                                                  C2.1,45,15.8,35.7,20,32.8l2.4,2.6C23.5,36.5,22.3,37.3,22.3,37.3z" style="fill:#0072C6;">
+              </path>
+              <path d="M22,31c0,0-12-12.9-13.4-14.3c-1.3-1.5-0.1-3.2,0.6-3.8c0.7-0.6,2.8-1.5,3.9-0.4S27.6,28,28.6,29.1
+                                                  s0.9,2.8-0.8,4c-0.3,0.2-1.1,0.8-2.3,1.6c-0.1,0.1-0.6,0.5-1.1,0.8c0,0,1.1-0.8,0.3-1.7L22,31z" style="fill:#0072C6;">
+              </path>
+              <path d="M30.6,22.5c5.4,5.8,13.8,14.9,14.7,15.8c1.1,1.2,3,1.2,3.8,0.5s1.2-2.5,0.1-3.7c-0.6-0.7-11.9-12.8-15.3-16.5
+                                                  l-2.9,2C29.6,21.4,30.6,22.5,30.6,22.5z" style="fill:#0072C6;">
+              </path>
+              <path d="M31.8,16.6c0,0,14.5-10.1,16.1-11.3s0.8-3.1,0.2-3.8s-2.4-2.1-3.7-1.2S27,12.4,25.8,13.3s-1.5,2.5,0,4.1
+                                                  c0.2,0.3,0.9,1,1.9,2.1c0.1,0.1,0.5,0.6,0.9,1c0,0-0.9-1,0.1-1.7L31.8,16.6z" style="fill:#0072C6;">
+              </path>
+             </svg>
+            </div>
+            <h2>
+             Azure Bastion
+            </h2>
+            <h4>
+             无需 VM 上的公共 IP，即可保护到 Azure 虚拟网络中的 Azure VM 的无缝 RDP/SSH 连接
+            </h4>
+           </div>
+          </div>
+         </div>
+         <div class="pricing-page-section">
+          <p>
+           借助 Azure Bastion 服务，无需 VM 上的公共 IP，无需任何其他客户端/代理或任何软件，即可直接在 Azure 门户中通过 RDP 和 SSH 安全、无缝地访问 Azure
+                              虚拟网络中的 VM。在虚拟网络中预配 Azure Bastion 服务后，即可在同一虚拟网络中的所有 VM 上获得无缝 RDP/SSH 体验。有关详细信息，请参阅
+           <a href="https://docs.azure.cn/zh-cn/bastion/" aria-label="aLabel" target="_blank">
+            文档
+           </a>
+           。
+          </p>
+          <div class="pricing-page-section">
+           <h2>
+            Azure Bastion 定价
+           </h2>
+          </div>
+          <!-- BEGIN: TAB-CONTROL -->
+          <div class="technical-azure-selector pricing-detail-tab tab-dropdown tab-fixed-recover">
+           <div class="tab-container-container">
+            <div class="tab-container-box">
+             <div class="tab-container">
+              <div class="dropdown-container software-kind-container" style="display:none;">
+               <label>
+                OS/软件:
+               </label>
+               <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                <span class="selected-item">
+                   Azure Bastion
+                  </span>
+                <i class="icon">
+                </i>
+                <ol class="tab-items">
+                 <li class="active">
+                  <a data-href="#tabContent1" href="javascript:void(0)" id="home_Azure-Bastion" aria-label="home_Azure-Bastion" target="_blank">
+                   Azure Bastion
+                  </a>
+                 </li>
+                </ol>
+               </div>
+               <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
+                <!-- value 对应 soft-category 的 os -->
+                <option data-href="#tabContent1" selected="selected" value="Azure Bastion">
+                 Azure Bastion
+                </option>
+               </select>
+              </div>
+              <div class="clearfix">
+              </div>
+             </div>
+            </div>
+           </div>
+           <!-- BEGIN: TAB-CONTAINER-1 -->
+           <div class="tab-content">
+            <!-- BEGIN: TAB-CONTENT-1 -->
+            <div class="tab-panel show-md" id="tabContent1">
+             <!-- BEGIN: Tab level 2 navigator 2 -->
+             <!-- BEGIN: Tab level 2 content 3 -->
+             <ul class="tab-nav" style="display:none">
+              <li class="active">
+               <a data-href="#tabContent2" data-toggle="tab" href="javascript:void(0)" id="gpv1" aria-label="gpv1" target="_blank">
+                常规用途 v1
+               </a>
+              </li>
+             </ul>
+             <div class="tab-content">
+              <!-- BEGIN: Table1-Content-->
+              <div class="tab-panel show-md" id="tabContent2">
+               <div class="scroll-table" style="display: block;"><div><table cellpadding="0" cellspacing="0" id="azure-bastion-region1" width="100%">
+                <tbody><tr>
+                 <th align="left">
+                  <strong>
+                  </strong>
+                 </th>
+                 <th align="left">
+                  <strong>
+                   价格 <sup>2</sup>
+                  </strong>
+                 </th>
+                </tr>
+                <tr>
+                 <td>
+                  Azure Bastion 基本版
+                 </td>
+                 <td>
+                  ￥ 1.932/小时
+                 </td>
+                </tr>
+                <tr>
+                 <td>
+                  Azure Bastion 标准版
+                 </td>
+                 <td>
+                  ￥ 2.952/小时
+                 </td>
+                </tr>
+                <tr>
+                 <td>
+                  其他标准实例
+                  <sup>
+                   1
+                  </sup>
+                 </td>
+                 <td>
+                  ￥ 1.42464/小时
+                 </td>
+                </tr>
+                <tr>
+                  <td>
+                      Azure Bastion 高级版
+                  </td>
+                  <td>
+                      ￥4.58/小时
+                  </td>
+                 </tr>
+                 <tr>
+                  <td>
+                      其他高级实例
+                      <sup>3</sup>
+                  </td>
+                  <td>
+                      ￥2.23/小时
+                  </td>
+                 </tr>
+               </tbody></table></div></div>
+               <p class="tags-date" style="margin: 0;">
+                <sup>
+                 1
+                </sup>
+                Azure Bastion 标准版最少配备 2 个缩放单元，费用包含在基本定价中。
+               </p>
+               <div class="tags-date" style="margin: 0;">
+                  <sup>2</sup>
+                  <span>无论出站数据使用情况如何，从部署资源到删除资源，Azure Bastion 按小时计费。每小时定价将基于所选 SKU、配置的缩放单元数和数据传输速率。</span>
+               </div>
+               <div class="tags-date" style="margin: 0;">
+                  <sup>3</sup>
+                  <span>Azure Bastion 高级版最少配备 2 个缩放单元，费用包含在基本定价中。</span>
+               </div>
+               <br><br><br>
+               <div class="scroll-table" style="display: block;"><div><table cellpadding="0" cellspacing="0" id="azure-bastion-region2" width="100%">
+                  <tbody><tr>
+                      <th align="left" rowspan="2">
+                          <strong>
+                           出站数据传输
+                          </strong>
+                         </th>
+                      <th colspan="2">
+                          <strong>
+                              价格
+                          </strong>
+                      </th>
+                  </tr>
+                <tr>
+                 <!-- <th align="left">
+                  <strong>
+                   出站数据传输
+                  </strong>
+                 </th> -->
+                 <th align="left">
+                  <strong>
+                   区域 1
+                  </strong>
+                  <sup>
+                   1
+                  </sup>
+                 </th>
+                 <th align="left">
+                  <strong>
+                   区域 2
+                  </strong>
+                  <sup>
+                   1
+                  </sup>
+                 </th>
+                </tr>
+                <tr>
+                 <td>
+                  前 5 GB/月
+                 </td>
+                 <td>
+                  免费
+                 </td>
+                 <td>
+                  免费
+                 </td>
+                </tr>
+                <tr>
+                 <td>
+                  5 GB - 10 TB
+                  <sup>
+                   2
+                  </sup>
+                  /月
+                 </td>
+                 <td>
+                  ￥0.885 / GB
+                 </td>
+                 <td>
+                  ￥0.885 / GB
+                 </td>
+                </tr>
+                <tr>
+                 <td>
+                  <p>
+                   后 40 TB
+                  </p>
+                  <p>
+                   (10 TB - 50 TB）/月
+                  </p>
+                 </td>
+                 <td>
+                  ￥0.844 / GB
+                 </td>
+                 <td>
+                  ￥0.844 / GB
+                 </td>
+                </tr>
+                <tr>
+                 <td>
+                  <p>
+                   后 100 TB
+                  </p>
+                  <p>
+                   (50 TB - 150 TB）/月
+                  </p>
+                 </td>
+                 <td>
+                  ￥0.712 / GB
+                 </td>
+                 <td>
+                  ￥0.712 / GB
+                 </td>
+                </tr>
+                <tr>
+                 <td>
+                  <p>
+                   后 350 TB
+                  </p>
+                  <p>
+                   (150 TB - 500 TB）/月
+                  </p>
+                 </td>
+                 <td>
+                  ￥ 0.508 / GB
+                 </td>
+                 <td>
+                  ￥ 0.508 / GB
+                 </td>
+                </tr>
+                <tr>
+                 <td>
+                  超过 500 TB/月
+                 </td>
+                 <td>
+                  <a href="https://support.azure.cn/zh-cn/support/contact" aria-label="aLabel" target="_blank">
+                   联系我们
+                  </a>
+                 </td>
+                 <td>
+                  <a href="https://support.azure.cn/zh-cn/support/contact" aria-label="aLabel" target="_blank">
+                   联系我们
+                  </a>
+                 </td>
+                </tr>
+               </tbody></table></div></div>
+               <p class="tags-date" style="margin: 0;">
+                <sup>
+                 1
+                </sup>
+                有关区域详细信息，请参考下面的
+                <a href="/pricing/details/azure-bastion/index.html#Storage_question14" aria-label="aLabel">
+                 常见问题解答
+                </a>
+               </p>
+               <p class="tags-date" style="margin: 0;">
+                <sup>
+                 2
+                </sup>
+                1 TB = 1024 GB
+               </p>
+              </div>
+              <!-- END: Table1-Content-->
+             </div>
+            </div>
+            <!-- END: TAB-CONTENT-3 -->
+           </div>
+           <!-- END: TAB-CONTAINER-1 -->
+          </div>
+          <!-- END: TAB-CONTROL -->
+          <div class="pricing-page-section">
+           <div class="more-detail">
+            <h2>
+             常见问题
+            </h2>
+            <em>
+             全部展开
+            </em>
+            <ul>
+             <li>
+              <i class="icon icon-plus">
+              </i>
+              <div>
+               <a id="Storage_question14" aria-label="Storage_question14">
+                哪些区域与区域1和区域2相对应？
+               </a>
+               <section>
+                <p>
+                 子区域是可选择部署应用程序和关联数据的最低级别的地理位置。对于数据传输（CDN 除外），以下区域与区域1和区域 2 相对应
+                </p>
+                <ul>
+                 <li>
+                  <strong>
+                   Zone 1 – 中国东部3, 中国北部3
+                  </strong>
+                 </li>
+                 <li>
+                  <strong>
+                   Zone 2 – 中国东部2, 中国北部2
+                  </strong>
+                 </li>
+                </ul>
+               </section>
+              </div>
+             </li>
+            </ul>
+           </div>
+          </div>
+          <div class="pricing-page-section">
+           <h2>
+            支持和 SLA
+           </h2>
+           <ul>
+            <li>
+             我们为正式发布的所有 Azure 服务（包括 Azure Bastion）提供技术支持。可通过
+             <a href="https://support.azure.cn/zh-cn/support/plans/" aria-label="aLabel" target="_blank">
+              Azure
+                                      支持
+             </a>
+             获取支持。计费和订阅管理支持免费提供。
+            </li>
+           </ul>
+          </div>
+          <!--BEGIN: Support and service code chunk-->
+          <!--END: Support and service code chunk-->
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- END: Documentation Content -->
+     <!-- BEGIN: Footer -->
+     <div class="public_footerpage">
+
+  </div>
+     <!--END: Common sidebar-->
+     <link href="../../../Static/CSS/Localization/zh-cn.css" rel="stylesheet">
+     <script src="/Static/Scripts/lib/jquery-1.12.3.min.js" type="text/javascript">
+     </script>
+     <script type="text/javascript">
+      function getAntiForgeryToken() {
+              var token =
+                  '<input name="__RequestVerificationToken" type="hidden" value="pp_xxKDshbtueTQmfHeAW98thEu6tY1pJ2-jULR15hLqSMGIANieFFwvAOlk-XxiH_alcAFK99NAwcIECWmXpVR8DnvNjMuxo3SsmH4iPvA1" />';
+              token = $(token).val();
+              return token;
+          }
+  
+          function setLocaleCookie(localeVal) {
+              var Days = 365 * 10; // Ten year expiration
+              var exp = new Date();
+  
+              var hostName = window.location.hostname;
+              var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+  
+              exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+              document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain + "; path=/;expires=" + exp
+                  .toGMTString();
+          }
+  
+          setLocaleCookie(window.currentLocale);
+     </script>
+     <script type="text/javascript">
+      var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+          var TECHNICAL_STORAGE = '/blob/tech-content/';
+          var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+          var EnablePricingSync = 'false';
+     </script>
+     <!-- BEGIN: Minified RequireJs -->
+     <script src="/Static/Scripts/global.config.js" type="text/javascript">
+     </script>
+     <script src="/Static/Scripts/require.js" type="text/javascript">
+     </script>
+     <script src="/Static/Scripts/pricing-page-detail.js" type="text/javascript">
+     </script>
+     <!--    <script src='../../../../Static/Scripts/4552a1505e111da8c71780b349b683700a6158fa.js' type='text/javascript'></script>-->
+     <!-- END: Minified RequireJs -->
+     <!-- begin JSLL -->
+     <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js">
+     </script>
+     <script type="text/javascript">
+      (function () {
+              var config = {
+                  cookiesToCollect: ["_mkto_trk"],
+                  syncMuid: true,
+                  ix: {
+                      a: true,
+                      g: true
+                  },
+                  coreData: {
+                      appId: 'AzureCN',
+                      market: 'zh-cn',
+                  }
+              };
+              awa.init(config);
+          })();
+     </script>
+     <!-- end JSLL -->
+     <script src="../../../../Static/Scripts/plugins/cookie/jquery.cookie.js" type="text/javascript">
+     </script>
+     <script src="../../../../Static/Scripts/wacndatatracker.js" type="text/javascript">
+     </script>
+     <script src="/common/useCommon.js" type="text/javascript">
+     </script>
+    </div>
+   
+  
+  </body></html>

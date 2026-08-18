@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.1",
+  "product_key": "service-bus",
+  "display_name": "Service Bus",
+  "slug": "service-bus",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "integration"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/service-bus/index.html",
+      "url": "https://www.azure.cn/pricing/details/service-bus/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/service-bus/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/service-bus/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "simple_static",
+    "page_global_content": {
+      "source_boundary": "sole_static_formal_selector_before_common_sections",
+      "expected_by_language": {
+        "zh-cn": {
+          "fragment_count": 1,
+          "source_html_sha256": "95f29033d0c710e71260fdc926f96c885c124dabb16672939a5a832fd7b9ede5",
+          "wire_html_sha256": "9d9cce97d44e236e58d7461aa4c5425f061afabcdfbcacab8c65bae7ae725374"
+        },
+        "en-us": {
+          "fragment_count": 1,
+          "source_html_sha256": "8f05d669c13e2daa02d968b50dcf5ec31f6f342f2c9e1d8f67131682637488ea",
+          "wire_html_sha256": "aa02090d85e9bac31e7c23e3f7d2863c2e6d39db78d7443f2d80d28f5b3e2cca"
+        }
+      }
+    }
+  }
+}

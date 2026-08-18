@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "event-hubs",
+  "display_name": "Event Hubs",
+  "slug": "event-hubs",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "iot"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/event-hubs/index.html",
+      "url": "https://www.azure.cn/pricing/details/event-hubs/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/event-hubs/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/event-hubs/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "region_filter"
+  }
+}

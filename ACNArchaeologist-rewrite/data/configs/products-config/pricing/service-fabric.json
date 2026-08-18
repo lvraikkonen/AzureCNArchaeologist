@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.2",
+  "product_key": "service-fabric",
+  "display_name": "Service Fabric",
+  "slug": "service-fabric",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "container"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/service-fabric/index.html",
+      "url": "https://www.azure.cn/pricing/details/service-fabric/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/service-fabric/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/service-fabric/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "simple_static",
+    "page_global_content": {
+      "source_boundary": "sole_direct_static_business_wrapper_before_common_sections",
+      "expected_by_language": {
+        "zh-cn": {
+          "fragment_count": 1,
+          "source_html_sha256": "70b0a22305d1b0f247e2cee58316228dc95097738784746c191a292c12044774",
+          "wire_html_sha256": "c3c3545c5ba0d7f89a2e950318a180a40c17c82e90e7cb11843a484d3e0a5709"
+        },
+        "en-us": {
+          "fragment_count": 1,
+          "source_html_sha256": "b713ff78c7c33f0ed4eba52f33abd3ab483855283dc697cc4062de91453234e6",
+          "wire_html_sha256": "d1c2b91607201cad1430c775d20b72da90e5f8de60f762fc3bb10da48e26e839"
+        }
+      }
+    }
+  }
+}

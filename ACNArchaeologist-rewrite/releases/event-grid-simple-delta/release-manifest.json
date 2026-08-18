@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "release_id": "event-grid-simple-delta",
+  "release_kind": "delta",
+  "source_review": {
+    "review_id": "event-grid-simple-incremental-review",
+    "review_queue_path": "reviews/event-grid-simple-incremental-review/queue.json",
+    "run_name": "event-grid-simple-incremental",
+    "run_manifest_path": "runs/event-grid-simple-incremental/run.json",
+    "incremental_run_name": "event-grid-simple-incremental",
+    "change_plan_path": "runs/event-grid-simple-incremental/change-plan.json"
+  },
+  "summary": {
+    "approved_products": 1,
+    "payload_items": 2,
+    "rejected_products": 0,
+    "awaiting_decision_products": 0,
+    "not_queued_items": 0,
+    "already_delivered_products": 0,
+    "stale_reprocessed_products": 0
+  },
+  "products": [
+    {
+      "product_key": "event-grid",
+      "display_name": "Event Grid",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "review": {
+        "reviewer": "claus lv",
+        "decision": "approved",
+        "inspection_scope": {
+          "languages": [
+            "zh-cn",
+            "en-us"
+          ],
+          "materials": [
+            "Frozen HTML",
+            "Business Payload",
+            "L3a 检查报告",
+            "L3b 检查报告"
+          ]
+        },
+        "notes": "event-grid simplePage页面内容审核通过",
+        "source_decision_path": "reviews/event-grid-simple-incremental-review/decisions/event-grid.json",
+        "release_decision_path": "review-decisions/event-grid.json"
+      },
+      "items": [
+        {
+          "item_id": "event-grid/zh-cn",
+          "language": "zh-cn",
+          "frozen_html_path": "runs/event-grid-simple-incremental/inputs/prod-html/zh-cn/pricing/event-grid.html",
+          "source_payload_path": "runs/event-grid-simple-incremental/payloads/zh-cn/pricing/event-grid.json",
+          "release_payload_path": "payloads/zh-cn/pricing/event-grid.json",
+          "l3a_report_path": "runs/event-grid-simple-incremental/checks/zh-cn/pricing/event-grid.l3a.json",
+          "l3b_report_path": "runs/event-grid-simple-incremental/checks/zh-cn/pricing/event-grid.l3b.json"
+        },
+        {
+          "item_id": "event-grid/en-us",
+          "language": "en-us",
+          "frozen_html_path": "runs/event-grid-simple-incremental/inputs/prod-html/en-us/pricing/event-grid.html",
+          "source_payload_path": "runs/event-grid-simple-incremental/payloads/en-us/pricing/event-grid.json",
+          "release_payload_path": "payloads/en-us/pricing/event-grid.json",
+          "l3a_report_path": "runs/event-grid-simple-incremental/checks/en-us/pricing/event-grid.l3a.json",
+          "l3b_report_path": "runs/event-grid-simple-incremental/checks/en-us/pricing/event-grid.l3b.json"
+        }
+      ],
+      "change_reasons": {
+        "change_sources": [
+          "html"
+        ],
+        "changed_languages": [
+          "zh-cn",
+          "en-us"
+        ],
+        "html_changes": [
+          {
+            "language": "zh-cn",
+            "change_type": "modified",
+            "new_snapshot_path": "data/current_prod_html/zh-cn/pricing/details/event-grid/index.html",
+            "previous_frozen_path": "data/prod-html/zh-cn/pricing/event-grid.html",
+            "reason": "zh-cn 上游 HTML 的文件内容与当前 Frozen HTML 不同。"
+          },
+          {
+            "language": "en-us",
+            "change_type": "modified",
+            "new_snapshot_path": "data/current_prod_html/en-us/pricing/details/event-grid/index.html",
+            "previous_frozen_path": "data/prod-html/en-us/pricing/event-grid.html",
+            "reason": "en-us 上游 HTML 的文件内容与当前 Frozen HTML 不同。"
+          }
+        ],
+        "soft_category_reasons": [],
+        "product_definition_reasons": [],
+        "bilingual_processing_reason": "zh-cn、en-us 的 HTML 发生变化；按照双语一致原则，本次同时处理 zh-cn 和 en-us。"
+      }
+    }
+  ],
+  "excluded": {
+    "rejected_product_keys": [],
+    "awaiting_decision_product_keys": [],
+    "not_queued_items": [],
+    "already_delivered_product_keys": [],
+    "ended_without_delivery_product_keys": [],
+    "stale_reprocessed_product_keys": []
+  }
+}

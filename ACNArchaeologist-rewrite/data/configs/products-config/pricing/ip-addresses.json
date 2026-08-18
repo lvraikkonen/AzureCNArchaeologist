@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.1",
+  "product_key": "ip-addresses",
+  "display_name": "IP Address",
+  "slug": "ip-addresses",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "networking"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/ip-addresses/index.html",
+      "url": "https://www.azure.cn/pricing/details/ip-addresses/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/reserved-ip-addresses/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "ip-addresses"
+        }
+      ]
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/ip-addresses/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/ip-addresses/",
+      "aliases": [
+        {
+          "snapshot_path": "pricing/details/reserved-ip-addresses/index.html",
+          "reason": "Historical or duplicate source route retained for traceability.",
+          "canonical_product_key": "ip-addresses"
+        }
+      ]
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "simple_static"
+  }
+}

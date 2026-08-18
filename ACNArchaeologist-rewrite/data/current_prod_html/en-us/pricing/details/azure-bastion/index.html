@@ -1,0 +1,750 @@
+<html lang="zh-CN" class="desktop"><head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Azure Bastion service provides secure, seamless RDP &amp; SSH connectivity to Azure VMs in Azure virtual network, without the need of public IP on the VM." name="description">
+    <title>
+        Azure Bastion - Azure Cloud Computing
+    </title>
+    <link href="../../../../Static/Favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180">
+    <link href="../../../../Static/Favicon/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="../../../../Static/Favicon/favicon.ico" rel="icon" type="image/x-icon">
+    <link href="../../../../Static/Favicon/manifest.json" rel="manifest">
+    <link color="#0078D4" href="../../../../Static/Favicon/safari-pinned-tab.svg" rel="mask-icon">
+    <meta content="/Static/Favicon/browserconfig.xml" name="msapplication-config">
+    <meta content="#ffffff" name="theme-color">
+    <link href="https://azure.microsoft.com/pricing/details/storage/managed-disks/" rel="canonical">
+    <!-- BEGIN: Azure UI Style -->
+    <link href="../../../../Static/CSS/azureui.min.css" rel="stylesheet">
+    <link href="../../../../Static/CSS/common.min.css" rel="stylesheet">
+    <!-- END: Azure UI Style -->
+    <!-- BEGIN: Page Style -->
+    <!-- END: Page Style -->
+    <!-- BEGIN: Minified Page Style -->
+    <link href="../../../../Static/CSS/a05a0e4e99489d7b3cb548e24414e01adf779d77.css" rel="stylesheet">
+    <!-- END: Minified Page Style -->
+    <link href="../../../../StaticService/css/service.min.css" rel="stylesheet">
+<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="Common" src="/Static/Scripts/modules/common.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="Banner" src="/Static/Scripts/modules/banner-exchange.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="DocLeftNav" src="/Static/Scripts/modules/documentation-left-navigation.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="AccordianMenu" src="/Static/Scripts/modules/accordian-menu.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="Layout" src="/Static/Scripts/modules/layout.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="IsExternalLink" src="/Static/Scripts/modules/is-external-link.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="TabControl" src="/Static/Scripts/modules/tab-control.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="ToggleShow" src="/Static/Scripts/modules/toggle-showdetail.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="Table" src="/Static/Scripts/modules/table.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="TemporaryHide" src="/Static/Scripts/modules/temporary-hide.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="TabDropDown" src="/Static/Scripts/modules/tab-dropdown.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="jquery" src="/Static/Scripts/lib/jquery-1.12.3.min.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="AX" src="/Static/Scripts/lib/azurex.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="FastClick" src="/Static/Scripts/plugins/fastclick/fastclick.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="ScreenTest" src="/Static/Scripts/modules/screen-test.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="AutoScroll" src="/Static/Scripts/modules/auto-scroll.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="Tab" src="/Static/Scripts/modules/tab.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="Dialog" src="/Static/Scripts/modules/dialog.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="AutoHeight" src="/Static/Scripts/modules/auto-height.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="MobileDetect" src="/Static/Scripts/plugins/mobile-detect/mobile-detect.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="underscore" src="/Static/Scripts/lib/underscore-min.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="MediaTag" src="/Static/Scripts/modules/media-tag.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="HeaderFooterLinkCorrector" src="/Static/Scripts/modules/headerfooter-link-corrector.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="LocalizationLoader" src="/Static/Scripts/modules/localization-loader.js"></script><link rel="stylesheet" href="https://cnazuren3.blob.core.chinacloudapi.cn/marketing-resource/StaticService/css/dropkick.css"><script type="text/javascript" src="https://cnazuren3.blob.core.chinacloudapi.cn/marketing-resource/StaticService/js/dropkick.js"></script></head>
+<body class="en-us">
+<script>
+    window.requireUrlArgs = "2019/6/24 6:51:27";
+    window.currentLocale = "en-US";
+    window.headerTimestamp = "2019/1/23 8:25:24";
+    window.footerTimestamp = "2019/1/8 8:07:06";
+    window.locFileTimestamp = "2018/11/29 7:49:17";
+
+    window.AcnHeaderFooter = {
+        IsEnableQrCode: true,
+        CurrentLang: window.currentLocale.toLowerCase(),
+    };
+</script>
+<style>
+    @media (min-width: 0) {
+        .acn-header-placeholder {
+            height: 48px;
+            width: 100%;
+        }
+    }
+
+    @media (min-width: 980px) {
+        .acn-header-placeholder {
+            height: 89px;
+            width: 100%;
+        }
+    }
+
+    .acn-header-placeholder {
+        background-color: #1A1A1A;
+    }
+
+    .acn-header-service {
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+</style>
+<div class="acn-header-container">
+    <div class="acn-header-placeholder">
+    </div>
+    <div class="public_headerpage"><div class="acn-header-service override en-us" style="background-color: #fff !important;">
+    <header class="header scroll">
+        <div class="azure-service-container">
+            <div class="brand clearfix">
+                <div class="logo">
+                    <div class="azure-logo">
+                        <h1 class="logo-first-level">
+                            <a id="navigation-azure-logo-id" href="https://www.azure.cn/en-us" title="Microsoft Azure" aria-label="Azure logo">
+                            </a>
+                        </h1>
+                    </div>
+                </div>
+                <div class="top-nav">
+                    <a class="search" href="#" title="Search" id="navigation-search-button" aria-label="search-button">
+                        <i class="icon icon-search-thick">
+                        </i>
+                    </a>
+                    <a class="nav-toggle" href="#" title="Navigate">
+                        <i class="icon icon-navigation-sharp">
+                        </i>
+                    </a>
+                </div>
+            </div>
+            <nav class="nav auto-scroll" data-fullscreen="true" data-top="header" style="height: auto;">
+                <ul class="accordian-menu" data-accordiandisabled="desktop" data-accordianinteraction="exclusive">
+                    <li>
+                        <!-- <a class="menu-title icon-arrow-down-sharp2" id="nav_price" target="_blank" href="https://www.azure.cn/pricing" title="Pricing"> -->
+                        <a class="" id="nav_price" target="_blank" href="https://www.azure.cn/en-us/pricing/" title="Products and Pricing">
+                            <span>Products and Pricing</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="" id="nav_documentation" target="_blank" href="https://docs.azure.cn/en-us/?product=popular" title="Documentation">
+                            <span>Documentation &gt;</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="" id="nav_market-place" target="_blank" href="https://market.azure.cn" title="Azure Marketplace">
+                            <span>Azure Marketplace &gt;</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="" id="nav_support" target="_blank" href="https://support.azure.cn/en-us/support/plans/" title="Support Plans">
+                            <span>Support Plans &gt;</span>
+                        </a>
+                    </li>
+
+                </ul>
+                <!--a id="homepage-top-1rmb" class="buy-it"
+                    href="https://www.microsoft.com/china/azure/index-en.html?fromtype=cn" title="Apply"
+                    target="_blank">
+                    <span>Apply</span>
+                    <span class="icon-arrow-right-thin2"></span>
+                </a-->
+                <a id="header-portal-azure-id" class="portal-link" href="https://portal.azure.cn/" title="Azure Portal" target="_blank">
+                    Azure Portal
+                </a>
+
+            </nav>
+            <div class="search-panel auto-scroll" data-fullscreen="true" data-top="header" style="height: auto;">
+                <div class="azure-service-container">
+                    <div class="row search-input">
+                        <div class="col-xs-12 col-sm-12">
+                            <div class="input-wrapper">
+                                <input id="searchInput" class="text-input" aria-label="Search" type="text" name="" value="" placeholder="Please input a search keyword">
+                                <a id="searchBtn" aria-label="Search" href="#">
+                                    <i class="icon icon-search-thick">
+                                        <span class="icon-navigation-search icon-navigation-svg"></span>
+                                        <span class="icon-close-svg"></span>
+                                    </i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row hidden-md hidden-lg">
+                        <div class="col-xs-12">
+                            <h3>Popular searches</h3>
+                        </div>
+                    </div>
+                    <div class="hot-tag row hidden-md hidden-lg">
+                    </div>
+                    <div class="row hidden-md hidden-lg">
+                        <div class="col-xs-12">
+                            <h3>Recent search history</h3>
+                        </div>
+                    </div>
+                    <div class="row search-history hidden-md hidden-lg">
+                        <div class="col-xs-12">
+                            <ul></ul>
+                        </div>
+                        <div class="col-xs-12">
+                            <a href="#" class="btn btn-link btn-block clear-btn">
+                                Clear search records
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</div></div>
+</div>
+<!-- BEGIN: Documentation Content -->
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="bread-crumb hidden-sm hidden-xs">
+                    <ul>
+                        <li>
+         <span>
+         </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="single-page">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="documentation-navigation left-navigation hidden-xs hidden-sm"><h3>Azure Bastion</h3><ul class="accordian-menu"><li><button id="leftnav_product_identity_details" class="menu-title expand" role="button" aria-expanded="true" title="Product"><span class="nav-title">Product</span><span class="icon icon-arrow-top"></span></button><ul class="menu-child accordian-menu" style="display: block;"><li><a href="https://azure.microsoft.com/services/azure-bastion/" id="leftnav_product_identity_function_Product overview" title="Product overview" target="_blank">Product overview</a></li><li class="active"><a href="/en-us/pricing/details/azure-bastion/" id="leftnav_product_identity_pricing_Pricing details" title="Pricing details">Pricing details</a></li><li><a href="/en-us/support/sla/azure-bastion/v1_0/" id="leftnav_product_identity_sla_Service Level Agreement" title="Service Level Agreement">Service Level Agreement</a></li><li><a href="/pricing/calculator/" id="leftnav_product_container-instances_calculator_Pricing calculator" title="Pricing calculator">Pricing calculator</a></li><li><a href="https://docs.azure.cn/en-us/bastion/" id="leftnav_product_identity_documentation_Documentation" title="Documentation" target="_blank">Documentation</a></li></ul></li><li><button id="leftnav_product_identity_related" class="menu-title" role="button" aria-expanded="true" title="Related products"><span class="nav-title">Related products</span><span class="icon icon-arrow-top"></span></button><ul class="menu-child accordian-menu" style=""><li><a href="https://azure.microsoft.com/services/virtual-machines/" id="leftnav_product_virtual-machines_function_Virtual Machines" title="Virtual Machines" target="_blank">Virtual Machines</a></li><li><a href="https://azure.microsoft.com/services/storage/" id="leftnav_product_storage_function_Storage" title="Storage" target="_blank">Storage</a></li><li><a href="https://azure.microsoft.com/services/sql-database/" id="leftnav_product_sql_storage_function_SQL Database" title="SQL Database" target="_blank">SQL Database</a></li><li><a href="https://azure.microsoft.com/services/vpn-gateway/" id="leftnav_product_vpn-gateway_function_VPN Gateway" title="VPN Gateway" target="_blank">VPN Gateway</a></li><li><a href="https://azure.microsoft.com/services/load-balancer/" id="leftnav_product_load-balancer_function_Load Balancer" title="Load Balancer" target="_blank">Load Balancer</a></li></ul></li><li><button id="leftnav_product_identity_others" class="menu-title" role="button" aria-expanded="true" title="Related Documentation and Links"><span class="nav-title">Related Documentation and Links</span><span class="icon icon-arrow-top"></span></button><ul class="menu-child accordian-menu" style=""><li><a href="https://docs.microsoft.com/azure/bastion/bastion-overview" id="leftnav_product_identity_articles_active-directory-b2c-overview_What is Azure Bastion?" title="What is Azure Bastion?" target="_blank">What is Azure Bastion?</a></li><li><a href="https://docs.microsoft.com/azure/bastion/quickstart-host-portal" id="leftnav_product_identity_active-directory-b2c-solution-articles_Create a bastion host from VM settings" title="Create a bastion host from VM settings" target="_blank">Create a bastion host from VM settings</a></li><li><a href="https://docs.microsoft.com/azure/bastion/bastion-create-host-portal" id="leftnav_product_identity_articles_active-directory-b2c-code-samples_Create a Bastion host" title="Create a Bastion host" target="_blank">Create a Bastion host</a></li><li><a href="https://www.microsoft.com/videoplayer/embed/RE39WT5" id="leftnav_product_identity_articles_active-directory-b2c-faq_Working with Azure Bastion" title="Working with Azure Bastion" target="_blank">Working with Azure Bastion</a></li></ul></li></ul></div>
+                </div>
+                <div class="pure-content col-md-10">
+                    <div class="select left-navigation-select hidden-md hidden-lg">
+                        <select aria-label="leftNavSelect">
+                            
+                        <optgroup label="Product"><option id="leftnav_product_identity_function_Product overview_mobile" value="https://azure.microsoft.com/services/azure-bastion/">Product overview</option><option id="leftnav_product_identity_pricing_Pricing details_mobile" value="/en-us/pricing/details/azure-bastion/">Pricing details</option><option id="leftnav_product_identity_sla_Service Level Agreement_mobile" value="/en-us/support/sla/azure-bastion/v1_0/">Service Level Agreement</option><option id="leftnav_product_container-instances_calculator_Pricing calculator_mobile" value="/pricing/calculator/" disabled="" class="del-xs">Pricing calculator</option><option id="leftnav_product_identity_documentation_Documentation_mobile" value="https://docs.azure.cn/en-us/bastion/">Documentation</option></optgroup><optgroup label="Related products"><option id="leftnav_product_virtual-machines_function_Virtual Machines_mobile" value="https://azure.microsoft.com/services/virtual-machines/">Virtual Machines</option><option id="leftnav_product_storage_function_Storage_mobile" value="https://azure.microsoft.com/services/storage/">Storage</option><option id="leftnav_product_sql_storage_function_SQL Database_mobile" value="https://azure.microsoft.com/services/sql-database/">SQL Database</option><option id="leftnav_product_vpn-gateway_function_VPN Gateway_mobile" value="https://azure.microsoft.com/services/vpn-gateway/">VPN Gateway</option><option id="leftnav_product_load-balancer_function_Load Balancer_mobile" value="https://azure.microsoft.com/services/load-balancer/">Load Balancer</option></optgroup><optgroup label="Related Documentation and Links"><option id="leftnav_product_identity_articles_active-directory-b2c-overview_What is Azure Bastion?_mobile" value="https://docs.microsoft.com/azure/bastion/bastion-overview">What is Azure Bastion?</option><option id="leftnav_product_identity_active-directory-b2c-solution-articles_Create a bastion host from VM settings_mobile" value="https://docs.microsoft.com/azure/bastion/quickstart-host-portal">Create a bastion host from VM settings</option><option id="leftnav_product_identity_articles_active-directory-b2c-code-samples_Create a Bastion host_mobile" value="https://docs.microsoft.com/azure/bastion/bastion-create-host-portal">Create a Bastion host</option><option id="leftnav_product_identity_articles_active-directory-b2c-faq_Working with Azure Bastion_mobile" value="https://www.microsoft.com/videoplayer/embed/RE39WT5">Working with Azure Bastion</option></optgroup></select>
+                        <span class="icon icon-arrow-top">
+        </span>
+                    </div>
+                    <tags ms.date="24/07/2020" ms.service="en-us-azure-bastion" wacn.date="24/07/2020">
+                    </tags>
+                    <style type="text/css">
+                        .pricing-detail-tab .tab-nav {
+                            padding-left: 0 !important;
+                            margin-top: 5px;
+                            margin-bottom: 0;
+                            overflow: hidden;
+                        }
+
+                        .pricing-detail-tab .tab-nav li {
+                            list-style: none;
+                            float: left;
+                        }
+
+                        .pricing-detail-tab .tab-nav li.active a {
+                            border-bottom: 4px solid #00a3d9;
+                        }
+
+                        .pricing-detail-tab .tab-nav li.active a:hover {
+                            border-bottom: 4px solid #00a3d9;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel {
+                            display: none;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel.show-md {
+                            display: block;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel .tab-nav li a {
+                            padding-left: 5px;
+                            padding-right: 5px;
+                            color: #00a3d9;
+                            background-color: #FFF;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel .tab-nav li.active a {
+                            color: #FFF;
+                            background-color: #00a3d9;
+                        }
+
+                        .pricing-detail-tab .tab-content .tab-panel .tab-nav li a:hover {
+                            color: #FFF;
+                            background-color: #00a3d9;
+                        }
+
+                        .pure-content .technical-azure-selector p a,
+                        .pure-content .technical-azure-selector table a {
+                            background: 0 0;
+                            padding: 0;
+                            margin: 0 6px;
+                            height: 21px;
+                            line-height: 22px;
+                            font-size: 14px;
+                            color: #00a3d9;
+                            float: none;
+                            display: inline;
+                        }
+
+                        .svg {
+                            width: 50px;
+                            float: left;
+                            margin-right: 10px;
+                        }
+                    </style>
+                    <div class="hide-info" style="display:none;">
+                        <div class="bg-box">
+                            <div class="cover-bg">
+                            </div>
+                        </div>
+                        <div class="msg-box">
+                            <div class="pricing-unavailable-message">
+                                Not available in the selected region
+                            </div>
+                        </div>
+                    </div>
+                    <div class="common-banner col-top-banner" data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'','imageHeight':'auto'}" style="background-color: rgb(227, 244, 255);">
+                        <div class="common-banner-image" style="background-image: url(&quot;&quot;);">
+                            <div class="common-banner-title">
+                                <div class="svg">
+                                    <svg aria-hidden="true" data-slug-id="azure-bastion" role="presentation" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M49,1v48H1V1H49 M50,0H0v50h50V0L50,0z" style="opacity:1.000000e-02;fill:none;stroke:#FFFFFF;stroke-width:1.000000e-03;stroke-miterlimit:10;">
+                                        </path>
+                                        <path d="M22.3,37.3C15.8,41.8,5.4,48.7,4.4,49.5c-1.3,0.9-3.2,0.5-3.8-0.3C0,48.3,0,46.4,1.3,45.5
+												C2.1,45,15.8,35.7,20,32.8l2.4,2.6C23.5,36.5,22.3,37.3,22.3,37.3z" style="fill:#0072C6;">
+                                        </path>
+                                        <path d="M22,31c0,0-12-12.9-13.4-14.3c-1.3-1.5-0.1-3.2,0.6-3.8c0.7-0.6,2.8-1.5,3.9-0.4S27.6,28,28.6,29.1
+												s0.9,2.8-0.8,4c-0.3,0.2-1.1,0.8-2.3,1.6c-0.1,0.1-0.6,0.5-1.1,0.8c0,0,1.1-0.8,0.3-1.7L22,31z" style="fill:#0072C6;">
+                                        </path>
+                                        <path d="M30.6,22.5c5.4,5.8,13.8,14.9,14.7,15.8c1.1,1.2,3,1.2,3.8,0.5s1.2-2.5,0.1-3.7c-0.6-0.7-11.9-12.8-15.3-16.5
+												l-2.9,2C29.6,21.4,30.6,22.5,30.6,22.5z" style="fill:#0072C6;">
+                                        </path>
+                                        <path d="M31.8,16.6c0,0,14.5-10.1,16.1-11.3s0.8-3.1,0.2-3.8s-2.4-2.1-3.7-1.2S27,12.4,25.8,13.3s-1.5,2.5,0,4.1
+												c0.2,0.3,0.9,1,1.9,2.1c0.1,0.1,0.5,0.6,0.9,1c0,0-0.9-1,0.1-1.7L31.8,16.6z" style="fill:#0072C6;">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <h2>
+                                    Azure Bastion
+                                </h2>
+                                <h4>
+                                    Secure seamless RDP/SSH connectivity to Azure VMs in Azure virtual network without public IP on the VM
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pricing-page-section">
+                        <p>
+                            Azure Bastion service enables you to securely and seamlessly RDP &amp; SSH to your VMs in Azure virtual network, without the need of public IP
+                            on the VM, directly from the Azure portal, and without the need of any additional client/agent or any piece of software. Once you provision an
+                            Azure Bastion service in your virtual network, the seamless RDP/SSH experience is available to all your VMs in the same virtual network. For
+                            more information, please refer to
+                            <a href="https://docs.azure.cn/en-us/bastion/" aria-label="aLabel" target="_blank">
+                                the documentation
+                            </a>
+                            .
+                        </p>
+                        <div class="pricing-page-section">
+                            <h2>
+                                Azure Bastion pricing
+                            </h2>
+                        </div>
+                        <!-- BEGIN: TAB-CONTROL -->
+                        <div class="technical-azure-selector pricing-detail-tab tab-dropdown tab-fixed-recover">
+                            <div class="tab-container-container">
+                                <div class="tab-container-box">
+                                    <div class="tab-container">
+                                        <div class="dropdown-container software-kind-container" style="display:none;">
+                                            <label>
+                                                OS/软件:
+                                            </label>
+                                            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+              <span class="selected-item">
+                                                            Azure Bastion
+                                                        </span>
+                                                <i class="icon">
+                                                </i>
+                                                <ol class="tab-items">
+                                                    <li class="active">
+                                                        <a data-href="#tabContent1" href="javascript:void(0)" id="home_Azure-Bastion" aria-label="home_Azure-Bastion" target="_blank">
+                                                            Azure Bastion
+                                                        </a>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
+                                                <option data-href="#tabContent1" selected="selected" value="Azure Bastion">
+                                                    Azure Bastion
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <!-- <div class="dropdown-container region-container">
+                                                                            <label>Region:</label>
+                                                                            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                                                                <span class="selected-item">China North 2</span>
+                                                                                <i class="icon"></i>
+                                                                                <ol class="tab-items">
+                                                                                    <li class="active"><a href="javascript:void(0)" data-href="#north-china2" id="north-china2">China North 2</a></li>
+                                                                                    <li ><a href="javascript:void(0)" data-href="#east-china2" id="east-china2">China East 2</a></li>
+                                                                                    <li><a href="javascript:void(0)" data-href="#north-china" id="north-china">China North</a></li>
+                                                                                    <li><a href="javascript:void(0)" data-href="#east-china" id="east-china">China East</a></li>
+                                                                                </ol>
+                                                                            </div>
+                                                                            <select class="dropdown-select region-box hidden-lg hidden-md"
+                                                                                id="region-box">
+                                                                                <option  data-href="#east-china2"
+                                                                                    value="east-china2">China East 2</option>
+                                                                                <option selected="selected" data-href="#north-china2" value="north-china2">>China North 2
+                                                                                </option>
+                                                                                <option data-href="#east-china" value="east-china">China East</option>
+                                                                                <option data-href="#north-china" value="north-china">China North</option>
+                                                                            </select>
+                                                                        </div> -->
+                                        <div class="clearfix">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- BEGIN: TAB-CONTAINER-1 -->
+                            <div class="tab-content">
+                                <!-- BEGIN: TAB-CONTENT-1 -->
+                                <div class="tab-panel show-md" id="tabContent1">
+                                    <!-- BEGIN: Tab level 2 navigator 2 -->
+                                    <!-- BEGIN: Tab level 2 content 3 -->
+                                    <ul class="tab-nav" style="display:none">
+                                        <li class="active">
+                                            <a data-href="#tabContent2" data-toggle="tab" href="javascript:void(0)" id="gpv1" aria-label="gpv1" target="_blank">
+                                                Regular use
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <!-- BEGIN: Table1-Content-->
+                                        <div class="tab-panel show-md" id="tabContent2">
+                                            <div class="scroll-table" style="display: block;"><div><table cellpadding="0" cellspacing="0" id="azure-bastion-region1" width="100%">
+                                                <tbody><tr>
+                                                    <th align="left">
+                                                        <strong>
+                                                        </strong>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            PRICE <sup>2</sup>
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Azure Bastion Basic
+                                                    </td>
+                                                    <td>
+                                                        ￥1.932 per hour
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Azure Bastion Standard
+                                                    </td>
+                                                    <td>
+                                                        ￥2.952 per hour
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Additional Standard Instance
+                                                        <sup>
+                                                            1
+                                                        </sup>
+                                                    </td>
+                                                    <td>
+                                                        ￥1.42464 per hour
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Azure Bastion Premium
+                                                    </td>
+                                                    <td>
+                                                        ￥4.58 Per hour
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Additional Premium Instance<sup>3</sup>
+                                                    </td>
+                                                    <td>
+                                                        ￥2.23 Per hour
+                                                    </td>
+                                                </tr>
+                                            </tbody></table></div></div>
+                                            <div class="tags-date" style="margin: 0;">
+                                                <sup>1</sup> <span>Azure Bastion Standard and Azure Bastion Premium start with 2 instances as part of base pricing.</span>
+                                             </div>
+                                             <div class="tags-date" style="margin: 0;">
+                                                <sup>2</sup> <span>Azure Bastion is billed hourly from the moment the resource is deployed until the resource is deleted, regardless of outbound data usage. The hourly pricing will be based on the SKU selected, number of scale units configured, and data transfer rates.</span>
+                                             </div>
+                                             <div class="tags-date" style="margin: 0;">
+                                                <sup>3</sup> <span>Azure Bastion Standard and Azure Bastion Premium start with 2 instances as part of base pricing.</span>
+                                             </div>
+                                            <br><br><br>
+
+                                            <div class="scroll-table" style="display: block;"><div><table cellpadding="0" cellspacing="0" id="azure-bastion-region2" width="100%">
+                                                <tbody><tr>
+                                                    <th align="left" rowspan="2">
+                                                        <strong>
+                                                            OUTBOUND DATA TRANSFER
+                                                        </strong>
+                                                    </th>
+                                                    <th colspan="2">
+                                                        <strong>
+                                                            Price
+                                                        </strong>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <!-- <th align="left">
+                                                        <strong>
+                                                            OUTBOUND DATA TRANSFER
+                                                        </strong>
+                                                    </th> -->
+                                                    <th align="left">
+                                                        <strong>
+                                                            ZONE 1
+                                                        </strong>
+                                                        <sup>
+                                                            1
+                                                        </sup>
+                                                    </th>
+                                                    <th align="left">
+                                                        <strong>
+                                                            ZONE 2
+                                                        </strong>
+                                                        <sup>
+                                                            1
+                                                        </sup>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        First 5 GB / month
+                                                    </td>
+                                                    <td>
+                                                        Free
+                                                    </td>
+                                                    <td>
+                                                        Free
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        5 GB - 10 TB
+                                                        <sup>
+                                                            2
+                                                        </sup>
+                                                        / month
+                                                    </td>
+                                                    <td>
+                                                        ￥ 0.885 per GB
+                                                    </td>
+                                                    <td>
+                                                        ￥ 0.885 per GB
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>
+                                                            Next 40 TB
+                                                        </p>
+                                                        <p>
+                                                            (10 TB - 50 TB) / month
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        ￥ 0.844 per GB
+                                                    </td>
+                                                    <td>
+                                                        ￥ 0.844 per GB
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>
+                                                            Next 100 TB
+                                                        </p>
+                                                        <p>
+                                                            (50 TB - 150 TB) / month
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        ￥ 0.712 per GB
+                                                    </td>
+                                                    <td>
+                                                        ￥ 0.712 per GB
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>
+                                                            Next 350 TB
+                                                        </p>
+                                                        <p>
+                                                            (150 TB - 500 TB) / month
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        ￥ 0.508 per GB
+                                                    </td>
+                                                    <td>
+                                                        ￥ 0.508 per GB
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Over 500 TB / month
+                                                    </td>
+                                                    <td>
+                                                        <a href="https://support.azure.cn/en-us/support/contact" aria-label="aLabel" target="_blank">
+                                                            Contact us
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="https://support.azure.cn/en-us/support/contact" aria-label="aLabel" target="_blank">
+                                                            Contact us
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody></table></div></div>
+                                            <p class="tags-date" style="margin: 0;">
+                                                <sup>
+                                                    1
+                                                </sup>
+                                                For Zone details, please refer to the
+                                                <a href="/en-us/pricing/details/azure-bastion/index.html#Storage_question14" aria-label="aLabel">
+                                                    FAQ
+                                                </a>
+                                                below.
+                                            </p>
+                                            <p class="tags-date" style="margin: 0;">
+                                                <sup>
+                                                    2
+                                                </sup>
+                                                1 TB = 1024 GB
+                                            </p>
+                                        </div>
+                                        <!-- END: Table1-Content-->
+                                    </div>
+                                </div>
+                                <!-- END: TAB-CONTENT-3 -->
+                            </div>
+                            <!-- END: TAB-CONTAINER-1 -->
+                        </div>
+                        <!-- END: TAB-CONTROL -->
+                        <div class="pricing-page-section">
+                            <div class="more-detail">
+                                <h2>
+                                    FAQ
+                                </h2>
+                                <em>
+                                    Expand all
+                                </em>
+                                <ul>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="Storage_question14" aria-label="Storage_question14">
+                                                Which regions correspond to Zone 1 and Zone 2?
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    A: A sub-region is the lowest level geo-location that you may select to deploy your applications and associated data.
+                                                    For data transfers (except CDN), the following regions correspond to Zone 1 and Zone 2
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                        <strong>
+                                                            Zone 1 – China East 3, China North 3
+                                                        </strong>
+                                                    </li>
+                                                    <li>
+                                                        <strong>
+                                                            Zone 2 – China East 2, China North 2
+                                                        </strong>
+                                                    </li>
+                                                </ul>
+                                            </section>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="pricing-page-section">
+                            <h2>
+                                Support &amp; SLA
+                            </h2>
+                            <ul>
+                                <li>
+                                    We provide technical support for all Azure services released to general availability, including Azure Bastion. Support is available
+                                    through
+                                    <a href="https://support.azure.cn/en-us/support/plans/" aria-label="aLabel" target="_blank">
+                                        Azure Support
+                                    </a>
+                                    .
+                                </li>
+                            </ul>
+                        </div>
+                        <!--BEGIN: Support and service code chunk-->
+                        <!--END: Support and service code chunk-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Documentation Content -->
+    <!-- BEGIN: Footer -->
+    <div class="public_footerpage">
+
+</div>
+    <!--END: Common sidebar-->
+    <link href="../../../../Static/CSS/Localization/zh-cn.css" rel="stylesheet">
+    <script src="/Static//Scripts/lib/jquery-1.12.3.min.js">
+    </script>
+    <script type="text/javascript">
+        function getAntiForgeryToken() {
+            var token =
+                '<input name="__RequestVerificationToken" type="hidden" value="pp_xxKDshbtueTQmfHeAW98thEu6tY1pJ2-jULR15hLqSMGIANieFFwvAOlk-XxiH_alcAFK99NAwcIECWmXpVR8DnvNjMuxo3SsmH4iPvA1" />';
+            token = $(token).val();
+            return token;
+        }
+
+        function setLocaleCookie(localeVal) {
+            var Days = 365 * 10; // Ten year expiration
+            var exp = new Date();
+
+            var hostName = window.location.hostname;
+            var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain + "; path=/;expires=" + exp
+                .toGMTString();
+        }
+
+        setLocaleCookie(window.currentLocale);
+    </script>
+    <script type="text/javascript">
+        var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+        var TECHNICAL_STORAGE = '/blob/tech-content/';
+        var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+        var EnablePricingSync = 'false';
+    </script>
+    <!-- BEGIN: Minified RequireJs -->
+    <script src="../../../../Static/Scripts/global.config.js" type="text/javascript">
+    </script>
+    <script src="../../../../Static/Scripts/require.js" type="text/javascript">
+    </script>
+    <script src="../../../../Static/Scripts/pricing-page-detail.js" type="text/javascript">
+    </script>
+    <!-- END: Minified RequireJs -->
+    <!-- begin JSLL -->
+    <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js">
+    </script>
+    <script type="text/javascript">
+        (function () {
+            var config = {
+                cookiesToCollect: ["_mkto_trk"],
+                syncMuid: true,
+                ix: {
+                    a: true,
+                    g: true
+                },
+                coreData: {
+                    appId: 'AzureCN',
+                    market: 'zh-cn',
+                }
+            };
+            awa.init(config);
+        })();
+    </script>
+    <!-- end JSLL -->
+    <script src="../../../../Static/Scripts/plugins/cookie/jquery.cookie.js" type="text/javascript">
+    </script>
+    <script src="../../../../Static/Scripts/wacndatatracker.js" type="text/javascript">
+    </script>
+    <script src="/common/useCommon.js" type="text/javascript">
+    </script>
+</div>
+
+
+</body></html>

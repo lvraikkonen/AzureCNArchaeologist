@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "review_id": "event-grid-simple-incremental-review",
+  "batch": {
+    "run_name": "event-grid-simple-incremental",
+    "run_directory": "runs/event-grid-simple-incremental",
+    "run_manifest_path": "runs/event-grid-simple-incremental/run.json",
+    "batch_kind": "incremental"
+  },
+  "review_instructions": [
+    "审核决定只能由真实审核人通过本地人工审核台页面记录。",
+    "批准前必须检查同一产品的中文和英文 Frozen HTML、Business Payload、L3a 与 L3b 报告。",
+    "人工决定不能覆盖机器检查失败或阻断。"
+  ],
+  "summary": {
+    "batch_items": 2,
+    "queued_items": 2,
+    "not_queued_items": 0,
+    "queued_products": 1,
+    "bilingual_ready_products": 1
+  },
+  "products": [
+    {
+      "product_key": "event-grid",
+      "display_name": "Event Grid",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "bilingual_ready": true,
+      "review_material_path": "reviews/event-grid-simple-incremental-review/materials/event-grid.md",
+      "items": [
+        {
+          "item_id": "event-grid/zh-cn",
+          "language": "zh-cn",
+          "page_model": "FlexibleContentPage",
+          "semantic_strategy": "simple_static",
+          "frozen_html_path": "runs/event-grid-simple-incremental/inputs/prod-html/zh-cn/pricing/event-grid.html",
+          "payload_path": "runs/event-grid-simple-incremental/payloads/zh-cn/pricing/event-grid.json",
+          "l3a_report_path": "runs/event-grid-simple-incremental/checks/zh-cn/pricing/event-grid.l3a.json",
+          "l3b_report_path": "runs/event-grid-simple-incremental/checks/zh-cn/pricing/event-grid.l3b.json",
+          "machine_results": {
+            "L3a": {
+              "status": "passed",
+              "scope": "完整 Business Payload",
+              "difference_count": 0
+            },
+            "L3b": {
+              "status": "passed",
+              "scope": "全部业务 HTML 字段",
+              "verified_field_count": 4
+            }
+          }
+        },
+        {
+          "item_id": "event-grid/en-us",
+          "language": "en-us",
+          "page_model": "FlexibleContentPage",
+          "semantic_strategy": "simple_static",
+          "frozen_html_path": "runs/event-grid-simple-incremental/inputs/prod-html/en-us/pricing/event-grid.html",
+          "payload_path": "runs/event-grid-simple-incremental/payloads/en-us/pricing/event-grid.json",
+          "l3a_report_path": "runs/event-grid-simple-incremental/checks/en-us/pricing/event-grid.l3a.json",
+          "l3b_report_path": "runs/event-grid-simple-incremental/checks/en-us/pricing/event-grid.l3b.json",
+          "machine_results": {
+            "L3a": {
+              "status": "passed",
+              "scope": "完整 Business Payload",
+              "difference_count": 0
+            },
+            "L3b": {
+              "status": "passed",
+              "scope": "全部业务 HTML 字段",
+              "verified_field_count": 4
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "not_queued_items": []
+}

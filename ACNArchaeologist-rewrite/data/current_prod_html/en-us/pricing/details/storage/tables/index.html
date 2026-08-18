@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=2.0" name="viewport"/>
+    <meta content="Azure, Storage, Table" name="keywords"/>
+    <meta content="Learn about the pricing details of Azure Storage. Azure Storage is a highly durable, available and scalable cloud storage enabling access anytime, anywhere."
+          name="description"/>
+    <title>
+        Azure Cloud Storage_Table - Azure Cloud Computing
+    </title>
+    <link href="/Static/Favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+    <link href="/Static/Favicon/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+    <link href="/Static/Favicon/favicon.ico" rel="icon" type="image/x-icon"/>
+    <link href="/Static/Favicon/manifest.json" rel="manifest"/>
+    <link color="#0078D4" href="/Static/Favicon/safari-pinned-tab.svg" rel="mask-icon"/>
+    <meta content="/Static/Favicon/browserconfig.xml" name="msapplication-config"/>
+    <meta content="#ffffff" name="theme-color"/>
+    <link href="https://azure.microsoft.com/pricing/details/storage/tables/" rel="canonical"/>
+    <!-- BEGIN: Azure UI Style -->
+    <link href="/Static/CSS/azureui.min.css" rel="stylesheet"/>
+    <link href="/Static/CSS/common.min.css" rel="stylesheet"/>
+    <!-- END: Azure UI Style -->
+    <!-- BEGIN: Page Style -->
+    <!-- END: Page Style -->
+    <!-- BEGIN: Minified Page Style -->
+    <link href="/Static/CSS/a05a0e4e99489d7b3cb548e24414e01adf779d77.css" rel="stylesheet"/>
+    <!-- END: Minified Page Style -->
+    <link href="/StaticService/css/service.min.css" rel="stylesheet"/>
+</head>
+<body class="en-us">
+<script>
+    window.requireUrlArgs = "1/6/2020 11:41:53 AM";
+    window.currentLocale = "en-US";
+    window.headerTimestamp = "5/9/2019 9:29:29 AM";
+    window.footerTimestamp = "5/9/2019 9:29:29 AM";
+    window.locFileTimestamp = "5/9/2019 9:29:21 AM";
+
+    window.AcnHeaderFooter = {
+        IsEnableQrCode: true,
+        CurrentLang: window.currentLocale.toLowerCase(),
+    };
+</script>
+<style>
+    @media (min-width: 0) {
+        .acn-header-placeholder {
+            height: 48px;
+            width: 100%;
+        }
+    }
+
+    @media (min-width: 980px) {
+        .acn-header-placeholder {
+            height: 89px;
+            width: 100%;
+        }
+    }
+
+    .acn-header-placeholder {
+        background-color: #1A1A1A;
+    }
+
+    .acn-header-service {
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+</style>
+<div class="acn-header-container">
+    <div class="acn-header-placeholder">
+    </div>
+    <div class="public_headerpage">
+    </div>
+</div>
+<!-- BEGIN: Documentation Content -->
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="bread-crumb hidden-sm hidden-xs">
+                    <ul>
+                        <li>
+         <span>
+         </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="single-page">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+                        <div class="loader">
+                            <i class="circle">
+                            </i>
+                            <i class="circle">
+                            </i>
+                            <i class="circle">
+                            </i>
+                            <i class="circle">
+                            </i>
+                            <i class="circle">
+                            </i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 pure-content">
+                    <div class="select left-navigation-select hidden-md hidden-lg">
+                        <select>
+                            <option selected="selected">
+                                加载中...
+                            </option>
+                        </select>
+                        <span class="icon icon-arrow-top">
+        </span>
+                    </div>
+                    <tags ms.date="09/30/2015" ms.service="en-us-storage-tables" wacn.date="11/27/2015">
+                    </tags>
+                    <style>
+                        .pure-content .technical-azure-selector p a,
+                        .pure-content .technical-azure-selector table a {
+                            background: 0 0;
+                            padding: 0;
+                            margin: 0 6px;
+                            height: 21px;
+                            line-height: 22px;
+                            color: #00a3d9;
+                            float: none;
+                            display: inline;
+                        }
+                    </style>
+                    <div class="hide-info" style="display:none;">
+                        <div class="bg-box">
+                            <div class="cover-bg">
+                            </div>
+                        </div>
+                        <div class="msg-box">
+                            <div class="pricing-unavailable-message">
+                                Not available in the selected region
+                            </div>
+                        </div>
+                    </div>
+                    <div class="common-banner col-top-banner"
+                         data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'/Images/marketing-resource/css/storage.png','imageHeight':'auto'}">
+                        <div class="common-banner-image">
+                            <div class="common-banner-title">
+                                <img src="/Images/marketing-resource/css/storage@2x.png"/>
+                                <h2>
+                                    Tables
+                                </h2>
+                                <h4>
+                                    Offer NoSQL storage for unstructured and semi-structured data
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pricing-page-section">
+                        <div>
+                            <h2>
+                                Pricing Details
+                            </h2>
+                            <p>
+                                Tables offer NoSQL storage for unstructured and semi-structured data—ideal for web applications, address books, and other user data.
+                            </p>
+                            <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
+                                <div class="tab-container-container">
+                                    <div class="tab-container-box">
+                                        <div class="tab-container">
+                                            <div class="dropdown-container software-kind-container" style="display: none">
+                                                <label>
+                                                    OS/Software：
+                                                </label>
+                                                <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+               <span class="selected-item">
+                Tables
+               </span>
+                                                    <i class="icon">
+                                                    </i>
+                                                    <ol class="tab-items">
+                                                        <li class="active">
+                                                            <a data-href="#tabContent1" href="javascript:void(0)" id="home_tables">
+                                                                Tables
+                                                            </a>
+                                                        </li>
+                                                    </ol>
+                                                </div>
+                                                <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
+                                                    <option data-href="#tabContent1" selected="selected" value="Tables">
+                                                        Tables
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="dropdown-container region-container">
+                                                <label>
+                                                    Region：
+                                                </label>
+                                                <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+               <span class="selected-item">
+                China East 3
+               </span>
+                                                    <i class="icon">
+                                                    </i>
+                                                    <ol class="tab-items">
+                                                        <li class="active"><a href="javascript:void(0)" data-href="#east-china3" id="east-china3">China East 3</a></li>
+                                                        <li>
+                                                            <a data-href="#north-china3" href="javascript:void(0)" id="north-china3">
+                                                                China North 3
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a data-href="#east-china2" href="javascript:void(0)" id="east-china2">
+                                                                China East 2
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a data-href="#north-china2" href="javascript:void(0)" id="north-china2">
+                                                                China North 2
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a data-href="#east-china" href="javascript:void(0)" id="east-china">
+                                                                China East
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a data-href="#north-china" href="javascript:void(0)" id="north-china">
+                                                                China North
+                                                            </a>
+                                                        </li>
+                                                    </ol>
+                                                </div>
+                                                <select class="dropdown-select region-box hidden-lg hidden-md" id="region-box">
+                                                    <option selected="selected" data-href="#east-china3"
+                                                                                                 value="east-china3">China East 3
+                                                                                         </option>
+                                                    <option data-href="#north-china3" value="north-china3">
+                                                        China North 3
+                                                    </option>
+                                                    <option data-href="#east-china2" selected="selected" value="east-china2">
+                                                        China East 2
+                                                    </option>
+                                                    <option data-href="#north-china2" value="north-china2">
+                                                        China North 2
+                                                    </option>
+                                                    <option data-href="#east-china" value="east-china">
+                                                        China East
+                                                    </option>
+                                                    <option data-href="#north-china" value="north-china">
+                                                        China North
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="clearfix">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-content">
+                                    <div class="tab-panel" id="tabContent1">
+                                        <div class="tab-content">
+                                            <div class="tab-panel">
+                                                <h4>
+                                                    Tables encrypted with a key that is scoped to the storage account
+                                                </h4>
+                                                <p>
+                                                    Data storage and transaction pricing for account specific key encrypted Tables that relies on a key that is scoped
+                                                    to the storage account to be able to configure customer-managed key for encryption at rest.
+                                                    <a href="https://docs.microsoft.com/en-us/azure/storage/common/storage-service-encryption">
+                                                        Learn more.
+                                                    </a>
+                                                </p>
+                                                <h4>
+                                                    Data Storage Pricing
+                                                </h4>
+                                                <div class="tags-date">
+                                                    <div class="ms-date">
+                                                        *The following prices are tax-inclusive.
+                                                    </div>
+                                                    <br/>
+                                                </div>
+                                                <table cellpadding="0" cellspacing="0" id="tables-data-storage-east3" width="100%">
+                                                    <tr>
+                                                        <!-- <th align="left"><strong>Monthly storage capacity</strong></th> -->
+                                                        <th align="left">
+                                                            <strong>
+                                                                Local Redundant Storage (LRS)
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                Geo-Redundant Storage (GRS)
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                Read/Access Geo-Redundant Storage (RA-GRS)
+                                                            </strong>
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <!-- <td>0 至 1TB<sup>1</sup></td> -->
+                                                        <td>
+                                                            ¥ 0.46/GB
+                                                        </td>
+                                                        <td>
+                                                            ¥ 0.88/GB
+                                                        </td>
+                                                        <td>
+                                                            ¥ 1.15/GB
+                                                        </td>
+                                                    </tr>
+                                                    <!-- <tr>
+                                                                                             <td>1 TB to 50 TB</td>
+                                                                                             <td>¥ 0.57/GB</td>
+                                                                                             <td>￥ 0.80/GB</td>
+                                                                                             <td>￥ 1.02/GB</td>
+                                                                                         </tr>
+                                                                                         <tr>
+                                                                                             <td>More than 50 TB</td>
+                                                                                             <td>¥ 0.54/GB</td>
+                                                                                             <td>￥ 0.74/GB</td>
+                                                                                             <td>￥ 0.94/GB</td>
+                                                                                         </tr> -->
+                                                </table>
+                                                <table cellpadding="0" cellspacing="0" id="tables-data-storage-north3" width="100%">
+                                                    <tr>
+                                                        <!-- <th align="left"><strong>Monthly storage capacity</strong></th> -->
+                                                        <th align="left">
+                                                            <strong>
+                                                                LRS
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                GRS
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                GZRS
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                               RA-GRS
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                               RA-GZRS
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                ZRS
+                                                            </strong>
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <!-- <td>0 至 1TB<sup>1</sup></td> -->
+                                                        <td>
+                                                            ¥ 0.4578/GB
+                                                        </td>
+                                                        <td>
+                                                            ¥ 1.05294/GB
+                                                        </td>
+                                                        <td>
+                                                            ¥ 6.487/GB
+                                                        </td>
+                                                        <td>
+                                                            ¥ 1.316175/GB
+                                                        </td>
+                                                        <td>
+                                                            ¥ 8.185/GB
+                                                        </td>
+                                                        <td>
+                                                            ¥ 0.57189/GB
+                                                        </td>
+                                                    </tr>
+                                                    <!-- <tr>
+                                                                                             <td>1 TB to 50 TB</td>
+                                                                                             <td>¥ 0.57/GB</td>
+                                                                                             <td>￥ 0.80/GB</td>
+                                                                                             <td>￥ 1.02/GB</td>
+                                                                                         </tr>
+                                                                                         <tr>
+                                                                                             <td>More than 50 TB</td>
+                                                                                             <td>¥ 0.54/GB</td>
+                                                                                             <td>￥ 0.74/GB</td>
+                                                                                             <td>￥ 0.94/GB</td>
+                                                                                         </tr> -->
+                                                </table>
+                                                <table cellpadding="0" cellspacing="0" id="tables-data-storage" width="100%">
+                                                    <tr>
+                                                        <!-- <th align="left"><strong>Monthly storage capacity</strong></th> -->
+                                                        <th align="left">
+                                                            <strong>
+                                                                Local Redundant Storage (LRS)
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                Geo-Redundant Storage (GRS)
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                Read/Access Geo-Redundant Storage (RA-GRS)
+                                                            </strong>
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <!-- <td>0 to 1TB<sup>1</sup></td> -->
+                                                        <td>
+                                                            ￥ 0.46/GB
+                                                        </td>
+                                                        <td>
+                                                            ￥ 0.88/GB
+                                                        </td>
+                                                        <td>
+                                                            ￥ 1.15/GB
+                                                        </td>
+                                                    </tr>
+                                                    <!-- <tr>
+                                                                                             <td>1 TB to 50 TB</td>
+                                                                                             <td>¥ 0.57/GB</td>
+                                                                                             <td>￥ 0.80/GB</td>
+                                                                                             <td>￥ 1.02/GB</td>
+                                                                                         </tr>
+                                                                                         <tr>
+                                                                                             <td>More than 50 TB</td>
+                                                                                             <td>¥ 0.54/GB</td>
+                                                                                             <td>￥ 0.74/GB</td>
+                                                                                             <td>￥ 0.94/GB</td>
+                                                                                         </tr> -->
+                                                </table>
+                                                <!-- <p><strong><sup>1 </sup></strong>1 TB = 1,024 GB</p> -->
+                                                <h4>
+                                                    Operation and Data Transmission Pricing
+                                                </h4>
+                                                <div class="tags-date">
+                                                    <div class="ms-date">
+                                                        *The following prices are tax-inclusive.
+                                                    </div>
+                                                    <br/>
+                                                </div>
+                                                <table cellpadding="0" cellspacing="0" id="tables-operations-transfer-east3" width="100%">
+                                                    <tr>
+                                                        <th align="left">
+                                                            <strong>
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                LRS
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                GRS
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                RA-GRS
+                                                            </strong>
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Write Operations (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.2544
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.58512
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.58512
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Batch Write Operations (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.762
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥1.7526
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥1.7526
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Read Operations (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.05088
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.05088
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.05088
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Scan operation (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.918
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.918
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.918
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Delete Operations (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            Free
+                                                        </td>
+                                                        <td align="left">
+                                                            Free
+                                                        </td>
+                                                        <td align="left">
+                                                            Free
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            List Operations (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.918
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.918
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.918
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                <table cellpadding="0" cellspacing="0" id="tables-operations-transfer-north3" width="100%">
+                                                    <tr>
+                                                        <th align="left">
+                                                            <strong>
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                LRS
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                GRS
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                RA-GRS
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                ZRS
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                GZRS
+                                                            </strong>
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Write Operations (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.2544
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.58512
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.58512
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.2544
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.0023
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Batch Write Operations (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.762
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥1.7526
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥1.7526
+                                                        </td>
+                                                        <td align="left">
+                                                            N/A
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.0023
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Read Operations (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.05088
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.05088
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.05088
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.05088
+                                                        </td>
+                                                        <td align="left">
+                                                            N/A
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Scan operation (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.918
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.918
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.918
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥5.838
+                                                        </td>
+                                                        <td align="left">
+                                                            N/A
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Delete Operations (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            Free
+                                                        </td>
+                                                        <td align="left">
+                                                            Free
+                                                        </td>
+                                                        <td align="left">
+                                                            Free
+                                                        </td>
+                                                        <td align="left">
+                                                            Free
+                                                        </td>
+                                                        <td align="left">
+                                                            N/A
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            List Operations (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.918
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.918
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.918
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥0.916
+                                                        </td>
+                                                        <td align="left">
+                                                            N/A
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                <table cellpadding="0" cellspacing="0" id="tables-operations-transfer" width="100%">
+                                                    <tr>
+                                                        <th align="left">
+                                                            <strong>
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                LRS
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                GRS
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                RA-GRS
+                                                            </strong>
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Write Operations (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥ 0.25
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥ 0.5
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥ 0.5
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Batch Write Operations (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥ 0.76
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥ 1.52
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥ 1.52
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Read Operations (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ¥ 0.05
+                                                        </td>
+                                                        <td align="left">
+                                                            ¥ 0.05
+                                                        </td>
+                                                        <td align="left">
+                                                            ¥ 0.05
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Scan operation (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥ 0.92
+                                                        </td>
+                                                        <td align="left">
+                                                            ¥ 0.92
+                                                        </td>
+                                                        <td align="left">
+                                                            ¥ 0.92
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Delete Operations (per 10,000 counted)
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥ 0
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥ 0
+                                                        </td>
+                                                        <td align="left">
+                                                            ￥ 0
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END: TAB-CONTROL -->
+                        </div>
+                    </div>
+                    <div class="pricing-page-section">
+                        <h2>
+                            Support &amp; SLA
+                        </h2>
+                        <p>
+                            If you have any questions or need help, please visit
+                            <a href="https://support.azure.cn/en-us/support/contact" id="storage-contact-page">
+                                Azure
+                                Support
+                            </a>
+                            and select self-help service or any other method to contact us for support.
+                        </p>
+                        <p>
+                            We guarantee that we can successfully process data reading requests from an offsite redundant storage (RA-GRS)
+                            account at least 99.99% of the time (99.9% for the Cold Access Layer), provided that we will retry in the secondary
+                            zone from the data writing failure from the primary zone.
+                        </p>
+                        <p>
+                            We guarantee that we can successfully process data reading from local redundant storage (LRS) and offsite redundant
+                            storage (GRS) accounts at least 99.9% of the time (99% for the Cold Access Layer)
+                        </p>
+                        <p>
+                            We guarantee that we can successfully process data writing requests into onsite redundant storage (LRS) and
+                            geo-redundant storage (GRS) accounts and read and access geo-redundant storage (RA-GRS) accounts at least 99.9% of
+                            the time (99% for the Cold Access Layer).
+                        </p>
+                        <p>
+                            To learn more about the details of our Service Level Agreement, please visit the
+                            <a href="/en-us/support/sla/storage/" id="pricing_storage_sla">
+                                Service Level Agreements
+                            </a>
+                            page.
+                        </p>
+                        <p>
+                            The Managed Disk itself doesn’t provide a Service Level Agreement with financial support. The availability of a
+                            Managed Disk depends on the Service Level Agreement governing the basic storage used and the Virtual Machine it’s
+                            attached to. To learn more about the details of the Service Level Agreement of the Managed Disk, please visit the
+                            <a href="/en-us/support/sla/managed-disks/">
+                                Managed Disk Service Level Agreements
+                            </a>
+                            page.
+                        </p>
+                    </div>
+                    <!--BEGIN: Support and service code chunk-->
+                    <!--
+             -->
+                    <!--END: Support and service code chunk-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END: Documentation Content -->
+<!-- BEGIN: Footer -->
+<div class="public_footerpage">
+</div>
+<!--END: Common sidebar-->
+<link href="/Static/CSS/Localization/en-us.css" rel="stylesheet"/>
+<script src="/Static/Scripts/lib/jquery-1.12.3.min.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+    function getAntiForgeryToken() {
+        var token = '<input name="__RequestVerificationToken" type="hidden" value="joLvmUclJMqFMvEgNKbb8WFwDPMz4obeb900848S_Ny4LKncfPmDS9_APPR-FaFLiVGF5G0X8MmF8ORjZpV-iS8cmG0tuI1pOawIdKMcFmY1" />';
+        token = $(token).val();
+        return token;
+    }
+
+    function setLocaleCookie(localeVal) {
+        var Days = 365 * 10; // Ten year expiration
+        var exp = new Date();
+
+        var hostName = window.location.hostname;
+        var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+        exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+        document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain + "; path=/;expires=" + exp.toGMTString();
+    }
+
+    setLocaleCookie(window.currentLocale);
+</script>
+<script type="text/javascript">
+    var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+    var TECHNICAL_STORAGE = '/blob/tech-content/';
+    var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+    var EnablePricingSync = 'false';
+</script>
+<!-- BEGIN: Minified RequireJs -->
+<script src="/Static/Scripts/global.config.js" type="text/javascript">
+</script>
+<script src="/Static/Scripts/require.js" type="text/javascript">
+</script>
+<script src="/Static/Scripts/pricing-page-detail.js" type="text/javascript">
+</script>
+<!-- <script src='/Static/Scripts/ef3815ab64d6cfe32680fc9c60373db97e92ccc1.js' type='text/javascript'></script> -->
+<!-- END: Minified RequireJs -->
+<!-- begin JSLL -->
+<script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js">
+</script>
+<script type="text/javascript">
+    (function () {
+        var config = {
+            cookiesToCollect: ["_mkto_trk"],
+            syncMuid: true,
+            ix: {
+                a: true,
+                g: true
+            },
+            coreData: {
+                appId: 'AzureCN',
+                market: 'zh-cn',
+            }
+        };
+        awa.init(config);
+    })();
+</script>
+<!-- end JSLL -->
+<script src="/Static/Scripts/plugins/cookie/jquery.cookie.js" type="text/javascript">
+</script>
+<script src="/Static/Scripts/wacndatatracker.js" type="text/javascript">
+</script>
+<script src="/common/useCommon.js" type="text/javascript">
+</script>
+</body>
+</html>

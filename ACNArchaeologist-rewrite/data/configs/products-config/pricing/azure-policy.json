@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "azure-policy",
+  "display_name": "Azure Policy",
+  "slug": "azure-policy",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "management"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/azure-policy/index.html",
+      "url": "https://www.azure.cn/pricing/details/azure-policy/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/azure-policy/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/azure-policy/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "simple_static"
+  }
+}

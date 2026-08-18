@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "route-server",
+  "display_name": "Route Server",
+  "slug": "route-server",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "networking"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/route-server/index.html",
+      "url": "https://www.azure.cn/pricing/details/route-server/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/route-server/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/route-server/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "simple_static"
+  }
+}

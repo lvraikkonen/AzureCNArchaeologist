@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "azure-update-management-center",
+  "display_name": "Azure Update Management Center",
+  "slug": "azure-update-management-center",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "management"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/azure-update-management-center/index.html",
+      "url": "https://www.azure.cn/pricing/details/azure-update-management-center/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/azure-update-management-center/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/azure-update-management-center/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "simple_static"
+  }
+}

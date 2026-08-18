@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "product_key": "iot-hub",
+  "display_name": "Azure IoT Hub",
+  "slug": "iot-hub",
+  "page_model": "FlexibleContentPage",
+  "capability_status": "supported",
+  "catalog_categories": [
+    "iot"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/iot-hub/index.html",
+      "url": "https://www.azure.cn/pricing/details/iot-hub/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/iot-hub/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/iot-hub/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "region_filter"
+  }
+}
