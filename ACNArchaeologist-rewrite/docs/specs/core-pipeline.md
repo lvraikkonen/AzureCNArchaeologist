@@ -1,8 +1,8 @@
 # 核心 Pipeline 实现规格
 
-> 状态：M5 已完成；四种 Strategy 代表产品已真实审核，首个完整 Release 已通过核对
+> 状态：M1 至 M7 已完成；首批 22 产品 v1.0 验收通过
 >
-> 日期：2026-08-16
+> 更新日期：2026-08-18
 >
 > 依据：当前对话中已经确认的范围和规则
 
@@ -42,7 +42,10 @@ data/
 ├── configs/
 │   ├── products-config/       # 211 个历史参考 Product Definition
 │   └── soft-category.json     # 上游可信映射
-├── current_prod_html/         # 上游本次交付的 HTML 快照
+├── current_prod_html/         # 上游本次完整输入快照
+│   ├── soft-category.json     # 上游本次可信映射
+│   ├── zh-cn/                 # 中文 HTML
+│   └── en-us/                 # 英文 HTML
 └── prod-html/                 # source_input 固定后的实际处理输入
 ```
 
@@ -122,7 +125,7 @@ Business Payload 使用确定性的 JSON 格式写入运行目录。写出后，
 ## 7. 运行目录
 
 ```text
-runs/{run_id}/
+runs/{run-name}/
 ├── run.json
 ├── payloads/
 │   ├── zh-cn/
@@ -165,10 +168,11 @@ src/utils/content/    生产抽取使用的内容选择和组装辅助模块
 src/utils/html/       源片段与 Payload 共用的 parser 和唯一规范化入口
 src/machine_checks/   L3a 重复抽取检查与独立 L3b 源内容核对
 src/review/           审核清单、审核材料和只写一次的人工决定
-src/release/          不可覆盖的完整 Release 构建与直接核对
+src/incremental/      上游变化识别、固定增量输入、未结束 Batch 和重新处理状态
+src/release/          不可覆盖的完整与增量 Release 构建及直接核对
 ```
 
-后续的增量处理也应在 `src/` 下建立职责明确的目录。不得把上述目录再整体放入 `src/acn_archaeologist/` 或其他包住全部模块的第二层目录。Strategy 的详细复用边界见 [`strategy-reuse.md`](strategy-reuse.md)。
+上述职责目录不得再整体放入 `src/acn_archaeologist/` 或其他包住全部模块的第二层目录。Strategy 的详细复用边界见 [`strategy-reuse.md`](strategy-reuse.md)。
 
 允许 L3b 与生产抽取共享通用 HTML parser、HTML 规范化函数和只含数据的 Payload 模型；禁止共享决定源片段归属的 Strategy helper。
 

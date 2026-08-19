@@ -1,0 +1,34 @@
+{
+  "title": "Azure 策略定价 - Azure云计算",
+  "metaTitle": "",
+  "metaDescription": "探究 Azure 策略定价，它为 Azure 资源大规模地提供主动控制和管理。",
+  "metaKeywords": "Azure 策略定价, Azure 策略, 控制, 管理, 符合性",
+  "slug": "azure-policy",
+  "language": "zh-cn",
+  "baseContent": "<div class=\"pricing-page-section\"><p> 免费使用 Azure 策略。 </p></div>",
+  "contentGroups": [],
+  "commonSections": [
+    {
+      "sectionType": "Banner",
+      "sectionTitle": "Banner",
+      "content": "<div class=\"common-banner col-top-banner\" data-config=\"{'backgroundColor':'#e3f4ff', 'backgroundImage':'{base_url}/Images/marketing-resource/css/images/service/product_banner_policy.png','imageHeight':'auto'}\"><div class=\"common-banner-image\"><div class=\"common-banner-title\"><img src=\"{base_url}/Images/marketing-resource/media/images/production/policy.svg\"/><h2> Azure 策略 <span> Azure Policy </span></h2><h4> 为 Azure 资源大规模实施公司管理和标准 </h4></div></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "sectionType": "Qa",
+      "sectionTitle": "Qa",
+      "content": "<div class=\"pricing-page-section\"><h2> 支持和服务级别协议 </h2><p> 如有任何疑问或需要帮助，请访问 <a href=\"https://support.azure.cn/zh-cn/support/contact\" id=\"policy-contact-page\"> Azure 支持 </a> 选择自助服务或者其他任何方式联系我们获得支持。 </p><p> Azure 策略是一项免费的服务，因此本身不提供具有财务保障的服务级别协议。若要了解有关我们的服务器级别协议的详细信息，请访问 <a href=\"../../../support/legal/sla/index.html\" id=\"pricing_policy_sla\"> 服务级别协议 </a> 页。 </p></div>",
+      "sortOrder": 2,
+      "isActive": true
+    }
+  ],
+  "pageConfig": {
+    "displayTitle": "Azure 策略定价 - Azure云计算",
+    "pageIcon": "{base_url}/Static/Favicon/favicon.ico",
+    "leftNavigationIdentifier": "azure-policy",
+    "pageType": "Simple",
+    "enableFilters": false,
+    "filtersJsonConfig": "{\"filterDefinitions\":[]}"
+  }
+}

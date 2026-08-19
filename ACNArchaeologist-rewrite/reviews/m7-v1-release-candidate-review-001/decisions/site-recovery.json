@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "review_id": "m7-v1-release-candidate-review-001",
+  "run_name": "m7-full-regression-001",
+  "batch_kind": "standard",
+  "incremental_run_name": null,
+  "product_key": "site-recovery",
+  "reviewer": "claus lv",
+  "decision": "approved",
+  "inspection_scope": {
+    "languages": [
+      "zh-cn",
+      "en-us"
+    ],
+    "materials": [
+      "Frozen HTML",
+      "Business Payload",
+      "L3a 检查报告",
+      "L3b 检查报告"
+    ]
+  },
+  "notes": "Simple页面，页面内容审核通过",
+  "reviewed_items": [
+    {
+      "item_id": "site-recovery/zh-cn",
+      "language": "zh-cn",
+      "frozen_html_path": "data/prod-html/zh-cn/pricing/site-recovery.html",
+      "payload_path": "runs/m7-full-regression-001/payloads/zh-cn/pricing/site-recovery.json",
+      "l3a_report_path": "runs/m7-full-regression-001/checks/zh-cn/pricing/site-recovery.l3a.json",
+      "l3b_report_path": "runs/m7-full-regression-001/checks/zh-cn/pricing/site-recovery.l3b.json"
+    },
+    {
+      "item_id": "site-recovery/en-us",
+      "language": "en-us",
+      "frozen_html_path": "data/prod-html/en-us/pricing/site-recovery.html",
+      "payload_path": "runs/m7-full-regression-001/payloads/en-us/pricing/site-recovery.json",
+      "l3a_report_path": "runs/m7-full-regression-001/checks/en-us/pricing/site-recovery.l3a.json",
+      "l3b_report_path": "runs/m7-full-regression-001/checks/en-us/pricing/site-recovery.l3b.json"
+    }
+  ]
+}

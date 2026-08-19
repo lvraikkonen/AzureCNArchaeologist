@@ -1,0 +1,34 @@
+{
+  "title": "Azure Cloud Services quotes_price budgeting - Azure Cloud Computing",
+  "metaTitle": "",
+  "metaDescription": "Learn more about the pricing details for Azure Cloud Services application and API deployment. Azure Cloud Services are divided into two types: A-series and D-series.",
+  "metaKeywords": "Azure Cloud Services, Cloud Services, Pricing page",
+  "slug": "azure-migrate",
+  "language": "en-us",
+  "baseContent": "<h2> Pricing Details </h2><h3> Azure Migrate and Azure Migrate tools are available at no additional charge. </h3><div class=\"tab-content\"><table cellpadding=\"0\" cellspacing=\"0\" class=\"speech-services-table\" id=\"cognitive-services-table-speech-services-neural\" width=\"100%\"><tr><th align=\"left\" style=\"width: 40%;\"><strong> Tool </strong></th><th align=\"left\" style=\"width: 20%;\"><strong> Scenario </strong></th><th align=\"left\" style=\"width: 20%;\"><strong> Pricing </strong></th></tr><tr><td rowspan=\"3\"> Azure Migrate </td><td> Server Assessment and Migration </td><td> Free <sup> 1 </sup></td></tr><tr><td> Database Assessment and Migration </td><td> Free <sup> 2 </sup></td></tr><td> Web App Assessment and Migration </td><td> Free <sup></sup></td></table><p><sup> 1 </sup> Dependency visualization is free for the first 180 days from the day of associating a Log Analytics workspace with Server Assessment. After 180 days, standard <a href=\"https://www.azure.cn/en-us/pricing/details/monitor/\"> Log Analytics </a> charges will apply. The use of any solution other than Service Map within this workspace is not free and will incur standard Log <a href=\"https://www.azure.cn/en-us/pricing/details/monitor/\"> Log Analytics </a> charges. Azure Migrate: Server migration is free for first 180 days for each machine. After 180 days, $25/month per instance replicated will be applied. Note that for the first 180 days, you will not incur any Server Migration licensing charges, but you might incur charges for Azure Storage, storage transactions and data transfer during replication. </p><p><sup> 2 </sup> Database Migration Service (DMS) is free for first 180 days, learn more about <a href=\"https://www.azure.cn/en-us/pricing/details/database-migration/\"> DMS </a> pricing. </p></div>",
+  "contentGroups": [],
+  "commonSections": [
+    {
+      "sectionType": "Banner",
+      "sectionTitle": "Banner",
+      "content": "<div class=\"common-banner col-top-banner\" data-config=\"{'backgroundColor':'#e3f4ff', 'backgroundImage':'{base_url}/Images/marketing-resource/css/cloud_services.png','imageHeight':'auto'}\"><div class=\"common-banner-image\"><div class=\"common-banner-title\"><!-- <img src=\"{base_url}/Images/marketing-resource/css/cloud-services@2x.png\" /> --><div class=\"svg\"><img src=\"{base_url}/Images/marketing-resource/media/images/production/AzureMigratelogo.svg\"/></div><h2> Azure Migrate </h2></div></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "sectionType": "ProductDescription",
+      "sectionTitle": "ProductDescription",
+      "content": "<ul class=\"ex_ul_container\"><li><h2> Discover, assess, right-size, and migrate your on-premises virtual machines (VMs) to Azure </h2></li><li><ul id=\"in_ul_container\"><li> Azure Migrate helps you discover, assess, and migrate applications, infrastructure, and data from your on-premises environments to Azure. You can centrally track progress of your migration journey across multiple Microsoft and Independent Software Vendor (ISV) tools. </li></ul></li></ul>",
+      "sortOrder": 2,
+      "isActive": true
+    }
+  ],
+  "pageConfig": {
+    "displayTitle": "Azure Cloud Services quotes_price budgeting - Azure Cloud Computing",
+    "pageIcon": "{base_url}/Static/Favicon/favicon.ico",
+    "leftNavigationIdentifier": "en-us-cloud-services1",
+    "pageType": "Simple",
+    "enableFilters": false,
+    "filtersJsonConfig": "{\"filterDefinitions\":[]}"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "title": "Azure 防火墙 - Azure 云计算",
+  "metaTitle": "",
+  "metaDescription": "Azure 防火墙定价详情页面；该防火墙是一款云和本地网络安全和分析工具。",
+  "metaKeywords": "Azure, Azure 防火墙, 定价",
+  "slug": "azure-firewall",
+  "language": "zh-cn",
+  "baseContent": "",
+  "contentGroups": [
+    {
+      "groupName": "中国北部 3",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china3\"}]",
+      "content": "<div class=\"tab-content\"><!-- BEGIN: TAB-CONTENT-1 --><div class=\"tab-panel\" id=\"tabContent1\"><!-- BEGIN: Tab level 2 navigator 2 --><!-- BEGIN: Tab level 2 content 3 --><ul class=\"tab-nav\" style=\"display:none\"><li class=\"active\"><a data-href=\"#tabContent2\" data-toggle=\"tab\" href=\"javascript:void(0)\" id=\"gpv1\"> 常规用途 v1 </a></li></ul><div class=\"tab-content\"><!-- BEGIN: TAB-CONTAINER-1 --><div class=\"tab-panel\" id=\"tabContent1\"><!-- BEGIN: Table1-Content--><div class=\"scroll-table\" style=\"display: block;\"><h2> Azure 防火墙 </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> 基本 </strong></th><th align=\"left\"><strong> 标准 </strong></th><th align=\"left\"><strong> 高级 </strong></th></tr><tr><td> 部署 </td><td> ￥4.02 每部署小时 </td><td> ￥12.72 每部署小时 </td><td> ￥17.808 每部署小时 </td></tr><tr><td> 数据处理 </td><td> ￥0.66 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td></tr><tr><td> Capacity Unit </td><td> N/A </td><td> ￥0.712 per Capacity Unit Hour </td><td> ￥1.119 per Capacity Unit Hour </td></tr></table></div><div class=\"scroll-table\" style=\"display: block;\"><h2> 具有安全虚拟中心的 Azure 防火墙 </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard2-n3\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> 基本 </strong></th><th align=\"left\"><strong> 标准 </strong></th><th align=\"left\"><strong> 高级 </strong></th></tr><tr><td> 安全虚拟中心部署 </td><td> ￥2.5122 每部署小时 </td><td> ￥12.72 每部署小时 </td><td> ￥17.808 每部署小时 </td></tr><tr><td> 安全虚拟中心已处理的数据 </td><td> ￥0.4134 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td></tr><tr><td> Secured Virtual Hubs Capacity Unit </td><td> N/A </td><td> ￥0.712 per Capacity Unit Hour </td><td> ￥1.119 per Capacity Unit Hour </td></tr></table></div></div><!-- END: TAB-CONTAINER-1 --></div></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "groupName": "中国东部 2",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"east-china2\"}]",
+      "content": "<div class=\"tab-content\"><!-- BEGIN: TAB-CONTENT-1 --><div class=\"tab-panel\" id=\"tabContent1\"><!-- BEGIN: Tab level 2 navigator 2 --><!-- BEGIN: Tab level 2 content 3 --><ul class=\"tab-nav\" style=\"display:none\"><li class=\"active\"><a data-href=\"#tabContent2\" data-toggle=\"tab\" href=\"javascript:void(0)\" id=\"gpv1\"> 常规用途 v1 </a></li></ul><div class=\"tab-content\"><!-- BEGIN: TAB-CONTAINER-1 --><div class=\"tab-panel\" id=\"tabContent1\"><!-- BEGIN: Table1-Content--><div class=\"scroll-table\" style=\"display: block;\"><h2> Azure 防火墙 </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> 基本 </strong></th><th align=\"left\"><strong> 标准 </strong></th><th align=\"left\"><strong> 高级 </strong></th></tr><tr><td> 部署 </td><td> ￥4.02 每部署小时 </td><td> ￥12.72 每部署小时 </td><td> ￥17.808 每部署小时 </td></tr><tr><td> 数据处理 </td><td> ￥0.66 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td></tr><tr><td> Capacity Unit </td><td> N/A </td><td> ￥0.712 per Capacity Unit Hour </td><td> ￥1.119 per Capacity Unit Hour </td></tr></table></div><div class=\"scroll-table\" style=\"display: block;\"><h2> 具有安全虚拟中心的 Azure 防火墙 </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard2\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> 基本 </strong></th><th align=\"left\"><strong> 标准 </strong></th><th align=\"left\"><strong> 高级 </strong></th></tr><tr><td> 安全虚拟中心部署 </td><td> ￥2.5122 每部署小时 </td><td> ￥12.72 每部署小时 </td><td> ￥17.808 每部署小时 </td></tr><tr><td> 安全虚拟中心已处理的数据 </td><td> ￥0.4134 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td></tr></table></div></div><!-- END: TAB-CONTAINER-1 --></div></div></div>",
+      "sortOrder": 2,
+      "isActive": true
+    },
+    {
+      "groupName": "中国北部 2",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china2\"}]",
+      "content": "<div class=\"tab-content\"><!-- BEGIN: TAB-CONTENT-1 --><div class=\"tab-panel\" id=\"tabContent1\"><!-- BEGIN: Tab level 2 navigator 2 --><!-- BEGIN: Tab level 2 content 3 --><ul class=\"tab-nav\" style=\"display:none\"><li class=\"active\"><a data-href=\"#tabContent2\" data-toggle=\"tab\" href=\"javascript:void(0)\" id=\"gpv1\"> 常规用途 v1 </a></li></ul><div class=\"tab-content\"><!-- BEGIN: TAB-CONTAINER-1 --><div class=\"tab-panel\" id=\"tabContent1\"><!-- BEGIN: Table1-Content--><div class=\"scroll-table\" style=\"display: block;\"><h2> Azure 防火墙 </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> 基本 </strong></th><th align=\"left\"><strong> 标准 </strong></th><th align=\"left\"><strong> 高级 </strong></th></tr><tr><td> 部署 </td><td> ￥4.02 每部署小时 </td><td> ￥12.72 每部署小时 </td><td> ￥17.808 每部署小时 </td></tr><tr><td> 数据处理 </td><td> ￥0.66 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td></tr><tr><td> Capacity Unit </td><td> N/A </td><td> ￥0.712 per Capacity Unit Hour </td><td> ￥1.119 per Capacity Unit Hour </td></tr></table></div><div class=\"scroll-table\" style=\"display: block;\"><h2> 具有安全虚拟中心的 Azure 防火墙 </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard2\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> 基本 </strong></th><th align=\"left\"><strong> 标准 </strong></th><th align=\"left\"><strong> 高级 </strong></th></tr><tr><td> 安全虚拟中心部署 </td><td> ￥2.5122 每部署小时 </td><td> ￥12.72 每部署小时 </td><td> ￥17.808 每部署小时 </td></tr><tr><td> 安全虚拟中心已处理的数据 </td><td> ￥0.4134 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td></tr></table></div></div><!-- END: TAB-CONTAINER-1 --></div></div></div>",
+      "sortOrder": 3,
+      "isActive": true
+    },
+    {
+      "groupName": "中国东部",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"east-china\"}]",
+      "content": "<div class=\"tab-content\"><!-- BEGIN: TAB-CONTENT-1 --><div class=\"tab-panel\" id=\"tabContent1\"><!-- BEGIN: Tab level 2 navigator 2 --><!-- BEGIN: Tab level 2 content 3 --><ul class=\"tab-nav\" style=\"display:none\"><li class=\"active\"><a data-href=\"#tabContent2\" data-toggle=\"tab\" href=\"javascript:void(0)\" id=\"gpv1\"> 常规用途 v1 </a></li></ul><div class=\"tab-content\"><!-- BEGIN: TAB-CONTAINER-1 --><div class=\"tab-panel\" id=\"tabContent1\"><!-- BEGIN: Table1-Content--><div class=\"scroll-table\" style=\"display: block;\"><h2> Azure 防火墙 </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> 基本 </strong></th><th align=\"left\"><strong> 标准 </strong></th><th align=\"left\"><strong> 高级 </strong></th></tr><tr><td> 部署 </td><td> ￥4.02 每部署小时 </td><td> ￥12.72 每部署小时 </td><td> ￥17.808 每部署小时 </td></tr><tr><td> 数据处理 </td><td> ￥0.66 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td></tr><tr><td> Capacity Unit </td><td> N/A </td><td> ￥0.712 per Capacity Unit Hour </td><td> ￥1.119 per Capacity Unit Hour </td></tr></table></div><div class=\"scroll-table\" style=\"display: block;\"><h2> 具有安全虚拟中心的 Azure 防火墙 </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard2\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> 基本 </strong></th><th align=\"left\"><strong> 标准 </strong></th><th align=\"left\"><strong> 高级 </strong></th></tr><tr><td> 安全虚拟中心部署 </td><td> ￥2.5122 每部署小时 </td><td> ￥12.72 每部署小时 </td><td> ￥17.808 每部署小时 </td></tr><tr><td> 安全虚拟中心已处理的数据 </td><td> ￥0.4134 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td></tr></table></div></div><!-- END: TAB-CONTAINER-1 --></div></div></div>",
+      "sortOrder": 4,
+      "isActive": true
+    },
+    {
+      "groupName": "中国北部",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china\"}]",
+      "content": "<div class=\"tab-content\"><!-- BEGIN: TAB-CONTENT-1 --><div class=\"tab-panel\" id=\"tabContent1\"><!-- BEGIN: Tab level 2 navigator 2 --><!-- BEGIN: Tab level 2 content 3 --><ul class=\"tab-nav\" style=\"display:none\"><li class=\"active\"><a data-href=\"#tabContent2\" data-toggle=\"tab\" href=\"javascript:void(0)\" id=\"gpv1\"> 常规用途 v1 </a></li></ul><div class=\"tab-content\"><!-- BEGIN: TAB-CONTAINER-1 --><div class=\"tab-panel\" id=\"tabContent1\"><!-- BEGIN: Table1-Content--><div class=\"scroll-table\" style=\"display: block;\"><h2> Azure 防火墙 </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> 基本 </strong></th><th align=\"left\"><strong> 标准 </strong></th><th align=\"left\"><strong> 高级 </strong></th></tr><tr><td> 部署 </td><td> ￥4.02 每部署小时 </td><td> ￥12.72 每部署小时 </td><td> ￥17.808 每部署小时 </td></tr><tr><td> 数据处理 </td><td> ￥0.66 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td></tr><tr><td> Capacity Unit </td><td> N/A </td><td> ￥0.712 per Capacity Unit Hour </td><td> ￥1.119 per Capacity Unit Hour </td></tr></table></div><div class=\"scroll-table\" style=\"display: block;\"><h2> 具有安全虚拟中心的 Azure 防火墙 </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard2\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> 基本 </strong></th><th align=\"left\"><strong> 标准 </strong></th><th align=\"left\"><strong> 高级 </strong></th></tr><tr><td> 安全虚拟中心部署 </td><td> ￥2.5122 每部署小时 </td><td> ￥12.72 每部署小时 </td><td> ￥17.808 每部署小时 </td></tr><tr><td> 安全虚拟中心已处理的数据 </td><td> ￥0.4134 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td><td> ￥0.1632 每已处理 GB </td></tr></table></div></div><!-- END: TAB-CONTAINER-1 --></div></div></div>",
+      "sortOrder": 5,
+      "isActive": true
+    }
+  ],
+  "commonSections": [
+    {
+      "sectionType": "Banner",
+      "sectionTitle": "Banner",
+      "content": "<div class=\"common-banner col-top-banner\" data-config=\"{'backgroundColor':'#e3f4ff', 'backgroundImage':'{base_url}/Images/marketing-resource/css/azure-firewall_banner.png','imageHeight':'auto'}\"><div class=\"common-banner-image\"><div class=\"common-banner-title\"><img src=\"{base_url}/Images/marketing-resource/css/azure-firewall.svg\"/><h2> Azure 防火墙 <span> Azure Firewall </span></h2><h4> 云和本地网络安全，用于保护 Azure 虚拟网络资源 </h4><div class=\"updatetime\">更新时间：2026年03月11日</div></div></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "sectionType": "ProductDescription",
+      "sectionTitle": "ProductDescription",
+      "content": "<ul class=\"ul\"><li><h2> 本机防火墙功能，同时内置有高可用性、提供无限的云扩展性且无需维护 </h2></li><li><p> Azure Firewall is a managed cloud-based network security service that protects your Azure Virtual Network resources. Azure Firewall can be seamlessly deployed, requires zero maintenance, and is highly available with unrestricted cloud scalability. Setting up an Azure Firewall is easy; with billing comprised of a fixed and variable fee. </p></li></ul>",
+      "sortOrder": 2,
+      "isActive": true
+    },
+    {
+      "sectionType": "Qa",
+      "sectionTitle": "Qa",
+      "content": "<div class=\"more-detail\"><h2> 常见问题 </h2><em> 全部展开 </em><ul><li><i class=\"icon icon-plus\"></i><div><a id=\"ih-que-q1\"> 是否不足 1 小时按 1 小时计费？ </a><section><p> 可以。不足 1 小时按 1 小时计费。 </p></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"ih-que-q2\"> 除了 Azure 防火墙费用外，还收取任何计算费用吗？ </a><section><p> 不。你可像往常一样为其他资源付费。不就 Azure 防火墙收取任何计算费用。 </p></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"ih-que-q3\"> 此服务如何计费？ </a><section><p> 防火墙开发（不限规模）将按小时收取费用（费率固定）。此外，每次开发将针对防火墙处理的数据收取数据处理费用。 </p></section></div></li></ul></div><div class=\"pricing-page-section\"><h2> 支持和服务级别协议 </h2><p> 如有任何疑问或需要帮助，请访问 <a href=\"https://support.azure.cn/zh-cn/support/contact/\" id=\"iot-contact-page\"> Azure 支持 </a> 选择自助服务或者其他任何方式联系我们获得支持。 </p><p> 我们保证 Azure 防火墙至少在 99.95% 的时间可用。若要了解有关我们的服务器级别协议的详细信息，请访问 <a href=\"../../../support/sla/azure-firewall/index.html\" id=\"pricing_azure-firewall_sla\"> 服务级别协议 </a> 页。 </p></div>",
+      "sortOrder": 3,
+      "isActive": true
+    }
+  ],
+  "pageConfig": {
+    "displayTitle": "Azure 防火墙 - Azure 云计算",
+    "pageIcon": "{base_url}/Static/Favicon/favicon.ico",
+    "leftNavigationIdentifier": "azure-firewall",
+    "pageType": "RegionFilter",
+    "enableFilters": true,
+    "filtersJsonConfig": "{\"filterDefinitions\":[{\"filterKey\":\"region\",\"filterType\":\"dropdown\",\"displayName\":\"地区\",\"options\":[{\"value\":\"north-china3\",\"label\":\"中国北部 3\",\"href\":\"#north-china3\",\"isActive\":true,\"isDefault\":true},{\"value\":\"east-china2\",\"label\":\"中国东部 2\",\"href\":\"#east-china2\",\"isActive\":true},{\"value\":\"north-china2\",\"label\":\"中国北部 2\",\"href\":\"#north-china2\",\"isActive\":true},{\"value\":\"east-china\",\"label\":\"中国东部\",\"href\":\"#east-china\",\"isActive\":true},{\"value\":\"north-china\",\"label\":\"中国北部\",\"href\":\"#north-china\",\"isActive\":true}]}]}"
+  }
+}

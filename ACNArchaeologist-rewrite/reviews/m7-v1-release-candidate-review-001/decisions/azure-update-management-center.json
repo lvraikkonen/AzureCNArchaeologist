@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "review_id": "m7-v1-release-candidate-review-001",
+  "run_name": "m7-full-regression-001",
+  "batch_kind": "standard",
+  "incremental_run_name": null,
+  "product_key": "azure-update-management-center",
+  "reviewer": "claus lv",
+  "decision": "approved",
+  "inspection_scope": {
+    "languages": [
+      "zh-cn",
+      "en-us"
+    ],
+    "materials": [
+      "Frozen HTML",
+      "Business Payload",
+      "L3a 检查报告",
+      "L3b 检查报告"
+    ]
+  },
+  "notes": "Simple页面，页面内容审核通过",
+  "reviewed_items": [
+    {
+      "item_id": "azure-update-management-center/zh-cn",
+      "language": "zh-cn",
+      "frozen_html_path": "data/prod-html/zh-cn/pricing/azure-update-management-center.html",
+      "payload_path": "runs/m7-full-regression-001/payloads/zh-cn/pricing/azure-update-management-center.json",
+      "l3a_report_path": "runs/m7-full-regression-001/checks/zh-cn/pricing/azure-update-management-center.l3a.json",
+      "l3b_report_path": "runs/m7-full-regression-001/checks/zh-cn/pricing/azure-update-management-center.l3b.json"
+    },
+    {
+      "item_id": "azure-update-management-center/en-us",
+      "language": "en-us",
+      "frozen_html_path": "data/prod-html/en-us/pricing/azure-update-management-center.html",
+      "payload_path": "runs/m7-full-regression-001/payloads/en-us/pricing/azure-update-management-center.json",
+      "l3a_report_path": "runs/m7-full-regression-001/checks/en-us/pricing/azure-update-management-center.l3a.json",
+      "l3b_report_path": "runs/m7-full-regression-001/checks/en-us/pricing/azure-update-management-center.l3b.json"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "title": "Azure Update Manager",
+  "metaTitle": "",
+  "metaDescription": "Learn more about the pricing details of Azure Key Vault. With Azure Key Vault, Azure users can protect and control the encryption keys and other secrets used by cloud applications and services. A 1RMB Trial gets you RMB1,500 in service credits. You can also make a direct purchase and become a Pay-in-Advance Azure customer to enjoy a Service Level Agreement of up to 99.99%.",
+  "metaKeywords": "Azure, Key Vault, and Pricing",
+  "slug": "azure-update-management-center",
+  "language": "en-us",
+  "baseContent": "<div class=\"technical-azure-selector tab-control-selector\"><div class=\"tab-control-container tab-active\"><h2> Azure Update Manager </h2><p>For Arc-enabled servers, Azure Update Manager is charged at a daily prorated value of ￥1.03/server/day which amounts to ￥31.8/server/month (assuming 31 days of connected usage). A machine enabled by Azure Arc would only be charged for days when it’s connected to Arc and managed by Azure Update Manager. Learn more about when <a href=\"https://learn.microsoft.com/en-us/azure/update-manager/update-manager-faq#when-is-an-arc-enabled-server-considered-managed-by-azure-update-manager\" target=\"_blank\">a machine is managed by Azure Update Manager.</a></p><p> Click here to learn more <a href=\"https://learn.microsoft.com/en-us/azure/update-manager/update-manager-faq#pricing\" target=\"_blank\">Azure Update Manager FAQ | Microsoft Learn.</a></p><br/><br/><table cellpadding=\"0\" cellspacing=\"0\" class=\"table-col6\" width=\"100%\"><tr><th align=\"left\"><strong> Service </strong></th><th align=\"left\"><strong> Azure </strong></th><th align=\"left\"><strong> Arc-enabled </strong></th></tr><tr><td> Azure Update Manager </td><td> Free </td><td> ￥31.8/server/month </td></tr></table></div></div>",
+  "contentGroups": [],
+  "commonSections": [
+    {
+      "sectionType": "Banner",
+      "sectionTitle": "Banner",
+      "content": "<div class=\"common-banner col-top-banner\" data-config=\"{'backgroundColor':'#e3f4ff', 'backgroundImage':'{base_url}/Images/marketing-resource/media/images/production/virtual_machine.png','imageHeight':'auto'}\"><div class=\"common-banner-image\"><div class=\"common-banner-title\"><img src=\"{base_url}/Images/02846-icon-service-Update-Management-Center.svg\"/><h2> Azure Update Manager <span></span></h2><h4> Azure Update Manager is a service that helps you manage updates for all your machines, including those running Windows and Linux, across Azure, on-premises, and other cloud platforms. </h4></div></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "sectionType": "Qa",
+      "sectionTitle": "Qa",
+      "content": "<div class=\"more-detail\"><h2> FAQ </h2><em> Expand all </em><ul><li><i class=\"icon icon-plus\"></i><div><a id=\"key-vault-question-stored\"> How is Azure Update Manager price calculated for Arc-enabled servers? </a><section><p>For Arc-enabled servers, Azure Update Manager is charged $5/server/month (assuming 31 days of connected usage). It's charged at a daily prorated value of $0.162/server/day. An Arc-enabled machine would only be charged for the days when it's connected and managed by Azure Update Manager.</p></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"key-vault-question-stored2\">When is an Arc-enabled server considered managed by Azure Update Manager?</a><section><p>An Arc-enabled server is considered managed by Azure Update Manager for days on which the machine fulfills the following conditions:</p><ul><li>Connected status for Arc at any time during the day.</li><li>An update operation (patched on demand or through a scheduled job, assessed on demand or through periodic assessment) is triggered on it, or it's associated with a schedule.</li></ul></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"key-vault-question-stored3\"> Are there scenarios in which Arc-enabled Server isn't charged for Azure Update Manager? </a><section><p>An Arc-enabled server managed with Azure Update Manager is not charged in following scenarios:</p><ul><li>If the machine is enabled for delivery of Extended Security Updates (ESUs) enabled by Azure Arc.</li><li>Microsoft Defender for Servers Plan 2 is enabled for the subscription hosting the Arc-enabled server.</li></ul></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"key-vault-question-stored4\"> Will I be charged if I move from Automation Update Management to Update Manager? </a><section><p>Customers will not be charged if they onboard their Arc enabled servers to the same subscription that had Automation Update Management solution enabled on it (as of September 1, 2023), until the LA agent is retired.</p></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"key-vault-question-operations\"> I'm a Defender for Server customer and use update recommendations powered by Azure Update Manager namely \"periodic assessment should be enabled on your machines\" and \"system updates should be installed on your machines\". Would I be charged for Azure Update Manager?</a><section><p> If you have purchased a Defender for Servers Plan 2, then you won't have to pay to remediate the unhealthy resources for the above two recommendations. But if you're using any other Defender for server plan for your Arc machines, then you would be charged for those machines at the daily prorated $0.162/server by Azure Update Manager.</p></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"key-vault-question-billed\"> Is Azure Update Manager chargeable on Azure Stack HCI? </a><section><p> Azure Update Manager is not charged for machines hosted on Azure Stack HCI clusters that have been enabled for Azure benefits and Azure Arc VM management.<a href=\"https://learn.microsoft.com/en-us/azure-stack/hci/manage/azure-benefits?tabs=wac\" target=\"_blank\">Learn more</a></p></section></div></li></ul></div>",
+      "sortOrder": 2,
+      "isActive": true
+    }
+  ],
+  "pageConfig": {
+    "displayTitle": "Azure Update Manager",
+    "pageIcon": "{base_url}/Static/Favicon/favicon.ico",
+    "leftNavigationIdentifier": "en-us-azure-update-management-center",
+    "pageType": "Simple",
+    "enableFilters": false,
+    "filtersJsonConfig": "{\"filterDefinitions\":[]}"
+  }
+}

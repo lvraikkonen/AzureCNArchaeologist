@@ -1,0 +1,98 @@
+{
+  "title": "定价 - Azure 数据库迁移服务 - Azure 云计算",
+  "metaTitle": "",
+  "metaDescription": "Azure 数据库迁移服务使用功能全面而操作简单的自我引导式迁移流程，将 SQL Server 和 Oracle 数据库轻松、安全地迁移到云，从而降低云迁移的复杂度。",
+  "metaKeywords": "数据库迁移, microsoft azure, azure",
+  "slug": "database-migration",
+  "language": "zh-cn",
+  "baseContent": "",
+  "contentGroups": [
+    {
+      "groupName": "中国东部 2 - 标准",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"east-china2\"},{\"filterKey\":\"category\",\"matchValues\":\"tabContent1-1\"}]",
+      "content": "<div class=\"tab-panel\" id=\"tabContent1-1\"><h3> 标准 </h3><p> 大多数中小企业工作负载（仅支持脱机迁移） </p><div class=\"scroll-table\" style=\"display:block;\"><h3> 计算 </h3><p> 在虚拟核心 (vCore) 中预配计算。vCore 表示逻辑 CPU。 </p><div class=\"tags-date\"><div class=\"ms-date\"> *以下价格均为含税价格。 </div><br/><div class=\"ms-date\"> *每月价格估算基于每个月 31 天的使用量。 </div><br/></div><table cellpadding=\"0\" cellspacing=\"0\" id=\"database-migration-standard-compute\" width=\"100%\"><tr><th align=\"left\"><strong> vCore </strong></th><th align=\"left\"><strong> 价格 <sup> * </sup></strong></th></tr><tr><td> 1 </td><td> 免费 </td></tr><tr><td> 2 </td><td> 免费 </td></tr><tr><td> 4 </td><td> 免费 </td></tr></table></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "groupName": "中国东部 2 - 高级",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"east-china2\"},{\"filterKey\":\"category\",\"matchValues\":\"tabContent1-2\"}]",
+      "content": "<div class=\"tab-panel\" id=\"tabContent1-2\"><div><h3> 高级 </h3><p> 大型或业务关键型工作负载（支持联机迁移、脱机迁移和较快的迁移速度） </p><div class=\"scroll-table\" style=\"display:block;\"><h3> 计算 </h3><p> 在虚拟核心 (vCore) 中预配计算。vCore 表示逻辑 CPU。 </p><div class=\"tags-date\"><div class=\"ms-date\"> *以下价格均为含税价格。 </div><br/><div class=\"ms-date\"> *每月价格估算基于每个月 31 天的使用量。 </div></div><table cellpadding=\"0\" cellspacing=\"0\" id=\"database-migration-premium-compute\" width=\"100%\"><tr><th align=\"left\"><strong> VCore </strong></th><th align=\"left\"><strong> 价格 </strong></th></tr><tr><td> 4 </td><td> ￥ 1.9/小时 <br/> (约￥ 1,413.6/月) </td></tr></table><div class=\"tags-date\"><div class=\"ms-date\"><sup> * </sup> 自 DMS 服务创建之日起可免费使用 DMS 高级 4-vCore 六个月（183 天），之后将产生费用。 </div></div></div><!-- END: Table1-Content--></div></div>",
+      "sortOrder": 2,
+      "isActive": true
+    },
+    {
+      "groupName": "中国北部 2 - 标准",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china2\"},{\"filterKey\":\"category\",\"matchValues\":\"tabContent1-1\"}]",
+      "content": "<div class=\"tab-panel\" id=\"tabContent1-1\"><h3> 标准 </h3><p> 大多数中小企业工作负载（仅支持脱机迁移） </p></div>",
+      "sortOrder": 3,
+      "isActive": true
+    },
+    {
+      "groupName": "中国北部 2 - 高级",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china2\"},{\"filterKey\":\"category\",\"matchValues\":\"tabContent1-2\"}]",
+      "content": "<div class=\"tab-panel\" id=\"tabContent1-2\"><div><h3> 高级 </h3><p> 大型或业务关键型工作负载（支持联机迁移、脱机迁移和较快的迁移速度） </p><!-- END: Table1-Content--></div></div>",
+      "sortOrder": 4,
+      "isActive": true
+    },
+    {
+      "groupName": "中国东部 - 标准",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"east-china\"},{\"filterKey\":\"category\",\"matchValues\":\"tabContent1-1\"}]",
+      "content": "<div class=\"tab-panel\" id=\"tabContent1-1\"><h3> 标准 </h3><p> 大多数中小企业工作负载（仅支持脱机迁移） </p></div>",
+      "sortOrder": 5,
+      "isActive": true
+    },
+    {
+      "groupName": "中国东部 - 高级",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"east-china\"},{\"filterKey\":\"category\",\"matchValues\":\"tabContent1-2\"}]",
+      "content": "<div class=\"tab-panel\" id=\"tabContent1-2\"><div><h3> 高级 </h3><p> 大型或业务关键型工作负载（支持联机迁移、脱机迁移和较快的迁移速度） </p><!-- END: Table1-Content--></div></div>",
+      "sortOrder": 6,
+      "isActive": true
+    },
+    {
+      "groupName": "中国北部 - 标准",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china\"},{\"filterKey\":\"category\",\"matchValues\":\"tabContent1-1\"}]",
+      "content": "<div class=\"tab-panel\" id=\"tabContent1-1\"><h3> 标准 </h3><p> 大多数中小企业工作负载（仅支持脱机迁移） </p></div>",
+      "sortOrder": 7,
+      "isActive": true
+    },
+    {
+      "groupName": "中国北部 - 高级",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china\"},{\"filterKey\":\"category\",\"matchValues\":\"tabContent1-2\"}]",
+      "content": "<div class=\"tab-panel\" id=\"tabContent1-2\"><div><h3> 高级 </h3><p> 大型或业务关键型工作负载（支持联机迁移、脱机迁移和较快的迁移速度） </p><!-- END: Table1-Content--></div></div>",
+      "sortOrder": 8,
+      "isActive": true
+    }
+  ],
+  "commonSections": [
+    {
+      "sectionType": "Banner",
+      "sectionTitle": "Banner",
+      "content": "<div class=\"common-banner col-top-banner\" data-config=\"{'backgroundColor':'#e3f4ff', 'backgroundImage':'{base_url}/Images/marketing-resource/css/database-migration_banner.png','imageHeight':'auto'}\"><div class=\"common-banner-image\"><div class=\"common-banner-title\"><img src=\"{base_url}/Images/marketing-resource/css/database-migration_icon@2x.svg\"/><h2> Azure 数据库迁移服务 <span> Azure Database Migration Service </span></h2><h4> 加速转换到云 </h4></div></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "sectionType": "ProductDescription",
+      "sectionTitle": "ProductDescription",
+      "content": "<div class=\"pricing-page-section\"><p> Azure 数据库迁移服务 (DMS) 是一项完全托管的服务，用于迁移操作数据库和数据仓库。 </p><p> 标准定价层支持脱机（又称为“一次性”）迁移。标准定价层提供 1-vCore、2-vCore 和 4-vCore 选项，已正式面向客户免费推出。 </p><p> 针对要求停机时间最短的业务关键型工作负载，高级定价层支持脱机和联机迁移（又称为“持续迁移”）。现已正式推出高级定价层。 </p><h2> 定价详细信息 </h2></div>",
+      "sortOrder": 2,
+      "isActive": true
+    },
+    {
+      "sectionType": "Qa",
+      "sectionTitle": "Qa",
+      "content": "<div class=\"more-detail\"><h2> 常见问题 </h2><em> 全部展开 </em><h3> 综合 </h3><ul><li><i class=\"icon icon-plus\"></i><div><a id=\"home_database-migration_How is my bill calculated for the Standard tier of Database Migration Service\"> 如何针对数据库迁移服务标准层计算我的账单？ </a><section><p> 数据库迁移服务的标准层支持脱机迁移且免费提供。 </p></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"home_database-migration_How is my bill calculated for the Premium tier of Database Migration Service\"> 如何针对数据库迁移服务高级层计算我的账单？ </a><section><p> DMS 高级层根据 vCore 中针对你的迁移服务预配的计算，按可预测的每小时费率进行计费。 </p><p> 你可自 DMS 服务创建之日起免费使用 4 vCore 高级 DMS 六个月（183 天），之后开始计费。 </p><p> 例如： </p><ul><li> 如果自 DMS 服务创建之日起你使用 4 vCore 高级 DMS 的时间不超过 6 个月（183 天），则不对你计费（DMS 高级 4 vCore 自 DMS 创建起免费提供 183 天）。因此，如果你使用了 4 vCore 高级 DMS 三个月，则该服务免费。 </li><li> 如果你在 3 月 15 日创建 4 vCore 高级 DMS 服务，则你的 6 个月（183 天）免费期将于服务创建之日开始启动，持续到 9 月 14 日。对于 9 月 15 日或之后产生的使用量，将对你预配的计算资源按小时计费。如果使用 4 vCore 高级 DMS 的时间是 3 月 15 日至 11 月 1 日，则你在 9 月 14 日（183 天）之前可免费使用，然后从 9 月 15 至 11 月 1 日就你的使用量向你收费。 </li></ul></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"home_database-migration_How long can I use the Premium tier of Database Migration Service\"> 我可使用数据库迁移服务高级层多长时间？ </a><section><p> 创建 DMS 服务后，可自服务创建之日起使用 DMS 长达 1 年。 </p></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"home_database-migration_How many DMS services can I create\"> 我可创建多少个 DMS 服务？ </a><section><p> 客户可对每个订阅创建 2 个 DMS 服务。要另外创建服务，请创建支持票证。 </p></section></div></li></ul></div><div class=\"pricing-page-section\"><h2> 支持和服务级别协议 </h2><p> 如有任何疑问或需要帮助，请访问 <a href=\"https://support.azure.cn/zh-cn/support/contact\" id=\"database-migration-contact-page\"> Azure 支持 </a> 选择自助服务或者其他任何方式联系我们获得支持。 </p><p> 若要了解有关我们的服务器级别协议的详细信息，请访问 <a href=\"../../../support/legal/sla\" id=\"pricing_database-migration_sla\"> 服务级别协议 </a> 页。 </p></div>",
+      "sortOrder": 3,
+      "isActive": true
+    }
+  ],
+  "pageConfig": {
+    "displayTitle": "定价 - Azure 数据库迁移服务 - Azure 云计算",
+    "pageIcon": "{base_url}/Static/Favicon/favicon.ico",
+    "leftNavigationIdentifier": "database-migration",
+    "pageType": "ComplexFilter",
+    "enableFilters": true,
+    "filtersJsonConfig": "{\"filterDefinitions\":[{\"filterKey\":\"region\",\"filterType\":\"dropdown\",\"displayName\":\"地区\",\"options\":[{\"value\":\"east-china2\",\"label\":\"中国东部 2\",\"href\":\"#east-china2\",\"isActive\":true,\"isDefault\":true},{\"value\":\"north-china2\",\"label\":\"中国北部 2\",\"href\":\"#north-china2\",\"isActive\":true},{\"value\":\"east-china\",\"label\":\"中国东部\",\"href\":\"#east-china\",\"isActive\":true},{\"value\":\"north-china\",\"label\":\"中国北部\",\"href\":\"#north-china\",\"isActive\":true}]},{\"filterKey\":\"category\",\"filterType\":\"tab\",\"displayName\":\"类别\",\"options\":[{\"value\":\"tabContent1-1\",\"label\":\"标准\",\"href\":\"#tabContent1-1\",\"isActive\":true,\"isDefault\":true},{\"value\":\"tabContent1-2\",\"label\":\"高级\",\"href\":\"#tabContent1-2\",\"isActive\":true}]}]}"
+  }
+}

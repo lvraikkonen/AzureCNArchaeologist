@@ -25,6 +25,8 @@
 - [`reviews/m6-event-grid-monitor-preflight.md`](reviews/m6-event-grid-monitor-preflight.md)：新 `event-grid` Simple 页面与 `monitor` Complex 页面结构的只读预检。
 - [`reviews/m6-incremental-implementation.md`](reviews/m6-incremental-implementation.md)：完整增量机制、重新处理能力和真实验收进度。
 - [`reviews/cms-payload-contract-correction.md`](reviews/cms-payload-contract-correction.md)：CMS 筛选选项与公共区块标题合同修正、五产品双语 Batch 和人工审核结果。
+- [`reviews/m7-v1-acceptance.md`](reviews/m7-v1-acceptance.md)：M7 可靠性回归、文档核对、安全检查、支持矩阵和 v1.0 发布判断的连续验收记录。
+- [`reviews/m7-support-matrix.md`](reviews/m7-support-matrix.md)：首批 22 个产品基于当前机器回归和真实人工审核形成的新支持、阻断或待确认结论。
 - [`input-notes/m3-databricks-en-us-correction.md`](input-notes/m3-databricks-en-us-correction.md)：Databricks 英文输入的已确认修正和仍保留的上游标记问题。
 
 ## 写作规则

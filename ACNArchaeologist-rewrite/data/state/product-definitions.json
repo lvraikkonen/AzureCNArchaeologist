@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "source_run_name": "event-grid-simple-incremental",
+  "source_run_name": "m7-incremental-no-change-001-no-product-changes",
   "ignored_fields": [
     "capability_status",
     "display_name",

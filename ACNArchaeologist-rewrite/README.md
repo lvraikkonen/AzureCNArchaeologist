@@ -16,6 +16,8 @@ M6 已完成：`event-grid-simple-incremental` 只处理变化后的 `event-grid
 
 M6 后的 CMS Payload 合同修正已经完成：当前合同 `1.2` 要求 `software`、`region`、`category` 三类 options 使用统一的启用和默认字段。`cms-payload-contract-correction-002` 精确重跑 `api-management`、`databricks`、`event-grid`、`monitor`、`service-bus` 的 10 个双语处理项，全部通过抽取、L3a 和独立 L3b；真实审核人在 `cms-payload-contract-correction-review-002` 中批准了全部 5 个产品。不可覆盖的完整 Release `cms-payload-contract-correction-release-002` 已封存并通过独立核对，包含 5 个产品、10 个 Payload。较早的 `-001` 清单及其一项人工决定保持原样，但不再用于后续审核或 Release。详细记录见 [CMS Payload 合同修正 Batch](docs/reviews/cms-payload-contract-correction.md)。
 
+M7 和首批范围 v1.0 验收已经完成：完整 Python 测试、Dashboard 单元测试和生产构建均通过；`m7-full-regression-001` 对 22 个产品、44 个中英文处理项完成真实回归，44 项全部通过抽取、L3a 和独立 L3b。真实审核人随后批准当前 Batch 的全部 22 个产品，不可覆盖的完整 Release `m7-v1-release-candidate-001` 封存 44 个 Payload 并通过独立核对。Python 项目和人工审核台版本均为 `1.0.0`。完整结论见 [M7 可靠性与 v1.0 验收记录](docs/reviews/m7-v1-acceptance.md)。
+
 源码直接按职责放在 `src/core/`、`src/pipeline/`、`src/incremental/`、`src/extractors/`、`src/machine_checks/`、`src/review/`、`src/release/`、`src/strategies/` 和 `src/utils/`，不使用包住全部模块的 `src/acn_archaeologist/`。
 
 ## 使用方式
@@ -91,3 +93,4 @@ uv run python cli.py review-serve \
 - [M6 HTML 变化识别验收记录](docs/reviews/m6-html-change-detection.md)
 - [M6 增量实现与验收进展](docs/reviews/m6-incremental-implementation.md)
 - [CMS Payload 合同修正 Batch 记录](docs/reviews/cms-payload-contract-correction.md)
+- [M7 可靠性与 v1.0 验收记录](docs/reviews/m7-v1-acceptance.md)

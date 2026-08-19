@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "acn-archaeologist-rewrite"
-version = "0.1.0"
+version = "1.0.0"
 description = "Azure China pricing and support article extraction pipeline rewrite"
 readme = "README.md"
 requires-python = ">=3.10"

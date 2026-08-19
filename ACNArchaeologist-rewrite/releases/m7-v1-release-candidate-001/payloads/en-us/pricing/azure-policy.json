@@ -1,0 +1,34 @@
+{
+  "title": "Azure Policy Pricing - Azure Cloud Computing",
+  "metaTitle": "",
+  "metaDescription": "Explore pricing for Azure Policy, which provides active control and governance at scale for your Azure resources.",
+  "metaKeywords": "Azure Policy pricing, Azure Policy, control, governance, compliance",
+  "slug": "azure-policy",
+  "language": "en-us",
+  "baseContent": "<div class=\"pricing-page-section\"><p> There are no charges for using Azure Policy. </p></div>",
+  "contentGroups": [],
+  "commonSections": [
+    {
+      "sectionType": "Banner",
+      "sectionTitle": "Banner",
+      "content": "<div class=\"common-banner col-top-banner\" data-config=\"{'backgroundColor':'#e3f4ff', 'backgroundImage':'{base_url}/Images/marketing-resource/css/images/service/product_banner_policy.png','imageHeight':'auto'}\"><div class=\"common-banner-image\"><div class=\"common-banner-title\"><img src=\"{base_url}/Images/marketing-resource/media/images/production/policy.svg\"/><h2> Azure policy </h2><h4> Implement corporate governance and standards at scale for Azure resources </h4></div></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "sectionType": "Qa",
+      "sectionTitle": "Qa",
+      "content": "<div class=\"pricing-page-section\"><h2> Support &amp; SLA </h2><p> If you have any questions or need help, please visit <a href=\"https://support.azure.cn/en-us/support/contact\" id=\"policy-contact-page\"> Azure Support </a> and select self-help service or any other method to contact us for support. </p><p> Azure Policy is a free service, therefore, it does not have a financially backed SLA.To learn more about the details of our Service Level Agreement, please visit the <a href=\"/en-us/support/legal/sla/index.html\" id=\"pricing_policy_sla\"> Service Level Agreements </a> page. </p></div>",
+      "sortOrder": 2,
+      "isActive": true
+    }
+  ],
+  "pageConfig": {
+    "displayTitle": "Azure Policy Pricing - Azure Cloud Computing",
+    "pageIcon": "{base_url}/Static/Favicon/favicon.ico",
+    "leftNavigationIdentifier": "en-us-azure-policy",
+    "pageType": "Simple",
+    "enableFilters": false,
+    "filtersJsonConfig": "{\"filterDefinitions\":[]}"
+  }
+}

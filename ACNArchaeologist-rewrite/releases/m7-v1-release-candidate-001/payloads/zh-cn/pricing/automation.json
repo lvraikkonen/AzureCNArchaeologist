@@ -1,0 +1,70 @@
+{
+  "title": "Azure自动化云管理服务定价 - Azure云计算",
+  "metaTitle": "",
+  "metaDescription": "了解 Azure 自动化（Automation）价格详情。Azure 自动化（Automation）采用两个级别提供：免费和基本。Azure 自动化（Automation）基本级别计费基于月份中使用的作业运行时间分钟数。1元试用即获1500元人民币的服务使用额度，也可直接购买成为 Azure 预付费客户，尽享最高 99.99% 的服务级别协议。",
+  "metaKeywords": "Azure, 自动化, 价格",
+  "slug": "automation",
+  "language": "zh-cn",
+  "baseContent": "",
+  "contentGroups": [
+    {
+      "groupName": "中国东部 2",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"east-china2\"}]",
+      "content": "<div class=\"tab-content\"><!-- BEGIN: TAB-CONTENT-1 --><ul class=\"tab-nav\" style=\"display:none\"><li class=\"active\"><a data-href=\"#tabContent1\" data-toggle=\"tab\" href=\"javascript:void(0)\" id=\"gpv1\"> 常规用途 v1 </a></li></ul><div class=\"tab-panel\" id=\"tabContent1\"><!-- BEGIN: Tab level 2 navigator 2 --><!-- BEGIN: Tab level 2 content 3 --><div class=\"tab-content\"><!-- BEGIN: Table1-Content--><div class=\"tab-panel\" id=\"tabContent2\"><h2> 定价详细信息 </h2><h3> 流程自动化 </h3><p> 流程自动化的费用是在作业运行时发生的。只收取超过免费包含单元的分钟/小时。 </p><!-- <p>从2016年4月1日起， 价格会下调 25.6%，以下是下调后的新价格：</p> --><div class=\"tags-date\"><div class=\"ms-date\"> *以下价格均为含税价格。 </div><br/><div class=\"ms-date\"> *每月价格估算基于每个月 744 小时的使用量。 </div></div><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr><th align=\"left\"><strong></strong></th><th align=\"left\"><strong> 免费单位（每月） </strong></th><th align=\"left\"><strong> 价格 </strong></th></tr><tr><td> 作业运行时间 </td><td> 500 分钟 </td><td> ￥0.01元/分钟 </td></tr></table><h3> 配置管理 </h3><p> 配置管理包括配置拉取服务和更改跟踪功能。基于向此服务注册的节点数和 <a href=\"../monitor/index.html\" style=\"float: none;display: inline;background-color: white;margin: 0;padding: 0;\"> Azure Log Analytics </a> 服务中存储的日志数据计费。 </p><p> 向服务注册节点时即开始对配置管理计费，取消向服务注册节点时停止计费。节点是其配置由配置管理进行管理的任何计算机。可以是 Azure 虚拟机 (VM)、本地 VM、物理主机或其他公有云上的 VM。每小时按比例计算节点费用。 </p><table cellpadding=\"0\" cellspacing=\"0\" id=\"Automation-control\" width=\"100%\"><tr><th align=\"left\"><strong></strong></th><th align=\"left\"><strong> 内附的免费单位数（每月）** </strong></th><th align=\"left\"><strong> 价格 </strong></th></tr><tr><td> Azure node </td><td> 不适用 </td><td> 免费 </td></tr><tr><td> 非 Azure 节点 </td><td> 5 节点 </td><td> ￥61.056/节点 </td></tr></table><h3> 更新管理 </h3><p> 更新管理方案包括在环境中部署更新并使其可见。该项服务免费，仅对 <sapn><a href=\"../monitor/index.html\" style=\"float: none;display: inline;background-color: white;margin: 0;padding: 0;\"> Azure Log Analytics </a></sapn> 服务中存储的日志数据付费。 </p><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr><th align=\"left\"><strong></strong></th><th align=\"left\"><strong> 内附的免费单位数（每月） <sup> ** </sup></strong></th><th align=\"left\"><strong> 价格 </strong></th></tr><tr><td> 任何节点 </td><td> 不适用 </td><td> 免费 </td></tr></table><div class=\"tags-date\"><div class=\"ms-date\"><sup> ** </sup> 采用提供统一折扣或固定每月信用额度量的费率计划的订阅者不可使用上述免费单位数。 </div><br/></div></div><!-- END: Table1-Content--></div></div><!-- END: TAB-CONTENT-3 --></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "groupName": "中国北部 2",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china2\"}]",
+      "content": "<div class=\"tab-content\"><!-- BEGIN: TAB-CONTENT-1 --><ul class=\"tab-nav\" style=\"display:none\"><li class=\"active\"><a data-href=\"#tabContent1\" data-toggle=\"tab\" href=\"javascript:void(0)\" id=\"gpv1\"> 常规用途 v1 </a></li></ul><div class=\"tab-panel\" id=\"tabContent1\"><!-- BEGIN: Tab level 2 navigator 2 --><!-- BEGIN: Tab level 2 content 3 --><div class=\"tab-content\"><!-- BEGIN: Table1-Content--><div class=\"tab-panel\" id=\"tabContent2\"><h2> 定价详细信息 </h2><h3> 流程自动化 </h3><p> 流程自动化的费用是在作业运行时发生的。只收取超过免费包含单元的分钟/小时。 </p><!-- <p>从2016年4月1日起， 价格会下调 25.6%，以下是下调后的新价格：</p> --><div class=\"tags-date\"><div class=\"ms-date\"> *以下价格均为含税价格。 </div><br/><div class=\"ms-date\"> *每月价格估算基于每个月 744 小时的使用量。 </div></div><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr><th align=\"left\"><strong></strong></th><th align=\"left\"><strong> 免费单位（每月） </strong></th><th align=\"left\"><strong> 价格 </strong></th></tr><tr><td> 作业运行时间 </td><td> 500 分钟 </td><td> ￥0.01元/分钟 </td></tr></table><h3> 配置管理 </h3><p> 配置管理包括配置拉取服务和更改跟踪功能。基于向此服务注册的节点数和 <a href=\"../monitor/index.html\" style=\"float: none;display: inline;background-color: white;margin: 0;padding: 0;\"> Azure Log Analytics </a> 服务中存储的日志数据计费。 </p><p> 向服务注册节点时即开始对配置管理计费，取消向服务注册节点时停止计费。节点是其配置由配置管理进行管理的任何计算机。可以是 Azure 虚拟机 (VM)、本地 VM、物理主机或其他公有云上的 VM。每小时按比例计算节点费用。 </p><table cellpadding=\"0\" cellspacing=\"0\" id=\"Automation-control\" width=\"100%\"><tr><th align=\"left\"><strong></strong></th><th align=\"left\"><strong> 内附的免费单位数（每月）** </strong></th><th align=\"left\"><strong> 价格 </strong></th></tr><tr><td> Azure node </td><td> 不适用 </td><td> 免费 </td></tr><tr><td> 非 Azure 节点 </td><td> 5 节点 </td><td> ￥61.056/节点 </td></tr></table><h3> 更新管理 </h3><p> 更新管理方案包括在环境中部署更新并使其可见。该项服务免费，仅对 <sapn><a href=\"../monitor/index.html\" style=\"float: none;display: inline;background-color: white;margin: 0;padding: 0;\"> Azure Log Analytics </a></sapn> 服务中存储的日志数据付费。 </p><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr><th align=\"left\"><strong></strong></th><th align=\"left\"><strong> 内附的免费单位数（每月） <sup> ** </sup></strong></th><th align=\"left\"><strong> 价格 </strong></th></tr><tr><td> 任何节点 </td><td> 不适用 </td><td> 免费 </td></tr></table><div class=\"tags-date\"><div class=\"ms-date\"><sup> ** </sup> 采用提供统一折扣或固定每月信用额度量的费率计划的订阅者不可使用上述免费单位数。 </div><br/></div></div><!-- END: Table1-Content--></div></div><!-- END: TAB-CONTENT-3 --></div>",
+      "sortOrder": 2,
+      "isActive": true
+    },
+    {
+      "groupName": "中国东部",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"east-china\"}]",
+      "content": "<div class=\"tab-content\"><!-- BEGIN: TAB-CONTENT-1 --><ul class=\"tab-nav\" style=\"display:none\"><li class=\"active\"><a data-href=\"#tabContent1\" data-toggle=\"tab\" href=\"javascript:void(0)\" id=\"gpv1\"> 常规用途 v1 </a></li></ul><div class=\"tab-panel\" id=\"tabContent1\"><!-- BEGIN: Tab level 2 navigator 2 --><!-- BEGIN: Tab level 2 content 3 --><div class=\"tab-content\"><!-- BEGIN: Table1-Content--><div class=\"tab-panel\" id=\"tabContent2\"><h2> 定价详细信息 </h2><h3> 流程自动化 </h3><p> 流程自动化的费用是在作业运行时发生的。只收取超过免费包含单元的分钟/小时。 </p><!-- <p>从2016年4月1日起， 价格会下调 25.6%，以下是下调后的新价格：</p> --><div class=\"tags-date\"><div class=\"ms-date\"> *以下价格均为含税价格。 </div><br/><div class=\"ms-date\"> *每月价格估算基于每个月 744 小时的使用量。 </div></div><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr><th align=\"left\"><strong></strong></th><th align=\"left\"><strong> 免费单位（每月） </strong></th><th align=\"left\"><strong> 价格 </strong></th></tr><tr><td> 作业运行时间 </td><td> 500 分钟 </td><td> ￥0.01元/分钟 </td></tr></table><h3> 配置管理 </h3><p> 配置管理包括配置拉取服务和更改跟踪功能。基于向此服务注册的节点数和 <a href=\"../monitor/index.html\" style=\"float: none;display: inline;background-color: white;margin: 0;padding: 0;\"> Azure Log Analytics </a> 服务中存储的日志数据计费。 </p><p> 向服务注册节点时即开始对配置管理计费，取消向服务注册节点时停止计费。节点是其配置由配置管理进行管理的任何计算机。可以是 Azure 虚拟机 (VM)、本地 VM、物理主机或其他公有云上的 VM。每小时按比例计算节点费用。 </p><h3> 更新管理 </h3><p> 更新管理方案包括在环境中部署更新并使其可见。该项服务免费，仅对 <sapn><a href=\"../monitor/index.html\" style=\"float: none;display: inline;background-color: white;margin: 0;padding: 0;\"> Azure Log Analytics </a></sapn> 服务中存储的日志数据付费。 </p><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr><th align=\"left\"><strong></strong></th><th align=\"left\"><strong> 内附的免费单位数（每月） <sup> ** </sup></strong></th><th align=\"left\"><strong> 价格 </strong></th></tr><tr><td> 任何节点 </td><td> 不适用 </td><td> 免费 </td></tr></table><div class=\"tags-date\"><div class=\"ms-date\"><sup> ** </sup> 采用提供统一折扣或固定每月信用额度量的费率计划的订阅者不可使用上述免费单位数。 </div><br/></div></div><!-- END: Table1-Content--></div></div><!-- END: TAB-CONTENT-3 --></div>",
+      "sortOrder": 3,
+      "isActive": true
+    },
+    {
+      "groupName": "中国北部",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china\"}]",
+      "content": "<div class=\"tab-content\"><!-- BEGIN: TAB-CONTENT-1 --><ul class=\"tab-nav\" style=\"display:none\"><li class=\"active\"><a data-href=\"#tabContent1\" data-toggle=\"tab\" href=\"javascript:void(0)\" id=\"gpv1\"> 常规用途 v1 </a></li></ul><div class=\"tab-panel\" id=\"tabContent1\"><!-- BEGIN: Tab level 2 navigator 2 --><!-- BEGIN: Tab level 2 content 3 --><div class=\"tab-content\"><!-- BEGIN: Table1-Content--><div class=\"tab-panel\" id=\"tabContent2\"><h2> 定价详细信息 </h2><h3> 流程自动化 </h3><p> 流程自动化的费用是在作业运行时发生的。只收取超过免费包含单元的分钟/小时。 </p><!-- <p>从2016年4月1日起， 价格会下调 25.6%，以下是下调后的新价格：</p> --><div class=\"tags-date\"><div class=\"ms-date\"> *以下价格均为含税价格。 </div><br/><div class=\"ms-date\"> *每月价格估算基于每个月 744 小时的使用量。 </div></div><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr><th align=\"left\"><strong></strong></th><th align=\"left\"><strong> 免费单位（每月） </strong></th><th align=\"left\"><strong> 价格 </strong></th></tr><tr><td> 作业运行时间 </td><td> 500 分钟 </td><td> ￥0.01元/分钟 </td></tr></table><h3> 配置管理 </h3><p> 配置管理包括配置拉取服务和更改跟踪功能。基于向此服务注册的节点数和 <a href=\"../monitor/index.html\" style=\"float: none;display: inline;background-color: white;margin: 0;padding: 0;\"> Azure Log Analytics </a> 服务中存储的日志数据计费。 </p><p> 向服务注册节点时即开始对配置管理计费，取消向服务注册节点时停止计费。节点是其配置由配置管理进行管理的任何计算机。可以是 Azure 虚拟机 (VM)、本地 VM、物理主机或其他公有云上的 VM。每小时按比例计算节点费用。 </p><h3> 更新管理 </h3><p> 更新管理方案包括在环境中部署更新并使其可见。该项服务免费，仅对 <sapn><a href=\"../monitor/index.html\" style=\"float: none;display: inline;background-color: white;margin: 0;padding: 0;\"> Azure Log Analytics </a></sapn> 服务中存储的日志数据付费。 </p><table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr><th align=\"left\"><strong></strong></th><th align=\"left\"><strong> 内附的免费单位数（每月） <sup> ** </sup></strong></th><th align=\"left\"><strong> 价格 </strong></th></tr><tr><td> 任何节点 </td><td> 不适用 </td><td> 免费 </td></tr></table><div class=\"tags-date\"><div class=\"ms-date\"><sup> ** </sup> 采用提供统一折扣或固定每月信用额度量的费率计划的订阅者不可使用上述免费单位数。 </div><br/></div></div><!-- END: Table1-Content--></div></div><!-- END: TAB-CONTENT-3 --></div>",
+      "sortOrder": 4,
+      "isActive": true
+    }
+  ],
+  "commonSections": [
+    {
+      "sectionType": "Banner",
+      "sectionTitle": "Banner",
+      "content": "<div class=\"common-banner col-top-banner\" data-config=\"{'backgroundColor':'#e3f4ff', 'backgroundImage':'{base_url}/Images/marketing-resource/media/images/production/automation.png','imageHeight':'auto'}\"><div class=\"common-banner-image\"><div class=\"common-banner-title\"><img src=\"{base_url}/Images/marketing-resource/media/images/production/automation@2x.png\"/><h2> 自动化 <span> Automation </span></h2><h4> 使用流程自动化来简化云管理 </h4></div></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "sectionType": "ProductDescription",
+      "sectionTitle": "ProductDescription",
+      "content": "<div class=\"pricing-page-section\"><p> 借助自动化，你可以节省时间、减少错误和增加效率，同时还可降低运营成本。自动处理所有耗时、容易出错且经常要执行的云管理任务，使你能够将更多时间花在增加企业价值的工作上。 </p><p> 自动化 Runbook 可以处理网站、虚拟机、存储、SQL Server 和其他流行 Azure 服务。你还可使用它们连接和管理任何具有公共 Internet API 的服务。 </p></div>",
+      "sortOrder": 2,
+      "isActive": true
+    },
+    {
+      "sectionType": "Qa",
+      "sectionTitle": "Qa",
+      "content": "<div class=\"more-detail\"><h2> 常见问题 </h2><em> 全部展开 </em><ul><li><i class=\"icon icon-plus\"></i><div><a id=\"auto_price_question1\"> 如何计费？ </a><section><p> 我们为您提供免费使用的服务。对于自动化，我们基于与你订阅关联的所有自动化帐户间使用的作业运行时间总分钟数来对你进行计费。例如，在 1 个月中使用 5,500 分钟会产生 ￥50 的费用。 </p></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"auto_price_question2\"> 每个月包含哪些免费单元? </a><section><p> 包括免费单元，你可以免费使用，而且每个月都可以恢复。在一个月的免费单元中所有的使用费用都是按标准的价格收费的。这些免费的单元不能使用给订阅用户提供折扣或者每月固定的信用额度。 </p></section></div></li><!-- <li><i class=\"icon icon-plus\"></i><div><a id=\"auto_price_question3\">我能否将我的自动化服务从免费版升级到基本版？</a><section><p>可以，通过针对订阅中的自动化帐户在“缩放”页上更新层级特性可以支持对现有自动化订阅的升级。升级将应用于订阅中的所有自动化帐户。</p></section></div></li> --></ul></div><div class=\"pricing-page-section\"><h2> 支持和服务级别协议 </h2><p> 如有任何疑问或需要帮助，请访问 <a href=\"https://support.azure.cn/zh-cn/support/contact\" id=\"automation-contact-page\"> Azure 支持 </a> 选择自助服务或者其他任何方式联系我们获得支持。 </p><p> 我们保证至少 99.9% 的作业将在预定的开始时间30 分钟内开始。 </p><p> 对于自动化的免费层级不提供服务级别协议。 </p><p> 若要了解有关我们的服务器级别协议的详细信息，请访问 <a href=\"../../../support/sla/automation/index.html\" id=\"pricing_automation_sla\"> 服务级别协议 </a> 页。 </p></div>",
+      "sortOrder": 3,
+      "isActive": true
+    }
+  ],
+  "pageConfig": {
+    "displayTitle": "Azure自动化云管理服务定价 - Azure云计算",
+    "pageIcon": "{base_url}/Static/Favicon/favicon.ico",
+    "leftNavigationIdentifier": "automation",
+    "pageType": "RegionFilter",
+    "enableFilters": true,
+    "filtersJsonConfig": "{\"filterDefinitions\":[{\"filterKey\":\"region\",\"filterType\":\"dropdown\",\"displayName\":\"地区\",\"options\":[{\"value\":\"east-china2\",\"label\":\"中国东部 2\",\"href\":\"#east-china2\",\"isActive\":true,\"isDefault\":true},{\"value\":\"north-china2\",\"label\":\"中国北部 2\",\"href\":\"#north-china2\",\"isActive\":true},{\"value\":\"east-china\",\"label\":\"中国东部\",\"href\":\"#east-china\",\"isActive\":true},{\"value\":\"north-china\",\"label\":\"中国北部\",\"href\":\"#north-china\",\"isActive\":true}]}]}"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "title": "Azure Firewall – Azure Cloud Computing",
+  "metaTitle": "",
+  "metaDescription": "Pricing details page for Azure Firewall, a cloud-native network security and analytics service.",
+  "metaKeywords": "Azure, Azure Firewall, Pricing",
+  "slug": "azure-firewall",
+  "language": "en-us",
+  "baseContent": "",
+  "contentGroups": [
+    {
+      "groupName": "China North 3",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china3\"}]",
+      "content": "<div class=\"tab-content\"><!-- BEGIN: TAB-CONTAINER-1 --><div class=\"tab-control-container tab-active\" id=\"tabContent1\"><!-- BEGIN: Table1-Content--><div class=\"scroll-table\" style=\"display:block;\"><h2> Azure Firewall </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> Basic </strong></th><th align=\"left\"><strong> Standard </strong></th><th align=\"left\"><strong> Premium </strong></th></tr><tr><td> Deployment </td><td> ￥4.02 per deployment hour </td><td> ￥12.72 per deployment hour </td><td> ￥17.808 per deployment hour </td></tr><tr><td> Data Processing </td><td> ￥0.66 per GB processed </td><td> ￥0.1632 per GB processed </td><td> ￥0.1632 per GB processed </td></tr><tr><td> Capacity Unit </td><td> N/A </td><td> ￥0.712 per Capacity Unit Hour </td><td> ￥1.119 per Capacity Unit Hour </td></tr></table></div><div class=\"scroll-table\" style=\"display: block;\"><h2> Azure Firewall with Secured Virtual Hub </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard2-n3\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> Basic </strong></th><th align=\"left\"><strong> Standard </strong></th><th align=\"left\"><strong> Premium </strong></th></tr><tr><td> Secured Virtual Hubs Deployments </td><td> ￥2.5122 per deployment hour </td><td> ￥12.72 per deployment hour </td><td> ￥17.808 per deployment hour </td></tr><tr><td> Secured Virtual Hubs Data Processed </td><td> ￥0.4134 per GB processed </td><td> ￥0.1632 per GB processed </td><td> ￥0.1632 per GB processed </td></tr><tr><td> Secured Virtual Hubs Capacity Unit </td><td> N/A </td><td> ￥0.712 per Capacity Unit Hour </td><td> ￥1.119 per Capacity Unit Hour </td></tr></table></div></div><!-- END: TAB-CONTAINER-1 --></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "groupName": "China East 2",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"east-china2\"}]",
+      "content": "<div class=\"tab-content\"><!-- BEGIN: TAB-CONTAINER-1 --><div class=\"tab-control-container tab-active\" id=\"tabContent1\"><!-- BEGIN: Table1-Content--><div class=\"scroll-table\" style=\"display:block;\"><h2> Azure Firewall </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> Basic </strong></th><th align=\"left\"><strong> Standard </strong></th><th align=\"left\"><strong> Premium </strong></th></tr><tr><td> Deployment </td><td> ￥4.02 per deployment hour </td><td> ￥12.72 per deployment hour </td><td> ￥17.808 per deployment hour </td></tr><tr><td> Data Processing </td><td> ￥0.66 per GB processed </td><td> ￥0.1632 per GB processed </td><td> ￥0.1632 per GB processed </td></tr><tr><td> Capacity Unit </td><td> N/A </td><td> ￥0.712 per Capacity Unit Hour </td><td> ￥1.119 per Capacity Unit Hour </td></tr></table></div><div class=\"scroll-table\" style=\"display:block;\"><h2> Azure Firewall with Secured Virtual Hub </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard2\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> Basic </strong></th><th align=\"left\"><strong> Standard </strong></th><th align=\"left\"><strong> Premium </strong></th></tr><tr><td> Secured Virtual Hubs Deployments </td><td> ￥2.5122 per deployment hour </td><td> ￥12.72 per deployment hour </td><td> ￥17.808 per deployment hour </td></tr><tr><td> Secured Virtual Hubs Data Processed </td><td> ￥0.4134 per GB processed </td><td> ￥0.1632 per GB processed </td><td> ￥0.1632 per GB processed </td></tr></table></div></div><!-- END: TAB-CONTAINER-1 --></div>",
+      "sortOrder": 2,
+      "isActive": true
+    },
+    {
+      "groupName": "China North 2",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china2\"}]",
+      "content": "<div class=\"tab-content\"><!-- BEGIN: TAB-CONTAINER-1 --><div class=\"tab-control-container tab-active\" id=\"tabContent1\"><!-- BEGIN: Table1-Content--><div class=\"scroll-table\" style=\"display:block;\"><h2> Azure Firewall </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> Basic </strong></th><th align=\"left\"><strong> Standard </strong></th><th align=\"left\"><strong> Premium </strong></th></tr><tr><td> Deployment </td><td> ￥4.02 per deployment hour </td><td> ￥12.72 per deployment hour </td><td> ￥17.808 per deployment hour </td></tr><tr><td> Data Processing </td><td> ￥0.66 per GB processed </td><td> ￥0.1632 per GB processed </td><td> ￥0.1632 per GB processed </td></tr><tr><td> Capacity Unit </td><td> N/A </td><td> ￥0.712 per Capacity Unit Hour </td><td> ￥1.119 per Capacity Unit Hour </td></tr></table></div><div class=\"scroll-table\" style=\"display:block;\"><h2> Azure Firewall with Secured Virtual Hub </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard2\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> Basic </strong></th><th align=\"left\"><strong> Standard </strong></th><th align=\"left\"><strong> Premium </strong></th></tr><tr><td> Secured Virtual Hubs Deployments </td><td> ￥2.5122 per deployment hour </td><td> ￥12.72 per deployment hour </td><td> ￥17.808 per deployment hour </td></tr><tr><td> Secured Virtual Hubs Data Processed </td><td> ￥0.4134 per GB processed </td><td> ￥0.1632 per GB processed </td><td> ￥0.1632 per GB processed </td></tr></table></div></div><!-- END: TAB-CONTAINER-1 --></div>",
+      "sortOrder": 3,
+      "isActive": true
+    },
+    {
+      "groupName": "China East",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"east-china\"}]",
+      "content": "<div class=\"tab-content\"><!-- BEGIN: TAB-CONTAINER-1 --><div class=\"tab-control-container tab-active\" id=\"tabContent1\"><!-- BEGIN: Table1-Content--><div class=\"scroll-table\" style=\"display:block;\"><h2> Azure Firewall </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> Basic </strong></th><th align=\"left\"><strong> Standard </strong></th><th align=\"left\"><strong> Premium </strong></th></tr><tr><td> Deployment </td><td> ￥4.02 per deployment hour </td><td> ￥12.72 per deployment hour </td><td> ￥17.808 per deployment hour </td></tr><tr><td> Data Processing </td><td> ￥0.66 per GB processed </td><td> ￥0.1632 per GB processed </td><td> ￥0.1632 per GB processed </td></tr><tr><td> Capacity Unit </td><td> N/A </td><td> ￥0.712 per Capacity Unit Hour </td><td> ￥1.119 per Capacity Unit Hour </td></tr></table></div><div class=\"scroll-table\" style=\"display:block;\"><h2> Azure Firewall with Secured Virtual Hub </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard2\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> Basic </strong></th><th align=\"left\"><strong> Standard </strong></th><th align=\"left\"><strong> Premium </strong></th></tr><tr><td> Secured Virtual Hubs Deployments </td><td> ￥2.5122 per deployment hour </td><td> ￥12.72 per deployment hour </td><td> ￥17.808 per deployment hour </td></tr><tr><td> Secured Virtual Hubs Data Processed </td><td> ￥0.4134 per GB processed </td><td> ￥0.1632 per GB processed </td><td> ￥0.1632 per GB processed </td></tr></table></div></div><!-- END: TAB-CONTAINER-1 --></div>",
+      "sortOrder": 4,
+      "isActive": true
+    },
+    {
+      "groupName": "China North",
+      "filterCriteriaJson": "[{\"filterKey\":\"region\",\"matchValues\":\"north-china\"}]",
+      "content": "<div class=\"tab-content\"><!-- BEGIN: TAB-CONTAINER-1 --><div class=\"tab-control-container tab-active\" id=\"tabContent1\"><!-- BEGIN: Table1-Content--><div class=\"scroll-table\" style=\"display:block;\"><h2> Azure Firewall </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> Basic </strong></th><th align=\"left\"><strong> Standard </strong></th><th align=\"left\"><strong> Premium </strong></th></tr><tr><td> Deployment </td><td> ￥4.02 per deployment hour </td><td> ￥12.72 per deployment hour </td><td> ￥17.808 per deployment hour </td></tr><tr><td> Data Processing </td><td> ￥0.66 per GB processed </td><td> ￥0.1632 per GB processed </td><td> ￥0.1632 per GB processed </td></tr><tr><td> Capacity Unit </td><td> N/A </td><td> ￥0.712 per Capacity Unit Hour </td><td> ￥1.119 per Capacity Unit Hour </td></tr></table></div><div class=\"scroll-table\" style=\"display:block;\"><h2> Azure Firewall with Secured Virtual Hub </h2><table cellpadding=\"0\" cellspacing=\"0\" id=\"azure_firewall_standard2\" width=\"100%\"><tr><th align=\"left\" style=\"width: 384px;\"><strong></strong></th><th align=\"left\"><strong> Basic </strong></th><th align=\"left\"><strong> Standard </strong></th><th align=\"left\"><strong> Premium </strong></th></tr><tr><td> Secured Virtual Hubs Deployments </td><td> ￥2.5122 per deployment hour </td><td> ￥12.72 per deployment hour </td><td> ￥17.808 per deployment hour </td></tr><tr><td> Secured Virtual Hubs Data Processed </td><td> ￥0.4134 per GB processed </td><td> ￥0.1632 per GB processed </td><td> ￥0.1632 per GB processed </td></tr></table></div></div><!-- END: TAB-CONTAINER-1 --></div>",
+      "sortOrder": 5,
+      "isActive": true
+    }
+  ],
+  "commonSections": [
+    {
+      "sectionType": "Banner",
+      "sectionTitle": "Banner",
+      "content": "<div class=\"common-banner col-top-banner\" data-config=\"{'backgroundColor':'#e3f4ff', 'backgroundImage':'{base_url}/Images/marketing-resource/css/azure-firewall_banner.png','imageHeight':'auto'}\"><div class=\"common-banner-image\"><div class=\"common-banner-title\"><img src=\"{base_url}/Images/marketing-resource/css/azure-firewall.svg\"/><h2> Azure Firewall <span> Azure Firewall </span></h2><h4> Cloud-native network security to protect your Azure Virtual Network resources </h4><div class=\"updatetime\">Updated on：2026/03/11</div></div></div></div>",
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "sectionType": "ProductDescription",
+      "sectionTitle": "ProductDescription",
+      "content": "<ul class=\"ul\"><li><h2> Native firewalling capabilities with built-in high availability, unrestricted cloud scalability, and zero maintenance </h2></li><li><p> Azure Firewall is a managed cloud-based network security service that protects your Azure Virtual Network resources. Azure Firewall can be seamlessly deployed, requires zero maintenance, and is highly available with unrestricted cloud scalability. Setting up an Azure Firewall is easy; with billing comprised of a fixed and variable fee. </p></li></ul>",
+      "sortOrder": 2,
+      "isActive": true
+    },
+    {
+      "sectionType": "Qa",
+      "sectionTitle": "Qa",
+      "content": "<div class=\"more-detail\"><h2> FAQs </h2><em> Expand all </em><ul><li><i class=\"icon icon-plus\"></i><div><a id=\"ih-que-q1\"> Is a partial hour billed as a full hour? </a><section><p> Yes. A partial hour is billed as a full hour. </p></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"ih-que-q2\"> Will there be any compute charges in addition to Azure Firewall charges? </a><section><p> No, you pay for other resources as you normally would. Azure Firewall will not impose any compute charges. </p></section></div></li><li><i class=\"icon icon-plus\"></i><div><a id=\"ih-que-q3\"> How does billing for this service work? </a><section><p> A fixed hourly fee will be charged per a firewall deployment regardless of scale. In addition, data processing fee is billed per deployment for any data processed by your firewall. </p></section></div></li></ul></div><div class=\"pricing-page-section\"><h2> Support &amp; SLA </h2><p> If you have any questions or need help, please visit <a href=\"https://support.azure.cn/en-us/support/contact/\" id=\"iot-contact-page\"> Azure Support </a> and select self-help service or any other method to contact us for support. </p><p> We guarantee that Azure Firewall will be available at least 99.95% of the time. To learn more about the details of our Service Level Agreement, please visit the <a href=\"/en-us/support/sla/azure-firewall/index.html\" id=\"pricing_azure-firewall_sla\"> Service Level Agreements </a> page. </p></div>",
+      "sortOrder": 3,
+      "isActive": true
+    }
+  ],
+  "pageConfig": {
+    "displayTitle": "Azure Firewall – Azure Cloud Computing",
+    "pageIcon": "{base_url}/Static/Favicon/favicon.ico",
+    "leftNavigationIdentifier": "en-us-azure-firewall",
+    "pageType": "RegionFilter",
+    "enableFilters": true,
+    "filtersJsonConfig": "{\"filterDefinitions\":[{\"filterKey\":\"region\",\"filterType\":\"dropdown\",\"displayName\":\"Region\",\"options\":[{\"value\":\"north-china3\",\"label\":\"China North 3\",\"href\":\"#north-china3\",\"isActive\":true,\"isDefault\":true},{\"value\":\"east-china2\",\"label\":\"China East 2\",\"href\":\"#east-china2\",\"isActive\":true},{\"value\":\"north-china2\",\"label\":\"China North 2\",\"href\":\"#north-china2\",\"isActive\":true},{\"value\":\"east-china\",\"label\":\"China East\",\"href\":\"#east-china\",\"isActive\":true},{\"value\":\"north-china\",\"label\":\"China North\",\"href\":\"#north-china\",\"isActive\":true}]}]}"
+  }
+}
