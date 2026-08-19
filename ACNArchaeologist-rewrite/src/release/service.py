@@ -315,6 +315,10 @@ def _build_release(
             "not_queued_items": queue["not_queued_items"],
         },
     }
+    if "payload_contract_version" in queue["batch"]:
+        manifest["source_review"]["payload_contract_version"] = queue[
+            "batch"
+        ]["payload_contract_version"]
     if release_kind == "delta":
         assert incremental_run_name is not None
         assert incremental_run_directory is not None
@@ -474,6 +478,19 @@ def _verify_release_directory(
         raise ReleaseError(f"Release 引用的审核记录无效：{error}") from error
     if source_review.get("run_name") != snapshot.queue["batch"]["run_name"]:
         raise ReleaseError("Release 引用的 Batch 与审核清单不一致。")
+    declared_contract_version = source_review.get("payload_contract_version")
+    queue_has_contract_version = (
+        "payload_contract_version" in snapshot.queue["batch"]
+    )
+    if (
+        (declared_contract_version is not None) != queue_has_contract_version
+        or (
+            queue_has_contract_version
+            and declared_contract_version
+            != snapshot.queue["batch"]["payload_contract_version"]
+        )
+    ):
+        raise ReleaseError("Release 引用的 Payload 合同版本与审核清单不一致。")
     run_directory = _resolve_presented_path(
         snapshot.queue["batch"]["run_directory"],
         catalog.project_root,

@@ -145,6 +145,9 @@ class ReviewWorkbenchService:
                     page_global_source_boundary=(
                         definition.page_global_source_boundary
                     ),
+                    payload_contract_version=materials[
+                        "payload_contract_version"
+                    ],
                 )
                 comparisons = _pricing_comparisons(source, payload)
             languages.append(

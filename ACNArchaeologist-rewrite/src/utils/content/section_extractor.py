@@ -47,7 +47,7 @@ class SectionExtractor:
         return [
             {
                 "sectionType": section_type,
-                "sectionTitle": "",
+                "sectionTitle": section_type,
                 "content": content,
                 "sortOrder": index,
                 "isActive": True,

@@ -115,7 +115,7 @@ def _simple_payload(product_key: str, language: str) -> dict:
         "commonSections": [
             {
                 "sectionType": "Banner",
-                "sectionTitle": "",
+                "sectionTitle": "Banner",
                 "content": f"<div>{product_key} banner</div>",
                 "sortOrder": 1,
                 "isActive": True,

@@ -69,6 +69,61 @@ def test_region_l3b_detects_state_label_and_condition_drift(tmp_path) -> None:
     assert "contentGroups[0].filterCriteriaJson" in failed
 
 
+def test_l3b_independently_checks_active_and_default_filter_options(tmp_path) -> None:
+    payload = product_payload("api-management")
+    config = json.loads(payload["pageConfig"]["filtersJsonConfig"])
+    config["filterDefinitions"][0]["options"][0]["isDefault"] = False
+    payload["pageConfig"]["filtersJsonConfig"] = json.dumps(
+        config,
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+
+    report = l3b_report(
+        tmp_path,
+        product_key="api-management",
+        language="zh-cn",
+        payload=payload,
+    )
+
+    assert report["status"] == "failed"
+    assert next(
+        field
+        for field in report["fields"]
+        if field["payload_path"] == "pageConfig.filtersJsonConfig"
+    )["status"] == "failed"
+
+
+def test_l3b_independently_checks_category_option_status(tmp_path) -> None:
+    payload = product_payload("databricks")
+    config = json.loads(payload["pageConfig"]["filtersJsonConfig"])
+    category = next(
+        definition
+        for definition in config["filterDefinitions"]
+        if definition["filterKey"] == "category"
+    )
+    category["options"][0]["isDefault"] = False
+    payload["pageConfig"]["filtersJsonConfig"] = json.dumps(
+        config,
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+
+    report = l3b_report(
+        tmp_path,
+        product_key="databricks",
+        language="zh-cn",
+        payload=payload,
+    )
+
+    assert report["status"] == "failed"
+    assert next(
+        field
+        for field in report["fields"]
+        if field["payload_path"] == "pageConfig.filtersJsonConfig"
+    )["status"] == "failed"
+
+
 def test_complex_l3b_detects_truncated_category_content(tmp_path) -> None:
     payload = product_payload("databricks")
     payload["contentGroups"][4]["content"] = payload["contentGroups"][4][

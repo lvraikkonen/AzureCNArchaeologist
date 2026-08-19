@@ -55,6 +55,10 @@ def test_service_bus_bilingual_extraction_is_deterministic_and_complete() -> Non
             "ProductDescription",
             "Qa",
         ]
+        assert all(
+            section["sectionTitle"] == section["sectionType"]
+            for section in first["commonSections"]
+        )
         assert first["pageConfig"]["pageType"] == "Simple"
         assert first["pageConfig"]["enableFilters"] is False
 

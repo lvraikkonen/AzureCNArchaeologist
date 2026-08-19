@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   canSubmitDecision,
   filterReviewProducts,
+  formatEvidenceForCopy,
   parseWorkbenchConnection,
 } from "../app/review-model.ts";
 
@@ -74,5 +75,14 @@ test("approval requires both languages and every material", () => {
   assert.equal(
     canSubmitDecision({ ...base, inspectedLanguages: ["zh-cn"] }),
     false,
+  );
+});
+
+test("evidence copy text preserves strings and formats structured values", () => {
+  assert.equal(formatEvidenceForCopy("<div>源片段</div>"), "<div>源片段</div>");
+  assert.equal(formatEvidenceForCopy(undefined), "<缺少>");
+  assert.equal(
+    formatEvidenceForCopy({ filterKey: "category", isActive: true }),
+    '{\n  "filterKey": "category",\n  "isActive": true\n}',
   );
 });

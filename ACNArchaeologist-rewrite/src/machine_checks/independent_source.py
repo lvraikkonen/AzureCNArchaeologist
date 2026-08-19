@@ -14,6 +14,11 @@ from typing import Any
 
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
+from src.core.payload_contract import (
+    CURRENT_PAYLOAD_CONTRACT_VERSION,
+    FILTER_KEYS_WITH_OPTION_STATUS_BY_CONTRACT,
+    PAYLOAD_CONTRACT_VERSIONS,
+)
 from src.utils.html.normalization import normalize_html
 
 
@@ -28,7 +33,12 @@ def locate_pricing_source(
     language: str,
     soft_category_path: Path | None,
     page_global_source_boundary: str | None = None,
+    payload_contract_version: str = CURRENT_PAYLOAD_CONTRACT_VERSION,
 ) -> dict[str, Any]:
+    if payload_contract_version not in PAYLOAD_CONTRACT_VERSIONS:
+        raise IndependentSourceError(
+            f"L3b 不认识 Payload 合同版本 {payload_contract_version!r}。"
+        )
     pure = _one(soup.select("div.pure-content"), "pure-content")
     if semantic_strategy == "simple_static":
         boundary = _simple_pricing_boundary(
@@ -106,7 +116,12 @@ def locate_pricing_source(
                 }
             )
         definitions = [
-            _filter_definition(region_control, "region", "dropdown")
+            _filter_definition(
+                region_control,
+                "region",
+                "dropdown",
+                payload_contract_version=payload_contract_version,
+            )
         ]
         return {
             "baseContent": base_content,
@@ -237,12 +252,27 @@ def locate_pricing_source(
     definitions = []
     if software_control["visible"]:
         definitions.append(
-            _filter_definition(software_control, "software", "dropdown")
+            _filter_definition(
+                software_control,
+                "software",
+                "dropdown",
+                payload_contract_version=payload_contract_version,
+            )
         )
     definitions.extend(
         [
-            _filter_definition(region_control, "region", "dropdown"),
-            _filter_definition(category_control, "category", "tab"),
+            _filter_definition(
+                region_control,
+                "region",
+                "dropdown",
+                payload_contract_version=payload_contract_version,
+            ),
+            _filter_definition(
+                category_control,
+                "category",
+                "tab",
+                payload_contract_version=payload_contract_version,
+            ),
         ]
     )
     return {
@@ -931,13 +961,31 @@ def _independent_units(scope: Tag, table_id: str) -> list[Tag]:
 
 
 def _filter_definition(
-    control: dict[str, Any], key: str, filter_type: str
+    control: dict[str, Any],
+    key: str,
+    filter_type: str,
+    *,
+    payload_contract_version: str,
 ) -> dict[str, Any]:
+    options: list[dict[str, Any]] = []
+    for index, source_option in enumerate(control["options"]):
+        option: dict[str, Any] = {
+            "value": source_option["value"],
+            "label": source_option["label"],
+            "href": source_option["href"],
+        }
+        if key in FILTER_KEYS_WITH_OPTION_STATUS_BY_CONTRACT[
+            payload_contract_version
+        ]:
+            option["isActive"] = True
+            if index == 0:
+                option["isDefault"] = True
+        options.append(option)
     return {
         "filterKey": key,
         "filterType": filter_type,
         "displayName": control["display_name"],
-        "options": control["options"],
+        "options": options,
     }
 
 

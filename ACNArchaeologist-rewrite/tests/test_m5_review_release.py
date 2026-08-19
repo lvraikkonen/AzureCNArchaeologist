@@ -9,6 +9,7 @@ import pytest
 
 from src.cli import build_parser, main
 from src.core.catalog import ProductCatalog
+from src.core.payload_contract import CURRENT_PAYLOAD_CONTRACT_VERSION
 from src.release import ReleaseError, build_full_release, verify_full_release
 from src.review import (
     ReviewError,
@@ -45,7 +46,7 @@ def _simple_payload(product_key: str, language: str, title: str) -> dict[str, An
         "commonSections": [
             {
                 "sectionType": "Banner",
-                "sectionTitle": "",
+                "sectionTitle": "Banner",
                 "content": f"<div>{product_key} banner</div>",
                 "sortOrder": 1,
                 "isActive": True,
@@ -151,6 +152,7 @@ def _sealed_run(
         run_directory / "run.json",
         {
             "schema_version": "1.0",
+            "payload_contract_version": CURRENT_PAYLOAD_CONTRACT_VERSION,
             "run_name": run_name,
             "status": "passed" if not blocked else "completed_with_issues",
             "summary": {
@@ -228,6 +230,9 @@ def test_review_queue_contains_only_machine_passed_items_and_direct_materials(
         "queued_products": 1,
         "bilingual_ready_products": 1,
     }
+    assert result.queue["batch"]["payload_contract_version"] == (
+        CURRENT_PAYLOAD_CONTRACT_VERSION
+    )
     assert [product["product_key"] for product in result.queue["products"]] == [
         "good-product",
     ]
@@ -428,6 +433,9 @@ def test_release_contains_all_and_only_current_approved_bilingual_products(
         "awaiting_decision_products": 1,
         "not_queued_items": 0,
     }
+    assert result.manifest["source_review"]["payload_contract_version"] == (
+        CURRENT_PAYLOAD_CONTRACT_VERSION
+    )
     assert [product["product_key"] for product in result.manifest["products"]] == [
         "approved-product"
     ]

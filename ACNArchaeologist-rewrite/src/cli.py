@@ -116,6 +116,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     run_scope_arguments = run.add_mutually_exclusive_group(required=True)
     run_scope_arguments.add_argument("--product", metavar="PRODUCT_KEY")
+    run_scope_arguments.add_argument(
+        "--products",
+        nargs="+",
+        metavar="PRODUCT_KEY",
+        help="在一个 Batch 中精确处理列出的多个产品；每个产品始终处理中英文",
+    )
     run_scope_arguments.add_argument("--category", metavar="CATEGORY")
     run_scope_arguments.add_argument(
         "--all",
@@ -389,6 +395,7 @@ def main(
             result = run_scope(
                 catalog,
                 product_key=args.product,
+                product_keys=args.products,
                 category=args.category,
                 all_products=args.all_products,
                 run_name=args.run_name,

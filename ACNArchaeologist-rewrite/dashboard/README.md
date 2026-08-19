@@ -26,3 +26,7 @@ uv run python cli.py review-serve --review-id m5-full-review-workbench
 页面以产品为审核单位，包含中文和英文两个语言页签。Source 一侧由 L3b
 独立源定位器从 Frozen HTML 重新确定，Payload 一侧来自已封存 Batch，生产
 Strategy 不参与审核页面的源片段定位。
+
+每个“Frozen HTML 独立源片段”和“Payload 对应字段”框的右上角都有“复制”
+按钮。按钮复制该框的完整原始内容，而不是 iframe 预览后的页面文本；成功后会
+短暂显示“已复制”，浏览器拒绝剪贴板权限时显示“复制失败”。

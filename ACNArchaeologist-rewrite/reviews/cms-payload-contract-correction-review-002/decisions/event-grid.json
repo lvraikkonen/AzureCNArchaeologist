@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "review_id": "cms-payload-contract-correction-review-002",
+  "run_name": "cms-payload-contract-correction-002",
+  "batch_kind": "standard",
+  "incremental_run_name": null,
+  "product_key": "event-grid",
+  "reviewer": "claus lv",
+  "decision": "approved",
+  "inspection_scope": {
+    "languages": [
+      "zh-cn",
+      "en-us"
+    ],
+    "materials": [
+      "Frozen HTML",
+      "Business Payload",
+      "L3a 检查报告",
+      "L3b 检查报告"
+    ]
+  },
+  "notes": "页面内容审核通过，simple页面",
+  "reviewed_items": [
+    {
+      "item_id": "event-grid/zh-cn",
+      "language": "zh-cn",
+      "frozen_html_path": "data/prod-html/zh-cn/pricing/event-grid.html",
+      "payload_path": "runs/cms-payload-contract-correction-002/payloads/zh-cn/pricing/event-grid.json",
+      "l3a_report_path": "runs/cms-payload-contract-correction-002/checks/zh-cn/pricing/event-grid.l3a.json",
+      "l3b_report_path": "runs/cms-payload-contract-correction-002/checks/zh-cn/pricing/event-grid.l3b.json"
+    },
+    {
+      "item_id": "event-grid/en-us",
+      "language": "en-us",
+      "frozen_html_path": "data/prod-html/en-us/pricing/event-grid.html",
+      "payload_path": "runs/cms-payload-contract-correction-002/payloads/en-us/pricing/event-grid.json",
+      "l3a_report_path": "runs/cms-payload-contract-correction-002/checks/en-us/pricing/event-grid.l3a.json",
+      "l3b_report_path": "runs/cms-payload-contract-correction-002/checks/en-us/pricing/event-grid.l3b.json"
+    }
+  ]
+}

@@ -10,6 +10,7 @@
 
 ```bash
 python cli.py run --product service-bus --run-name one-product
+python cli.py run --products api-management databricks service-bus --run-name exact-products
 python cli.py run --category management --run-name one-category
 python cli.py run --all --run-name initial-full-batch
 ```

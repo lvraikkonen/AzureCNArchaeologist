@@ -9,10 +9,11 @@ import tempfile
 from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 from src.core.catalog import ProcessingItem, ProductCatalog
 from src.core.payload_contract import (
+    CURRENT_PAYLOAD_CONTRACT_VERSION,
     load_payload,
     payload_json_bytes,
     validate_pricing_payload,
@@ -113,6 +114,7 @@ def run_scope(
     *,
     run_name: str,
     product_key: str | None = None,
+    product_keys: Sequence[str] | None = None,
     category: str | None = None,
     all_products: bool = False,
     runs_root: Path | str | None = None,
@@ -124,11 +126,13 @@ def run_scope(
     _validate_parallel_jobs(parallel_jobs)
     items = catalog.select(
         product_key=product_key,
+        product_keys=product_keys,
         category=category,
         all_products=all_products,
     )
     selection, selection_value = _selection_description(
         product_key=product_key,
+        product_keys=product_keys,
         category=category,
         all_products=all_products,
     )
@@ -1270,6 +1274,7 @@ def _new_manifest(
         scope[selection] = selection_value
     manifest = {
         "schema_version": "1.1",
+        "payload_contract_version": CURRENT_PAYLOAD_CONTRACT_VERSION,
         "run_name": run_name,
         "batch_kind": batch_kind,
         "status": "running",
@@ -1722,16 +1727,19 @@ def _safe_run_relative_path(
 def _selection_description(
     *,
     product_key: str | None,
+    product_keys: Sequence[str] | None,
     category: str | None,
     all_products: bool,
 ) -> tuple[str, str | None]:
     if product_key is not None:
         return "product", product_key
+    if product_keys is not None:
+        return "products", None
     if category is not None:
         return "category", category.strip().lower()
     if all_products:
         return "all", None
-    raise PipelineRunError("必须选择 product、category 或 all。")
+    raise PipelineRunError("必须选择 product、products、category 或 all。")
 
 
 def _manifest_items_by_id(manifest: dict[str, Any]) -> dict[str, dict[str, Any]]:

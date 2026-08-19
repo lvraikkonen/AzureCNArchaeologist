@@ -90,6 +90,35 @@ def test_single_product_always_selects_chinese_and_english() -> None:
     ]
 
 
+def test_explicit_products_preserve_requested_order_and_expand_both_languages() -> None:
+    catalog = ProductCatalog.load(PROJECT_ROOT)
+
+    items = catalog.select(
+        product_keys=("service-bus", "api-management", "event-grid")
+    )
+
+    assert [(item.product_key, item.language) for item in items] == [
+        (product_key, language)
+        for product_key in ("service-bus", "api-management", "event-grid")
+        for language in ("zh-cn", "en-us")
+    ]
+
+
+def test_explicit_products_reject_empty_duplicate_and_unknown_keys() -> None:
+    catalog = ProductCatalog.load(PROJECT_ROOT)
+
+    with pytest.raises(CatalogError, match="至少需要一个"):
+        catalog.select(product_keys=())
+    with pytest.raises(CatalogError, match="不能是单段文本"):
+        catalog.select(product_keys="service-bus")
+    with pytest.raises(CatalogError, match="必须是非空文本"):
+        catalog.select(product_keys=("service-bus", ""))
+    with pytest.raises(CatalogError, match="不能重复"):
+        catalog.select(product_keys=("service-bus", "service-bus"))
+    with pytest.raises(UnknownProductError, match="未知 Product Key"):
+        catalog.select(product_keys=("service-bus", "does-not-exist"))
+
+
 def test_support_article_type_can_be_selected_as_a_category() -> None:
     catalog = ProductCatalog.load(PROJECT_ROOT)
 

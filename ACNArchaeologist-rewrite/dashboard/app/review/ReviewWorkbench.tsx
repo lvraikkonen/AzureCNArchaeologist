@@ -16,6 +16,7 @@ import {
   assertReviewProjection,
   canSubmitDecision,
   filterReviewProducts,
+  formatEvidenceForCopy,
   parseWorkbenchConnection,
   reviewLanguages,
   reviewMaterials,
@@ -57,9 +58,7 @@ function StatusPill({ status }: { status: string }) {
 }
 
 function displayValue(value: unknown): string {
-  if (typeof value === "string") return value;
-  if (value === undefined) return "<缺少>";
-  return JSON.stringify(value, null, 2);
+  return formatEvidenceForCopy(value);
 }
 
 function previewDocument(fragment: unknown): string {
@@ -154,9 +153,47 @@ function MachineEvidence({ evidence }: { evidence: ReviewLanguageEvidence }) {
 }
 
 function EvidenceSide({ label, value, kind }: { label: string; value: unknown; kind: "html" | "value" }) {
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">("idle");
+
+  useEffect(() => {
+    if (copyStatus === "idle") return undefined;
+    const timeout = window.setTimeout(() => setCopyStatus("idle"), 2000);
+    return () => window.clearTimeout(timeout);
+  }, [copyStatus]);
+
+  const copyContent = async () => {
+    try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error("浏览器没有提供剪贴板写入能力。");
+      }
+      await navigator.clipboard.writeText(formatEvidenceForCopy(value));
+      setCopyStatus("copied");
+    } catch {
+      setCopyStatus("failed");
+    }
+  };
+
+  const copyLabel = copyStatus === "copied"
+    ? "已复制"
+    : copyStatus === "failed"
+      ? "复制失败"
+      : "复制";
+
   return (
     <article className="evidence-side">
-      <header><span>{label}</span></header>
+      <header>
+        <span>{label}</span>
+        <button
+          type="button"
+          className={`copy-evidence-button copy-${copyStatus}`}
+          onClick={() => void copyContent()}
+          aria-label={`复制${label}内容`}
+          aria-live="polite"
+          title="复制框内完整内容"
+        >
+          {copyLabel}
+        </button>
+      </header>
       {kind === "html" ? (
         <iframe
           className="fragment-preview"
@@ -187,8 +224,8 @@ function ComparisonViewer({ comparison }: { comparison: ReviewComparison }) {
         <StatusPill status={comparison.status} />
       </header>
       <div className="comparison-grid">
-        <EvidenceSide label="Frozen HTML 独立源片段" value={comparison.source} kind={comparison.kind} />
-        <EvidenceSide label="Payload 对应字段" value={comparison.payload} kind={comparison.kind} />
+        <EvidenceSide key={`${comparison.comparison_key}:source`} label="Frozen HTML 独立源片段" value={comparison.source} kind={comparison.kind} />
+        <EvidenceSide key={`${comparison.comparison_key}:payload`} label="Payload 对应字段" value={comparison.payload} kind={comparison.kind} />
       </div>
       {comparison.difference ? (
         <details className="difference-panel">

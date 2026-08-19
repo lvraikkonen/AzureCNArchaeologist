@@ -11,6 +11,8 @@ from typing import Any, Sequence
 
 from src.core.catalog import LANGUAGES, ProductCatalog
 from src.core.payload_contract import (
+    LEGACY_PAYLOAD_CONTRACT_VERSION,
+    PAYLOAD_CONTRACT_VERSIONS,
     PayloadContractError,
     load_payload,
     validate_pricing_payload,
@@ -78,6 +80,7 @@ def prepare_review_queue(
     run_root = _root_path(project_root, runs_root, "runs")
     review_root = _root_path(project_root, reviews_root, "reviews", create=True)
     run_directory, manifest = _load_sealed_run(run_root, run_name)
+    payload_contract_version = _manifest_payload_contract_version(manifest)
 
     final_directory = review_root / review_id
     building_directory = review_root / f"{review_id}.building"
@@ -109,6 +112,7 @@ def prepare_review_queue(
             catalog,
             run_directory=run_directory,
             row=row,
+            payload_contract_version=payload_contract_version,
         )
         if queued_item is None:
             not_queued_items.append(
@@ -176,6 +180,7 @@ def prepare_review_queue(
             run_directory / "run.json", project_root
         ),
         "batch_kind": manifest.get("batch_kind", "standard"),
+        "payload_contract_version": payload_contract_version,
     }
     if manifest.get("batch_kind") == "incremental_reprocessing":
         reprocessing = manifest.get("incremental_reprocessing")
@@ -399,7 +404,9 @@ def read_review_materials(
     review_root = _root_path(catalog.project_root, reviews_root, "reviews")
     _, queue = _load_review_queue(review_root, review_id)
     product = _queue_product(queue, product_key)
-    _verify_queue_product(queue, product, catalog=catalog)
+    payload_contract_version = _verify_queue_product(
+        queue, product, catalog=catalog
+    )
     items: list[dict[str, Any]] = []
     for item in product["items"]:
         l3a_path = _resolve_presented_path(
@@ -428,6 +435,7 @@ def read_review_materials(
         "review_id": review_id,
         "run_name": queue["batch"]["run_name"],
         "batch_kind": queue["batch"].get("batch_kind", "standard"),
+        "payload_contract_version": payload_contract_version,
         "incremental_run_name": queue["batch"].get("incremental_run_name"),
         "product_key": product_key,
         "display_name": product["display_name"],
@@ -488,6 +496,7 @@ def _build_queue_item(
     *,
     run_directory: Path,
     row: dict[str, Any],
+    payload_contract_version: str,
 ) -> tuple[dict[str, Any] | None, list[str]]:
     item_id = _required_string(row, "item_id", "Batch 处理项")
     product_key = _required_string(row, "product_key", item_id)
@@ -570,6 +579,7 @@ def _build_queue_item(
             payload_path=payload_path,
             page_model=page_model,
             semantic_strategy=semantic_strategy,
+            payload_contract_version=payload_contract_version,
         )
         for check_name in CHECK_NAMES:
             report = _read_json_object(check_paths[check_name])
@@ -623,7 +633,7 @@ def _verify_queue_product(
     product: dict[str, Any],
     *,
     catalog: ProductCatalog,
-) -> None:
+) -> str:
     project_root = catalog.project_root
     run_name = _required_string(queue["batch"], "run_name", "审核清单 Batch")
     run_directory = _resolve_presented_path(
@@ -648,6 +658,13 @@ def _verify_queue_product(
         "batch_kind", "standard"
     ):
         raise ReviewError("审核清单引用的处理记录类型与 run.json 不一致。")
+    payload_contract_version = _manifest_payload_contract_version(manifest)
+    stored_contract_version = queue["batch"].get("payload_contract_version")
+    if (
+        stored_contract_version is not None
+        and stored_contract_version != payload_contract_version
+    ):
+        raise ReviewError("审核清单引用的 Payload 合同版本与 run.json 不一致。")
     if manifest.get("batch_kind") == "incremental_reprocessing":
         reprocessing = manifest.get("incremental_reprocessing")
         if not isinstance(reprocessing, dict):
@@ -777,7 +794,9 @@ def _verify_queue_product(
             ),
             page_model=page_model,
             semantic_strategy=semantic_strategy,
+            payload_contract_version=payload_contract_version,
         )
+    return payload_contract_version
 
 
 def _validate_business_payload(
@@ -788,6 +807,7 @@ def _validate_business_payload(
     payload_path: Path,
     page_model: str,
     semantic_strategy: str,
+    payload_contract_version: str,
 ) -> None:
     definition = catalog.get_definition(product_key)
     try:
@@ -798,6 +818,7 @@ def _validate_business_payload(
                 product_key=product_key,
                 language=language,
                 semantic_strategy=semantic_strategy,
+                payload_contract_version=payload_contract_version,
             )
         else:
             assert definition.support_article_type is not None
@@ -811,6 +832,16 @@ def _validate_business_payload(
         raise ReviewError(
             f"{product_key}/{language} 的 Business Payload 契约无效：{error}"
         ) from error
+
+
+def _manifest_payload_contract_version(manifest: dict[str, Any]) -> str:
+    version = manifest.get(
+        "payload_contract_version",
+        LEGACY_PAYLOAD_CONTRACT_VERSION,
+    )
+    if not isinstance(version, str) or version not in PAYLOAD_CONTRACT_VERSIONS:
+        raise ReviewError(f"Batch 声明了未知 Payload 合同版本：{version!r}。")
+    return version
 
 
 def _load_sealed_run(

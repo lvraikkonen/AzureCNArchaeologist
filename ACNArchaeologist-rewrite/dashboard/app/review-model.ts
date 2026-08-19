@@ -102,6 +102,12 @@ export const reviewMaterials = [
   ["l3b-report", "L3b 报告"],
 ] as const;
 
+export function formatEvidenceForCopy(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (value === undefined) return "<缺少>";
+  return JSON.stringify(value, null, 2);
+}
+
 export function parseWorkbenchConnection(
   fragmentText: string,
   fallbackBridge = "http://127.0.0.1:8765",

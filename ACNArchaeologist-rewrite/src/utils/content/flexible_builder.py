@@ -193,14 +193,17 @@ class FlexibleBuilder:
         tabs = tab_analysis.get("category_tabs")
         if not isinstance(tabs, list) or not tabs:
             raise ValueError("Complex 页面没有 Category 选项。")
-        options = [
-            {
+        options: list[dict[str, Any]] = []
+        for index, tab in enumerate(tabs):
+            option: dict[str, Any] = {
                 "value": str(tab.get("href", "")).removeprefix("#"),
                 "label": " ".join(str(tab.get("label", "")).split()),
                 "href": str(tab.get("href", "")),
+                "isActive": True,
             }
-            for tab in tabs
-        ]
+            if index == 0:
+                option["isDefault"] = True
+            options.append(option)
         if any(not option["value"] or not option["label"] for option in options):
             raise ValueError("Category 选项缺少名称或目标。")
         return {
@@ -211,18 +214,21 @@ class FlexibleBuilder:
         }
 
     @staticmethod
-    def _options(analysis: dict[str, Any], key: str) -> list[dict[str, str]]:
+    def _options(analysis: dict[str, Any], key: str) -> list[dict[str, Any]]:
         raw_options = analysis.get(f"{key}_options")
         if not isinstance(raw_options, list) or not raw_options:
             raise ValueError(f"筛选器 {key} 没有选项。")
-        options = [
-            {
+        options: list[dict[str, Any]] = []
+        for index, option in enumerate(raw_options):
+            cms_option: dict[str, Any] = {
                 "value": str(option.get("value", "")),
                 "label": str(option.get("label", "")),
                 "href": str(option.get("href", "")),
             }
-            for option in raw_options
-        ]
+            cms_option["isActive"] = True
+            if index == 0:
+                cms_option["isDefault"] = True
+            options.append(cms_option)
         if any(not option["value"] or not option["label"] for option in options):
             raise ValueError(f"筛选器 {key} 存在空名称或空值。")
         if len({option["value"] for option in options}) != len(options):

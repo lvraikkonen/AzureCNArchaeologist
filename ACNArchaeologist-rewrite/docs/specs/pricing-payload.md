@@ -2,11 +2,19 @@
 
 > 状态：M4 已实现
 >
-> 日期：2026-08-14
+> 日期：2026-08-18（补充 CMS 筛选选项和公共区块标题要求）
 
 ## 1. 用途
 
 Pricing Business Payload 是交给 CMS 的业务数据。它只包含页面字段，不包含源路径、错误、机器检查结果、运行时间或内部支持结论。
+
+当前合同版本为 `1.2`。新 Batch 必须在 `run.json` 中写入 `"payload_contract_version": "1.2"`，审核清单继承并核对这个版本。M1 至 M6 已封存 Batch 没有该字段，读取时明确按历史 `1.0` 合同核对；已经产生人工决定的 `cms-payload-contract-correction-001` 明确使用 `1.1`。程序不会改写这些历史文件。
+
+三个版本的直接差异如下：
+
+- `1.0`：`commonSections[].sectionTitle` 为空，三类筛选 options 均没有 `isActive`、`isDefault`；
+- `1.1`：`sectionTitle` 等于 `sectionType`，只有 `software`、`region` options 使用启用和默认字段；
+- `1.2`：`sectionTitle` 等于 `sectionType`，`software`、`region`、`category` options 全部使用启用和默认字段。
 
 顶层字段及固定顺序如下：
 
@@ -60,6 +68,20 @@ Complex 页面可以在上述五个字段之后增加 `sharedContent`，表示�
 | `complex` | `ComplexFilter` | `true` | `region`、`category`；软件控件可见时为 `software`、`region`、`category` |
 
 三类页面的 `commonSections` 必须以 `Banner` 开始，然后按源页面实际存在情况包含 `ProductDescription` 和 `Qa`。不伪造缺失区块；存在的每个区块 HTML 必须非空且顺序与源页面一致。
+
+每个公共区块的 `sectionTitle` 必须与同一元素的 `sectionType` 完全相同。例如 `Banner` 区块同时使用 `"sectionType": "Banner"` 和 `"sectionTitle": "Banner"`，不得再输出空标题。
+
+`filtersJsonConfig` 中 `software`、`region`、`category` 的每个 option 都必须包含布尔值 `"isActive": true`。每组选项按源页面证明的默认项排在第一位，且只有第一个 option 额外包含布尔值 `"isDefault": true`；其余 option 不得包含 `isDefault`。
+
+```json
+{
+  "value": "east-china2",
+  "label": "China East 2",
+  "href": "#east-china2",
+  "isActive": true,
+  "isDefault": true
+}
+```
 
 Region 与 Complex 的代表源边界见 [`m3-strategy-boundaries.md`](m3-strategy-boundaries.md)；M4 扩展形态见 [`m4-batch.md`](m4-batch.md)。
 

@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "review_id": "cms-payload-contract-correction-review-001",
+  "run_name": "cms-payload-contract-correction-001",
+  "batch_kind": "standard",
+  "incremental_run_name": null,
+  "product_key": "api-management",
+  "reviewer": "claus lv",
+  "decision": "approved",
+  "inspection_scope": {
+    "languages": [
+      "zh-cn",
+      "en-us"
+    ],
+    "materials": [
+      "Frozen HTML",
+      "Business Payload",
+      "L3a 检查报告",
+      "L3b 检查报告"
+    ]
+  },
+  "notes": "CMS要求的字段已添加，页面内容审核通过",
+  "reviewed_items": [
+    {
+      "item_id": "api-management/zh-cn",
+      "language": "zh-cn",
+      "frozen_html_path": "data/prod-html/zh-cn/pricing/api-management.html",
+      "payload_path": "runs/cms-payload-contract-correction-001/payloads/zh-cn/pricing/api-management.json",
+      "l3a_report_path": "runs/cms-payload-contract-correction-001/checks/zh-cn/pricing/api-management.l3a.json",
+      "l3b_report_path": "runs/cms-payload-contract-correction-001/checks/zh-cn/pricing/api-management.l3b.json"
+    },
+    {
+      "item_id": "api-management/en-us",
+      "language": "en-us",
+      "frozen_html_path": "data/prod-html/en-us/pricing/api-management.html",
+      "payload_path": "runs/cms-payload-contract-correction-001/payloads/en-us/pricing/api-management.json",
+      "l3a_report_path": "runs/cms-payload-contract-correction-001/checks/en-us/pricing/api-management.l3a.json",
+      "l3b_report_path": "runs/cms-payload-contract-correction-001/checks/en-us/pricing/api-management.l3b.json"
+    }
+  ]
+}

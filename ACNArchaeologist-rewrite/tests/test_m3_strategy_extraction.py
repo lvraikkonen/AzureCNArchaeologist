@@ -1,12 +1,18 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 
 from bs4 import BeautifulSoup
+import pytest
 
 from src.core.payload_contract import (
+    CURRENT_PAYLOAD_CONTRACT_VERSION,
     PRICING_PAYLOAD_FIELDS,
+    SOFTWARE_REGION_OPTION_CONTRACT_VERSION,
     SUPPORT_ARTICLE_FIELDS,
+    PayloadContractError,
+    validate_pricing_payload,
 )
 from src.strategies.strategy_factory import StrategyFactory
 from tests.m2_helpers import PROJECT_ROOT
@@ -18,6 +24,20 @@ def _criteria(group):
         (criterion["filterKey"], criterion["matchValues"])
         for criterion in json.loads(group["filterCriteriaJson"])
     ]
+
+
+def _filter_definitions(payload):
+    return json.loads(payload["pageConfig"]["filtersJsonConfig"])[
+        "filterDefinitions"
+    ]
+
+
+def _assert_active_default_options(definition) -> None:
+    options = definition["options"]
+    assert options
+    assert all(option["isActive"] is True for option in options)
+    assert options[0]["isDefault"] is True
+    assert all("isDefault" not in option for option in options[1:])
 
 
 def test_strategy_factory_exposes_exactly_the_four_copied_core_strategies() -> None:
@@ -56,6 +76,9 @@ def test_api_management_bilingual_region_states_are_complete_and_deterministic()
         east_china2 = first["contentGroups"][0]["content"]
         assert 'id="API-Management-preview2"' not in east_china2
         assert 'id="API-Management-preview"' in east_china2
+        definitions = _filter_definitions(first)
+        assert [definition["filterKey"] for definition in definitions] == ["region"]
+        _assert_active_default_options(definitions[0])
 
 
 def test_databricks_bilingual_complex_states_include_exact_region_projection() -> None:
@@ -77,6 +100,61 @@ def test_databricks_bilingual_complex_states_include_exact_region_projection() -
         assert _criteria(east2)[0] == ("region", "east-china2")
         assert "databricks-data-analysis-n3" in north3["sharedContent"]
         assert "databricks-data-analysis-n3" not in east2["sharedContent"]
+        definitions = _filter_definitions(payload)
+        assert [definition["filterKey"] for definition in definitions] == [
+            "region",
+            "category",
+        ]
+        _assert_active_default_options(definitions[0])
+        _assert_active_default_options(definitions[1])
+
+
+def test_all_visible_filter_options_use_the_cms_active_default_fields() -> None:
+    payload = product_payload("machine-learning")
+    definitions = _filter_definitions(payload)
+
+    assert [definition["filterKey"] for definition in definitions] == [
+        "software",
+        "region",
+        "category",
+    ]
+    _assert_active_default_options(definitions[0])
+    _assert_active_default_options(definitions[1])
+    _assert_active_default_options(definitions[2])
+
+
+def test_version_1_1_remains_readable_without_category_option_status() -> None:
+    payload = deepcopy(product_payload("databricks"))
+    definitions = _filter_definitions(payload)
+    category = next(
+        definition
+        for definition in definitions
+        if definition["filterKey"] == "category"
+    )
+    for option in category["options"]:
+        option.pop("isActive")
+        option.pop("isDefault", None)
+    payload["pageConfig"]["filtersJsonConfig"] = json.dumps(
+        {"filterDefinitions": definitions},
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+
+    validate_pricing_payload(
+        payload,
+        product_key="databricks",
+        language="zh-cn",
+        semantic_strategy="complex",
+        payload_contract_version=SOFTWARE_REGION_OPTION_CONTRACT_VERSION,
+    )
+    with pytest.raises(PayloadContractError):
+        validate_pricing_payload(
+            payload,
+            product_key="databricks",
+            language="zh-cn",
+            semantic_strategy="complex",
+            payload_contract_version=CURRENT_PAYLOAD_CONTRACT_VERSION,
+        )
 
 
 def test_complex_strategy_contains_no_non_incremental_encoded_evidence_logic() -> None:

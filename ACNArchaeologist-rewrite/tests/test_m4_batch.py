@@ -3,7 +3,8 @@ from __future__ import annotations
 import io
 import json
 
-from src.cli import main
+from src.cli import build_parser, main
+from src.core.payload_contract import CURRENT_PAYLOAD_CONTRACT_VERSION
 from src.pipeline import coordinator
 from src.pipeline.coordinator import read_run_status, run_product, run_scope
 from tests.m2_helpers import real_catalog
@@ -100,6 +101,9 @@ def test_parallel_job_count_does_not_change_plan_or_payload_bytes(
         parallel_jobs=6,
     )
 
+    assert first.manifest["payload_contract_version"] == (
+        CURRENT_PAYLOAD_CONTRACT_VERSION
+    )
     assert [item["item_id"] for item in first.manifest["items"]] == [
         item["item_id"] for item in second.manifest["items"]
     ]
@@ -111,6 +115,67 @@ def test_parallel_job_count_does_not_change_plan_or_payload_bytes(
         ).read_bytes() == (
             second.run_directory / second_item["payload_path"]
         ).read_bytes()
+
+
+def test_exact_products_scope_creates_one_ordered_bilingual_plan(
+    tmp_path, monkeypatch
+) -> None:
+    catalog = real_catalog()
+    selected = (
+        "api-management",
+        "databricks",
+        "event-grid",
+        "monitor",
+        "service-bus",
+    )
+    captured = {}
+    sentinel = object()
+
+    def capture_start_run(selected_catalog, **kwargs):
+        captured.update(kwargs)
+        assert selected_catalog is catalog
+        return sentinel
+
+    monkeypatch.setattr(coordinator, "_start_run", capture_start_run)
+
+    result = run_scope(
+        catalog,
+        product_keys=selected,
+        run_name="exact-products-test",
+        runs_root=tmp_path,
+        parallel_jobs=5,
+    )
+
+    assert result is sentinel
+    assert captured["selection"] == "products"
+    assert captured["selection_value"] is None
+    assert [
+        (item.product_key, item.language) for item in captured["items"]
+    ] == [
+        (product_key, language)
+        for product_key in selected
+        for language in ("zh-cn", "en-us")
+    ]
+
+
+def test_cli_parses_exact_products_as_one_mutually_exclusive_scope() -> None:
+    args = build_parser().parse_args(
+        [
+            "run",
+            "--products",
+            "api-management",
+            "databricks",
+            "service-bus",
+            "--run-name",
+            "exact-products-cli-test",
+        ]
+    )
+
+    assert args.products == ["api-management", "databricks", "service-bus"]
+    assert args.product is None
+    assert args.category is None
+    assert args.all_products is False
+    assert args.changed is False
 
 
 def test_status_and_resume_reuse_an_already_written_payload(

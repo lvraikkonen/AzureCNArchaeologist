@@ -372,3 +372,4 @@ M4 权威全量结果是 42 通过、0 失败、2 阻断、0 待处理。阻断�
 | 2026-08-17 | M6 增加同一增量 Batch 的不可覆盖重新处理能力：保留旧结果和拒绝，只允许最新结果交付 |
 | 2026-08-18 | `monitor` 修正 Release 核对通过；真实 `event-grid` 增量 Batch 双语机器检查通过并进入人工审核 |
 | 2026-08-18 | `event-grid` 真实人工审核、Delta Release 和增量 Batch 关闭完成；M6 完成，下一步进入 M7 |
+| 2026-08-18 | M6 后的 CMS Payload 合同 `1.2` 修正完成：5 个产品、10 个双语 Payload 经机器检查和真实人工审核后，封存为 `cms-payload-contract-correction-release-002` 并通过独立核对 |

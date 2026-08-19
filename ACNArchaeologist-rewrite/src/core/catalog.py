@@ -6,7 +6,7 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
-from typing import Any
+from typing import Any, Sequence
 
 
 LANGUAGES = ("zh-cn", "en-us")
@@ -204,16 +204,24 @@ class ProductCatalog:
         self,
         *,
         product_key: str | None = None,
+        product_keys: Sequence[str] | None = None,
         category: str | None = None,
         all_products: bool = False,
     ) -> tuple[ProcessingItem, ...]:
         """Select products and always expand each one to both configured languages."""
 
         selected_option_count = sum(
-            (product_key is not None, category is not None, all_products)
+            (
+                product_key is not None,
+                product_keys is not None,
+                category is not None,
+                all_products,
+            )
         )
         if selected_option_count != 1:
-            raise CatalogError("必须且只能选择 product、category 或 all 中的一种范围。")
+            raise CatalogError(
+                "必须且只能选择 product、products、category 或 all 中的一种范围。"
+            )
 
         if product_key is not None:
             if product_key not in self.definitions:
@@ -223,6 +231,25 @@ class ProductCatalog:
                     f"产品 {product_key} 不在当前重写处理范围中。"
                 )
             selected_keys = (product_key,)
+        elif product_keys is not None:
+            if isinstance(product_keys, str):
+                raise CatalogError(
+                    "Products 范围必须是 Product Key 列表，不能是单段文本。"
+                )
+            selected_keys = tuple(product_keys)
+            if not selected_keys:
+                raise CatalogError("Products 范围至少需要一个 Product Key。")
+            if any(not isinstance(key, str) or not key for key in selected_keys):
+                raise CatalogError("Products 范围中的 Product Key 必须是非空文本。")
+            if len(selected_keys) != len(set(selected_keys)):
+                raise CatalogError("Products 范围不能重复声明同一个 Product Key。")
+            for key in selected_keys:
+                if key not in self.definitions:
+                    raise UnknownProductError(f"未知 Product Key：{key}。")
+                if key not in self.scope_product_keys:
+                    raise UnknownProductError(
+                        f"产品 {key} 不在当前重写处理范围中。"
+                    )
         elif category is not None:
             normalized_category = category.strip().lower()
             if not normalized_category:

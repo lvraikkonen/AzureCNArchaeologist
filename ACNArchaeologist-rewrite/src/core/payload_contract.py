@@ -52,6 +52,19 @@ PAGE_CONFIG_FIELDS = (
     "enableFilters",
     "filtersJsonConfig",
 )
+LEGACY_PAYLOAD_CONTRACT_VERSION = "1.0"
+SOFTWARE_REGION_OPTION_CONTRACT_VERSION = "1.1"
+CURRENT_PAYLOAD_CONTRACT_VERSION = "1.2"
+FILTER_KEYS_WITH_OPTION_STATUS_BY_CONTRACT = {
+    LEGACY_PAYLOAD_CONTRACT_VERSION: frozenset(),
+    SOFTWARE_REGION_OPTION_CONTRACT_VERSION: frozenset({"software", "region"}),
+    CURRENT_PAYLOAD_CONTRACT_VERSION: frozenset(
+        {"software", "region", "category"}
+    ),
+}
+PAYLOAD_CONTRACT_VERSIONS = frozenset(
+    FILTER_KEYS_WITH_OPTION_STATUS_BY_CONTRACT
+)
 
 
 class PayloadContractError(ValueError):
@@ -64,7 +77,12 @@ def validate_pricing_payload(
     product_key: str,
     language: str,
     semantic_strategy: str,
+    payload_contract_version: str = CURRENT_PAYLOAD_CONTRACT_VERSION,
 ) -> None:
+    if payload_contract_version not in PAYLOAD_CONTRACT_VERSIONS:
+        raise PayloadContractError(
+            f"未知 Pricing Payload 合同版本：{payload_contract_version!r}。"
+        )
     _require_exact_fields(payload, PRICING_PAYLOAD_FIELDS, "Payload")
     for field in (
         "title",
@@ -105,11 +123,15 @@ def validate_pricing_payload(
         )
 
     criteria_rows = _validate_content_groups(groups, semantic_strategy)
-    _validate_common_sections(payload["commonSections"])
+    _validate_common_sections(
+        payload["commonSections"],
+        payload_contract_version=payload_contract_version,
+    )
     filter_domains = _validate_page_config(
         payload["pageConfig"],
         payload_title=payload["title"],
         semantic_strategy=semantic_strategy,
+        payload_contract_version=payload_contract_version,
     )
     expected_criteria_keys = tuple(filter_domains)
     for group_index, criteria in enumerate(criteria_rows):
@@ -137,12 +159,14 @@ def validate_simple_pricing_payload(
     *,
     product_key: str,
     language: str,
+    payload_contract_version: str = CURRENT_PAYLOAD_CONTRACT_VERSION,
 ) -> None:
     validate_pricing_payload(
         payload,
         product_key=product_key,
         language=language,
         semantic_strategy="simple_static",
+        payload_contract_version=payload_contract_version,
     )
 
 
@@ -259,7 +283,11 @@ def _validate_content_groups(
     return criteria_rows
 
 
-def _validate_common_sections(value: Any) -> None:
+def _validate_common_sections(
+    value: Any,
+    *,
+    payload_contract_version: str,
+) -> None:
     if not isinstance(value, list):
         raise PayloadContractError("Payload.commonSections 必须是列表。")
     actual_types = [
@@ -289,9 +317,15 @@ def _validate_common_sections(value: Any) -> None:
             raise PayloadContractError(
                 f"commonSections[{index}].content 必须是非空文本。"
             )
-        if section["sectionTitle"] != "":
+        expected_title = (
+            ""
+            if payload_contract_version == LEGACY_PAYLOAD_CONTRACT_VERSION
+            else section["sectionType"]
+        )
+        if section["sectionTitle"] != expected_title:
             raise PayloadContractError(
-                f"commonSections[{index}].sectionTitle 必须为空文本。"
+                f"commonSections[{index}].sectionTitle 不符合 "
+                f"Pricing Payload 合同 {payload_contract_version}。"
             )
         if section["sortOrder"] != index + 1 or section["isActive"] is not True:
             raise PayloadContractError(
@@ -304,6 +338,7 @@ def _validate_page_config(
     *,
     payload_title: str,
     semantic_strategy: str,
+    payload_contract_version: str,
 ) -> dict[str, tuple[str, ...]]:
     if not isinstance(value, dict):
         raise PayloadContractError("Payload.pageConfig 必须是对象。")
@@ -366,17 +401,37 @@ def _validate_page_config(
             )
         values: list[str] = []
         for option_index, option in enumerate(options):
-            if not isinstance(option, dict) or tuple(option) != (
-                "value",
-                "label",
-                "href",
-            ):
+            filter_key = definition["filterKey"]
+            option_status_keys = FILTER_KEYS_WITH_OPTION_STATUS_BY_CONTRACT[
+                payload_contract_version
+            ]
+            if filter_key in option_status_keys:
+                expected_option_fields = (
+                    ("value", "label", "href", "isActive", "isDefault")
+                    if option_index == 0
+                    else ("value", "label", "href", "isActive")
+                )
+            else:
+                expected_option_fields = ("value", "label", "href")
+            if not isinstance(option, dict) or tuple(option) != expected_option_fields:
                 raise PayloadContractError(
                     f"filterDefinitions[{index}].options[{option_index}] "
                     "字段或顺序不正确。"
                 )
-            if any(not isinstance(option[field], str) or not option[field] for field in option):
+            if any(
+                not isinstance(option[field], str) or not option[field]
+                for field in ("value", "label", "href")
+            ):
                 raise PayloadContractError("筛选选项必须是非空文本。")
+            if filter_key in option_status_keys:
+                if option["isActive"] is not True:
+                    raise PayloadContractError(
+                        f"{filter_key} 筛选选项必须启用。"
+                    )
+                if option_index == 0 and option["isDefault"] is not True:
+                    raise PayloadContractError(
+                        f"{filter_key} 筛选器的第一个选项必须是默认项。"
+                    )
             values.append(option["value"])
         if len(values) != len(set(values)):
             raise PayloadContractError("同一个筛选器不能包含重复值。")

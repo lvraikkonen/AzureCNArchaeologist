@@ -123,6 +123,8 @@ HTML 预览禁止脚本运行和外部网络资源。像 `databricks` 这样比�
 4. 决定明确覆盖双语和四类材料；
 5. 两个 Payload 都存在，并在复制后与 Batch Payload 直接逐字节一致。
 
+审核服务按 Batch 清单固定的 `payload_contract_version` 验证 Payload。没有该字段的 M1 至 M6 历史 Batch 只按历史 `1.0` 合同读取；已经产生人工决定的首份 CMS 修正 Batch 使用 `1.1`；新 Batch 明确使用当前 `1.2` 合同。Workbench 的独立源重建也使用同一份 Batch 合同版本，但仍不调用生产 Strategy。新 Release 的 `source_review.payload_contract_version` 必须与审核清单一致；历史 Release 和历史审核清单都没有该字段时仍可原样核对。
+
 拒绝、待审核、机器检查失败、阻断或双语不完整的产品不会进入 Release。Release 清单会分别列出这些排除项，不能静默跳过。
 
 Release 先在 `{release-id}.building` 中完成复制和全量核对，再整体封存为 `{release-id}`。已存在的 Release ID 和未完成目录都禁止覆盖。核对使用可读路径、字段和直接字节比较，不在清单中建立哈希、指纹、摘要或校验码链。

@@ -72,12 +72,14 @@ data/prod-html/{language}/support-articles/{article-type}/{product-key}.html
 
 ```text
 run --product <product-key>
+run --products <product-key> [<product-key> ...]
 run --category <category>
 run --all
 run --changed
 ```
 
 - `--product`：完整处理一个产品的中英文。
+- `--products`：在一个 Batch 中按明确列出的顺序完整处理多个产品的中英文；空清单、重复 Product Key 和当前范围外产品都会在运行前被拒绝。
 - `--category`：完整处理新项目支持清单中属于该 Category 的全部产品及双语文件。
 - `--all`：完整处理新项目当前支持清单，不代表直接处理 211 个历史参考配置。
 - `--changed`：完整比较 HTML、可信配置和处理相关 Product Definition 字段，只为受影响产品运行使用 Batch 固定输入的双语增量流程；没有业务变化时不创建空 Batch。
@@ -88,7 +90,7 @@ run --changed
 
 ### 6.1 选择范围
 
-解析产品、Category、全量或增量参数，生成按 Product Key 排序的双语处理清单。相同输入必须产生相同顺序。
+解析单产品、精确多产品、Category、全量或增量参数，生成双语处理清单。单产品、Category、全量和增量范围使用各自的稳定顺序；精确多产品范围保留命令中明确给出的产品顺序。相同输入必须产生相同顺序。
 
 ### 6.2 固定输入
 
