@@ -1,211 +1,74 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-策略工厂
-负责注册、创建和管理所有提取策略实例
-"""
+"""Create one of the four copied production Strategies by its readable name."""
 
-import sys
-from pathlib import Path
-from typing import Dict, Type, Any
+from __future__ import annotations
 
-# 添加项目根目录到Python路径
-project_root = Path(__file__).parent.parent.parent
-sys.path.append(str(project_root))
+from importlib import import_module
+from typing import Any
 
-from src.core.data_models import StrategyType, ExtractionStrategy
 from src.strategies.base_strategy import BaseStrategy
-from src.core.logging import get_logger
-
-logger = get_logger(__name__)
 
 
 class StrategyFactory:
-    """策略工厂类，实现策略模式的工厂模式"""
-    
-    # 策略注册表：策略类型 -> 策略类
-    _strategies: Dict[StrategyType, Type[BaseStrategy]] = {}
-    
-    # 语义策略描述信息
-    _strategy_descriptions: Dict[StrategyType, str] = {
-        StrategyType.SIMPLE_STATIC: "简单静态页面处理策略",
-        StrategyType.REGION_FILTER: "区域筛选页面处理策略",
-        StrategyType.COMPLEX: "复杂多筛选器页面处理策略",
-        StrategyType.SUPPORT_ARTICLE: "支持文章页面处理策略",
+    _strategy_classes = {
+        "simple_static": (
+            "src.strategies.simple_static_strategy",
+            "SimpleStaticStrategy",
+        ),
+        "region_filter": (
+            "src.strategies.region_filter_strategy",
+            "RegionFilterStrategy",
+        ),
+        "complex": (
+            "src.strategies.complex_content_strategy",
+            "ComplexContentStrategy",
+        ),
+        "support_article": (
+            "src.strategies.support_article_strategy",
+            "SupportArticleStrategy",
+        ),
     }
 
     @classmethod
-    def register_strategy(cls, strategy_type: StrategyType, strategy_class: Type[BaseStrategy]) -> None:
-        """
-        注册策略类
-        
-        Args:
-            strategy_type: 策略类型
-            strategy_class: 策略类
-        """
-        if not issubclass(strategy_class, BaseStrategy):
-            raise ValueError(f"策略类 {strategy_class.__name__} 必须继承自 BaseStrategy")
-        
-        cls._strategies[strategy_type] = strategy_class
-        logger.info(f"✓ 注册策略: {strategy_type.value} -> {strategy_class.__name__}")
-
-    @classmethod
-    def create_strategy(cls, extraction_strategy: ExtractionStrategy, 
-                       product_config: Dict[str, Any], 
-                       html_file_path: str = "") -> BaseStrategy:
-        """
-        创建策略实例
-        
-        Args:
-            extraction_strategy: StrategyManager返回的策略配置
-            product_config: 产品配置信息
-            html_file_path: HTML文件路径
-            
-        Returns:
-            策略实例
-            
-        Raises:
-            ValueError: 未知的策略类型或策略未注册
-        """
-        strategy_type = extraction_strategy.strategy_type
-        
-        if strategy_type not in cls._strategies:
-            available_strategies = list(cls._strategies.keys())
+    def create_strategy(
+        cls,
+        strategy_name: str,
+        product_config: dict[str, Any],
+        html_file_path: str = "",
+    ) -> BaseStrategy:
+        location = cls._strategy_classes.get(strategy_name)
+        if location is None:
+            available = ", ".join(cls._strategy_classes)
             raise ValueError(
-                f"未知的策略类型: {strategy_type.value}. "
-                f"已注册的策略: {[s.value for s in available_strategies]}"
+                f"未知 Strategy {strategy_name!r}；当前可选值：{available}。"
             )
-        
-        strategy_class = cls._strategies[strategy_type]
-        
-        try:
-            # 创建策略实例
-            strategy_instance = strategy_class(
-                product_config=product_config,
-                html_file_path=html_file_path
-            )
-            
-            # 设置策略相关信息
-            strategy_instance.strategy_name = strategy_type.value
-            strategy_instance.extraction_strategy = extraction_strategy
-            
-            logger.info(f"✓ 创建策略实例: {strategy_type.value} -> {strategy_class.__name__}")
-            return strategy_instance
-            
-        except Exception as e:
-            raise ValueError(f"创建策略实例失败 ({strategy_type.value}): {e}")
+        module_name, class_name = location
+        strategy_class = getattr(import_module(module_name), class_name)
+        if not isinstance(strategy_class, type) or not issubclass(
+            strategy_class, BaseStrategy
+        ):
+            raise TypeError(f"{class_name} 不是 BaseStrategy 的实现。")
+        return strategy_class(
+            product_config=product_config,
+            html_file_path=html_file_path,
+        )
 
     @classmethod
-    def get_registered_strategies(cls) -> Dict[StrategyType, Type[BaseStrategy]]:
-        """
-        获取所有已注册的策略
-        
-        Returns:
-            策略类型到策略类的映射
-        """
-        return cls._strategies.copy()
-
-    @classmethod
-    def get_strategy_description(cls, strategy_type: StrategyType) -> str:
-        """
-        获取策略描述
-        
-        Args:
-            strategy_type: 策略类型
-            
-        Returns:
-            策略描述信息
-        """
-        return cls._strategy_descriptions.get(strategy_type, "未知策略")
-
-    @classmethod
-    def is_strategy_registered(cls, strategy_type: StrategyType) -> bool:
-        """
-        检查策略是否已注册
-        
-        Args:
-            strategy_type: 策略类型
-            
-        Returns:
-            是否已注册
-        """
-        return strategy_type in cls._strategies
-
-    @classmethod
-    def get_registration_status(cls) -> Dict[str, Any]:
-        """
-        获取策略注册状态报告
-        
-        Returns:
-            注册状态信息
-        """
-        all_strategy_types = list(StrategyType)
-        registered_count = len(cls._strategies)
-        total_count = len(all_strategy_types)
-        
-        status = {
-            "total_strategies": total_count,
-            "registered_strategies": registered_count,
-            "completion_rate": registered_count / total_count * 100,
-            "registered": {
-                strategy_type.value: {
-                    "class_name": strategy_class.__name__,
-                    "description": cls.get_strategy_description(strategy_type)
-                }
-                for strategy_type, strategy_class in cls._strategies.items()
-            },
-            "missing": [
-                {
-                    "strategy_type": strategy_type.value,
-                    "description": cls.get_strategy_description(strategy_type)
-                }
-                for strategy_type in all_strategy_types
-                if strategy_type not in cls._strategies
-            ]
+    def get_registration_status(cls) -> dict[str, Any]:
+        names = list(cls._strategy_classes)
+        return {
+            "total_strategies": len(names),
+            "registered_strategies": len(names),
+            "strategies": names,
         }
-        
-        return status
-
-    @classmethod
-    def validate_strategy_registration(cls) -> bool:
-        """
-        验证所有必需的策略是否已注册
-        
-        Returns:
-            是否所有策略都已注册
-        """
-        all_strategy_types = set(StrategyType)
-        registered_strategy_types = set(cls._strategies.keys())
-        
-        missing_strategies = all_strategy_types - registered_strategy_types
-        
-        if missing_strategies:
-            logger.warning(f"⚠ 缺少策略注册: {[s.value for s in missing_strategies]}")
-            return False
-        
-        logger.info("✓ 所有策略已完整注册")
-        return True
-
-    @classmethod
-    def clear_registrations(cls) -> None:
-        """清除所有注册的策略（主要用于测试）"""
-        cls._strategies.clear()
-        logger.info("🧹 清除所有策略注册")
 
 
-# 便捷函数，用于在其他模块中快速访问工厂功能
-def register_strategy(strategy_type: StrategyType, strategy_class: Type[BaseStrategy]) -> None:
-    """便捷函数：注册策略"""
-    StrategyFactory.register_strategy(strategy_type, strategy_class)
-
-
-def create_strategy(extraction_strategy: ExtractionStrategy, 
-                   product_config: Dict[str, Any], 
-                   html_file_path: str = "") -> BaseStrategy:
-    """便捷函数：创建策略实例"""
-    return StrategyFactory.create_strategy(extraction_strategy, product_config, html_file_path)
-
-
-def get_strategy_status() -> Dict[str, Any]:
-    """便捷函数：获取策略注册状态"""
-    return StrategyFactory.get_registration_status()
+def create_strategy(
+    strategy_name: str,
+    product_config: dict[str, Any],
+    html_file_path: str = "",
+) -> BaseStrategy:
+    return StrategyFactory.create_strategy(
+        strategy_name,
+        product_config,
+        html_file_path,
+    )

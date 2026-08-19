@@ -1,3 +1,0 @@
-# Fail Closed When Page-Global Content Cannot Be Emitted Validly
-
-v0.4 emits `baseContent` only when the exact Page-Global Content boundary is proven and the resulting fragment is contract-valid. We reject whole-page or `.pure-content` fallbacks, cross-field Content Ownership Overlap, and extractor-side repairs of duplicate IDs: an unproven boundary is a reconstruction failure, while duplicate IDs inside one exact emitted fragment are recorded as a Blocking Source Structure Finding and fail before Payload generation. Keeping the product supported and runnable while recording an explicit failed item was chosen over `known_unsupported`, skip, empty content, or silent source repair because those alternatives would hide either capability or source truth.

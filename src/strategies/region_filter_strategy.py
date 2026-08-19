@@ -6,29 +6,23 @@
 集成新工具类与现有RegionProcessor
 """
 
-import os
-import sys
+import logging
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from bs4 import BeautifulSoup
 
-# 添加项目根目录到Python路径
-project_root = Path(__file__).parent.parent.parent
-sys.path.append(str(project_root))
-
 from src.strategies.base_strategy import BaseStrategy
+from src.core.scoped_source_content import locate_formal_pricing_boundary
 from src.core.region_processor import RegionProcessor
 from src.utils.content.content_extractor import ContentExtractor
 from src.utils.content.section_extractor import SectionExtractor
 from src.utils.content.flexible_builder import FlexibleBuilder
 from src.detectors.filter_detector import FilterDetector
 from src.utils.content.content_utils import classify_pricing_section, filter_sections_by_type
-from src.utils.html.cleaner import clean_html_content
+from src.utils.html.normalization import normalize_html
 
-from src.core.logging import get_logger
-from src.core.scoped_source_content import resolve_page_global_base_content
-
-logger = get_logger(__name__)
+clean_html_content = normalize_html
+logger = logging.getLogger(__name__)
 
 
 class RegionFilterStrategy(BaseStrategy):
@@ -55,12 +49,23 @@ class RegionFilterStrategy(BaseStrategy):
         self.strategy_name = "region_filter"
         
         # 初始化工具类
-        self.content_extractor = ContentExtractor()
+        self.content_extractor = ContentExtractor(
+            expected_language=str(product_config.get("language", "")) or None
+        )
         self.section_extractor = SectionExtractor()
         self.flexible_builder = FlexibleBuilder()
         
         # 保持现有区域处理逻辑
-        self.region_processor = RegionProcessor()
+        soft_category_path = product_config.get("soft_category_path")
+        if not isinstance(soft_category_path, str) or not soft_category_path:
+            raise ValueError("RegionFilterStrategy 缺少可信区域配置路径。")
+        lookup_recorder = product_config.get("soft_category_lookup_recorder")
+        if lookup_recorder is not None and not callable(lookup_recorder):
+            raise ValueError("soft_category_lookup_recorder 必须可以被调用。")
+        self.region_processor = RegionProcessor(
+            soft_category_path,
+            lookup_recorder=lookup_recorder,
+        )
         self.filter_detector = FilterDetector()
         
         logger.info(f"🌍 初始化区域筛选策略: {self._get_product_key()}")
@@ -81,24 +86,15 @@ class RegionFilterStrategy(BaseStrategy):
         # 1. 使用ContentExtractor提取基础元数据
         base_metadata = self.content_extractor.extract_base_metadata(soup, url, self.html_file_path)
         
+        pricing_boundary = locate_formal_pricing_boundary(soup)
+
         # 2. 使用SectionExtractor提取commonSections
-        common_sections = self.section_extractor.extract_all_sections(soup)
+        common_sections = self.section_extractor.extract_all_sections(
+            soup, pricing_boundary
+        )
         
         # 3. 使用FilterDetector获取筛选器信息
         filter_analysis = self.filter_detector.detect_filters(soup)
-        software_options = filter_analysis.get("software_options", [])
-        product_key = self._get_product_key()
-        if (
-            not filter_analysis.get("software_visible")
-            and len(software_options) == 1
-            and str(software_options[0].get("label", "")).casefold()
-            == product_key.casefold()
-            and str(software_options[0].get("value", "")).casefold()
-            != product_key.casefold()
-        ):
-            software_options[0]["value"] = product_key
-            filter_analysis["software_default_value"] = product_key
-        
         # 4. 使用RegionProcessor提取区域内容（传递筛选器信息和产品配置）
         region_content = self.region_processor.extract_region_contents(
             soup,
@@ -115,11 +111,7 @@ class RegionFilterStrategy(BaseStrategy):
         
         # 6. RegionFilter必须由完整的region状态组承载，禁止退化为Simple。
         strategy_content = {
-            "baseContent": resolve_page_global_base_content(
-                soup,
-                self.product_config,
-                language=str(base_metadata.get("Language", "")),
-            ),
+            "baseContent": "",
             "contentGroups": content_groups,
             "strategy_type": "region_filter",
             "filter_analysis": filter_analysis,  # 传递筛选器分析结果
@@ -144,7 +136,8 @@ class RegionFilterStrategy(BaseStrategy):
         Returns:
             commonSections列表
         """
-        return self.section_extractor.extract_all_sections(soup)
+        boundary = locate_formal_pricing_boundary(soup)
+        return self.section_extractor.extract_all_sections(soup, boundary)
 
     def _extract_main_content(self, soup: BeautifulSoup) -> str:
         """

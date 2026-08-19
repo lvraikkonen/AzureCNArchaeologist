@@ -5,15 +5,9 @@
 Phase 2重构：精简为<50行，移除具体实现，添加flexible JSON支持
 """
 
-import sys
 from abc import ABC, abstractmethod
-from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from bs4 import BeautifulSoup
-
-# 添加项目根目录到Python路径
-project_root = Path(__file__).parent.parent.parent
-sys.path.append(str(project_root))
 
 
 class BaseStrategy(ABC):

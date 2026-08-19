@@ -5,17 +5,17 @@ Tab结构检测器
 
 基于实际HTML结构检测Azure中国区页面的tab结构：
 - 主容器：.technical-azure-selector.pricing-detail-tab.tab-dropdown
-- Tab内容：.tab-content > .tab-panel
+- Tab内容：正式选择器的直接内容容器 > .tab-panel
 - Category tabs：.os-tab-nav.category-tabs
 - 数据映射：data-href与内容ID的对应关系
 """
 
+import logging
+import re
 from typing import List, Dict, Any, Optional, Tuple
 from bs4 import BeautifulSoup, Tag
 
-from ..core.logging import get_logger
-
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class TabDetector:
@@ -24,7 +24,7 @@ class TabDetector:
     
     基于实际HTML结构精确检测：
     - 主容器：.technical-azure-selector.pricing-detail-tab.tab-dropdown
-    - Tab面板：.tab-content > .tab-panel#tabContentX
+    - Tab面板：正式定价选择器中的 .tab-panel#tabContentX
     - Category选项：.os-tab-nav.category-tabs 内的选项
     - 映射关系：data-href="#tabContent1-0" → <div id="tabContent1-0">
     """
@@ -147,18 +147,7 @@ class TabDetector:
         
         content_groups = []
         
-        # 查找 .tab-content 容器
-        tab_content = soup.find('div', class_='tab-content')
-        if not tab_content:
-            logger.info("⚠ 未找到 .tab-content 容器")
-            return content_groups
-        
-        # 查找其中的主要分组容器 .tab-panel#tabContentN
-        import re
-        tab_panels = tab_content.find_all('div', {
-            'class': 'tab-panel',
-            'id': re.compile(r'^tabContent\d+$')  # 只匹配主要分组，不包含子级
-        })
+        tab_panels = self._top_level_tab_panels(soup)
         
         for panel in tab_panels:
             panel_id = panel.get('id', '')
@@ -176,6 +165,48 @@ class TabDetector:
         
         logger.info(f"✅ 检测到 {len(content_groups)} 个内容分组")
         return content_groups
+
+    def _top_level_tab_panels(self, soup: BeautifulSoup) -> List[Tag]:
+        """Find software panels in either supported source layout.
+
+        Most pages put ``tabContentN`` below a direct ``.tab-content``.
+        Monitor puts the same proven software panel below a direct static
+        ``.tab-control-selector``.  The panel identity, rather than the
+        wrapper class, is the stable source contract.
+        """
+
+        main = self._detect_main_container(soup).get("element")
+        if not isinstance(main, Tag):
+            return []
+        content_wrappers = [
+            child
+            for child in main.children
+            if isinstance(child, Tag)
+            and (
+                "tab-content" in child.get("class", [])
+                or (
+                    "technical-azure-selector" in child.get("class", [])
+                    and "tab-control-selector" in child.get("class", [])
+                )
+            )
+        ]
+        if not content_wrappers:
+            return []
+        if len(content_wrappers) != 1:
+            raise ValueError("正式定价选择器没有唯一的软件内容容器")
+        panels = [
+            panel
+            for panel in content_wrappers[0].find_all(
+                "div",
+                id=re.compile(r"^tabContent\d+$"),
+                recursive=False,
+            )
+            if "tab-panel" in panel.get("class", [])
+        ]
+        panel_ids = [str(panel.get("id")) for panel in panels]
+        if len(panel_ids) != len(set(panel_ids)):
+            raise ValueError("软件内容面板包含重复 ID")
+        return panels
     
     def _detect_category_tabs(self, soup: BeautifulSoup) -> List[Dict[str, Any]]:
         """
@@ -191,18 +222,7 @@ class TabDetector:
         
         all_category_tabs = []
         
-        # 查找 .tab-content 容器
-        tab_content = soup.find('div', class_='tab-content')
-        if not tab_content:
-            logger.info("⚠ 未找到 .tab-content 容器")
-            return all_category_tabs
-        
-        # 查找所有tabContentN分组
-        import re
-        tab_panels = tab_content.find_all('div', {
-            'class': 'tab-panel',
-            'id': re.compile(r'^tabContent\d+$')
-        })
+        tab_panels = self._top_level_tab_panels(soup)
         
         for panel in tab_panels:
             panel_id = panel.get('id', '')
@@ -337,18 +357,7 @@ class TabDetector:
         
         grouped_tabs = {}
         
-        # 查找 .tab-content 容器
-        tab_content = soup.find('div', class_='tab-content')
-        if not tab_content:
-            logger.info("⚠ 未找到 .tab-content 容器")
-            return grouped_tabs
-        
-        # 查找所有tabContentN分组
-        import re
-        tab_panels = tab_content.find_all('div', {
-            'class': 'tab-panel',
-            'id': re.compile(r'^tabContent\d+$')
-        })
+        tab_panels = self._top_level_tab_panels(soup)
         
         for panel in tab_panels:
             panel_id = panel.get('id', '')

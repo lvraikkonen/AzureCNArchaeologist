@@ -1,22 +1,18 @@
 {
-  "name": "azure-cn-capability-dashboard",
-  "version": "0.4.1",
+  "name": "acn-archaeologist-rewrite-review-workbench",
+  "version": "1.0.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
   },
   "scripts": {
-    "data:build": "../.venv/bin/python ../scripts/build_capability_dashboard.py",
-    "predev": "npm run data:build",
-    "dev": "vinext dev",
-    "prebuild": "npm run data:build",
-    "build": "vinext build",
-    "start": "vinext start",
-    "test": "npm run build && node --test --experimental-strip-types tests/*.test.mjs",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern app/generated"
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1",
+    "test": "node --test --experimental-strip-types tests/*.test.mjs"
   },
   "dependencies": {
-    "next": "16.2.6",
+    "next": "16.3.1",
     "react": "19.2.6",
     "react-dom": "19.2.6"
   },
@@ -24,14 +20,7 @@
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "6.0.2",
-    "@vitejs/plugin-rsc": "0.5.26",
-    "eslint": "9.39.4",
-    "eslint-config-next": "16.2.6",
-    "react-server-dom-webpack": "19.2.6",
-    "typescript": "5.9.3",
-    "vinext": "0.0.50",
-    "vite": "8.0.13"
+    "typescript": "5.9.3"
   },
   "type": "module"
 }

@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
+import logging
 import re
 from typing import Any
 
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
-from src.core.logging import get_logger
 from src.strategies.base_strategy import BaseStrategy
-from src.utils.html.url_rewriter import rewrite_fragment_urls
+from src.utils.html.normalization import normalize_html
 
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class SupportArticleStrategy(BaseStrategy):
@@ -25,7 +25,6 @@ class SupportArticleStrategy(BaseStrategy):
     def __init__(self, product_config: dict[str, Any], html_file_path: str = "") -> None:
         super().__init__(product_config, html_file_path)
         self.support_article_type = product_config.get("support_article_type", "")
-        self.url_route_map = product_config.get("extraction", {}).get("url_route_map", {})
         if self.support_article_type not in self.SUPPORT_TYPES:
             raise ValueError(f"Invalid support_article_type: {self.support_article_type!r}")
 
@@ -94,7 +93,7 @@ class SupportArticleStrategy(BaseStrategy):
                 if clone:
                     wrapper.append(clone)
         self._clean_fragment(wrapper, source_url)
-        return wrapper.decode_contents()
+        return normalize_html(wrapper.decode_contents())
 
     def _extract_main_content(self, content: Tag, source_url: str) -> str:
         first_h2 = content.find("h2")
@@ -117,10 +116,10 @@ class SupportArticleStrategy(BaseStrategy):
         self._clean_fragment(wrapper, source_url)
         if not wrapper.get_text(" ", strip=True) and not wrapper.select("img, video, audio, table, iframe"):
             return ""
-        return wrapper.decode_contents().strip()
+        return normalize_html(wrapper.decode_contents())
 
     def _clean_fragment(self, fragment: Tag, source_url: str) -> None:
         for selector in self.UI_SELECTORS:
             for element in fragment.select(selector):
                 element.decompose()
-        rewrite_fragment_urls(fragment, source_url, self.url_route_map)
+        del source_url

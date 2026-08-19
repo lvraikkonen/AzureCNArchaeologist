@@ -1,5 +1,0 @@
-# Retain Both Payload Goldens and Fact Baselines for Core Pricing
-
-Status: Superseded for v0.4 by ADR-0087
-
-Every bilingual Core pricing end-to-end fixture retains two independently governed baselines. Its complete CMS-importable Business Payload is canonically serialized as a Golden Payload to detect title, metadata, HTML, filters, content groups, ordering, and other output regressions; runtime-only diagnostics, timestamps, Run IDs, and evidence paths are not Business Payload fields and do not enter that Golden. Its Curated Pricing Fact Baseline separately calibrates the independent source-side and payload-side fact validators. A mismatch in either fails the Deterministic Test Suite, and updates require reviewed Baseline Candidates, but only the frozen-source-derived Expected Pricing Fact Inventory remains the runtime correctness oracle. Facts-only E2E coverage was rejected because non-pricing CMS output could regress undetected, while treating a prior full payload as content truth was rejected because it could preserve an extraction defect.

@@ -9,16 +9,12 @@
 - 隐藏状态和选项映射的精确提取
 """
 
+import logging
 import re
 from typing import Dict, Any
 from bs4 import BeautifulSoup, Tag
 
-from ..core.data_models import (
-    FilterType, Filter
-)
-from ..core.logging import get_logger
-
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class FilterDetector:

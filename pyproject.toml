@@ -1,38 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "AzureCN-Archeologist"
-version = "0.5.5"
-description = "ACN rebuild"
+name = "acn-archaeologist"
+version = "1.0.0"
+description = "Azure China pricing and support article extraction pipeline rewrite"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = [
-    "azure-storage-blob>=12.26.0",
-    "beautifulsoup4>=4.13.4",
-    "loguru>=0.7.3",
-    "psutil>=7.0.0",
-    "python-dotenv>=1.1.1",
-    "jsonschema>=4.23.0",
-    "lxml>=5.4,<7",
-]
+dependencies = ["beautifulsoup4>=4.12,<5"]
 
-[dependency-groups]
-dev = [
-    "pytest>=8.4,<10",
-]
+[project.optional-dependencies]
+dev = ["pytest>=8.4"]
+
+[project.scripts]
+acn-archaeologist = "src.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
 
 [tool.pytest.ini_options]
-minversion = "8.4"
-testpaths = ["tests"]
-python_files = ["test_*.py"]
+addopts = "--strict-config --strict-markers"
 pythonpath = ["."]
-strict_config = true
-strict_markers = true
-addopts = [
-    "--strict-config",
-    "--strict-markers",
-    "--ignore=tests/test_data_models.py",
-    "--ignore=tests/test_detectors.py",
-    "--ignore=tests/test_page_analyzer.py",
-]
-markers = [
-    "live_interaction: explicitly network-enabled rendered interaction reference tests",
-]
+testpaths = ["tests"]

@@ -159,334 +159,230 @@
                             <h2>
                                 Event Grid consumption pricing
                             </h2>
-                        </div>
-                        <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
-                            <div class="tab-container-container">
-                                <div class="tab-container-box">
-                                    <div class="tab-container">
-                                        <div class="dropdown-container software-kind-container" style="display:none;">
-                                            <label>
-                                                OS/Software:
-                                            </label>
-                                            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
-                                                <span class="selected-item">
-                                                    Azure Event Grid
-                                                </span>
-                                                <i class="icon">
-                                                </i>
-                                                <ol class="tab-items">
-                                                    <li class="active">
-                                                        <a data-href="#tabContent1" href="javascript:void(0)"
-                                                            id="home_VPN Gateway">
-                                                            Azure Event Grid
-                                                        </a>
-                                                    </li>
-                                                </ol>
-                                            </div>
-                                            <select class="dropdown-select software-box hidden-lg hidden-md"
-                                                id="software-box">
-                                                <option data-href="#tabContent1" selected="selected"
-                                                    value="VPN Gateway">
-                                                    Azure Event Grid
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="dropdown-container region-container" style="display:none;">
-                                            <label>
-                                                Region:
-                                            </label>
-                                            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
-                                                <span class="selected-item">
-                                                    China North 3
-                                                </span>
-                                                <i class="icon">
-                                                </i>
-                                                <ol class="tab-items">
-                                                    <li class="active">
-                                                        <a data-href="#north-china3" href="javascript:void(0)"
-                                                            id="north-china3">
-                                                            China North 3
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a data-href="#east-china2" href="javascript:void(0)"
-                                                            id="east-china2">
-                                                            China East 2
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a data-href="#north-china2" href="javascript:void(0)"
-                                                            id="north-china2">
-                                                            China North 2
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a data-href="#east-china" href="javascript:void(0)"
-                                                            id="east-china">
-                                                            China East
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a data-href="#north-china" href="javascript:void(0)"
-                                                            id="north-china">
-                                                            China North
-                                                        </a>
-                                                    </li>
-                                                </ol>
-                                            </div>
-                                            <select class="dropdown-select region-box hidden-lg hidden-md"
-                                                id="region-box">
-                                                <option data-href="#north-china3" selected="selected"
-                                                    value="north-china3">
-                                                    China North 3
-                                                </option>
-                                                <option data-href="#east-china2" value="east-china2">
-                                                    China East2
-                                                </option>
-                                                <option data-href="#north-china2" value="north-china2">
-                                                    China North 2
-                                                </option>
-                                                <option data-href="#east-china" value="east-china">
-                                                    China East
-                                                </option>
-                                                <option data-href="#north-china" value="north-china">
-                                                    China North
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="clearfix">
-                                        </div>
-                                    </div>
-                                </div>
+                            <p>
+                                Event Grid is priced as pay-per-use based on operations performed.
+                                Operations
+                                include ingress of events to Domains or
+                                Topics, advanced matches, delivery attempts, and management calls. Plan
+                                pricing
+                                includes a monthly free grant of
+                                100,000 operations.
+                            </p>
+                            <table cellpadding="0" cellspacing="0" width="100%">
+                                <tbody>
+                                    <tr>
+                                        <th align="left">
+                                            Price per million operations
+                                        </th>
+                                        <th align="left">
+                                            Free usage per month
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td align="left">
+                                            ￥ 0.611
+                                        </td>
+                                        <td align="left">
+                                            100,000 operations
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div>
+                                <br />
+                                <h3>
+                                    Event Grid pricing example 1
+                                </h3>
+                                <p>
+                                    <a href="/en-us/home/features/azure-functions"
+                                        style="float: none;display: inline;background-color: white;margin: 0;padding: 0;">
+                                        Azure Functions
+                                    </a>
+                                    is connected to
+                                    <a href="/en-us/home/features/storage/blobs"
+                                        style="float: none;display: inline;background-color: white;margin: 0;padding: 0;">
+                                        Blob Storage
+                                    </a>
+                                    through Event Grid, to process images each time a new image is added. In
+                                    the
+                                    blob storage container 5
+                                    million images are created—each one triggering the Function through
+                                    Event
+                                    Grid.
+                                </p>
+                                <ul>
+                                    <li>
+                                        You publish 5 million events to Event Grid in a month.
+                                    </li>
+                                    <li>
+                                        All events are published to 1 https endpoint.
+                                    </li>
+                                </ul>
+                                <table cellpadding="0" cellspacing="0" width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <th align="left">
+                                                <strong>
+                                                    NUMBER OF OPERATIONS
+                                                </strong>
+                                            </th>
+                                            <th align="left">
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <td align="left">
+                                                Published events
+                                            </td>
+                                            <td align="left">
+                                                5 million operations
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left">
+                                                Delivery attempts
+                                            </td>
+                                            <td align="left">
+                                                5 million operations
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left">
+                                                Monthly free grant
+                                            </td>
+                                            <td align="left">
+                                                - 100,000 operations
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left">
+                                                Total operations
+                                                <br />
+                                                Price per million operations
+                                            </td>
+                                            <td align="left">
+                                                9.9 million
+                                                <br />
+                                                ￥ 0.611
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left">
+                                                <strong>
+                                                    Total monthly cost
+                                                </strong>
+                                            </td>
+                                            <td align="left">
+                                                ￥ 6.0489
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="tab-content">
-                            <!-- BEGIN: TAB-CONTENT-1 -->
-                            <!-- BEGIN: TAB-CONTAINER-1 -->
-                            <div class="tab-content">
-                                <!-- BEGIN: TAB-CONTENT-1 -->
-                                <div class="tab-panel" id="tabContent1">
-                                    <p>
-                                        Event Grid is priced as pay-per-use based on operations performed. Operations
-                                        include ingress of events to Domains or
-                                        Topics, advanced matches, delivery attempts, and management calls. Plan pricing
-                                        includes a monthly free grant of
-                                        100,000 operations.
-                                    </p>
-                                    <table cellpadding="0" cellspacing="0" width="100%">
-                                        <tbody>
-                                            <tr>
-                                                <th align="left">
-                                                    Price per million operations
-                                                </th>
-                                                <th align="left">
-                                                    Free usage per month
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <td align="left">
-                                                    ￥ 0.611
-                                                </td>
-                                                <td align="left">
-                                                    100,000 operations
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <div>
-                                        <br />
-                                        <h3>
-                                            Event Grid pricing example 1
-                                        </h3>
-                                        <p>
-                                            <a href="/en-us/home/features/azure-functions"
-                                                style="float: none;display: inline;background-color: white;margin: 0;padding: 0;">
-                                                Azure Functions
-                                            </a>
-                                            is connected to
-                                            <a href="/en-us/home/features/storage/blobs"
-                                                style="float: none;display: inline;background-color: white;margin: 0;padding: 0;">
-                                                Blob Storage
-                                            </a>
-                                            through Event Grid, to process images each time a new image is added. In the
-                                            blob storage container 5
-                                            million images are created—each one triggering the Function through Event
-                                            Grid.
-                                        </p>
-                                        <ul>
-                                            <li>
-                                                You publish 5 million events to Event Grid in a month.
-                                            </li>
-                                            <li>
-                                                All events are published to 1 https endpoint.
-                                            </li>
-                                        </ul>
-                                        <table cellpadding="0" cellspacing="0" width="100%">
-                                            <tbody>
-                                                <tr>
-                                                    <th align="left">
-                                                        <strong>
-                                                            NUMBER OF OPERATIONS
-                                                        </strong>
-                                                    </th>
-                                                    <th align="left">
-                                                    </th>
-                                                </tr>
-                                                <tr>
-                                                    <td align="left">
-                                                        Published events
-                                                    </td>
-                                                    <td align="left">
-                                                        5 million operations
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td align="left">
-                                                        Delivery attempts
-                                                    </td>
-                                                    <td align="left">
-                                                        5 million operations
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td align="left">
-                                                        Monthly free grant
-                                                    </td>
-                                                    <td align="left">
-                                                        - 100,000 operations
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td align="left">
-                                                        Total operations
-                                                        <br />
-                                                        Price per million operations
-                                                    </td>
-                                                    <td align="left">
-                                                        9.9 million
-                                                        <br />
-                                                        ￥ 0.611
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td align="left">
-                                                        <strong>
-                                                            Total monthly cost
-                                                        </strong>
-                                                    </td>
-                                                    <td align="left">
-                                                        ￥ 6.0489
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <br />
-                                    <h3>
-                                        Event Grid pricing example 2
-                                    </h3>
-                                    <p>
-                                        Incoming logs to Event Hubs are being sent to storage through
-                                        <a href="/en-us/home/features/event-hubs.html"
-                                            style="float: none;display: inline;background-color: white;margin: 0;padding: 0;">
-                                            Event Hubs
-                                        </a>
-                                        Capture. Five million log batch events are pushed by Event Grid to
-                                        <a href="/en-us/home/features/logic-apps.html"
-                                            style="float: none;display: inline;background-color: white;margin: 0;padding: 0;">
-                                            Logic Apps
-                                        </a>
-                                        for monitoring. All events are also pushed to one of several custom-monitoring
-                                        endpoints based on the event type, and in some cases the origin
-                                        of the event. One million of these events require advanced matching. One of the
-                                        endpoints experiences outages and retries are necessary to
-                                        successfully deliver the events.
-                                    </p>
-                                    <ul>
-                                        <li>
-                                            You publish 5 million events to Event Grid in a month.
-                                        </li>
-                                        <li>
-                                            All events are published to 2 https endpoints.
-                                        </li>
-                                        <li>
-                                            1 million of the events require advanced matching.
-                                        </li>
-                                        <li>
-                                            1 million of the events required 2 delivery attempts.
-                                        </li>
-                                    </ul>
-                                    <table cellpadding="0" cellspacing="0" width="100%">
-                                        <tbody>
-                                            <tr>
-                                                <th align="left">
-                                                    <strong>
-                                                        NUMBER OF OPERATIONS
-                                                    </strong>
-                                                </th>
-                                                <th align="left">
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <td align="left">
-                                                    Published events
-                                                </td>
-                                                <td align="left">
-                                                    5 million operations
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="left">
-                                                    Delivery attempts
-                                                </td>
-                                                <td align="left">
-                                                    11 million operations (1 million for second delivery attempt)
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="left">
-                                                    Advanced match
-                                                </td>
-                                                <td align="left">
-                                                    1 million operations
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="left">
-                                                    Monthly free grant
-                                                </td>
-                                                <td align="left">
-                                                    - 100,000 operations
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="left">
-                                                    Total operations
-                                                    <br />
-                                                    Price per million operations
-                                                </td>
-                                                <td align="left">
-                                                    16.9 million
-                                                    <br />
-                                                    ￥ 0.611
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="left">
-                                                    <strong>
-                                                        Total monthly cost
-                                                    </strong>
-                                                </td>
-                                                <td align="left">
-                                                    ￥ 10.3259
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <!-- END: TAB-CONTENT-1 -->
-                            </div>
-                            <!-- END: TAB-CONTAINER-1 -->
-                            </div>
+                            <br />
+                            <h3>
+                                Event Grid pricing example 2
+                            </h3>
+                            <p>
+                                Incoming logs to Event Hubs are being sent to storage through
+                                <a href="/en-us/home/features/event-hubs.html"
+                                    style="float: none;display: inline;background-color: white;margin: 0;padding: 0;">
+                                    Event Hubs
+                                </a>
+                                Capture. Five million log batch events are pushed by Event Grid to
+                                <a href="/en-us/home/features/logic-apps.html"
+                                    style="float: none;display: inline;background-color: white;margin: 0;padding: 0;">
+                                    Logic Apps
+                                </a>
+                                for monitoring. All events are also pushed to one of several
+                                custom-monitoring
+                                endpoints based on the event type, and in some cases the origin
+                                of the event. One million of these events require advanced matching. One of
+                                the
+                                endpoints experiences outages and retries are necessary to
+                                successfully deliver the events.
+                            </p>
+                            <ul>
+                                <li>
+                                    You publish 5 million events to Event Grid in a month.
+                                </li>
+                                <li>
+                                    All events are published to 2 https endpoints.
+                                </li>
+                                <li>
+                                    1 million of the events require advanced matching.
+                                </li>
+                                <li>
+                                    1 million of the events required 2 delivery attempts.
+                                </li>
+                            </ul>
+                            <table cellpadding="0" cellspacing="0" width="100%">
+                                <tbody>
+                                    <tr>
+                                        <th align="left">
+                                            <strong>
+                                                NUMBER OF OPERATIONS
+                                            </strong>
+                                        </th>
+                                        <th align="left">
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td align="left">
+                                            Published events
+                                        </td>
+                                        <td align="left">
+                                            5 million operations
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="left">
+                                            Delivery attempts
+                                        </td>
+                                        <td align="left">
+                                            11 million operations (1 million for second delivery attempt)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="left">
+                                            Advanced match
+                                        </td>
+                                        <td align="left">
+                                            1 million operations
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="left">
+                                            Monthly free grant
+                                        </td>
+                                        <td align="left">
+                                            - 100,000 operations
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="left">
+                                            Total operations
+                                            <br />
+                                            Price per million operations
+                                        </td>
+                                        <td align="left">
+                                            16.9 million
+                                            <br />
+                                            ￥ 0.611
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="left">
+                                            <strong>
+                                                Total monthly cost
+                                            </strong>
+                                        </td>
+                                        <td align="left">
+                                            ￥ 10.3259
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
                         </div>
 
                         <div class="pricing-page-section">

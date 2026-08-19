@@ -1,2 +1,0 @@
-"""Production Strategy content helpers."""
-

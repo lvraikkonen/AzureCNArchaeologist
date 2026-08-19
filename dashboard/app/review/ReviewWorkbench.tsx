@@ -1,75 +1,93 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 
 import {
-  IndependentFidelityView,
-  ItemEvidence,
+  ProductEvidence,
+  ReviewComparison,
+  ReviewDecision,
   ReviewFilters,
-  ReviewQueueItem,
-  WorkbenchProjection,
-  assertIndependentFidelityView,
-  assertItemEvidence,
-  assertWorkbenchProjection,
-  bindingLabel,
-  decisionLabel,
-  defaultReviewFilters,
-  filterReviewItems,
-  l3aClaimLabel,
-  shortSha,
+  ReviewLanguage,
+  ReviewLanguageEvidence,
+  ReviewProduct,
+  ReviewProjection,
+  WorkbenchConnection,
+  assertProductEvidence,
+  assertReviewProjection,
+  canSubmitDecision,
+  filterReviewProducts,
+  formatEvidenceForCopy,
+  parseWorkbenchConnection,
+  reviewLanguages,
+  reviewMaterials,
 } from "../review-model";
 
-const rejectionReasons = [
-  ["upstream_source", "上游 Source"],
-  ["product_config", "产品配置"],
-  ["extractor_defect", "提取器缺陷"],
-  ["validator_defect", "验证器缺陷"],
-  ["needs_clarification", "需要澄清"],
-] as const;
+const statusLabels: Record<string, string> = {
+  pending: "待审核",
+  approved: "已批准",
+  rejected: "已拒绝",
+  passed: "通过",
+  failed: "失败",
+  blocked: "阻断",
+  matched: "一致",
+  mismatched: "不一致",
+};
 
-function initialConnection(): { bridgeUrl: string; token: string | null; hadFragment: boolean } {
+function initialConnection(): WorkbenchConnection {
   if (typeof window === "undefined") {
-    return {
-      bridgeUrl: "http://127.0.0.1:8765",
-      token: null,
-      hadFragment: false,
-    };
+    return parseWorkbenchConnection("");
   }
-  const fragment = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-  return {
-    bridgeUrl: (fragment.get("bridge") ?? "http://127.0.0.1:8765").replace(/\/$/, ""),
-    token: fragment.get("token"),
-    hadFragment: window.location.hash.length > 1,
-  };
+  const fragmentAt = window.location.href.indexOf("#");
+  return parseWorkbenchConnection(
+    fragmentAt >= 0 ? window.location.href.slice(fragmentAt) : "",
+  );
 }
 
-function formatJson(value: unknown): string {
-  return JSON.stringify(value, null, 2);
+function statusTone(status: string): string {
+  if (["approved", "passed", "matched"].includes(status)) return "success";
+  if (["rejected", "failed", "blocked", "mismatched"].includes(status)) return "danger";
+  return "pending";
 }
 
-function statusTone(value: string): string {
-  if (value === "approved" || value === "eligible" || value === "bound" || value === "passed") return "emerald";
-  if (value === "rejected" || value === "stale" || value === "blocked" || value === "failed" || value === "invalid") return "coral";
-  if (value === "pending" || value === "not_applicable" || value === "not_recorded") return "amber";
-  return "slate";
-}
-
-function Pill({ label, tone }: { label: string; tone: string }) {
-  return <span className={`review-pill tone-${tone}`}>{label}</span>;
-}
-
-function Metric({
-  label,
-  value,
-  detail,
-}: {
-  label: string;
-  value: number;
-  detail: string;
-}) {
+function StatusPill({ status }: { status: string }) {
   return (
-    <article className="review-metric">
+    <span className={`status-pill status-${statusTone(status)}`}>
+      {statusLabels[status] ?? status}
+    </span>
+  );
+}
+
+function displayValue(value: unknown): string {
+  return formatEvidenceForCopy(value);
+}
+
+function previewDocument(fragment: unknown): string {
+  const html = typeof fragment === "string" ? fragment : `<pre>${displayValue(fragment)}</pre>`;
+  return `<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'"><style>html{color:#1d2925;background:#fffdf8;font:14px/1.55 system-ui,sans-serif}body{margin:16px;overflow-wrap:anywhere}table{border-collapse:collapse;max-width:100%}th,td{border:1px solid #d5ddd8;padding:6px 8px;text-align:left}img{max-width:100%}pre{white-space:pre-wrap}</style></head><body>${html}</body></html>`;
+}
+
+async function responseDocument(response: Response): Promise<unknown> {
+  try {
+    return await response.json();
+  } catch {
+    throw new Error(`本地审核服务返回了不可读取的响应（HTTP ${response.status}）。`);
+  }
+}
+
+function responseError(value: unknown, fallback: string): string {
+  if (value && typeof value === "object") {
+    const error = (value as { error?: unknown }).error;
+    if (error && typeof error === "object") {
+      const message = (error as { message?: unknown }).message;
+      if (typeof message === "string") return message;
+    }
+  }
+  return fallback;
+}
+
+function Metric({ label, value, detail }: { label: string; value: number; detail: string }) {
+  return (
+    <article className="metric-card">
       <span>{label}</span>
       <strong>{value.toLocaleString("zh-CN")}</strong>
       <small>{detail}</small>
@@ -77,796 +95,485 @@ function Metric({
   );
 }
 
-function SelectField({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  options: readonly [string, string][];
-  onChange: (value: string) => void;
-}) {
-  return (
-    <label className="review-field">
-      <span>{label}</span>
-      <select value={value} onChange={(event) => onChange(event.target.value)}>
-        {options.map(([optionValue, text]) => (
-          <option key={optionValue} value={optionValue}>
-            {text}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}
-
-function EvidenceBlock({
-  title,
-  source,
-  payload,
-}: {
-  title: string;
-  source: unknown;
-  payload: unknown;
-}) {
-  return (
-    <section className="review-evidence-block">
-      <h4>{title}</h4>
-      <div className="review-compare-grid">
-        <div>
-          <span>Source</span>
-          <pre>{formatJson(source)}</pre>
-        </div>
-        <div>
-          <span>Payload</span>
-          <pre>{formatJson(payload)}</pre>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function coverageLabel(value: object | null): string {
-  if (!value) return "—";
-  const coverage = value as Record<string, unknown>;
-  if (typeof coverage.required === "number") {
-    return `${String(coverage.completed ?? 0)}/${coverage.required} completed`;
-  }
-  if (typeof coverage.universe_count === "number") {
-    return `${String(coverage.selected_count ?? 0)}/${coverage.universe_count} sampled`;
-  }
-  return "recorded";
-}
-
-function IndependentFidelityPanel({
-  l3a,
-  l3b,
-}: {
-  l3a: ItemEvidence;
-  l3b: IndependentFidelityView;
-}) {
-  return (
-    <section className="review-l3-panel" aria-label="L3a and L3b evidence">
-      <header className="review-l3-head">
-        <div>
-          <p className="eyebrow">Machine evidence · read only</p>
-          <h3>L3a / L3b claims</h3>
-        </div>
-        <Pill label={l3b.status.replace("_", "-")} tone={statusTone(l3b.status)} />
-      </header>
-
-      <div className="review-l3-summary-grid">
-        <article>
-          <span>L3a</span>
-          <strong>{l3aClaimLabel(l3a.coverage)}</strong>
-          <Pill
-            label={l3a.validation_summary.status}
-            tone={statusTone(l3a.validation_summary.status)}
-          />
-          <small>{coverageLabel(l3a.coverage)}</small>
-          <small>binding {l3a.status.evidence_binding}</small>
-          <pre>{formatJson(l3a.coverage)}</pre>
-        </article>
-        <article>
-          <span>L3b</span>
-          <strong>{l3b.l3b.claim}</strong>
-          <Pill label={l3b.l3b.verdict.replace("_", "-")} tone={statusTone(l3b.l3b.verdict)} />
-          <small>{coverageLabel(l3b.l3b.coverage)}</small>
-          <small>binding {l3b.evidence_identity ? "bound" : l3b.status.replace("_", "-")}</small>
-          <p>{l3b.l3b.reason}</p>
-        </article>
-      </div>
-
-      <dl className="review-l3-identity">
-        <dt>L3a Evidence</dt>
-        <dd>
-          <code>
-            {l3a.artifacts.validation
-              ? `runs/${l3a.batch_id}/${l3a.artifacts.validation.path}`
-              : "not recorded"}
-          </code>
-        </dd>
-        <dt>L3a ID</dt>
-        <dd><code>{l3a.validation_summary.evidence_sha256}</code></dd>
-        <dt>L3b Evidence</dt>
-        <dd><code>{l3b.evidence_identity?.path ?? "not recorded"}</code></dd>
-        <dt>L3b ID</dt>
-        <dd><code>{l3b.evidence_identity?.semantic_sha256 ?? "not recorded"}</code></dd>
-        {l3b.evidence_identity ? (
-          <>
-            <dt>Producer</dt>
-            <dd><code>{l3b.evidence_identity.producer_commit}</code></dd>
-          </>
-        ) : null}
-      </dl>
-
-      {l3b.l3b.claim_limitations.length ? (
-        <aside className="review-l3-limitations">
-          <strong>Claim limitations</strong>
-          {l3b.l3b.claim_limitations.map((limitation) => (
-            <p key={limitation}>{limitation}</p>
-          ))}
-        </aside>
-      ) : null}
-
-      <div className="review-l3-scopes">
-        {l3b.scopes.map((scope, index) => (
-          <details key={scope.scope_key} open={index === 0}>
-            <summary>
-              <span>
-                <strong>{scope.scope_key}</strong>
-                <small>{scope.scope_kind} · {scope.payload_locator}</small>
-              </span>
-              <Pill label={scope.verdict} tone={statusTone(scope.verdict)} />
-            </summary>
-            <p className="review-l3-reason">{scope.reason}</p>
-            <div className="review-l3-metadata">
-              <div>
-                <span>Criteria</span>
-                <pre>{formatJson(scope.criteria)}</pre>
-              </div>
-              <div>
-                <span>Locator</span>
-                <pre>{formatJson(scope.source_locator)}</pre>
-              </div>
-              <div>
-                <span>Ownership</span>
-                <pre>{formatJson({ retained: scope.retained_table_ids, removed: scope.removed_table_ids })}</pre>
-              </div>
-              <div>
-                <span>Transforms</span>
-                <pre>{formatJson(scope.applied_transform_rule_ids)}</pre>
-              </div>
-            </div>
-            <div className="review-l3-fragments">
-              <div><span>Source</span><pre>{scope.source}</pre></div>
-              <div><span>Expected</span><pre>{scope.expected}</pre></div>
-              <div><span>Payload</span><pre>{scope.payload}</pre></div>
-              <div><span>Diff</span><pre>{scope.diff || "(no differences)"}</pre></div>
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function QueueTable({
-  items,
-  selectedItemId,
+function ProductQueue({
+  products,
+  selectedProductKey,
   onSelect,
 }: {
-  items: ReviewQueueItem[];
-  selectedItemId: string | null;
-  onSelect: (item: ReviewQueueItem) => void;
+  products: ReviewProduct[];
+  selectedProductKey: string | null;
+  onSelect: (productKey: string) => void;
 }) {
+  if (!products.length) {
+    return <p className="empty-state">当前筛选条件下没有产品。</p>;
+  }
   return (
-    <div className="review-table-wrap">
-      <table className="review-table">
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>语言</th>
-            <th>状态</th>
-            <th>绑定</th>
-            <th>覆盖</th>
-            <th>Release</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item) => (
-            <tr
-              key={item.item_id}
-              className={selectedItemId === item.item_id ? "selected" : undefined}
-            >
-              <td>
-                <button type="button" onClick={() => onSelect(item)}>
-                  <strong>{item.resource_key}</strong>
-                  <span>{item.product_key}</span>
-                </button>
-              </td>
-              <td>{item.language}</td>
-              <td>
-                <Pill label={decisionLabel(item.status.review)} tone={statusTone(item.status.review)} />
-              </td>
-              <td>
-                <Pill label={bindingLabel(item.status.evidence_binding)} tone={statusTone(item.status.evidence_binding)} />
-              </td>
-              <td>
-                {item.coverage.mode === "full"
-                  ? "full"
-                  : `${item.coverage.selected_count}/${item.coverage.universe_count}`}
-              </td>
-              <td>{item.release_ready ? "ready" : "blocked"}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <ul className="product-list">
+      {products.map((product) => (
+        <li key={product.product_key}>
+          <button
+            type="button"
+            className={`product-row ${selectedProductKey === product.product_key ? "selected" : ""}`}
+            onClick={() => onSelect(product.product_key)}
+          >
+            <span className="product-row-main">
+              <strong>{product.display_name}</strong>
+              <small>{product.product_key}</small>
+            </span>
+            <span className="product-row-meta">
+              <StatusPill status={product.status} />
+              <small>{product.semantic_strategy}</small>
+            </span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function MachineEvidence({ evidence }: { evidence: ReviewLanguageEvidence }) {
+  const l3aStatus = String(evidence.l3a.status ?? "unknown");
+  const l3bStatus = String(evidence.l3b.status ?? "unknown");
+  return (
+    <section className="machine-panel" aria-label={`${evidence.language} 机器检查`}>
+      <div className="machine-card">
+        <div><span>L3a</span><StatusPill status={l3aStatus} /></div>
+        <strong>批处理幂等性</strong>
+        <p>两次独立抽取的完整 Business Payload 是否一致。</p>
+        <code>{evidence.paths.l3a_report}</code>
+      </div>
+      <div className="machine-card">
+        <div><span>L3b</span><StatusPill status={l3bStatus} /></div>
+        <strong>Source / Payload 内容一致性</strong>
+        <p>{evidence.summary.matched}/{evidence.summary.comparisons} 项一致；独立于生产 Strategy。</p>
+        <code>{evidence.paths.l3b_report}</code>
+      </div>
+    </section>
+  );
+}
+
+function EvidenceSide({ label, value, kind }: { label: string; value: unknown; kind: "html" | "value" }) {
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">("idle");
+
+  useEffect(() => {
+    if (copyStatus === "idle") return undefined;
+    const timeout = window.setTimeout(() => setCopyStatus("idle"), 2000);
+    return () => window.clearTimeout(timeout);
+  }, [copyStatus]);
+
+  const copyContent = async () => {
+    try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error("浏览器没有提供剪贴板写入能力。");
+      }
+      await navigator.clipboard.writeText(formatEvidenceForCopy(value));
+      setCopyStatus("copied");
+    } catch {
+      setCopyStatus("failed");
+    }
+  };
+
+  const copyLabel = copyStatus === "copied"
+    ? "已复制"
+    : copyStatus === "failed"
+      ? "复制失败"
+      : "复制";
+
+  return (
+    <article className="evidence-side">
+      <header>
+        <span>{label}</span>
+        <button
+          type="button"
+          className={`copy-evidence-button copy-${copyStatus}`}
+          onClick={() => void copyContent()}
+          aria-label={`复制${label}内容`}
+          aria-live="polite"
+          title="复制框内完整内容"
+        >
+          {copyLabel}
+        </button>
+      </header>
+      {kind === "html" ? (
+        <iframe
+          className="fragment-preview"
+          sandbox=""
+          srcDoc={previewDocument(value)}
+          title={`${label} HTML 片段预览`}
+        />
+      ) : (
+        <pre className="value-preview">{displayValue(value)}</pre>
+      )}
+      <details className="raw-fragment">
+        <summary>{kind === "html" ? "查看规范化 HTML" : "查看原始值"}</summary>
+        <pre>{displayValue(value)}</pre>
+      </details>
+    </article>
+  );
+}
+
+function ComparisonViewer({ comparison }: { comparison: ReviewComparison }) {
+  return (
+    <section className="comparison-viewer">
+      <header className="comparison-heading">
+        <div>
+          <p className="eyebrow">{comparison.payload_path}</p>
+          <h3>{comparison.label}</h3>
+          <p>{comparison.source_boundary}</p>
+        </div>
+        <StatusPill status={comparison.status} />
+      </header>
+      <div className="comparison-grid">
+        <EvidenceSide key={`${comparison.comparison_key}:source`} label="Frozen HTML 独立源片段" value={comparison.source} kind={comparison.kind} />
+        <EvidenceSide key={`${comparison.comparison_key}:payload`} label="Payload 对应字段" value={comparison.payload} kind={comparison.kind} />
+      </div>
+      {comparison.difference ? (
+        <details className="difference-panel">
+          <summary>查看可读差异</summary>
+          <pre>{displayValue(comparison.difference)}</pre>
+        </details>
+      ) : null}
+    </section>
+  );
+}
+
+interface DecisionDraft {
+  reviewer: string;
+  decision: ReviewDecision;
+  notes: string;
+  inspectedLanguages: ReviewLanguage[];
+  inspectedMaterials: string[];
+}
+
+const emptyDecision: DecisionDraft = {
+  reviewer: "",
+  decision: "approved",
+  notes: "",
+  inspectedLanguages: [],
+  inspectedMaterials: [],
+};
+
+function DecisionPanel({
+  product,
+  draft,
+  onChange,
+  onRequestSubmit,
+  submitting,
+}: {
+  product: ProductEvidence["product"];
+  draft: DecisionDraft;
+  onChange: (draft: DecisionDraft) => void;
+  onRequestSubmit: () => void;
+  submitting: boolean;
+}) {
+  if (product.status !== "pending") {
+    return (
+      <section className="decision-panel decision-complete">
+        <p className="eyebrow">不可覆盖的人工决定</p>
+        <div className="decision-complete-line">
+          <StatusPill status={product.status} />
+          <strong>{product.reviewer}</strong>
+        </div>
+        <p>该产品已经有决定。需要重新审核时，请从同一 Batch 创建新的审核 ID。</p>
+        {product.decision_path ? <code>{product.decision_path}</code> : null}
+      </section>
+    );
+  }
+
+  const toggleLanguage = (language: ReviewLanguage) => {
+    const inspectedLanguages = draft.inspectedLanguages.includes(language)
+      ? draft.inspectedLanguages.filter((item) => item !== language)
+      : [...draft.inspectedLanguages, language];
+    onChange({ ...draft, inspectedLanguages });
+  };
+  const toggleMaterial = (material: string) => {
+    const inspectedMaterials = draft.inspectedMaterials.includes(material)
+      ? draft.inspectedMaterials.filter((item) => item !== material)
+      : [...draft.inspectedMaterials, material];
+    onChange({ ...draft, inspectedMaterials });
+  };
+  const submitReady = canSubmitDecision(draft);
+
+  return (
+    <section className="decision-panel">
+      <div>
+        <p className="eyebrow">产品级人工决定</p>
+        <h3>提交前确认实际检查范围</h3>
+        <p>决定同时覆盖这个产品的中文和英文处理项。批准必须勾选全部语言与材料。</p>
+      </div>
+      <label className="field-control">
+        <span>审核人</span>
+        <input
+          value={draft.reviewer}
+          onChange={(event) => onChange({ ...draft, reviewer: event.target.value })}
+          autoComplete="name"
+          placeholder="请输入真实审核人姓名"
+        />
+      </label>
+      <fieldset className="choice-fieldset">
+        <legend>决定</legend>
+        <label><input type="radio" name="decision" checked={draft.decision === "approved"} onChange={() => onChange({ ...draft, decision: "approved" })} />批准</label>
+        <label><input type="radio" name="decision" checked={draft.decision === "rejected"} onChange={() => onChange({ ...draft, decision: "rejected" })} />拒绝</label>
+      </fieldset>
+      <fieldset className="choice-fieldset">
+        <legend>已检查语言</legend>
+        {reviewLanguages.map((language) => (
+          <label key={language}>
+            <input type="checkbox" checked={draft.inspectedLanguages.includes(language)} onChange={() => toggleLanguage(language)} />
+            {language}
+          </label>
+        ))}
+      </fieldset>
+      <fieldset className="choice-fieldset material-choices">
+        <legend>已检查材料</legend>
+        {reviewMaterials.map(([material, label]) => (
+          <label key={material}>
+            <input type="checkbox" checked={draft.inspectedMaterials.includes(material)} onChange={() => toggleMaterial(material)} />
+            {label}
+          </label>
+        ))}
+      </fieldset>
+      <label className="field-control">
+        <span>审核说明</span>
+        <textarea
+          value={draft.notes}
+          onChange={(event) => onChange({ ...draft, notes: event.target.value })}
+          rows={4}
+          placeholder="记录批准依据，或清楚说明拒绝原因。"
+        />
+      </label>
+      <button type="button" className="decision-button" disabled={!submitReady || submitting} onClick={onRequestSubmit}>
+        {submitting ? "正在提交…" : `准备${draft.decision === "approved" ? "批准" : "拒绝"}`}
+      </button>
+    </section>
   );
 }
 
 export default function ReviewWorkbench() {
-  const [connection, setConnection] = useState({
-    bridgeUrl: "http://127.0.0.1:8765",
-    token: null as string | null,
-    hadFragment: false,
-  });
-  const token = connection.token;
-  const [batches, setBatches] = useState<string[]>([]);
-  const [selectedBatch, setSelectedBatch] = useState<string | null>(null);
-  const [projection, setProjection] = useState<WorkbenchProjection | null>(null);
-  const [selectedItem, setSelectedItem] = useState<ReviewQueueItem | null>(null);
-  const [evidence, setEvidence] = useState<ItemEvidence | null>(null);
-  const [independentFidelity, setIndependentFidelity] = useState<IndependentFidelityView | null>(null);
-  const [filters, setFilters] = useState<ReviewFilters>(defaultReviewFilters);
-  const [reviewer, setReviewer] = useState("");
-  const [notes, setNotes] = useState("");
-  const [verdict, setVerdict] = useState<"approved" | "rejected">("approved");
-  const [reason, setReason] = useState("needs_clarification");
-  const [pageGlobal, setPageGlobal] = useState(false);
-  const [selectedStates, setSelectedStates] = useState<string[]>([]);
+  const [connection] = useState<WorkbenchConnection>(initialConnection);
+  const [projection, setProjection] = useState<ReviewProjection | null>(null);
+  const [selectedProductKey, setSelectedProductKey] = useState<string | null>(null);
+  const [evidence, setEvidence] = useState<ProductEvidence | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState<ReviewLanguage>("zh-cn");
+  const [selectedComparisonKey, setSelectedComparisonKey] = useState<string | null>(null);
+  const [filters, setFilters] = useState<ReviewFilters>({ query: "", status: "pending", strategy: "all" });
+  const [draft, setDraft] = useState<DecisionDraft>(emptyDecision);
   const [confirming, setConfirming] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [loadingEvidence, setLoadingEvidence] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const authFetch = useCallback(
-    async (path: string, init: RequestInit = {}) => {
-      if (!token) throw new Error("Workbench token is missing");
-      const response = await fetch(`${connection.bridgeUrl}${path}`, {
-        ...init,
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          ...(init.body ? { "Content-Type": "application/json" } : {}),
-          ...init.headers,
-        },
-      });
-      const payload: unknown = await response.json();
-      if (!response.ok) {
-        const problem = payload as { error?: { code?: string; message?: string } };
-        throw new Error(problem.error?.message ?? `Bridge request failed: ${response.status}`);
-      }
-      return payload;
-    },
-    [connection.bridgeUrl, token],
-  );
+  const bridgeFetch = useCallback(async (path: string, init?: RequestInit): Promise<unknown> => {
+    if (!connection.token) throw new Error("缺少本地审核服务令牌，请使用 review-serve 打印的完整页面地址进入。 ");
+    const response = await fetch(`${connection.bridgeUrl}${path}`, {
+      ...init,
+      cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${connection.token}`,
+        ...(init?.body ? { "Content-Type": "application/json" } : {}),
+        ...init?.headers,
+      },
+    });
+    const value = await responseDocument(response);
+    if (!response.ok) throw new Error(responseError(value, `请求失败（HTTP ${response.status}）。`));
+    return value;
+  }, [connection]);
 
-  const loadProjection = useCallback(
-    async (batchId: string) => {
-      const payload = await authFetch(`/v1/batches/${encodeURIComponent(batchId)}/projection`);
-      assertWorkbenchProjection(payload);
-      setProjection(payload);
-      setSelectedBatch(batchId);
-      return payload;
-    },
-    [authFetch],
-  );
+  const loadProjection = useCallback(async () => {
+    const value = await bridgeFetch("/v1/review");
+    assertReviewProjection(value);
+    setProjection(value);
+    setSelectedProductKey((current) => {
+      if (current && value.products.some((product) => product.product_key === current)) return current;
+      return value.products.find((product) => product.status === "pending")?.product_key ?? value.products[0]?.product_key ?? null;
+    });
+  }, [bridgeFetch]);
 
-  const loadEvidence = useCallback(
-    async (batchId: string, item: ReviewQueueItem) => {
+  const loadEvidence = useCallback(async (productKey: string) => {
+    setLoadingEvidence(true);
+    setError(null);
+    try {
+      const value = await bridgeFetch(`/v1/products/${encodeURIComponent(productKey)}/evidence`);
+      assertProductEvidence(value);
+      setEvidence(value);
+      setSelectedLanguage("zh-cn");
+      const chinese = value.languages.find((language) => language.language === "zh-cn") ?? value.languages[0];
+      setSelectedComparisonKey(chinese.comparisons[0]?.comparison_key ?? null);
+      setDraft((current) => ({ ...emptyDecision, reviewer: current.reviewer }));
+    } catch (reason) {
       setEvidence(null);
-      setIndependentFidelity(null);
-      setSelectedStates([]);
-      setPageGlobal(false);
-      const base = `/v1/batches/${encodeURIComponent(batchId)}/items/${item.language}/${encodeURIComponent(item.resource_key)}`;
-      const [payload, l3bPayload] = await Promise.all([
-        authFetch(`${base}/evidence`),
-        authFetch(`${base}/independent-fidelity`),
-      ]);
-      assertItemEvidence(payload);
-      assertIndependentFidelityView(l3bPayload);
-      if (
-        payload.batch_id !== batchId ||
-        payload.item_id !== item.item_id ||
-        l3bPayload.batch_id !== batchId ||
-        l3bPayload.item_id !== item.item_id
-      ) {
-        throw new TypeError("Workbench Evidence response identity differs from the selected item");
-      }
-      setEvidence(payload);
-      setIndependentFidelity(l3bPayload);
-    },
-    [authFetch],
-  );
+      setError(reason instanceof Error ? reason.message : "无法读取产品证据。");
+    } finally {
+      setLoadingEvidence(false);
+    }
+  }, [bridgeFetch]);
 
   useEffect(() => {
-    const nextConnection = initialConnection();
-    queueMicrotask(() => setConnection(nextConnection));
-    if (nextConnection.hadFragment) {
-      window.history.replaceState(null, "", window.location.pathname);
+    if (window.location.href.includes("#")) {
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
     }
   }, []);
 
   useEffect(() => {
-    if (!token) return;
-    let active = true;
-    const loadInitial = async () => {
-      setBusy(true);
-      setError(null);
-      try {
-        const session = await authFetch("/v1/session");
-        const nextBatches = Array.isArray((session as { batches?: unknown }).batches)
-          ? ((session as { batches: string[] }).batches)
-          : [];
-        if (!active) return;
-        setBatches(nextBatches);
-        if (nextBatches[0]) await loadProjection(nextBatches[0]);
-      } catch (caught) {
-        if (active) setError(caught instanceof Error ? caught.message : String(caught));
-      } finally {
-        if (active) setBusy(false);
-      }
-    };
-    void loadInitial();
-    return () => {
-      active = false;
-    };
-  }, [authFetch, loadProjection, token]);
+    if (!connection.token) {
+      setError("缺少本地审核服务令牌，请从 review-serve 打印的完整页面地址进入。");
+      return;
+    }
+    void loadProjection().catch((reason) => setError(reason instanceof Error ? reason.message : "无法读取审核清单。"));
+  }, [connection.token, loadProjection]);
 
-  const visibleItems = useMemo(
-    () => filterReviewItems(projection?.items ?? [], filters),
-    [filters, projection],
+  useEffect(() => {
+    if (selectedProductKey) void loadEvidence(selectedProductKey);
+  }, [selectedProductKey, loadEvidence]);
+
+  const filteredProducts = useMemo(
+    () => filterReviewProducts(projection?.products ?? [], filters),
+    [projection, filters],
   );
-
-  const selectedManualState = useMemo(() => {
-    if (!evidence || selectedStates.length === 0) return null;
-    return evidence.manual_preview.states.find((state) => state.state_id === selectedStates[0]) ?? null;
-  }, [evidence, selectedStates]);
-
-  const selectItem = useCallback(
-    (item: ReviewQueueItem) => {
-      if (!selectedBatch) return;
-      setSelectedItem(item);
-      setMessage(null);
-      loadEvidence(selectedBatch, item).catch((caught: Error) => setError(caught.message));
-    },
-    [loadEvidence, selectedBatch],
+  const strategies = useMemo(
+    () => [...new Set((projection?.products ?? []).map((product) => product.semantic_strategy))].sort(),
+    [projection],
   );
+  const languageEvidence = evidence?.languages.find((language) => language.language === selectedLanguage) ?? null;
+  const selectedComparison = languageEvidence?.comparisons.find((comparison) => comparison.comparison_key === selectedComparisonKey) ?? languageEvidence?.comparisons[0] ?? null;
 
-  const updateFilter = <Key extends keyof ReviewFilters>(
-    key: Key,
-    value: ReviewFilters[Key],
-  ) => setFilters((current) => ({ ...current, [key]: value }));
+  const chooseLanguage = (language: ReviewLanguage) => {
+    setSelectedLanguage(language);
+    const nextLanguage = evidence?.languages.find((candidate) => candidate.language === language);
+    setSelectedComparisonKey(nextLanguage?.comparisons[0]?.comparison_key ?? null);
+  };
 
-  const submitDecision = async () => {
-    if (!selectedBatch || !selectedItem || !projection || !evidence) return;
-    const inspected_states =
-      evidence.inspection.mode === "full"
-        ? [{ scope: "full_content" }]
-        : [
-            ...(pageGlobal ? [{ scope: "page_global" }] : []),
-            ...selectedStates.map((state_id) => ({ scope: "interactive_state", state_id })),
-          ];
-    setBusy(true);
+  const submitDecision = async (event?: FormEvent) => {
+    event?.preventDefault();
+    if (!evidence || !canSubmitDecision(draft)) return;
+    setSubmitting(true);
     setError(null);
+    setMessage(null);
     try {
-      const result = (await authFetch(
-        `/v1/batches/${encodeURIComponent(selectedBatch)}/items/${selectedItem.language}/${encodeURIComponent(selectedItem.resource_key)}/decision`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            expected_revision: projection.batch.manifest_revision,
-            reviewer,
-            verdict,
-            reason: verdict === "approved" ? null : reason,
-            notes,
-            inspected_states,
-          }),
-        },
-      )) as { status?: string; review?: string };
-      const refreshed = await loadProjection(selectedBatch);
-      const nextItem = refreshed.items.find((item) => item.item_id === selectedItem.item_id) ?? null;
-      setSelectedItem(nextItem);
-      if (nextItem) await loadEvidence(selectedBatch, nextItem);
+      await bridgeFetch(`/v1/products/${encodeURIComponent(evidence.product.product_key)}/decision`, {
+        method: "POST",
+        body: JSON.stringify({
+          reviewer: draft.reviewer,
+          decision: draft.decision,
+          notes: draft.notes,
+          inspected_languages: reviewLanguages.filter((language) => draft.inspectedLanguages.includes(language)),
+          inspected_materials: reviewMaterials.map(([material]) => material).filter((material) => draft.inspectedMaterials.includes(material)),
+        }),
+      });
       setConfirming(false);
-      setMessage(
-        result.status === "committed_but_refresh_required"
-          ? "决定已写入，但投影需要手动刷新。"
-          : "决定已写入并刷新。"
-      );
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : String(caught));
+      setMessage(`${evidence.product.display_name} 的${draft.decision === "approved" ? "批准" : "拒绝"}决定已写入，不能覆盖。`);
+      await loadProjection();
+      await loadEvidence(evidence.product.product_key);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "无法提交人工决定。");
     } finally {
-      setBusy(false);
+      setSubmitting(false);
     }
   };
 
-  const canSendDecision = Boolean(
-    selectedItem &&
-      evidence &&
-      reviewer.trim() &&
-      (evidence.inspection.mode === "full" || selectedStates.length > 0) &&
-      (verdict === "approved" || reason) &&
-      !(verdict === "approved" && selectedItem.approval_blocked),
-  );
-  const selectedSourceWarnings = selectedItem?.source_quality_findings.filter(
-    (finding) => finding.classification === "advisory",
-  ) ?? [];
-
   return (
-    <main className="review-workbench">
-      <header className="review-topbar">
-        <Link className="brand" href="/" aria-label="返回 Capability Ledger">
-          <span className="brand-mark" aria-hidden="true">
-            AZ
-          </span>
-          <span>
-            <strong>Azure CN Archaeologist</strong>
-            <small>Review Workbench</small>
-          </span>
-        </Link>
-        <div className="review-connection">
-          <Pill label={token ? "local bridge" : "read only"} tone={token ? "emerald" : "amber"} />
-          <span className="mono">{connection.bridgeUrl}</span>
+    <main className="workbench-shell">
+      <header className="topbar">
+        <div>
+          <p className="eyebrow">ACN Archaeologist Rewrite</p>
+          <h1>双语人工审核台</h1>
+        </div>
+        <div className={`connection-state ${projection ? "connected" : "disconnected"}`}>
+          <span aria-hidden="true" />
+          {projection ? `已连接 · ${projection.review_id}` : "尚未连接"}
         </div>
       </header>
 
-      <section className="review-shell review-hero">
-        <div>
-          <p className="eyebrow">Step 5 · Slice C</p>
-          <h1>受控 Review 工作台</h1>
-          <p>
-            明确选择 Batch，逐项查看 Source/Payload/Validation/Sampled Evidence，
-            并通过受控服务写入 append-only Review Decision。
-          </p>
-        </div>
-        <div className="review-batch-picker">
-          <SelectField
-            label="Batch"
-            value={selectedBatch ?? ""}
-            options={batches.map((batch) => [batch, batch])}
-            onChange={(value) => {
-              setSelectedItem(null);
-              setEvidence(null);
-              setIndependentFidelity(null);
-              loadProjection(value).catch((caught: Error) => setError(caught.message));
-            }}
-          />
-          <span>revision {projection?.batch.manifest_revision ?? "—"}</span>
-        </div>
-      </section>
-
-      {!token ? (
-        <section className="review-shell review-empty">
-          <h2>未连接本地 Workbench bridge</h2>
-          <p>
-            先启动 `pipeline-review-serve`，再使用命令输出的 `/review#bridge=...&token=...`
-            地址打开本页。无 token 时页面不会尝试读取或写入任何 Batch 状态。
-          </p>
-        </section>
-      ) : null}
-
-      {error ? <div className="review-shell review-alert">{error}</div> : null}
-      {message ? <div className="review-shell review-alert success">{message}</div> : null}
+      {error ? <div className="notice notice-error" role="alert">{error}</div> : null}
+      {message ? <div className="notice notice-success" role="status">{message}</div> : null}
 
       {projection ? (
         <>
-          <section className="review-shell review-metrics" aria-label="Review overview">
-            <Metric label="语言项" value={projection.summary.items.total} detail={`${projection.summary.items.pending} pending`} />
-            <Metric label="产品" value={projection.summary.products.total} detail={`${projection.summary.products.pending_attention} 需处理`} />
-            <Metric label="Release Ready" value={projection.summary.items.release_ready_count} detail={`${projection.summary.products.release_ready_count} 个产品`} />
-            <Metric label="Source Warning" value={projection.summary.items.source_warning_count} detail={`${projection.summary.products.source_warning_count} 个产品`} />
-            <Metric label="Approval Blocked" value={projection.summary.items.approval_blocked_count} detail={`${projection.summary.products.approval_blocked_count} 个产品`} />
-            <Metric label="Machine Failed" value={projection.summary.items.machine_failed_count} detail={`${projection.summary.products.machine_failed_count} 个产品`} />
+          <section className="intro-panel">
+            <div>
+              <p className="eyebrow">
+                {projection.incremental_run_name
+                  ? `原增量 Batch · ${projection.incremental_run_name} · 重新处理记录 · ${projection.run_name}`
+                  : `已封存 Batch · ${projection.run_name}`}
+              </p>
+              <h2>一个产品，一次完整双语决定</h2>
+              <p>{projection.instructions[1]}</p>
+            </div>
+            <code>{projection.review_directory}</code>
+          </section>
+          <section className="metrics-grid" aria-label="审核统计">
+            <Metric label="待审核" value={projection.summary.pending_products} detail={`${projection.summary.queued_items} 个双语处理项`} />
+            <Metric label="已批准" value={projection.summary.approved_products} detail="可进入完整 Release" />
+            <Metric label="已拒绝" value={projection.summary.rejected_products} detail="不会进入 Release" />
+            <Metric label="未入队" value={projection.summary.not_queued_items} detail="机器检查失败或阻断" />
           </section>
 
-          <section className="review-shell review-layout">
-            <aside className="review-sidebar">
-              <div className="review-filter-grid">
-                <label className="review-field">
-                  <span>搜索</span>
-                  <input
-                    value={filters.query}
-                    onChange={(event) => updateFilter("query", event.target.value)}
-                    placeholder="resource 或 product"
-                  />
-                </label>
-                <SelectField
-                  label="语言"
-                  value={filters.language}
-                  options={[
-                    ["all", "全部"],
-                    ["zh-cn", "zh-cn"],
-                    ["en-us", "en-us"],
-                  ]}
-                  onChange={(value) => updateFilter("language", value as ReviewFilters["language"])}
-                />
-                <SelectField
-                  label="Review"
-                  value={filters.review}
-                  options={[
-                    ["all", "全部"],
-                    ["pending", "待审"],
-                    ["approved", "已批准"],
-                    ["rejected", "已拒绝"],
-                  ]}
-                  onChange={(value) => updateFilter("review", value as ReviewFilters["review"])}
-                />
-                <SelectField
-                  label="Binding"
-                  value={filters.binding}
-                  options={[
-                    ["all", "全部"],
-                    ["bound", "bound"],
-                    ["stale", "stale"],
-                    ["not_applicable", "not_applicable"],
-                  ]}
-                  onChange={(value) => updateFilter("binding", value as ReviewFilters["binding"])}
-                />
-                <SelectField
-                  label="Coverage"
-                  value={filters.coverage}
-                  options={[
-                    ["all", "全部"],
-                    ["full", "full"],
-                    ["stratified_sample", "sample"],
-                  ]}
-                  onChange={(value) => updateFilter("coverage", value as ReviewFilters["coverage"])}
-                />
-                <SelectField
-                  label="Source"
-                  value={filters.source}
-                  options={[
-                    ["all", "全部"],
-                    ["warning", "warning"],
-                    ["approval_blocked", "approval blocked"],
-                    ["clear", "clear"],
-                  ]}
-                  onChange={(value) => updateFilter("source", value as ReviewFilters["source"])}
-                />
-                <SelectField
-                  label="Release"
-                  value={filters.release}
-                  options={[
-                    ["all", "全部"],
-                    ["ready", "ready"],
-                    ["blocked", "blocked"],
-                  ]}
-                  onChange={(value) => updateFilter("release", value as ReviewFilters["release"])}
-                />
+          <div className="workbench-grid">
+            <aside className="queue-panel">
+              <header><p className="eyebrow">产品清单</p><h2>{filteredProducts.length} / {projection.products.length}</h2></header>
+              <div className="filters">
+                <label><span>查找产品</span><input value={filters.query} onChange={(event) => setFilters({ ...filters, query: event.target.value })} placeholder="名称或 Product Key" /></label>
+                <div className="filter-row">
+                  <label><span>状态</span><select value={filters.status} onChange={(event) => setFilters({ ...filters, status: event.target.value as ReviewFilters["status"] })}><option value="all">全部</option><option value="pending">待审核</option><option value="approved">已批准</option><option value="rejected">已拒绝</option></select></label>
+                  <label><span>Strategy</span><select value={filters.strategy} onChange={(event) => setFilters({ ...filters, strategy: event.target.value })}><option value="all">全部</option>{strategies.map((strategy) => <option key={strategy} value={strategy}>{strategy}</option>)}</select></label>
+                </div>
               </div>
-              <QueueTable items={visibleItems} selectedItemId={selectedItem?.item_id ?? null} onSelect={selectItem} />
+              <ProductQueue products={filteredProducts} selectedProductKey={selectedProductKey} onSelect={setSelectedProductKey} />
+              {projection.not_queued_items.length ? (
+                <details className="not-queued"><summary>查看 {projection.not_queued_items.length} 个未入队处理项</summary>{projection.not_queued_items.map((item) => <div key={item.item_id}><strong>{item.item_id}</strong><span>{item.reason}</span></div>)}</details>
+              ) : null}
             </aside>
 
-            <section className="review-detail">
-              {selectedItem ? (
+            <section className="detail-panel">
+              {loadingEvidence ? <div className="loading-state">正在重新读取 Frozen HTML 与 Payload…</div> : null}
+              {!loadingEvidence && evidence ? (
                 <>
-                  <header className="review-detail-head">
-                    <div>
-                      <p className="eyebrow">{selectedItem.item_id}</p>
-                      <h2>{selectedItem.resource_key}</h2>
-                    </div>
-                    <div className="review-status-row">
-                      <Pill label={decisionLabel(selectedItem.status.review)} tone={statusTone(selectedItem.status.review)} />
-                      <Pill label={bindingLabel(selectedItem.status.evidence_binding)} tone={statusTone(selectedItem.status.evidence_binding)} />
-                      {selectedItem.source_warning ? <Pill label="Source Warning" tone="amber" /> : null}
-                      {selectedItem.approval_blocked ? <Pill label="Approval Blocked" tone="coral" /> : null}
-                      <Pill label={selectedItem.release_ready ? "release ready" : "release blocked"} tone={selectedItem.release_ready ? "emerald" : "slate"} />
-                    </div>
+                  <header className="product-heading">
+                    <div><p className="eyebrow">{evidence.product.product_key}</p><h2>{evidence.product.display_name}</h2><p>{evidence.product.page_model} · {evidence.product.semantic_strategy}</p></div>
+                    <StatusPill status={evidence.product.status} />
                   </header>
-
-                  {selectedSourceWarnings.length ? (
-                    <section className="review-warning-panel">
-                      <h3>Source Warning</h3>
-                      {selectedSourceWarnings.map((finding) => (
-                        <article key={`${finding.code}:${finding.path ?? "$"}`}>
-                          <strong>{finding.code}</strong>
-                          <span>{finding.message}</span>
-                          <code>{finding.path ?? "$"}</code>
-                        </article>
-                      ))}
-                    </section>
-                  ) : null}
-
-                  {selectedItem.approval_blockers.length ? (
-                    <section className="review-warning-panel blocked">
-                      <h3>Approval Blocked</h3>
-                      {selectedItem.approval_blockers.map((blocker) => (
-                        <article key={`${blocker.code}:${blocker.path ?? "$"}`}>
-                          <strong>{blocker.code}</strong>
-                          <span>{blocker.message}</span>
-                          <code>{blocker.path ?? "$"}</code>
-                        </article>
-                      ))}
-                    </section>
-                  ) : null}
-
-                  {evidence && independentFidelity ? (
-                    <IndependentFidelityPanel l3a={evidence} l3b={independentFidelity} />
-                  ) : null}
-
-                  {evidence?.manual_preview.status === "available" && evidence.manual_preview.page_global ? (
-                    <EvidenceBlock
-                      title="Page-global comparison"
-                      source={evidence.manual_preview.page_global.source}
-                      payload={evidence.manual_preview.page_global.payload}
-                    />
-                  ) : null}
-
-                  {evidence?.manual_preview.full_content ? (
-                    <EvidenceBlock
-                      title="Full-content comparison"
-                      source={evidence.manual_preview.full_content.source}
-                      payload={evidence.manual_preview.full_content.payload}
-                    />
-                  ) : null}
-
-                  {selectedManualState ? (
-                    <EvidenceBlock
-                      title={`State ${shortSha(selectedManualState.state_id)}`}
-                      source={selectedManualState.comparison.source}
-                      payload={selectedManualState.comparison.payload}
-                    />
-                  ) : null}
-
-                  {evidence?.manual_preview.status === "unavailable" ? (
-                    <section className="review-empty inline">
-                      <h3>Manual preview 暂不可用</h3>
-                      <p>{evidence.manual_preview.error?.message}</p>
-                    </section>
-                  ) : null}
-
-                  <section className="review-inspection">
-                    <h3>检查范围</h3>
-                    {evidence?.inspection.mode === "full" ? (
-                      <label className="review-check">
-                        <input type="checkbox" checked readOnly />
-                        Full content
-                      </label>
-                    ) : (
-                      <>
-                        <label className="review-check">
-                          <input
-                            type="checkbox"
-                            checked={pageGlobal}
-                            onChange={(event) => setPageGlobal(event.target.checked)}
-                          />
-                          Page-global
-                        </label>
-                        <div className="review-state-list">
-                          {evidence?.inspection.state_universe.map((state) => {
-                            const checked = selectedStates.includes(state.state_id);
-                            const machineSelected = evidence.coverage.selected_state_ids?.includes(state.state_id);
-                            return (
-                              <label className={machineSelected ? "review-check" : "review-check priority"} key={state.state_id}>
-                                <input
-                                  type="checkbox"
-                                  checked={checked}
-                                  onChange={(event) => {
-                                    setSelectedStates((current) =>
-                                      event.target.checked
-                                        ? [...current, state.state_id]
-                                        : current.filter((value) => value !== state.state_id),
-                                    );
-                                  }}
-                                />
-                                <span className="mono">{shortSha(state.state_id)}</span>
-                                <small>{state.criteria.map((pair) => pair.join("=")).join(" / ")}</small>
-                              </label>
-                            );
-                          })}
-                        </div>
-                      </>
-                    )}
-                  </section>
-
-                  <section className="review-decision-panel">
-                    <h3>写入 Review Decision</h3>
-                    <form
-                      onSubmit={(event: FormEvent) => {
-                        event.preventDefault();
-                        setConfirming(true);
-                      }}
-                    >
-                      <label className="review-field">
-                        <span>Reviewer</span>
-                        <input value={reviewer} onChange={(event) => setReviewer(event.target.value)} />
-                      </label>
-                      <SelectField
-                        label="Verdict"
-                        value={verdict}
-                        options={[
-                          ["approved", "批准"],
-                          ["rejected", "拒绝"],
-                        ]}
-                        onChange={(value) => setVerdict(value as "approved" | "rejected")}
-                      />
-                      {verdict === "rejected" ? (
-                        <SelectField
-                          label="Reason"
-                          value={reason}
-                          options={rejectionReasons}
-                          onChange={setReason}
-                        />
-                      ) : null}
-                      <label className="review-field wide">
-                        <span>Notes</span>
-                        <textarea value={notes} onChange={(event) => setNotes(event.target.value)} />
-                      </label>
-                      <button className="primary-action" type="submit" disabled={!canSendDecision || busy}>
-                        {busy ? "处理中" : "准备确认"}
+                  <p className="method-note">{evidence.evidence_method}</p>
+                  <div className="language-tabs" role="tablist" aria-label="审核语言">
+                    {evidence.languages.map((language) => (
+                      <button type="button" role="tab" aria-selected={selectedLanguage === language.language} className={selectedLanguage === language.language ? "active" : ""} key={language.language} onClick={() => chooseLanguage(language.language)}>
+                        <span>{language.language}</span><small>{language.summary.matched}/{language.summary.comparisons} 一致</small>
                       </button>
-                    </form>
-                  </section>
-
-                  {evidence?.decisions.history.length ? (
-                    <section className="review-history">
-                      <h3>Decision history</h3>
-                      {evidence.decisions.history.map((decision) => (
-                        <article key={decision.decision_id}>
-                          <strong>{decision.verdict}</strong>
-                          <span>{decision.reviewer} · {decision.decided_at}</span>
-                          <p>{decision.reason ?? "approved"}</p>
-                        </article>
-                      ))}
-                    </section>
+                    ))}
+                  </div>
+                  {languageEvidence ? (
+                    <>
+                      <MachineEvidence evidence={languageEvidence} />
+                      <details className="artifact-paths"><summary>查看本语言四类审核材料路径</summary><dl><dt>Frozen HTML</dt><dd><code>{languageEvidence.paths.frozen_html}</code></dd><dt>Payload</dt><dd><code>{languageEvidence.paths.payload}</code></dd><dt>L3a</dt><dd><code>{languageEvidence.paths.l3a_report}</code></dd><dt>L3b</dt><dd><code>{languageEvidence.paths.l3b_report}</code></dd></dl></details>
+                      <section className="comparison-section">
+                        <header><div><p className="eyebrow">完整字段清单</p><h3>选择一个 Source / Payload 对应项</h3></div><StatusPill status={languageEvidence.summary.mismatched ? "mismatched" : "matched"} /></header>
+                        <label className="comparison-selector"><span>比较项</span><select value={selectedComparison?.comparison_key ?? ""} onChange={(event) => setSelectedComparisonKey(event.target.value)}>{languageEvidence.comparisons.map((comparison) => <option key={comparison.comparison_key} value={comparison.comparison_key}>{comparison.status === "matched" ? "✓" : "!"} {comparison.label} · {comparison.payload_path}</option>)}</select></label>
+                        {selectedComparison ? <ComparisonViewer comparison={selectedComparison} /> : <p className="empty-state">本语言没有可展示的业务字段。</p>}
+                      </section>
+                    </>
                   ) : null}
+                  <DecisionPanel product={evidence.product} draft={draft} onChange={setDraft} onRequestSubmit={() => setConfirming(true)} submitting={submitting} />
                 </>
-              ) : (
-                <section className="review-empty inline">
-                  <h2>选择一个 Review item</h2>
-                  <p>左侧列表只展示当前 Batch 中机器执行成功且 Validation passed 的可审语言项。</p>
-                </section>
-              )}
+              ) : null}
             </section>
-          </section>
+          </div>
         </>
-      ) : null}
+      ) : (
+        <section className="connection-help">
+          <p className="eyebrow">Local only</p>
+          <h2>请从本地审核服务生成的地址进入</h2>
+          <p>先启动 Dashboard，再运行 <code>python cli.py review-serve --review-id &lt;审核 ID&gt;</code>。终端会打印包含临时令牌的完整审核页面地址。</p>
+        </section>
+      )}
 
-      {confirming && selectedItem ? (
-        <div className="review-modal-backdrop">
-          <section className="review-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
-            <h2 id="confirm-title">确认写入决定</h2>
-            <dl>
-              <dt>Item</dt>
-              <dd className="mono">{selectedItem.item_id}</dd>
-              <dt>Revision</dt>
-              <dd>{projection?.batch.manifest_revision}</dd>
-              <dt>Verdict</dt>
-              <dd>{verdict}</dd>
-              <dt>Scopes</dt>
-              <dd>{evidence?.inspection.mode === "full" ? "full_content" : `${pageGlobal ? "page_global " : ""}${selectedStates.length} states`}</dd>
-            </dl>
-            {selectedSourceWarnings.length ? (
-              <div className="review-modal-warning">
-                <strong>Source Warning</strong>
-                {selectedSourceWarnings.map((finding) => (
-                  <p key={`${finding.code}:${finding.path ?? "$"}`}>{finding.code}: {finding.message}</p>
-                ))}
-              </div>
-            ) : null}
-            <div className="review-modal-actions">
-              <button type="button" className="secondary-action" onClick={() => setConfirming(false)}>
-                取消
-              </button>
-              <button type="button" className="primary-action" onClick={submitDecision} disabled={busy}>
-                写入 append-only decision
-              </button>
-            </div>
+      {confirming && evidence ? (
+        <div className="modal-backdrop" role="presentation">
+          <section className="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+            <p className="eyebrow">最后确认 · 不可覆盖</p>
+            <h2 id="confirm-title">{draft.decision === "approved" ? "批准" : "拒绝"} {evidence.product.display_name}？</h2>
+            <p>此决定同时绑定该产品当前审核清单中的中英文材料。提交后不能修改或删除。</p>
+            <dl><dt>审核人</dt><dd>{draft.reviewer}</dd><dt>语言</dt><dd>{draft.inspectedLanguages.join("、")}</dd><dt>材料</dt><dd>{draft.inspectedMaterials.join("、")}</dd><dt>说明</dt><dd>{draft.notes}</dd></dl>
+            <div className="modal-actions"><button type="button" className="secondary-button" disabled={submitting} onClick={() => setConfirming(false)}>返回检查</button><button type="button" className={`decision-button ${draft.decision === "rejected" ? "reject" : ""}`} disabled={submitting} onClick={() => void submitDecision()}>{submitting ? "正在写入…" : "确认并写入决定"}</button></div>
           </section>
         </div>
       ) : null}

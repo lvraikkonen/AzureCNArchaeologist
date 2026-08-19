@@ -1,8 +1,0 @@
-<div class="pricing-page-section">
-<h2>
-                            IP Address Options
-                        </h2>
-<p>
-                            Reserve public IP addresses for your Azure Cloud Services deployments.
-                        </p>
-</div>

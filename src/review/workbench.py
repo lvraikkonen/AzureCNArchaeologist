@@ -1,725 +1,496 @@
-"""Dashboard Review Workbench read models for Step 4 Slice D."""
+"""Read models for the local, product-level human Review Workbench.
+
+The Workbench deliberately reconstructs Source fragments with the independent
+L3b locators.  It never asks a production Strategy which fragment ought to be
+shown to a reviewer.
+"""
 
 from __future__ import annotations
 
-import copy
-import json
-from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
-from src.content_sampling.projector import (
-    PayloadContentProjector,
-    ProjectionError,
-    SourceContentProjector,
+from src.core.catalog import ProductCatalog
+from src.core.payload_contract import load_payload
+from src.machine_checks.independent_source import (
+    locate_pricing_source,
+    locate_support_source,
 )
-from src.content_sampling.semantic import diff_document, semantic_fingerprint
-from src.core.canonical_identity import canonical_sha256
-from src.core.canonical_input import CanonicalInputLoader, InputAssuranceError
-from src.core.product_catalog import sha256_file
-from src.core.source_reachability import (
-    SourceReachability,
-    SourceReachabilityError,
-    SourceReachabilityResolver,
+from src.machine_checks.readable_diff import text_difference
+from src.review.service import (
+    ReviewDecisionResult,
+    create_review_decision,
+    read_review_materials,
+    read_review_status,
 )
-from src.core.strict_soft_category_projection import (
-    StrictSoftCategoryProjectionError,
-)
-from src.pipeline.models import BatchItem, items_from_dicts, utc_now
-from src.pipeline.state_store import StateStore
-from src.release.contracts import ReleaseContractError, evaluate_release_item
-from src.review.accounting import finding_summary, merge_item_accounting, summarize_review_items
-from src.review.independent_fidelity import build_independent_fidelity_view
-from src.review.service import ReviewService, ReviewServiceError
-
-
-class ReviewWorkbenchError(RuntimeError):
-    """A local Dashboard Workbench operation failed with a stable code."""
-
-    def __init__(self, code: str, message: str) -> None:
-        super().__init__(message)
-        self.code = code
-
-
-@dataclass(frozen=True)
-class WorkbenchBatchSelection:
-    batch_ids: tuple[str, ...]
-    history_index: Mapping[str, Any] | None = None
-
-
-def _error(code: str, message: str) -> ReviewWorkbenchError:
-    return ReviewWorkbenchError(code, message)
-
-
-def _read_json(path: Path) -> dict[str, Any]:
-    try:
-        value = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
-        raise _error("json_read_failed", f"Unable to read JSON document: {path}") from error
-    if not isinstance(value, dict):
-        raise _error("invalid_json_document", f"JSON document must be an object: {path}")
-    return value
-
-
-def _artifact(value: Mapping[str, Any] | None) -> dict[str, Any] | None:
-    return copy.deepcopy(dict(value)) if value is not None else None
-
-
-def _issue_summary(value: Mapping[str, Any]) -> dict[str, str]:
-    return {
-        "code": str(value.get("code", "issue")),
-        "message": str(value.get("message", value.get("code", "Issue"))),
-        "path": str(value.get("path", "$")),
-    }
-
-
-def _comparison(scope: str, source_value: Any, payload_value: Any) -> dict[str, Any]:
-    source_fingerprint = semantic_fingerprint(source_value)
-    payload_fingerprint = semantic_fingerprint(payload_value)
-    if source_fingerprint == payload_fingerprint:
-        status = "matched"
-        diff = None
-    else:
-        status = "mismatched"
-        diff = diff_document(
-            scope=scope,
-            source_value=source_value,
-            payload_value=payload_value,
-            source_fingerprint=source_fingerprint,
-            payload_fingerprint=payload_fingerprint,
-        )
-    return {
-        "status": status,
-        "source_fingerprint": source_fingerprint,
-        "payload_fingerprint": payload_fingerprint,
-        "source": source_value,
-        "payload": payload_value,
-        "diff": diff,
-    }
-
-
-def _decision_path(language: str, resource_key: str, decision_id: str) -> str:
-    return Path(
-        "review",
-        "decisions",
-        language,
-        resource_key,
-        f"{decision_id}.json",
-    ).as_posix()
-
-
-def _validation_profile_id(manifest: Mapping[str, Any]) -> str:
-    validation_context = manifest.get("validation_context")
-    if isinstance(validation_context, Mapping):
-        validation_profile = validation_context.get("validation_profile")
-        if (
-            isinstance(validation_profile, Mapping)
-            and isinstance(validation_profile.get("id"), str)
-        ):
-            return validation_profile["id"]
-    if isinstance(manifest.get("validation_profile_id"), str):
-        return str(manifest["validation_profile_id"])
-    return "legacy-profile-unrecorded"
+from src.utils.html.normalization import normalize_html, parse_html_bytes
 
 
 class ReviewWorkbenchService:
-    """Local-only read model for the Dashboard Review Workbench."""
+    """Build review projections and submit explicit product decisions."""
 
     def __init__(
         self,
-        root: str | Path = ".",
-        runs_dir: str | Path = "runs",
+        catalog: ProductCatalog,
         *,
-        review_service: ReviewService | None = None,
-        now: Any = utc_now,
+        review_id: str,
+        reviews_root: Path | str | None = None,
     ) -> None:
-        self.root = Path(root).resolve()
-        self.review = review_service or ReviewService(self.root, runs_dir)
-        self.store = self.review.store
-        self._now = now
-        self.input_loader = CanonicalInputLoader(self.root)
-        self.source_reachability = SourceReachabilityResolver(self.root)
-        self.source_projector = SourceContentProjector(self.root)
-        self.payload_projector = PayloadContentProjector()
+        self.catalog = catalog
+        self.review_id = review_id
+        self.reviews_root = reviews_root
 
-    def selection(
+    def projection(self) -> dict[str, Any]:
+        """Return the complete product queue with its current decision state."""
+
+        status = read_review_status(
+            self.catalog,
+            review_id=self.review_id,
+            reviews_root=self.reviews_root,
+        )
+        products: list[dict[str, Any]] = []
+        for status_product in status["products"]:
+            product_key = status_product["product_key"]
+            materials = read_review_materials(
+                self.catalog,
+                review_id=self.review_id,
+                product_key=product_key,
+                reviews_root=self.reviews_root,
+            )
+            languages = []
+            for item in materials["items"]:
+                languages.append(
+                    {
+                        "language": item["language"],
+                        "l3a_status": item["l3a_result"].get(
+                            "status", "unknown"
+                        ),
+                        "l3b_status": item["l3b_result"].get(
+                            "status", "unknown"
+                        ),
+                        "comparison_count": len(
+                            item["l3b_result"].get("fields", [])
+                        ),
+                    }
+                )
+            products.append(
+                {
+                    "product_key": product_key,
+                    "display_name": materials["display_name"],
+                    "page_model": materials["page_model"],
+                    "semantic_strategy": materials["semantic_strategy"],
+                    "status": status_product["status"],
+                    "reviewer": status_product["reviewer"],
+                    "decision_path": status_product["decision_path"],
+                    "languages": languages,
+                }
+            )
+
+        return {
+            "schema_version": "1.0",
+            "review_id": self.review_id,
+            "run_name": status["run_name"],
+            "batch_kind": status["batch_kind"],
+            "incremental_run_name": status["incremental_run_name"],
+            "review_directory": status["review_directory"],
+            "instructions": [
+                "审核以产品为单位，中文和英文必须一起查看、一起决定。",
+                "页面并排内容来自 L3b 独立源定位器和已封存 Payload，不调用生产 Strategy。",
+                "人工决定不能覆盖机器检查失败；已经提交的决定不能覆盖。",
+            ],
+            "summary": {
+                "queued_products": status["summary"]["queued_products"],
+                "queued_items": status["summary"]["queued_items"],
+                "approved_products": status["summary"]["approved_products"],
+                "rejected_products": status["summary"]["rejected_products"],
+                "pending_products": status["summary"]["pending_products"],
+                "not_queued_items": len(status["not_queued_items"]),
+            },
+            "products": products,
+            "not_queued_items": status["not_queued_items"],
+        }
+
+    def product_evidence(self, product_key: str) -> dict[str, Any]:
+        """Return exact bilingual Source/Payload comparisons for one product."""
+
+        materials = read_review_materials(
+            self.catalog,
+            review_id=self.review_id,
+            product_key=product_key,
+            reviews_root=self.reviews_root,
+        )
+        definition = self.catalog.get_definition(product_key)
+        languages = []
+        for item in materials["items"]:
+            frozen_html_path = Path(item["frozen_html_path"])
+            payload_path = Path(item["payload_path"])
+            soup = parse_html_bytes(
+                frozen_html_path.read_bytes(), source_name=str(frozen_html_path)
+            )
+            payload = load_payload(payload_path)
+            if materials["page_model"] == "SupportArticlePage":
+                source = locate_support_source(soup)
+                comparisons = _support_comparisons(source, payload)
+            else:
+                source = locate_pricing_source(
+                    soup,
+                    semantic_strategy=materials["semantic_strategy"],
+                    language=item["language"],
+                    soft_category_path=(
+                        self.catalog.project_root
+                        / "data"
+                        / "configs"
+                        / "soft-category.json"
+                    ),
+                    page_global_source_boundary=(
+                        definition.page_global_source_boundary
+                    ),
+                    payload_contract_version=materials[
+                        "payload_contract_version"
+                    ],
+                )
+                comparisons = _pricing_comparisons(source, payload)
+            languages.append(
+                {
+                    "language": item["language"],
+                    "paths": {
+                        "frozen_html": item["frozen_html_path"],
+                        "payload": item["payload_path"],
+                        "l3a_report": item["l3a_report_path"],
+                        "l3b_report": item["l3b_report_path"],
+                    },
+                    "l3a": item["l3a_result"],
+                    "l3b": item["l3b_result"],
+                    "comparisons": comparisons,
+                    "summary": {
+                        "comparisons": len(comparisons),
+                        "matched": sum(
+                            comparison["status"] == "matched"
+                            for comparison in comparisons
+                        ),
+                        "mismatched": sum(
+                            comparison["status"] == "mismatched"
+                            for comparison in comparisons
+                        ),
+                    },
+                }
+            )
+
+        status = read_review_status(
+            self.catalog,
+            review_id=self.review_id,
+            reviews_root=self.reviews_root,
+        )
+        product_status = next(
+            product
+            for product in status["products"]
+            if product["product_key"] == product_key
+        )
+        return {
+            "schema_version": "1.0",
+            "review_id": self.review_id,
+            "run_name": materials["run_name"],
+            "batch_kind": materials["batch_kind"],
+            "incremental_run_name": materials["incremental_run_name"],
+            "product": {
+                "product_key": product_key,
+                "display_name": materials["display_name"],
+                "page_model": materials["page_model"],
+                "semantic_strategy": materials["semantic_strategy"],
+                "status": product_status["status"],
+                "reviewer": product_status["reviewer"],
+                "decision_path": product_status["decision_path"],
+            },
+            "evidence_method": (
+                "Frozen HTML 由 L3b 独立源定位器重新读取；Source 与 Payload "
+                "使用同一 HTML 规范化规则后逐字段比较。"
+            ),
+            "languages": languages,
+        }
+
+    def submit_decision(
         self,
-        batch_ids: Sequence[str],
+        product_key: str,
         *,
-        history_index_path: str | Path | None = None,
-    ) -> WorkbenchBatchSelection:
-        if not batch_ids:
-            raise _error("missing_batch_selection", "At least one Batch ID is required")
-        ordered: list[str] = []
-        seen: set[str] = set()
-        for batch_id in batch_ids:
-            run_dir = self.store.run_dir(batch_id)
-            if not run_dir.is_dir():
-                raise _error("unknown_batch", f"Unknown Batch: {batch_id}")
-            if batch_id not in seen:
-                ordered.append(batch_id)
-                seen.add(batch_id)
-        history = (
-            self._read_history_index(Path(history_index_path))
-            if history_index_path is not None
+        reviewer: str,
+        decision: str,
+        inspected_languages: Sequence[str],
+        inspected_materials: Sequence[str],
+        notes: str,
+    ) -> ReviewDecisionResult:
+        """Submit through the existing write-once product decision service."""
+
+        return create_review_decision(
+            self.catalog,
+            review_id=self.review_id,
+            product_key=product_key,
+            reviewer=reviewer,
+            decision=decision,
+            inspected_languages=inspected_languages,
+            inspected_materials=inspected_materials,
+            notes=notes,
+            reviews_root=self.reviews_root,
+        )
+
+
+def _support_comparisons(
+    source: dict[str, str], payload: dict[str, Any]
+) -> list[dict[str, Any]]:
+    comparisons: list[dict[str, Any]] = []
+    _html_comparison(
+        comparisons,
+        payload_path="articleDescription",
+        label="文章说明",
+        source_boundary="h1 与首个 h2 之间的直接说明段落",
+        source=source["articleDescription"],
+        payload=payload.get("articleDescription"),
+    )
+    _html_comparison(
+        comparisons,
+        payload_path="mainContent",
+        label="文章主体",
+        source_boundary="首个直接 h2 至反馈控件之前的完整文章主体",
+        source=source["mainContent"],
+        payload=payload.get("mainContent"),
+    )
+    return comparisons
+
+
+def _pricing_comparisons(
+    source: dict[str, Any], payload: dict[str, Any]
+) -> list[dict[str, Any]]:
+    comparisons: list[dict[str, Any]] = []
+    _html_comparison(
+        comparisons,
+        payload_path="baseContent",
+        label="页面定价主体",
+        source_boundary=(
+            "完整静态定价主体"
+            if source["baseContent"]
+            else "筛选页面没有单独的全局正文"
+        ),
+        source=source["baseContent"],
+        payload=payload.get("baseContent"),
+    )
+    _content_group_comparisons(
+        comparisons,
+        source=source["contentGroups"],
+        payload=payload.get("contentGroups"),
+    )
+    _common_section_comparisons(
+        comparisons,
+        source=source["commonSections"],
+        payload=payload.get("commonSections"),
+    )
+    if "filtersJsonConfig" in source:
+        page_config = payload.get("pageConfig")
+        payload_filters = (
+            page_config.get("filtersJsonConfig")
+            if isinstance(page_config, dict)
             else None
         )
-        if history is not None:
-            history_batch_ids = [entry["batch_id"] for entry in history["batches"]]
-            unknown = [value for value in history_batch_ids if value not in seen]
-            if unknown:
-                raise _error(
-                    "history_batch_not_allowed",
-                    "History index references a Batch not in the explicit allowlist: "
-                    + ", ".join(unknown),
-                )
-        return WorkbenchBatchSelection(tuple(ordered), history)
-
-    def list_batches(self, selection: WorkbenchBatchSelection) -> dict[str, Any]:
-        batches: list[dict[str, Any]] = []
-        history_labels = {
-            entry["batch_id"]: entry.get("label")
-            for entry in (selection.history_index or {}).get("batches", [])
-        }
-        for batch_id in selection.batch_ids:
-            manifest = self.store.read_manifest(batch_id)
-            batches.append({
-                "batch_id": batch_id,
-                "manifest_revision": manifest["revision"],
-                "status": manifest["status"],
-                "label": history_labels.get(batch_id),
-                "run_dir": self.store.run_dir(batch_id).as_posix(),
-            })
-        return {
-            "schema_version": "1.0",
-            "generated_at": self._now(),
-            "batches": batches,
-            "history_configured": selection.history_index is not None,
-        }
-
-    def build_projection(
-        self,
-        batch_id: str,
-        *,
-        history_index: Mapping[str, Any] | None = None,
-    ) -> dict[str, Any]:
-        manifest = self.store.read_manifest(batch_id)
-        queue = self.review.list_items(batch_id, status="all")
-        frozen = self.store.read_input_manifest(batch_id)
-        items = items_from_dicts(frozen["items"])
-        runnable_item_ids = {item.item_id for item in items if item.runnable}
-        product_items: dict[str, set[str]] = {}
-        for item in items:
-            if item.runnable:
-                product_items.setdefault(item.product_key, set()).add(item.item_id)
-
-        enriched_items: list[dict[str, Any]] = []
-        release_ready_by_item: dict[str, bool] = {}
-        for raw_item in queue["items"]:
-            item = copy.deepcopy(dict(raw_item))
-            release_eligibility = self._release_eligibility(manifest, item)
-            item["release_eligibility"] = release_eligibility
-            item = merge_item_accounting(
-                item,
-                release_ready=bool(release_eligibility["eligible"]),
-            )
-            release_ready_by_item[item["item_id"]] = item["release_ready"]
-            enriched_items.append(item)
-
-        product_ready = sum(
-            bool(item_ids) and all(release_ready_by_item.get(item_id, False) for item_id in item_ids)
-            for item_ids in product_items.values()
+        _value_comparison(
+            comparisons,
+            payload_path="pageConfig.filtersJsonConfig",
+            label="筛选器配置",
+            source_boundary="独立读取的筛选器名称、顺序、默认项和值域",
+            source=source["filtersJsonConfig"],
+            payload=payload_filters,
         )
-        product_pending_attention = {
-            item["product_key"]
-            for item in enriched_items
-            if item["status"]["review"] == "pending"
-        }
-        product_rejected_attention = {
-            item["product_key"]
-            for item in enriched_items
-            if item["status"]["review"] == "rejected"
-        }
-        product_source_warning = {
-            item["product_key"]
-            for item in enriched_items
-            if item.get("source_warning")
-        }
-        product_approval_blocked = {
-            item["product_key"]
-            for item in enriched_items
-            if item.get("approval_blocked")
-        }
-        product_machine_failed = {
-            current["product_key"]
-            for current in manifest["items"].values()
-            if current["status"]["validation"] == "failed"
-        }
-        machine_failed_items = sum(
-            current["status"]["validation"] == "failed"
-            for current in manifest["items"].values()
-        )
-        item_summary = summarize_review_items(enriched_items)
-        item_summary["runnable"] = len(runnable_item_ids)
-        item_summary["machine_failed_count"] = machine_failed_items
-        release_manifests = list(manifest.get("release_manifests", []))
-        publication_receipts = list(manifest.get("publication_receipts", []))
-        projection = {
-            "schema_version": "1.0",
-            "projection_id": "0" * 64,
-            "generated_at": self._now(),
-            "batch": {
-                "batch_id": batch_id,
-                "manifest_revision": manifest["revision"],
-                "status": manifest["status"],
-                "validation_profile_id": _validation_profile_id(manifest),
-                "run_dir": self.store.run_dir(batch_id).as_posix(),
-            },
-            "summary": {
-                "items": item_summary,
-                "products": {
-                    "total": len(product_items),
-                    "release_ready_count": product_ready,
-                    "pending_attention": len(product_pending_attention),
-                    "rejected_attention": len(product_rejected_attention),
-                    "source_warning_count": len(product_source_warning),
-                    "approval_blocked_count": len(product_approval_blocked),
-                    "machine_failed_count": len(product_machine_failed),
-                },
-            },
-            "history": self._history_summary(history_index),
-            "release": {
-                "release_manifests": copy.deepcopy(release_manifests),
-                "publication_receipts": copy.deepcopy(publication_receipts),
-            },
-            "items": enriched_items,
-        }
-        projection["projection_id"] = canonical_sha256({
-            "schema_version": projection["schema_version"],
-            "batch_id": batch_id,
-            "manifest_revision": manifest["revision"],
-            "items": [
-                {
-                    "item_id": item["item_id"],
-                    "review": item["status"]["review"],
-                    "evidence_binding": item["status"]["evidence_binding"],
-                    "approval_eligibility": item["status"]["approval_eligibility"],
-                    "release_ready": item["release_ready"],
-                }
-                for item in enriched_items
-            ],
-        })
-        return projection
+    return comparisons
 
-    def get_item_evidence(
-        self,
-        batch_id: str,
-        *,
-        language: str,
-        resource_key: str,
-    ) -> dict[str, Any]:
-        item_id = f"{language}/{resource_key}"
-        frozen = self.store.read_input_manifest(batch_id)
-        manifest = self.store.read_manifest(batch_id)
-        item_by_id = {item.item_id: item for item in items_from_dicts(frozen["items"])}
-        item = item_by_id.get(item_id)
-        if item is None:
-            raise _error("unknown_item", f"Unknown Batch Item: {item_id}")
-        snapshot = self.review.get_item_evidence(batch_id, item_id)
-        manifest_item = manifest["items"][item_id]
-        preview = self._manual_preview(batch_id, item, snapshot)
-        return {
-            "schema_version": "1.0",
-            "generated_at": self._now(),
-            "batch_id": batch_id,
-            "item_id": item_id,
-            "manifest_revision": manifest["revision"],
-            "item": {
-                "language": item.language,
-                "resource_key": item.resource_key,
-                "product_key": item.product_key,
-                "page_model": item.page_model,
-                "strategy": item.strategy,
-                "slug": item.slug,
-                "source_url": item.source_url,
-            },
-            "status": copy.deepcopy(dict(manifest_item["status"])),
-            "artifacts": {
-                key: _artifact(manifest_item["artifacts"].get(key))
-                for key in (
-                    "payload",
-                    "validation",
-                    "sampling_plan",
-                    "sampled_content_evidence",
-                    "current_review_decision",
-                )
-            },
-            "bindings": copy.deepcopy(dict(snapshot["bindings"])),
-            "coverage": copy.deepcopy(dict(snapshot["validation"]["evidence"]["content_validation"]["coverage"])),
-            "validation_summary": {
-                "status": snapshot["validation"]["status"],
-                "evidence_sha256": snapshot["validation"]["evidence_sha256"],
-                "errors": copy.deepcopy(snapshot["validation"]["evidence"]["errors"]),
-                "warnings": copy.deepcopy(snapshot["validation"]["evidence"]["warnings"]),
-                "approval_preconditions": copy.deepcopy(
-                    snapshot["validation"]["evidence"]["approval_preconditions"]
+
+def _content_group_comparisons(
+    comparisons: list[dict[str, Any]],
+    *,
+    source: list[dict[str, Any]],
+    payload: Any,
+) -> None:
+    if not source:
+        _value_comparison(
+            comparisons,
+            payload_path="contentGroups",
+            label="可选择状态",
+            source_boundary="静态定价主体没有可选择页面状态",
+            source=[],
+            payload=payload,
+        )
+        return
+    _value_comparison(
+        comparisons,
+        payload_path="contentGroups",
+        label="可选择状态数量",
+        source_boundary="独立读取的全部源页面可选择状态",
+        source=len(source),
+        payload=len(payload) if isinstance(payload, list) else type(payload).__name__,
+    )
+    for index, source_group in enumerate(source):
+        payload_group = (
+            payload[index]
+            if isinstance(payload, list) and index < len(payload)
+            else None
+        )
+        group_label = source_group.get("groupName") or f"状态 {index + 1}"
+        for field_name, field_label in (
+            ("groupName", "状态名称"),
+            ("filterCriteriaJson", "状态筛选条件"),
+        ):
+            _value_comparison(
+                comparisons,
+                payload_path=f"contentGroups[{index}].{field_name}",
+                label=f"{group_label} · {field_label}",
+                source_boundary="源筛选控件声明的状态名称与机器条件",
+                source=source_group[field_name],
+                payload=(
+                    payload_group.get(field_name)
+                    if isinstance(payload_group, dict)
+                    else None
                 ),
-            },
-            "source_quality_findings": [
-                finding_summary(finding)
-                for finding in snapshot["source_quality_findings"]
-            ],
-            "machine_evidence": {
-                "page_global_comparison": copy.deepcopy(
-                    snapshot["sampled_content_evidence"]["page_global_comparison"]
+            )
+        _html_comparison(
+            comparisons,
+            payload_path=f"contentGroups[{index}].content",
+            label=f"{group_label} · 定价内容",
+            source_boundary="该状态对应的完整定价内容面板",
+            source=source_group["content"],
+            payload=(
+                payload_group.get("content")
+                if isinstance(payload_group, dict)
+                else None
+            ),
+        )
+        if "sharedContent" in source_group or (
+            isinstance(payload_group, dict) and "sharedContent" in payload_group
+        ):
+            _html_comparison(
+                comparisons,
+                payload_path=f"contentGroups[{index}].sharedContent",
+                label=f"{group_label} · 公共定价内容",
+                source_boundary=(
+                    "Category 面板之前、按当前区域配置投影的公共定价内容"
                 ),
-                "full_content_comparison": copy.deepcopy(
-                    snapshot["sampled_content_evidence"]["full_content_comparison"]
+                source=source_group.get("sharedContent", ""),
+                payload=(
+                    payload_group.get("sharedContent")
+                    if isinstance(payload_group, dict)
+                    else None
                 ),
-                "samples": copy.deepcopy(snapshot["sampled_content_evidence"]["samples"]),
-            },
-            "inspection": {
-                "mode": snapshot["inspection_mode"],
-                "allowed_state_ids": copy.deepcopy(snapshot["allowed_state_ids"]),
-                "state_universe": (
-                    copy.deepcopy(snapshot["sampling_plan"]["state_universe"]["states"])
-                    if snapshot["sampling_plan"] is not None
-                    else []
-                ),
-            },
-            "manual_preview": preview,
-            "decisions": {
-                "current": self._current_decision_summary(batch_id, item, manifest_item),
-                "history": self._decision_history(batch_id, item, manifest_item),
-            },
-        }
+            )
 
-    def get_independent_fidelity(
-        self,
-        batch_id: str,
-        *,
-        language: str,
-        resource_key: str,
-    ) -> dict[str, Any]:
-        """Return the GET-only L3b panel model for one existing Batch item."""
 
-        item_id = f"{language}/{resource_key}"
-        manifest = self.store.read_manifest(batch_id)
-        manifest_item = manifest["items"].get(item_id)
-        if not isinstance(manifest_item, Mapping):
-            raise _error("unknown_item", f"Unknown Batch Item: {item_id}")
-        payload = manifest_item.get("artifacts", {}).get("payload")
-        if not isinstance(payload, Mapping):
-            return {
-                "schema_version": "1.0",
-                "batch_id": batch_id,
-                "item_id": item_id,
-                "status": "invalid",
-                "evidence_identity": None,
-                "l3b": {
-                    "claim": "independent_source_content_fidelity",
-                    "verdict": "invalid",
-                    "coverage": None,
-                    "reason": "Batch item has no persisted payload binding.",
-                    "claim_limitations": [],
-                },
-                "scopes": [],
-            }
-        return build_independent_fidelity_view(
-            self.root,
-            run_dir=self.store.run_dir(batch_id),
-            batch_id=batch_id,
-            item_id=item_id,
-            payload_artifact=payload,
+def _common_section_comparisons(
+    comparisons: list[dict[str, Any]],
+    *,
+    source: list[dict[str, str]],
+    payload: Any,
+) -> None:
+    if not isinstance(payload, list) or len(payload) != len(source):
+        _value_comparison(
+            comparisons,
+            payload_path="commonSections",
+            label="公共区块数量",
+            source_boundary="Banner、产品说明、FAQ 与 SLA",
+            source=len(source),
+            payload=len(payload) if isinstance(payload, list) else type(payload).__name__,
+        )
+    for index, source_section in enumerate(source):
+        payload_section = (
+            payload[index]
+            if isinstance(payload, list) and index < len(payload)
+            else None
+        )
+        section_type = source_section["sectionType"]
+        if not isinstance(payload_section, dict) or (
+            payload_section.get("sectionType") != section_type
+        ):
+            _value_comparison(
+                comparisons,
+                payload_path=f"commonSections[{index}].sectionType",
+                label=f"公共区块 {index + 1} 类型",
+                source_boundary=source_section["source_boundary"],
+                source=section_type,
+                payload=(
+                    payload_section.get("sectionType")
+                    if isinstance(payload_section, dict)
+                    else None
+                ),
+            )
+        _html_comparison(
+            comparisons,
+            payload_path=f"commonSections[{index}].content",
+            label=f"{section_type} 公共区块",
+            source_boundary=source_section["source_boundary"],
+            source=source_section["content"],
+            payload=(
+                payload_section.get("content")
+                if isinstance(payload_section, dict)
+                else None
+            ),
         )
 
-    def _manual_preview(
-        self,
-        batch_id: str,
-        item: BatchItem,
-        snapshot: Mapping[str, Any],
-    ) -> dict[str, Any]:
-        try:
-            payload_ref = self.store.read_manifest(batch_id)["items"][item.item_id]["artifacts"]["payload"]
-            payload_path = self.store.run_dir(batch_id) / payload_ref["path"]
-            if not payload_path.is_file() or sha256_file(payload_path) != payload_ref["sha256"]:
-                raise _error(
-                    "payload_artifact_untrusted",
-                    f"Payload artifact is missing or hash-drifted for {item.item_id}",
-                )
-            payload = _read_json(payload_path)
-            canonical_input = self.input_loader.load(
-                item.product_key,
-                item.language,
-                version_key=item.version_key,
-                expected_sha256=item.normalized_sha256,
-            )
-            reachability = self._reachability_for(item, canonical_input)
-            source_payload = self.source_projector.project_payload(
-                product_key=item.product_key,
-                language=item.language,
-                version_key=item.version_key,
-                canonical_input=canonical_input,
-                strategy=item.strategy,
-                source_reachability=reachability,
-            )
-            page_global = _comparison(
-                "page_global",
-                self.payload_projector.page_global(source_payload, item.strategy),
-                self.payload_projector.page_global(payload, item.strategy),
-            )
-            full_content = None
-            states: list[dict[str, Any]] = []
-            if snapshot["inspection_mode"] == "full":
-                full_content = _comparison(
-                    "full_content",
-                    self.payload_projector.full_content(source_payload, item.strategy),
-                    self.payload_projector.full_content(payload, item.strategy),
-                )
-            else:
-                selected = set(snapshot["sampled_content_evidence"]["coverage"]["selected_state_ids"])
-                for state in snapshot["sampling_plan"]["state_universe"]["states"]:
-                    state_comparison = _comparison(
-                        f"interactive_state:{state['state_id']}",
-                        self.payload_projector.state_content(source_payload, state),
-                        self.payload_projector.state_content(payload, state),
-                    )
-                    states.append({
-                        "state_id": state["state_id"],
-                        "criteria": copy.deepcopy(state["criteria"]),
-                        "machine_selected": state["state_id"] in selected,
-                        "comparison": state_comparison,
-                    })
-            return {
-                "status": "available",
-                "error": None,
-                "page_global": page_global,
-                "full_content": full_content,
-                "states": states,
-            }
-        except (
-            InputAssuranceError,
-            ProjectionError,
-            SourceReachabilityError,
-            StrictSoftCategoryProjectionError,
-            ReviewWorkbenchError,
-            OSError,
-            KeyError,
-            TypeError,
-            ValueError,
-        ) as error:
-            return {
-                "status": "unavailable",
-                "error": {
-                    "code": getattr(error, "code", "manual_preview_unavailable"),
-                    "message": str(error),
-                },
-                "page_global": None,
-                "full_content": None,
-                "states": [],
-            }
 
-    def _reachability_for(
-        self,
-        item: BatchItem,
-        canonical_input: Any,
-    ) -> SourceReachability | None:
-        if item.page_model != "FlexibleContentPage":
-            return None
-        reachability = self.source_reachability.resolve(canonical_input)
-        if item.strategy == "complex":
-            reachability = self.source_reachability.attach_strict_soft_category_projections(
-                canonical_input,
-                reachability,
-            )
-        return reachability
-
-    def _release_eligibility(
-        self,
-        manifest: Mapping[str, Any],
-        queue_item: Mapping[str, Any],
-    ) -> dict[str, Any]:
-        status = queue_item["status"]
-        decision = queue_item.get("current_decision")
-        decision_sha = (
-            decision.get("sha256")
-            if isinstance(decision, Mapping) and decision.get("sha256")
-            else "0" * 64
+def _html_comparison(
+    comparisons: list[dict[str, Any]],
+    *,
+    payload_path: str,
+    label: str,
+    source_boundary: str,
+    source: str,
+    payload: Any,
+) -> None:
+    normalized_source = normalize_html(source)
+    normalized_payload = normalize_html(payload) if isinstance(payload, str) else payload
+    matched = isinstance(normalized_payload, str) and (
+        normalized_source == normalized_payload
+    )
+    comparison: dict[str, Any] = {
+        "comparison_key": payload_path,
+        "payload_path": payload_path,
+        "label": label,
+        "source_boundary": source_boundary,
+        "kind": "html",
+        "status": "matched" if matched else "mismatched",
+        "source": normalized_source,
+        "payload": normalized_payload,
+        "difference": None,
+    }
+    if not matched:
+        comparison["difference"] = (
+            text_difference(normalized_source, normalized_payload)
+            if isinstance(normalized_payload, str)
+            else {
+                "source": "HTML 文本",
+                "payload": type(normalized_payload).__name__,
+            }
         )
-        current_hashes = {
-            "payload_sha256": queue_item["bindings"]["payload_sha256"],
-            "validation_artifact_sha256": queue_item["bindings"]["validation_artifact_sha256"],
-            "validation_evidence_sha256": queue_item["bindings"]["validation_evidence_sha256"],
-            "review_decision_sha256": decision_sha,
-            "validation_profile_sha256": manifest["validation_context"]["validation_profile"]["sha256"],
-            "sampling_plan_sha256": queue_item["bindings"]["sampling_plan_sha256"],
+    comparisons.append(comparison)
+
+
+def _value_comparison(
+    comparisons: list[dict[str, Any]],
+    *,
+    payload_path: str,
+    label: str,
+    source_boundary: str,
+    source: Any,
+    payload: Any,
+) -> None:
+    matched = source == payload
+    comparisons.append(
+        {
+            "comparison_key": payload_path,
+            "payload_path": payload_path,
+            "label": label,
+            "source_boundary": source_boundary,
+            "kind": "value",
+            "status": "matched" if matched else "mismatched",
+            "source": source,
+            "payload": payload,
+            "difference": None
+            if matched
+            else {"source": source, "payload": payload},
         }
-        try:
-            return evaluate_release_item(
-                execution_status=status["execution"],
-                validation_status=status["validation"],
-                evidence_binding=status["evidence_binding"],
-                approval_eligibility=status["approval_eligibility"],
-                review_status=status["review"],
-                current_hashes=current_hashes,
-                release_hashes=current_hashes,
-            ).to_dict()
-        except ReleaseContractError as error:
-            return {
-                "eligible": False,
-                "blockers": [{"code": error.code, "message": str(error)}],
-            }
-
-    def _current_decision_summary(
-        self,
-        batch_id: str,
-        item: BatchItem,
-        manifest_item: Mapping[str, Any],
-    ) -> dict[str, Any] | None:
-        reference = manifest_item["artifacts"].get("current_review_decision")
-        if reference is None:
-            return None
-        decision = self._read_decision_by_reference(batch_id, item, reference)
-        return {
-            "decision_id": decision["decision_id"],
-            "path": reference["path"],
-            "sha256": reference["sha256"],
-            "reviewer": decision["reviewer"],
-            "decided_at": decision["decided_at"],
-            "verdict": decision["verdict"],
-            "reason": decision["reason"],
-            "supersedes_decision_id": decision["supersedes_decision_id"],
-        }
-
-    def _decision_history(
-        self,
-        batch_id: str,
-        item: BatchItem,
-        manifest_item: Mapping[str, Any],
-    ) -> list[dict[str, Any]]:
-        reference = manifest_item["artifacts"].get("current_review_decision")
-        if reference is None:
-            return []
-        history: list[dict[str, Any]] = []
-        seen: set[str] = set()
-        decision = self._read_decision_by_reference(batch_id, item, reference)
-        decision_sha = str(reference["sha256"])
-        decision_path = str(reference["path"])
-        while True:
-            decision_id = str(decision["decision_id"])
-            if decision_id in seen:
-                raise _error(
-                    "decision_history_cycle",
-                    f"Review Decision supersession cycle at {decision_id}",
-                )
-            seen.add(decision_id)
-            history.append({
-                "decision_id": decision_id,
-                "path": decision_path,
-                "sha256": decision_sha,
-                "reviewer": decision["reviewer"],
-                "decided_at": decision["decided_at"],
-                "verdict": decision["verdict"],
-                "reason": decision["reason"],
-                "notes": decision["notes"],
-                "inspected_states": copy.deepcopy(decision["inspected_states"]),
-                "supersedes_decision_id": decision["supersedes_decision_id"],
-            })
-            supersedes = decision["supersedes_decision_id"]
-            if supersedes is None:
-                return history
-            decision_path = _decision_path(item.language, item.resource_key, str(supersedes))
-            decision_file = self.store.run_dir(batch_id) / decision_path
-            if not decision_file.is_file():
-                raise _error(
-                    "decision_history_missing",
-                    f"Superseded Review Decision is missing: {decision_path}",
-                )
-            decision_sha = sha256_file(decision_file)
-            decision = self.store.read_review_decision(batch_id, relative_path=decision_path)
-            if decision["decision_id"] != supersedes:
-                raise _error(
-                    "decision_history_identity_mismatch",
-                    "Superseded Review Decision identity does not match its path",
-                )
-            if decision["item_id"] != item.item_id:
-                raise _error(
-                    "decision_history_item_mismatch",
-                    "Superseded Review Decision item does not match the current item",
-                )
-
-    def _read_decision_by_reference(
-        self,
-        batch_id: str,
-        item: BatchItem,
-        reference: Mapping[str, Any],
-    ) -> dict[str, Any]:
-        decision = self.store.read_review_decision(
-            batch_id,
-            relative_path=reference["path"],
-        )
-        decision_file = self.store.run_dir(batch_id) / reference["path"]
-        if sha256_file(decision_file) != reference["sha256"]:
-            raise _error(
-                "review_decision_hash_drift",
-                f"Review Decision hash drifted for {item.item_id}",
-            )
-        if decision["item_id"] != item.item_id:
-            raise _error(
-                "review_decision_item_mismatch",
-                f"Review Decision item_id does not match {item.item_id}",
-            )
-        if _decision_path(item.language, item.resource_key, decision["decision_id"]) != reference["path"]:
-            raise _error(
-                "review_decision_path_mismatch",
-                "Review Decision path is not canonical",
-            )
-        return decision
-
-    def _read_history_index(self, path: Path) -> dict[str, Any]:
-        if not path.is_absolute():
-            path = (self.root / path).resolve()
-        if not path.is_file():
-            raise _error("history_index_missing", f"History index is missing: {path}")
-        value = _read_json(path)
-        if value.get("schema_version") != "1.0" or not isinstance(value.get("batches"), list):
-            raise _error(
-                "invalid_history_index",
-                "History index must use schema_version 1.0 and a batches array",
-            )
-        seen: set[str] = set()
-        for index, entry in enumerate(value["batches"]):
-            if not isinstance(entry, Mapping):
-                raise _error("invalid_history_index", f"batches[{index}] must be an object")
-            if set(entry) - {"batch_id", "label"}:
-                raise _error("invalid_history_index", f"batches[{index}] has unknown fields")
-            batch_id = entry.get("batch_id")
-            if not isinstance(batch_id, str) or not batch_id:
-                raise _error("invalid_history_index", f"batches[{index}].batch_id is required")
-            if batch_id in seen:
-                raise _error("invalid_history_index", f"Duplicate history Batch ID: {batch_id}")
-            seen.add(batch_id)
-            label = entry.get("label")
-            if label is not None and (not isinstance(label, str) or not label):
-                raise _error("invalid_history_index", f"batches[{index}].label must be non-empty")
-        return value
-
-    @staticmethod
-    def _history_summary(history_index: Mapping[str, Any] | None) -> dict[str, Any]:
-        if history_index is None:
-            return {
-                "configured": False,
-                "batches": [],
-            }
-        return {
-            "configured": True,
-            "batches": copy.deepcopy(list(history_index["batches"])),
-        }
+    )
 
 
-__all__ = [
-    "ReviewWorkbenchError",
-    "ReviewWorkbenchService",
-    "WorkbenchBatchSelection",
-]
+__all__ = ["ReviewWorkbenchService"]

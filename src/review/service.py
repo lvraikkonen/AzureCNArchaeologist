@@ -1,906 +1,1133 @@
-"""Controlled Review Decision service for Step 4 Slice C."""
+"""Prepare human review material and record explicit human decisions."""
 
 from __future__ import annotations
 
-import copy
-from collections.abc import Callable, Mapping, Sequence
+import json
+import os
+import re
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Literal
+from pathlib import Path, PurePosixPath
+from typing import Any, Sequence
 
-from src.content_sampling.artifacts import artifact_json_sha256
-from src.core.product_catalog import sha256_file
-from src.pipeline.models import (
-    BatchItem,
-    items_from_dicts,
-    summarize_batch_manifest,
-    utc_now,
-)
-from src.pipeline.state_store import (
-    ManifestConflictError,
-    RepositoryLock,
-    StateStore,
-)
-from src.review.accounting import (
-    finding_summary,
-    item_accounting,
-    legacy_review_summary,
-    summarize_review_items,
-)
-from src.review.contracts import (
-    ApprovalBlocker,
-    EvidenceBindings,
-    P3_PROFILE_IDENTITIES,
-    ReviewContractError,
-    derive_approval_eligibility,
-    derive_evidence_binding,
-    derive_review_decision_id,
-    machine_approval_preconditions,
-    precondition_result_from_mapping,
-    validate_inspected_states,
-    validate_review_transition,
+from src.core.catalog import LANGUAGES, ProductCatalog
+from src.core.payload_contract import (
+    LEGACY_PAYLOAD_CONTRACT_VERSION,
+    PAYLOAD_CONTRACT_VERSIONS,
+    PayloadContractError,
+    load_payload,
+    validate_pricing_payload,
+    validate_support_article_payload,
 )
 
 
-ReviewStatusFilter = Literal["pending", "approved", "rejected", "all"]
+READABLE_ID_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+CHECK_NAMES = ("L3a", "L3b")
+DECISIONS = {"approved", "rejected"}
+MATERIAL_LABELS = {
+    "frozen-html": "Frozen HTML",
+    "payload": "Business Payload",
+    "l3a-report": "L3a 检查报告",
+    "l3b-report": "L3b 检查报告",
+}
+ALL_MATERIALS = tuple(MATERIAL_LABELS)
 
 
-class ReviewServiceError(RuntimeError):
-    """A controlled review operation failed with a stable code."""
-
-    def __init__(self, code: str, message: str) -> None:
-        super().__init__(message)
-        self.code = code
+class ReviewError(RuntimeError):
+    """A review queue or decision cannot be trusted or safely written."""
 
 
 @dataclass(frozen=True)
-class ReviewDecisionRequest:
-    batch_id: str
-    item_id: str
-    expected_revision: int
-    reviewer: str
-    verdict: str
-    reason: str | None = None
-    notes: str = ""
-    inspected_states: tuple[Mapping[str, Any], ...] = ()
+class ReviewQueueResult:
+    review_id: str
+    review_directory: Path
+    queue: dict[str, Any]
 
 
 @dataclass(frozen=True)
 class ReviewDecisionResult:
-    batch_id: str
-    item_id: str
-    decision_id: str
-    decision_path: str
-    decision_sha256: str
-    committed_revision: int
-    current_revision: int
-    review: str
-    evidence_binding: str
-    approval_eligibility: str
-    projection_status: str
-    source_warnings: tuple[Mapping[str, str], ...] = ()
-    warnings: tuple[str, ...] = ()
-
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            "batch_id": self.batch_id,
-            "item_id": self.item_id,
-            "decision_id": self.decision_id,
-            "decision_path": self.decision_path,
-            "decision_sha256": self.decision_sha256,
-            "committed_revision": self.committed_revision,
-            "current_revision": self.current_revision,
-            "review": self.review,
-            "evidence_binding": self.evidence_binding,
-            "approval_eligibility": self.approval_eligibility,
-            "projection_status": self.projection_status,
-            "source_warnings": [dict(warning) for warning in self.source_warnings],
-            "warnings": list(self.warnings),
-        }
+    review_id: str
+    product_key: str
+    decision_path: Path
+    decision: dict[str, Any]
 
 
 @dataclass(frozen=True)
-class ReviewEvidenceSnapshot:
-    batch_id: str
-    item: BatchItem
-    manifest_item: Mapping[str, Any]
-    validation: Mapping[str, Any]
-    sampled_evidence: Mapping[str, Any]
-    sampling_plan: Mapping[str, Any] | None
-    current_bindings: EvidenceBindings
-    coverage: Mapping[str, Any]
-    source_quality_findings: tuple[Mapping[str, Any], ...]
-    source_preconditions: Mapping[str, Any]
-    allowed_state_ids: tuple[str, ...]
-    state_universe: tuple[Mapping[str, Any], ...]
-    current_decision: Mapping[str, Any] | None
-    current_decision_reference: Mapping[str, Any] | None
-
-    @property
-    def inspection_mode(self) -> Literal["interactive", "full"]:
-        return "interactive" if self.sampling_plan is not None else "full"
+class ReleaseReviewSnapshot:
+    review_directory: Path
+    queue: dict[str, Any]
+    approved: tuple[tuple[dict[str, Any], dict[str, Any], Path], ...]
+    rejected_product_keys: tuple[str, ...]
+    pending_product_keys: tuple[str, ...]
 
 
-def _error(code: str, message: str) -> ReviewServiceError:
-    return ReviewServiceError(code, message)
+def prepare_review_queue(
+    catalog: ProductCatalog,
+    *,
+    run_name: str,
+    review_id: str,
+    runs_root: Path | str | None = None,
+    reviews_root: Path | str | None = None,
+) -> ReviewQueueResult:
+    """Create one immutable queue from a sealed Batch.
 
+    Queue items are language-specific and enter only when extraction, L3a, and
+    L3b all passed. Decisions are intentionally absent from this operation.
+    """
 
-def _artifact_reference(value: Mapping[str, Any] | None) -> dict[str, Any] | None:
-    return copy.deepcopy(dict(value)) if value is not None else None
+    _validate_readable_id(run_name, field="Batch 名称")
+    _validate_readable_id(review_id, field="审核 ID")
+    project_root = catalog.project_root
+    run_root = _root_path(project_root, runs_root, "runs")
+    review_root = _root_path(project_root, reviews_root, "reviews", create=True)
+    run_directory, manifest = _load_sealed_run(run_root, run_name)
+    payload_contract_version = _manifest_payload_contract_version(manifest)
 
-
-def _decision_path(decision: Mapping[str, Any]) -> str:
-    return (
-        Path(
-            "review",
-            "decisions",
-            str(decision["language"]),
-            str(decision["resource_key"]),
-            f"{decision['decision_id']}.json",
+    final_directory = review_root / review_id
+    building_directory = review_root / f"{review_id}.building"
+    if final_directory.exists():
+        raise ReviewError(f"审核目录已经存在，不能覆盖：{final_directory}")
+    if building_directory.exists():
+        raise ReviewError(
+            f"发现未完成的审核清单目录，不能覆盖：{building_directory}"
         )
-        .as_posix()
+
+    queued_by_product: dict[str, list[dict[str, Any]]] = {}
+    product_order: list[str] = []
+    not_queued_items: list[dict[str, str]] = []
+    items = manifest.get("items")
+    if not isinstance(items, list):
+        raise ReviewError("Batch 清单缺少可读的处理项列表。")
+
+    for row in items:
+        if not isinstance(row, dict):
+            raise ReviewError("Batch 清单包含不是对象的处理项。")
+        product_key = _required_string(row, "product_key", "Batch 处理项")
+        language = _required_string(row, "language", f"{product_key} 处理项")
+        item_id = _required_string(row, "item_id", f"{product_key} 处理项")
+        if language not in LANGUAGES:
+            raise ReviewError(f"{item_id} 使用未知语言：{language}。")
+        if product_key not in product_order:
+            product_order.append(product_key)
+        queued_item, reasons = _build_queue_item(
+            catalog,
+            run_directory=run_directory,
+            row=row,
+            payload_contract_version=payload_contract_version,
+        )
+        if queued_item is None:
+            not_queued_items.append(
+                {"item_id": item_id, "reason": "；".join(reasons)}
+            )
+            continue
+        queued_by_product.setdefault(product_key, []).append(queued_item)
+
+    products: list[dict[str, Any]] = []
+    for product_key in product_order:
+        queued_items = queued_by_product.get(product_key, [])
+        if not queued_items:
+            continue
+        queued_languages = tuple(item["language"] for item in queued_items)
+        if queued_languages != tuple(catalog.languages):
+            for item in queued_items:
+                not_queued_items.append(
+                    {
+                        "item_id": item["item_id"],
+                        "reason": (
+                            "同一产品没有完整的中文和英文机器检查通过项，"
+                            "不能进入产品级人工审核"
+                        ),
+                    }
+                )
+            continue
+        page_models = {item["page_model"] for item in queued_items}
+        semantic_strategies = {
+            item["semantic_strategy"] for item in queued_items
+        }
+        if len(page_models) != 1 or len(semantic_strategies) != 1:
+            for item in queued_items:
+                not_queued_items.append(
+                    {
+                        "item_id": item["item_id"],
+                        "reason": (
+                            "同一产品的中英文 Batch 页面模型或 Strategy 不一致，"
+                            "不能进入产品级人工审核"
+                        ),
+                    }
+                )
+            continue
+        definition = catalog.get_definition(product_key)
+        material_path = final_directory / "materials" / f"{product_key}.md"
+        products.append(
+            {
+                "product_key": product_key,
+                "display_name": definition.display_name,
+                "page_model": next(iter(page_models)),
+                "semantic_strategy": next(iter(semantic_strategies)),
+                "bilingual_ready": True,
+                "review_material_path": _present_path(material_path, project_root),
+                "items": queued_items,
+            }
+        )
+
+    queued_item_count = sum(len(product["items"]) for product in products)
+    bilingual_product_count = sum(
+        1 for product in products if product["bilingual_ready"]
+    )
+    batch_reference: dict[str, Any] = {
+        "run_name": run_name,
+        "run_directory": _present_path(run_directory, project_root),
+        "run_manifest_path": _present_path(
+            run_directory / "run.json", project_root
+        ),
+        "batch_kind": manifest.get("batch_kind", "standard"),
+        "payload_contract_version": payload_contract_version,
+    }
+    if manifest.get("batch_kind") == "incremental_reprocessing":
+        reprocessing = manifest.get("incremental_reprocessing")
+        if not isinstance(reprocessing, dict):
+            raise ReviewError("重新处理记录缺少原增量 Batch 绑定。")
+        batch_reference["incremental_run_name"] = _required_string(
+            reprocessing,
+            "incremental_run_name",
+            "重新处理记录",
+        )
+        batch_reference["previous_processing_run_name"] = _required_string(
+            reprocessing,
+            "previous_processing_run_name",
+            "重新处理记录",
+        )
+    queue: dict[str, Any] = {
+        "schema_version": "1.0",
+        "review_id": review_id,
+        "batch": batch_reference,
+        "review_instructions": [
+            "审核决定只能由真实审核人通过本地人工审核台页面记录。",
+            "批准前必须检查同一产品的中文和英文 Frozen HTML、Business Payload、L3a 与 L3b 报告。",
+            "人工决定不能覆盖机器检查失败或阻断。",
+        ],
+        "summary": {
+            "batch_items": len(items),
+            "queued_items": queued_item_count,
+            "not_queued_items": len(not_queued_items),
+            "queued_products": len(products),
+            "bilingual_ready_products": bilingual_product_count,
+        },
+        "products": products,
+        "not_queued_items": not_queued_items,
+    }
+
+    building_directory.mkdir(parents=True)
+    (building_directory / "decisions").mkdir()
+    materials_directory = building_directory / "materials"
+    materials_directory.mkdir()
+    _write_new_json(building_directory / "queue.json", queue)
+    for product in products:
+        material_path = materials_directory / f"{product['product_key']}.md"
+        material_path.write_text(
+            _build_material_markdown(
+                product,
+                material_path=final_directory / "materials" / material_path.name,
+                project_root=project_root,
+            ),
+            encoding="utf-8",
+        )
+    try:
+        building_directory.rename(final_directory)
+    except OSError as error:
+        raise ReviewError(
+            f"无法封存审核清单目录 {final_directory}：{error}"
+        ) from error
+    return ReviewQueueResult(review_id, final_directory, queue)
+
+
+def create_review_decision(
+    catalog: ProductCatalog,
+    *,
+    review_id: str,
+    product_key: str,
+    reviewer: str,
+    decision: str,
+    inspected_languages: Sequence[str],
+    inspected_materials: Sequence[str],
+    notes: str,
+    reviews_root: Path | str | None = None,
+) -> ReviewDecisionResult:
+    """Record one product-level human decision without overwriting history."""
+
+    _validate_readable_id(review_id, field="审核 ID")
+    _validate_readable_id(product_key, field="Product Key")
+    normalized_reviewer = _human_text(reviewer, field="审核人", single_line=True)
+    normalized_notes = _human_text(notes, field="审核说明")
+    if decision not in DECISIONS:
+        raise ReviewError("审核决定必须是 approved 或 rejected。")
+    languages = _ordered_unique(
+        inspected_languages,
+        allowed=tuple(catalog.languages),
+        field="已检查语言",
+    )
+    materials = _ordered_unique(
+        inspected_materials,
+        allowed=ALL_MATERIALS,
+        field="已检查材料",
+    )
+    if decision == "approved":
+        if languages != tuple(catalog.languages):
+            raise ReviewError("批准前必须明确检查中文和英文两个处理项。")
+        if materials != ALL_MATERIALS:
+            raise ReviewError(
+                "批准前必须明确检查 Frozen HTML、Business Payload、L3a 和 L3b 报告。"
+            )
+
+    project_root = catalog.project_root
+    review_root = _root_path(project_root, reviews_root, "reviews")
+    review_directory, queue = _load_review_queue(review_root, review_id)
+    product = _queue_product(queue, product_key)
+    if not product.get("bilingual_ready"):
+        raise ReviewError(
+            f"产品 {product_key} 没有两个语言均通过机器检查，不能记录批准或拒绝决定。"
+        )
+    _verify_queue_product(
+        queue,
+        product,
+        catalog=catalog,
+    )
+
+    reviewed_items = [
+        {
+            "item_id": item["item_id"],
+            "language": item["language"],
+            "frozen_html_path": item["frozen_html_path"],
+            "payload_path": item["payload_path"],
+            "l3a_report_path": item["l3a_report_path"],
+            "l3b_report_path": item["l3b_report_path"],
+        }
+        for item in product["items"]
+    ]
+    decision_record: dict[str, Any] = {
+        "schema_version": "1.0",
+        "review_id": review_id,
+        "run_name": queue["batch"]["run_name"],
+        "batch_kind": queue["batch"].get("batch_kind", "standard"),
+        "incremental_run_name": queue["batch"].get("incremental_run_name"),
+        "product_key": product_key,
+        "reviewer": normalized_reviewer,
+        "decision": decision,
+        "inspection_scope": {
+            "languages": list(languages),
+            "materials": [MATERIAL_LABELS[material] for material in materials],
+        },
+        "notes": normalized_notes,
+        "reviewed_items": reviewed_items,
+    }
+    decision_path = review_directory / "decisions" / f"{product_key}.json"
+    if decision_path.exists():
+        raise ReviewError(
+            f"产品 {product_key} 已有审核决定，不能覆盖；需要重审时请创建新的审核 ID。"
+        )
+    _write_new_json(decision_path, decision_record)
+    return ReviewDecisionResult(
+        review_id,
+        product_key,
+        decision_path,
+        decision_record,
     )
 
 
-class ReviewService:
-    """UI-independent authority for review queue projection and decisions."""
+def read_review_status(
+    catalog: ProductCatalog,
+    *,
+    review_id: str,
+    reviews_root: Path | str | None = None,
+) -> dict[str, Any]:
+    """Return a live projection of write-once decision files."""
 
-    def __init__(
-        self,
-        root: str | Path = ".",
-        runs_dir: str | Path = "runs",
-        *,
-        state_store: StateStore | None = None,
-        now: Callable[[], str] = utc_now,
-    ) -> None:
-        self.root = Path(root).resolve()
-        self.store = state_store or StateStore(self.root, runs_dir)
-        self._now = now
-
-    def list_items(
-        self,
-        batch_id: str,
-        *,
-        status: ReviewStatusFilter = "pending",
-        item_id: str | None = None,
-    ) -> dict[str, Any]:
-        queue = self.build_queue(batch_id)
-        return self._filtered_queue(queue, status=status, item_id=item_id)
-
-    def get_item_evidence(
-        self,
-        batch_id: str,
-        item_id: str,
-    ) -> dict[str, Any]:
-        frozen = self.store.read_input_manifest(batch_id)
-        manifest = self.store.read_manifest(batch_id)
-        if not self._is_supported_review_profile(manifest):
-            raise _error(
-                "unsupported_review_profile",
-                "Review evidence snapshots require Validation Profile P3",
+    _validate_readable_id(review_id, field="审核 ID")
+    review_root = _root_path(catalog.project_root, reviews_root, "reviews")
+    review_directory, queue = _load_review_queue(review_root, review_id)
+    products: list[dict[str, str | None]] = []
+    counts = {"approved": 0, "rejected": 0, "pending": 0}
+    for product in queue["products"]:
+        product_key = product["product_key"]
+        decision_path = review_directory / "decisions" / f"{product_key}.json"
+        if decision_path.is_file():
+            record = _read_decision(
+                decision_path,
+                review_id=review_id,
+                product_key=product_key,
             )
-        items = {item.item_id: item for item in items_from_dicts(frozen["items"])}
-        if item_id not in items:
-            raise _error("unknown_item", f"Unknown Batch Item: {item_id}")
-        snapshot = self._snapshot(batch_id, manifest, items[item_id])
-        return {
-            "batch_id": batch_id,
-            "item_id": item_id,
-            "manifest_revision": manifest["revision"],
-            "validation": copy.deepcopy(dict(snapshot.validation)),
-            "sampled_content_evidence": copy.deepcopy(
-                dict(snapshot.sampled_evidence)
-            ),
-            "sampling_plan": (
-                copy.deepcopy(dict(snapshot.sampling_plan))
-                if snapshot.sampling_plan is not None
-                else None
-            ),
-            "bindings": snapshot.current_bindings.to_dict(),
-            "source_quality_findings": [
-                dict(finding) for finding in snapshot.source_quality_findings
-            ],
-            "allowed_state_ids": list(snapshot.allowed_state_ids),
-            "inspection_mode": snapshot.inspection_mode,
-        }
-
-    def evidence_snapshot(
-        self,
-        batch_id: str,
-        item_id: str,
-        *,
-        manifest: Mapping[str, Any] | None = None,
-    ) -> ReviewEvidenceSnapshot:
-        """Return the authoritative current evidence snapshot for one item."""
-
-        current_manifest = (
-            copy.deepcopy(dict(manifest))
-            if manifest is not None
-            else self.store.read_manifest(batch_id)
-        )
-        frozen = self.store.read_input_manifest(batch_id)
-        items = {item.item_id: item for item in items_from_dicts(frozen["items"])}
-        item = items.get(item_id)
-        if item is None:
-            raise _error("unknown_item", f"Unknown Batch Item: {item_id}")
-        return self._snapshot(batch_id, current_manifest, item)
-
-    def decide(self, request: ReviewDecisionRequest) -> ReviewDecisionResult:
-        reviewer = request.reviewer.strip()
-        if not reviewer:
-            raise _error("invalid_reviewer", "reviewer must be non-empty")
-        if not isinstance(request.expected_revision, int):
-            raise _error(
-                "invalid_expected_revision",
-                "expected_revision must be an integer",
-            )
-        with RepositoryLock(
-            self.store.lock_root,
-            batch_id=request.batch_id,
-            command="pipeline-review-decide",
-        ):
-            manifest = self.store.read_manifest(request.batch_id)
-            if manifest["revision"] != request.expected_revision:
-                raise ManifestConflictError(
-                    f"Batch {request.batch_id} revision is {manifest['revision']}, "
-                    f"expected {request.expected_revision}"
-                )
-            if not self._is_supported_review_profile(manifest):
-                raise _error(
-                    "unsupported_review_profile",
-                    "Review Decisions require Validation Profile P3",
-                )
-            if manifest["status"] not in ("completed", "completed_with_failures"):
-                raise _error(
-                    "batch_not_terminal",
-                    "Review Decisions require a completed Batch",
-                )
-            frozen = self.store.read_input_manifest(request.batch_id)
-            items = {
-                item.item_id: item for item in items_from_dicts(frozen["items"])
-            }
-            item = items.get(request.item_id)
-            if item is None:
-                raise _error("unknown_item", f"Unknown Batch Item: {request.item_id}")
-            snapshot = self._snapshot(request.batch_id, manifest, item)
-            self._assert_decidable(snapshot)
-
-            current_decision_id = (
-                str(snapshot.current_decision["decision_id"])
-                if snapshot.current_decision is not None
-                else None
-            )
-            inspected = tuple(copy.deepcopy(dict(value)) for value in request.inspected_states)
-            try:
-                transition = validate_review_transition(
-                    execution_status=snapshot.manifest_item["status"]["execution"],
-                    validation_status=snapshot.manifest_item["status"]["validation"],
-                    current_bindings=snapshot.current_bindings,
-                    decision_bindings=snapshot.current_bindings,
-                    source_quality_findings=snapshot.source_quality_findings,
-                    source_preconditions=snapshot.source_preconditions,
-                    inspection_mode=snapshot.inspection_mode,
-                    inspected_states=inspected,
-                    allowed_state_ids=snapshot.allowed_state_ids,
-                    verdict=request.verdict,
-                    reason=request.reason,
-                    current_decision_id=current_decision_id,
-                    supersedes_decision_id=current_decision_id,
-                )
-            except ReviewContractError as error:
-                raise _error(error.code, str(error)) from error
-
-            decision_body: dict[str, Any] = {
-                "schema_version": "1.0",
-                "decision_id": "0" * 64,
-                "batch_id": request.batch_id,
-                "item_id": item.item_id,
-                "resource_key": item.resource_key,
-                "language": item.language,
+            status = record["decision"]
+            reviewer = record["reviewer"]
+        else:
+            status = "pending"
+            reviewer = None
+        counts[status] += 1
+        products.append(
+            {
+                "product_key": product_key,
+                "status": status,
                 "reviewer": reviewer,
-                "decided_at": self._now(),
-                "verdict": transition.verdict,
-                "reason": transition.reason,
-                "notes": request.notes,
-                "bindings": snapshot.current_bindings.to_dict(),
-                "inspected_states": [
-                    state.to_dict() for state in transition.inspected_states
-                ],
-                "supersedes_decision_id": current_decision_id,
-            }
-            decision_body["decision_id"] = derive_review_decision_id(decision_body)
-            relative_path = _decision_path(decision_body)
-            decision_path = self.store.write_review_decision(
-                request.batch_id,
-                decision_body,
-                relative_path=relative_path,
-            )
-            decision_sha256 = sha256_file(decision_path)
-
-            def mutate(value: dict[str, Any]) -> None:
-                current = value["items"][item.item_id]
-                current["artifacts"]["current_review_decision"] = {
-                    "path": relative_path,
-                    "sha256": decision_sha256,
-                }
-                current["status"]["review"] = transition.verdict
-                current["status"]["evidence_binding"] = "bound"
-                current["status"]["approval_eligibility"] = (
-                    transition.approval_eligibility.status
-                )
-                value["summary"] = summarize_batch_manifest(value)
-
-            updated = self.store.update_manifest(
-                request.batch_id,
-                mutate,
-                expected_revision=request.expected_revision,
-                changed_item_ids=(item.item_id,),
-            )
-            warnings: list[str] = []
-            projection_status = "rebuilt"
-            try:
-                self.rebuild_queue(request.batch_id)
-                current_manifest = self.store.read_manifest(request.batch_id)
-            except Exception as error:  # pragma: no cover - covered by service callers
-                projection_status = "projection_rebuild_pending"
-                warnings.append(str(error))
-                current_manifest = updated
-            current_item = current_manifest["items"][item.item_id]
-            source_warnings = tuple(
-                finding_summary(finding)
-                for finding in snapshot.source_quality_findings
-                if finding.get("classification") == "advisory"
-            )
-            return ReviewDecisionResult(
-                batch_id=request.batch_id,
-                item_id=item.item_id,
-                decision_id=str(decision_body["decision_id"]),
-                decision_path=relative_path,
-                decision_sha256=decision_sha256,
-                committed_revision=int(updated["revision"]),
-                current_revision=int(current_manifest["revision"]),
-                review=str(current_item["status"]["review"]),
-                evidence_binding=str(current_item["status"]["evidence_binding"]),
-                approval_eligibility=str(
-                    current_item["status"]["approval_eligibility"]
+                "decision_path": (
+                    _present_path(decision_path, catalog.project_root)
+                    if decision_path.is_file()
+                    else None
                 ),
-                projection_status=projection_status,
-                source_warnings=source_warnings,
-                warnings=tuple(warnings),
-            )
-
-    def rebuild_queue(self, batch_id: str) -> dict[str, Any]:
-        projection = self.build_queue(batch_id)
-        self.store.write_projection(batch_id, "review", projection)
-        return projection
-
-    def build_queue(self, batch_id: str) -> dict[str, Any]:
-        manifest = self.store.read_manifest(batch_id)
-        if not self._is_supported_review_profile(manifest):
-            return self.store.read_projection(batch_id, "review")
-        frozen = self.store.read_input_manifest(batch_id)
-        items = items_from_dicts(frozen["items"])
-        queue_items: list[dict[str, Any]] = []
-        for item in items:
-            current = manifest["items"][item.item_id]
-            if (
-                current["status"]["execution"] != "succeeded"
-                or current["status"]["validation"] != "passed"
-            ):
-                continue
-            snapshot = self._snapshot(batch_id, manifest, item)
-            queue_items.append(self._queue_item(snapshot))
-        summary = self._queue_summary(queue_items)
-        return {
-            "schema_version": "2.0",
-            "batch_id": batch_id,
-            "manifest_revision": manifest["revision"],
-            "generated_at": (
-                manifest["checkpoints"]["review"].get("completed_at")
-                or manifest["updated_at"]
-            ),
-            "summary": summary,
-            "items": queue_items,
-        }
-
-    def batch_accounting(self, batch_id: str) -> dict[str, int]:
-        manifest = self.store.read_manifest(batch_id)
-        summary: Mapping[str, Any] = {}
-        if self._is_supported_review_profile(manifest):
-            queue = self.build_queue(batch_id)
-            summary = queue.get("summary", {})
-        return {
-            "source_warning_count": int(summary.get("source_warning_count", 0)),
-            "approval_blocked_count": int(
-                summary.get("approval_blocked_count", summary.get("approval_blocked", 0))
-            ),
-            "machine_failed_count": sum(
-                item["status"]["validation"] == "failed"
-                for item in manifest["items"].values()
-            ),
-            "release_ready_count": int(summary.get("release_ready_count", 0)),
-        }
-
-    def lifecycle_after_validation(
-        self,
-        *,
-        batch_id: str,
-        item: BatchItem,
-        manifest_item: Mapping[str, Any],
-        validation_projection: Mapping[str, Any],
-    ) -> dict[str, Any]:
-        """Derive post-validation review state without mutating artifacts."""
-
-        machine = machine_approval_preconditions(
-            str(manifest_item["status"]["execution"]),
-            str(manifest_item["status"]["validation"]),
-        )
-        try:
-            source = precondition_result_from_mapping(
-                validation_projection["evidence"]["approval_preconditions"]["source"]
-            )
-            eligibility = derive_approval_eligibility(
-                machine=machine,
-                source=source,
-            )
-        except ReviewContractError as error:
-            raise _error(error.code, str(error)) from error
-
-        reference = manifest_item["artifacts"].get("current_review_decision")
-        if reference is None:
-            return {
-                "review": (
-                    "pending"
-                    if validation_projection.get("status") == "passed"
-                    else "not_requested"
-                ),
-                "evidence_binding": "not_applicable",
-                "approval_eligibility": eligibility.status,
             }
-        decision = self._read_current_decision(batch_id, item, reference)
-        if validation_projection.get("status") != "passed":
-            return {
-                "review": "pending",
-                "evidence_binding": "stale",
-                "approval_eligibility": eligibility.status,
+        )
+    return {
+        "review_id": review_id,
+        "run_name": queue["batch"]["run_name"],
+        "batch_kind": queue["batch"].get("batch_kind", "standard"),
+        "incremental_run_name": queue["batch"].get("incremental_run_name"),
+        "review_directory": _present_path(review_directory, catalog.project_root),
+        "summary": {
+            "queued_products": len(products),
+            "queued_items": queue["summary"]["queued_items"],
+            "approved_products": counts["approved"],
+            "rejected_products": counts["rejected"],
+            "pending_products": counts["pending"],
+        },
+        "products": products,
+        "not_queued_items": queue["not_queued_items"],
+    }
+
+
+def read_review_materials(
+    catalog: ProductCatalog,
+    *,
+    review_id: str,
+    product_key: str,
+    reviews_root: Path | str | None = None,
+) -> dict[str, Any]:
+    """Resolve the exact files a reviewer must inspect for one product."""
+
+    _validate_readable_id(review_id, field="审核 ID")
+    review_root = _root_path(catalog.project_root, reviews_root, "reviews")
+    _, queue = _load_review_queue(review_root, review_id)
+    product = _queue_product(queue, product_key)
+    payload_contract_version = _verify_queue_product(
+        queue, product, catalog=catalog
+    )
+    items: list[dict[str, Any]] = []
+    for item in product["items"]:
+        l3a_path = _resolve_presented_path(
+            item["l3a_report_path"], catalog.project_root
+        )
+        l3b_path = _resolve_presented_path(
+            item["l3b_report_path"], catalog.project_root
+        )
+        items.append(
+            {
+                "item_id": item["item_id"],
+                "language": item["language"],
+                "frozen_html_path": _resolve_presented_path(
+                    item["frozen_html_path"], catalog.project_root
+                ).as_posix(),
+                "payload_path": _resolve_presented_path(
+                    item["payload_path"], catalog.project_root
+                ).as_posix(),
+                "l3a_report_path": l3a_path.as_posix(),
+                "l3b_report_path": l3b_path.as_posix(),
+                "l3a_result": _read_json_object(l3a_path),
+                "l3b_result": _read_json_object(l3b_path),
             }
-        bindings = self._bindings_from_validation(
-            validation_projection,
-            validation_artifact_sha256=str(
-                manifest_item["artifacts"]["validation"]["sha256"]
+        )
+    return {
+        "review_id": review_id,
+        "run_name": queue["batch"]["run_name"],
+        "batch_kind": queue["batch"].get("batch_kind", "standard"),
+        "payload_contract_version": payload_contract_version,
+        "incremental_run_name": queue["batch"].get("incremental_run_name"),
+        "product_key": product_key,
+        "display_name": product["display_name"],
+        "page_model": product["page_model"],
+        "semantic_strategy": product["semantic_strategy"],
+        "bilingual_ready": product["bilingual_ready"],
+        "review_material_path": _resolve_presented_path(
+            product["review_material_path"], catalog.project_root
+        ).as_posix(),
+        "items": items,
+    }
+
+
+def collect_release_review_snapshot(
+    catalog: ProductCatalog,
+    *,
+    review_id: str,
+    reviews_root: Path | str | None = None,
+) -> ReleaseReviewSnapshot:
+    """Read and strictly validate the current decisions for Release building."""
+
+    _validate_readable_id(review_id, field="审核 ID")
+    review_root = _root_path(catalog.project_root, reviews_root, "reviews")
+    review_directory, queue = _load_review_queue(review_root, review_id)
+    approved: list[tuple[dict[str, Any], dict[str, Any], Path]] = []
+    rejected: list[str] = []
+    pending: list[str] = []
+    for product in queue["products"]:
+        if not isinstance(product, dict):
+            raise ReviewError("审核清单包含不是对象的产品。")
+        product_key = _required_string(product, "product_key", "审核产品")
+        decision_path = review_directory / "decisions" / f"{product_key}.json"
+        if not decision_path.is_file():
+            pending.append(product_key)
+            continue
+        record = _read_decision(
+            decision_path,
+            review_id=review_id,
+            product_key=product_key,
+        )
+        _verify_queue_product(queue, product, catalog=catalog)
+        _validate_decision_binding(queue, product, record)
+        if record["decision"] == "approved":
+            approved.append((product, record, decision_path))
+        else:
+            rejected.append(product_key)
+    return ReleaseReviewSnapshot(
+        review_directory=review_directory,
+        queue=queue,
+        approved=tuple(approved),
+        rejected_product_keys=tuple(rejected),
+        pending_product_keys=tuple(pending),
+    )
+
+
+def _build_queue_item(
+    catalog: ProductCatalog,
+    *,
+    run_directory: Path,
+    row: dict[str, Any],
+    payload_contract_version: str,
+) -> tuple[dict[str, Any] | None, list[str]]:
+    item_id = _required_string(row, "item_id", "Batch 处理项")
+    product_key = _required_string(row, "product_key", item_id)
+    language = _required_string(row, "language", item_id)
+    page_model = _required_string(row, "page_model", item_id)
+    semantic_strategy = _required_string(row, "semantic_strategy", item_id)
+    reasons: list[str] = []
+    if row.get("status") != "passed":
+        reason = row.get("error") or f"Batch 结果为 {row.get('status', 'unknown')}"
+        reasons.append(str(reason))
+    source_input = row.get("input")
+    if not isinstance(source_input, dict) or source_input.get("status") != "passed":
+        reasons.append("Frozen HTML 固定没有通过")
+    extraction = row.get("extraction")
+    if not isinstance(extraction, dict) or extraction.get("status") != "passed":
+        reasons.append("抽取没有通过")
+    checks = row.get("checks")
+    if not isinstance(checks, dict):
+        reasons.append("缺少 L3a、L3b 检查结果")
+    else:
+        for check_name in CHECK_NAMES:
+            check = checks.get(check_name)
+            if not isinstance(check, dict) or check.get("status") != "passed":
+                reasons.append(f"{check_name} 没有通过")
+    if reasons:
+        return None, reasons
+
+    assert isinstance(checks, dict)
+    payload_path = _run_artifact_path(
+        run_directory,
+        _required_string(row, "payload_path", item_id),
+        item_id,
+    )
+    batch_frozen = row.get("frozen_html_path")
+    if batch_frozen is not None:
+        frozen_path = _run_artifact_path(
+            run_directory,
+            _required_string(row, "frozen_html_path", item_id),
+            f"{item_id} Batch Frozen HTML",
+        )
+    else:
+        frozen_relative = _required_string(
+            row,
+            "frozen_relative_path",
+            item_id,
+        )
+        frozen_path = _safe_relative_path(
+            catalog.project_root / "data" / "prod-html",
+            frozen_relative,
+            label=f"{item_id} Frozen HTML",
+        )
+    check_paths: dict[str, Path] = {}
+    check_reports: dict[str, dict[str, Any]] = {}
+    for check_name in CHECK_NAMES:
+        check = checks[check_name]
+        check_path = _run_artifact_path(
+            run_directory,
+            _required_string(check, "path", f"{item_id} {check_name}"),
+            f"{item_id} {check_name}",
+        )
+        check_paths[check_name] = check_path
+
+    missing = [
+        label
+        for label, path in (
+            ("Frozen HTML", frozen_path),
+            ("Business Payload", payload_path),
+            ("L3a 报告", check_paths["L3a"]),
+            ("L3b 报告", check_paths["L3b"]),
+        )
+        if not path.is_file()
+    ]
+    if missing:
+        return None, [f"缺少审核材料：{', '.join(missing)}"]
+    try:
+        _validate_business_payload(
+            catalog,
+            product_key=product_key,
+            language=language,
+            payload_path=payload_path,
+            page_model=page_model,
+            semantic_strategy=semantic_strategy,
+            payload_contract_version=payload_contract_version,
+        )
+        for check_name in CHECK_NAMES:
+            report = _read_json_object(check_paths[check_name])
+            _validate_passed_check(
+                report,
+                check_name=check_name,
+                product_key=product_key,
+                language=language,
+            )
+            check_reports[check_name] = report
+    except ReviewError as error:
+        return None, [str(error)]
+
+    return (
+        {
+            "item_id": item_id,
+            "language": language,
+            "page_model": page_model,
+            "semantic_strategy": semantic_strategy,
+            "frozen_html_path": _present_path(frozen_path, catalog.project_root),
+            "payload_path": _present_path(payload_path, catalog.project_root),
+            "l3a_report_path": _present_path(
+                check_paths["L3a"], catalog.project_root
             ),
-        )
-        binding = derive_evidence_binding(bindings, decision["bindings"])
-        if binding != "bound":
-            return {
-                "review": "pending",
-                "evidence_binding": "stale",
-                "approval_eligibility": eligibility.status,
-            }
-        inspection_mode = (
-            "interactive" if bindings.sampling_plan_sha256 is not None else "full"
-        )
-        allowed_state_ids: tuple[str, ...] = ()
-        if inspection_mode == "interactive":
-            plan_ref = manifest_item["artifacts"].get("sampling_plan")
-            if plan_ref is None or plan_ref.get("sha256") is None:
-                return {
-                    "review": "pending",
-                    "evidence_binding": "bound",
-                    "approval_eligibility": eligibility.status,
-                }
-            plan = self.store.read_step4_artifact(
-                batch_id,
-                "sampling_plan",
-                relative_path=plan_ref["path"],
-            )
-            allowed_state_ids = tuple(
-                str(state["state_id"])
-                for state in plan["state_universe"]["states"]
-            )
-        try:
-            validate_inspected_states(
-                decision["inspected_states"],
-                inspection_mode=inspection_mode,
-                allowed_state_ids=allowed_state_ids,
-            )
-        except ReviewContractError:
-            return {
-                "review": "pending",
-                "evidence_binding": "bound",
-                "approval_eligibility": eligibility.status,
-            }
-        return {
-            "review": str(decision["verdict"]),
-            "evidence_binding": "bound",
-            "approval_eligibility": eligibility.status,
-        }
+            "l3b_report_path": _present_path(
+                check_paths["L3b"], catalog.project_root
+            ),
+            "machine_results": {
+                "L3a": {
+                    "status": "passed",
+                    "scope": check_reports["L3a"].get("scope", "完整 Business Payload"),
+                    "difference_count": len(
+                        check_reports["L3a"].get("differences", [])
+                    ),
+                },
+                "L3b": {
+                    "status": "passed",
+                    "scope": check_reports["L3b"].get("scope", "全部业务 HTML 字段"),
+                    "verified_field_count": len(
+                        check_reports["L3b"].get("fields", [])
+                    ),
+                },
+            },
+        },
+        [],
+    )
 
-    @staticmethod
-    def _profile_id(manifest: Mapping[str, Any]) -> str:
-        validation_context = manifest.get("validation_context")
-        if isinstance(validation_context, Mapping):
-            validation_profile = validation_context.get("validation_profile")
-            if (
-                isinstance(validation_profile, Mapping)
-                and isinstance(validation_profile.get("id"), str)
-            ):
-                return str(validation_profile["id"])
-        if isinstance(manifest.get("validation_profile_id"), str):
-            return str(manifest["validation_profile_id"])
-        return "legacy-profile-unrecorded"
 
-    @staticmethod
-    def _profile_identity(manifest: Mapping[str, Any]) -> Mapping[str, Any] | None:
-        validation_context = manifest.get("validation_context")
-        if isinstance(validation_context, Mapping):
-            validation_profile = validation_context.get("validation_profile")
-            if isinstance(validation_profile, Mapping):
-                return validation_profile
-        return None
-
-    @classmethod
-    def _is_supported_review_profile(cls, manifest: Mapping[str, Any]) -> bool:
-        profile = cls._profile_identity(manifest)
-        if profile is None:
-            return False
-        return dict(profile) in P3_PROFILE_IDENTITIES
-
-    def _snapshot(
-        self,
-        batch_id: str,
-        manifest: Mapping[str, Any],
-        item: BatchItem,
-    ) -> ReviewEvidenceSnapshot:
-        current = manifest["items"][item.item_id]
-        validation_ref = current["artifacts"]["validation"]
-        validation_sha = validation_ref["sha256"]
-        if not validation_sha:
-            raise _error(
-                "missing_validation_artifact",
-                f"Validation artifact SHA is missing for {item.item_id}",
-            )
-        validation_path = validation_ref["path"]
-        validation_file = self.store.run_dir(batch_id) / validation_path
-        if not validation_file.is_file() or sha256_file(validation_file) != validation_sha:
-            raise _error(
-                "validation_artifact_untrusted",
-                f"Validation artifact is missing or hash-drifted for {item.item_id}",
-            )
-        validation = self.store.read_projection(
-            batch_id,
-            "validation",
-            relative_path=validation_path,
-        )
-        if validation.get("schema_version") not in ("2.0", "2.1", "2.2"):
-            raise _error(
-                "unsupported_validation_projection",
-                "Review Decisions require Validation Projection 2.0, 2.1, or 2.2",
-            )
-        manifest_profile = self._profile_identity(manifest)
-        validation_profile = validation["evidence"]["bindings"]["validation_profile"]
-        if manifest_profile is None or dict(manifest_profile) != dict(validation_profile):
-            raise _error(
-                "validation_profile_mismatch",
-                "Validation Projection profile identity differs from the Batch",
-            )
-        if validation.get("item_id") != item.item_id:
-            raise _error(
-                "validation_item_mismatch",
-                f"Validation Projection item_id does not match {item.item_id}",
-            )
-
-        evidence_ref = current["artifacts"]["sampled_content_evidence"]
-        if evidence_ref is None or not evidence_ref["sha256"]:
-            raise _error(
-                "missing_sampled_content_evidence",
-                f"Sampled Content Evidence is missing for {item.item_id}",
-            )
-        sampled = self.store.read_step4_artifact(
-            batch_id,
-            "sampled_content_evidence",
-            relative_path=evidence_ref["path"],
-        )
-        if artifact_json_sha256(sampled) != evidence_ref["sha256"]:
-            raise _error(
-                "sampled_content_evidence_untrusted",
-                f"Sampled Content Evidence hash drifted for {item.item_id}",
-            )
-        content_binding = validation["evidence"]["content_validation"][
-            "sampled_content_evidence"
-        ]
-        if (
-            content_binding["path"] != evidence_ref["path"]
-            or content_binding["artifact_sha256"] != evidence_ref["sha256"]
-            or content_binding["evidence_sha256"] != sampled["evidence_sha256"]
+def _verify_queue_product(
+    queue: dict[str, Any],
+    product: dict[str, Any],
+    *,
+    catalog: ProductCatalog,
+) -> str:
+    project_root = catalog.project_root
+    run_name = _required_string(queue["batch"], "run_name", "审核清单 Batch")
+    run_directory = _resolve_presented_path(
+        _required_string(queue["batch"], "run_directory", "审核清单 Batch"),
+        project_root,
+    )
+    manifest_path = _resolve_presented_path(
+        _required_string(
+            queue["batch"], "run_manifest_path", "审核清单 Batch"
+        ),
+        project_root,
+    )
+    if manifest_path != run_directory / "run.json":
+        raise ReviewError("审核清单引用的 Batch 清单路径与运行目录不一致。")
+    if (run_directory.parent / f"{run_name}.building").exists():
+        raise ReviewError(f"Batch {run_name} 仍有未封存目录，不能用于人工决定。")
+    manifest = _read_json_object(manifest_path)
+    if manifest.get("run_name") != run_name:
+        raise ReviewError("审核清单引用的 Batch 名称与 run.json 不一致。")
+    stored_kind = queue["batch"].get("batch_kind")
+    if stored_kind is not None and stored_kind != manifest.get(
+        "batch_kind", "standard"
+    ):
+        raise ReviewError("审核清单引用的处理记录类型与 run.json 不一致。")
+    payload_contract_version = _manifest_payload_contract_version(manifest)
+    stored_contract_version = queue["batch"].get("payload_contract_version")
+    if (
+        stored_contract_version is not None
+        and stored_contract_version != payload_contract_version
+    ):
+        raise ReviewError("审核清单引用的 Payload 合同版本与 run.json 不一致。")
+    if manifest.get("batch_kind") == "incremental_reprocessing":
+        reprocessing = manifest.get("incremental_reprocessing")
+        if not isinstance(reprocessing, dict):
+            raise ReviewError("重新处理记录缺少原增量 Batch 绑定。")
+        for queue_field, manifest_field in (
+            ("incremental_run_name", "incremental_run_name"),
+            ("previous_processing_run_name", "previous_processing_run_name"),
         ):
-            raise _error(
-                "validation_evidence_binding_mismatch",
-                f"Validation evidence binding does not match sampled evidence for {item.item_id}",
-            )
-
-        plan = None
-        state_universe: tuple[Mapping[str, Any], ...] = ()
-        allowed_state_ids: tuple[str, ...] = ()
-        plan_ref = current["artifacts"].get("sampling_plan")
-        plan_binding = validation["evidence"]["bindings"]["sampling_plan"]
-        if plan_binding is None:
-            if plan_ref is not None and plan_ref.get("sha256") is not None:
-                raise _error(
-                    "unexpected_sampling_plan",
-                    f"Full-mode item unexpectedly has a Sampling Plan for {item.item_id}",
-                )
-        else:
-            if plan_ref is None or not plan_ref["sha256"]:
-                raise _error(
-                    "missing_sampling_plan",
-                    f"Sampling Plan is missing for {item.item_id}",
-                )
-            if (
-                plan_binding["path"] != plan_ref["path"]
-                or plan_binding["artifact_sha256"] != plan_ref["sha256"]
+            if queue["batch"].get(queue_field) != reprocessing.get(
+                manifest_field
             ):
-                raise _error(
-                    "sampling_plan_binding_mismatch",
-                    f"Validation evidence binding does not match Sampling Plan for {item.item_id}",
+                raise ReviewError(
+                    f"审核清单中的 {queue_field} 与重新处理记录不一致。"
                 )
-            plan = self.store.read_step4_artifact(
-                batch_id,
-                "sampling_plan",
-                relative_path=plan_ref["path"],
-            )
-            if artifact_json_sha256(plan) != plan_ref["sha256"]:
-                raise _error(
-                    "sampling_plan_untrusted",
-                    f"Sampling Plan hash drifted for {item.item_id}",
-                )
-            if plan["plan_sha256"] != plan_binding["plan_sha256"]:
-                raise _error(
-                    "sampling_plan_identity_mismatch",
-                    f"Sampling Plan semantic identity drifted for {item.item_id}",
-                )
-            state_universe = tuple(
-                copy.deepcopy(dict(state))
-                for state in plan["state_universe"]["states"]
-            )
-            allowed_state_ids = tuple(str(state["state_id"]) for state in state_universe)
-
-        bindings = self._bindings_from_validation(
-            validation,
-            validation_artifact_sha256=str(validation_sha),
+    rows = {
+        row.get("item_id"): row
+        for row in manifest.get("items", [])
+        if isinstance(row, dict)
+    }
+    page_model = _required_string(product, "page_model", "审核清单产品")
+    semantic_strategy = _required_string(
+        product,
+        "semantic_strategy",
+        "审核清单产品",
+    )
+    expected_languages = tuple(item["language"] for item in product["items"])
+    if expected_languages != tuple(LANGUAGES):
+        raise ReviewError(
+            f"产品 {product['product_key']} 的审核材料不是完整中英文两项。"
         )
-        decision_ref = current["artifacts"].get("current_review_decision")
-        decision = (
-            self._read_current_decision(batch_id, item, decision_ref)
-            if decision_ref is not None
-            else None
-        )
-        return ReviewEvidenceSnapshot(
-            batch_id=batch_id,
-            item=item,
-            manifest_item=copy.deepcopy(dict(current)),
-            validation=validation,
-            sampled_evidence=sampled,
-            sampling_plan=plan,
-            current_bindings=bindings,
-            coverage=validation["evidence"]["content_validation"]["coverage"],
-            source_quality_findings=tuple(
-                copy.deepcopy(dict(finding))
-                for finding in validation["evidence"]["source_quality_findings"]
+    for item in product["items"]:
+        row = rows.get(item["item_id"])
+        if not isinstance(row, dict):
+            raise ReviewError(f"Batch 不再包含 {item['item_id']}。")
+        if row.get("status") != "passed":
+            raise ReviewError(f"{item['item_id']} 当前 Batch 结果不是 passed。")
+        if row.get("page_model") != page_model:
+            raise ReviewError(
+                f"{item['item_id']} 的页面模型与审核清单不一致。"
+            )
+        if row.get("semantic_strategy") != semantic_strategy:
+            raise ReviewError(
+                f"{item['item_id']} 的 Strategy 与审核清单不一致。"
+            )
+        if item.get("page_model", page_model) != page_model:
+            raise ReviewError(
+                f"{item['item_id']} 保存的页面模型与产品审核清单不一致。"
+            )
+        if item.get("semantic_strategy", semantic_strategy) != semantic_strategy:
+            raise ReviewError(
+                f"{item['item_id']} 保存的 Strategy 与产品审核清单不一致。"
+            )
+        checks = row.get("checks")
+        if not isinstance(checks, dict):
+            raise ReviewError(f"{item['item_id']} 缺少机器检查记录。")
+        source_input = row.get("input")
+        if not isinstance(source_input, dict) or source_input.get("status") != "passed":
+            raise ReviewError(f"{item['item_id']} 的 Frozen HTML 固定没有通过。")
+        for check_name in CHECK_NAMES:
+            if not isinstance(checks.get(check_name), dict):
+                raise ReviewError(f"{item['item_id']} 缺少 {check_name} 检查记录。")
+        expected_paths = {
+            "payload_path": _run_artifact_path(
+                run_directory,
+                _required_string(row, "payload_path", item["item_id"]),
+                item["item_id"],
             ),
-            source_preconditions=copy.deepcopy(dict(
-                validation["evidence"]["approval_preconditions"]["source"]
-            )),
-            allowed_state_ids=allowed_state_ids,
-            state_universe=state_universe,
-            current_decision=decision,
-            current_decision_reference=(
-                copy.deepcopy(dict(decision_ref))
-                if decision_ref is not None
-                else None
+            "l3a_report_path": _run_artifact_path(
+                run_directory,
+                _required_string(checks["L3a"], "path", item["item_id"]),
+                item["item_id"],
             ),
-        )
-
-    def _read_current_decision(
-        self,
-        batch_id: str,
-        item: BatchItem,
-        reference: Mapping[str, Any],
-    ) -> dict[str, Any]:
-        decision = self.store.read_review_decision(
-            batch_id,
-            relative_path=reference["path"],
-        )
-        path = self.store.run_dir(batch_id) / reference["path"]
-        if sha256_file(path) != reference["sha256"]:
-            raise _error(
-                "current_review_decision_untrusted",
-                f"Current Review Decision hash drifted for {item.item_id}",
-            )
-        if decision["item_id"] != item.item_id:
-            raise _error(
-                "current_review_decision_item_mismatch",
-                f"Current Review Decision item_id does not match {item.item_id}",
-            )
-        expected_path = _decision_path(decision)
-        if expected_path != reference["path"]:
-            raise _error(
-                "current_review_decision_path_mismatch",
-                "Current Review Decision path is not canonical",
-            )
-        return decision
-
-    @staticmethod
-    def _bindings_from_validation(
-        validation: Mapping[str, Any],
-        *,
-        validation_artifact_sha256: str,
-    ) -> EvidenceBindings:
-        bindings = validation["evidence"]["bindings"]
-        plan = bindings["sampling_plan"]
-        return EvidenceBindings(
-            source_sha256=bindings["source"]["sha256"],
-            payload_sha256=bindings["payload"]["sha256"],
-            validation_artifact_sha256=validation_artifact_sha256,
-            validation_evidence_sha256=validation["evidence_sha256"],
-            sampling_plan_sha256=(
-                plan["plan_sha256"] if plan is not None else None
+            "l3b_report_path": _run_artifact_path(
+                run_directory,
+                _required_string(checks["L3b"], "path", item["item_id"]),
+                item["item_id"],
             ),
-        )
-
-    @staticmethod
-    def _assert_decidable(snapshot: ReviewEvidenceSnapshot) -> None:
-        status = snapshot.manifest_item["status"]
-        if status["execution"] != "succeeded" or status["validation"] != "passed":
-            raise _error(
-                "machine_preconditions_failed",
-                "Machine failure cannot be overridden by a Review Decision",
-            )
-        if status["publication"] == "published" or status["release"] == "released":
-            raise _error(
-                "item_already_released",
-                "Released or published items require a new Batch for review changes",
-            )
-
-    def _queue_item(self, snapshot: ReviewEvidenceSnapshot) -> dict[str, Any]:
-        status = snapshot.manifest_item["status"]
-        machine = machine_approval_preconditions(
-            status["execution"],
-            status["validation"],
-        )
-        source = precondition_result_from_mapping(snapshot.source_preconditions)
-        blockers: list[ApprovalBlocker] = [*machine.blockers, *source.blockers]
-        source_findings = [
-            finding_summary(finding)
-            for finding in snapshot.source_quality_findings
-        ]
-        approval_blockers = [blocker.to_dict() for blocker in blockers]
-        result = {
-            "item_id": snapshot.item.item_id,
-            "product_key": snapshot.item.product_key,
-            "resource_key": snapshot.item.resource_key,
-            "language": snapshot.item.language,
-            "page_model": snapshot.item.page_model,
-            "strategy": snapshot.manifest_item["strategy"],
-            "status": {
-                key: status[key]
-                for key in (
-                    "execution",
-                    "validation",
-                    "review",
-                    "publication",
-                    "evidence_binding",
-                    "approval_eligibility",
-                    "release",
-                )
-            },
-            "artifacts": {
-                key: _artifact_reference(snapshot.manifest_item["artifacts"].get(key))
-                for key in (
-                    "payload",
-                    "diagnostic",
-                    "validation",
-                    "sampling_plan",
-                    "sampled_content_evidence",
-                    "current_review_decision",
-                )
-            },
-            "bindings": snapshot.current_bindings.to_dict(),
-            "coverage": {
-                "mode": snapshot.coverage["mode"],
-                "universe_count": snapshot.coverage["universe_count"],
-                "selected_count": snapshot.coverage["selected_count"],
-                "untested_count": snapshot.coverage["untested_count"],
-                "selected_state_ids": list(snapshot.coverage["selected_state_ids"]),
-            },
-            "inspection": {
-                "mode": snapshot.inspection_mode,
-                "state_universe": [
-                    copy.deepcopy(dict(state)) for state in snapshot.state_universe
-                ],
-                "full_content_scope": snapshot.inspection_mode == "full",
-            },
-            "source_quality_findings": source_findings,
-            "approval_blockers": approval_blockers,
-            "current_decision": self._decision_summary(snapshot),
         }
-        result.update(
-            item_accounting(
-                status=result["status"],
-                source_quality_findings=source_findings,
-                approval_blockers=approval_blockers,
-                release_ready=(
-                    result["status"]["review"] == "approved"
-                    and result["status"]["evidence_binding"] == "bound"
-                    and result["status"]["approval_eligibility"] == "eligible"
-                    and result["current_decision"] is not None
+        if row.get("frozen_html_path") is not None:
+            frozen_path = _run_artifact_path(
+                run_directory,
+                _required_string(
+                    row,
+                    "frozen_html_path",
+                    item["item_id"],
                 ),
+                f"{item['item_id']} Batch Frozen HTML",
             )
-        )
-        return result
-
-    @staticmethod
-    def _decision_summary(
-        snapshot: ReviewEvidenceSnapshot,
-    ) -> dict[str, Any] | None:
-        if snapshot.current_decision is None or snapshot.current_decision_reference is None:
-            return None
-        decision = snapshot.current_decision
-        return {
-            "decision_id": decision["decision_id"],
-            "path": snapshot.current_decision_reference["path"],
-            "sha256": snapshot.current_decision_reference["sha256"],
-            "reviewer": decision["reviewer"],
-            "decided_at": decision["decided_at"],
-            "verdict": decision["verdict"],
-            "reason": decision["reason"],
-            "supersedes_decision_id": decision["supersedes_decision_id"],
-        }
-
-    @staticmethod
-    def _queue_summary(queue_items: Sequence[Mapping[str, Any]]) -> dict[str, int]:
-        return summarize_review_items(queue_items)
-
-    @classmethod
-    def _filtered_queue(
-        cls,
-        queue: Mapping[str, Any],
-        *,
-        status: ReviewStatusFilter,
-        item_id: str | None,
-    ) -> dict[str, Any]:
-        if status not in ("pending", "approved", "rejected", "all"):
-            raise _error("invalid_status_filter", f"Invalid review status: {status}")
-
-        def review_status(value: Mapping[str, Any]) -> str:
-            current = value["status"]
-            if isinstance(current, Mapping):
-                return str(current["review"])
-            return str(current)
-
-        items = [
-            copy.deepcopy(dict(item))
-            for item in queue["items"]
-            if (status == "all" or review_status(item) == status)
-            and (item_id is None or item["item_id"] == item_id)
-        ]
-        result = copy.deepcopy(dict(queue))
-        result["items"] = items
-        if queue.get("schema_version") == "2.0":
-            summary = queue.get("summary", {})
-            if isinstance(summary, Mapping) and "source_blocked" in summary:
-                result["summary"] = legacy_review_summary(items)
-            else:
-                result["summary"] = cls._queue_summary(items)
         else:
-            result["summary"] = {"pending": len(items)}
-        return result
+            frozen_path = _safe_relative_path(
+                project_root / "data" / "prod-html",
+                _required_string(
+                    row,
+                    "frozen_relative_path",
+                    item["item_id"],
+                ),
+                label=f"{item['item_id']} Frozen HTML",
+            )
+        expected_paths["frozen_html_path"] = frozen_path
+        for field, expected in expected_paths.items():
+            stored = _resolve_presented_path(item[field], project_root)
+            if stored != expected:
+                raise ReviewError(
+                    f"{item['item_id']} 的 {field} 与当前 Batch 不一致。"
+                )
+            if not stored.is_file():
+                raise ReviewError(f"{item['item_id']} 缺少材料：{stored}")
+        for check_name, field in (
+            ("L3a", "l3a_report_path"),
+            ("L3b", "l3b_report_path"),
+        ):
+            report = _read_json_object(
+                _resolve_presented_path(item[field], project_root)
+            )
+            _validate_passed_check(
+                report,
+                check_name=check_name,
+                product_key=product["product_key"],
+                language=item["language"],
+            )
+        _validate_business_payload(
+            catalog,
+            product_key=product["product_key"],
+            language=item["language"],
+            payload_path=_resolve_presented_path(
+                item["payload_path"], project_root
+            ),
+            page_model=page_model,
+            semantic_strategy=semantic_strategy,
+            payload_contract_version=payload_contract_version,
+        )
+    return payload_contract_version
 
 
-__all__ = [
-    "ReviewDecisionRequest",
-    "ReviewDecisionResult",
-    "ReviewEvidenceSnapshot",
-    "ReviewService",
-    "ReviewServiceError",
-]
+def _validate_business_payload(
+    catalog: ProductCatalog,
+    *,
+    product_key: str,
+    language: str,
+    payload_path: Path,
+    page_model: str,
+    semantic_strategy: str,
+    payload_contract_version: str,
+) -> None:
+    definition = catalog.get_definition(product_key)
+    try:
+        payload = load_payload(payload_path)
+        if page_model == "FlexibleContentPage":
+            validate_pricing_payload(
+                payload,
+                product_key=product_key,
+                language=language,
+                semantic_strategy=semantic_strategy,
+                payload_contract_version=payload_contract_version,
+            )
+        else:
+            assert definition.support_article_type is not None
+            validate_support_article_payload(
+                payload,
+                product_key=product_key,
+                expected_slug=definition.slug,
+                support_article_type=definition.support_article_type,
+            )
+    except (PayloadContractError, ValueError) as error:
+        raise ReviewError(
+            f"{product_key}/{language} 的 Business Payload 契约无效：{error}"
+        ) from error
+
+
+def _manifest_payload_contract_version(manifest: dict[str, Any]) -> str:
+    version = manifest.get(
+        "payload_contract_version",
+        LEGACY_PAYLOAD_CONTRACT_VERSION,
+    )
+    if not isinstance(version, str) or version not in PAYLOAD_CONTRACT_VERSIONS:
+        raise ReviewError(f"Batch 声明了未知 Payload 合同版本：{version!r}。")
+    return version
+
+
+def _load_sealed_run(
+    runs_root: Path,
+    run_name: str,
+) -> tuple[Path, dict[str, Any]]:
+    run_directory = runs_root / run_name
+    building_directory = runs_root / f"{run_name}.building"
+    if building_directory.exists():
+        raise ReviewError(f"Batch {run_name} 尚未封存，不能准备人工审核。")
+    if not run_directory.is_dir():
+        raise ReviewError(f"找不到已封存 Batch：{run_directory}")
+    manifest = _read_json_object(run_directory / "run.json")
+    if manifest.get("run_name") != run_name:
+        raise ReviewError("Batch 目录名与 run.json 中的名称不一致。")
+    summary = manifest.get("summary")
+    if not isinstance(summary, dict) or summary.get("pending") != 0:
+        raise ReviewError(f"Batch {run_name} 仍有未处理项，不能准备人工审核。")
+    return run_directory.resolve(), manifest
+
+
+def _load_review_queue(
+    reviews_root: Path,
+    review_id: str,
+) -> tuple[Path, dict[str, Any]]:
+    review_directory = reviews_root / review_id
+    if (reviews_root / f"{review_id}.building").exists():
+        raise ReviewError(f"审核清单 {review_id} 尚未封存。")
+    if not review_directory.is_dir():
+        raise ReviewError(f"找不到审核清单：{review_directory}")
+    queue = _read_json_object(review_directory / "queue.json")
+    if queue.get("review_id") != review_id:
+        raise ReviewError("审核目录名与 queue.json 中的审核 ID 不一致。")
+    if not isinstance(queue.get("batch"), dict):
+        raise ReviewError("审核清单缺少 Batch 引用。")
+    if not isinstance(queue.get("products"), list):
+        raise ReviewError("审核清单缺少产品列表。")
+    if not isinstance(queue.get("not_queued_items"), list):
+        raise ReviewError("审核清单缺少未入队处理项对账。")
+    return review_directory.resolve(), queue
+
+
+def _queue_product(queue: dict[str, Any], product_key: str) -> dict[str, Any]:
+    for product in queue["products"]:
+        if isinstance(product, dict) and product.get("product_key") == product_key:
+            if not isinstance(product.get("items"), list):
+                raise ReviewError(f"产品 {product_key} 的审核项列表无效。")
+            return product
+    raise ReviewError(
+        f"产品 {product_key} 不在审核清单中；机器检查未通过或该产品不属于当前 Batch。"
+    )
+
+
+def _read_decision(
+    path: Path,
+    *,
+    review_id: str,
+    product_key: str,
+) -> dict[str, Any]:
+    record = _read_json_object(path)
+    if record.get("review_id") != review_id:
+        raise ReviewError(f"审核决定 {path} 引用了其他审核 ID。")
+    if record.get("product_key") != product_key:
+        raise ReviewError(f"审核决定 {path} 引用了其他产品。")
+    if record.get("decision") not in DECISIONS:
+        raise ReviewError(f"审核决定 {path} 的结论无效。")
+    _human_text(record.get("reviewer"), field=f"{path} 审核人", single_line=True)
+    _human_text(record.get("notes"), field=f"{path} 审核说明")
+    return record
+
+
+def _validate_decision_binding(
+    queue: dict[str, Any],
+    product: dict[str, Any],
+    record: dict[str, Any],
+) -> None:
+    product_key = product["product_key"]
+    if record.get("run_name") != queue["batch"]["run_name"]:
+        raise ReviewError(f"产品 {product_key} 的审核决定引用了其他 Batch。")
+    for field in ("batch_kind", "incremental_run_name"):
+        if field in record and record.get(field) != queue["batch"].get(field):
+            raise ReviewError(
+                f"产品 {product_key} 的审核决定 {field} 与审核清单不一致。"
+            )
+    reviewed_items = [
+        {
+            "item_id": item["item_id"],
+            "language": item["language"],
+            "frozen_html_path": item["frozen_html_path"],
+            "payload_path": item["payload_path"],
+            "l3a_report_path": item["l3a_report_path"],
+            "l3b_report_path": item["l3b_report_path"],
+        }
+        for item in product["items"]
+    ]
+    if record.get("reviewed_items") != reviewed_items:
+        raise ReviewError(f"产品 {product_key} 的审核决定与当前审核材料不一致。")
+    scope = record.get("inspection_scope")
+    if not isinstance(scope, dict):
+        raise ReviewError(f"产品 {product_key} 的审核决定缺少检查范围。")
+    languages = scope.get("languages")
+    materials = scope.get("materials")
+    if not isinstance(languages, list) or not isinstance(materials, list):
+        raise ReviewError(f"产品 {product_key} 的审核决定检查范围无效。")
+    if record["decision"] == "approved":
+        if languages != list(LANGUAGES):
+            raise ReviewError(f"产品 {product_key} 的批准决定没有覆盖中英文。")
+        expected_materials = [MATERIAL_LABELS[value] for value in ALL_MATERIALS]
+        if materials != expected_materials:
+            raise ReviewError(f"产品 {product_key} 的批准决定没有覆盖全部审核材料。")
+
+
+def _validate_passed_check(
+    report: dict[str, Any],
+    *,
+    check_name: str,
+    product_key: str,
+    language: str,
+) -> None:
+    if report.get("check") != check_name:
+        raise ReviewError(f"{product_key}/{language} 的 {check_name} 报告名称不一致。")
+    if report.get("product_key") != product_key:
+        raise ReviewError(f"{product_key}/{language} 的 {check_name} 报告产品不一致。")
+    if report.get("language") != language:
+        raise ReviewError(f"{product_key}/{language} 的 {check_name} 报告语言不一致。")
+    if report.get("status") != "passed":
+        raise ReviewError(f"{product_key}/{language} 的 {check_name} 报告没有通过。")
+
+
+def _build_material_markdown(
+    product: dict[str, Any],
+    *,
+    material_path: Path,
+    project_root: Path,
+) -> str:
+    lines = [
+        f"# {product['display_name']}（{product['product_key']}）人工审核材料",
+        "",
+        f"- 页面类型：{product['page_model']}",
+        f"- Strategy：{product['semantic_strategy']}",
+        f"- 双语材料完整：{'是' if product['bilingual_ready'] else '否'}",
+        "",
+        "批准前请分别打开中文和英文的 Frozen HTML、Business Payload、L3a 与 L3b 报告。",
+        "",
+        "| 语言 | Frozen HTML | Business Payload | L3a | L3b |",
+        "|---|---|---|---|---|",
+    ]
+    for item in product["items"]:
+        links = [
+            _markdown_link("打开", item[field], material_path, project_root)
+            for field in (
+                "frozen_html_path",
+                "payload_path",
+                "l3a_report_path",
+                "l3b_report_path",
+            )
+        ]
+        lines.append(
+            f"| {item['language']} | {links[0]} | {links[1]} | {links[2]} | {links[3]} |"
+        )
+    lines.extend(
+        [
+            "",
+            "机器检查通过只表示结果稳定且 Payload 与 Frozen HTML 对应；它不替代人工批准，也不证明上游内容本身正确。",
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def _markdown_link(
+    label: str,
+    presented_path: str,
+    material_path: Path,
+    project_root: Path,
+) -> str:
+    target = _resolve_presented_path(presented_path, project_root)
+    relative = os.path.relpath(target, start=material_path.parent)
+    return f"[{label}](<{Path(relative).as_posix()}>)"
+
+
+def _root_path(
+    project_root: Path,
+    value: Path | str | None,
+    default_name: str,
+    *,
+    create: bool = False,
+) -> Path:
+    root = (
+        Path(value).resolve()
+        if value is not None
+        else (project_root / default_name).resolve()
+    )
+    if create:
+        root.mkdir(parents=True, exist_ok=True)
+    return root
+
+
+def _run_artifact_path(run_directory: Path, relative: str, label: str) -> Path:
+    return _safe_relative_path(run_directory, relative, label=label)
+
+
+def _safe_relative_path(root: Path, relative: str, *, label: str) -> Path:
+    candidate = PurePosixPath(relative)
+    if candidate.is_absolute() or not candidate.parts or ".." in candidate.parts:
+        raise ReviewError(f"{label} 使用了不安全路径：{relative}")
+    root = root.resolve()
+    path = root.joinpath(*candidate.parts).resolve()
+    if not path.is_relative_to(root):
+        raise ReviewError(f"{label} 路径越出允许目录：{relative}")
+    return path
+
+
+def _present_path(path: Path, project_root: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(project_root.resolve()).as_posix()
+    except ValueError:
+        return resolved.as_posix()
+
+
+def _resolve_presented_path(value: Any, project_root: Path) -> Path:
+    if not isinstance(value, str) or not value.strip():
+        raise ReviewError("审核材料路径必须是非空文本。")
+    path = Path(value)
+    return (path if path.is_absolute() else project_root / path).resolve()
+
+
+def _validate_readable_id(value: str, *, field: str) -> None:
+    if not isinstance(value, str) or not READABLE_ID_PATTERN.fullmatch(value):
+        raise ReviewError(f"{field} 必须由小写字母、数字和连字符组成。")
+
+
+def _required_string(data: dict[str, Any], key: str, context: str) -> str:
+    value = data.get(key)
+    if not isinstance(value, str) or not value.strip():
+        raise ReviewError(f"{context} 缺少非空字段 {key}。")
+    return value
+
+
+def _human_text(value: Any, *, field: str, single_line: bool = False) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ReviewError(f"{field}不能为空。")
+    normalized = value.strip()
+    if single_line and ("\n" in normalized or "\r" in normalized):
+        raise ReviewError(f"{field}必须写在一行内。")
+    return normalized
+
+
+def _ordered_unique(
+    values: Sequence[str],
+    *,
+    allowed: Sequence[str],
+    field: str,
+) -> tuple[str, ...]:
+    if not values:
+        raise ReviewError(f"{field}不能为空。")
+    unknown = [value for value in values if value not in allowed]
+    if unknown:
+        raise ReviewError(f"{field}包含未知值：{', '.join(unknown)}。")
+    if len(set(values)) != len(values):
+        raise ReviewError(f"{field}不能包含重复值。")
+    selected = set(values)
+    return tuple(value for value in allowed if value in selected)
+
+
+def _read_json_object(path: Path) -> dict[str, Any]:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError as error:
+        raise ReviewError(f"找不到 JSON 文件：{path}") from error
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise ReviewError(f"无法读取 JSON 文件 {path}：{error}") from error
+    if not isinstance(value, dict):
+        raise ReviewError(f"JSON 文件必须包含对象：{path}")
+    return value
+
+
+def _write_new_json(path: Path, value: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    data = (
+        json.dumps(value, ensure_ascii=False, indent=2, separators=(",", ": "))
+        + "\n"
+    ).encode("utf-8")
+    try:
+        with path.open("xb") as stream:
+            stream.write(data)
+    except FileExistsError as error:
+        raise ReviewError(f"文件已经存在，不能覆盖：{path}") from error

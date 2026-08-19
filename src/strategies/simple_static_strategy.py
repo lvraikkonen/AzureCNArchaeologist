@@ -6,26 +6,26 @@
 使用新工具类替代BaseStrategy继承逻辑
 """
 
-import os
-import sys
+import logging
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from bs4 import BeautifulSoup
 
-# 添加项目根目录到Python路径
-project_root = Path(__file__).parent.parent.parent
-sys.path.append(str(project_root))
-
-from src.strategies.base_strategy import BaseStrategy
+from .base_strategy import BaseStrategy
 from src.utils.content.content_extractor import ContentExtractor
 from src.utils.content.section_extractor import SectionExtractor
 from src.utils.content.flexible_builder import FlexibleBuilder
-from src.utils.html.cleaner import clean_html_content
-from src.utils.content.content_utils import classify_pricing_section, filter_sections_by_type
-from src.core.scoped_source_content import resolve_page_global_base_content
-from src.core.logging import get_logger
+from src.utils.html.normalization import normalize_html
+from src.utils.content.content_utils import (
+    classify_pricing_section,
+    filter_sections_by_type,
+)
+from src.core.scoped_source_content import (
+    locate_simple_pricing_boundary,
+)
 
-logger = get_logger(__name__)
+clean_html_content = normalize_html
+logger = logging.getLogger(__name__)
 
 
 class SimpleStaticStrategy(BaseStrategy):
@@ -52,7 +52,9 @@ class SimpleStaticStrategy(BaseStrategy):
         self.strategy_name = "simple_static"
         
         # 初始化工具类
-        self.content_extractor = ContentExtractor()
+        self.content_extractor = ContentExtractor(
+            expected_language=str(product_config.get("language", "")) or None
+        )
         self.section_extractor = SectionExtractor()
         self.flexible_builder = FlexibleBuilder()
         
@@ -74,16 +76,20 @@ class SimpleStaticStrategy(BaseStrategy):
         # 1. 使用ContentExtractor提取基础元数据
         base_metadata = self.content_extractor.extract_base_metadata(soup, url, self.html_file_path)
         
+        pricing_boundary = locate_simple_pricing_boundary(
+            soup,
+            self.product_config,
+            language=str(base_metadata.get("Language", "")),
+        )
+
         # 2. 使用SectionExtractor提取commonSections
-        common_sections = self.section_extractor.extract_all_sections(soup)
+        common_sections = self.section_extractor.extract_all_sections(
+            soup, pricing_boundary
+        )
         
         # 3. 构建策略特定内容
         strategy_content = {
-            "baseContent": resolve_page_global_base_content(
-                soup,
-                self.product_config,
-                language=str(base_metadata.get("Language", "")),
-            ),
+            "baseContent": pricing_boundary.html,
             "contentGroups": self.flexible_builder.build_simple_content_groups(""),  # 简单页面无contentGroups
             "strategy_type": "simple_static"
         }
@@ -106,7 +112,12 @@ class SimpleStaticStrategy(BaseStrategy):
         Returns:
             commonSections列表
         """
-        return self.section_extractor.extract_all_sections(soup)
+        boundary = locate_simple_pricing_boundary(
+            soup,
+            self.product_config,
+            language=str(self.product_config.get("language", "")),
+        )
+        return self.section_extractor.extract_all_sections(soup, boundary)
 
     def _extract_main_content(self, soup: BeautifulSoup) -> str:
         """
