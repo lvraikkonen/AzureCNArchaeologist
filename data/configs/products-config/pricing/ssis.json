@@ -17,14 +17,7 @@
     "en-us": {
       "availability": "available",
       "snapshot_path": "pricing/details/data-factory/ssis.html",
-      "url": "https://www.azure.cn/en-us/pricing/details/data-factory/ssis/",
-      "aliases": [
-        {
-          "snapshot_path": "pricing/details/data-factory/ssis/index.html",
-          "reason": "Historical or duplicate source route retained for traceability.",
-          "canonical_product_key": "ssis"
-        }
-      ]
+      "url": "https://www.azure.cn/en-us/pricing/details/data-factory/ssis/"
     }
   },
   "extraction": {
