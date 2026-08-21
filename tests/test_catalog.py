@@ -17,26 +17,35 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_SCOPE = (
     "advisor",
     "api-management",
+    "app-service",
     "automation",
     "azure-firewall",
     "azure-migrate",
     "azure-policy",
     "azure-update-management-center",
     "backup",
+    "cloud-services",
+    "cosmos-db",
     "database-migration",
     "databricks",
     "event-grid",
     "icp-new",
     "machine-learning",
+    "managed-instance",
     "monitor",
     "network-watcher",
+    "postgresql",
     "scheduler",
     "service-bus",
     "site-recovery",
     "sla-api-management",
     "sla-databricks",
     "sla-virtual-machines",
+    "sql-database",
+    "synapse-analytics",
     "traffic-manager",
+    "virtual-machine-scale-sets",
+    "virtual-machines",
 )
 
 
@@ -49,7 +58,7 @@ def test_real_catalog_has_expected_scope_and_deterministic_item_order() -> None:
     first = catalog.select(all_products=True)
     second = catalog.select(all_products=True)
     assert first == second
-    assert len(first) == 44
+    assert len(first) == 62
     assert [(item.product_key, item.language) for item in first] == [
         (product_key, language)
         for product_key in EXPECTED_SCOPE

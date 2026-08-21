@@ -55,17 +55,17 @@ L3b 可以共享：
 
 ## 4. 当前验收状态
 
-下表中的 M4 数量是已封存的历史 Batch 结果。最新 Product Definition 已直接生效，`processing-scope.json` 不再提供 Strategy 覆盖：`event-grid` 当前为 `simple_static`，`monitor` 当前为 `complex`。`monitor` 已完成独立双语修正 Release；`event-grid` 真实增量 Batch 的中英文抽取、L3a、独立 L3b、人工审核和 Delta Release 均已通过。
+M4 数量仍是已封存的历史 Batch 结果。最新 Product Definition 已直接生效，`processing-scope.json` 不再提供 Strategy 覆盖：`event-grid` 当前为 `simple_static`，`monitor` 当前为 `complex`。2026-08-20 完成 Complex 修复后，正式范围已从 22 个产品扩展为 31 个产品；全量 Batch 的 62 个双语处理项全部通过，且 Payload 与此前人工批准的对应产物逐字节一致。
 
 | Strategy | 当前状态 | 说明 |
 |---|---|---|
-| `simple_static` | M4 全量范围已验收 | 范围内 8 个 Simple 产品的 16 项均通过 L3a 与独立 L3b |
-| `region_filter` | M4 可交付页面已验收 | `api-management`、`automation`、`azure-firewall`、`backup`、`monitor`、`network-watcher` 的 12 项通过；`event-grid` 的 2 项因源控件矛盾阻断 |
-| `complex` | M4 全量范围已验收 | `database-migration`、`databricks`、`machine-learning` 的 6 项均通过；覆盖汇总 Category、可见软件轴和页面级正文 |
-| `support_article` | M4 全量范围已验收 | `icp-new` 和三个 SLA 产品的 8 项均通过；`icp-new/en-us` 当前是用户提供的中文副本 |
+| `simple_static` | 正式范围已验收 | 9 个产品、18 项通过 L3a 与独立 L3b |
+| `region_filter` | 正式范围已验收 | 5 个产品、10 项通过 L3a 与独立 L3b |
+| `complex` | 正式范围已验收 | 13 个产品、26 项通过 L3a 与独立 L3b；支持可选及按 Software 变化的 Category、空状态、同叶多物理表单元和大型 VM 页面 |
+| `support_article` | 正式范围已验收 | `icp-new` 和三个 SLA 产品的 8 项通过 L3a 与独立 L3b；`icp-new/en-us` 当前是用户提供的中文副本 |
 
-最新页面结构与机器验证证据见 [`../reviews/m6-event-grid-monitor-preflight.md`](../reviews/m6-event-grid-monitor-preflight.md)。历史 M4 结果不会被当前 Product Definition 反向改写。
+Complex 修复及扩围证据见 [`../plans/complex-fix-handoff-20260819.md`](../plans/complex-fix-handoff-20260819.md)。历史 M4 结果不会被当前 Product Definition 反向改写。
 
-当前结论只适用于 `processing-scope.json` 中已逐项验收的首批范围。新增产品仍不能因为使用同名 Strategy 就自动成为已支持产品。
+当前结论只适用于 `processing-scope.json` 中已逐项验收的 31 个产品。新增产品仍不能因为使用同名 Strategy 就自动成为已支持产品。
 
 代表源内容边界见 [`m3-strategy-boundaries.md`](m3-strategy-boundaries.md)，M4 扩展和 Batch 规则见 [`m4-batch.md`](m4-batch.md)。

@@ -127,6 +127,7 @@ def compare_product_definitions(
         for field, label in (
             ("page_model", "页面类型"),
             ("semantic_strategy", "Strategy"),
+            ("page_global_source_boundary", "页面全局正文边界"),
             ("sources", "中英文源路径"),
         ):
             if previous.get(field) == current.get(field):
@@ -155,6 +156,9 @@ def _current_projection(
         "product_key": product_key,
         "page_model": definition.page_model,
         "semantic_strategy": catalog.effective_strategy(product_key),
+        "page_global_source_boundary": (
+            definition.page_global_source_boundary
+        ),
         "sources": {
             language: definition.source_for(language).snapshot_path
             for language in catalog.languages

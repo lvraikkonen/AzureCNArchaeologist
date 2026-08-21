@@ -4,8 +4,7 @@
   "display_name": "Virtual Machines",
   "slug": "virtual-machines",
   "page_model": "FlexibleContentPage",
-  "capability_status": "known_unsupported",
-  "unsupported_reason": "not_yet_qualified_for_extraction",
+  "capability_status": "supported",
   "catalog_categories": [
     "compute"
   ],
@@ -22,6 +21,9 @@
     }
   },
   "extraction": {
-    "semantic_strategy": "complex"
+    "semantic_strategy": "complex",
+    "page_global_content": {
+      "source_boundary": "after_final_formal_selector_before_common_sections"
+    }
   }
 }

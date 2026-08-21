@@ -18,6 +18,8 @@ M6 后的 CMS Payload 合同修正已经完成：当前合同 `1.2` 要求 `soft
 
 M7 和首批范围 v1.0 验收已经完成：完整 Python 测试、Dashboard 单元测试和生产构建均通过；`m7-full-regression-001` 对 22 个产品、44 个中英文处理项完成真实回归，44 项全部通过抽取、L3a 和独立 L3b。真实审核人随后批准当前 Batch 的全部 22 个产品，不可覆盖的完整 Release `m7-v1-release-candidate-001` 封存 44 个 Payload 并通过独立核对。Python 项目和人工审核台版本均为 `1.0.0`。完整结论见 [M7 可靠性与 v1.0 验收记录](docs/reviews/m7-v1-acceptance.md)。
 
+Complex 页面抽取修复及正式扩围已经完成：当前范围为 31 个产品、62 个双语处理项，其中 Pricing 27 个、Support Article 4 个。`scope-expansion-full-regression-20260820` 的 62 项全部通过输入固定、生产抽取、配置使用报告、L3a 和独立 L3b；输入均为 `unchanged`，62 个 Payload 与此前已经人工批准的对应产物逐字节一致。VM/VMSS 继续使用统一 Complex Strategy，不新增 LargeFile 业务 Strategy；`page_global_source_boundary` 已纳入 Product Definition 增量与 Batch 固定合同。完整记录见 [Complex 修复 handoff](docs/plans/complex-fix-handoff-20260819.md) 和 [产品验证状态](tracking-product-status.md)。
+
 源码直接按职责放在 `src/core/`、`src/pipeline/`、`src/incremental/`、`src/extractors/`、`src/machine_checks/`、`src/review/`、`src/release/`、`src/strategies/` 和 `src/utils/`，不使用包住全部模块的 `src/acn_archaeologist/`。
 
 ## 使用方式
@@ -86,6 +88,8 @@ uv run python cli.py review-serve \
 - [增量处理规格](docs/specs/incremental-processing.md)
 - [增量重新处理架构决定](docs/adr/0002-append-only-incremental-reprocessing.md)
 - [首批验收矩阵](docs/plans/initial-acceptance-matrix.md)
+- [Complex 页面抽取修复与正式扩围记录](docs/plans/complex-fix-handoff-20260819.md)
+- [产品验证状态](tracking-product-status.md)
 - [M2 `service-bus` 验收记录](docs/reviews/m2-service-bus-acceptance.md)
 - [M3 四种 Strategy 代表产品验收记录](docs/reviews/m3-representative-strategies-acceptance.md)
 - [M4 Category 与完整 Batch 验收记录](docs/reviews/m4-full-batch-acceptance.md)

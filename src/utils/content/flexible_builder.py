@@ -89,8 +89,6 @@ class FlexibleBuilder:
                 raise ValueError("Complex 状态名称与筛选条件不一致。")
             content = normalize_html(state.get("content", ""))
             shared_content = normalize_html(state.get("sharedContent", ""))
-            if not content and not shared_content:
-                raise ValueError("Complex 页面状态没有任何源内容。")
             group: dict[str, Any] = {
                 "groupName": " - ".join(labels),
                 "filterCriteriaJson": _compact_json(
@@ -154,16 +152,15 @@ class FlexibleBuilder:
                         filter_type="dropdown",
                     )
                 )
-            definitions.extend(
-                [
-                    self._filter_definition(
-                        filter_analysis,
-                        key="region",
-                        filter_type="dropdown",
-                    ),
-                    self._category_definition(tab_analysis),
-                ]
+            definitions.append(
+                self._filter_definition(
+                    filter_analysis,
+                    key="region",
+                    filter_type="dropdown",
+                )
             )
+            if tab_analysis.get("category_tabs"):
+                definitions.append(self._category_definition(tab_analysis))
             return {
                 **common,
                 "pageType": "ComplexFilter",

@@ -160,9 +160,18 @@ def locate_pricing_source(
         "软件内容容器",
     )
     groups: list[dict[str, Any]] = []
-    category_domain: list[dict[str, str]] | None = None
+    category_catalog: list[dict[str, str]] = []
+    category_by_value: dict[str, dict[str, str]] = {}
     seen_software_values: set[str] = set()
     seen_software_targets: set[str] = set()
+    prepared_scopes: list[
+        tuple[
+            dict[str, str],
+            list[tuple[dict[str, str] | None, dict[str, Any]]],
+            dict[str, Any],
+            dict[str, tuple[str, ...]],
+        ]
+    ] = []
     for software_option in software_options:
         software = software_option["value"]
         software_target = software_option["href"].removeprefix("#")
@@ -175,45 +184,86 @@ def locate_pricing_source(
             f"软件内容面板 {software_target}",
         )
         raw_category_control = _read_categories(software_panel)
-        inner = _one(
-            [
-                child
-                for child in software_panel.children
-                if isinstance(child, Tag)
-                and "tab-content" in child.get("class", [])
-            ],
-            "Category 内容容器",
+        category_control, leaves, shared_fragments = _independent_content_leaves(
+            raw_category_control,
+            software_panel,
         )
-        category_control, panels = _material_categories(
-            raw_category_control, inner
-        )
-        if category_domain is None:
-            category_domain = category_control["options"]
-        elif category_control["options"] != category_domain:
-            raise IndependentSourceError(
-                "可见软件选项的 Category 名称与目标不一致。"
+        if len(software_options) == 1:
+            shared_fragments = [
+                *shared_fragments,
+                *_independent_single_software_trailing_fragments(software_panel),
+            ]
+        exclusions_by_region = {
+            region["value"]: _config_row(
+                config_rows,
+                software,
+                region["value"],
             )
-        panel_by_id = {str(panel.get("id")): panel for panel in panels}
-        shared_fragments: list[Tag] = []
-        for child in inner.children:
-            if child is panels[0]:
-                break
-            if isinstance(child, Tag):
-                shared_fragments.append(child)
+            for region in region_control["options"]
+        }
+        relevant_table_ids = frozenset(
+            table_id
+            for exclusions in exclusions_by_region.values()
+            for table_id in exclusions
+        )
+        indexed_leaves = [
+            (
+                category,
+                _build_independent_fragment_index(
+                    [panel],
+                    relevant_table_ids=relevant_table_ids,
+                ),
+            )
+            for category, panel in leaves
+        ]
+        shared_index = _build_independent_fragment_index(
+            shared_fragments,
+            relevant_table_ids=relevant_table_ids,
+        )
+        indexes = [
+            shared_index,
+            *(index for _category, index in indexed_leaves),
+        ]
+        applicable_by_region = {
+            region: _independent_applicable_exclusions(indexes, exclusions)
+            for region, exclusions in exclusions_by_region.items()
+        }
+        prepared_scopes.append(
+            (
+                software_option,
+                indexed_leaves,
+                shared_index,
+                applicable_by_region,
+            )
+        )
+        for category in category_control["options"]:
+            existing = category_by_value.get(category["value"])
+            if existing is not None:
+                if existing != category:
+                    raise IndependentSourceError(
+                        "相同 Category target 在不同 Software 中使用了不同名称。"
+                    )
+                continue
+            category_by_value[category["value"]] = category
+            category_catalog.append(category)
 
+    for (
+        software_option,
+        indexed_leaves,
+        shared_index,
+        applicable_by_region,
+    ) in prepared_scopes:
+        software = software_option["value"]
         for region in region_control["options"]:
-            excluded = _config_row(config_rows, software, region["value"])
-            applicable_exclusions = _validate_targets(pricing, excluded)
-            shared_content = _project_many(
-                shared_fragments,
-                excluded=applicable_exclusions,
+            applicable_exclusions = applicable_by_region[region["value"]]
+            shared_content = _project_independent_fragment_index(
+                shared_index,
+                applicable_exclusions,
             )
-            for category in category_control["options"]:
-                content = _project_one(
-                    panel_by_id[category["value"]],
-                    source_scope=pricing,
-                    excluded=applicable_exclusions,
-                    targets_already_validated=True,
+            for category, index in indexed_leaves:
+                content = _project_independent_fragment_index(
+                    index,
+                    applicable_exclusions,
                 )
                 criteria = []
                 labels = []
@@ -222,19 +272,21 @@ def locate_pricing_source(
                         {"filterKey": "software", "matchValues": software}
                     )
                     labels.append(software_option["label"])
-                criteria.extend(
-                    [
-                        {
-                            "filterKey": "region",
-                            "matchValues": region["value"],
-                        },
+                criteria.append(
+                    {
+                        "filterKey": "region",
+                        "matchValues": region["value"],
+                    }
+                )
+                labels.append(region["label"])
+                if category is not None:
+                    criteria.append(
                         {
                             "filterKey": "category",
                             "matchValues": category["value"],
-                        },
-                    ]
-                )
-                labels.extend((region["label"], category["label"]))
+                        }
+                    )
+                    labels.append(category["label"])
                 group = {
                     "groupName": " - ".join(labels),
                     "filterCriteriaJson": _compact_json(criteria),
@@ -243,12 +295,6 @@ def locate_pricing_source(
                 if shared_content:
                     group["sharedContent"] = shared_content
                 groups.append(group)
-    assert category_domain is not None
-    category_control = {
-        "visible": True,
-        "display_name": raw_category_control["display_name"],
-        "options": category_domain,
-    }
     definitions = []
     if software_control["visible"]:
         definitions.append(
@@ -259,22 +305,27 @@ def locate_pricing_source(
                 payload_contract_version=payload_contract_version,
             )
         )
-    definitions.extend(
-        [
+    definitions.append(
+        _filter_definition(
+            region_control,
+            "region",
+            "dropdown",
+            payload_contract_version=payload_contract_version,
+        )
+    )
+    if category_catalog:
+        definitions.append(
             _filter_definition(
-                region_control,
-                "region",
-                "dropdown",
-                payload_contract_version=payload_contract_version,
-            ),
-            _filter_definition(
-                category_control,
+                {
+                    "visible": True,
+                    "display_name": raw_category_control["display_name"],
+                    "options": category_catalog,
+                },
                 "category",
                 "tab",
                 payload_contract_version=payload_contract_version,
-            ),
-        ]
-    )
+            )
+        )
     return {
         "baseContent": base_content,
         "contentGroups": groups,
@@ -672,48 +723,48 @@ def _read_filter(pricing: Tag, kind: str) -> dict[str, Any]:
         pricing.select(f"div.dropdown-container.{class_name}"),
         f"{kind} 筛选器",
     )
-    select_id = "region-box" if kind == "region" else "software-box"
-    select = _one(container.select(f"select#{select_id}"), f"{kind} 移动端选项")
-    mobile: dict[str, dict[str, str]] = {}
-    mobile_defaults: list[str] = []
-    for option in select.find_all("option", recursive=False):
-        href = str(option.get("data-href", "")).strip()
-        raw_value = str(option.get("value", "")).strip()
-        value = href.removeprefix("#") if kind == "region" else raw_value
-        label = " ".join(option.get_text(" ", strip=True).split())
-        if not value or not href or not label or value in mobile:
+    software_values_by_target: dict[str, list[str]] = {}
+    if kind == "software":
+        mobile_selects = container.select(
+            "select#software-box.hidden-lg.hidden-md"
+        )
+        if len(mobile_selects) != 1:
             raise IndependentSourceError(
-                f"{kind} 移动端选项缺少值、目标、名称或包含重复值。"
+                "Software 需要唯一的移动端 select 提供 option.value 语义键。"
             )
-        mobile[value] = {"value": value, "label": label, "href": href}
-        if option.has_attr("selected"):
-            mobile_defaults.append(value)
+        for option in mobile_selects[0].find_all("option", recursive=False):
+            target = str(option.get("data-href", "")).strip()
+            value = str(option.get("value", "")).strip()
+            if target and value:
+                software_values_by_target.setdefault(target, []).append(value)
+    elif kind != "region":
+        raise IndependentSourceError(f"未知筛选器类型：{kind}。")
 
+    desktop_links = container.select(
+        ".dropdown-box.os-tab-nav.hidden-xs.hidden-sm "
+        ".tab-items a[data-href]"
+    )
+    if not desktop_links:
+        raise IndependentSourceError(f"{kind} 筛选器没有桌面端选项。")
     desktop_rows: list[dict[str, str]] = []
     desktop_defaults: list[str] = []
-    for link in container.select(".dropdown-box.os-tab-nav .tab-items a[data-href]"):
+    for link in desktop_links:
         href = str(link.get("data-href", "")).strip()
+        label = " ".join(link.get_text(" ", strip=True).split())
+        if not href.startswith("#") or not href.removeprefix("#") or not label:
+            raise IndependentSourceError(
+                f"{kind} 桌面端选项缺少内容目标或显示名称。"
+            )
         if kind == "region":
             value = href.removeprefix("#")
         else:
-            link_id = str(link.get("id", "")).strip()
-            matches = [
-                option["value"]
-                for option in mobile.values()
-                if option["href"] == href or option["value"] == link_id
-            ]
-            if len(matches) != 1:
+            semantic_values = software_values_by_target.get(href, [])
+            if len(semantic_values) != 1:
                 raise IndependentSourceError(
-                    "桌面软件选项无法唯一对应移动端选项。"
+                    "Software 桌面端选项无法按 target 唯一取得 "
+                    "移动端 option.value 语义键。"
                 )
-            value = matches[0]
-        if value not in mobile or any(row["value"] == value for row in desktop_rows):
-            raise IndependentSourceError(
-                f"{kind} 桌面选项与移动端选项不一致或重复。"
-            )
-        label = " ".join(link.get_text(" ", strip=True).split())
-        if not label:
-            raise IndependentSourceError(f"{kind} 桌面选项没有名称。")
+            value = semantic_values[0]
         desktop_rows.append({"value": value, "label": label, "href": href})
         parent = link.find_parent("li")
         if isinstance(parent, Tag) and set(parent.get("class", [])) & {
@@ -722,12 +773,27 @@ def _read_filter(pricing: Tag, kind: str) -> dict[str, Any]:
             "selected-item",
         }:
             desktop_defaults.append(value)
-    if {row["value"] for row in desktop_rows} != set(mobile):
-        raise IndependentSourceError(f"{kind} 桌面与移动端选项集合不同。")
-    defaults = list(dict.fromkeys(desktop_defaults + mobile_defaults))
-    if len(defaults) != 1:
-        raise IndependentSourceError(f"{kind} 筛选器没有唯一默认选项。")
-    default = defaults[0]
+    values = [row["value"] for row in desktop_rows]
+    labels = [row["label"] for row in desktop_rows]
+    hrefs = [row["href"] for row in desktop_rows]
+    if len(values) != len(set(values)):
+        raise IndependentSourceError(f"{kind} 桌面端选项包含重复机器值。")
+    if len(labels) != len(set(labels)):
+        raise IndependentSourceError(f"{kind} 桌面端选项包含重复名称。")
+    if len(hrefs) != len(set(hrefs)):
+        raise IndependentSourceError(f"{kind} 桌面端选项包含重复内容目标。")
+    selected_item = container.select_one("span.selected-item")
+    selected_label = (
+        " ".join(selected_item.get_text(" ", strip=True).split())
+        if isinstance(selected_item, Tag)
+        else ""
+    )
+    default = _independent_desktop_default(
+        desktop_rows,
+        desktop_defaults,
+        selected_label=selected_label,
+        context=f"{kind} 筛选器",
+    )
     default_row = _one(
         [row for row in desktop_rows if row["value"] == default],
         f"{kind} 默认选项",
@@ -747,8 +813,53 @@ def _read_filter(pricing: Tag, kind: str) -> dict[str, Any]:
     }
 
 
+def _independent_desktop_default(
+    rows: list[dict[str, str]],
+    marked_values: list[str],
+    *,
+    selected_label: str,
+    context: str,
+) -> str:
+    """Resolve one default using desktop markers and its visible summary."""
+
+    # A unique state marker is explicit source evidence.  The summary is only
+    # needed when markers are absent or when several stale markers coexist.
+    defaults = list(dict.fromkeys(marked_values))
+    if len(defaults) == 1:
+        return defaults[0]
+    if not defaults and len(rows) == 1:
+        return rows[0]["value"]
+
+    summary_matches = [
+        row["value"]
+        for row in rows
+        if selected_label and row["label"] == selected_label
+    ]
+    if len(summary_matches) != 1:
+        raise IndependentSourceError(
+            f"{context}的当前项摘要无法唯一对应桌面端选项。"
+        )
+    summary_default = summary_matches[0]
+    if defaults and summary_default not in defaults:
+        raise IndependentSourceError(
+            f"{context}声明了多个无法消歧的桌面端默认项。"
+        )
+    return summary_default
+
+
 def _read_categories(software_panel: Tag) -> dict[str, Any]:
     navs = software_panel.select("ul.os-tab-nav.category-tabs.hidden-xs.hidden-sm")
+    if not navs:
+        if software_panel.select_one("ul.category-tabs, select.category-tabs") is not None:
+            raise IndependentSourceError(
+                "Category 控件存在但没有唯一可读的桌面导航。"
+            )
+        return {
+            "visible": False,
+            "display_name": "Category",
+            "options": [],
+            "default": None,
+        }
     nav = _one(navs, "桌面 Category 导航")
     rows: list[dict[str, str]] = []
     defaults: list[str] = []
@@ -766,18 +877,25 @@ def _read_categories(software_panel: Tag) -> dict[str, Any]:
             "selected-item",
         }:
             defaults.append(value)
-    mobile_options = software_panel.select("select.category-tabs option")
-    mobile_targets = [
-        str(option.get("data-href", "")).strip().removeprefix("#")
-        for option in mobile_options
-    ]
-    if mobile_targets != [row["value"] for row in rows]:
-        raise IndependentSourceError("Category 桌面与移动端目标顺序不同。")
-    defaults = list(dict.fromkeys(defaults))
-    if len(defaults) != 1:
-        raise IndependentSourceError("Category 没有唯一桌面默认选项。")
+    labels = [row["label"] for row in rows]
+    if len(labels) != len(set(labels)):
+        raise IndependentSourceError("Category 桌面端选项包含重复名称。")
+    selected_item = software_panel.select_one(
+        ".category-container span.selected-item"
+    )
+    selected_label = (
+        " ".join(selected_item.get_text(" ", strip=True).split())
+        if isinstance(selected_item, Tag)
+        else ""
+    )
+    default = _independent_desktop_default(
+        rows,
+        defaults,
+        selected_label=selected_label,
+        context="Category",
+    )
     default_row = _one(
-        [row for row in rows if row["value"] == defaults[0]],
+        [row for row in rows if row["value"] == default],
         "Category 默认选项",
     )
     ordered = [default_row] + [row for row in rows if row is not default_row]
@@ -795,47 +913,121 @@ def _read_categories(software_panel: Tag) -> dict[str, Any]:
     }
 
 
-def _material_categories(
-    category_control: dict[str, Any], inner: Tag
-) -> tuple[dict[str, Any], list[Tag]]:
+def _independent_content_leaves(
+    category_control: dict[str, Any], software_panel: Tag
+) -> tuple[
+    dict[str, Any],
+    list[tuple[dict[str, str] | None, Tag]],
+    list[Tag],
+]:
+    options = list(category_control["options"])
+    if not options:
+        bodies = [
+            child
+            for child in software_panel.children
+            if isinstance(child, Tag)
+            and (
+                "tab-content" in child.get("class", [])
+                or "tabContent" in child.get("class", [])
+            )
+        ]
+        body = _one(bodies, "无 Category 软件内容主体")
+        return category_control, [(None, body)], []
+
+    expected_ids = [option["value"] for option in options]
+    target_matches = {
+        value: software_panel.find_all(id=value) for value in expected_ids
+    }
+    missing = [
+        index
+        for index, value in enumerate(expected_ids)
+        if not target_matches[value]
+    ]
+    first = options[0]
+    if missing:
+        if (
+            missing != [0]
+            or first["label"].casefold() not in {"all", "全部"}
+            or category_control.get("default") != first["value"]
+            or len(options) == 1
+        ):
+            raise IndependentSourceError(
+                "Category 控件包含无法证明的缺失内容目标。"
+            )
+        material = options[1:]
+    else:
+        material = options
+    if not material:
+        raise IndependentSourceError("Category 没有可交付的实体内容选项。")
+
     panels = [
+        _one(target_matches[option["value"]], f"Category 内容面板 {option['value']}")
+        for option in material
+    ]
+    parent = panels[0].parent
+    if not isinstance(parent, Tag) or any(
+        panel.parent is not parent for panel in panels
+    ):
+        raise IndependentSourceError("Category target 没有唯一共同直接父节点。")
+    actual_panels = [
         child
-        for child in inner.children
+        for child in parent.children
         if isinstance(child, Tag)
         and "tab-panel" in child.get("class", [])
         and child.get("id")
     ]
-    actual_ids = [str(panel.get("id")) for panel in panels]
-    options = list(category_control["options"])
-    expected_ids = [option["value"] for option in options]
-    if actual_ids == expected_ids:
-        material = options
-    else:
-        missing = [
-            index for index, value in enumerate(expected_ids) if value not in actual_ids
-        ]
-        first = options[0] if options else None
-        if (
-            missing != [0]
-            or not isinstance(first, dict)
-            or first["label"].casefold() not in {"all", "全部"}
-            or category_control.get("default") != first["value"]
-            or actual_ids != expected_ids[1:]
-        ):
-            raise IndependentSourceError(
-                "Category 控件与直接内容面板无法确定为完整有序的内容状态。"
-            )
-        material = options[1:]
-    if not material:
-        raise IndependentSourceError("Category 没有可交付的实体内容选项。")
+    actual_ids = [str(panel.get("id")) for panel in actual_panels]
+    material_ids = [option["value"] for option in material]
+    if actual_ids != material_ids or any(
+        actual is not expected
+        for actual, expected in zip(actual_panels, panels)
+    ):
+        raise IndependentSourceError(
+            "Category 控件与共同父节点的直接内容面板不是完整有序集合。"
+        )
+
+    shared_fragments: list[Tag] = []
+    for child in parent.children:
+        if child is panels[0]:
+            break
+        if isinstance(child, Tag) and child.select_one(
+            "ul.os-tab-nav.category-tabs, select.category-tabs"
+        ) is None:
+            shared_fragments.append(child)
     return (
         {
             "visible": True,
             "display_name": category_control["display_name"],
             "options": material,
         },
-        panels,
+        list(zip(material, panels)),
+        shared_fragments,
     )
+
+
+def _independent_single_software_trailing_fragments(
+    software_panel: Tag,
+) -> list[Tag]:
+    container = software_panel.parent
+    if not isinstance(container, Tag):
+        return []
+    direct_panels = [
+        child
+        for child in container.children
+        if isinstance(child, Tag) and "tab-panel" in child.get("class", [])
+    ]
+    if len(direct_panels) != 1 or direct_panels[0] is not software_panel:
+        return []
+
+    fragments: list[Tag] = []
+    after_panel = False
+    for child in container.children:
+        if child is software_panel:
+            after_panel = True
+            continue
+        if after_panel and isinstance(child, Tag):
+            fragments.append(child)
+    return fragments
 
 
 def _read_soft_category(path: Path) -> dict[tuple[str, str], tuple[str, ...]]:
@@ -879,6 +1071,135 @@ def _config_row(
 ) -> tuple[str, ...]:
     key = (software, region)
     return rows.get(key, ())
+
+
+def _build_independent_fragment_index(
+    fragments: list[Tag],
+    *,
+    relevant_table_ids: frozenset[str],
+) -> dict[str, Any]:
+    holder = BeautifulSoup("<div></div>", "html.parser").div
+    assert holder is not None
+    for fragment in fragments:
+        holder.append(deepcopy(fragment))
+
+    units_by_id: dict[str, list[Tag]] = {}
+    for candidate in holder.find_all(
+        lambda tag: isinstance(tag, Tag)
+        and any(
+            str(tag.get(attribute, "")).strip() in relevant_table_ids
+            for attribute in ("id", "data-table-id")
+        )
+    ):
+        if "scroll-table" in candidate.get("class", []):
+            unit = candidate
+        else:
+            wrapper = candidate.find_parent(
+                lambda tag: isinstance(tag, Tag)
+                and tag.name == "div"
+                and "scroll-table" in tag.get("class", [])
+            )
+            unit = wrapper if isinstance(wrapper, Tag) else candidate
+        if unit.name != "table" and "scroll-table" not in unit.get("class", []):
+            raise IndependentSourceError(
+                "配置名称指向的不是 table 或 scroll-table 物理单元。"
+            )
+        identifiers = {
+            str(candidate.get(attribute, "")).strip()
+            for attribute in ("id", "data-table-id")
+            if str(candidate.get(attribute, "")).strip() in relevant_table_ids
+        }
+        for table_id in identifiers:
+            units = units_by_id.setdefault(table_id, [])
+            if all(unit is not existing for existing in units):
+                units.append(unit)
+
+    return {
+        "holder": holder,
+        "paths": {
+            table_id: tuple(
+                _independent_element_path(holder, unit) for unit in units
+            )
+            for table_id, units in units_by_id.items()
+        },
+    }
+
+
+def _independent_applicable_exclusions(
+    indexes: list[dict[str, Any]],
+    excluded: tuple[str, ...],
+) -> tuple[str, ...]:
+    available = {
+        table_id
+        for index in indexes
+        for table_id in index["paths"]
+    }
+    applicable = tuple(table_id for table_id in excluded if table_id in available)
+    if excluded and not applicable:
+        raise IndependentSourceError(
+            "该配置记录在当前 Software 的所有内容叶子中没有对应任何物理表格单元，"
+            "实际为 0 个。"
+        )
+    return applicable
+
+
+def _project_independent_fragment_index(
+    index: dict[str, Any],
+    excluded: tuple[str, ...],
+) -> str:
+    clone = deepcopy(index["holder"])
+    selected_paths = {
+        path
+        for table_id in excluded
+        for path in index["paths"].get(table_id, ())
+    }
+    outermost: list[tuple[int, ...]] = []
+    for path in sorted(selected_paths, key=lambda item: (len(item), item)):
+        if any(path[: len(parent)] == parent for parent in outermost):
+            continue
+        outermost.append(path)
+    units = [
+        _resolve_independent_element_path(clone, path) for path in outermost
+    ]
+    for unit in units:
+        unit.decompose()
+    if not (
+        clone.get_text(" ", strip=True)
+        or clone.select_one("img, video, audio, table, iframe")
+    ):
+        return ""
+    return normalize_html(clone.decode_contents())
+
+
+def _independent_element_path(root: Tag, node: Tag) -> tuple[int, ...]:
+    indexes: list[int] = []
+    current = node
+    while current is not root:
+        parent = current.parent
+        if not isinstance(parent, Tag):
+            raise IndependentSourceError("表格物理单元不在独立待投影片段内。")
+        children = [child for child in parent.children if isinstance(child, Tag)]
+        indexes.append(
+            next(
+                index
+                for index, child in enumerate(children)
+                if child is current
+            )
+        )
+        current = parent
+    return tuple(reversed(indexes))
+
+
+def _resolve_independent_element_path(root: Tag, path: tuple[int, ...]) -> Tag:
+    current = root
+    for index in path:
+        children = [child for child in current.children if isinstance(child, Tag)]
+        if index >= len(children):
+            raise IndependentSourceError(
+                "独立投影片段的元素路径与 preflight 索引不一致。"
+            )
+        current = children[index]
+    return current
 
 
 def _project_one(

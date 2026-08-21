@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "description": "首批重写验收范围。每个产品始终同时处理中文和英文。",
+  "description": "当前正式验收范围。每个产品始终同时处理中文和英文。",
   "languages": [
     "zh-cn",
     "en-us"
@@ -8,25 +8,34 @@
   "product_keys": [
     "advisor",
     "api-management",
+    "app-service",
     "automation",
     "azure-firewall",
     "azure-migrate",
     "azure-policy",
     "azure-update-management-center",
     "backup",
+    "cloud-services",
+    "cosmos-db",
     "database-migration",
     "databricks",
     "event-grid",
     "icp-new",
     "machine-learning",
+    "managed-instance",
     "monitor",
     "network-watcher",
+    "postgresql",
     "scheduler",
     "service-bus",
     "site-recovery",
     "sla-api-management",
     "sla-databricks",
     "sla-virtual-machines",
-    "traffic-manager"
+    "sql-database",
+    "synapse-analytics",
+    "traffic-manager",
+    "virtual-machine-scale-sets",
+    "virtual-machines"
   ]
 }

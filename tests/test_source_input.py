@@ -237,7 +237,7 @@ def test_copy_byte_difference_is_detected_and_removed(project_builder, monkeypat
     )
 
 
-def test_real_scope_freezes_all_44_files_with_identical_bytes(tmp_path: Path) -> None:
+def test_real_scope_freezes_all_62_files_with_identical_bytes(tmp_path: Path) -> None:
     catalog = ProductCatalog.load(PROJECT_ROOT)
     items = catalog.select(all_products=True)
     frozen_root = tmp_path / "real-prod-html"
@@ -245,9 +245,9 @@ def test_real_scope_freezes_all_44_files_with_identical_bytes(tmp_path: Path) ->
     report = SourceInput(catalog, frozen_root=frozen_root).freeze(items)
 
     assert report.succeeded
-    assert report.selected_product_count == 22
-    assert report.selected_item_count == 44
-    assert report.passed_item_count == 44
+    assert report.selected_product_count == 31
+    assert report.selected_item_count == 62
+    assert report.passed_item_count == 62
     for item in items:
         source = (PROJECT_ROOT / "data" / "current_prod_html").joinpath(
             *item.source_relative_path.parts

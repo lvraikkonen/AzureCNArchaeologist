@@ -585,6 +585,44 @@ def test_processing_product_definition_change_is_a_bilingual_trigger(
     ]
 
 
+def test_page_global_source_boundary_change_is_a_bilingual_trigger(
+    project_builder,
+) -> None:
+    project_root = project_builder([{"product_key": "sample-product"}])
+    original_catalog = ProductCatalog.load(project_root)
+    _freeze_baseline(original_catalog)
+    _prepare_incremental_config(
+        original_catalog,
+        previous_rows=[],
+        current_rows=[],
+    )
+    config_path = (
+        project_root
+        / "data/configs/products-config/pricing/sample-product.json"
+    )
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    config["extraction"]["page_global_content"] = {
+        "source_boundary": "after_final_formal_selector_before_common_sections"
+    }
+    _write_json(config_path, config)
+    changed_catalog = ProductCatalog.load(project_root)
+
+    plan = detect_incremental_changes(changed_catalog)
+
+    assert plan.affected_product_count == 1
+    product = plan.affected_products[0]
+    assert product.change_sources == ("product_definition",)
+    assert product.changed_languages == ()
+    assert [item.language for item in product.processing_items] == [
+        "zh-cn",
+        "en-us",
+    ]
+    assert {
+        item.page_global_source_boundary
+        for item in product.processing_items
+    } == {"after_final_formal_selector_before_common_sections"}
+
+
 def test_incremental_batch_uses_fixed_inputs_and_delta_release_closes_it(
     project_builder,
     tmp_path,

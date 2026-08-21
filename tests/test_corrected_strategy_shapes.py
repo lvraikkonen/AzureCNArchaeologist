@@ -226,3 +226,65 @@ def test_monitor_static_software_panel_is_a_complete_complex_page(
         source_path=source_path,
         payload=payload,
     )["status"] == "passed"
+
+
+@pytest.mark.parametrize("language", LANGUAGES)
+def test_postgresql_trailing_extended_support_is_region_shared_content(
+    tmp_path: Path,
+    language: str,
+) -> None:
+    catalog, item, source_path, payload = _extract_upstream(
+        tmp_path,
+        product_key="postgresql",
+        language=language,
+    )
+
+    assert payload["baseContent"] == ""
+    assert len(payload["contentGroups"]) == 18
+    assert all("sharedContent" in group for group in payload["contentGroups"])
+
+    east3 = "Azure_PostgreSQL_Database_Extended_Support_East3"
+    other_regions = "Azure_PostgreSQL_Database_Extended_Support_E2N2N3"
+    retained_tables = {
+        "east-china3": {east3},
+        "east-china2": {other_regions},
+        "north-china2": {other_regions},
+        "north-china3": {other_regions},
+        "east-china": set(),
+        "north-china": set(),
+    }
+    heading = "扩展支持" if language == "zh-cn" else "Extended Support"
+    categories_by_region: dict[str, int] = {}
+    for group in payload["contentGroups"]:
+        criteria = json.loads(group["filterCriteriaJson"])
+        assert [criterion["filterKey"] for criterion in criteria] == [
+            "region",
+            "category",
+        ]
+        region = criteria[0]["matchValues"]
+        categories_by_region[region] = categories_by_region.get(region, 0) + 1
+        shared_content = group["sharedContent"]
+        assert heading in shared_content
+        assert heading not in group["content"]
+        actual_tables = {
+            table_id
+            for table_id in (east3, other_regions)
+            if f'id="{table_id}"' in shared_content
+        }
+        assert actual_tables == retained_tables[region]
+
+    assert categories_by_region == {
+        "east-china3": 3,
+        "east-china2": 3,
+        "north-china2": 3,
+        "north-china3": 3,
+        "east-china": 3,
+        "north-china": 3,
+    }
+    assert _l3b(
+        tmp_path,
+        catalog=catalog,
+        item=item,
+        source_path=source_path,
+        payload=payload,
+    )["status"] == "passed"

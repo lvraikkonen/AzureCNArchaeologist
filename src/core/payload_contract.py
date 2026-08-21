@@ -135,7 +135,13 @@ def validate_pricing_payload(
     )
     expected_criteria_keys = tuple(filter_domains)
     for group_index, criteria in enumerate(criteria_rows):
-        if tuple(key for key, _value in criteria) != expected_criteria_keys:
+        actual_criteria_keys = tuple(key for key, _value in criteria)
+        allowed_criteria_keys = {expected_criteria_keys}
+        if semantic_strategy == "complex" and expected_criteria_keys[-1:] == (
+            "category",
+        ):
+            allowed_criteria_keys.add(expected_criteria_keys[:-1])
+        if actual_criteria_keys not in allowed_criteria_keys:
             raise PayloadContractError(
                 f"contentGroups[{group_index}] 的筛选条件种类或顺序"
                 "与页面筛选器不一致。"
@@ -243,8 +249,9 @@ def _validate_content_groups(
             raise PayloadContractError(
                 f"contentGroups[{index}].sharedContent 必须是文本。"
             )
-        if not group["groupName"].strip() or not (
-            group["content"].strip() or shared.strip()
+        if not group["groupName"].strip() or (
+            semantic_strategy != "complex"
+            and not (group["content"].strip() or shared.strip())
         ):
             raise PayloadContractError(
                 f"contentGroups[{index}] 缺少名称或源内容。"
@@ -357,7 +364,12 @@ def _validate_page_config(
         "complex": (
             "ComplexFilter",
             True,
-            (("region", "category"), ("software", "region", "category")),
+            (
+                ("region",),
+                ("software", "region"),
+                ("region", "category"),
+                ("software", "region", "category"),
+            ),
         ),
     }
     expected_page_type, expected_enabled, allowed_key_orders = expectations[

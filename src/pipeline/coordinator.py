@@ -582,6 +582,7 @@ def _validate_reprocessing_items(
             "language": item.language,
             "page_model": item.page_model,
             "semantic_strategy": item.semantic_strategy,
+            "page_global_source_boundary": item.page_global_source_boundary,
             "source_relative_path": item.source_relative_path.as_posix(),
             "frozen_relative_path": item.frozen_relative_path.as_posix(),
         }
@@ -1340,6 +1341,7 @@ def _new_manifest_item(
         "language": item.language,
         "page_model": item.page_model,
         "semantic_strategy": item.semantic_strategy,
+        "page_global_source_boundary": item.page_global_source_boundary,
         "source_relative_path": item.source_relative_path.as_posix(),
         "frozen_relative_path": item.frozen_relative_path.as_posix(),
         "status": "pending",
@@ -1597,6 +1599,7 @@ def _items_for_stored_plan(
             "language": item.language,
             "page_model": item.page_model,
             "semantic_strategy": item.semantic_strategy,
+            "page_global_source_boundary": item.page_global_source_boundary,
             "source_relative_path": item.source_relative_path.as_posix(),
             "frozen_relative_path": item.frozen_relative_path.as_posix(),
         }

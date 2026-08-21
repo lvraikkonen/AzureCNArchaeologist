@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "source_run_name": "m7-incremental-no-change-001-no-product-changes",
+  "source_run_name": "scope-expansion-full-regression-20260820",
   "ignored_fields": [
     "capability_status",
     "display_name",
@@ -12,6 +12,7 @@
       "product_key": "advisor",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/advisor/index.html",
         "en-us": "pricing/details/advisor/index.html"
@@ -21,15 +22,27 @@
       "product_key": "api-management",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/api-management/index.html",
         "en-us": "pricing/details/api-management/index.html"
       }
     },
     {
+      "product_key": "app-service",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/app-service/index.html",
+        "en-us": "pricing/details/app-service/index.html"
+      }
+    },
+    {
       "product_key": "automation",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/automation/index.html",
         "en-us": "pricing/details/automation/index.html"
@@ -39,6 +52,7 @@
       "product_key": "azure-firewall",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/azure-firewall/index.html",
         "en-us": "pricing/details/azure-firewall/index.html"
@@ -48,6 +62,7 @@
       "product_key": "azure-migrate",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/azure-migrate/index.html",
         "en-us": "pricing/details/azure-migrate/index.html"
@@ -57,6 +72,7 @@
       "product_key": "azure-policy",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/azure-policy/index.html",
         "en-us": "pricing/details/azure-policy/index.html"
@@ -66,6 +82,7 @@
       "product_key": "azure-update-management-center",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/azure-update-management-center/index.html",
         "en-us": "pricing/details/azure-update-management-center/index.html"
@@ -75,15 +92,37 @@
       "product_key": "backup",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/backup/index.html",
         "en-us": "pricing/details/backup/index.html"
       }
     },
     {
+      "product_key": "cloud-services",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
+      "sources": {
+        "zh-cn": "pricing/details/cloud-services/index.html",
+        "en-us": "pricing/details/cloud-services/index.html"
+      }
+    },
+    {
+      "product_key": "cosmos-db",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/cosmos-db/index.html",
+        "en-us": "pricing/details/cosmos-db/index.html"
+      }
+    },
+    {
       "product_key": "database-migration",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/database-migration/index.html",
         "en-us": "pricing/details/database-migration/index.html"
@@ -93,6 +132,7 @@
       "product_key": "databricks",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/databricks/index.html",
         "en-us": "pricing/details/databricks/index.html"
@@ -102,6 +142,7 @@
       "product_key": "event-grid",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/event-grid/index.html",
         "en-us": "pricing/details/event-grid/index.html"
@@ -111,6 +152,7 @@
       "product_key": "icp-new",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "SupportArticles/ICP/icp-new.html",
         "en-us": "SupportArticles/ICP/icp-new.html"
@@ -120,15 +162,27 @@
       "product_key": "machine-learning",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
       "sources": {
         "zh-cn": "pricing/details/machine-learning/index.html",
         "en-us": "pricing/details/machine-learning/index.html"
       }
     },
     {
+      "product_key": "managed-instance",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/managed-instance/index.html",
+        "en-us": "pricing/details/managed-instance/index.html"
+      }
+    },
+    {
       "product_key": "monitor",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/monitor/index.html",
         "en-us": "pricing/details/monitor/index.html"
@@ -138,15 +192,27 @@
       "product_key": "network-watcher",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/network-watcher/index.html",
         "en-us": "pricing/details/network-watcher/index.html"
       }
     },
     {
+      "product_key": "postgresql",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/postgresql/index.html",
+        "en-us": "pricing/details/postgresql/index.html"
+      }
+    },
+    {
       "product_key": "scheduler",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/scheduler/index.html",
         "en-us": "pricing/details/scheduler/index.html"
@@ -156,6 +222,7 @@
       "product_key": "service-bus",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "page_global_source_boundary": "sole_static_formal_selector_before_common_sections",
       "sources": {
         "zh-cn": "pricing/details/service-bus/index.html",
         "en-us": "pricing/details/service-bus/index.html"
@@ -165,6 +232,7 @@
       "product_key": "site-recovery",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "pricing/details/site-recovery/index.html",
         "en-us": "pricing/details/site-recovery/index.html"
@@ -174,6 +242,7 @@
       "product_key": "sla-api-management",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/api-management/index.html",
         "en-us": "SupportArticles/SLA/api-management/index.html"
@@ -183,6 +252,7 @@
       "product_key": "sla-databricks",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/databricks/index.html",
         "en-us": "SupportArticles/SLA/databricks/index.html"
@@ -192,18 +262,60 @@
       "product_key": "sla-virtual-machines",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/virtual-machines/index.html",
         "en-us": "SupportArticles/SLA/virtual-machines/index.html"
       }
     },
     {
+      "product_key": "sql-database",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/sql-database/index.html",
+        "en-us": "pricing/details/sql-database/index.html"
+      }
+    },
+    {
+      "product_key": "synapse-analytics",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/synapse-analytics/index.html",
+        "en-us": "pricing/details/synapse-analytics/index.html"
+      }
+    },
+    {
       "product_key": "traffic-manager",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "page_global_source_boundary": "sole_static_formal_selector_before_common_sections",
       "sources": {
         "zh-cn": "pricing/details/traffic-manager/index.html",
         "en-us": "pricing/details/traffic-manager/index.html"
+      }
+    },
+    {
+      "product_key": "virtual-machine-scale-sets",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
+      "sources": {
+        "zh-cn": "pricing/details/virtual-machine-scale-sets/index.html",
+        "en-us": "pricing/details/virtual-machine-scale-sets/index.html"
+      }
+    },
+    {
+      "product_key": "virtual-machines",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
+      "sources": {
+        "zh-cn": "pricing/details/virtual-machines/index.html",
+        "en-us": "pricing/details/virtual-machines/index.html"
       }
     }
   ]

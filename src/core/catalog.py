@@ -98,16 +98,18 @@ class ProcessingItem:
     language: str
     page_model: str
     semantic_strategy: str
+    page_global_source_boundary: str | None
     source_relative_path: PurePosixPath
     frozen_relative_path: PurePosixPath
 
-    def as_dict(self) -> dict[str, str]:
+    def as_dict(self) -> dict[str, object]:
         return {
             "product_key": self.product_key,
             "display_name": self.display_name,
             "language": self.language,
             "page_model": self.page_model,
             "semantic_strategy": self.semantic_strategy,
+            "page_global_source_boundary": self.page_global_source_boundary,
             "source_relative_path": self.source_relative_path.as_posix(),
             "frozen_relative_path": self.frozen_relative_path.as_posix(),
         }
@@ -280,6 +282,9 @@ class ProductCatalog:
                         language=language,
                         page_model=definition.page_model,
                         semantic_strategy=self.effective_strategy(key),
+                        page_global_source_boundary=(
+                            definition.page_global_source_boundary
+                        ),
                         source_relative_path=PurePosixPath(
                             language, *PurePosixPath(source.snapshot_path).parts
                         ),

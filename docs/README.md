@@ -16,6 +16,8 @@
 - [`adr/0001-incremental-change-and-open-batch-boundaries.md`](adr/0001-incremental-change-and-open-batch-boundaries.md)：输入变化、双语范围和唯一未结束增量 Batch 的边界。
 - [`adr/0002-append-only-incremental-reprocessing.md`](adr/0002-append-only-incremental-reprocessing.md)：程序修复后在原增量 Batch 内追加不可覆盖记录的决定。
 - [`plans/initial-acceptance-matrix.md`](plans/initial-acceptance-matrix.md)：首批 22 个产品、44 个双语处理项及验收场景。
+- [`plans/complex-fix-handoff-20260819.md`](plans/complex-fix-handoff-20260819.md)：Complex 页面抽取修复、13 产品验证、Large 页面结论和 31 产品正式扩围记录。
+- [`../tracking-product-status.md`](../tracking-product-status.md)：当前 31 个已验证产品及完整参考产品清单。
 - [`reviews/m1-input-acceptance.md`](reviews/m1-input-acceptance.md)：M1 输入闭环真实验收。
 - [`reviews/m2-service-bus-acceptance.md`](reviews/m2-service-bus-acceptance.md)：M2 `service-bus` 双语抽取、L3a 和独立 L3b 验收。
 - [`reviews/m3-representative-strategies-acceptance.md`](reviews/m3-representative-strategies-acceptance.md)：M3 四个代表产品、8 个处理项的真实机器验收。

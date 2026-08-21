@@ -6,7 +6,8 @@
 基于实际HTML结构检测Azure中国区页面的筛选器，专门检测：
 - 软件类别筛选器：.dropdown-container.software-kind-container
 - 地区筛选器：.dropdown-container.region-container
-- 隐藏状态和选项映射的精确提取
+- 桌面端选项集合、顺序、标签、默认项和内容目标的精确提取
+- Software 移动端 option.value 到桌面端 target 的语义键映射
 """
 
 import logging
@@ -22,10 +23,10 @@ class FilterDetector:
     Azure中国区页面筛选器检测器。
     
     基于实际HTML结构精确检测：
-    - 软件类别筛选器：.dropdown-container.software-kind-container + #software-box
-    - 地区筛选器：.dropdown-container.region-container + #region-box
+    - 软件类别筛选器：桌面导航 + #software-box option.value 语义键
+    - 地区筛选器：仅桌面导航
     - 检测隐藏状态：style="display:none;"
-    - 提取选项映射：data-href和value属性
+    - 移动端控件不参与选项集合、顺序、标签或默认项验证
     """
     
     def __init__(self):
@@ -101,30 +102,11 @@ class FilterDetector:
         # 检查是否隐藏
         is_visible = self._is_visible(software_container)
         
-        # 查找 #software-box select
-        software_select = soup.find('select', id='software-box')
-        options = []
-        
-        if software_select:
-            logger.info("✅ 找到 #software-box")
-            option_elements = software_select.find_all('option', recursive=False)
-            
-            for option in option_elements:
-                value = option.get('value', '').strip()
-                href = option.get('data-href', '').strip()
-                label = option.get_text().strip()
-                
-                if value and href:
-                    options.append({
-                        "value": value,
-                        "href": href,
-                        "label": label,
-                        "selected": option.has_attr("selected"),
-                    })
-
-        options, default_value = self._order_options(
-            options, software_container
+        options = self._desktop_options(
+            software_container,
+            kind="software",
         )
+        options, default_value = self._order_options(options, software_container)
         
         logger.info(f"✅ 软件类别筛选器: visible={is_visible}, options={len(options)}")
         
@@ -171,28 +153,7 @@ class FilterDetector:
         # 检查是否隐藏
         is_visible = self._is_visible(region_container)
         
-        # 查找 #region-box select
-        region_select = soup.find('select', id='region-box')
-        options = []
-        
-        if region_select:
-            logger.info("✅ 找到 #region-box")
-            option_elements = region_select.find_all('option', recursive=False)
-            
-            for option in option_elements:
-                raw_value = option.get('value', '').strip()
-                href = option.get('data-href', '').strip()
-                label = option.get_text().strip()
-                value = href.removeprefix("#") if href else raw_value
-                
-                if raw_value and value and href:
-                    options.append({
-                        "value": value,
-                        "href": href,
-                        "label": label,
-                        "selected": option.has_attr("selected"),
-                    })
-
+        options = self._desktop_options(region_container, kind="region")
         options, default_value = self._order_options(options, region_container)
         
         logger.info(f"✅ 地区筛选器: visible={is_visible}, options={len(options)}")
@@ -219,182 +180,122 @@ class FilterDetector:
         return value or fallback
 
     @staticmethod
+    def _desktop_options(container: Tag, *, kind: str) -> list[dict[str, Any]]:
+        """Read the option domain from the desktop navigation only.
+
+        Region values are the desktop targets themselves.  Software keeps its
+        business value in the responsive ``option.value`` source, so that one
+        field is joined to each desktop option by target.  No other mobile
+        field is read or compared.
+        """
+
+        desktop_links = container.select(
+            ".dropdown-box.os-tab-nav.hidden-xs.hidden-sm "
+            ".tab-items a[data-href]"
+        )
+        if not desktop_links:
+            raise ValueError(f"{kind} 筛选器没有桌面端选项。")
+
+        software_values_by_target: dict[str, list[str]] = {}
+        if kind == "software":
+            mobile_selects = container.select(
+                "select#software-box.hidden-lg.hidden-md"
+            )
+            if len(mobile_selects) != 1:
+                raise ValueError(
+                    "Software 需要唯一的移动端 select 提供 option.value 语义键。"
+                )
+            for option in mobile_selects[0].find_all("option", recursive=False):
+                target = str(option.get("data-href", "")).strip()
+                value = str(option.get("value", "")).strip()
+                if target and value:
+                    software_values_by_target.setdefault(target, []).append(value)
+        elif kind != "region":
+            raise ValueError(f"未知筛选器类型：{kind}。")
+
+        rows: list[dict[str, Any]] = []
+        for link in desktop_links:
+            href = str(link.get("data-href", "")).strip()
+            label = " ".join(link.get_text(" ", strip=True).split())
+            if not href.startswith("#") or not href.removeprefix("#") or not label:
+                raise ValueError(
+                    f"{kind} 桌面端选项缺少内容目标或显示名称。"
+                )
+            if kind == "software":
+                semantic_values = software_values_by_target.get(href, [])
+                if len(semantic_values) != 1:
+                    raise ValueError(
+                        "Software 桌面端选项无法按 target 唯一取得 "
+                        "移动端 option.value 语义键。"
+                    )
+                value = semantic_values[0]
+            else:
+                value = href.removeprefix("#")
+            parent = link.find_parent("li")
+            rows.append(
+                {
+                    "value": value,
+                    "href": href,
+                    "label": label,
+                    "desktop_default": bool(
+                        parent is not None
+                        and {
+                            "active",
+                            "selected",
+                            "selected-item",
+                        }.intersection(parent.get("class", []))
+                    ),
+                }
+            )
+        return rows
+
+    @staticmethod
     def _order_options(
         options: list[dict[str, Any]], container: Tag
     ) -> tuple[list[dict[str, Any]], str | None]:
-        """Use desktop source order, then move the proven default to first."""
+        """Keep desktop order and move its proven default to the first slot."""
 
-        selected_values = [
-            option["value"] for option in options if option.pop("selected", False)
-        ]
-        if len(selected_values) > 1:
-            raise ValueError("Filter declares more than one selected option")
+        values = [str(option.get("value", "")) for option in options]
+        labels = [" ".join(str(option.get("label", "")).split()) for option in options]
+        hrefs = [str(option.get("href", "")) for option in options]
+        if any(not value for value in values) or len(values) != len(set(values)):
+            raise ValueError("筛选器桌面端选项包含空或重复机器值。")
+        if any(not label for label in labels) or len(labels) != len(set(labels)):
+            raise ValueError("筛选器桌面端选项包含空或重复显示名称。")
+        if any(not href for href in hrefs) or len(hrefs) != len(set(hrefs)):
+            raise ValueError("筛选器桌面端选项包含空或重复内容目标。")
 
-        values = [option["value"] for option in options]
-        if len(values) != len(set(values)):
-            raise ValueError("Filter declares duplicate machine values")
-
-        by_value = {option["value"]: option for option in options}
-        by_href = {
-            option["href"]: option
+        desktop_defaults = [
+            option["value"]
             for option in options
-            if option["href"]
-        }
-        desktop_links = container.select(
-            ".dropdown-box.os-tab-nav .tab-items a"
-        )
-        desktop_rows: list[dict[str, Any]] = []
-        desktop_defaults: list[str] = []
-        for index, link in enumerate(desktop_links):
-            link_id = str(link.get("id", "")).strip()
-            link_href = str(link.get("data-href", "")).strip()
-            option = by_value.get(link_id) or by_href.get(link_href)
-            if option is None:
-                raise ValueError(
-                    "Desktop filter option does not resolve to the mobile domain"
-                )
-            desktop_label = " ".join(link.get_text(" ", strip=True).split())
-            if not desktop_label:
-                raise ValueError(
-                    "Desktop filter option requires a display label"
-                )
-            parent = link.find_parent("li")
-            desktop_rows.append({
-                "value": option["value"],
-                "label": desktop_label,
-                "is_default": bool(
-                    parent is not None
-                    and {
-                        "active",
-                        "selected",
-                        "selected-item",
-                    }.intersection(parent.get("class", []))
-                ),
-                "source_index": index,
-            })
-
-        if desktop_rows:
-            raw_values = [row["value"] for row in desktop_rows]
-            if len(desktop_rows) == len(options):
-                mismatch_indexes = [
-                    index
-                    for index, row in enumerate(desktop_rows)
-                    if row["value"] != options[index]["value"]
-                ]
-                if mismatch_indexes and all(
-                    raw_values.count(desktop_rows[index]["value"]) > 1
-                    and options[index]["value"] not in raw_values
-                    for index in mismatch_indexes
-                ):
-                    for index in mismatch_indexes:
-                        desktop_rows[index]["value"] = options[index]["value"]
-
-            grouped: dict[str, list[dict[str, Any]]] = {}
-            for row in desktop_rows:
-                grouped.setdefault(row["value"], []).append(row)
-            suppressed_indexes: set[int] = set()
-            for value, rows in grouped.items():
-                if len(rows) < 2 or value not in by_value:
-                    continue
-                label_matches = [
-                    row
-                    for row in rows
-                    if row["label"] == by_value[value]["label"]
-                ]
-                if len(label_matches) != 1:
-                    continue
-                retained = label_matches[0]
-                discarded = [
-                    row
-                    for row in rows
-                    if row["source_index"] != retained["source_index"]
-                ]
-                if any(row["is_default"] for row in discarded):
-                    continue
-                suppressed_indexes.update(
-                    row["source_index"] for row in discarded
-                )
-            desktop_rows = [
-                row
-                for row in desktop_rows
-                if row["source_index"] not in suppressed_indexes
-            ]
-            desktop_values = [row["value"] for row in desktop_rows]
-            desktop_labels = {
-                row["value"]: row["label"] for row in desktop_rows
-            }
-            desktop_defaults = [
-                row["value"]
-                for row in desktop_rows
-                if row["is_default"]
-            ]
-            if (
-                len(desktop_values) != len(set(desktop_values))
-                or set(desktop_values) != set(values)
-            ):
-                raise ValueError(
-                    "Desktop and mobile filter controls expose different domains"
-                )
-            if len(desktop_labels.values()) != len(
-                set(desktop_labels.values())
-            ):
-                raise ValueError(
-                    "Desktop filter declares duplicate display labels"
-                )
-            for value, label in desktop_labels.items():
-                by_value[value]["label"] = label
-            options = [by_value[value] for value in desktop_values]
-
-        selected_item = container.select_one(".selected-item")
+            if option.pop("desktop_default", False)
+        ]
+        selected_item = container.select_one("span.selected-item")
         selected_label = (
-            selected_item.get_text(" ", strip=True)
-            if selected_item
+            " ".join(selected_item.get_text(" ", strip=True).split())
+            if selected_item is not None
             else ""
         )
-        unique_selected_values = list(dict.fromkeys(selected_values))
-        unique_desktop_defaults = list(dict.fromkeys(desktop_defaults))
-        if (
-            len(unique_desktop_defaults) > 1
-            and len(unique_selected_values) == 1
-        ):
-            selected_value = unique_selected_values[0]
+        # Some sources leave the visible summary stale.  One explicit desktop
+        # marker is therefore authoritative; the summary is only a fallback
+        # or a way to disambiguate multiple stale markers.
+        distinct_defaults = list(dict.fromkeys(desktop_defaults))
+        if len(distinct_defaults) == 1:
+            default_value = distinct_defaults[0]
+        elif not distinct_defaults and len(options) == 1:
+            default_value = options[0]["value"]
+        else:
             summary_matches = [
                 option["value"]
                 for option in options
-                if selected_label
-                and " ".join(option["label"].split()) == selected_label
+                if selected_label and option["label"] == selected_label
             ]
-            if (
-                summary_matches == [selected_value]
-                and selected_value in unique_desktop_defaults
-            ):
-                desktop_defaults = [selected_value]
-
-        explicit_defaults = list(dict.fromkeys(
-            selected_values + desktop_defaults
-        ))
-        if explicit_defaults:
-            distinct_defaults = explicit_defaults
-        else:
-            label_matches = [
-                option["value"]
-                for option in options
-                if selected_label
-                and " ".join(option["label"].split()) == selected_label
-            ]
-            distinct_defaults = (
-                label_matches if len(label_matches) == 1 else []
-            )
-        if len(distinct_defaults) > 1:
-            raise ValueError(
-                "Desktop and mobile filter controls declare different defaults"
-            )
-        default_value = (
-            distinct_defaults[0] if distinct_defaults else None
-        )
-
-        if options and default_value is None:
-            raise ValueError("Filter source does not establish a default option")
+            if len(summary_matches) != 1:
+                raise ValueError("桌面端筛选器的当前项摘要无法唯一对应选项。")
+            summary_default = summary_matches[0]
+            if distinct_defaults and summary_default not in distinct_defaults:
+                raise ValueError("桌面端筛选器声明了多个无法消歧的默认项。")
+            default_value = summary_default
         default_index = next(
             (
                 index

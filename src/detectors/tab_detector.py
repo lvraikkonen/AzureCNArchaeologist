@@ -250,75 +250,82 @@ class TabDetector:
         """
         category_tabs = []
         
-        # 在该分组内查找 .os-tab-nav.category-tabs
-        nav_elements = group_element.find_all('ul', class_=lambda x: x and 'os-tab-nav' in x and 'category-tabs' in x)
-        
-        for nav in nav_elements:
-            # 检查是否隐藏在小屏幕（只统计桌面版本的tab）
-            nav_classes = nav.get('class', [])
-            if 'hidden-xs' in nav_classes and 'hidden-sm' in nav_classes:
-                # 这是桌面版本，查找其中的选项
-                links = nav.find_all('a')
-                for link in links:
-                    href = link.get('data-href', '')
-                    link_id = link.get('id', '')
-                    label = link.get_text(" ", strip=True)
-                    
-                    if href and label:
-                        target_id = href.removeprefix("#")
-                        category_tabs.append({
-                            "href": href,
-                            "id": link_id,
-                            "label": label,
-                            "target_exists": group_element.find(
-                                id=target_id
-                            ) is not None,
-                            "selected": bool(
-                                link.find_parent("li")
-                                and {
-                                    "active",
-                                    "selected",
-                                    "selected-item",
-                                }.intersection(
-                                    link.find_parent("li").get("class", [])
-                                )
-                            ),
-                        })
-
-        selected_options = group_element.select(
-            "select.category-tabs option[selected]"
+        # 移动端 select 不参与 Category 集合或默认项验证。
+        nav_elements = group_element.select(
+            "ul.os-tab-nav.category-tabs.hidden-xs.hidden-sm"
         )
-        selected_hrefs = {
-            str(option.get("data-href", "")).strip()
-            for option in selected_options
-            if str(option.get("data-href", "")).strip()
-        }
-        selected_tabs = [
-            tab
-            for tab in category_tabs
-            if tab.pop("selected", False) or tab["href"] in selected_hrefs
-        ]
-        if len(selected_tabs) > 1:
-            raise ValueError("Category tabs declare more than one default")
+        if len(nav_elements) > 1:
+            raise ValueError("Software 面板包含多个桌面端 Category 导航。")
+        if nav_elements:
+            for link in nav_elements[0].select("li a[data-href]"):
+                href = str(link.get("data-href", "")).strip()
+                link_id = str(link.get("id", "")).strip()
+                label = " ".join(link.get_text(" ", strip=True).split())
+                if not href.startswith("#") or not href.removeprefix("#") or not label:
+                    raise ValueError("Category 桌面端选项缺少目标或名称。")
+                target_id = href.removeprefix("#")
+                parent = link.find_parent("li")
+                category_tabs.append({
+                    "href": href,
+                    "id": link_id,
+                    "label": label,
+                    "target_exists": group_element.find(
+                        id=target_id
+                    ) is not None,
+                    "desktop_default": bool(
+                        parent is not None
+                        and {
+                            "active",
+                            "selected",
+                            "selected-item",
+                        }.intersection(parent.get("class", []))
+                    ),
+                })
 
-        default_href = selected_tabs[0]["href"] if selected_tabs else None
-        if default_href is None:
-            selected_item = group_element.select_one(
-                ".category-container .selected-item"
-            )
-            selected_label = (
-                selected_item.get_text(" ", strip=True) if selected_item else ""
-            )
-            matches = [
+        hrefs = [tab["href"] for tab in category_tabs]
+        labels = [tab["label"] for tab in category_tabs]
+        if len(hrefs) != len(set(hrefs)):
+            raise ValueError("Category 桌面端选项包含重复 target。")
+        if len(labels) != len(set(labels)):
+            raise ValueError("Category 桌面端选项包含重复名称。")
+
+        desktop_defaults = [
+            tab["href"]
+            for tab in category_tabs
+            if tab.pop("desktop_default", False)
+        ]
+        selected_item = group_element.select_one(
+            ".category-container span.selected-item"
+        )
+        selected_label = (
+            " ".join(selected_item.get_text(" ", strip=True).split())
+            if selected_item is not None
+            else ""
+        )
+        # A unique desktop state marker outranks a possibly stale summary.
+        distinct_defaults = list(dict.fromkeys(desktop_defaults))
+        if len(distinct_defaults) == 1:
+            default_href = distinct_defaults[0]
+        elif not distinct_defaults and len(category_tabs) == 1:
+            default_href = category_tabs[0]["href"]
+        elif category_tabs:
+            summary_matches = [
                 tab["href"]
                 for tab in category_tabs
                 if selected_label and tab["label"] == selected_label
             ]
-            if len(matches) == 1:
-                default_href = matches[0]
+            if len(summary_matches) != 1:
+                raise ValueError("Category 当前项摘要无法唯一对应桌面端选项。")
+            default_href = summary_matches[0]
+            if distinct_defaults and default_href not in distinct_defaults:
+                raise ValueError("Category 桌面端声明了多个无法消歧的默认项。")
+        else:
+            default_href = None
 
         if category_tabs and default_href is None:
-            raise ValueError("Category tab source does not establish a default")
+            raise ValueError("Category 桌面端没有建立唯一默认项。")
+        if not category_tabs:
+            return []
         default_index = next(
             (
                 index
