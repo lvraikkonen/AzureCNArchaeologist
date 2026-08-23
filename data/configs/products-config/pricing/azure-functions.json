@@ -21,6 +21,9 @@
     }
   },
   "extraction": {
-    "semantic_strategy": "region_filter"
+    "semantic_strategy": "region_filter",
+    "page_global_content": {
+      "source_boundary": "after_final_formal_selector_before_common_sections"
+    }
   }
 }

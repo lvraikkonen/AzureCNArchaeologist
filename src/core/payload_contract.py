@@ -75,6 +75,7 @@ def validate_pricing_payload(
     payload: dict[str, Any],
     *,
     product_key: str,
+    expected_slug: str | None = None,
     language: str,
     semantic_strategy: str,
     payload_contract_version: str = CURRENT_PAYLOAD_CONTRACT_VERSION,
@@ -97,9 +98,10 @@ def validate_pricing_payload(
             raise PayloadContractError(f"Payload.{field} 必须是文本。")
     if not payload["title"].strip():
         raise PayloadContractError("Payload.title 不能为空。")
-    if payload["slug"] != product_key:
+    required_slug = expected_slug if expected_slug is not None else product_key
+    if payload["slug"] != required_slug:
         raise PayloadContractError(
-            f"Payload.slug 应为 {product_key}，实际为 {payload['slug']}。"
+            f"Payload.slug 应为 {required_slug}，实际为 {payload['slug']}。"
         )
     if payload["language"] != language:
         raise PayloadContractError(
@@ -164,12 +166,14 @@ def validate_simple_pricing_payload(
     payload: dict[str, Any],
     *,
     product_key: str,
+    expected_slug: str | None = None,
     language: str,
     payload_contract_version: str = CURRENT_PAYLOAD_CONTRACT_VERSION,
 ) -> None:
     validate_pricing_payload(
         payload,
         product_key=product_key,
+        expected_slug=expected_slug,
         language=language,
         semantic_strategy="simple_static",
         payload_contract_version=payload_contract_version,

@@ -5504,14 +5504,12 @@
     "os": "spring-cloud",
     "region": "east-china2",
     "tableIDs": [
-      "#qqqqq"
     ]
   },
   {
     "os": "spring-cloud",
     "region": "north-china2",
     "tableIDs": [
-      "#qqqqq",
       "#springcloud-standard-north3"
     ]
   },

@@ -687,6 +687,7 @@ def _independent_qa_role(
         phrase in headings or phrase in text
         for phrase in (
             "支持和服务级别协议",
+            "支持和 sla",
             "support & sla",
             "support and sla",
             "service level agreement",

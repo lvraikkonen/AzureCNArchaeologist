@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=2.0" name="viewport"/>
+  <meta content="Azure, 微软云, 网络, 虚拟网络, Azure VPN 网关, Azure VPN Gateway, 虚拟专用网络, 点到站点, VPN, IP 地址, DNS, Ipsec, ExpressRoute" name="keywords"/>
+  <meta content="了解 Azure VPN 网关（Azure VPN Gateway）的价格详情，VPN 网关可以将基础结构连接到云。设置虚拟网络是免费的。VPN 网关提供基本、标准和高性能 VPN 或 ExpressRoute 网关的不同定价。1元试用即获1500元人民币的服务使用额度，也可直接购买成为 Azure 预付费客户，尽享最高 99.99% 的服务级别协议。" name="description"/>
+  <title>
+   VPN网关定价 - Azure云计算
+  </title>
+  <link href="../../../Static/Favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+  <link href="../../../Static/Favicon/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+  <link href="../../../Static/Favicon/favicon.ico" rel="icon" type="image/x-icon"/>
+  <link href="../../../Static/Favicon/manifest.json" rel="manifest"/>
+  <link color="#0078D4" href="../../../Static/Favicon/safari-pinned-tab.svg" rel="mask-icon"/>
+  <meta content="/Static/Favicon/browserconfig.xml" name="msapplication-config"/>
+  <meta content="#ffffff" name="theme-color"/>
+  <link href="https://azure.microsoft.com/pricing/details/vpn-gateway/" rel="canonical"/>
+  <!-- BEGIN: Azure UI Style -->
+  <link href="../../../Static/CSS/azureui.min.css" rel="stylesheet"/>
+  <link href="../../../Static/CSS/common.min.css" rel="stylesheet"/>
+  <!-- END: Azure UI Style -->
+  <!-- BEGIN: Page Style -->
+  <!-- END: Page Style -->
+  <!-- BEGIN: Minified Page Style -->
+  <link href="../../../Static/CSS/a05a0e4e99489d7b3cb548e24414e01adf779d77.css" rel="stylesheet"/>
+  <!-- END: Minified Page Style -->
+  <link href="../../../StaticService/css/service.min.css" rel="stylesheet"/>
+ </head>
+ <body class="zh-cn">
+  <script>
+   window.requireUrlArgs = "2019/6/24 6:51:27";
+        window.currentLocale = "zh-CN";        
+        window.headerTimestamp = "2019/1/23 8:25:24";
+        window.footerTimestamp = "2019/1/8 8:07:06";
+        window.locFileTimestamp = "2018/11/29 7:49:17";
+
+        window.AcnHeaderFooter = {
+            IsEnableQrCode: true,
+            CurrentLang: window.currentLocale.toLowerCase(),
+        };
+  </script>
+  <style>
+   @media (min-width: 0) {
+            .acn-header-placeholder {
+                height: 48px; 
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 980px) {
+            .acn-header-placeholder {
+                height: 89px; 
+                width: 100%;
+            }
+        }
+
+        .acn-header-placeholder {
+            background-color: #1A1A1A;
+        }
+
+        .acn-header-service{
+            position: absolute; 
+            top: 0;
+            width: 100%;
+        }
+  </style>
+  <div class="acn-header-container">
+   <div class="acn-header-placeholder">
+   </div>
+   <div class="public_headerpage">
+   </div>
+  </div>
+  <!-- BEGIN: Documentation Content -->
+  <div class="content">
+   <div class="container">
+    <div class="row">
+     <div class="col-md-12">
+      <div class="bread-crumb hidden-sm hidden-xs">
+       <ul>
+        <li>
+         <span>
+         </span>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+    <div class="single-page">
+     <div class="row">
+      <div class="col-md-2">
+       <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+        <div class="loader">
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+         <i class="circle">
+         </i>
+        </div>
+       </div>
+      </div>
+      <div class="col-md-10 pure-content">
+       <div class="select left-navigation-select hidden-md hidden-lg">
+        <select>
+         <option selected="selected">
+          加载中...
+         </option>
+        </select>
+        <span class="icon icon-arrow-top">
+        </span>
+       </div>
+       <tags ms.date="09/30/2015" ms.service="vpn-gateway" wacn.date="11/27/2015">
+       </tags>
+       <style type="text/css">
+        .pricing-detail-tab .tab-nav {
+                    padding-left: 0 !important;
+                    margin-top: 5px;
+                    margin-bottom: 0;
+                    overflow: hidden;
+                }
+
+                .pricing-detail-tab .tab-nav li {
+                    list-style: none;
+                    float: left;
+                }
+
+                .pricing-detail-tab .tab-nav li.active a {
+                    border-bottom: 4px solid #00a3d9;
+                }
+
+                .pricing-detail-tab .tab-nav li.active a:hover {
+                    border-bottom: 4px solid #00a3d9;
+                }
+
+                .pricing-detail-tab .tab-content .tab-panel {
+                    display: none;
+                }
+
+                .pricing-detail-tab .tab-content .tab-panel.show-md {
+                    display: block;
+                }
+
+                .pricing-detail-tab .tab-content .tab-panel .tab-nav li a {
+                    padding-left: 5px;
+                    padding-right: 5px;
+                    color: #00a3d9;
+                    background-color: #FFF;
+                }
+
+                .pricing-detail-tab .tab-content .tab-panel .tab-nav li.active a {
+                    color: #FFF;
+                    background-color: #00a3d9;
+                }
+
+                .pricing-detail-tab .tab-content .tab-panel .tab-nav li a:hover {
+                    color: #FFF;
+                    background-color: #00a3d9;
+                }
+
+                .pure-content .technical-azure-selector p a,
+                .pure-content .technical-azure-selector table a {
+                    background: 0 0;
+                    padding: 0;
+                    margin: 0 6px;
+                    height: 21px;
+                    line-height: 22px;
+                    font-size: 14px;
+                    color: #00a3d9;
+                    float: none;
+                    display: inline;
+                }
+
+                .svg {
+                    width: 50px;
+                    float: left;
+                    margin-right: 10px;
+                }
+
+                .sub_list {
+                    overflow: hidden;
+                    background: #f4f5f6;
+                    padding: 20px 0;
+                }
+
+                .sub_list > li {
+                    display: block;
+                    list-style: none;
+                    float: left;
+                    width: 50%;
+                }
+       </style>
+       <!-- BEGIN: Product-Detail-TopBanner -->
+       <div class="common-banner col-top-banner" data-config="{'backgroundColor':'#e3f4ff', 'backgroundImage':'/Images/marketing-resource/css/vpn-gateway.png','imageHeight':'auto'}">
+        <div class="common-banner-image">
+         <div class="common-banner-title">
+          <img src="/Images/marketing-resource/css/vpn-gateway@2x.png"/>
+          <h2>
+           VPN 网关
+           <span>
+            VPN Gateway
+           </span>
+          </h2>
+          <h4>
+           创建安全的跨界连接
+          </h4>
+         </div>
+        </div>
+       </div>
+       <!-- END: Product-Detail-TopBanner -->
+       <div class="pricing-page-section">
+        <p>
+         通过 Azure VPN 网关，你可以在 Azure 和本地 IT 基础结构内的虚拟网络之间创建安全的跨界连接。
+        </p>
+        <h2>
+         定价详细信息
+        </h2>
+       </div>
+       <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
+        <div class="tab-container-container">
+         <div class="tab-container-box">
+          <div class="tab-container">
+           <div class="dropdown-container software-kind-container" style="display:none;">
+            <label>
+             OS/Software:
+            </label>
+            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+             <span class="selected-item">
+              VPN Gateway
+             </span>
+             <i class="icon">
+             </i>
+             <ol class="tab-items">
+              <li class="active">
+               <a data-href="#tabContent1" href="javascript:void(0)" id="home VPN Gateway">
+                VPN Gateway
+               </a>
+              </li>
+             </ol>
+            </div>
+            <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
+             <option data-href="#tabContent1" selected="selected" value="VPN Gateway">
+              VPN Gateway
+             </option>
+            </select>
+           </div>
+           <div class="dropdown-container region-container">
+            <label>
+             地区:
+            </label>
+            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+             <span class="selected-item">
+              中国北部 3
+             </span>
+             <i class="icon">
+             </i>
+             <ol class="tab-items">
+              <!-- id 对应 soft-category 的 region -->
+              <li class="active">
+               <a data-href="#north-china3" href="javascript:void(0)" id="north-china3">
+                中国北部 3
+               </a>
+              </li>
+              <li>
+               <a data-href="#east-china2" href="javascript:void(0)" id="east-china2">
+                中国东部 2
+               </a>
+              </li>
+              <li>
+               <a data-href="#north-china2" href="javascript:void(0)" id="north-china2">
+                中国北部 2
+               </a>
+              </li>
+              <li>
+               <a data-href="#east-china" href="javascript:void(0)" id="east-china">
+                中国东部
+               </a>
+              </li>
+              <li>
+               <a data-href="#north-china" href="javascript:void(0)" id="north-china">
+                中国北部
+               </a>
+              </li>
+             </ol>
+            </div>
+            <select class="dropdown-select region-box hidden-lg hidden-md" id="region-box">
+             <option data-href="#north-china3" selected="selected" value="north-china3">
+              中国北部 3
+             </option>
+             <option data-href="#east-china2" value="east-china2">
+              中国东部 2
+             </option>
+             <option data-href="#north-china2" value="north-china2">
+              中国北部 2
+             </option>
+             <option data-href="#east-china" value="east-china">
+              中国东部
+             </option>
+             <option data-href="#north-china" value="north-china">
+              中国北部
+             </option>
+            </select>
+           </div>
+           <div class="clearfix">
+           </div>
+          </div>
+         </div>
+        </div>
+        <!-- BEGIN: TAB-CONTAINER-1 -->
+        <div class="tab-content">
+         <!-- BEGIN: TAB-CONTENT-1 -->
+         <div class="tab-content" id="tabContent1">
+          <div>
+           <h3>
+            VPN 网关
+           </h3>
+           <p>
+            设置虚拟网络是免费的。但是，我们会对连接到本地和 Azure 中其他虚拟网络的 VPN 网关收费。此费用基于设置和提供网关的时间量。
+           </p>
+           <!-- <div class="tags-date">
+            <div class="ms-date">
+             *以下价格均为含税价格。
+            </div>
+            <br/>
+            <div class="ms-date">
+             *每月价格估算基于每个月 744 小时的使用量。
+            </div>
+           </div> -->
+<!--            <table cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+             <th align="left">
+              <strong>
+               VPN 网关类型
+              </strong>
+             </th>
+             <th align="left">
+              <strong>
+               每小时价格
+              </strong>
+             </th>
+             <th align="left">
+              <strong>
+               带宽
+              </strong>
+             </th>
+             <th align="left">
+              <strong>
+               S2S 隧道
+              </strong>
+             </th>
+             <th align="left">
+              <strong>
+               P2S 隧道
+              </strong>
+             </th>
+            </tr>
+            <tr>
+             <td>
+              基本
+             </td>
+             <td>
+              ￥0.25 每个网关/小时（约￥186.00 /月）
+             </td>
+             <td>
+              100 Mbp
+             </td>
+             <td>
+              最多 101-10：内附
+             </td>
+             <td>
+              最多 1281-128：内附
+             </td>
+            </tr>
+            <tr>
+             <td>
+              VpnGw1
+             </td>
+             <td>
+              ￥1.1914 每个网关/小时（约￥885.4016 /月）
+             </td>
+             <td>
+              650 Mbp
+             </td>
+             <td>
+              最多 301-10：内附11-30: ￥0.0945/小时每隧道
+             </td>
+             <td>
+              最多 2501-128：内附
+              <br/>
+              129-250：￥0.0636/小时每隧道
+             </td>
+            </tr>
+            <tr>
+             <td>
+              VpnGw2
+             </td>
+             <td>
+              ￥3.1276 每个网关/小时（约￥2,326.9344 /月）
+             </td>
+             <td>
+              1 Gbps
+             </td>
+             <td>
+              最多 301-10：内附11-30: ￥0.0945/小时每隧道
+             </td>
+             <td>
+              最多 5001-128：内附
+              <br/>
+              129-500：￥0.0636/小时每隧道
+             </td>
+            </tr>
+            <tr>
+             <td>
+              VpnGw3
+             </td>
+             <td>
+              ￥7.95 每个网关/小时（约￥5,914.8 /月）
+             </td>
+             <td>
+              1.25 Gbps
+             </td>
+             <td>
+              最多 301-10：内附11-30: ￥0.0945/小时每隧道
+             </td>
+             <td>
+              最多 10001-128：内附
+              <br/>
+              129-1000：￥0.0636/小时每隧道
+             </td>
+            </tr>
+            <tr>
+             <td>
+              VpnGw4
+             </td>
+             <td>
+              ￥21.37 每个网关/小时（约￥15,899.28 /月）
+             </td>
+             <td>
+              5 Gbps
+             </td>
+             <td>
+              最多 1001-10：内附11-100: ￥0.0945/小时每隧道
+             </td>
+             <td>
+              最多 50001-128：内附
+              <br/>
+              129-5000：￥0.0636/小时每隧道
+             </td>
+            </tr>
+            <tr>
+             <td>
+              VpnGw5
+             </td>
+             <td>
+              ￥37.142 每个网关/小时（约￥27,633.65 /月）
+             </td>
+             <td>
+              10 Gbps
+             </td>
+             <td>
+              最多 1001-10：内附11-100: ￥0.0945/小时每隧道
+             </td>
+             <td>
+              最多 100001-128：内附
+              <br/>
+              129-10000：￥0.0636/小时每隧道
+             </td>
+            </tr>
+           </table> -->
+           <!-- BEGIN: Table2-Content-->
+           <h3>
+            入站虚拟网络间数据传输
+           </h3>
+           <p>
+            数据传入发生在同一区域内的两个虚拟网络之间：免费
+           </p>
+           <p>
+            数据传入发生在两个不同区域（中国东部数据中心 , 中国北部数据中心）内的虚拟网络之间：免费
+           </p>
+           <!-- END: Table2-Content-->
+           <!-- BEGIN: Table3-Content-->
+           <h3>
+            出站虚拟网络间数据传输
+           </h3>
+           <p>
+            数据传出发生在同一区域内的两个虚拟网络之间：免费
+           </p>
+           <p>
+            数据传出发生在两个不同区域（中国东部数据中心 , 中国北部数据中心）内的虚拟网络之间：￥0.16 /GB
+           </p>
+           <!-- END: Table3-Content-->
+           <!-- BEGIN: Table4-Content-->
+           <h3>
+            出站 P2S（点到站点）VPN 数据传输
+           </h3>
+           <p>
+            （也即，数据通过 P2S VPN 离开 Azure 虚拟网络）：
+           </p>
+           <p>
+            通过 P2S VPN 传输出 Azure 虚拟网络的数据将以标准
+            <a href="../data-transfer/index.html" id="Virtual_Network_price_sjcs1" style="color: #00a8d9;" target="_blank">
+             数据传输
+            </a>
+            费率收费。
+           </p>
+          </div>
+          <div>
+           <h3>
+            VPN 网关 - 可用性区域
+           </h3>
+           <p>
+            如同所有 Azure 服务一样，我们不断地创新、升级和优化虚拟网络网关，以便进一步提高可靠性和可用性。通过添加对
+            <a href="https://learn.microsoft.com/zh-cn/azure/reliability/availability-zones-overview" target="_blank">
+             Azure 可用性区域
+            </a>
+            的支持，我们提高了虚拟网络网关的复原能力、可缩放性和可用性。可通过使用新的区域冗余网关 SKU，在 Azure 可用性区域中部署 VPN 网关和 ExpressRoute 网关。这在物理上和逻辑上将它们分成不同的可用性区域，从而保护本地网络与 Azure 的连接免受区域级故障的影响。区域冗余网关的带宽阈值保持不变。
+           </p>
+           <table cellpadding="0" cellspacing="0" id="VPN_Gateway_table_Availability_Zones" width="100%">
+            <tr>
+             <th align="left">
+              <strong>
+               VPN 网关类型
+              </strong>
+             </th>
+             <th align="left">
+              <strong>
+               价格
+              </strong>
+             </th>
+             <th align="left">
+              <strong>
+               带宽
+              </strong>
+             </th>
+             <th align="left">
+              <strong>
+               S2S 隧道
+              </strong>
+             </th>
+             <th align="left">
+              <strong>
+               P2S 隧道
+              </strong>
+             </th>
+            </tr>
+            <tr>
+             <td rowspan="3">
+              VpnGw1AZ
+             </td>
+             <td rowspan="3">
+              1.34/小时
+             </td>
+             <td rowspan="3">
+              650 Mbps
+             </td>
+             <td>
+              最多 30
+             </td>
+             <td>
+              最多 250
+             </td>
+            </tr>
+            <tr>
+             <td>
+              1-10：内附
+             </td>
+             <td>
+              1-128：包含
+             </td>
+            </tr>
+            <tr>
+             <td>
+              11-30: ￥0.0945/小时每隧道
+             </td>
+             <td>
+             </td>
+            </tr>
+            <tr>
+             <td rowspan="3">
+              VpnGw2AZ
+             </td>
+             <td rowspan="3">
+              3.43/小时
+             </td>
+             <td rowspan="3">
+              1 Gbps
+             </td>
+             <td>
+              最多 30
+             </td>
+             <td>
+              最多 500
+             </td>
+            </tr>
+            <tr>
+             <td>
+              1-10：内附
+             </td>
+             <td>
+              1-128：包含
+             </td>
+            </tr>
+            <tr>
+             <td>
+              11-30: ￥0.0945/小时每隧道
+             </td>
+             <td>
+             </td>
+            </tr>
+            <tr>
+             <td rowspan="3">
+              VpnGw3AZ
+             </td>
+             <td rowspan="3">
+              8.78/小时
+             </td>
+             <td rowspan="3">
+              1.25 Gbps
+             </td>
+             <td>
+              最多 30
+             </td>
+             <td>
+              最多 1000
+             </td>
+            </tr>
+            <tr>
+             <td>
+              1-10：内附
+             </td>
+             <td>
+              1-128：包含
+             </td>
+            </tr>
+            <tr>
+             <td>
+              11-30: ￥0.0945/小时每隧道
+             </td>
+             <td>
+             </td>
+            </tr>
+            <tr>
+             <td rowspan="3">
+              VpnGw4AZ
+             </td>
+             <td rowspan="3">
+              14.69/小时
+             </td>
+             <td rowspan="3">
+              5 Gbps
+             </td>
+             <td>
+              最多 100
+             </td>
+             <td>
+              最多 5000
+             </td>
+            </tr>
+            <tr>
+             <td>
+              1-10：内附
+             </td>
+             <td>
+              1-128：包含
+             </td>
+            </tr>
+            <tr>
+             <td>
+              11-100: ￥0.0945/小时每隧道
+             </td>
+             <td>
+             </td>
+            </tr>
+            <tr>
+             <td rowspan="3">
+              VpnGw5AZ
+             </td>
+             <td rowspan="3">
+              25.57/小时
+             </td>
+             <td rowspan="3">
+              10 Gbps
+             </td>
+             <td>
+              最多 100
+             </td>
+             <td>
+              最多 10000
+             </td>
+            </tr>
+            <tr>
+             <td>
+              1-10：内附
+             </td>
+             <td>
+              1-128：包含
+             </td>
+            </tr>
+            <tr>
+             <td>
+              11-100: ￥0.0945/小时每隧道
+             </td>
+             <td>
+             </td>
+            </tr>
+           </table>
+           <div class="tags-date">
+            <div class="ms-date">
+             * VpnGw1AZ、VpnGw2AZ、VpnGw3AZ、VpnGw4AZ 和 VpnGw5AZ 是 VpnGw1、VpnGw2、VpnGw3、VpnGw4 和 VpnGw5 的区域复原版本。
+            </div>
+            <br/>
+            <div class="ms-date">
+             每月价格评估基于每个月 744 小时的使用量。
+            </div>
+           </div>
+          </div>
+         </div>
+         <!-- END: TAB-CONTENT-3 -->
+        </div>
+        <!-- END: TAB-CONTAINER-1 -->
+       </div>
+       <div class="pricing-page-section">
+        <div class="more-detail">
+         <h2>
+          常见问题
+         </h2>
+         <em>
+          全部展开
+         </em>
+         <ul>
+          <li>
+           <i class="icon icon-plus">
+           </i>
+           <div>
+            <a id="Virtual_Network_less-hour">
+             是否不足 1 小时按 1 小时计费？
+            </a>
+            <section>
+             <p>
+              可以。不足 1 小时按 1 小时计费。
+             </p>
+            </section>
+           </div>
+          </li>
+          <li>
+           <i class="icon icon-plus">
+           </i>
+           <div>
+            <a id="Virtual_Network_vpn-connection">
+             VPN 连接上的数据传输是否单独收费？
+            </a>
+            <section>
+             <p>
+              可以。在两个虚拟网络之间进行的数据传输按上面列出的虚拟网络间费率收费。与你的本地站点或普通 Internet 站点之间通过 VPN 连接进行的其他数据传输按正常的
+              <a href="../data-transfer/index.html" id="Virtual_Network_price_sjcs2" style="color: #00a8d9;" target="_blank">
+               数据传输
+              </a>
+              费率单独收费。
+             </p>
+            </section>
+           </div>
+          </li>
+          <li>
+           <i class="icon icon-plus">
+           </i>
+           <div>
+            <a id="Virtual_Network_data-transmission">
+             虚拟网络间的数据传输是根据源区域还是目标区域的费率收费？
+            </a>
+            <section>
+             <p>
+              与标准的数据传输收费模式类似，虚拟网络间的数据传输根据源区域的费率收费。
+             </p>
+            </section>
+           </div>
+          </li>
+          <li>
+           <i class="icon icon-plus">
+           </i>
+           <div>
+            <a id="Virtual_Network_same-area">
+             位于同一区域中的虚拟网络之间的数据传输是否会收费？
+            </a>
+            <section>
+             <p>
+              不会。仅对两个不同区域间的数据传输收费，除了 P2S VPN。
+             </p>
+            </section>
+           </div>
+          </li>
+          <li>
+           <i class="icon icon-plus">
+           </i>
+           <div>
+            <a id="Virtual_Network_vpn-tunnel">
+             VPN 网关可以支持多少个站点到站点 VPN 隧道？
+            </a>
+            <section>
+             <p>
+              静态路由 VPN 网关：1
+             </p>
+             <p>
+              动态路由 VPN 网关：10
+             </p>
+             <p>
+              高性能 VPN 网关：30
+             </p>
+            </section>
+           </div>
+          </li>
+         </ul>
+        </div>
+       </div>
+       <div class="pricing-page-section">
+        <h2>
+         支持和服务级别协议
+        </h2>
+        <p>
+         如有任何疑问或需要帮助，请访问
+         <a href="https://support.azure.cn/zh-cn/support/contact" id="vpn-contact-page">
+          Azure 支持
+         </a>
+         选择自助服务或者其他任何方式联系我们获得支持。
+        </p>
+        <p>
+         我们保证每个 VPN 或 ExpressRoute 的基本网关均具有 99.9% 的可用性。 我们保证每个 VPN 或 ExpressRoute 的标准网关均具有 99.95% 的可用性。 我们保证每个 VPN 或 ExpressRoute 的高性能网关均具有 99.95% 的可用性。若要了解有关我们的服务器级别协议的详细信息，请访问
+         <a href="../../../support/sla/vpn-gateway/index.html" id="vpn_authentication_sla">
+          服务级别协议
+         </a>
+         页。
+        </p>
+       </div>
+       <!--BEGIN: Support and service code chunk-->
+       <!--
+
+            <h2>支持和服务级别协议</h2>
+            <p>Azure 支持功能：</p>
+            <p>我们免费向用户提供以下支持服务：</p>
+            <table cellpadding="0" cellspacing="0" class="table-col6">
+                <tr>
+                    <th align="left">&nbsp;</th>
+                    <th align="left"><strong>是否支持</strong></th>
+                </tr>
+                <tr>
+                    <td>计费和订阅管理</td>
+                    <td><i class="icon icon-tick"></i></td>
+                </tr>
+                <tr>
+                    <td>服务仪表板</td>
+                    <td><i class="icon icon-tick"></i></td>
+                </tr>
+                <tr>
+                    <td>Web事件提交</td>
+                    <td><i class="icon icon-tick"></i></td>
+                </tr>
+                <tr>
+                    <td>中断/修复不受限制</td>
+                    <td><i class="icon icon-tick"></i></td>
+                </tr>
+                <tr>
+                    <td>电话支持</td>
+                    <td><i class="icon icon-tick"></i></td>
+                </tr>
+                <tr>
+                    <td>ICP备案支持</td>
+                    <td><i class="icon icon-tick"></i></td>
+                </tr>
+            </table>
+            <p>您可以<a href="/support/support-ticket-form/?l=zh-cn" id="vm-sla-sup">在线申请支持</a>，也可以通过服务热线联系我们。</p>
+            <h2>服务热线：</h2>
+            <ul>
+                <li>400-089-0365</li>
+                <li>010-84563652</li>
+            </ul>
+            <p>社区帮助：<a href="https://social.msdn.microsoft.com/Forums/zh-cn/home?forum=windowsazurezhchs" id="pricing_vm_help">访问MSDN</a></p>
+            <p>更多支持信息，请访问<a href="/support/plans/" id="stor-sla-info">Azure 支持计划</a></p>
+              
+      -->
+       <!--END: Support and service code chunk-->
+       <!--BEGIN: Support and service code chunk-->
+       <!--END: Support and service code chunk-->
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- END: Documentation Content -->
+  <!-- BEGIN: Footer -->
+  <div class="public_footerpage">
+  </div>
+  <!--END: Common sidebar-->
+  <link href="../../../Static/CSS/Localization/zh-cn.css" rel="stylesheet"/>
+  <script src="/Static/Scripts/lib/jquery-1.12.3.min.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   function getAntiForgeryToken() {
+        var token = '<input name="__RequestVerificationToken" type="hidden" value="fJH501NPORMdtta1zJPga6VjM1ig_a_6YEr2T3-K8pcBkegj_rGB1z9DyVf_GIixZy-eItzQuuaLzQ4_0H2RFA3MGrnmU7qnukfHQ3ybQUg1" />';
+        token = $(token).val();
+        return token;
+    }
+
+    function setLocaleCookie(localeVal) {
+        var Days = 365 * 10; // Ten year expiration
+        var exp = new Date();
+
+        var hostName = window.location.hostname;
+        var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+        exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+        document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain + "; path=/;expires=" + exp.toGMTString();
+    }
+
+    setLocaleCookie(window.currentLocale);
+  </script>
+  <script type="text/javascript">
+   var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+    var TECHNICAL_STORAGE = '/blob/tech-content/';
+    var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+    var EnablePricingSync = 'false';
+  </script>
+  <!-- BEGIN: Minified RequireJs -->
+  <script src="/Static/Scripts/global.config.js" type="text/javascript">
+  </script>
+  <script src="/Static/Scripts/require.js" type="text/javascript">
+  </script>
+  <script src="/Static/Scripts/pricing-page-detail.js" type="text/javascript">
+  </script>
+  <!-- END: Minified RequireJs -->
+  <!-- begin JSLL -->
+  <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js">
+  </script>
+  <script type="text/javascript">
+   (function () {
+        var config = {
+            cookiesToCollect: ["_mkto_trk"],
+            syncMuid: true,
+            ix: {
+                a: true,
+                g: true
+            },
+            coreData: {
+                appId: 'AzureCN',
+                market: 'zh-cn',
+            }
+        };
+        awa.init(config);
+    })();
+  </script>
+  <!-- end JSLL -->
+  <script src="/Static/Scripts/plugins/cookie/jquery.cookie.js" type="text/javascript">
+  </script>
+  <script src="/Static/Scripts/wacndatatracker.js" type="text/javascript">
+  </script>
+  <script src="/common/useCommon.js" type="text/javascript">
+  </script>
+ </body>
+</html>

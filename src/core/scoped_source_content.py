@@ -252,6 +252,7 @@ def is_common_section_boundary(node: Tag) -> bool:
             "faq",
             "frequently asked questions",
             "支持和服务级别协议",
+            "支持和 sla",
             "support & sla",
             "support and sla",
             "service level agreement",

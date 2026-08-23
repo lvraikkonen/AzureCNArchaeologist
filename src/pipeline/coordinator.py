@@ -1237,6 +1237,7 @@ def _validate_persisted_payload(
         validate_pricing_payload(
             payload,
             product_key=item.product_key,
+            expected_slug=definition.slug,
             language=item.language,
             semantic_strategy=item.semantic_strategy,
         )

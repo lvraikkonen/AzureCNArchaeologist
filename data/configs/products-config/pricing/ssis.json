@@ -2,7 +2,7 @@
   "schema_version": "1.1",
   "product_key": "ssis",
   "display_name": "SQL Server Integration Services",
-  "slug": "ssis",
+  "slug": "data-factory_ssis",
   "page_model": "FlexibleContentPage",
   "capability_status": "supported",
   "catalog_categories": [

@@ -55,6 +55,19 @@ def test_strategy_factory_exposes_exactly_the_four_copied_core_strategies() -> N
     }
 
 
+def test_pricing_contract_accepts_product_definition_slug_for_nested_url() -> None:
+    payload = product_payload("api-management")
+    payload["slug"] = "data-factory_data-pipeline"
+
+    validate_pricing_payload(
+        payload,
+        product_key="data-pipeline",
+        expected_slug="data-factory_data-pipeline",
+        language="zh-cn",
+        semantic_strategy="region_filter",
+    )
+
+
 def test_api_management_bilingual_region_states_are_complete_and_deterministic() -> None:
     for language in ("zh-cn", "en-us"):
         first = product_payload("api-management", language)

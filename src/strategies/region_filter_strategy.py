@@ -12,7 +12,10 @@ from typing import Dict, List, Any
 from bs4 import BeautifulSoup
 
 from src.strategies.base_strategy import BaseStrategy
-from src.core.scoped_source_content import locate_formal_pricing_boundary
+from src.core.scoped_source_content import (
+    locate_formal_pricing_boundary,
+    resolve_page_global_base_content,
+)
 from src.core.region_processor import RegionProcessor
 from src.utils.content.content_extractor import ContentExtractor
 from src.utils.content.section_extractor import SectionExtractor
@@ -111,7 +114,11 @@ class RegionFilterStrategy(BaseStrategy):
         
         # 6. RegionFilter必须由完整的region状态组承载，禁止退化为Simple。
         strategy_content = {
-            "baseContent": "",
+            "baseContent": resolve_page_global_base_content(
+                soup,
+                self.product_config,
+                language=base_metadata["Language"],
+            ),
             "contentGroups": content_groups,
             "strategy_type": "region_filter",
             "filter_analysis": filter_analysis,  # 传递筛选器分析结果

@@ -24,7 +24,7 @@ Pricing Business Payload 是交给 CMS 的业务数据。它只包含页面字�
 | 2 | `metaTitle` | 源页面 Meta Title，没有时为空文本 |
 | 3 | `metaDescription` | 源页面 Meta Description |
 | 4 | `metaKeywords` | 源页面 Meta Keywords |
-| 5 | `slug` | Product Key 对应的 CMS slug |
+| 5 | `slug` | Product Definition 声明的 CMS slug；嵌套 Pricing URL 的路径段以 `_` 连接，因此可以与 Product Key 不同 |
 | 6 | `language` | `zh-cn` 或 `en-us` |
 | 7 | `baseContent` | 不随页面状态变化的定价正文 |
 | 8 | `contentGroups` | 随页面状态变化的正文；Simple 页面为空列表 |

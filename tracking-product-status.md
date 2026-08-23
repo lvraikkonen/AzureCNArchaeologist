@@ -1,6 +1,6 @@
 # 产品状态跟踪
 
-> 数据更新时间：2026-08-20（America/Los_Angeles）
+> 数据更新时间：2026-08-23（America/Los_Angeles）
 >
 > Pricing 来源：<https://www.azure.cn/pricing/>
 >
@@ -11,15 +11,17 @@
 | 项目 | 数量 |
 |---|---:|
 | pricing 页面唯一产品 URL | 105 |
-| 已验证产品 | 31（v1.0：22；Complex 修复正式扩围新增：9） |
-| 已验证 pricing 产品 | 27 |
+| 已验证产品（人工复审已批准） | 31（v1.0：22；Complex 修复正式扩围新增：9） |
+| 已验证 pricing 产品（人工复审已批准） | 27 |
 | 已验证 support article 产品 | 4 |
+| 中英文机器验证通过、Workbench 待人工审核的 pricing 产品 | 26（52/52 个语言条目通过） |
 | `data/configs/products-config/` 下 JSON 产品配置 | 211 |
 
 验证记录依据：
 
 - v1.0：[`docs/reviews/m7-support-matrix.md`](docs/reviews/m7-support-matrix.md)、[`docs/reviews/m7-v1-acceptance.md`](docs/reviews/m7-v1-acceptance.md)；
 - Complex 页面修复正式扩围：[`docs/plans/complex-fix-handoff-20260819.md`](docs/plans/complex-fix-handoff-20260819.md)、[`runs/scope-expansion-full-regression-20260820/run.json`](runs/scope-expansion-full-regression-20260820/run.json)、[`reviews/complex-fix-final-review-20260820/queue.json`](reviews/complex-fix-final-review-20260820/queue.json)、[`reviews/complex-fix-postgresql-shared-content-review-20260820/queue.json`](reviews/complex-fix-postgresql-shared-content-review-20260820/queue.json)。
+- 2026-08-23 首批更多产品扩围机器验证：25 个产品见 [`runs/expand-more-products-wave1-all-rerun-20260823/run.json`](runs/expand-more-products-wave1-all-rerun-20260823/run.json) 和 [`reviews/expand-more-products-wave1-all-rerun-review-20260823/queue.json`](reviews/expand-more-products-wave1-all-rerun-review-20260823/queue.json)；`event-hubs` 修复后补跑见 [`runs/event-hubs-source-fix-rerun-20260823/run.json`](runs/event-hubs-source-fix-rerun-20260823/run.json) 和 [`reviews/event-hubs-source-fix-rerun-review-20260823/queue.json`](reviews/event-hubs-source-fix-rerun-review-20260823/queue.json)。合计 26 个产品的中英文条目全部通过 L3a/L3b，已进入 Workbench，尚待人工审核，因此未计入“已验证产品（人工复审已批准）”。
 
 ## 1. Pricing 页面产品清单
 
@@ -55,13 +57,13 @@
 | 28 | Azure Database for MySQL | ["数据库"] | `mysql` | <https://www.azure.cn/pricing/details/mysql/index.html> | `region_filter` | 未验证 | — |
 | 29 | Azure Database for PostgreSQL | ["数据库"] | `postgresql` | <https://www.azure.cn/pricing/details/postgresql/index.html> | `complex` | Complex 修复正式扩围（13 个） | — |
 | 30 | Azure 数据工厂 | ["数据库","分析"] | `data-factory` | <https://www.azure.cn/pricing/details/data-factory/index.html> | `simple_static` | 未验证 | — |
-| 31 | SQL Server Integration Services | ["数据库","分析"] | `ssis` | <https://www.azure.cn/pricing/details/data-factory/ssis.html> | `region_filter` | 未验证 | — |
-| 32 | 数据管道 | ["数据库","分析"] | `data-factory-data-pipeline` | <https://www.azure.cn/pricing/details/data-factory/data-pipeline.html> | `complex` | 未验证 | — |
+| 31 | SQL Server Integration Services | ["数据库","分析"] | `ssis` | <https://www.azure.cn/pricing/details/data-factory/ssis.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 32 | 数据管道 | ["数据库","分析"] | `data-factory-data-pipeline` | <https://www.azure.cn/pricing/details/data-factory/data-pipeline.html> | `complex` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
 | 33 | Azure 数据资源管理器 | ["数据库"] | `data-explorer` | <https://www.azure.cn/pricing/details/data-explorer> | `region_filter` | 未验证 | — |
 | 34 | Azure SQL Edge | ["数据库"] | `sql-edge` | <https://www.azure.cn/pricing/details/sql-edge/> | `simple_static` | 未验证 | — |
-| 35 | 密钥保密库 | ["安全性"] | `key-vault` | <https://www.azure.cn/pricing/details/key-vault/index.html> | `region_filter` | 未验证 | — |
-| 36 | 应用程序网关 | ["安全性","联网"] | `application-gateway` | <https://www.azure.cn/pricing/details/application-gateway/index.html> | `region_filter` | 未验证 | — |
-| 37 | VPN 网关 | ["安全性","联网"] | `vpn-gateway` | <https://www.azure.cn/pricing/details/vpn-gateway/index.html> | `region_filter` | 未验证 | — |
+| 35 | 密钥保密库 | ["安全性"] | `key-vault` | <https://www.azure.cn/pricing/details/key-vault/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 36 | 应用程序网关 | ["安全性","联网"] | `application-gateway` | <https://www.azure.cn/pricing/details/application-gateway/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 37 | VPN 网关 | ["安全性","联网"] | `vpn-gateway` | <https://www.azure.cn/pricing/details/vpn-gateway/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
 | 38 | Microsoft Defender | ["安全性","Hybrid + Multicloud"] | `azure-defender` | <https://www.azure.cn/pricing/details/azure-defender/index.html> | `simple_static` | 未验证 | — |
 | 39 | Microsoft Sentinel | ["安全性"] | `microsoft-sentinel` | <https://www.azure.cn/pricing/details/microsoft-sentinel/index.html> | `region_filter` | 未验证 | — |
 | 40 | 服务总线 | ["集成"] | `service-bus` | <https://www.azure.cn/pricing/details/service-bus/index.html> | `simple_static` | v1.0（22 个） | — |
@@ -71,29 +73,29 @@
 | 44 | 虚拟机规模集 | ["计算"] | `virtual-machine-scale-sets` | <https://www.azure.cn/pricing/details/virtual-machine-scale-sets/index.html> | `complex` | Complex 修复正式扩围（13 个） | — |
 | 45 | 应用服务 | ["计算","移动","容器","网站"] | `app-service` | <https://www.azure.cn/pricing/details/app-service/index.html> | `complex` | Complex 修复正式扩围（13 个） | — |
 | 46 | 批处理 | ["计算","容器"] | `batch` | <https://www.azure.cn/pricing/details/batch/index.html> | `simple_static` | 未验证 | — |
-| 47 | Service Fabric | ["计算","容器"] | `service-fabric` | <https://www.azure.cn/pricing/details/service-fabric/index.html> | `simple_static` | 未验证 | — |
+| 47 | Service Fabric | ["计算","容器"] | `service-fabric` | <https://www.azure.cn/pricing/details/service-fabric/index.html> | `simple_static` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
 | 48 | 云服务 | ["计算"] | `cloud-services` | <https://www.azure.cn/pricing/details/cloud-services/index.html> | `complex` | Complex 修复正式扩围（13 个） | — |
-| 49 | Azure Functions | ["计算"] | `azure-functions` | <https://www.azure.cn/pricing/details/azure-functions/index.html> | `region_filter` | 未验证 | — |
+| 49 | Azure Functions | ["计算"] | `azure-functions` | <https://www.azure.cn/pricing/details/azure-functions/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
 | 50 | Azure 专用主机 | ["计算"] | `virtual-machines-dedicated-host` | <https://www.azure.cn/pricing/details/virtual-machines/dedicated-host/index.html> | `region_filter` | 未验证 | — |
-| 51 | Azure Spring Apps | ["计算"] | `spring-cloud` | <https://www.azure.cn/pricing/details/spring-cloud/index.html> | `region_filter` | 未验证 | — |
-| 52 | Azure HPC缓存 | ["计算"] | `hpc-cache` | <https://www.azure.cn/pricing/details/hpc-cache/index.html> | `region_filter` | 未验证 | — |
-| 53 | Azure IoT 中心 | ["物联网"] | `iot-hub` | <https://www.azure.cn/pricing/details/iot-hub/index.html> | `region_filter` | 未验证 | — |
-| 54 | Azure IoT 边缘 | ["物联网"] | `iot-edge` | <https://www.azure.cn/pricing/details/iot-edge/index.html> | `simple_static` | 未验证 | — |
-| 55 | 事件中心 | ["物联网","分析"] | `event-hubs` | <https://www.azure.cn/pricing/details/event-hubs/index.html> | `region_filter` | 未验证 | — |
-| 56 | 流分析 | ["物联网","分析"] | `stream-analytics` | <https://www.azure.cn/pricing/details/stream-analytics/index.html> | `simple_static` | 未验证 | — |
-| 57 | 逻辑应用 | ["物联网"] | `logic-apps` | <https://www.azure.cn/pricing/details/logic-apps/index.html> | `region_filter` | 未验证 | — |
-| 58 | 通知中心 | ["物联网","网站"] | `notification-hubs` | <https://www.azure.cn/pricing/details/notification-hubs/index.html> | `region_filter` | 未验证 | — |
-| 59 | Azure 时序见解 | ["物联网"] | `time-series-insights` | <https://www.azure.cn/pricing/details/time-series-insights> | `complex` | 未验证 | — |
-| 60 | Azure Active Directory B2C | ["标识"] | `active-directory-b2c` | <https://www.azure.cn/pricing/details/active-directory-b2c/index.html> | `simple_static` | 未验证 | — |
-| 61 | Microsoft Entra 域服务 (Azure AD DS) | ["标识"] | `active-directory-ds` | <https://www.azure.cn/pricing/details/active-directory-ds/index.html> | `region_filter` | 未验证 | — |
-| 62 | 多重身份验证 | ["标识"] | `multi-factor-authentication` | <https://www.azure.cn/pricing/details/multi-factor-authentication/index.html> | `simple_static` | 未验证 | — |
+| 51 | Azure Spring Apps | ["计算"] | `spring-cloud` | <https://www.azure.cn/pricing/details/spring-cloud/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 52 | Azure HPC缓存 | ["计算"] | `hpc-cache` | <https://www.azure.cn/pricing/details/hpc-cache/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 53 | Azure IoT 中心 | ["物联网"] | `iot-hub` | <https://www.azure.cn/pricing/details/iot-hub/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 54 | Azure IoT 边缘 | ["物联网"] | `iot-edge` | <https://www.azure.cn/pricing/details/iot-edge/index.html> | `simple_static` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 55 | 事件中心 | ["物联网","分析"] | `event-hubs` | <https://www.azure.cn/pricing/details/event-hubs/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 56 | 流分析 | ["物联网","分析"] | `stream-analytics` | <https://www.azure.cn/pricing/details/stream-analytics/index.html> | `simple_static` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 57 | 逻辑应用 | ["物联网"] | `logic-apps` | <https://www.azure.cn/pricing/details/logic-apps/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 58 | 通知中心 | ["物联网","网站"] | `notification-hubs` | <https://www.azure.cn/pricing/details/notification-hubs/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 59 | Azure 时序见解 | ["物联网"] | `time-series-insights` | <https://www.azure.cn/pricing/details/time-series-insights> | `complex` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 60 | Azure Active Directory B2C | ["标识"] | `active-directory-b2c` | <https://www.azure.cn/pricing/details/active-directory-b2c/index.html> | `simple_static` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 61 | Microsoft Entra 域服务 (Azure AD DS) | ["标识"] | `active-directory-ds` | <https://www.azure.cn/pricing/details/active-directory-ds/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 62 | 多重身份验证 | ["标识"] | `multi-factor-authentication` | <https://www.azure.cn/pricing/details/multi-factor-authentication/index.html> | `simple_static` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
 | 63 | Microsoft Purview | ["分析"] | `purview` | <https://www.azure.cn/pricing/details/purview/index.html> | `complex` | 未验证 | — |
 | 64 | HDInsight | ["分析"] | `hdinsight` | <https://www.azure.cn/pricing/details/hdinsight/index.html> | `region_filter` | 未验证 | — |
-| 65 | Power BI Embedded | ["分析"] | `power-bi-embedded` | <https://www.azure.cn/pricing/details/power-bi-embedded/index.html> | `region_filter` | 未验证 | — |
+| 65 | Power BI Embedded | ["分析"] | `power-bi-embedded` | <https://www.azure.cn/pricing/details/power-bi-embedded/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
 | 66 | Azure 分析服务 | ["分析"] | `analysis-services` | <https://www.azure.cn/pricing/details/analysis-services/index.html> | `region_filter` | 未验证 | — |
 | 67 | 虚拟网络 | ["联网"] | `virtual-network` | <https://www.azure.cn/pricing/details/virtual-network/index.html> | `simple_static` | 未验证 | — |
 | 68 | 负载均衡器 | ["联网"] | `load-balancer` | <https://www.azure.cn/pricing/details/load-balancer/index.html> | `simple_static` | 未验证 | — |
-| 69 | Azure Front Door | ["联网","网站"] | `frontdoor` | <https://www.azure.cn/pricing/details/frontdoor/index.html> | `simple_static` | 未验证 | — |
+| 69 | Azure Front Door | ["联网","网站"] | `frontdoor` | <https://www.azure.cn/pricing/details/frontdoor/index.html> | `simple_static` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
 | 70 | CDN 内容分发网络 | ["联网"] | `cdn` | <https://www.azure.cn/pricing/details/cdn/index.html> | `simple_static` | 未验证 | — |
 | 71 | ExpressRoute | ["联网"] | `expressroute` | <https://www.azure.cn/pricing/details/expressroute/index.html> | `simple_static` | 未验证 | — |
 | 72 | 数据传输（带宽） | ["联网"] | `data-transfer` | <https://www.azure.cn/pricing/details/data-transfer/index.html> | `simple_static` | 未验证 | — |
@@ -122,13 +124,13 @@
 | 95 | Azure Kubernetes 服务（AKS） | ["容器"] | `kubernetes-service` | <https://www.azure.cn/pricing/details/kubernetes-service/index.html> | `simple_static` | 未验证 | — |
 | 96 | 容器实例 | ["容器"] | `container-instances` | <https://www.azure.cn/pricing/details/container-instances/index.html> | `region_filter` | 未验证 | — |
 | 97 | Azure 容器应用 | ["容器"] | `container-apps` | <https://www.azure.cn/pricing/details/container-apps/> | `region_filter` | 未验证 | — |
-| 98 | Azure SignalR | ["网站"] | `signalr-service` | <https://www.azure.cn/pricing/details/signalr-service/index.html> | `region_filter` | 未验证 | — |
-| 99 | Azure Web PubSub | ["网站"] | `web-pubsub` | <https://www.azure.cn/pricing/details/web-pubsub/index.html> | `region_filter` | 未验证 | — |
-| 100 | Azure Fluid Relay | ["网站"] | `fluid-relay` | <https://www.azure.cn/pricing/details/fluid-relay/index.html> | `region_filter` | 未验证 | — |
-| 101 | 应用程序配置 | ["开发人员工具"] | `app-configuration` | <https://www.azure.cn/pricing/details/app-configuration/index.html> | `region_filter` | 未验证 | — |
+| 98 | Azure SignalR | ["网站"] | `signalr-service` | <https://www.azure.cn/pricing/details/signalr-service/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 99 | Azure Web PubSub | ["网站"] | `web-pubsub` | <https://www.azure.cn/pricing/details/web-pubsub/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 100 | Azure Fluid Relay | ["网站"] | `fluid-relay` | <https://www.azure.cn/pricing/details/fluid-relay/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
+| 101 | 应用程序配置 | ["开发人员工具"] | `app-configuration` | <https://www.azure.cn/pricing/details/app-configuration/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
 | 102 | Azure Local | ["Hybrid + Multicloud"] | `azure-stack-hci` | <https://www.azure.cn/pricing/details/azure-stack/hci/index.html> | `region_filter` | 未验证 | — |
 | 103 | Azure Stack Hub | ["Hybrid + Multicloud"] | `azure-stack-hub` | <https://www.azure.cn/pricing/details/azure-stack/hub/index.html> | `region_filter` | 未验证 | — |
-| 104 | Azure 虚拟桌面 | ["Azure 虚拟桌面"] | `virtual-desktop` | <https://www.azure.cn/pricing/details/virtual-desktop/index.html> | `region_filter` | 未验证 | — |
+| 104 | Azure 虚拟桌面 | ["Azure 虚拟桌面"] | `virtual-desktop` | <https://www.azure.cn/pricing/details/virtual-desktop/index.html> | `region_filter` | 机器验证通过，Workbench 待审（扩围 2026-08-23） | — |
 | 105 | 托管 Grafana | ["DevOps"] | `managed-grafana` | <https://www.azure.cn/pricing/details/managed-grafana/index.html> | `region_filter` | 未验证 | — |
 
 ## 2. 已验证的 31 个产品

@@ -21,9 +21,6 @@
     }
   },
   "extraction": {
-    "semantic_strategy": "simple_static",
-    "page_global_content": {
-      "source_boundary": "sole_direct_static_business_wrapper_before_common_sections"
-    }
+    "semantic_strategy": "simple_static"
   }
 }

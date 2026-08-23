@@ -816,6 +816,7 @@ def _validate_business_payload(
             validate_pricing_payload(
                 payload,
                 product_key=product_key,
+                expected_slug=definition.slug,
                 language=language,
                 semantic_strategy=semantic_strategy,
                 payload_contract_version=payload_contract_version,

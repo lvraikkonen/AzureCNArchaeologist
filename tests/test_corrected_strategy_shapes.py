@@ -161,6 +161,62 @@ def test_event_grid_simple_table_boundary_rejects_state_controls() -> None:
         )
 
 
+@pytest.mark.parametrize(
+    ("language", "heading"),
+    (("zh-cn", "详细信息"), ("en-us", "More information")),
+)
+def test_azure_functions_preserves_declared_page_global_details(
+    tmp_path: Path,
+    language: str,
+    heading: str,
+) -> None:
+    catalog, item, source_path, payload = _extract_upstream(
+        tmp_path,
+        product_key="azure-functions",
+        language=language,
+    )
+
+    assert heading in BeautifulSoup(
+        payload["baseContent"], "html.parser"
+    ).get_text(" ", strip=True)
+    assert _l3b(
+        tmp_path,
+        catalog=catalog,
+        item=item,
+        source_path=source_path,
+        payload=payload,
+    )["status"] == "passed"
+
+
+@pytest.mark.parametrize("language", LANGUAGES)
+def test_active_directory_ds_preserves_support_and_sla(
+    tmp_path: Path,
+    language: str,
+) -> None:
+    catalog, item, source_path, payload = _extract_upstream(
+        tmp_path,
+        product_key="active-directory-ds",
+        language=language,
+    )
+
+    qa_sections = [
+        section
+        for section in payload["commonSections"]
+        if section["sectionType"] == "Qa"
+    ]
+    assert len(qa_sections) == 1
+    assert "sla" in BeautifulSoup(
+        qa_sections[0]["content"], "html.parser"
+    ).get_text(" ", strip=True).casefold()
+    assert _l3b(
+        tmp_path,
+        catalog=catalog,
+        item=item,
+        source_path=source_path,
+        payload=payload,
+    )["status"] == "passed"
+
+
 @pytest.mark.parametrize("language", LANGUAGES)
 def test_monitor_static_software_panel_is_a_complete_complex_page(
     tmp_path: Path,

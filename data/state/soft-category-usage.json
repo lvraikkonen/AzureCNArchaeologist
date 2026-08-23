@@ -4,6 +4,48 @@
   "items": [
     {
       "schema_version": "1.0",
+      "product_key": "active-directory-ds",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Active Directory",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Active Directory",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "active-directory-ds",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Active Directory",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Active Directory",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
       "product_key": "api-management",
       "language": "zh-cn",
       "semantic_strategy": "region_filter",
@@ -101,6 +143,60 @@
           "table_ids": [
             "API-Management-preview2"
           ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "app-configuration",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "App Configuration",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "App Configuration",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "App Configuration",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "app-configuration",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "App Configuration",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "App Configuration",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "App Configuration",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": []
         }
       ]
     },
@@ -542,6 +638,124 @@
     },
     {
       "schema_version": "1.0",
+      "product_key": "application-gateway",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Application Gateway",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "application-gateway-table-standard-v2",
+            "application-gateway-2"
+          ]
+        },
+        {
+          "os": "Application Gateway",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "application-gateway-2"
+          ]
+        },
+        {
+          "os": "Application Gateway",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": [
+            "application-gateway-1"
+          ]
+        },
+        {
+          "os": "Application Gateway",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "application-gateway-table-standard-v2",
+            "application-gateway-2"
+          ]
+        },
+        {
+          "os": "Application Gateway",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "application-gateway-2"
+          ]
+        },
+        {
+          "os": "Application Gateway",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "application-gateway-1"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "application-gateway",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Application Gateway",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "application-gateway-table-standard-v2",
+            "application-gateway-2"
+          ]
+        },
+        {
+          "os": "Application Gateway",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "application-gateway-2"
+          ]
+        },
+        {
+          "os": "Application Gateway",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": [
+            "application-gateway-1"
+          ]
+        },
+        {
+          "os": "Application Gateway",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "application-gateway-table-standard-v2",
+            "application-gateway-2"
+          ]
+        },
+        {
+          "os": "Application Gateway",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "application-gateway-2"
+          ]
+        },
+        {
+          "os": "Application Gateway",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "application-gateway-1"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
       "product_key": "automation",
       "language": "zh-cn",
       "semantic_strategy": "region_filter",
@@ -712,6 +926,124 @@
           "row_present": true,
           "table_ids": [
             "azure_firewall_standard2"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "azure-functions",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure Functions",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "azure-functions-table-total-plan-functions",
+            "azure-functions-table-total-plan-functions-north3"
+          ]
+        },
+        {
+          "os": "Azure Functions",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "azure-functions-table-total-plan-functions-north3"
+          ]
+        },
+        {
+          "os": "Azure Functions",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": [
+            "azure-functions-table-total-plan-functions"
+          ]
+        },
+        {
+          "os": "Azure Functions",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "azure-functions-table-total-plan-functions",
+            "azure-functions-table-total-plan-functions-north3"
+          ]
+        },
+        {
+          "os": "Azure Functions",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "azure-functions-table-total-plan-functions-north3"
+          ]
+        },
+        {
+          "os": "Azure Functions",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "azure-functions-table-total-plan-functions"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "azure-functions",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure Functions",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "azure-functions-table-total-plan-functions",
+            "azure-functions-table-total-plan-functions-north3"
+          ]
+        },
+        {
+          "os": "Azure Functions",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "azure-functions-table-total-plan-functions-north3"
+          ]
+        },
+        {
+          "os": "Azure Functions",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": [
+            "azure-functions-table-total-plan-functions"
+          ]
+        },
+        {
+          "os": "Azure Functions",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "azure-functions-table-total-plan-functions",
+            "azure-functions-table-total-plan-functions-north3"
+          ]
+        },
+        {
+          "os": "Azure Functions",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "azure-functions-table-total-plan-functions-north3"
+          ]
+        },
+        {
+          "os": "Azure Functions",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "azure-functions-table-total-plan-functions"
           ]
         }
       ]
@@ -1508,6 +1840,100 @@
     },
     {
       "schema_version": "1.0",
+      "product_key": "data-pipeline",
+      "language": "zh-cn",
+      "semantic_strategy": "complex",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Data Factory Data Pipeline",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "data-factory-data-pipeline-features",
+            "data-factory-data-pipeline-operation",
+            "Data-Flow-Execution-and-Debugging"
+          ]
+        },
+        {
+          "os": "Data Factory Data Pipeline",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Data Factory Data Pipeline",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "data-factory-data-pipeline-features",
+            "data-factory-data-pipeline-operation",
+            "Data-Flow-Execution-and-Debugging"
+          ]
+        },
+        {
+          "os": "Data Factory Data Pipeline",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "Data Factory Data Pipeline",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "data-pipeline",
+      "language": "en-us",
+      "semantic_strategy": "complex",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Data Factory Data Pipeline",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "data-factory-data-pipeline-features",
+            "data-factory-data-pipeline-operation",
+            "Data-Flow-Execution-and-Debugging"
+          ]
+        },
+        {
+          "os": "Data Factory Data Pipeline",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Data Factory Data Pipeline",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "data-factory-data-pipeline-features",
+            "data-factory-data-pipeline-operation",
+            "Data-Flow-Execution-and-Debugging"
+          ]
+        },
+        {
+          "os": "Data Factory Data Pipeline",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "Data Factory Data Pipeline",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
       "product_key": "database-migration",
       "language": "zh-cn",
       "semantic_strategy": "complex",
@@ -1692,6 +2118,496 @@
           "row_present": true,
           "table_ids": [
             "databricks-data-analysis"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "event-hubs",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "event-hubs",
+          "region": "east-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "event-hubs",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "event-hubs",
+          "region": "east-china3",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "event-hubs",
+          "region": "north-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "event-hubs",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "event-hubs",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "event-hubs",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "event-hubs",
+          "region": "east-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "event-hubs",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "event-hubs",
+          "region": "east-china3",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "event-hubs",
+          "region": "north-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "event-hubs",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "event-hubs",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "fluid-relay",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Fluid Relay",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "fluid-relay",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Fluid Relay",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "iot-hub",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure IoT",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "azure-iot-standard-north3",
+            "azure-iot-basic-north3"
+          ]
+        },
+        {
+          "os": "Azure IoT",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "azure-iot-standard-north3",
+            "azure-iot-basic-north3"
+          ]
+        },
+        {
+          "os": "Azure IoT",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": [
+            "azure-iot-standard-elsearea",
+            "azure-iot-basic-elsearea"
+          ]
+        },
+        {
+          "os": "Azure IoT",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "azure-iot-standard-north3",
+            "azure-iot-basic-north3"
+          ]
+        },
+        {
+          "os": "Azure IoT",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "azure-iot-standard-north3",
+            "azure-iot-basic-north3"
+          ]
+        },
+        {
+          "os": "Azure IoT",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "azure-iot-standard-elsearea",
+            "azure-iot-basic-elsearea"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "iot-hub",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure IoT",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "azure-iot-standard-north3",
+            "azure-iot-basic-north3"
+          ]
+        },
+        {
+          "os": "Azure IoT",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "azure-iot-standard-north3",
+            "azure-iot-basic-north3"
+          ]
+        },
+        {
+          "os": "Azure IoT",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": [
+            "azure-iot-standard-elsearea",
+            "azure-iot-basic-elsearea"
+          ]
+        },
+        {
+          "os": "Azure IoT",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "azure-iot-standard-north3",
+            "azure-iot-basic-north3"
+          ]
+        },
+        {
+          "os": "Azure IoT",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "azure-iot-standard-north3",
+            "azure-iot-basic-north3"
+          ]
+        },
+        {
+          "os": "Azure IoT",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "azure-iot-standard-elsearea",
+            "azure-iot-basic-elsearea"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "key-vault",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Key Vault",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "keyvault-vaults-N2E2N3E3-table",
+            "keyvault-key-protected-N2E2N3E3-table",
+            "keyvault-HSM-protected-N2E2N3E3-table",
+            "keyvault-key-rotation-N2E2N3E3-table"
+          ]
+        },
+        {
+          "os": "Key Vault",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "Key Vault",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "Key Vault",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "keyvault-vaults-N2E2N3E3-table",
+            "keyvault-key-protected-N2E2N3E3-table",
+            "keyvault-HSM-protected-N2E2N3E3-table",
+            "keyvault-key-rotation-N2E2N3E3-table"
+          ]
+        },
+        {
+          "os": "Key Vault",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "Key Vault",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "key-vault",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Key Vault",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "keyvault-vaults-N2E2N3E3-table",
+            "keyvault-key-protected-N2E2N3E3-table",
+            "keyvault-HSM-protected-N2E2N3E3-table",
+            "keyvault-key-rotation-N2E2N3E3-table"
+          ]
+        },
+        {
+          "os": "Key Vault",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "Key Vault",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "Key Vault",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "keyvault-vaults-N2E2N3E3-table",
+            "keyvault-key-protected-N2E2N3E3-table",
+            "keyvault-HSM-protected-N2E2N3E3-table",
+            "keyvault-key-rotation-N2E2N3E3-table"
+          ]
+        },
+        {
+          "os": "Key Vault",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "Key Vault",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "logic-apps",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Logic Apps",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "logic-apps-integration-service-environment-table",
+            "logic-apps-integration-service-environment-table1",
+            "logic-apps-integration-service-environment-north3-china-table"
+          ]
+        },
+        {
+          "os": "Logic Apps",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "logic-apps-integration-service-environment-north3-china-table",
+            "logic-apps-integration-service-environment-n1e1-china-table"
+          ]
+        },
+        {
+          "os": "Logic Apps",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": [
+            "logic-apps-integration-service-environment-table1",
+            "logic-apps-integration-service-environment-table",
+            "logic-apps-integration-service-environment-n1e1-china-table"
+          ]
+        },
+        {
+          "os": "Logic Apps",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "logic-apps-integration-service-environment-table",
+            "logic-apps-integration-service-environment-table1",
+            "logic-apps-integration-service-environment-north3-china-table"
+          ]
+        },
+        {
+          "os": "Logic Apps",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "logic-apps-integration-service-environment-north3-china-table",
+            "logic-apps-integration-service-environment-n1e1-china-table"
+          ]
+        },
+        {
+          "os": "Logic Apps",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "logic-apps-integration-service-environment-table1",
+            "logic-apps-integration-service-environment-table",
+            "logic-apps-integration-service-environment-n1e1-china-table"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "logic-apps",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Logic Apps",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "logic-apps-integration-service-environment-table",
+            "logic-apps-integration-service-environment-table1",
+            "logic-apps-integration-service-environment-north3-china-table"
+          ]
+        },
+        {
+          "os": "Logic Apps",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "logic-apps-integration-service-environment-north3-china-table",
+            "logic-apps-integration-service-environment-n1e1-china-table"
+          ]
+        },
+        {
+          "os": "Logic Apps",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": [
+            "logic-apps-integration-service-environment-table1",
+            "logic-apps-integration-service-environment-table",
+            "logic-apps-integration-service-environment-n1e1-china-table"
+          ]
+        },
+        {
+          "os": "Logic Apps",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "logic-apps-integration-service-environment-table",
+            "logic-apps-integration-service-environment-table1",
+            "logic-apps-integration-service-environment-north3-china-table"
+          ]
+        },
+        {
+          "os": "Logic Apps",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "logic-apps-integration-service-environment-north3-china-table",
+            "logic-apps-integration-service-environment-n1e1-china-table"
+          ]
+        },
+        {
+          "os": "Logic Apps",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "logic-apps-integration-service-environment-table1",
+            "logic-apps-integration-service-environment-table",
+            "logic-apps-integration-service-environment-n1e1-china-table"
           ]
         }
       ]
@@ -4312,6 +5228,72 @@
     },
     {
       "schema_version": "1.0",
+      "product_key": "notification-hubs",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "notification-hubs",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "notification-hubs",
+          "region": "east-china3",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "notification-hubs",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "notification-hubs",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "notification-hubs",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "notification-hubs",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "notification-hubs",
+          "region": "east-china3",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "notification-hubs",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "notification-hubs",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
       "product_key": "postgresql",
       "language": "zh-cn",
       "semantic_strategy": "complex",
@@ -4593,6 +5575,198 @@
             "postgresql-flexible-memory-storage-E2N2",
             "postgresql-flexible-memory-backstorage-E2N2"
           ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "power-bi-embedded",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Power BI Embedded",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "power-bi-embedded-table-hide-a7a8"
+          ]
+        },
+        {
+          "os": "Power BI Embedded",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "power-bi-embedded-table-a7a8"
+          ]
+        },
+        {
+          "os": "Power BI Embedded",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "power-bi-embedded-table-hide-a7a8"
+          ]
+        },
+        {
+          "os": "Power BI Embedded",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "power-bi-embedded-table-a7a8"
+          ]
+        },
+        {
+          "os": "Power BI Embedded",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "power-bi-embedded-table-a7a8"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "power-bi-embedded",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Power BI Embedded",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "power-bi-embedded-table-hide-a7a8"
+          ]
+        },
+        {
+          "os": "Power BI Embedded",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "power-bi-embedded-table-a7a8"
+          ]
+        },
+        {
+          "os": "Power BI Embedded",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "power-bi-embedded-table-hide-a7a8"
+          ]
+        },
+        {
+          "os": "Power BI Embedded",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "power-bi-embedded-table-a7a8"
+          ]
+        },
+        {
+          "os": "Power BI Embedded",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "power-bi-embedded-table-a7a8"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "spring-cloud",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "spring-cloud",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "spring-cloud-premium-region2",
+            "springcloud-standard-north3"
+          ]
+        },
+        {
+          "os": "spring-cloud",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "spring-cloud",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "spring-cloud-premium-region2",
+            "springcloud-standard-north3"
+          ]
+        },
+        {
+          "os": "spring-cloud",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "springcloud-standard-north3"
+          ]
+        },
+        {
+          "os": "spring-cloud",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "spring-cloud",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "spring-cloud",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "spring-cloud-premium-region2",
+            "springcloud-standard-north3"
+          ]
+        },
+        {
+          "os": "spring-cloud",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "spring-cloud",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "spring-cloud-premium-region2",
+            "springcloud-standard-north3"
+          ]
+        },
+        {
+          "os": "spring-cloud",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "springcloud-standard-north3"
+          ]
+        },
+        {
+          "os": "spring-cloud",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": []
         }
       ]
     },
@@ -6338,6 +7512,120 @@
     },
     {
       "schema_version": "1.0",
+      "product_key": "ssis",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Data Factory SSIS",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "data-factory-ssis-standard-a1v2-a8v2",
+            "data-factory-ssis-enterprise-a1v2-a8v2",
+            "data-factory-ssis-standard-d1v2-d4v2",
+            "data-factory-ssis-enterprise-d1v2-d4v2",
+            "data-factory-ssis-standard-e2v3-e64v3",
+            "data-factory-ssis-enterprise-e2v3-e64v3",
+            "data-factory-ssis-standard-d2v3-d64v3",
+            "data-factory-ssis-enterprise-d2v3-d64v3"
+          ]
+        },
+        {
+          "os": "Data Factory SSIS",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Data Factory SSIS",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "data-factory-ssis-standard-a1v2-a8v2",
+            "data-factory-ssis-enterprise-a1v2-a8v2",
+            "data-factory-ssis-standard-d1v2-d4v2",
+            "data-factory-ssis-enterprise-d1v2-d4v2",
+            "data-factory-ssis-standard-e2v3-e64v3",
+            "data-factory-ssis-enterprise-e2v3-e64v3",
+            "data-factory-ssis-standard-d2v3-d64v3",
+            "data-factory-ssis-enterprise-d2v3-d64v3"
+          ]
+        },
+        {
+          "os": "Data Factory SSIS",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Data Factory SSIS",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "ssis",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Data Factory SSIS",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "data-factory-ssis-standard-a1v2-a8v2",
+            "data-factory-ssis-enterprise-a1v2-a8v2",
+            "data-factory-ssis-standard-d1v2-d4v2",
+            "data-factory-ssis-enterprise-d1v2-d4v2",
+            "data-factory-ssis-standard-e2v3-e64v3",
+            "data-factory-ssis-enterprise-e2v3-e64v3",
+            "data-factory-ssis-standard-d2v3-d64v3",
+            "data-factory-ssis-enterprise-d2v3-d64v3"
+          ]
+        },
+        {
+          "os": "Data Factory SSIS",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Data Factory SSIS",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "data-factory-ssis-standard-a1v2-a8v2",
+            "data-factory-ssis-enterprise-a1v2-a8v2",
+            "data-factory-ssis-standard-d1v2-d4v2",
+            "data-factory-ssis-enterprise-d1v2-d4v2",
+            "data-factory-ssis-standard-e2v3-e64v3",
+            "data-factory-ssis-enterprise-e2v3-e64v3",
+            "data-factory-ssis-standard-d2v3-d64v3",
+            "data-factory-ssis-enterprise-d2v3-d64v3"
+          ]
+        },
+        {
+          "os": "Data Factory SSIS",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Data Factory SSIS",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
       "product_key": "synapse-analytics",
       "language": "zh-cn",
       "semantic_strategy": "complex",
@@ -6621,6 +7909,90 @@
             "Azure_Synapse_Analytics3-3-east",
             "Azure_Synapse_Analytics3-online2"
           ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "time-series-insights",
+      "language": "zh-cn",
+      "semantic_strategy": "complex",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Time Series Insights",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Time Series Insights",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "time-series-insights",
+      "language": "en-us",
+      "semantic_strategy": "complex",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Time Series Insights",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Time Series Insights",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "virtual-desktop",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure Virtual",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Azure Virtual",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "virtual-desktop",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure Virtual",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Azure Virtual",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
         }
       ]
     },
@@ -19085,6 +20457,150 @@
             "vm-table1-ddv5-dsen2",
             "vm-table1-edv5-s"
           ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "vpn-gateway",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "VPN Gateway",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "VPN_Gateway_table_Availability_Zones"
+          ]
+        },
+        {
+          "os": "VPN Gateway",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "VPN Gateway",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "VPN_Gateway_table_Availability_Zones"
+          ]
+        },
+        {
+          "os": "VPN Gateway",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "VPN Gateway",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "vpn-gateway",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "VPN Gateway",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "VPN_Gateway_table_Availability_Zones"
+          ]
+        },
+        {
+          "os": "VPN Gateway",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "VPN Gateway",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "VPN_Gateway_table_Availability_Zones"
+          ]
+        },
+        {
+          "os": "VPN Gateway",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "VPN Gateway",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "web-pubsub",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "metrics-advisor",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "metrics-advisor",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "metrics_advisor_Desktop1"
+          ]
+        },
+        {
+          "os": "metrics-advisor",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "web-pubsub",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "metrics-advisor",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "metrics-advisor",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "metrics_advisor_Desktop1"
+          ]
+        },
+        {
+          "os": "metrics-advisor",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
         }
       ]
     }
