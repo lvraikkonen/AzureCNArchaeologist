@@ -60,14 +60,14 @@ def run_l3b(
         _compare_html_field(
             fields,
             payload_path="articleDescription",
-            source_boundary="h1 与首个 h2 之间的直接说明段落",
+            source_boundary="文章标题与正文边界之间除日期和界面元素外的完整说明节点",
             expected=expected["articleDescription"],
             actual=payload.get("articleDescription"),
         )
         _compare_html_field(
             fields,
             payload_path="mainContent",
-            source_boundary="首个直接 h2 至反馈控件之前的完整文章主体",
+            source_boundary="首个正文 h2 起；无 h2 时为标题后的完整短文正文",
             expected=expected["mainContent"],
             actual=payload.get("mainContent"),
         )

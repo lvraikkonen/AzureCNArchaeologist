@@ -155,7 +155,13 @@ def validate_exclusion_targets(
     source_scope: Tag,
     excluded_table_ids: tuple[str, ...],
 ) -> tuple[str, ...]:
-    matched_count = 0
+    """Return only unambiguous exclusions present in the current Region source.
+
+    A configured ID that no longer exists is a no-op: the source table content
+    remains in the projection for human review.  One ID resolving to multiple
+    physical units is still ambiguous and therefore blocks extraction.
+    """
+
     applicable_ids: list[str] = []
     for table_id in excluded_table_ids:
         source_units = _matching_table_units(source_scope, table_id)
@@ -165,13 +171,7 @@ def validate_exclusion_targets(
                 f"实际为 {len(source_units)} 个。"
             )
         if source_units:
-            matched_count += 1
             applicable_ids.append(table_id)
-    if excluded_table_ids and matched_count == 0:
-        raise RegionProjectionError(
-            "该配置记录在当前源定价范围内没有对应任何物理表格单元，"
-            "实际为 0 个。"
-        )
     return tuple(applicable_ids)
 
 

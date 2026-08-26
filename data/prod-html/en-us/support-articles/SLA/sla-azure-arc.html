@@ -1,0 +1,517 @@
+<html lang="en-US" class="desktop"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+    <meta name="keywords" content="">
+    <meta name="description" content="
+    SLA for Azure Arc
+        ">
+
+    <title>SLA for Azure Arc | Azure</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/Static/Favicon/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/Static/Favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/Static/Favicon/favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="/Static/Favicon/manifest.json">
+    <link rel="mask-icon" href="/Static/Favicon/safari-pinned-tab.svg" color="#0078D4">
+    <meta name="msapplication-config" content="/Static/Favicon/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <!-- BEGIN: Azure UI Style -->
+    <link href="/Static/CSS/azureui.min.css" rel="stylesheet">
+    <link href="/Static/CSS/common.min.css" rel="stylesheet">
+    <!-- END: Azure UI Style -->
+    <!-- BEGIN: Page Style -->
+
+    <!-- END: Page Style -->
+
+    <!-- BEGIN: Minified Page Style -->
+    <link href="/Static/CSS/d32f7e46bb12eef495b9b58c4ab0c2dfb52c1f25.css" rel="stylesheet">
+    <!-- END: Minified Page Style -->
+
+    <link rel="stylesheet" href="/StaticService/css/service.min.css">
+<link rel="stylesheet" href="https://cnazuren3.blob.core.chinacloudapi.cn/marketing-resource/StaticService/css/dropkick.css"><script type="text/javascript" src="https://cnazuren3.blob.core.chinacloudapi.cn/marketing-resource/StaticService/js/dropkick.js"></script></head>
+
+<body class="en-us">
+    <script>
+        window.requireUrlArgs = "1/6/2020 11:41:53 AM";
+        window.currentLocale = "en-US";
+        window.headerTimestamp = "5/9/2019 9:29:29 AM";
+        window.footerTimestamp = "5/9/2019 9:29:29 AM";
+        window.locFileTimestamp = "5/9/2019 9:29:21 AM";
+
+        window.AcnHeaderFooter = {
+            IsEnableQrCode: true,
+            CurrentLang: window.currentLocale.toLowerCase(),
+        };
+    </script>
+
+    <style>
+        @media (min-width: 0) {
+            .acn-header-placeholder {
+                height: 48px;
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 980px) {
+            .acn-header-placeholder {
+                height: 89px;
+                width: 100%;
+            }
+        }
+
+        .acn-header-placeholder {
+            background-color: #1A1A1A;
+        }
+
+        .acn-header-service {
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+    </style>
+    <div class="acn-header-container">
+        <div class="acn-header-placeholder">
+        </div>
+        <div class="public_headerpage"><div class="acn-header-service override en-us" style="background-color: #fff !important;">
+    <header class="header scroll">
+        <div class="azure-service-container">
+            <div class="brand clearfix">
+                <div class="logo">
+                    <div class="azure-logo">
+                        <h1 class="logo-first-level">
+                            <a id="navigation-azure-logo-id" href="https://www.azure.cn/en-us" title="Microsoft Azure" aria-label="Azure logo" target="_blank">
+                            </a>
+                        </h1>
+                    </div>
+                </div>
+                <div class="top-nav">
+                    <a class="search" href="#" title="Search" id="navigation-search-button" aria-label="search-button">
+                        <i class="icon icon-search-thick">
+                        </i>
+                    </a>
+                    <a class="nav-toggle" href="#" title="Navigate">
+                        <i class="icon icon-navigation-sharp">
+                        </i>
+                    </a>
+                </div>
+            </div>
+            <nav class="nav auto-scroll" data-fullscreen="true" data-top="header" style="height: auto;">
+                <ul class="accordian-menu" data-accordiandisabled="desktop" data-accordianinteraction="exclusive">
+                    <li>
+                        <!-- <a class="menu-title icon-arrow-down-sharp2" id="nav_price" target="_blank" href="https://www.azure.cn/pricing" title="Pricing"> -->
+                        <a class="" id="nav_price" target="_blank" href="https://www.azure.cn/en-us/pricing/" title="Products and Pricing">
+                            <span>Products and Pricing</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="" id="nav_documentation" target="_blank" href="https://docs.azure.cn/en-us/?product=popular" title="Documentation">
+                            <span>Documentation &gt;</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="" id="nav_market-place" target="_blank" href="https://market.azure.cn" title="Azure Marketplace">
+                            <span>Azure Marketplace &gt;</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="" id="nav_support" target="_blank" href="https://support.azure.cn/en-us/support/plans/" title="Support Plans">
+                            <span>Support Plans &gt;</span>
+                        </a>
+                    </li>
+
+                </ul>
+                <!--a id="homepage-top-1rmb" class="buy-it"
+                    href="https://www.microsoft.com/china/azure/index-en.html?fromtype=cn" title="Apply"
+                    target="_blank">
+                    <span>Apply</span>
+                    <span class="icon-arrow-right-thin2"></span>
+                </a-->
+                <a id="header-portal-azure-id" class="portal-link" href="https://portal.azure.cn/" title="Azure Portal" target="_blank">
+                    Azure Portal
+                </a>
+
+            </nav>
+            <div class="search-panel auto-scroll" data-fullscreen="true" data-top="header" style="height: auto;">
+                <div class="azure-service-container">
+                    <div class="row search-input">
+                        <div class="col-xs-12 col-sm-12">
+                            <div class="input-wrapper">
+                                <input id="searchInput" class="text-input" aria-label="Search" type="text" name="" value="" placeholder="Please input a search keyword">
+                                <a id="searchBtn" aria-label="Search" href="#">
+                                    <i class="icon icon-search-thick">
+                                        <span class="icon-navigation-search icon-navigation-svg"></span>
+                                        <span class="icon-close-svg"></span>
+                                    </i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row hidden-md hidden-lg">
+                        <div class="col-xs-12">
+                            <h3>Popular searches</h3>
+                        </div>
+                    </div>
+                    <div class="hot-tag row hidden-md hidden-lg">
+                    </div>
+                    <div class="row hidden-md hidden-lg">
+                        <div class="col-xs-12">
+                            <h3>Recent search history</h3>
+                        </div>
+                    </div>
+                    <div class="row search-history hidden-md hidden-lg">
+                        <div class="col-xs-12">
+                            <ul></ul>
+                        </div>
+                        <div class="col-xs-12">
+                            <a href="#" class="btn btn-link btn-block clear-btn">
+                                Clear search records
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</div></div>
+    </div>
+
+    <!-- BEGIN: Documentation Content -->
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bread-crumb hidden-sm hidden-xs">
+                        <ul>
+                            <li><span class="hidden-all">文档与资源</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="single-page">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="documentation-navigation left-navigation hidden-xs hidden-sm"><h3>Legal</h3><ul class="accordian-menu"><li><button id="leftnav_support_legal_details" class="menu-title expand" role="button" aria-expanded="true" title="Legal Information"><span class="nav-title">Legal Information</span><span class="icon icon-arrow-top"></span></button><ul class="menu-child accordian-menu" style="display: block;"><li><a href="/en-us/support/legal/" id="legal-home_Overview" title="Overview">Overview</a></li><li><a href="/en-us/support/legal/subscription-agreement/" id="legal-waa_Subscription Agreement" title="Subscription Agreement">Subscription Agreement</a></li><li><a href="http://www.21vbluecloud.com/ostpt/" id="legal-services-terms_Services Terms" title="Services Terms" target="_blank">Services Terms</a></li><li><a href="/en-us/support/legal/offer-rate-plans/" id="offerrateplan-support-legal_Offer Details" title="Offer Details">Offer Details</a></li><li><a href="/en-us/support/legal/privacy-statement/" id="legal-privacy-statement_Privacy Statement" title="Privacy Statement">Privacy Statement</a></li><li><a href="/en-us/support/legal/sla/" id="sla_Service Level Agreements" title="Service Level Agreements">Service Level Agreements</a></li></ul></li></ul></div>
+                    </div>
+                    <div class="pure-content col-md-8">
+                        <div class="select left-navigation-select hidden-md hidden-lg">
+                            <select aria-label="leftNavSelect">
+                                
+                            <optgroup label="Legal Information"><option id="legal-home_Overview_mobile" value="/en-us/support/legal/">Overview</option><option id="legal-waa_Subscription Agreement_mobile" value="/en-us/support/legal/subscription-agreement/">Subscription Agreement</option><option id="legal-services-terms_Services Terms_mobile" value="http://www.21vbluecloud.com/ostpt/">Services Terms</option><option id="offerrateplan-support-legal_Offer Details_mobile" value="/en-us/support/legal/offer-rate-plans/">Offer Details</option><option id="legal-privacy-statement_Privacy Statement_mobile" value="/en-us/support/legal/privacy-statement/">Privacy Statement</option><option id="sla_Service Level Agreements_mobile" value="/en-us/support/legal/sla/">Service Level Agreements</option></optgroup></select>
+                            <span class="icon icon-arrow-top"></span>
+                        </div>
+
+                        <p>
+                            <tags ms.service="legal-en" ms.date="10/2017" wacn.date="10/2017" wacn.lang="en">
+                        </tags></p>
+
+                        <h1>SLA for Azure Arc</h1>
+                        <div class="tags-date">
+                            <div class="ms-date">Updated: 08/2024</div>
+                        </div><div class="book-mark documentation-bookmark hidden-md hidden-lg"><h3>In this article:</h3><ul><li><a id="bookmark-Introduction_mobile" href="#bookmark-0" data-index="0">Introduction</a></li><li><a id="bookmark-General_Terms_mobile" href="#bookmark-1" data-index="1">General Terms</a></li><li><a id="bookmark-The_SLA_details_mobile" href="#bookmark-2" data-index="2">The SLA details</a></li></ul></div>
+                        <p>We guarantee that Apps running in a customer subscription will be available 99.95% of the time. </p>
+                        <h2>Introduction</h2>
+                        <p>This Service Level Agreement for Azure (this “SLA”) is made by 21Vianet in connection with,
+                            and is a part of, the agreement under which Customer has purchased Azure Services from
+                            21Vianet (the “Agreement”).</p>
+                        <p>We provide financial backing to our commitment to achieve and maintain Service Levels for our
+                            Services. If we do not achieve and maintain the Service Levels for each Service as described
+                            in this SLA, then you may be eligible for a credit towards a portion of your monthly service
+                            fees. These terms will be fixed for term of your Agreement. If a subscription is renewed,
+                            the version of this SLA that is current at the time the renewal term commences will apply
+                            throughout the renewal term. We will provide at least 90 days' notice for adverse material
+                            changes to this SLA. You can review the most current version of this SLA at any time by
+                            visiting <a id="cognitive-services-sla-en_sla-en" href="/en-us/support/sla/container-apps/v1_0/" aria-label="cognitive-services-sla-en_sla-en">https://www.azure.cn/en-us/support/sla/container-apps/v1_0/</a>.</p>
+                        <h2>General Terms</h2>
+                        <h3>1. Definitions</h3>
+                        <ol>
+                            <li>
+                                <p>"Claim" means a claim submitted by Customer to 21Vianet pursuant to this
+                                    SLA that a Service Level has not been met and that a Service Credit may be due to
+                                    Customer. </p>
+                            </li>
+                            <li>
+                                <p>"Customer" refers to the organization that has entered into the Agreement.
+                                </p>
+                            </li>
+                            <li>
+                                <p>"Customer Support" means the services by which 21Vianet may provide
+                                    assistance to Customer to resolve issues with the Services.</p>
+                            </li>
+                            <li>
+                                <p>"Error Code" means an indication that an operation has failed, such as an
+                                    HTTP status code in the 5xx range.</p>
+                            </li>
+                            <li>
+                                <p>"External Connectivity" is bi-directional network traffic over supported
+                                    protocols such as HTTP and HTTPS that can be sent and received from a public IP
+                                    address.</p>
+                            </li>
+                            <li>
+                                <p>"Incident" means any set of circumstances resulting in a failure to meet a
+                                    Service Level.</p>
+                            </li>
+                            <li>
+                                <p>"Management Portal" means the web interface, provided by 21Vianet, through
+                                    which customers may manage the Service.</p>
+                            </li>
+                            <li>
+                                <p>"21Vianet" means the 21Vianet entity that appears on Customer's Agreement.
+                                </p>
+                            </li>
+                            <li>
+                                <p>"Preview" refers to a preview, beta, or other pre-release version of a
+                                    service or software offered to obtain customer feedback.</p>
+                            </li>
+                            <li>
+                                <p>"Service” or “Services" refers to a Azure service provided to Customer
+                                    pursuant to the Agreement for which an SLA is provided below.</p>
+                            </li>
+                            <li>
+                                <p>"Service Credit" is the percentage of the monthly service fees for the
+                                    affected Service or Service Resource that is credited to Customer for a validated
+                                    Claim.</p>
+                            </li>
+                            <li>
+                                <p>"Service Level" means standards 21Vianet chooses to adhere to and by which
+                                    it measures the level of service it provides for each Service as specifically set
+                                    forth below.</p>
+                            </li>
+                            <li>
+                                <p>"Service Resource" means an individual resource available for use within a
+                                    Service.</p>
+                            </li>
+                            <li>
+                                <p>"Success Code" means an indication that an operation has succeeded, such as
+                                    an HTTP status code in the 2xx range.</p>
+                            </li>
+                            <li>
+                                <p>"Support Window" refers to the period of time during which a Service
+                                    feature or compatibility with a separate product or service is supported. </p>
+                            </li>
+                            <li>
+                                <p>"Virtual Network" refers to a virtual private network that includes a
+                                    collection of user-defined IP addresses and subnets that form a network boundary
+                                    within Azure.</p>
+                            </li>
+                            <li>
+                                <p>"Virtual Network Gateway" refers to a gateway that facilitates
+                                    cross-premises connectivity between a Virtual Network and a customer on-premises
+                                    network.</p>
+                            </li>
+                        </ol>
+                        <h3>2. Service Credit Claims</h3>
+                        <ol>
+                            <li>
+                                <p>In order for 21Vianet to consider a Claim, Customer must submit the Claim to Customer
+                                    Support within two months of the end of the billing month in which the Incident that
+                                    is the subject of the Claim occurs. Customer must provide to Customer Support all
+                                    information necessary for 21Vianet to validate the Claim, including but not limited
+                                    to detailed descriptions of the Incident, the time and duration of the Incident, the
+                                    affected resources or operations, and any attempts made by Customer to resolve the
+                                    Incident</p>
+                            </li>
+                            <li>
+                                <p>21Vianet will use all information reasonably available to it to validate the Claim
+                                    and to determine whether any Service Credits are due.</p>
+                            </li>
+                            <li>
+                                <p>In the event that more than one Service Level for a particular Service is not met
+                                    because of the same Incident, Customer must choose only one Service Level under
+                                    which a Claim may be made based on the Incident.</p>
+                            </li>
+                            <li>
+                                <p>Service Credits apply only to fees paid for the particular Service, Service Resource,
+                                    or Service tier for which a Service Level has not been met. In cases where Service
+                                    Levels apply to individual Service Resources or to separate Service tiers, Service
+                                    Credits apply only to fees paid for the affected Service Resource or Service tier,
+                                    as applicable.</p>
+                            </li>
+                        </ol>
+                        <h3>3. SLA Exclusions</h3>
+                        <p>This SLA and any applicable Service Levels do not apply to any performance or availability
+                            issues:</p>
+                        <ol>
+                            <li>
+                                <p>Due to factors outside 21Vianet’s reasonable control (for example, a network or
+                                    device failure external to 21Vianet’s data centers, including at Customer's site or
+                                    between Customer's site and 21Vianet’s data center);</p>
+                            </li>
+                            <li>
+                                <p>That resulted from Customer's use of hardware, software, or services not provided by
+                                    21Vianet as part of the Services (for example, third-party software or services
+                                    purchased from the Azure Store or other non-Azure services provided by 21Vianet);
+                                </p>
+                            </li>
+                            <li>
+                                <p>Due to Customer's use of the Service in a manner inconsistent with the features and
+                                    functionality of the Service (for example, attempts to perform operations that are
+                                    not supported) or inconsistent with published documentation or guidance;</p>
+                            </li>
+                            <li>
+                                <p>That resulted from faulty input, instructions, or arguments (for example, requests to
+                                    access files that do not exist);</p>
+                            </li>
+                            <li>
+                                <p>Caused by Customer's use of the Service after 21Vianet advised Customer to modify its
+                                    use of the Service, if Customer did not modify its use as advised;</p>
+                            </li>
+                            <li>
+                                <p>During or with respect to Previews or to purchases made using 21Vianet subscription
+                                    credits;</p>
+                            </li>
+                            <li>
+                                <p>That resulted from Customer's attempts to perform operations that exceed prescribed
+                                    quotas or that resulted from throttling of suspected abusive behavior;</p>
+                            </li>
+                            <li>
+                                <p>Due to Customer's use Service features that are outside of associated Support
+                                    Windows; or</p>
+                            </li>
+                            <li>
+                                <p>Attributable to acts by persons gaining unauthorized access to 21Vianet’s Service by
+                                    means of Customer's passwords or equipment or otherwise resulting from Customer's
+                                    failure to follow appropriate security practices.</p>
+                            </li>
+                        </ol>
+                        <h3>4. Service Credits</h3>
+                        <ol>
+                            <li>
+                                <p>The amount and method of calculation of Service Credits is described below in
+                                    connection with each Service. </p>
+                            </li>
+                            <li>
+                                <p>Service Credits are Customer's sole and exclusive remedy for any failure to meet any
+                                    Service Level.</p>
+                            </li>
+                            <li>
+                                <p>The Service Credits awarded in any billing month for a particular Service or Service
+                                    Resource will not, under any circumstance, exceed Customer's monthly service fees
+                                    that Service or Service Resource, as applicable, in the billing month.</p>
+                            </li>
+                            <li>
+                                <p>For Services purchased as part of a suite, the Service Credit will be based on the
+                                    pro-rata portion of the cost of the Service, as determined by 21Vianet in its
+                                    reasonable discretion. In cases where Customer has purchased Services from a
+                                    reseller, the Service Credit will be based on the estimated retail price for the
+                                    applicable Service, as determined by 21Vianet in its reasonable discretion.</p>
+                            </li>
+                        </ol>
+                        <h2>The SLA details</h2>
+                        <h3>Additional Definitions</h3>
+                        
+                        <p><b>"Maximum Available Minutes"</b> is the total accumulated minutes in an Applicable Period during which at least one Kubernetes configuration Azure resource has been deployed on an Azure Arc enabled Kubernetes resource in a Azure subscription.</p>
+                        <p><b>"Downtime"</b> is the total accumulated Maximum Available Minutes in an Applicable Period during which at least one Kubernetes configuration Azure resource has been deployed on an Azure Arc enabled Kubernetes resource, but the REST API operations for the Kubernetes configuration Azure resource are unavailable.</p>
+                        
+                        <p><b></b>"Uptime Percentage"</b> The Uptime Percentage is calculated using the following formula:</p>
+                        <p>(Maximum Available Minutes-Downtime)/(Maximum Available Minutes)  x 100</p>
+                        <p>The following Service Levels and Service Credits are applicable to Customer's use of Kubernetes configuration Azure resource on top of Azure Arc enabled Kubernetes:</p>
+                        <div class="scroll-table"><div><table style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th align="left" style="width:50%">Uptime Percentage</th>
+                                    <th align="left">Service Credit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>&lt;99.9%</td>
+                                    <td>10%</td>
+                                </tr>
+                                <tr>
+                                    <td>&lt;99%</td>
+                                    <td>25%</td>
+                                </tr>
+                            </tbody>
+                        </table></div></div>
+                        
+
+                        <div id="content_feedback"></div>
+
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="documentation-bookmark book-mark hidden-sm hidden-xs" style="width: 171px; top: 0px;"><h3>In this article:</h3><ul><li><a id="bookmark-Introduction" href="#bookmark-0" data-index="0">Introduction</a></li><li><a id="bookmark-General_Terms" href="#bookmark-1" data-index="1">General Terms</a></li><li><a id="bookmark-The_SLA_details" href="#bookmark-2" data-index="2">The SLA details</a></li></ul></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Documentation Content -->
+
+    <!-- BEGIN: Footer -->
+    <div class="public_footerpage">
+    </div>
+    <!--END: Common sidebar-->
+
+
+
+    <link href="/Static/CSS/Localization/en-us.css" rel="stylesheet">
+    <script type="text/javascript">
+        function getAntiForgeryToken() {
+            var token = '<input name="__RequestVerificationToken" type="hidden" value="uI0cDIbLLvYAGCKVI4CeJSxV-Hc6wPsWKyX1WE_FeA2xcXe5VxbiWe1Brqo0iKZpYfJQrg1nF4Tqu0lswMxYkIJXJ6z9OjwvPBlej8AgL2Q1" />';
+            token = $(token).val();
+            return token;
+        }
+        function setLocaleCookie(localeVal) {
+            var Days = 365 * 10; // Ten year expiration
+            var exp = new Date();
+
+            var hostName = window.location.hostname;
+            var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain + "; path=/;expires=" + exp.toGMTString();
+        }
+
+        setLocaleCookie(window.currentLocale);
+    </script>
+
+    <script type="text/javascript">
+        var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+        var TECHNICAL_STORAGE = '/blob/tech-content/';
+        var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+        var EnablePricingSync = 'false';
+    </script>
+
+    <!-- BEGIN: Script -->
+
+    <!-- END: Script -->
+
+    <!-- BEGIN: Minified RequireJs -->
+    <script src="/Static/Scripts/global.config.js" type="text/javascript"></script>
+    <script src="/Static/Scripts/require.js" type="text/javascript"></script>
+    <script src="/Static/Scripts/ad5c296cd375ba23de6e9b6f940729e549234d8c.js" type="text/javascript"></script>
+    <!-- END: Minified RequireJs -->
+
+    <!-- begin JSLL -->
+    <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js"></script>
+
+    <script type="text/javascript">
+        (function () {
+            var config = {
+                cookiesToCollect: ["_mkto_trk"],
+                syncMuid: true,
+                ix: {
+                    a: true,
+                    g: true
+                },
+                coreData: {
+                    appId: 'AzureCN',
+                    market: 'zh-cn',
+                }
+            };
+            awa.init(config);
+        })();
+    </script>
+    <!-- end JSLL -->
+
+    <script type="text/javascript" src="/Static/Scripts/plugins/cookie/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/Static/Scripts/wacndatatracker.js"></script>
+
+
+    <script type="text/javascript" src="/common/useCommon.js"></script>
+
+
+
+</body></html>

@@ -21,6 +21,24 @@ _PRICING_HEADING = re.compile(
     r"(?:定价详细信息|pricing\s+details?)",
     re.IGNORECASE,
 )
+_SIMPLE_STATIC_STATE_SELECTOR = (
+    ".technical-azure-selector, .pricing-detail-tab, "
+    ".region-container, .software-kind-container, "
+    ".category-container-container, .category-container, "
+    ".tab-container-container, .more-detail, "
+    "select, form, button, input, textarea"
+)
+_SIMPLE_STATIC_STATE_CLASSES = {
+    "technical-azure-selector",
+    "pricing-detail-tab",
+    "region-container",
+    "software-kind-container",
+    "category-container-container",
+    "category-container",
+    "tab-container-container",
+    "more-detail",
+}
+_SIMPLE_STATIC_STATE_TAGS = {"select", "form", "button", "input", "textarea"}
 
 
 class PageBodyBoundaryError(ValueError):
@@ -190,8 +208,18 @@ def locate_simple_pricing_boundary(
             formal_root=None,
         )
 
+    if before_common and all(
+        _is_unwrapped_static_simple_node(node) for node in before_common
+    ):
+        anchors = tuple(before_common)
+        return PricingBoundary(
+            html=normalize_html("".join(str(node) for node in anchors)),
+            anchors=anchors,
+            formal_root=None,
+        )
+
     raise PageBodyBoundaryError(
-        "Simple 页面没有唯一的静态选择器、定价标题范围或免费说明正文。"
+        "Simple 页面没有唯一的静态选择器、定价标题范围或连续无状态正文。"
     )
 
 
@@ -320,6 +348,14 @@ def _is_material(node: Tag) -> bool:
         node.get_text(" ", strip=True)
         or node.find(["img", "video", "audio", "table", "iframe"]) is not None
     )
+
+
+def _is_unwrapped_static_simple_node(node: Tag) -> bool:
+    if node.name in _SIMPLE_STATIC_STATE_TAGS:
+        return False
+    if set(node.get("class", [])) & _SIMPLE_STATIC_STATE_CLASSES:
+        return False
+    return node.select_one(_SIMPLE_STATIC_STATE_SELECTOR) is None
 
 
 def _one(candidates: list[Tag], name: str) -> Tag:

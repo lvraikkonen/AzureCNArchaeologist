@@ -241,7 +241,7 @@ def _support_comparisons(
         comparisons,
         payload_path="articleDescription",
         label="文章说明",
-        source_boundary="h1 与首个 h2 之间的直接说明段落",
+        source_boundary="文章标题与正文边界之间除日期和界面元素外的完整说明节点",
         source=source["articleDescription"],
         payload=payload.get("articleDescription"),
     )
@@ -249,7 +249,7 @@ def _support_comparisons(
         comparisons,
         payload_path="mainContent",
         label="文章主体",
-        source_boundary="首个直接 h2 至反馈控件之前的完整文章主体",
+        source_boundary="首个正文 h2 起；无 h2 时为标题后的完整短文正文",
         source=source["mainContent"],
         payload=payload.get("mainContent"),
     )

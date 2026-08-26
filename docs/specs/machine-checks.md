@@ -118,12 +118,14 @@ SupportArticlePage 至少覆盖：
 
 ### 3.4 源片段定位
 
-- `simple_static`：独立确认页面正文边界及公共区块边界。
+- `simple_static`：独立确认唯一静态选择器，或 Banner 后到首个 FAQ/SLA 前的连续无状态正文；公共 FAQ/SLA 必须是独立的 `pricing-page-section`，不能仅凭正文中的 SLA 字样截断正文。
 - `region_filter`：从源控件确定地区状态，并分别找到每个地区的内容。
 - `complex`：从源控件和必要的 `soft-category.json` 确定实际可选状态及对应内容，不生成理论组合。
-- `support_article`：独立确认文章正文开始和结束边界，保留段落之间的直接文本。
+- `support_article`：独立确认唯一文章标题，以及直接分节、单一包装层分节或无 `h2` 短文的正文边界；保留包装节点和直接文本。
 
 找不到唯一边界、一个状态对应多个候选片段或源控件相互矛盾时，结果为 `blocked`，不能选择“第一个看起来合适的节点”。
+
+`region_filter` 的配置排除 ID 在当前源中零匹配时不属于边界歧义：生产抽取与独立 L3b 都把该 ID 视为不适用并保留完整源内容，最终内容判断交给 Workbench 人工审核。同一 ID 对应多个物理表格单元仍为 `blocked`；Complex 的 Software 全叶子零匹配规则也保持不变。
 
 ### 3.5 HTML 规范化
 

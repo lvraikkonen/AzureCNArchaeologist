@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "source_run_name": "scope-expansion-full-regression-20260820",
+  "source_run_name": "supported-products-expanded-full-regression-20260825",
   "ignored_fields": [
     "capability_status",
     "display_name",
@@ -9,6 +9,26 @@
   ],
   "products": [
     {
+      "product_key": "active-directory-b2c",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/active-directory-b2c/index.html",
+        "en-us": "pricing/details/active-directory-b2c/index.html"
+      }
+    },
+    {
+      "product_key": "active-directory-ds",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/active-directory-ds/index.html",
+        "en-us": "pricing/details/active-directory-ds/index.html"
+      }
+    },
+    {
       "product_key": "advisor",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
@@ -16,6 +36,26 @@
       "sources": {
         "zh-cn": "pricing/details/advisor/index.html",
         "en-us": "pricing/details/advisor/index.html"
+      }
+    },
+    {
+      "product_key": "analysis-services",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/analysis-services/index.html",
+        "en-us": "pricing/details/analysis-services/index.html"
+      }
+    },
+    {
+      "product_key": "anomaly-detector",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/cognitive-services/anomaly-detector/index.html",
+        "en-us": "pricing/details/cognitive-services/anomaly-detector/index.html"
       }
     },
     {
@@ -29,6 +69,16 @@
       }
     },
     {
+      "product_key": "app-configuration",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/app-configuration/index.html",
+        "en-us": "pricing/details/app-configuration/index.html"
+      }
+    },
+    {
       "product_key": "app-service",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
@@ -36,6 +86,16 @@
       "sources": {
         "zh-cn": "pricing/details/app-service/index.html",
         "en-us": "pricing/details/app-service/index.html"
+      }
+    },
+    {
+      "product_key": "application-gateway",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/application-gateway/index.html",
+        "en-us": "pricing/details/application-gateway/index.html"
       }
     },
     {
@@ -49,6 +109,16 @@
       }
     },
     {
+      "product_key": "azure-bastion",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/azure-bastion/index.html",
+        "en-us": "pricing/details/azure-bastion/index.html"
+      }
+    },
+    {
       "product_key": "azure-firewall",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
@@ -59,6 +129,16 @@
       }
     },
     {
+      "product_key": "azure-functions",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
+      "sources": {
+        "zh-cn": "pricing/details/azure-functions/index.html",
+        "en-us": "pricing/details/azure-functions/index.html"
+      }
+    },
+    {
       "product_key": "azure-migrate",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
@@ -66,6 +146,16 @@
       "sources": {
         "zh-cn": "pricing/details/azure-migrate/index.html",
         "en-us": "pricing/details/azure-migrate/index.html"
+      }
+    },
+    {
+      "product_key": "azure-nat-gateway",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/azure-nat-gateway/index.html",
+        "en-us": "pricing/details/azure-nat-gateway/index.html"
       }
     },
     {
@@ -99,6 +189,26 @@
       }
     },
     {
+      "product_key": "bot-services",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/bot-services/index.html",
+        "en-us": "pricing/details/bot-services/index.html"
+      }
+    },
+    {
+      "product_key": "cache",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/cache/index.html",
+        "en-us": "pricing/details/cache/index.html"
+      }
+    },
+    {
       "product_key": "cloud-services",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
@@ -109,6 +219,56 @@
       }
     },
     {
+      "product_key": "cognitive-services",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/cognitive-services/index.html",
+        "en-us": "pricing/details/cognitive-services/index.html"
+      }
+    },
+    {
+      "product_key": "container-apps",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/container-apps/index.html",
+        "en-us": "pricing/details/container-apps/index.html"
+      }
+    },
+    {
+      "product_key": "container-instances",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
+      "sources": {
+        "zh-cn": "pricing/details/container-instances/index.html",
+        "en-us": "pricing/details/container-instances/index.html"
+      }
+    },
+    {
+      "product_key": "container-registry",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": "sole_static_formal_selector_before_common_sections",
+      "sources": {
+        "zh-cn": "pricing/details/container-registry/index.html",
+        "en-us": "pricing/details/container-registry/index.html"
+      }
+    },
+    {
+      "product_key": "core-control-plane",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/azure-arc/core-control-plane/index.html",
+        "en-us": "pricing/details/azure-arc/core-control-plane/index.html"
+      }
+    },
+    {
       "product_key": "cosmos-db",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
@@ -116,6 +276,36 @@
       "sources": {
         "zh-cn": "pricing/details/cosmos-db/index.html",
         "en-us": "pricing/details/cosmos-db/index.html"
+      }
+    },
+    {
+      "product_key": "data-explorer",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/data-explorer/index.html",
+        "en-us": "pricing/details/data-explorer/index.html"
+      }
+    },
+    {
+      "product_key": "data-factory",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/data-factory/index.html",
+        "en-us": "pricing/details/data-factory/index.html"
+      }
+    },
+    {
+      "product_key": "data-pipeline",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/data-factory/data-pipeline.html",
+        "en-us": "pricing/details/data-factory/data-pipeline.html"
       }
     },
     {
@@ -139,6 +329,26 @@
       }
     },
     {
+      "product_key": "dedicated-host",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/virtual-machines/dedicated-host/index.html",
+        "en-us": "pricing/details/virtual-machines/dedicated-host/index.html"
+      }
+    },
+    {
+      "product_key": "dns",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/dns/index.html",
+        "en-us": "pricing/details/dns/index.html"
+      }
+    },
+    {
       "product_key": "event-grid",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
@@ -146,6 +356,126 @@
       "sources": {
         "zh-cn": "pricing/details/event-grid/index.html",
         "en-us": "pricing/details/event-grid/index.html"
+      }
+    },
+    {
+      "product_key": "event-hubs",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/event-hubs/index.html",
+        "en-us": "pricing/details/event-hubs/index.html"
+      }
+    },
+    {
+      "product_key": "expressroute",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/expressroute/index.html",
+        "en-us": "pricing/details/expressroute/index.html"
+      }
+    },
+    {
+      "product_key": "firewall-manager",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/firewall-manager/index.html",
+        "en-us": "pricing/details/firewall-manager/index.html"
+      }
+    },
+    {
+      "product_key": "fluid-relay",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/fluid-relay/index.html",
+        "en-us": "pricing/details/fluid-relay/index.html"
+      }
+    },
+    {
+      "product_key": "form-recognizer",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/form-recognizer/index.html",
+        "en-us": "pricing/details/form-recognizer/index.html"
+      }
+    },
+    {
+      "product_key": "frontdoor",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/frontdoor/index.html",
+        "en-us": "pricing/details/frontdoor/index.html"
+      }
+    },
+    {
+      "product_key": "hdinsight",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/hdinsight/index.html",
+        "en-us": "pricing/details/hdinsight/index.html"
+      }
+    },
+    {
+      "product_key": "hpc-cache",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/hpc-cache/index.html",
+        "en-us": "pricing/details/hpc-cache/index.html"
+      }
+    },
+    {
+      "product_key": "icp-addweb",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/ICP/icp-addweb.html",
+        "en-us": "SupportArticles/ICP/icp-addweb.html"
+      }
+    },
+    {
+      "product_key": "icp-cancel",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/ICP/icp-cancel.html",
+        "en-us": "SupportArticles/ICP/icp-cancel.html"
+      }
+    },
+    {
+      "product_key": "icp-change",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/ICP/icp-change.html",
+        "en-us": "SupportArticles/ICP/icp-change.html"
+      }
+    },
+    {
+      "product_key": "icp-faq",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/ICP/icp-faq.html",
+        "en-us": "SupportArticles/ICP/icp-faq.html"
       }
     },
     {
@@ -159,6 +489,146 @@
       }
     },
     {
+      "product_key": "icp-newinsert",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/ICP/icp-newinsert.html",
+        "en-us": "SupportArticles/ICP/icp-newinsert.html"
+      }
+    },
+    {
+      "product_key": "icp-newweb",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/ICP/icp-newweb.html",
+        "en-us": "SupportArticles/ICP/icp-newweb.html"
+      }
+    },
+    {
+      "product_key": "icp-summary",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/ICP/icp.html",
+        "en-us": "SupportArticles/ICP/icp.html"
+      }
+    },
+    {
+      "product_key": "iot-edge",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/iot-edge/index.html",
+        "en-us": "pricing/details/iot-edge/index.html"
+      }
+    },
+    {
+      "product_key": "iot-hub",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/iot-hub/index.html",
+        "en-us": "pricing/details/iot-hub/index.html"
+      }
+    },
+    {
+      "product_key": "ip-addresses",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/ip-addresses/index.html",
+        "en-us": "pricing/details/ip-addresses/index.html"
+      }
+    },
+    {
+      "product_key": "key-vault",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/key-vault/index.html",
+        "en-us": "pricing/details/key-vault/index.html"
+      }
+    },
+    {
+      "product_key": "kubernetes-service",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/kubernetes-service/index.html",
+        "en-us": "pricing/details/kubernetes-service/index.html"
+      }
+    },
+    {
+      "product_key": "legal-offer-rate-plans",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/Legal/offer-rate-plans.html",
+        "en-us": "SupportArticles/Legal/offer-rate-plans.html"
+      }
+    },
+    {
+      "product_key": "legal-privacy-statement",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/Legal/privacy-statement.html",
+        "en-us": "SupportArticles/Legal/privacy-statement.html"
+      }
+    },
+    {
+      "product_key": "legal-subscription-agreement",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/Legal/subscription-agreement.html",
+        "en-us": "SupportArticles/Legal/subscription-agreement.html"
+      }
+    },
+    {
+      "product_key": "legal-summary",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/Legal/legal.html",
+        "en-us": "SupportArticles/Legal/legal.html"
+      }
+    },
+    {
+      "product_key": "load-balancer",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/load-balancer/index.html",
+        "en-us": "pricing/details/load-balancer/index.html"
+      }
+    },
+    {
+      "product_key": "logic-apps",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/logic-apps/index.html",
+        "en-us": "pricing/details/logic-apps/index.html"
+      }
+    },
+    {
       "product_key": "machine-learning",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
@@ -166,6 +636,16 @@
       "sources": {
         "zh-cn": "pricing/details/machine-learning/index.html",
         "en-us": "pricing/details/machine-learning/index.html"
+      }
+    },
+    {
+      "product_key": "managed-grafana",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/managed-grafana/index.html",
+        "en-us": "pricing/details/managed-grafana/index.html"
       }
     },
     {
@@ -179,6 +659,16 @@
       }
     },
     {
+      "product_key": "metrics-advisor",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/metrics-advisor/index.html",
+        "en-us": "pricing/details/metrics-advisor/index.html"
+      }
+    },
+    {
       "product_key": "monitor",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
@@ -186,6 +676,16 @@
       "sources": {
         "zh-cn": "pricing/details/monitor/index.html",
         "en-us": "pricing/details/monitor/index.html"
+      }
+    },
+    {
+      "product_key": "multi-factor-authentication",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/multi-factor-authentication/index.html",
+        "en-us": "pricing/details/multi-factor-authentication/index.html"
       }
     },
     {
@@ -199,6 +699,16 @@
       }
     },
     {
+      "product_key": "notification-hubs",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/notification-hubs/index.html",
+        "en-us": "pricing/details/notification-hubs/index.html"
+      }
+    },
+    {
       "product_key": "postgresql",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
@@ -206,6 +716,46 @@
       "sources": {
         "zh-cn": "pricing/details/postgresql/index.html",
         "en-us": "pricing/details/postgresql/index.html"
+      }
+    },
+    {
+      "product_key": "power-bi-embedded",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/power-bi-embedded/index.html",
+        "en-us": "pricing/details/power-bi-embedded/index.html"
+      }
+    },
+    {
+      "product_key": "private-link",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/private-link/index.html",
+        "en-us": "pricing/details/private-link/index.html"
+      }
+    },
+    {
+      "product_key": "psr-summary",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/PublicSecurityRegistration/index.html",
+        "en-us": "SupportArticles/PublicSecurityRegistration/index.html"
+      }
+    },
+    {
+      "product_key": "route-server",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/route-server/index.html",
+        "en-us": "pricing/details/route-server/index.html"
       }
     },
     {
@@ -219,6 +769,16 @@
       }
     },
     {
+      "product_key": "search",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/search/index.html",
+        "en-us": "pricing/details/search/index.html"
+      }
+    },
+    {
       "product_key": "service-bus",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
@@ -226,6 +786,26 @@
       "sources": {
         "zh-cn": "pricing/details/service-bus/index.html",
         "en-us": "pricing/details/service-bus/index.html"
+      }
+    },
+    {
+      "product_key": "service-fabric",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/service-fabric/index.html",
+        "en-us": "pricing/details/service-fabric/index.html"
+      }
+    },
+    {
+      "product_key": "signalr-service",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/signalr-service/index.html",
+        "en-us": "pricing/details/signalr-service/index.html"
       }
     },
     {
@@ -239,6 +819,46 @@
       }
     },
     {
+      "product_key": "sla-active-directory",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/active-directory/index.html",
+        "en-us": "SupportArticles/SLA/active-directory/index.html"
+      }
+    },
+    {
+      "product_key": "sla-active-directory-b2c",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/active-directory-b2c/index.html",
+        "en-us": "SupportArticles/SLA/active-directory-b2c/index.html"
+      }
+    },
+    {
+      "product_key": "sla-active-directory-ds",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/active-directory-ds/v1_0/index.html",
+        "en-us": "SupportArticles/SLA/active-directory-ds/v1_0/index.html"
+      }
+    },
+    {
+      "product_key": "sla-analysis-services",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/analysis-services/index.html",
+        "en-us": "SupportArticles/SLA/analysis-services/index.html"
+      }
+    },
+    {
       "product_key": "sla-api-management",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
@@ -246,6 +866,216 @@
       "sources": {
         "zh-cn": "SupportArticles/SLA/api-management/index.html",
         "en-us": "SupportArticles/SLA/api-management/index.html"
+      }
+    },
+    {
+      "product_key": "sla-app-configuration",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/app-configuration/index.html",
+        "en-us": "SupportArticles/SLA/app-configuration/index.html"
+      }
+    },
+    {
+      "product_key": "sla-app-service",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/app-service/index.html",
+        "en-us": "SupportArticles/SLA/app-service/index.html"
+      }
+    },
+    {
+      "product_key": "sla-application-gateway",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/application-gateway/index.html",
+        "en-us": "SupportArticles/SLA/application-gateway/index.html"
+      }
+    },
+    {
+      "product_key": "sla-application-insights",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/application-insights/index.html",
+        "en-us": "SupportArticles/SLA/application-insights/index.html"
+      }
+    },
+    {
+      "product_key": "sla-automation",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/automation/index.html",
+        "en-us": "SupportArticles/SLA/automation/index.html"
+      }
+    },
+    {
+      "product_key": "sla-azure-arc",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/azure-arc/core-control-plane/index.html",
+        "en-us": "SupportArticles/SLA/azure-arc/core-control-plane/index.html"
+      }
+    },
+    {
+      "product_key": "sla-azure-bastion",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/azure-bastion/v1_0/index.html",
+        "en-us": "SupportArticles/SLA/azure-bastion/v1_0/index.html"
+      }
+    },
+    {
+      "product_key": "sla-azure-defender",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/azure-defender/index.html",
+        "en-us": "SupportArticles/SLA/azure-defender/index.html"
+      }
+    },
+    {
+      "product_key": "sla-azure-firewall",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/azure-firewall/index.html",
+        "en-us": "SupportArticles/SLA/azure-firewall/index.html"
+      }
+    },
+    {
+      "product_key": "sla-backup",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/back-up/index.html",
+        "en-us": "SupportArticles/SLA/back-up/index.html"
+      }
+    },
+    {
+      "product_key": "sla-bot-services",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/bot-services/index.html",
+        "en-us": "SupportArticles/SLA/bot-services/index.html"
+      }
+    },
+    {
+      "product_key": "sla-cache",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/cache/index.html",
+        "en-us": "SupportArticles/SLA/cache/index.html"
+      }
+    },
+    {
+      "product_key": "sla-cdn",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/cdn/index.html",
+        "en-us": "SupportArticles/SLA/cdn/index.html"
+      }
+    },
+    {
+      "product_key": "sla-cloud-services",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/cloud-services/index.html",
+        "en-us": "SupportArticles/SLA/cloud-services/index.html"
+      }
+    },
+    {
+      "product_key": "sla-cognitive-services",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/cognitive-services/index.html",
+        "en-us": "SupportArticles/SLA/cognitive-services/index.html"
+      }
+    },
+    {
+      "product_key": "sla-container-apps",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/container-apps/v1_0/index.html",
+        "en-us": "SupportArticles/SLA/container-apps/v1_0/index.html"
+      }
+    },
+    {
+      "product_key": "sla-container-instances",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/container-instances/v1_0/index.html",
+        "en-us": "SupportArticles/SLA/container-instances/v1_0/index.html"
+      }
+    },
+    {
+      "product_key": "sla-container-registry",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/container-registry/index.html",
+        "en-us": "SupportArticles/SLA/container-registry/index.html"
+      }
+    },
+    {
+      "product_key": "sla-cosmos-db",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/cosmos-db/index.html",
+        "en-us": "SupportArticles/SLA/cosmos-db/index.html"
+      }
+    },
+    {
+      "product_key": "sla-data-explorer",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/data-explorer/index.html",
+        "en-us": "SupportArticles/SLA/data-explorer/index.html"
+      }
+    },
+    {
+      "product_key": "sla-data-factory",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/data-factory/index.html",
+        "en-us": "SupportArticles/SLA/data-factory/index.html"
       }
     },
     {
@@ -259,6 +1089,536 @@
       }
     },
     {
+      "product_key": "sla-ddos-protection",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/ddos-protection/index.html",
+        "en-us": "SupportArticles/SLA/ddos-protection/index.html"
+      }
+    },
+    {
+      "product_key": "sla-dns",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/dns/index.html",
+        "en-us": "SupportArticles/SLA/dns/index.html"
+      }
+    },
+    {
+      "product_key": "sla-event-grid",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/event-grid/index.html",
+        "en-us": "SupportArticles/SLA/event-grid/index.html"
+      }
+    },
+    {
+      "product_key": "sla-event-hubs",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/event-hubs/index.html",
+        "en-us": "SupportArticles/SLA/event-hubs/index.html"
+      }
+    },
+    {
+      "product_key": "sla-expressroute",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/expressroute/index.html",
+        "en-us": "SupportArticles/SLA/expressroute/index.html"
+      }
+    },
+    {
+      "product_key": "sla-fluid-relay",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/fluid-relay/index.html",
+        "en-us": "SupportArticles/SLA/fluid-relay/index.html"
+      }
+    },
+    {
+      "product_key": "sla-frontdoor",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/frontdoor/index.html",
+        "en-us": "SupportArticles/SLA/frontdoor/index.html"
+      }
+    },
+    {
+      "product_key": "sla-functions",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/functions/index.html",
+        "en-us": "SupportArticles/SLA/functions/index.html"
+      }
+    },
+    {
+      "product_key": "sla-hdinsight",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/hdinsight/index.html",
+        "en-us": "SupportArticles/SLA/hdinsight/index.html"
+      }
+    },
+    {
+      "product_key": "sla-hpc-cache",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/hpc-cache/v1_0/index.html",
+        "en-us": "SupportArticles/SLA/hpc-cache/v1_0/index.html"
+      }
+    },
+    {
+      "product_key": "sla-information-protection",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/information-protection/index.html",
+        "en-us": "SupportArticles/SLA/information-protection/index.html"
+      }
+    },
+    {
+      "product_key": "sla-iot-hub",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/iot-hub/index.html",
+        "en-us": "SupportArticles/SLA/iot-hub/index.html"
+      }
+    },
+    {
+      "product_key": "sla-key-vault",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/key-vault/index.html",
+        "en-us": "SupportArticles/SLA/key-vault/index.html"
+      }
+    },
+    {
+      "product_key": "sla-kubernetes-service",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/kubernetes-service/index.html",
+        "en-us": "SupportArticles/SLA/kubernetes-service/index.html"
+      }
+    },
+    {
+      "product_key": "sla-load-balancer",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/load-balancer/index.html",
+        "en-us": "SupportArticles/SLA/load-balancer/index.html"
+      }
+    },
+    {
+      "product_key": "sla-log-analytics",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/log-analytics/index.html",
+        "en-us": "SupportArticles/SLA/Log Analytics/index.html"
+      }
+    },
+    {
+      "product_key": "sla-logic-apps",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/logic-apps/v1_0/index.html",
+        "en-us": "SupportArticles/SLA/logic-apps/v1_0/index.html"
+      }
+    },
+    {
+      "product_key": "sla-machine-learning",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/machine-learning/index.html",
+        "en-us": "SupportArticles/SLA/machine-learning/index.html"
+      }
+    },
+    {
+      "product_key": "sla-managed-disks",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/managed-disks/index.html",
+        "en-us": "SupportArticles/SLA/managed-disks/index.html"
+      }
+    },
+    {
+      "product_key": "sla-managed-grafana",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/managed-grafana/index.html",
+        "en-us": "SupportArticles/SLA/managed-grafana/index.html"
+      }
+    },
+    {
+      "product_key": "sla-managed-instance",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/managed-instance/index.html",
+        "en-us": "SupportArticles/SLA/managed-instance/index.html"
+      }
+    },
+    {
+      "product_key": "sla-mariadb",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/mariadb/index.html",
+        "en-us": "SupportArticles/SLA/mariadb/index.html"
+      }
+    },
+    {
+      "product_key": "sla-media-services",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/media-services/index.html",
+        "en-us": "SupportArticles/SLA/media-services/index.html"
+      }
+    },
+    {
+      "product_key": "sla-messaging",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/messaging/index.html",
+        "en-us": "SupportArticles/SLA/messaging/index.html"
+      }
+    },
+    {
+      "product_key": "sla-microsoft-sentinel",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/microsoft-sentinel/index.html",
+        "en-us": "SupportArticles/SLA/microsoft-sentinel/index.html"
+      }
+    },
+    {
+      "product_key": "sla-monitor",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/monitor/index.html",
+        "en-us": "SupportArticles/SLA/monitor/index.html"
+      }
+    },
+    {
+      "product_key": "sla-multi-factor-authentication",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/multi-factor-authentication/index.html",
+        "en-us": "SupportArticles/SLA/multi-factor-authentication/index.html"
+      }
+    },
+    {
+      "product_key": "sla-mysql",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/mysql/index.html",
+        "en-us": "SupportArticles/SLA/mysql/index.html"
+      }
+    },
+    {
+      "product_key": "sla-nat-gateway",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/nat-gateway/index.html",
+        "en-us": "SupportArticles/SLA/nat-gateway/index.html"
+      }
+    },
+    {
+      "product_key": "sla-network-watcher",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/network-watcher/index.html",
+        "en-us": "SupportArticles/SLA/network-watcher/index.html"
+      }
+    },
+    {
+      "product_key": "sla-notification-hubs",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/notification-hubs/index.html",
+        "en-us": "SupportArticles/SLA/notification-hubs/index.html"
+      }
+    },
+    {
+      "product_key": "sla-postgresql",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/postgresql/index.html",
+        "en-us": "SupportArticles/SLA/postgresql/index.html"
+      }
+    },
+    {
+      "product_key": "sla-power-bi-embedded",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/power-bi-embedded/index.html",
+        "en-us": "SupportArticles/SLA/power-bi-embedded/index.html"
+      }
+    },
+    {
+      "product_key": "sla-private-link",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/private-link/index.html",
+        "en-us": "SupportArticles/SLA/private-link/index.html"
+      }
+    },
+    {
+      "product_key": "sla-purview",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/purview/index.html",
+        "en-us": "SupportArticles/SLA/purview/index.html"
+      }
+    },
+    {
+      "product_key": "sla-route-server",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/route-server/index.html",
+        "en-us": "SupportArticles/SLA/route-server/index.html"
+      }
+    },
+    {
+      "product_key": "sla-scheduler",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/scheduler/index.html",
+        "en-us": "SupportArticles/SLA/scheduler/index.html"
+      }
+    },
+    {
+      "product_key": "sla-search",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/search/v1_0/index.html",
+        "en-us": "SupportArticles/SLA/search/v1_0/index.html"
+      }
+    },
+    {
+      "product_key": "sla-service-bus",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/service-bus/index.html",
+        "en-us": "SupportArticles/SLA/service-bus/index.html"
+      }
+    },
+    {
+      "product_key": "sla-service-fabric",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/service-fabric/index.html",
+        "en-us": "SupportArticles/SLA/service-fabric/index.html"
+      }
+    },
+    {
+      "product_key": "sla-signalr-service",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/signalr-service/index.html",
+        "en-us": "SupportArticles/SLA/signale-service/index.html"
+      }
+    },
+    {
+      "product_key": "sla-site-recovery",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/site-recovery/index.html",
+        "en-us": "SupportArticles/SLA/site-recovery/index.html"
+      }
+    },
+    {
+      "product_key": "sla-spring-cloud",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/spring-cloud/index.html",
+        "en-us": "SupportArticles/SLA/spring-cloud/index.html"
+      }
+    },
+    {
+      "product_key": "sla-sql-data",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/sql-data/index.html",
+        "en-us": "SupportArticles/SLA/sql-data/index.html"
+      }
+    },
+    {
+      "product_key": "sla-sql-server-stretch-database",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/sql-server-stretch-database/index.html",
+        "en-us": "SupportArticles/SLA/sql-server-stretch-database/index.html"
+      }
+    },
+    {
+      "product_key": "sla-storage",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/storage/index.html",
+        "en-us": "SupportArticles/SLA/storage/index.html"
+      }
+    },
+    {
+      "product_key": "sla-stream-analytics",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/stream-analytics/index.html",
+        "en-us": "SupportArticles/SLA/stream-analytics/index.html"
+      }
+    },
+    {
+      "product_key": "sla-summary",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/Legal/sla.html",
+        "en-us": "SupportArticles/Legal/sla.html"
+      }
+    },
+    {
+      "product_key": "sla-synapse-analytics",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/synapse-analytics/index.html",
+        "en-us": "SupportArticles/SLA/sql-data-warehouse/index.html"
+      }
+    },
+    {
+      "product_key": "sla-time-series-insights",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/time-series-insights/index.html",
+        "en-us": "SupportArticles/SLA/time-series-insights/index.html"
+      }
+    },
+    {
+      "product_key": "sla-traffic-manager",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/traffic-manager/index.html",
+        "en-us": "SupportArticles/SLA/traffic-manager/index.html"
+      }
+    },
+    {
+      "product_key": "sla-virtual-desktop",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/virtual-desktop/v1_0/index.html",
+        "en-us": "SupportArticles/SLA/virtual-desktop/v1_0/index.html"
+      }
+    },
+    {
+      "product_key": "sla-virtual-machine-scale-sets",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/virtual-machine-scale-sets/index.html",
+        "en-us": "SupportArticles/SLA/virtual-machine-scale-sets/index.html"
+      }
+    },
+    {
       "product_key": "sla-virtual-machines",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
@@ -266,6 +1626,56 @@
       "sources": {
         "zh-cn": "SupportArticles/SLA/virtual-machines/index.html",
         "en-us": "SupportArticles/SLA/virtual-machines/index.html"
+      }
+    },
+    {
+      "product_key": "sla-virtual-network",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/virtual-network/index.html",
+        "en-us": "SupportArticles/SLA/virtual-network/index.html"
+      }
+    },
+    {
+      "product_key": "sla-virtual-network-manager",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/virtual-network-manager/index.html",
+        "en-us": "SupportArticles/SLA/virtual-network-manager/index.html"
+      }
+    },
+    {
+      "product_key": "sla-vpn-gateway",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/vpn-gateway/index.html",
+        "en-us": "SupportArticles/SLA/vpn-gateway/index.html"
+      }
+    },
+    {
+      "product_key": "sla-web-pubsub",
+      "page_model": "SupportArticlePage",
+      "semantic_strategy": "support_article",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "SupportArticles/SLA/web-pubsub/index.html",
+        "en-us": "SupportArticles/SLA/web-pubsub/index.html"
+      }
+    },
+    {
+      "product_key": "spring-cloud",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/spring-cloud/index.html",
+        "en-us": "pricing/details/spring-cloud/index.html"
       }
     },
     {
@@ -279,6 +1689,56 @@
       }
     },
     {
+      "product_key": "sql-edge",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/sql-edge/index.html",
+        "en-us": "pricing/details/sql-edge/index.html"
+      }
+    },
+    {
+      "product_key": "sql-server-stretch-database",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/sql-server-stretch-database/index.html",
+        "en-us": "pricing/details/sql-server-stretch-database/index.html"
+      }
+    },
+    {
+      "product_key": "ssis",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/data-factory/ssis.html",
+        "en-us": "pricing/details/data-factory/ssis.html"
+      }
+    },
+    {
+      "product_key": "storage",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/storage/index.html",
+        "en-us": "pricing/details/storage/index.html"
+      }
+    },
+    {
+      "product_key": "stream-analytics",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/stream-analytics/index.html",
+        "en-us": "pricing/details/stream-analytics/index.html"
+      }
+    },
+    {
       "product_key": "synapse-analytics",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
@@ -289,6 +1749,16 @@
       }
     },
     {
+      "product_key": "time-series-insights",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/time-series-insights/index.html",
+        "en-us": "pricing/details/time-series-insights/index.html"
+      }
+    },
+    {
       "product_key": "traffic-manager",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
@@ -296,6 +1766,16 @@
       "sources": {
         "zh-cn": "pricing/details/traffic-manager/index.html",
         "en-us": "pricing/details/traffic-manager/index.html"
+      }
+    },
+    {
+      "product_key": "virtual-desktop",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/virtual-desktop/index.html",
+        "en-us": "pricing/details/virtual-desktop/index.html"
       }
     },
     {
@@ -316,6 +1796,56 @@
       "sources": {
         "zh-cn": "pricing/details/virtual-machines/index.html",
         "en-us": "pricing/details/virtual-machines/index.html"
+      }
+    },
+    {
+      "product_key": "virtual-network",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/virtual-network/index.html",
+        "en-us": "pricing/details/virtual-network/index.html"
+      }
+    },
+    {
+      "product_key": "virtual-network-manager",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/virtual-network-manager/index.html",
+        "en-us": "pricing/details/virtual-network-manager/index.html"
+      }
+    },
+    {
+      "product_key": "virtual-wan",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/virtual-wan/index.html",
+        "en-us": "pricing/details/virtual-wan/index.html"
+      }
+    },
+    {
+      "product_key": "vpn-gateway",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/vpn-gateway/index.html",
+        "en-us": "pricing/details/vpn-gateway/index.html"
+      }
+    },
+    {
+      "product_key": "web-pubsub",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "sources": {
+        "zh-cn": "pricing/details/web-pubsub/index.html",
+        "en-us": "pricing/details/web-pubsub/index.html"
       }
     }
   ]

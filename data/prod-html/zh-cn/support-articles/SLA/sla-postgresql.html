@@ -1,0 +1,449 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+    <meta name="keywords" content="" />
+    <meta name="description" content="
+            Azure Database for PostgreSQL 的服务级别协议
+        " />
+
+    <title>Azure Database for PostgreSQL 的服务级别协议 - Azure云计算</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="../../../Static/Favicon/apple-touch-icon.png">
+    <link rel="shortcut icon" href="../../../Static/Favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../../../Static/Favicon/favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="../../../Static/Favicon/manifest.json">
+    <link rel="mask-icon" href="../../../Static/Favicon/safari-pinned-tab.svg" color="#0078D4">
+    <meta name="msapplication-config" content="/Static/Favicon/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <!-- BEGIN: Azure UI Style -->
+    <link href="../../../Static/CSS/azureui.min.css" rel="stylesheet">
+    <link href="../../../Static/CSS/common.min.css" rel="stylesheet">
+    <!-- END: Azure UI Style -->
+    <!-- BEGIN: Page Style -->
+    
+    <!-- END: Page Style -->
+
+    <!-- BEGIN: Minified Page Style -->
+    <link href='../../../Static/CSS/d32f7e46bb12eef495b9b58c4ab0c2dfb52c1f25.css' rel='stylesheet' />
+    <!-- END: Minified Page Style -->
+            
+    <link rel="stylesheet" href="../../../StaticService/css/service.min.css" />
+</head>
+<body class="zh-cn">    
+    <script>
+        window.requireUrlArgs = "2019/6/24 6:51:27";
+        window.currentLocale = "zh-CN";        
+        window.headerTimestamp = "2019/1/23 8:25:24";
+        window.footerTimestamp = "2019/1/8 8:07:06";
+        window.locFileTimestamp = "2018/11/29 7:49:17";
+
+        window.AcnHeaderFooter = {
+            IsEnableQrCode: true,
+            CurrentLang: window.currentLocale.toLowerCase(),
+        };
+    </script>
+    
+    <style>
+       @media (min-width: 0) {
+            .acn-header-placeholder {
+                height: 48px; 
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 980px) {
+            .acn-header-placeholder {
+                height: 89px; 
+                width: 100%;
+            }
+        }
+
+        .acn-header-placeholder {
+            background-color: #1A1A1A;
+        }
+
+        .acn-header-service{
+            position: absolute; 
+            top: 0;
+            width: 100%;
+        }
+    </style>
+<div class="acn-header-container">
+        <div class="acn-header-placeholder">
+        </div>
+        <div class="public_headerpage"></div>
+</div>
+
+<!-- BEGIN: Documentation Content -->
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="bread-crumb hidden-sm hidden-xs">
+                    <ul>
+                        <li><span class="hidden-all">文档与资源</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="single-page">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="documentation-navigation left-navigation hidden-xs hidden-sm">
+                        <div class="loader">
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                    </div>
+                </div>
+                </div>
+                <div class="col-md-8 pure-content">
+                    <div class="select left-navigation-select hidden-md hidden-lg">
+                        <select><option selected="selected">加载中...</option></select>
+                        <span class="icon icon-arrow-top"></span>
+                    </div>
+                    
+        <p><tags ms.service="legal" ms.date="03/2016" wacn.date="03/2016" wacn.lang="cn"/></p>
+
+        <h1>Azure Database for PostgreSQL 的服务级别协议</h1><div class="tags-date"><div class="wacn-date">最后更新时间：2024年07月</div></div>
+        <h2>引言</h2>
+        <p>此世纪互联在线服务的服务级别协议（本“SLA”）是世纪互联批量许可协议（简称“协议”）的一部分。本 SLA 中使用但未定义的术语应沿用其在“协议”中的含义。本 SLA 适用于文中列出的世纪互联在线服务（简称“服务”），但对与服务一起提供、与服务或任一服务中任何本地软件关联的独立品牌服务不适用。
+            如果我们未达到和保持本 SLA 规定的每种服务的服务级别，那么您可能有资格获得月度服务费用的部分退款。我们不会在您的订阅初始期限内修改您的 SLA 条款；但是，如果您续签订阅，则续签之时现行的本 SLA 的版本将适用于您的续签期。如本 SLA 有任何重大不利变更，我们将至少提前九十 (90) 天予以通知。</p>
+        <h2>一般条款</h2>
+        <h3>一、定义</h3>
+        <ol>
+        <li>
+        <p>“索赔” 指客户根据本服务级别协议向世纪互联提交的、有关尚未达到某个服务级别以及客户可获得的服务费抵扣的索赔。</p>
+        </li>
+        <li>
+        <p>“客户”指签订本协议的机构。</p>
+        </li>
+        <li>
+        <p>“客户支持”指世纪互联可由此为客户提供帮助以解决服务问题的服务。</p>
+        </li>
+        <li>
+        <p>“错误代码”用于指示某项操作出现了问题，例如，5xx 范围内的 HTTP 状态代码。</p>
+        </li>
+        <li>
+        <p>“外部连接”是指可通过受支持的协议（例如 HTTP 和 HTTPS）从公共 IP 地址发送和接收的双向网络流量。</p>
+        </li>
+        <li>
+        <p>“事件”表示导致无法达到服务级别的任何情况。</p>
+        </li>
+        <li>
+        <p>“管理门户”指由世纪互联提供的 web 界面，客户可以通过该界面来管理服务。</p>
+        </li>
+        <li>
+        <p>“世纪互联”指客户协议上载明的世纪互联实体。</p>
+        </li>
+        <li>
+        <p>“预览版”指提供用来获得客户反馈的服务或软件的预览版、测试版或其他预发行版。</p>
+        </li>
+        <li>
+        <p>“服务”表示根据协议为客户提供的并在以下指定服务级别协议的 Azure 服务。</p>
+        </li>
+        <li>
+        <p>“服务费抵扣”表示针对受影响的服务或服务资源的已经证实的服务索赔，返还给客户的月度服务费用的百分比。</p>
+        </li>
+        <li>
+        <p>“服务级别”指定世纪互联选择遵守并据此衡量其所提供的每种服务的服务级别的标准，具体如下所述。</p>
+        </li>
+        <li>
+        <p>“服务资源”指某个服务内可供使用的单独资源。</p>
+        </li>
+        <li>
+        <p>“成功代码”用于指示某项操作已经成功，例如，2xx 范围内的 HTTP 状态代码。</p>
+        </li>
+        <li>
+        <p>“支持时段”指支持某个服务功能或者支持与某个单独产品或服务兼容的时间范围。</p>
+        </li>
+        <li>
+        <p>“虚拟网络”指虚拟专用网络，包括用户定义的 IP 地址和子网的集合，形成了 Azure 内的网络边界。</p>
+        </li>
+        <li>
+        <p>“虚拟网络网关”是指促成虚拟网络和客户本地网络之间跨区域连接的网关。</p>
+        </li>
+        </ol>
+        <h3>二、服务费抵扣索赔</h3>
+        <ol>
+        <li>
+        <p>客户必须在事件（索赔主题）发生的帐单月份结束之后的两 (2) 个月内向客户支持提交索赔，世纪互联才会受理该索赔。客户必须向客户支持提供世纪互联证实该索赔所需的所有信息，包括但不限于：事件的详细说明、事件的发生时间和持续时间、受影响的资源或操作以及客户尝试解决该事件所做出的任何努力。</p>
+        </li>
+        <li>
+        <p>世纪互联将利用所有可合理获得的信息来验证索赔，并判定是否应兑现服务费抵扣。</p>
+        </li>
+        <li>
+        <p>如果由于同一事件导致未能达到某个特定服务的多个服务级别，客户必须仅选择一个服务级别并基于该服务级别针对此次事件提出索赔。</p>
+        </li>
+        <li>
+        <p>服务费抵扣仅适用于为未达到服务级别的特定服务、服务资源或服务层级所支付的费用。如果服务级别适用于单独的服务资源或单独的服务层级，则服务费抵扣仅适用于为受影响的服务资源或服务层级（如果有）所支付的费用。</p>
+        </li>
+        </ol>
+        <h3>三、服务级别协议排除项</h3>
+        <p>本服务级别协议和任何适用的服务级别不适用于由以下情况造成的任何性能或可用性问题：</p>
+        <ol>
+        <li>
+        <p>由于超出世纪互联合理控制范围的因素而导致的问题，例如，在世纪互联数据中心以外（包括在客户的站点或者客户的站点和世纪互联数据中心之间）的网络或设备故障；</p>
+        </li>
+        <li>
+        <p>由于客户使用非世纪互联提供的硬件、软件或服务（例如，从 Azure 商店购买的第三方软件或服务或者世纪互联提供的其他非 Azure 服务）作为服务的一部分而导致的问题；</p>
+        </li>
+        <li>
+        <p>由于客户未按与服务功能一致的方式（例如，尝试执行不受支持的操作）或者未按与发布的文档或指南一致的方式来使用服务而导致的问题；</p>
+        </li>
+        <li>
+        <p>由于错误的输入、指令或参数（例如，请求访问不存在的文件）而导致的问题；</p>
+        </li>
+        <li>
+        <p>世纪互联建议客户改变服务的使用方式之后，如果客户未按建议改变其使用方式而继续使用服务所导致的问题；</p>
+        </li>
+        <li>
+        <p>使用预览版期间出现问题或者与预览版有关的问题，或者使用世纪互联订购信用进行购买而导致的问题；</p>
+        </li>
+        <li>
+        <p>由于客户试图执行的操作超出了规定的服务配额而导致的问题，或者由于限制可疑的滥用行为而导致的问题；</p>
+        </li>
+        <li>
+        <p>由于客户使用的服务功能超出了相关支持时段而导致的问题；或</p>
+        </li>
+        <li>
+        <p>由于他人利用客户的密码或设备未经授权地访问世纪互联服务的行为，或由于客户未能遵循适当的安全惯例而导致的问题。</p>
+        </li>
+        </ol>
+        <h3>四、服务额度</h3>
+        <ol>
+        <li>
+        <p>服务额度是在本协议和本 SLA 下针对任何服务的任何性能或可用性问题对您做出的具有排他性的唯一补救措施。您不得以任何性能或可用性问题为由单方面抵消您的适用服务费。</p>
+        </li>
+        <li>
+        <p>服务额度仅适用于为未达到服务级别的特定服务、服务资源或服务层级所支付的费用。如果服务级别适用于单独的服务资源或单独的服务层级，则服务额度仅适用于为受影响的服务资源或服务层级（如果有）所支付的费用。在任何情况下，任何帐单月份内对特定服务或服务资源发放的服务额度，不得超过该项服务或服务资源（如适用）在该适用期间的月服务费。</p>
+        </li>
+        <li>
+        <p>通过预留实例或 Azure 成本节省计划购买的服务如果具有符合条件的 SLA，则有资格获得服务额度。</p>
+        </li>
+        <li>
+        <p>如果您是从某经销商处购买的服务，则可直接从该经销商处获得服务额度，而该经销商会直接从我们这里获得服务额度。服务额度将基于适用服务的估计零售价（此价格经世纪互联合理裁量后确定）。</p>
+        </li>
+        </ol>
+        <h2>Azure Database for PostgreSQL - 单服务器</h2>
+        <h3>附加定义</h3>
+        <ol>
+            <li>“<strong>服务器</strong>”是指任何指定的 Azure Database for PostgreSQL 服务器 - 单服务器。</li>
+            <li>“<strong>高可用性群集</strong>”是指一组高可用性节点。</li>
+            <li>“<strong>高可用性节点</strong>”是指一个服务器组中启用高可用性功能的节点。</li>
+            <li>“<strong>协调器节点</strong>”是指被分配群集协调器角色的节点。</li>
+            <li>“<strong>工作器节点</strong>”是指被分配工作器角色的节点。</li>
+        </ol>
+        <h3>Azure Database for PostgreSQL - 单服务器的正常服务时间计算和服务级别</h3>
+        <ol>
+        <li>
+        <p>“<strong>最大可用分钟数</strong>”是指在一个适用期间内，客户在 Azure 订阅中部署了指定服务器的总分钟数。</p>
+        </li>
+        <li>
+        <p>“<strong>停机时间</strong>”是指最大可用分钟数中服务器不可用的总分钟数。如果在某一分钟内，客户连续尝试与服务器建立连接但均返回错误代码，或者没有任何响应，则认为在这一分钟内服务器不可用。</p>
+        </li>
+        <li>
+        <p>Azure Database for PostgreSQL 的“<strong>正常服务时间百分比</strong>”计算方法为：最大可用分钟数减去停机时间，再除以最大可用分钟数。</p>
+        <p>“正常服务时间百分比”应使用以下公式计算：</p>
+        <p>正常服务时间百分比 =（最大可用分钟数 - 停机时间）/ 最大可用分钟数 X 100 </p>
+        
+        </li>
+        <li>
+        <p>以下服务级别和服务额度适用于客户对 Azure Database for PostgreSQL 单服务器的使用：</p>
+        <table style="text-align: center;">
+            <tr>
+                <th style="width: 300px;">正常服务时间百分比</th>
+                <th style="width: 300px;">服务额度</th>      
+           </tr>  
+            <tr>
+                <td>< 99.99%</td>
+                <td>10%</td>      
+            </tr>
+            <tr>
+                <td>< 99%</td>
+                <td>25%</td>      
+            </tr>
+            <tr>
+                <td>< 95%</td>
+                <td>100%</td>      
+            </tr>
+        </table>
+        </li>
+        </ol>
+
+        <!-- 灵活服务器 -->
+        <h2>Azure Database for PostgreSQL - 灵活服务器</h2>
+        <h3>附加定义</h3>
+        <ol>
+            <li>“<strong>服务器</strong>”是指任何指定的 Azure Database for PostgreSQL 服务器 - 灵活服务器。</li>
+            <li>在灵活服务器语境中，“<strong>高可用性</strong>”是指一组高可用性服务器（主服务器和备用服务器）采用区域冗余或同区域冗余配置部署。</li>
+        </ol>
+        <h3>Azure Database for PostgreSQL - 灵活服务器的正常服务时间计算和服务级别</h3>
+        <ol>
+        <li>
+        <p>“<strong>最大可用分钟数</strong>”是指在一个适用期间内，客户在 Azure 订阅中部署了指定服务器的总分钟数。</p>
+        </li>
+        <li>
+        <p>“<strong>停机时间</strong>”是指最大可用分钟数中服务器不可用的总分钟数。如果在某一分钟内，客户连续尝试与服务器建立连接，但所有尝试均不成功，则认为在这一分钟内该服务器不可用。</p>
+        </li>
+        <li>
+        <p>Azure Database for PostgreSQL - 灵活服务器的“<strong>正常服务时间百分比</strong>”通过以下方式计算：最大可用分钟数减去停机时间，再除以最大可用分钟数。</p>
+        <p>正常服务时间百分比计算公式如下所示：</p>
+        <p>正常服务时间百分比 =（最大可用分钟数 - 停机时间）/ 最大可用分钟数 X 100 </p>
+        
+        </li>
+        <li>
+        <p>以下服务级别和服务额度适用于客户对配置为分区冗余高可用性模式的 Azure Database for PostgreSQL - 灵活服务器的使用：</p>
+        <table style="text-align: center;">
+            <tr>
+                <th style="width: 300px;">正常服务时间百分比</th>
+                <th style="width: 300px;">服务额度</th>      
+           </tr>  
+            <tr>
+                <td>低于 99.99% 且大于或等于 99.00%</td>
+                <td>10%</td>      
+            </tr>
+            <tr>
+                <td>低于 99.00% 且大于或等于 95.00%</td>
+                <td>25%</td>      
+            </tr>
+            <tr>
+                <td>< 95.00%</td>
+                <td>100%</td>      
+            </tr>
+        </table>
+
+        <p>以下服务级别和服务额度适用于客户对配置为同区域高可用性模式的 Azure Database for PostgreSQL - 灵活服务器的使用：</p>
+        <table style="text-align: center;">
+            <tr>
+                <th style="width: 300px;">正常服务时间百分比</th>
+                <th style="width: 300px;">服务额度</th>      
+           </tr>  
+            <tr>
+                <td>低于 99.95% 且大于或等于 99.00%</td>
+                <td>10%</td>      
+            </tr>
+            <tr>
+                <td>< 99.00%</td>
+                <td>25%</td>      
+            </tr>
+        </table>
+
+        <p>以下服务级别和服务额度适用于客户对未配置高可用性模式的 Azure Database for PostgreSQL – 灵活服务器的使用：</p>
+        <table style="text-align: center;">
+            <tr>
+                <th style="width: 300px;">正常服务时间百分比</th>
+                <th style="width: 300px;">服务额度</th>      
+           </tr>  
+            <tr>
+                <td>低于 99.9% 且大于或等于 99.00%</td>
+                <td>10%</td>
+            </tr>
+            <tr>
+                <td>< 99.00%</td>
+                <td>25%</td>      
+            </tr>
+        </table>
+    
+                    <div id="content_feedback"></div>
+                    
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="documentation-bookmark book-mark hidden-sm hidden-xs">
+                        <div class="loader">
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                            <i class="circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END: Documentation Content -->
+
+<!-- BEGIN: Footer -->
+<div class="public_footerpage"></div>
+<!--END: Common sidebar-->
+
+
+        
+<link href="../../../Static/CSS/Localization/zh-cn.css" rel="stylesheet">
+<script type="text/javascript">
+    function getAntiForgeryToken() {
+        var token = '<input name="__RequestVerificationToken" type="hidden" value="zUB4BZSX-AbzY9mXtdEAa_n7jFO1GWFPzAQGp1rlO8DAcXapR49F5AlQ1dMiAORmOT-BuCi7ULg0oSNaTl_0wf0l7K0DOIdoS-keUb930IY1" />';
+        token = $(token).val();
+        return token;
+    }
+    function setLocaleCookie(localeVal) {
+        var Days = 365 * 10; // Ten year expiration
+        var exp = new Date();
+
+        var hostName = window.location.hostname;
+        var secondLevelDomain = hostName.substring(hostName.lastIndexOf(".", hostName.lastIndexOf(".") - 1));
+
+        exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+        document.cookie = "acn_selected_locale=" + localeVal + ";domain=" + secondLevelDomain + "; path=/;expires=" + exp.toGMTString();
+    }
+
+    setLocaleCookie(window.currentLocale);
+</script>
+
+<script type="text/javascript">
+    var MARKETING_STORAGE = '/blob/marketing-resource/Content';
+    var TECHNICAL_STORAGE = '/blob/tech-content/';
+    var EXTERNAL_RESOURCE_STORAGE = '/blob/external-resource/';
+    var EnablePricingSync = 'false';
+</script>
+
+    <!-- BEGIN: Script -->
+    
+    <!-- END: Script -->
+
+    <!-- BEGIN: Minified RequireJs -->
+    <script src='../../../Static/Scripts/global.config.js' type='text/javascript'></script>
+    <script src='../../../Static/Scripts/require.js' type='text/javascript'></script>
+    <script src='../../../Static/Scripts/7c65de8a762eefb843488abc82df7494b2d9a22d.js' type='text/javascript'></script>
+    <!-- END: Minified RequireJs -->
+
+    <!-- begin JSLL -->
+<script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js"></script>
+
+<script type="text/javascript">
+        (function () {
+            var config = {
+                cookiesToCollect: ["_mkto_trk"],
+                syncMuid: true,
+                ix: {
+                    a: true,
+                    g: true
+                },
+                coreData: {
+                    appId: 'AzureCN',
+                    market: 'zh-cn',
+                }
+            };
+            awa.init(config);
+        })();
+</script>
+<!-- end JSLL -->
+
+<script type="text/javascript" src="../../../Static/Scripts/plugins/cookie/jquery.cookie.js"></script>
+<script type="text/javascript" src="../../../Static/Scripts/wacndatatracker.js"></script>
+
+
+<script type="text/javascript" src="/common/useCommon.js"></script>
+
+</body>
+</html>

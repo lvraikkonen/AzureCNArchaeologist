@@ -22,6 +22,6 @@
     }
   },
   "extraction": {
-    "semantic_strategy": "simple_static"
+    "semantic_strategy": "complex"
   }
 }

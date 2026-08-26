@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import re
+from copy import deepcopy
 from typing import Any
 
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
@@ -21,6 +22,7 @@ class SupportArticleStrategy(BaseStrategy):
         "#content_feedback", ".content-feedback", ".select", ".left-navigation-select",
         ".bookmark", ".loader", ".tags", "select", "script", "style", "tags",
     )
+    METADATA_SELECTORS = (".tags-date", ".wacn-date", ".ms-date")
 
     def __init__(self, product_config: dict[str, Any], html_file_path: str = "") -> None:
         super().__init__(product_config, html_file_path)
@@ -81,45 +83,81 @@ class SupportArticleStrategy(BaseStrategy):
         ).strip()
 
     def _extract_article_description(self, content: Tag, source_url: str) -> str:
-        h1 = content.find("h1")
-        if not h1:
-            return ""
+        description_nodes, _main_nodes = self._article_nodes(content)
         wrapper = BeautifulSoup("<div></div>", "html.parser").div
-        for element in h1.next_elements:
-            if isinstance(element, Tag) and element.name == "h2":
-                break
-            if isinstance(element, Tag) and element.name == "p":
-                clone = BeautifulSoup(str(element), "html.parser").find("p")
-                if clone:
-                    wrapper.append(clone)
+        self._append_nodes(wrapper, description_nodes)
         self._clean_fragment(wrapper, source_url)
         return normalize_html(wrapper.decode_contents())
 
     def _extract_main_content(self, content: Tag, source_url: str) -> str:
-        first_h2 = content.find("h2")
-        if not first_h2:
-            return ""
+        _description_nodes, main_nodes = self._article_nodes(content)
         wrapper = BeautifulSoup("<div></div>", "html.parser").div
-        current = first_h2
-        while current is not None:
-            if isinstance(current, Tag):
-                clone = BeautifulSoup(str(current), "html.parser").find()
-                if clone:
-                    wrapper.append(clone)
-            elif (
-                isinstance(current, NavigableString)
-                and not isinstance(current, Comment)
-                and str(current).strip()
-            ):
-                wrapper.append(NavigableString(str(current)))
-            current = current.next_sibling
+        self._append_nodes(wrapper, main_nodes)
         self._clean_fragment(wrapper, source_url)
         if not wrapper.get_text(" ", strip=True) and not wrapper.select("img, video, audio, table, iframe"):
             return ""
         return normalize_html(wrapper.decode_contents())
 
+    @staticmethod
+    def _article_nodes(
+        content: Tag,
+    ) -> tuple[tuple[Any, ...], tuple[Any, ...]]:
+        """Resolve one direct, singly wrapped, or headingless article body."""
+
+        h1s = content.find_all("h1")
+        if len(h1s) != 1 or h1s[0].parent is not content:
+            return (), ()
+
+        direct_nodes = list(content.children)
+        h1 = h1s[0]
+        h1_index = direct_nodes.index(h1)
+
+        h2s = content.find_all("h2")
+        if h2s:
+            first_h2 = h2s[0]
+            headings = content.find_all(["h1", "h2"])
+            if not headings or headings[0] is not h1:
+                return (), ()
+
+            body = first_h2.parent
+            if not isinstance(body, Tag):
+                return (), ()
+            if body is not content and content not in body.parents:
+                return (), ()
+            if any(heading is not first_h2 and body not in heading.parents for heading in h2s):
+                return (), ()
+
+            body_nodes = list(body.children)
+            first_h2_index = body_nodes.index(first_h2)
+            if body is content:
+                description_start = h1_index + 1
+            else:
+                description_start = 0
+            return (
+                tuple(body_nodes[description_start:first_h2_index]),
+                tuple(body_nodes[first_h2_index:]),
+            )
+
+        # A short support article without section headings has no separate
+        # description. Everything after its title is the required main body.
+        return (), tuple(direct_nodes[h1_index + 1 :])
+
+    @staticmethod
+    def _append_nodes(wrapper: Tag, nodes: tuple[Any, ...]) -> None:
+        for node in nodes:
+            if isinstance(node, Comment):
+                continue
+            if isinstance(node, Tag):
+                if node.get("id") == "content_feedback" or "content-feedback" in node.get(
+                    "class", []
+                ):
+                    break
+                wrapper.append(deepcopy(node))
+            elif isinstance(node, NavigableString) and str(node).strip():
+                wrapper.append(NavigableString(str(node)))
+
     def _clean_fragment(self, fragment: Tag, source_url: str) -> None:
-        for selector in self.UI_SELECTORS:
+        for selector in (*self.UI_SELECTORS, *self.METADATA_SELECTORS):
             for element in fragment.select(selector):
                 element.decompose()
         del source_url

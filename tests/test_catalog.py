@@ -14,51 +14,26 @@ from src.core.catalog import (
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_SCOPE = (
-    "advisor",
-    "api-management",
-    "app-service",
-    "automation",
-    "azure-firewall",
-    "azure-migrate",
-    "azure-policy",
-    "azure-update-management-center",
-    "backup",
-    "cloud-services",
-    "cosmos-db",
-    "database-migration",
-    "databricks",
-    "event-grid",
-    "icp-new",
-    "machine-learning",
-    "managed-instance",
-    "monitor",
-    "network-watcher",
-    "postgresql",
-    "scheduler",
-    "service-bus",
-    "site-recovery",
-    "sla-api-management",
-    "sla-databricks",
-    "sla-virtual-machines",
-    "sql-database",
-    "synapse-analytics",
-    "traffic-manager",
-    "virtual-machine-scale-sets",
-    "virtual-machines",
+EXPECTED_SCOPE = tuple(
+    json.loads(
+        (
+            PROJECT_ROOT / "data" / "configs" / "processing-scope.json"
+        ).read_text(encoding="utf-8")
+    )["product_keys"]
 )
 
 
 def test_real_catalog_has_expected_scope_and_deterministic_item_order() -> None:
     catalog = ProductCatalog.load(PROJECT_ROOT)
 
-    assert len(catalog.definitions) == 211
+    assert len(catalog.definitions) == 201
+    assert len(EXPECTED_SCOPE) == 184
     assert catalog.scope_product_keys == EXPECTED_SCOPE
 
     first = catalog.select(all_products=True)
     second = catalog.select(all_products=True)
     assert first == second
-    assert len(first) == 62
+    assert len(first) == 368
     assert [(item.product_key, item.language) for item in first] == [
         (product_key, language)
         for product_key in EXPECTED_SCOPE
@@ -133,12 +108,18 @@ def test_support_article_type_can_be_selected_as_a_category() -> None:
 
     items = catalog.select(category="SLA")
 
-    assert len(items) == 6
-    assert {item.product_key for item in items} == {
-        "sla-api-management",
-        "sla-databricks",
-        "sla-virtual-machines",
-    }
+    expected_products = tuple(
+        product_key
+        for product_key in EXPECTED_SCOPE
+        if product_key.startswith("sla-")
+    )
+    assert len(expected_products) == 85
+    assert len(items) == 170
+    assert [(item.product_key, item.language) for item in items] == [
+        (product_key, language)
+        for product_key in expected_products
+        for language in ("zh-cn", "en-us")
+    ]
 
 
 def test_event_grid_is_selected_even_though_reference_status_is_old() -> None:

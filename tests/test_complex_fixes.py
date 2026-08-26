@@ -7,10 +7,19 @@ from src.core.complex_table_index import (
     IndexedFragmentProjector,
     applicable_exclusions_for_software,
 )
-from src.core.region_processor import RegionProjectionError
+from src.core.region_processor import (
+    RegionProjectionError,
+    project_fragment_for_region,
+    validate_exclusion_targets,
+)
 from src.detectors.filter_detector import FilterDetector
 from src.detectors.tab_detector import TabDetector
-from src.machine_checks.independent_source import _read_categories, _read_filter
+from src.machine_checks.independent_source import (
+    IndependentSourceError,
+    _read_categories,
+    _read_filter,
+    _validate_targets as independently_validate_region_targets,
+)
 from src.utils.content.flexible_builder import FlexibleBuilder
 
 
@@ -94,6 +103,45 @@ def test_complex_index_blocks_a_config_row_with_zero_software_matches() -> None:
 
     with pytest.raises(RegionProjectionError, match="当前 Software"):
         applicable_exclusions_for_software([projector], ("missing",))
+
+
+def test_region_projection_keeps_content_when_configured_ids_match_nothing() -> None:
+    soup = BeautifulSoup(
+        '<div id="scope"><div id="body"><table id="present"></table></div></div>',
+        "html.parser",
+    )
+    scope = soup.find("div", id="scope")
+    body = soup.find("div", id="body")
+    assert scope is not None
+    assert body is not None
+
+    assert validate_exclusion_targets(scope, ("missing",)) == ()
+    assert independently_validate_region_targets(scope, ("missing",)) == ()
+
+    projected = BeautifulSoup(
+        project_fragment_for_region(
+            body,
+            source_scope=scope,
+            excluded_table_ids=("missing",),
+        ),
+        "html.parser",
+    )
+    assert projected.find("table", id="present") is not None
+
+
+def test_region_projection_still_blocks_one_id_matching_multiple_units() -> None:
+    soup = BeautifulSoup(
+        '<div id="scope"><table id="duplicate"></table>'
+        '<table id="duplicate"></table></div>',
+        "html.parser",
+    )
+    scope = soup.find("div", id="scope")
+    assert scope is not None
+
+    with pytest.raises(RegionProjectionError, match="实际为 2 个"):
+        validate_exclusion_targets(scope, ("duplicate",))
+    with pytest.raises(IndependentSourceError, match="实际为 2 个"):
+        independently_validate_region_targets(scope, ("duplicate",))
 
 
 def test_complex_source_confirmed_empty_state_is_serialized_as_empty_content() -> None:

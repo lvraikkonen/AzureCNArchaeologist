@@ -46,6 +46,202 @@
     },
     {
       "schema_version": "1.0",
+      "product_key": "analysis-services",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Analysis Services",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "analysis-services-standard-tier-region2",
+            "analysis-services-standard-tier-region3",
+            "analysis-services-standard-tier-new-s1",
+            "analysis-services-standard-tier-new-s2"
+          ]
+        },
+        {
+          "os": "Analysis Services",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "analysis-services-standard-tier-region",
+            "analysis-services-standard-tier-s0",
+            "analysis-services-standard-tier-s1",
+            "analysis-services-standard-tier-new-s1",
+            "analysis-services-standard-tier-new-s2"
+          ]
+        },
+        {
+          "os": "Analysis Services",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "analysis-services-standard-tier-s0",
+            "analysis-services-standard-tier-s1",
+            "analysis-services-standard-tier-region3",
+            "analysis-services-standard-tier-region2"
+          ]
+        },
+        {
+          "os": "Analysis Services",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "analysis-services-standard-tier-region2",
+            "analysis-services-standard-tier-region3",
+            "analysis-services-standard-tier-s0",
+            "analysis-services-standard-tier-s1",
+            "analysis-services-standard-tier-new-s1",
+            "analysis-services-standard-tier-new-s2"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "analysis-services",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Analysis Services",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "analysis-services-standard-tier-region2",
+            "analysis-services-standard-tier-region3",
+            "analysis-services-standard-tier-new-s1",
+            "analysis-services-standard-tier-new-s2"
+          ]
+        },
+        {
+          "os": "Analysis Services",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "analysis-services-standard-tier-region",
+            "analysis-services-standard-tier-s0",
+            "analysis-services-standard-tier-s1",
+            "analysis-services-standard-tier-new-s1",
+            "analysis-services-standard-tier-new-s2"
+          ]
+        },
+        {
+          "os": "Analysis Services",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "analysis-services-standard-tier-s0",
+            "analysis-services-standard-tier-s1",
+            "analysis-services-standard-tier-region3",
+            "analysis-services-standard-tier-region2"
+          ]
+        },
+        {
+          "os": "Analysis Services",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "analysis-services-standard-tier-region2",
+            "analysis-services-standard-tier-region3",
+            "analysis-services-standard-tier-s0",
+            "analysis-services-standard-tier-s1",
+            "analysis-services-standard-tier-new-s1",
+            "analysis-services-standard-tier-new-s2"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "anomaly-detector",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Anomaly Detector",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "Anomaly_Detector"
+          ]
+        },
+        {
+          "os": "Anomaly Detector",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Anomaly Detector",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "Anomaly_Detector"
+          ]
+        },
+        {
+          "os": "Anomaly Detector",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "Anomaly_Detector"
+          ]
+        },
+        {
+          "os": "Anomaly Detector",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "anomaly-detector",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure AI Anomaly Detector",
+          "region": "east-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Azure AI Anomaly Detector",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Azure AI Anomaly Detector",
+          "region": "north-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Azure AI Anomaly Detector",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Azure AI Anomaly Detector",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
       "product_key": "api-management",
       "language": "zh-cn",
       "semantic_strategy": "region_filter",
@@ -1376,6 +1572,120 @@
     },
     {
       "schema_version": "1.0",
+      "product_key": "cache",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure Cache for Redis",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "cache6",
+            "cache4",
+            "cache5"
+          ]
+        },
+        {
+          "os": "Azure Cache for Redis",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "cache3",
+            "cache4",
+            "cache5"
+          ]
+        },
+        {
+          "os": "Azure Cache for Redis",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "cache6",
+            "cache4",
+            "cache5"
+          ]
+        },
+        {
+          "os": "Azure Cache for Redis",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "cache3",
+            "cache4",
+            "cache5"
+          ]
+        },
+        {
+          "os": "Azure Cache for Redis",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "cache3"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "cache",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure Cache for Redis",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "cache6",
+            "cache4",
+            "cache5"
+          ]
+        },
+        {
+          "os": "Azure Cache for Redis",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "cache3",
+            "cache4",
+            "cache5"
+          ]
+        },
+        {
+          "os": "Azure Cache for Redis",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "cache6",
+            "cache4",
+            "cache5"
+          ]
+        },
+        {
+          "os": "Azure Cache for Redis",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "cache3",
+            "cache4",
+            "cache5"
+          ]
+        },
+        {
+          "os": "Azure Cache for Redis",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "cache3"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
       "product_key": "cloud-services",
       "language": "zh-cn",
       "semantic_strategy": "complex",
@@ -1642,6 +1952,260 @@
     },
     {
       "schema_version": "1.0",
+      "product_key": "cognitive-services",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Cognitive Services",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "cognitive-services-table-speech-services",
+            "cognitive-services-table-speech-services-neural",
+            "cognitive-services-table-speech-services-east2",
+            "cognitive-services-table-speech-services-north3",
+            "cognitive-services-table-speech-servicesv1",
+            "cognitive-services1",
+            "cognitive-services2",
+            "cognitive-services3",
+            "cognitive-services4",
+            "cognitive-services5",
+            "cognitive-services-table-admitlevel-nor2east2",
+            "cognitive-services-table-speech-commitment-tiers-north2east2",
+            "cognitive-services-LanguageService-nor2east2",
+            "cognitive-services-table-speech-services-tier-nor2east2",
+            "cognitive-services-north3"
+          ]
+        },
+        {
+          "os": "Cognitive Services",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "cognitive-services-table-speech-services",
+            "cognitive-services-table-speech-services-neural",
+            "cognitive-services-table-speech-services-north",
+            "cognitive-services-table-speech-services-north3"
+          ]
+        },
+        {
+          "os": "Cognitive Services",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "cognitive-services-table-speech-services-neural",
+            "cognitive-services-table-speech-services-east2",
+            "cognitive-services-table-speech-services-north3",
+            "cognitive-services-table-speech-servicesv1",
+            "cognitive-services1",
+            "cognitive-services3",
+            "cognitive-services4",
+            "cognitive-services5",
+            "cognitive-services-table-admitlevel-nor2east2",
+            "cognitive-services-table-speech-commitment-tiers-north2east2",
+            "cognitive-services-LanguageService-nor2east2",
+            "cognitive-services-table-speech-services-tier-nor2east2",
+            "cognitive-services-north3"
+          ]
+        },
+        {
+          "os": "Cognitive Services",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "cognitive-services-table-speech-services",
+            "cognitive-services-table-speech-services-neural",
+            "cognitive-services-table-speech-services-north",
+            "cognitive-services-table-speech-services-north3",
+            "cognitive-services1",
+            "cognitive-services3",
+            "cognitive-services4",
+            "cognitive-services5",
+            "cognitive-services2",
+            "cognitive-services-north3"
+          ]
+        },
+        {
+          "os": "Cognitive Services",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "cognitive-services-table-speech-services",
+            "cognitive-services-table-speech-services-neural",
+            "cognitive-services-table-speech-services-north",
+            "cognitive-services-table-speech-services-east2",
+            "cognitive-services-table-speech-commitment-tiers-north2east2",
+            "cognitive-services1",
+            "cognitive-services-table-training",
+            "cognitive-services5"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "cognitive-services",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Cognitive Services",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "cognitive-services-table-speech-services",
+            "cognitive-services-table-speech-services-neural",
+            "cognitive-services-table-speech-services-east2",
+            "cognitive-services-table-speech-services-north3",
+            "cognitive-services-table-speech-servicesv1",
+            "cognitive-services1",
+            "cognitive-services2",
+            "cognitive-services3",
+            "cognitive-services4",
+            "cognitive-services5",
+            "cognitive-services-table-admitlevel-nor2east2",
+            "cognitive-services-table-speech-commitment-tiers-north2east2",
+            "cognitive-services-LanguageService-nor2east2",
+            "cognitive-services-table-speech-services-tier-nor2east2",
+            "cognitive-services-north3"
+          ]
+        },
+        {
+          "os": "Cognitive Services",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "cognitive-services-table-speech-services",
+            "cognitive-services-table-speech-services-neural",
+            "cognitive-services-table-speech-services-north",
+            "cognitive-services-table-speech-services-north3"
+          ]
+        },
+        {
+          "os": "Cognitive Services",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "cognitive-services-table-speech-services-neural",
+            "cognitive-services-table-speech-services-east2",
+            "cognitive-services-table-speech-services-north3",
+            "cognitive-services-table-speech-servicesv1",
+            "cognitive-services1",
+            "cognitive-services3",
+            "cognitive-services4",
+            "cognitive-services5",
+            "cognitive-services-table-admitlevel-nor2east2",
+            "cognitive-services-table-speech-commitment-tiers-north2east2",
+            "cognitive-services-LanguageService-nor2east2",
+            "cognitive-services-table-speech-services-tier-nor2east2",
+            "cognitive-services-north3"
+          ]
+        },
+        {
+          "os": "Cognitive Services",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "cognitive-services-table-speech-services",
+            "cognitive-services-table-speech-services-neural",
+            "cognitive-services-table-speech-services-north",
+            "cognitive-services-table-speech-services-north3",
+            "cognitive-services1",
+            "cognitive-services3",
+            "cognitive-services4",
+            "cognitive-services5",
+            "cognitive-services2",
+            "cognitive-services-north3"
+          ]
+        },
+        {
+          "os": "Cognitive Services",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "cognitive-services-table-speech-services",
+            "cognitive-services-table-speech-services-neural",
+            "cognitive-services-table-speech-services-north",
+            "cognitive-services-table-speech-services-east2",
+            "cognitive-services-table-speech-commitment-tiers-north2east2",
+            "cognitive-services1",
+            "cognitive-services-table-training",
+            "cognitive-services5"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "container-instances",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Container Instances - Linux",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "container-instances-linux-table-north2"
+          ]
+        },
+        {
+          "os": "Container Instances - Linux",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "container-instances-linux-table-north3east2"
+          ]
+        },
+        {
+          "os": "Container Instances - Linux",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "container-instances-linux-table-north2"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "container-instances",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Container Instances - Linux",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "container-instances-linux-table-north2"
+          ]
+        },
+        {
+          "os": "Container Instances - Linux",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "container-instances-linux-table-north3east2"
+          ]
+        },
+        {
+          "os": "Container Instances - Linux",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "container-instances-linux-table-north2"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
       "product_key": "cosmos-db",
       "language": "zh-cn",
       "semantic_strategy": "complex",
@@ -1834,6 +2398,88 @@
             "cosmos-11",
             "cosmos-3-2",
             "cosmos-3-3"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "data-explorer",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "data-explorer",
+          "region": "east-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-explorer",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-explorer",
+          "region": "north-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-explorer",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-explorer",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "data-explorer-esv111"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "data-explorer",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "data-explorer",
+          "region": "east-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-explorer",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-explorer",
+          "region": "north-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-explorer",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-explorer",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "data-explorer-esv111"
           ]
         }
       ]
@@ -2124,6 +2770,136 @@
     },
     {
       "schema_version": "1.0",
+      "product_key": "dedicated-host",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure Dedicated Host",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Dedicated-Host-1-east3",
+            "Azure-Dedicated-Host-1-north3",
+            "Azure-Dedicated-Host-1"
+          ]
+        },
+        {
+          "os": "Azure Dedicated Host",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Dedicated-Host-1-east3",
+            "Azure-Dedicated-Host-1-north3"
+          ]
+        },
+        {
+          "os": "Azure Dedicated Host",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Dedicated-Host-1-north3",
+            "Azure-Dedicated-Host-1"
+          ]
+        },
+        {
+          "os": "Azure Dedicated Host",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Dedicated-Host-1-east3",
+            "Azure-Dedicated-Host-1-north3",
+            "Azure-Dedicated-Host-1"
+          ]
+        },
+        {
+          "os": "Azure Dedicated Host",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Dedicated-Host-1-east3",
+            "Azure-Dedicated-Host-1-north3"
+          ]
+        },
+        {
+          "os": "Azure Dedicated Host",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Dedicated-Host-1-east3",
+            "Azure-Dedicated-Host-1"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "dedicated-host",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure Dedicated Host",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Dedicated-Host-1-east3",
+            "Azure-Dedicated-Host-1-north3",
+            "Azure-Dedicated-Host-1"
+          ]
+        },
+        {
+          "os": "Azure Dedicated Host",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Dedicated-Host-1-east3",
+            "Azure-Dedicated-Host-1-north3"
+          ]
+        },
+        {
+          "os": "Azure Dedicated Host",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Dedicated-Host-1-north3",
+            "Azure-Dedicated-Host-1"
+          ]
+        },
+        {
+          "os": "Azure Dedicated Host",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Dedicated-Host-1-east3",
+            "Azure-Dedicated-Host-1-north3",
+            "Azure-Dedicated-Host-1"
+          ]
+        },
+        {
+          "os": "Azure Dedicated Host",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Dedicated-Host-1-east3",
+            "Azure-Dedicated-Host-1-north3"
+          ]
+        },
+        {
+          "os": "Azure Dedicated Host",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Dedicated-Host-1-east3",
+            "Azure-Dedicated-Host-1"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
       "product_key": "event-hubs",
       "language": "zh-cn",
       "semantic_strategy": "region_filter",
@@ -2239,6 +3015,194 @@
           "region": "north-china3",
           "row_present": false,
           "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "form-recognizer",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure Form Recognizer",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "API_Azure_Form_Recognizer"
+          ]
+        },
+        {
+          "os": "Azure Form Recognizer",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "Azure Form Recognizer",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "API_Azure_Form_Recognizer"
+          ]
+        },
+        {
+          "os": "Azure Form Recognizer",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "Azure Form Recognizer",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "form-recognizer",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure AI Document Intelligence",
+          "region": "east-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Azure AI Document Intelligence",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Azure AI Document Intelligence",
+          "region": "north-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Azure AI Document Intelligence",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Azure AI Document Intelligence",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "hdinsight",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "HD Insight",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table",
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table-1"
+          ]
+        },
+        {
+          "os": "HD Insight",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table"
+          ]
+        },
+        {
+          "os": "HD Insight",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table",
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table-1"
+          ]
+        },
+        {
+          "os": "HD Insight",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table-1"
+          ]
+        },
+        {
+          "os": "HD Insight",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table-1",
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table-2",
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table-3"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "hdinsight",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "HD Insight",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table",
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table-1"
+          ]
+        },
+        {
+          "os": "HD Insight",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table"
+          ]
+        },
+        {
+          "os": "HD Insight",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table",
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table-1"
+          ]
+        },
+        {
+          "os": "HD Insight",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table-1"
+          ]
+        },
+        {
+          "os": "HD Insight",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table-1",
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table-2",
+            "hdinsight-computed-optimized-nodes-for-hdinsight-table-3"
+          ]
         }
       ]
     },
@@ -4540,6 +5504,48 @@
     },
     {
       "schema_version": "1.0",
+      "product_key": "managed-grafana",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Managed Grafana",
+          "region": "east-china3",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Managed Grafana",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "managed-grafana",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Managed Grafana",
+          "region": "east-china3",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "Managed Grafana",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
       "product_key": "managed-instance",
       "language": "zh-cn",
       "semantic_strategy": "complex",
@@ -5001,6 +6007,48 @@
             "sqldb-managed-instance-business-premium-serries-2",
             "sqldb-managed-instance-business-premium-serries-2-yh"
           ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "metrics-advisor",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "metrics-advisor",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "metrics-advisor",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "metrics-advisor",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "metrics-advisor",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "metrics-advisor",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
         }
       ]
     },
@@ -5672,6 +6720,192 @@
           "row_present": true,
           "table_ids": [
             "power-bi-embedded-table-a7a8"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "private-link",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "PrivateLink",
+          "region": "east-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "PrivateLink",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "PrivateLink",
+          "region": "east-china3",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "PrivateLink",
+          "region": "north-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "PrivateLink",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "PrivateLink",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "private-link",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "PrivateLink",
+          "region": "east-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "PrivateLink",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "PrivateLink",
+          "region": "east-china3",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "PrivateLink",
+          "region": "north-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "PrivateLink",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "PrivateLink",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "search",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure AI Search",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Cognitive-Search1",
+            "Azure-Cognitive-Search2",
+            "Azure-Cognitive-Search3"
+          ]
+        },
+        {
+          "os": "Azure AI Search",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "Azure AI Search",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Cognitive-Search1",
+            "Azure-Cognitive-Search2"
+          ]
+        },
+        {
+          "os": "Azure AI Search",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "Azure AI Search",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Cognitive-Search3"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "search",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure AI Search",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Cognitive-Search1",
+            "Azure-Cognitive-Search2",
+            "Azure-Cognitive-Search3"
+          ]
+        },
+        {
+          "os": "Azure AI Search",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "Azure AI Search",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Cognitive-Search1",
+            "Azure-Cognitive-Search2"
+          ]
+        },
+        {
+          "os": "Azure AI Search",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": []
+        },
+        {
+          "os": "Azure AI Search",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "Azure-Cognitive-Search3"
           ]
         }
       ]

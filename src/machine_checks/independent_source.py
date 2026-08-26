@@ -26,6 +26,26 @@ class IndependentSourceError(ValueError):
     """The source does not prove one unambiguous Payload reconstruction."""
 
 
+_SIMPLE_STATIC_STATE_SELECTOR = (
+    ".technical-azure-selector, .pricing-detail-tab, "
+    ".region-container, .software-kind-container, "
+    ".category-container-container, .category-container, "
+    ".tab-container-container, .more-detail, "
+    "select, form, button, input, textarea"
+)
+_SIMPLE_STATIC_STATE_CLASSES = {
+    "technical-azure-selector",
+    "pricing-detail-tab",
+    "region-container",
+    "software-kind-container",
+    "category-container-container",
+    "category-container",
+    "tab-container-container",
+    "more-detail",
+}
+_SIMPLE_STATIC_STATE_TAGS = {"select", "form", "button", "input", "textarea"}
+
+
 def locate_pricing_source(
     soup: BeautifulSoup,
     *,
@@ -336,45 +356,62 @@ def locate_pricing_source(
 
 def locate_support_source(soup: BeautifulSoup) -> dict[str, str]:
     pure = _one(soup.select("div.pure-content"), "Support Article pure-content")
-    direct_nodes = list(pure.children)
-    h1_indexes = [
-        index
-        for index, node in enumerate(direct_nodes)
-        if isinstance(node, Tag) and node.name == "h1"
-    ]
-    h2_indexes = [
-        index
-        for index, node in enumerate(direct_nodes)
-        if isinstance(node, Tag) and node.name == "h2"
-    ]
-    if len(h1_indexes) != 1 or not h2_indexes or h1_indexes[0] >= h2_indexes[0]:
+    h1s = pure.find_all("h1")
+    if len(h1s) != 1 or h1s[0].parent is not pure:
         raise IndependentSourceError(
-            "Support Article 必须有一个直接 h1，并在其后至少有一个直接 h2。"
+            "Support Article 必须有且只有一个 h1，且该 h1 必须是直接子节点。"
         )
-    h1_index = h1_indexes[0]
-    first_h2_index = h2_indexes[0]
+
+    direct_nodes = list(pure.children)
+    h1 = h1s[0]
+    h1_index = direct_nodes.index(h1)
+    h2s = pure.find_all("h2")
+
+    if h2s:
+        headings = pure.find_all(["h1", "h2"])
+        if not headings or headings[0] is not h1:
+            raise IndependentSourceError("Support Article 的首个文章标题必须是 h1。")
+
+        first_h2 = h2s[0]
+        body = first_h2.parent
+        if not isinstance(body, Tag):
+            raise IndependentSourceError("Support Article 的首个 h2 没有可用父节点。")
+        if body is not pure:
+            _prove_single_wrapped_support_body(
+                pure,
+                body,
+                h1_index=h1_index,
+            )
+        if any(
+            heading is not first_h2 and body not in heading.parents
+            for heading in h2s
+        ):
+            raise IndependentSourceError(
+                "Support Article 的 h2 分布在多个正文根中。"
+            )
+
+        body_nodes = list(body.children)
+        first_h2_index = body_nodes.index(first_h2)
+        description_start = h1_index + 1 if body is pure else 0
+        description_nodes = body_nodes[description_start:first_h2_index]
+        main_nodes = body_nodes[first_h2_index:]
+    else:
+        description_nodes = []
+        main_nodes = direct_nodes[h1_index + 1 :]
 
     description_holder = BeautifulSoup("<div></div>", "html.parser").div
     assert description_holder is not None
-    for node in direct_nodes[h1_index + 1 : first_h2_index]:
-        if isinstance(node, Tag) and node.name == "p":
-            description_holder.append(deepcopy(node))
+    _append_support_nodes(description_holder, description_nodes)
     _remove_support_ui(description_holder)
 
     main_holder = BeautifulSoup("<div></div>", "html.parser").div
     assert main_holder is not None
-    for node in direct_nodes[first_h2_index:]:
-        if isinstance(node, Comment):
-            continue
-        if isinstance(node, Tag):
-            if node.get("id") == "content_feedback":
-                break
-            main_holder.append(deepcopy(node))
-        elif isinstance(node, NavigableString) and str(node).strip():
-            main_holder.append(NavigableString(str(node)))
+    _append_support_nodes(main_holder, main_nodes)
     _remove_support_ui(main_holder)
     main_content = normalize_html(main_holder.decode_contents())
-    if not main_content:
+    if not main_holder.get_text(" ", strip=True) and not main_holder.select(
+        "img, video, audio, table, iframe"
+    ):
         raise IndependentSourceError("Support Article 主体为空。")
     return {
         "articleDescription": normalize_html(
@@ -382,6 +419,79 @@ def locate_support_source(soup: BeautifulSoup) -> dict[str, str]:
         ),
         "mainContent": main_content,
     }
+
+
+def _prove_single_wrapped_support_body(
+    pure: Tag,
+    body: Tag,
+    *,
+    h1_index: int,
+) -> None:
+    """Prove that a nested H2 body is reached through one content-only path."""
+
+    cursor = body
+    while cursor.parent is not pure:
+        parent = cursor.parent
+        if not isinstance(parent, Tag):
+            raise IndependentSourceError(
+                "Support Article 的包装正文不在 pure-content 内。"
+            )
+        if any(
+            sibling is not cursor and not _support_node_is_ignorable(sibling)
+            for sibling in parent.children
+        ):
+            raise IndependentSourceError(
+                "Support Article 的包装层包含正文路径之外的业务内容。"
+            )
+        cursor = parent
+
+    direct_nodes = list(pure.children)
+    try:
+        outer_index = direct_nodes.index(cursor)
+    except ValueError as error:
+        raise IndependentSourceError(
+            "Support Article 的包装正文不是 pure-content 子树。"
+        ) from error
+    if outer_index <= h1_index:
+        raise IndependentSourceError("Support Article 的包装正文必须位于 h1 之后。")
+
+    for index, node in enumerate(direct_nodes[h1_index + 1 :], h1_index + 1):
+        if index == outer_index:
+            continue
+        if not _support_node_is_ignorable(node):
+            raise IndependentSourceError(
+                "Support Article 的包装正文之外还有无法归属的业务内容。"
+            )
+
+
+def _append_support_nodes(holder: Tag, nodes: list[Any]) -> None:
+    for node in nodes:
+        if isinstance(node, Comment):
+            continue
+        if isinstance(node, Tag):
+            if node.get("id") == "content_feedback" or "content-feedback" in node.get(
+                "class", []
+            ):
+                break
+            holder.append(deepcopy(node))
+        elif isinstance(node, NavigableString) and str(node).strip():
+            holder.append(NavigableString(str(node)))
+
+
+def _support_node_is_ignorable(node: Any) -> bool:
+    if isinstance(node, Comment):
+        return True
+    if isinstance(node, NavigableString):
+        return not str(node).strip()
+    if not isinstance(node, Tag):
+        return True
+    holder = BeautifulSoup("<div></div>", "html.parser").div
+    assert holder is not None
+    holder.append(deepcopy(node))
+    _remove_support_ui(holder)
+    return not holder.get_text(" ", strip=True) and not holder.select(
+        "img, video, audio, table, iframe"
+    )
 
 
 def _simple_pricing_boundary(
@@ -512,9 +622,27 @@ def _simple_pricing_boundary(
             "html": normalize_html(str(free_statements[0])),
             "anchors": (free_statements[0],),
         }
+
+    if before_common and all(
+        _independent_is_unwrapped_static_simple_node(node)
+        for node in before_common
+    ):
+        anchors = tuple(before_common)
+        return {
+            "html": normalize_html("".join(str(node) for node in anchors)),
+            "anchors": anchors,
+        }
     raise IndependentSourceError(
-        "Simple 页面没有唯一的静态选择器、定价标题范围或免费说明正文。"
+        "Simple 页面没有唯一的静态选择器、定价标题范围或连续无状态正文。"
     )
+
+
+def _independent_is_unwrapped_static_simple_node(node: Tag) -> bool:
+    if node.name in _SIMPLE_STATIC_STATE_TAGS:
+        return False
+    if set(node.get("class", [])) & _SIMPLE_STATIC_STATE_CLASSES:
+        return False
+    return node.select_one(_SIMPLE_STATIC_STATE_SELECTOR) is None
 
 
 def _outer_pricing_roots(pure: Tag) -> list[Tag]:
@@ -672,6 +800,8 @@ def _independent_qa_role(
     node: Tag, pricing_anchors: tuple[Tag, ...]
 ) -> str | None:
     if any(node is anchor or anchor in node.descendants for anchor in pricing_anchors):
+        return None
+    if node.name != "div" or "pricing-page-section" not in node.get("class", []):
         return None
     text = node.get_text(" ", strip=True).casefold()
     headings = " ".join(
@@ -1228,7 +1358,8 @@ def _project_many(fragments: list[Tag], *, excluded: tuple[str, ...]) -> str:
 
 
 def _validate_targets(scope: Tag, excluded: tuple[str, ...]) -> tuple[str, ...]:
-    matched_count = 0
+    """Resolve Region exclusions without treating stale absent IDs as errors."""
+
     applicable: list[str] = []
     for table_id in excluded:
         units = _independent_units(scope, table_id)
@@ -1238,13 +1369,7 @@ def _validate_targets(scope: Tag, excluded: tuple[str, ...]) -> tuple[str, ...]:
                 f"实际为 {len(units)} 个。"
             )
         if units:
-            matched_count += 1
             applicable.append(table_id)
-    if excluded and matched_count == 0:
-        raise IndependentSourceError(
-            "该配置记录在当前源定价范围内没有对应任何物理表格单元，"
-            "实际为 0 个。"
-        )
     return tuple(applicable)
 
 
@@ -1324,6 +1449,9 @@ def _remove_support_ui(fragment: Tag) -> None:
         "script",
         "style",
         "tags",
+        ".tags-date",
+        ".wacn-date",
+        ".ms-date",
     )
     for selector in selectors:
         for node in fragment.select(selector):

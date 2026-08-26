@@ -40,7 +40,7 @@
 ```text
 data/
 ├── configs/
-│   ├── products-config/       # 211 个历史参考 Product Definition
+│   ├── products-config/       # 208 个历史参考 Product Definition
 │   └── soft-category.json     # 上游可信映射
 ├── current_prod_html/         # 上游本次完整输入快照
 │   ├── soft-category.json     # 上游本次可信映射
@@ -84,7 +84,7 @@ run --changed
 - `--product`：完整处理一个产品的中英文。
 - `--products`：在一个 Batch 中按明确列出的顺序完整处理多个产品的中英文；空清单、重复 Product Key 和当前范围外产品都会在运行前被拒绝。
 - `--category`：完整处理新项目支持清单中属于该 Category 的全部产品及双语文件。
-- `--all`：完整处理新项目当前支持清单，不代表直接处理 211 个历史参考配置。
+- `--all`：完整处理新项目当前支持清单，不代表直接处理 208 个历史参考配置。
 - `--changed`：完整比较 HTML、可信配置和处理相关 Product Definition 字段，只为受影响产品运行使用 Batch 固定输入的双语增量流程；没有业务变化时不创建空 Batch。
 
 新项目需要一份唯一、可读的处理范围清单。初始清单包含 22 个产品；2026-08-20 完成 Complex 修复验收后，`processing-scope.json` 扩展为 31 个产品。支持结论必须由新验收结果更新，不能从旧 `capability_status` 自动生成。
@@ -189,6 +189,6 @@ src/release/          不可覆盖的完整与增量 Release 构建及直接核�
 - 实时抓取 Azure 网站；
 - RAG、Embedding、知识图谱或价格计算器；
 - 自动替代人工批准；
-- 直接支持全部 211 个参考 Product Definition；
+- 直接支持全部 208 个参考 Product Definition；
 - 复制旧项目的哈希绑定、Schema 复制和历史兼容层；
 - 在真实输入未证明需要前实现 streaming。

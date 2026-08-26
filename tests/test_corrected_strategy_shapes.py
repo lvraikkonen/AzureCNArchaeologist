@@ -22,6 +22,18 @@ from src.machine_checks.l3b import run_l3b
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 LANGUAGES = ("zh-cn", "en-us")
+UNWRAPPED_SIMPLE_PRODUCTS = (
+    "azure-bastion",
+    "azure-nat-gateway",
+    "bot-services",
+    "core-control-plane",
+    "data-factory",
+    "firewall-manager",
+    "kubernetes-service",
+    "route-server",
+    "sql-edge",
+    "storage",
+)
 
 
 def _upstream_source(
@@ -46,6 +58,14 @@ def _extract_upstream(
     language: str,
 ):
     catalog = ProductCatalog.load(PROJECT_ROOT)
+    if product_key not in catalog.scope_product_keys:
+        catalog = ProductCatalog(
+            catalog.project_root,
+            catalog.definitions,
+            tuple(sorted((*catalog.scope_product_keys, product_key))),
+            catalog.languages,
+            catalog.strategy_overrides,
+        )
     item = next(
         item
         for item in catalog.select(product_key=product_key)
@@ -159,6 +179,46 @@ def test_event_grid_simple_table_boundary_rejects_state_controls() -> None:
             config,
             language="zh-cn",
         )
+
+
+@pytest.mark.parametrize("product_key", UNWRAPPED_SIMPLE_PRODUCTS)
+@pytest.mark.parametrize("language", LANGUAGES)
+def test_confirmed_unwrapped_simple_pages_match_independent_l3b(
+    tmp_path: Path,
+    product_key: str,
+    language: str,
+) -> None:
+    catalog, item, source_path, payload = _extract_upstream(
+        tmp_path,
+        product_key=product_key,
+        language=language,
+    )
+
+    assert item.semantic_strategy == "simple_static"
+    assert payload["pageConfig"]["pageType"] == "Simple"
+    assert payload["baseContent"]
+    assert payload["contentGroups"] == []
+    assert _l3b(
+        tmp_path,
+        catalog=catalog,
+        item=item,
+        source_path=source_path,
+        payload=payload,
+    )["status"] == "passed"
+
+    section_types = [
+        section["sectionType"] for section in payload["commonSections"]
+    ]
+    if product_key in {"bot-services", "core-control-plane"}:
+        assert section_types == ["Banner"]
+    if product_key == "data-factory":
+        assert len(
+            BeautifulSoup(payload["baseContent"], "html.parser").select(
+                "div.pricing-page-section"
+            )
+        ) == 3
+    if product_key == "kubernetes-service":
+        assert section_types == ["Banner", "Qa"]
 
 
 @pytest.mark.parametrize(
