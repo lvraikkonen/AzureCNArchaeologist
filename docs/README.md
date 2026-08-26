@@ -12,6 +12,7 @@
 - [`specs/m3-strategy-boundaries.md`](specs/m3-strategy-boundaries.md)：四种 Strategy 的真实状态、源片段和停止处理边界。
 - [`specs/m4-batch.md`](specs/m4-batch.md)：Category、全量 Batch、失败隔离、状态查询和中断恢复规则。
 - [`specs/m5-review-release.md`](specs/m5-review-release.md)：人工审核清单、真实决定和不可覆盖的完整 Release。
+- [`specs/blob-delivery.md`](specs/blob-delivery.md)：完整与增量 Release 的 Blob 目录、完成标志、敏感配置和上传命令。
 - [`specs/incremental-processing.md`](specs/incremental-processing.md)：上游快照变化识别、双语重跑和增量交付包。
 - [`adr/0001-incremental-change-and-open-batch-boundaries.md`](adr/0001-incremental-change-and-open-batch-boundaries.md)：输入变化、双语范围和唯一未结束增量 Batch 的边界。
 - [`adr/0002-append-only-incremental-reprocessing.md`](adr/0002-append-only-incremental-reprocessing.md)：程序修复后在原增量 Batch 内追加不可覆盖记录的决定。

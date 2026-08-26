@@ -161,3 +161,7 @@ _Avoid_: 普通输出目录、Batch、上传动作
 **增量交付包（Delta Release）**:
 只包含某次增量 Batch 中获批准的受影响产品双语 Payload 的交付包。
 _Avoid_: 任意挑选部分文件的 Release、未审核差异包
+
+**Blob 发布**:
+把一个已核对 Release 的 Payload 写入“上传日期 / Release ID”前缀，并在全部 Payload 成功后最后写入 `delivery-manifest.json` 的交付动作。CMS 只消费存在该完成标志的目录。
+_Avoid_: 覆盖历史 Release、普通输出目录上传、先写完成标志、把连接串写入清单

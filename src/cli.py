@@ -9,6 +9,13 @@ from pathlib import Path
 from typing import Sequence, TextIO
 
 from src.core.catalog import CatalogError, ProductCatalog
+from src.delivery import (
+    AzureBlobSink,
+    BlobSink,
+    DeliveryError,
+    load_blob_delivery_config,
+    upload_release_to_blob,
+)
 from src.incremental import (
     ChangeDetectionError,
     ChangePlan,
@@ -225,6 +232,18 @@ def build_parser() -> argparse.ArgumentParser:
     release_verify.add_argument("--release-id", required=True, metavar="READABLE_ID")
     release_verify.add_argument("--json", action="store_true")
 
+    release_upload = commands.add_parser(
+        "release-upload",
+        help=(
+            "把已核对 Release 的 Payload 上传到 Blob，"
+            "并最后发布 delivery-manifest.json"
+        ),
+    )
+    release_upload.add_argument(
+        "--release-id", required=True, metavar="READABLE_ID"
+    )
+    release_upload.add_argument("--json", action="store_true")
+
     incremental_status = commands.add_parser(
         "incremental-status",
         help="查看当前唯一未结束的增量 Batch 和未解决产品",
@@ -296,6 +315,7 @@ def main(
     runs_root: Path | str | None = None,
     reviews_root: Path | str | None = None,
     releases_root: Path | str | None = None,
+    blob_sink: BlobSink | None = None,
     stdout: TextIO | None = None,
     stderr: TextIO | None = None,
 ) -> int:
@@ -568,6 +588,37 @@ def main(
                     file=output,
                 )
             return 0
+        if args.command == "release-upload":
+            active_sink = blob_sink
+            owned_sink: AzureBlobSink | None = None
+            if active_sink is None:
+                config = load_blob_delivery_config(root)
+                owned_sink = AzureBlobSink(config)
+                active_sink = owned_sink
+            try:
+                result = upload_release_to_blob(
+                    catalog,
+                    release_id=args.release_id,
+                    blob_sink=active_sink,
+                    reviews_root=reviews_root,
+                    releases_root=releases_root,
+                )
+            finally:
+                if owned_sink is not None:
+                    owned_sink.close()
+            if args.json:
+                json.dump(result.as_dict(), output, ensure_ascii=False, indent=2)
+                output.write("\n")
+            else:
+                summary = result.manifest["summary"]
+                print(
+                    f"Release {args.release_id} 已上传到容器 "
+                    f"{result.container_name}：{summary['products']} 个产品、"
+                    f"{summary['payload_items']} 个 Payload；"
+                    f"完成标志 {result.delivery_manifest_blob_path}。",
+                    file=output,
+                )
+            return 0
         if args.command == "incremental-reprocess-product":
             result = reprocess_incremental_product(
                 catalog,
@@ -652,6 +703,7 @@ def main(
         PipelineRunError,
         ReviewError,
         ReleaseError,
+        DeliveryError,
     ) as error:
         print(f"命令无法完成：{error}", file=error_output)
         return 1

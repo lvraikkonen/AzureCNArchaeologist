@@ -122,6 +122,10 @@ Business Payload 使用确定性的 JSON 格式写入运行目录。写出后，
 
 交付包只接收当前机器检查通过且人工批准的处理项。交付目录一旦创建便不可覆盖；需要修正时使用新的 Release ID。
 
+### 6.8 发布到 Blob
+
+已核对 Release 按“上传日期 / Release ID”写入 CMS Blob 容器。程序只上传 Release 清单列出的 Payload，并在全部 Payload 成功后最后写入 `delivery-manifest.json`。CMS 不得消费缺少该完成标志的目录。连接串只从被 Git 忽略的 `.env` 或进程环境读取。
+
 ## 7. 运行目录
 
 ```text
@@ -170,6 +174,7 @@ src/machine_checks/   L3a 重复抽取检查与独立 L3b 源内容核对
 src/review/           审核清单、审核材料和只写一次的人工决定
 src/incremental/      上游变化识别、固定增量输入、未结束 Batch 和重新处理状态
 src/release/          不可覆盖的完整与增量 Release 构建及直接核对
+src/delivery/         已核对 Release 的 Azure Blob 发布与完成清单
 ```
 
 上述职责目录不得再整体放入 `src/acn_archaeologist/` 或其他包住全部模块的第二层目录。Strategy 的详细复用边界见 [`strategy-reuse.md`](strategy-reuse.md)。

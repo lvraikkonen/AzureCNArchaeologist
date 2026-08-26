@@ -43,7 +43,7 @@ reviews/
 # 本机运行配置和凭据只保留在工作环境中。
 .env
 .env.*
-!.env.example
+!.env_example
 *.pem
 *.p12
 *.pfx
