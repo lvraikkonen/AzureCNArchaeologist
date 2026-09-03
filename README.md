@@ -7,6 +7,7 @@ AzureCNArchaeologist 是 Azure 中国定价页与支持文章的双语内容抽�
 ## 目录
 
 - [当前生产基线](#当前生产基线)
+- [尚未完成的 Pricing 产品](#尚未完成的-pricing-产品)
 - [端到端工作流](#端到端工作流)
 - [关键概念](#关键概念)
 - [必须遵守的规则](#必须遵守的规则)
@@ -24,37 +25,57 @@ AzureCNArchaeologist 是 Azure 中国定价页与支持文章的双语内容抽�
 
 ## 当前生产基线
 
-以下状态截至 2026-08-26，详细产品级状态见 [`tracking-product-status.md`](tracking-product-status.md)。
+以下状态截至 2026-09-02（America/Los_Angeles），按唯一 Product Key 统计；同一产品的中文和英文不重复计数。详细机器检查、人工决定与发布记录见 [`tracking-product-status.md`](tracking-product-status.md)。
 
 | 项目 | 当前值 |
 |---|---:|
-| `processing-scope.json` 正式产品 | 184 |
-| 中文和英文处理项 | 368 |
-| 人工审核批准 | 181 个产品 |
-| 人工审核拒绝、等待上游修复 | 3 个产品 |
-| 待审核 | 0 |
-| 已批准 Pricing | 83 |
+| 当前有效产品配置 | 200（Pricing：102；Support Article：98） |
+| `processing-scope.json` 正式产品 | 194 |
+| `product-definitions.json` 基线产品 | 194 |
+| 正式范围中文和英文处理项 | 388 |
+| 人工审核批准 | 194 个产品 |
+| 已批准但尚未交付 | 0 |
+| 已批准 Pricing | 96 |
 | 已批准 Support Article | 98 |
+| 累计已 Release 并上传 Blob | 194 个唯一产品、388 份 Payload |
+| 尚未通过人工审核、位于正式范围外 | 6 个 Pricing 产品 |
 
-当前拒绝产品为：
+原来被拒绝的 `anomaly-detector`、`hdinsight`、`web-pubsub` 已完成修复、双语重跑和新的 Workbench 人工批准，并已发布。旧审核决定保留不变，不再作为当前未解决项重复统计。
 
-- `anomaly-detector`
-- `hdinsight`
-- `web-pubsub`
+本轮还将 10 个已人工批准的试验产品纳入正式范围与 Product Definition：`data-lake-storage`、`data-transfer`、`ddos-protection`、`hci`、`hub`、`storage-import-export`、`storage-managed-disks`、`storage-page-blobs`、`storage-queues`、`storage-tables`。其中 `hci`、`hub` 已确认为 `simple_static`。原 184 条处理定义保持不变，新增定义及其来源批次、审核 ID 记录在 `product-definitions.json` 的 `scope_expansions` 中。
 
-它们仍保留在正式范围与 Product Definition 基线中，以便上游修复后被增量检测选中，但不会进入未获批准的 Release。
+194 个产品的状态来自已完成的多个审核批次，不表示另行执行过一次 194 产品全量回归。范围同步后的只读 `changes --json` 检查覆盖 194 个产品、388 个语言条目，返回 `no_changes`；输入基线与交付状态仍是两个独立概念。
 
-最新成功交付：
+### 已完成的 Blob 交付
 
-| 字段 | 值 |
-|---|---|
-| Release ID | `supported-products-expanded-full-release-20260826-021215` |
-| Release 类型 | `full` |
-| 已交付产品 | 181 |
-| Payload | 362 |
-| Blob 容器 | `cms-output` |
-| Blob 前缀 | `2026-08-26/supported-products-expanded-full-release-20260826-021215/` |
-| 远端文件 | 362 个 Payload + 1 个 `delivery-manifest.json` |
+目标容器为 `cms-output`，每份交付均位于 `{上传日期}/{release_id}/`，并以最后发布的 `delivery-manifest.json` 作为 CMS 可消费标志。
+
+| 上传日期 | Release ID | 产品数 | Payload 数 |
+|---|---|---:|---:|
+| 2026-08-26 | [`supported-products-expanded-full-release-20260826-021215`](releases/supported-products-expanded-full-release-20260826-021215/release-manifest.json) | 181 | 362 |
+| 2026-09-02 | [`pricing-approved-release-20260902-224327`](releases/pricing-approved-release-20260902-224327/release-manifest.json) | 11 | 22 |
+| 2026-09-02 | [`pricing-review-fixes-release-20260902-224327`](releases/pricing-review-fixes-release-20260902-224327/release-manifest.json) | 2 | 4 |
+
+2026-09-02 的两份 Release 分别来自 `expand-pricing-latest-html-rerun-review-20260902` 和 `pricing-review-fixes-review-20260902-220448`，合计新增交付 13 个产品，原有 181 个产品没有重传。两份交付清单已发布，26 份远端 Payload 已与本地 Release 逐字节核对一致；HDInsight 和托管磁盘只交付最新审核批准的修复版本。
+
+三份 Release 的 `release_kind` 均为 `full`。这里的 `full` 指单个普通审核队列的全部有效批准项，不是必须打包整个正式范围；本轮两个来源批次均为 `standard`，所以采用两份小范围 Full Release 完成增量交付。只有 `run --changed` 产生的正式增量 Batch 及其重新处理链才能使用 `--kind delta`。
+
+## 尚未完成的 Pricing 产品
+
+当前剩余 6 个 Pricing 产品：人工拒绝 1 个、抽取阻断 1 个、尚无抽取记录 4 个。它们均未纳入正式 Scope / Product Definition，因此不会被日常 `--all` 或 `--changed` 自动处理，也不在已交付的 194 个产品中。
+
+| Product Key | 当前 Strategy | 当前状态 | 后续处理 |
+|---|---|---|---|
+| `purview` | `complex` | 中英文机器检查通过，但人工拒绝：只正确获取了第一个 `tabContent` 的内容。 | 调查多层级、多个 `tabContent` 的抽取边界，修复后双语重跑并重新人工审核。 |
+| `databox` | `complex` | 中英文抽取阻断，未进入 Workbench：缺少符合合同要求的可见且非空的区域筛选器。 | 核对源 HTML 与当前 Complex 合同后重新试验。 |
+| `batch` | `complex` | 当前仓库未找到抽取及审核记录；此前约定暂缓。 | 等待上游页面修改后安排双语抽取试验。 |
+| `mysql` | `region_filter` | 当前仓库未找到抽取及审核记录。 | 待安排双语抽取、机器验证和 Workbench 人工审核。 |
+| `storage-blobs` | `complex` | 当前仓库未找到抽取及审核记录。 | 待安排双语抽取、机器验证和 Workbench 人工审核。 |
+| `storage-files` | `region_filter` | 当前仓库未找到抽取及审核记录。 | 待安排双语抽取、机器验证和 Workbench 人工审核。 |
+
+问题依据：[`purview` 人工拒绝记录](reviews/expand-pricing-latest-html-rerun-review-20260902/decisions/purview.json)、[`databox` 最近双语阻断批次](runs/expand-pricing-wave2-final-rerun2-20260902/run.json)。后续只有完成抽取、机器验证和人工批准后，才能纳入正式支持与发布范围；不能把尚未验证的配置直接视为受支持产品。
+
+Pricing `mariadb` 已确认下线并移除，不属于上述待处理产品。独立的 `sla-mariadb` Support Article 仍保留，且已获批交付。
 
 ## 端到端工作流
 
@@ -92,7 +113,7 @@ flowchart LR
 | L3b | 不复用生产 Strategy 的内容选择结果，从 Frozen HTML 独立定位源片段并核对全部业务 HTML 字段。 |
 | Review Queue | 从已封存 Batch 中生成的、仅包含机器检查通过产品的人工审核清单。 |
 | Review Decision | 真实审核人对一个完整双语产品作出的批准或拒绝决定。 |
-| Full Release | 从一个普通审核会话收集当前全部有效批准产品形成的完整交付包。 |
+| Full Release | 从一个普通审核会话收集当前全部有效批准产品形成的交付包；不要求覆盖整个正式 Scope。 |
 | Delta Release | 只交付一个增量 Batch 中当前获批且尚未交付产品的增量包。 |
 | Delivery Manifest | Blob Release 目录的完成标志；CMS 只消费存在该文件的目录。 |
 
@@ -219,6 +240,22 @@ AzureCNArchaeologist/
 | `tracking-product-status.md` | 记录产品级机器验证、人工决定与上游问题。 | Scope、Product Definition 和人工状态变化后同步更新。 |
 
 扩展正式产品范围时，至少要核对 `processing-scope.json`、`product-definitions.json` 和 `tracking-product-status.md` 三者一致。不要在未完成验证时直接宣称产品受支持。
+
+### 区域页面的静态交付规则
+
+`soft-category.json` 的 `tableIDs` 是排除清单。RegionFilter 和 Complex 先排除不适用表格，再清理保留表格及其祖先包裹节点上的内联 `display:none`（包括大小写、空白和 `!important` 变体）。价格、表格结构、其它样式及无关隐藏界面均保留；不能依赖 CMS 执行原页面 JavaScript 才显示已交付表格。
+
+个别 RegionFilter 页面的说明文字也按区域切换，可在该产品配置的 `extraction` 中声明：
+
+```json
+"region_content_rules": [
+  { "class_name": "isn3", "visible_regions": ["north-china3"] }
+]
+```
+
+规则只匹配该产品定价正文内具有指定 class 的说明 `div`：列出的区域保留，其它区域移除；未配置产品不启用此功能。目前只有 `storage-managed-disks` 配置了 `isn3/notn3/ise3/note3/zone1`。class 必须实际命中说明节点，区域键必须存在于源控件，不能用此规则包办表格筛选。未知区域、零匹配或命中包含表格的 div 会阻断，需核对上游结构。
+
+这类配置变化属于 Product Definition 的处理变化，会触发该产品中英文增量重跑。Batch 和 Review 保存本次规则，Workbench 按批次规则独立重建片段。修改后仍须通过机器检查和新的人工审核，不能沿用旧批准。
 
 ## 运行名称规范
 
@@ -348,6 +385,8 @@ uv run python cli.py release-build \
 
 `release-build` 不接受 Product Key 参数。它自动收集该审核会话中当前全部有效批准产品，并把拒绝、待审核和未入队项写入排除清单。
 
+普通定向试验或重跑的审核也使用 `--kind full`，交付范围仅限该审核队列。若已批准结果来自不同审核 ID，应分别构建 Release，不能伪造增量 Batch 绑定或复制旧人工决定来使用 `--kind delta`。
+
 ### 7. 核对并上传
 
 ```bash
@@ -390,6 +429,8 @@ uv run python cli.py changes --json
 - Product Definition 的双语路径、页面模型、Strategy 和其他处理相关字段。
 
 `html-changes` 只比较 HTML，是诊断兼容命令，不能作为完整增量决定依据。
+
+`changes` 不比较 Blob 或交付记录。`no_changes` 仅表示当前输入与处理基线没有业务差异，不表示所有已批准 Payload 都已经上传；交付状态应结合审核、Release 和上传成功记录核对。
 
 ### 4. 运行受影响产品
 

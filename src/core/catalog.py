@@ -43,6 +43,20 @@ class ProductSource:
 
 
 @dataclass(frozen=True)
+class RegionContentRule:
+    """One product's explicit visibility of a source description div."""
+
+    class_name: str
+    visible_regions: tuple[str, ...]
+
+    def as_dict(self) -> dict[str, object]:
+        return {
+            "class_name": self.class_name,
+            "visible_regions": list(self.visible_regions),
+        }
+
+
+@dataclass(frozen=True)
 class ProductDefinition:
     """The small, validated subset of a reference Product Definition we use."""
 
@@ -56,6 +70,7 @@ class ProductDefinition:
     page_global_source_boundary: str | None
     sources: tuple[ProductSource, ...]
     config_path: Path
+    region_content_rules: tuple[RegionContentRule, ...] = ()
 
     @property
     def content_family(self) -> str:
@@ -101,6 +116,7 @@ class ProcessingItem:
     page_global_source_boundary: str | None
     source_relative_path: PurePosixPath
     frozen_relative_path: PurePosixPath
+    region_content_rules: tuple[RegionContentRule, ...] = ()
 
     def as_dict(self) -> dict[str, object]:
         return {
@@ -110,6 +126,9 @@ class ProcessingItem:
             "page_model": self.page_model,
             "semantic_strategy": self.semantic_strategy,
             "page_global_source_boundary": self.page_global_source_boundary,
+            "region_content_rules": [
+                rule.as_dict() for rule in self.region_content_rules
+            ] or None,
             "source_relative_path": self.source_relative_path.as_posix(),
             "frozen_relative_path": self.frozen_relative_path.as_posix(),
         }
@@ -289,6 +308,7 @@ class ProductCatalog:
                             language, *PurePosixPath(source.snapshot_path).parts
                         ),
                         frozen_relative_path=definition.frozen_relative_path(language),
+                        region_content_rules=definition.region_content_rules,
                     )
                 )
         return tuple(items)
@@ -323,6 +343,12 @@ def _read_product_definition(
     )
     if semantic_strategy not in SEMANTIC_STRATEGIES:
         raise CatalogError(f"{config_path} 使用未知 Strategy：{semantic_strategy}。")
+
+    region_content_rules = _read_region_content_rules(extraction, config_path)
+    if region_content_rules and semantic_strategy != "region_filter":
+        raise CatalogError(
+            f"{config_path} 的 region_content_rules 目前只支持 region_filter。"
+        )
 
     page_global_source_boundary: str | None = None
     page_global_content = extraction.get("page_global_content")
@@ -389,7 +415,37 @@ def _read_product_definition(
         page_global_source_boundary=page_global_source_boundary,
         sources=tuple(sources),
         config_path=config_path,
+        region_content_rules=region_content_rules,
     )
+
+
+def _read_region_content_rules(
+    extraction: dict[str, Any], path: Path
+) -> tuple[RegionContentRule, ...]:
+    values = extraction.get("region_content_rules", [])
+    if not isinstance(values, list):
+        raise CatalogError(f"{path} 的 region_content_rules 必须是列表。")
+    rules: list[RegionContentRule] = []
+    seen: set[str] = set()
+    for value in values:
+        if not isinstance(value, dict) or set(value) != {
+            "class_name",
+            "visible_regions",
+        }:
+            raise CatalogError(
+                f"{path} 的区域说明规则必须只包含 class_name、visible_regions。"
+            )
+        class_name = _required_string(value, "class_name", path)
+        if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_-]*", class_name):
+            raise CatalogError(f"{path} 的 class_name 必须是单个 class 名称。")
+        if class_name in seen:
+            raise CatalogError(f"{path} 重复声明区域说明 class：{class_name}。")
+        seen.add(class_name)
+        regions = _required_string_list(value, "visible_regions", path)
+        if any(not PRODUCT_KEY_PATTERN.fullmatch(region) for region in regions):
+            raise CatalogError(f"{path} 的 visible_regions 必须使用区域机器键。")
+        rules.append(RegionContentRule(class_name, tuple(sorted(regions))))
+    return tuple(sorted(rules, key=lambda rule: rule.class_name))
 
 
 def _read_scope_languages(data: dict[str, Any], path: Path) -> tuple[str, ...]:

@@ -77,8 +77,10 @@ class SectionExtractor:
         candidates = [
             node
             for node in direct[banner_index + 1 : anchor_index]
-            if self._is_material(node) and self._qa_role(node, ()) is None
+            if self._is_material(node)
         ]
+        # Position owns this content. A product description can discuss SLA
+        # without becoming the separate FAQ/SLA section after pricing.
         fragments = [str(node) for node in candidates]
         if anchor_child is not first_anchor:
             projected = self._prefix_before_anchor(anchor_child, first_anchor)

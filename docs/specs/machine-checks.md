@@ -127,6 +127,15 @@ SupportArticlePage 至少覆盖：
 
 `region_filter` 的配置排除 ID 在当前源中零匹配时不属于边界歧义：生产抽取与独立 L3b 都把该 ID 视为不适用并保留完整源内容，最终内容判断交给 Workbench 人工审核。同一 ID 对应多个物理表格单元仍为 `blocked`；Complex 的 Software 全叶子零匹配规则也保持不变。
 
+公共 `ProductDescription` 由 Banner 后、正式定价正文前的实际材料节点构成。正文中提到 SLA、服务级别协议或支持不改变此归属；真正的公共 FAQ/SLA 从定价正文之后独立定位。
+
+区域投影包含两项显式交付处理，它们不是全局 HTML 规范化规则：
+
+- RegionFilter/Complex 在 `soft-category` 排除后清理保留表格及包裹祖先的内联 `display:none`，保留其它样式、表格单元格和不相关隐藏控件。
+- RegionFilter 可使用该产品 `extraction.region_content_rules` 声明说明 div 的 class 和允许区域。L3b 独立核对 class 命中、区域域值和无表格边界，再按当前区域重建；不调用生产投影。未配置产品不裁剪这些 class。
+
+上述处理只作用于独立定位的期望源片段。实际 Payload 仍原样参与比较，重新注入隐藏样式、混入其它区域的说明或漏掉产品说明都必须使 L3b 失败。规则必须进入 Product Definition 变化检测以及 Batch/Review 固定输入，不能在审核时使用后来修改的产品规则替代。
+
 ### 3.5 HTML 规范化
 
 源片段与 Payload 片段必须调用同一个公开函数。规范化只处理无业务意义的格式差异，例如统一换行和标签之间的排版空白。

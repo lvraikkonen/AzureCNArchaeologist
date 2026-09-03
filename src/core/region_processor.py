@@ -9,6 +9,7 @@ from typing import Any, Callable
 from bs4 import BeautifulSoup, Tag
 
 from src.core.soft_category import SoftCategoryLookup, SoftCategoryRules
+from src.utils.html.inline_styles import without_display_none
 from src.utils.html.normalization import normalize_html
 
 
@@ -38,7 +39,7 @@ class RegionProcessor:
         filter_analysis: dict[str, Any],
         product_config: dict[str, Any],
     ) -> dict[str, str]:
-        del html_file_path, product_config
+        del html_file_path
         if not filter_analysis.get("region_visible"):
             raise RegionProjectionError("RegionFilter 页面没有可见区域筛选器。")
         region_options = filter_analysis.get("region_options")
@@ -88,18 +89,30 @@ class RegionProcessor:
             "区域定价主体",
         )
 
-        result: dict[str, str] = {}
+        regions: list[str] = []
         for option in region_options:
             if not isinstance(option, dict):
                 raise RegionProjectionError("区域选项必须是对象。")
             region = str(option.get("value", "")).strip()
-            if not region or region in result:
+            if not region or region in regions:
                 raise RegionProjectionError("区域选项名称为空或重复。")
+            regions.append(region)
+        content_rules = _description_rules(
+            pricing_body,
+            regions=regions,
+            rules=product_config.get("extraction", {}).get(
+                "region_content_rules", []
+            ),
+        )
+        result: dict[str, str] = {}
+        for region in regions:
             exclusions = self.rules.excluded_table_ids(software, region)
             content = project_fragment_for_region(
                 pricing_body,
                 source_scope=pricing_root,
                 excluded_table_ids=exclusions,
+                region=region,
+                region_content_rules=content_rules,
             )
             if not _has_business_content(content):
                 raise RegionProjectionError(f"区域 {region!r} 没有可交付定价内容。")
@@ -113,6 +126,8 @@ def project_fragment_for_region(
     source_scope: Tag,
     excluded_table_ids: tuple[str, ...],
     validate_targets: bool = True,
+    region: str | None = None,
+    region_content_rules: dict[str, tuple[str, ...]] | None = None,
 ) -> str:
     """Clone one source fragment and remove exact configured table units."""
 
@@ -123,6 +138,8 @@ def project_fragment_for_region(
         )
     clone = deepcopy(fragment)
     _remove_excluded_units(clone, applicable_ids)
+    _project_region_descriptions(clone, region, region_content_rules or {})
+    reveal_retained_tables(clone)
     return normalize_html(str(clone))
 
 
@@ -148,7 +165,80 @@ def project_fragments_for_region(
     for fragment in fragments:
         holder.append(deepcopy(fragment))
     _remove_excluded_units(holder, applicable_ids)
+    reveal_retained_tables(holder)
     return normalize_html(holder.decode_contents())
+
+
+def _description_rules(
+    body: Tag, *, regions: list[str], rules: list[dict[str, Any]]
+) -> dict[str, tuple[str, ...]]:
+    """Bind the catalog-validated rules to this language's actual source."""
+
+    result: dict[str, tuple[str, ...]] = {}
+    for rule in rules:
+        class_name = rule["class_name"]
+        visible = tuple(rule["visible_regions"])
+        unknown = set(visible) - set(regions)
+        if unknown:
+            raise RegionProjectionError(
+                f"区域说明 {class_name!r} 引用了源控件不存在的区域：{sorted(unknown)}。"
+            )
+        nodes = body.find_all("div", class_=class_name)
+        if not nodes:
+            raise RegionProjectionError(f"区域说明 class {class_name!r} 没有匹配 div。")
+        if any(node.find("table") is not None for node in nodes):
+            raise RegionProjectionError(
+                f"区域说明 class {class_name!r} 包含表格；表格必须由 soft-category 筛选。"
+            )
+        result[class_name] = visible
+    return result
+
+
+def _project_region_descriptions(
+    fragment: Tag,
+    region: str | None,
+    rules: dict[str, tuple[str, ...]],
+) -> None:
+    if rules and region is None:
+        raise RegionProjectionError("区域说明投影缺少区域键。")
+    if not rules:
+        return
+    for node in list(fragment.find_all("div")):
+        if node.attrs is None:  # An excluded ancestor already removed this node.
+            continue
+        applicable = set(node.get("class", [])) & rules.keys()
+        if any(region not in rules[name] for name in applicable):
+            node.decompose()
+        elif applicable:
+            _clear_display_none(node)
+
+
+def reveal_retained_tables(fragment: Tag) -> None:
+    """Reveal remaining tables and their wrappers, never unrelated hidden UI."""
+
+    tables = (
+        ([fragment] if fragment.name == "table" else [])
+        + fragment.find_all("table")
+    )
+    visited: set[int] = set()
+    for table in tables:
+        current = table
+        while isinstance(current, Tag) and id(current) not in visited:
+            visited.add(id(current))
+            _clear_display_none(current)
+            if current is fragment:
+                break
+            current = current.parent
+
+
+def _clear_display_none(node: Tag) -> None:
+    if "style" not in node.attrs:
+        return
+    value = without_display_none(str(node["style"]))
+    if value:
+        node["style"] = value
+    else:
+        del node["style"]
 
 
 def validate_exclusion_targets(

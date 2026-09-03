@@ -1,6 +1,32 @@
 {
   "schema_version": "1.0",
   "source_run_name": "supported-products-expanded-full-regression-20260825",
+  "scope_expansions": [
+    {
+      "accepted_on": "2026-09-02",
+      "source_run_name": "expand-pricing-latest-html-rerun-20260902",
+      "source_review_id": "expand-pricing-latest-html-rerun-review-20260902",
+      "product_keys": [
+        "data-lake-storage",
+        "data-transfer",
+        "ddos-protection",
+        "hci",
+        "hub",
+        "storage-import-export",
+        "storage-page-blobs",
+        "storage-queues",
+        "storage-tables"
+      ]
+    },
+    {
+      "accepted_on": "2026-09-02",
+      "source_run_name": "pricing-review-fixes-20260902-220448",
+      "source_review_id": "pricing-review-fixes-review-20260902-220448",
+      "product_keys": [
+        "storage-managed-disks"
+      ]
+    }
+  ],
   "ignored_fields": [
     "capability_status",
     "display_name",
@@ -299,6 +325,17 @@
       }
     },
     {
+      "product_key": "data-lake-storage",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
+      "region_content_rules": null,
+      "sources": {
+        "zh-cn": "pricing/details/storage/data-lake/index.html",
+        "en-us": "pricing/details/storage/data-lake/index.html"
+      }
+    },
+    {
       "product_key": "data-pipeline",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
@@ -306,6 +343,17 @@
       "sources": {
         "zh-cn": "pricing/details/data-factory/data-pipeline.html",
         "en-us": "pricing/details/data-factory/data-pipeline.html"
+      }
+    },
+    {
+      "product_key": "data-transfer",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "region_content_rules": null,
+      "sources": {
+        "zh-cn": "pricing/details/data-transfer/index.html",
+        "en-us": "pricing/details/data-transfer/index.html"
       }
     },
     {
@@ -326,6 +374,17 @@
       "sources": {
         "zh-cn": "pricing/details/databricks/index.html",
         "en-us": "pricing/details/databricks/index.html"
+      }
+    },
+    {
+      "product_key": "ddos-protection",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
+      "region_content_rules": null,
+      "sources": {
+        "zh-cn": "pricing/details/ddos-protection/index.html",
+        "en-us": "pricing/details/ddos-protection/index.html"
       }
     },
     {
@@ -419,6 +478,17 @@
       }
     },
     {
+      "product_key": "hci",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "region_content_rules": null,
+      "sources": {
+        "zh-cn": "pricing/details/azure-stack/hci/index.html",
+        "en-us": "pricing/details/azure-stack/hci/index.html"
+      }
+    },
+    {
       "product_key": "hdinsight",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
@@ -436,6 +506,17 @@
       "sources": {
         "zh-cn": "pricing/details/hpc-cache/index.html",
         "en-us": "pricing/details/hpc-cache/index.html"
+      }
+    },
+    {
+      "product_key": "hub",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "region_content_rules": null,
+      "sources": {
+        "zh-cn": "pricing/details/azure-stack/hub/index.html",
+        "en-us": "pricing/details/azure-stack/hub/index.html"
       }
     },
     {
@@ -1726,6 +1807,99 @@
       "sources": {
         "zh-cn": "pricing/details/storage/index.html",
         "en-us": "pricing/details/storage/index.html"
+      }
+    },
+    {
+      "product_key": "storage-import-export",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "simple_static",
+      "page_global_source_boundary": null,
+      "region_content_rules": null,
+      "sources": {
+        "zh-cn": "pricing/details/storage-import-export/index.html",
+        "en-us": "pricing/details/storage-import-export/index.html"
+      }
+    },
+    {
+      "product_key": "storage-managed-disks",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "region_content_rules": [
+        {
+          "class_name": "ise3",
+          "visible_regions": [
+            "east-china3"
+          ]
+        },
+        {
+          "class_name": "isn3",
+          "visible_regions": [
+            "north-china3"
+          ]
+        },
+        {
+          "class_name": "note3",
+          "visible_regions": [
+            "east-china2",
+            "north-china2",
+            "north-china3"
+          ]
+        },
+        {
+          "class_name": "notn3",
+          "visible_regions": [
+            "east-china",
+            "east-china2",
+            "east-china3",
+            "north-china",
+            "north-china2"
+          ]
+        },
+        {
+          "class_name": "zone1",
+          "visible_regions": [
+            "east-china",
+            "north-china"
+          ]
+        }
+      ],
+      "sources": {
+        "zh-cn": "pricing/details/storage/managed-disks/index.html",
+        "en-us": "pricing/details/storage/managed-disks/index.html"
+      }
+    },
+    {
+      "product_key": "storage-page-blobs",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
+      "region_content_rules": null,
+      "sources": {
+        "zh-cn": "pricing/details/storage/page-blobs/index.html",
+        "en-us": "pricing/details/storage/page-blobs/index.html"
+      }
+    },
+    {
+      "product_key": "storage-queues",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
+      "region_content_rules": null,
+      "sources": {
+        "zh-cn": "pricing/details/storage/queues/index.html",
+        "en-us": "pricing/details/storage/queues/index.html"
+      }
+    },
+    {
+      "product_key": "storage-tables",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "region_content_rules": null,
+      "sources": {
+        "zh-cn": "pricing/details/storage/tables/index.html",
+        "en-us": "pricing/details/storage/tables/index.html"
       }
     },
     {

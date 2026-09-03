@@ -128,6 +128,7 @@ def compare_product_definitions(
             ("page_model", "页面类型"),
             ("semantic_strategy", "Strategy"),
             ("page_global_source_boundary", "页面全局正文边界"),
+            ("region_content_rules", "区域说明显示规则"),
             ("sources", "中英文源路径"),
         ):
             if previous.get(field) == current.get(field):
@@ -159,6 +160,9 @@ def _current_projection(
         "page_global_source_boundary": (
             definition.page_global_source_boundary
         ),
+        "region_content_rules": [
+            rule.as_dict() for rule in definition.region_content_rules
+        ] or None,
         "sources": {
             language: definition.source_for(language).snapshot_path
             for language in catalog.languages
@@ -216,6 +220,13 @@ def _products_from_run_manifest(
             raise ProductDefinitionChangeError(
                 f"来源 Batch 中 {product_key} 的页面类型或 Strategy 不一致。"
             )
+        if any(
+            row.get("region_content_rules") != rows[0].get("region_content_rules")
+            for row in rows[1:]
+        ):
+            raise ProductDefinitionChangeError(
+                f"来源 Batch 中 {product_key} 的双语区域说明规则不一致。"
+            )
         sources: dict[str, str] = {}
         for row in rows:
             language = str(row["language"])
@@ -235,6 +246,7 @@ def _products_from_run_manifest(
                 "product_key": product_key,
                 "page_model": next(iter(page_models)),
                 "semantic_strategy": next(iter(strategies)),
+                "region_content_rules": rows[0].get("region_content_rules"),
                 "sources": sources,
             }
         )

@@ -24,6 +24,7 @@ def run_l3b(
     semantic_strategy: str = "simple_static",
     soft_category_path: Path | None = None,
     page_global_source_boundary: str | None = None,
+    region_content_rules: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Compare persisted content against a fresh independent source walk."""
 
@@ -41,6 +42,7 @@ def run_l3b(
                 language=language,
                 soft_category_path=soft_category_path,
                 page_global_source_boundary=page_global_source_boundary,
+                region_content_rules=region_content_rules,
             )
         else:
             raise ValueError(f"未知页面类型：{page_model}。")

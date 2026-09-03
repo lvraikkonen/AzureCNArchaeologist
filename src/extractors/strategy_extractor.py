@@ -219,6 +219,12 @@ def _strategy_config(
     }
     if language is not None:
         config["language"] = language
+    if definition.region_content_rules:
+        if effective_strategy != "region_filter":
+            raise ExtractionError("region_content_rules 目前只支持 region_filter。")
+        config["extraction"]["region_content_rules"] = [
+            rule.as_dict() for rule in definition.region_content_rules
+        ]
     if definition.page_global_source_boundary is not None:
         config["extraction"]["page_global_content"] = {
             "source_boundary": definition.page_global_source_boundary,

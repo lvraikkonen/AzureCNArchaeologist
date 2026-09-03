@@ -623,6 +623,29 @@ def test_page_global_source_boundary_change_is_a_bilingual_trigger(
     } == {"after_final_formal_selector_before_common_sections"}
 
 
+def test_region_description_rule_addition_and_removal_are_bilingual_changes(project_builder):
+    root = project_builder([{"product_key": "sample-product", "semantic_strategy": "region_filter"}])
+    original = ProductCatalog.load(root)
+    _freeze_baseline(original)
+    _prepare_incremental_config(original, previous_rows=[], current_rows=[])
+    path = root / "data/configs/products-config/pricing/sample-product.json"
+    config = json.loads(path.read_text())
+    rule = {"class_name": "isn3", "visible_regions": ["north-china3"]}
+    for rules in ([rule], []):
+        config["extraction"]["region_content_rules"] = rules
+        _write_json(path, config)
+        changed = ProductCatalog.load(root)
+        plan = detect_incremental_changes(changed)
+        assert plan.affected_product_count == 1
+        product = plan.affected_products[0]
+        assert product.change_sources == ("product_definition",)
+        assert product.changed_languages == ()
+        assert plan.product_definition_changes[0].changed_fields == ("region_content_rules",)
+        assert [item.language for item in product.processing_items] == ["zh-cn", "en-us"]
+        _prepare_incremental_config(changed, previous_rows=[], current_rows=[])
+        assert detect_incremental_changes(changed).affected_product_count == 0
+
+
 def test_incremental_batch_uses_fixed_inputs_and_delta_release_closes_it(
     project_builder,
     tmp_path,

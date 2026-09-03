@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import re
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
@@ -115,7 +117,86 @@ def _l3b(
             / "soft-category.json"
         ),
         page_global_source_boundary=definition.page_global_source_boundary,
+        region_content_rules=[
+            rule.as_dict() for rule in definition.region_content_rules
+        ] or None,
     )
+
+
+@pytest.mark.parametrize("language", LANGUAGES)
+def test_hdinsight_description_preserves_sla_mentions_and_all_intro_sections(tmp_path, language):
+    catalog, item, source_path, payload = _extract_upstream(
+        tmp_path, product_key="hdinsight", language=language
+    )
+    assert [s["sectionType"] for s in payload["commonSections"]] == [
+        "Banner", "ProductDescription", "Qa"
+    ]
+    description = BeautifulSoup(payload["commonSections"][1]["content"], "html.parser")
+    text = description.get_text(" ", strip=True)
+    markers = (
+        ["Azure HDInsight", "服务特征", "组件", "支持和服务级别协议", "定价详细信息"]
+        if language == "zh-cn"
+        else ["Azure HDInsight", "Service features", "Components", "Support and SLA", "Pricing Details"]
+    )
+    assert all(marker in text for marker in markers)
+    assert _l3b(tmp_path, catalog=catalog, item=item, source_path=source_path, payload=payload)["status"] == "passed"
+
+    # A partial description must fail even when ProductDescription still exists.
+    description.find("p").decompose()
+    incomplete = deepcopy(payload)
+    incomplete["commonSections"][1]["content"] = str(description)
+    assert _l3b(tmp_path, catalog=catalog, item=item, source_path=source_path, payload=incomplete)["status"] == "failed"
+
+
+@pytest.mark.parametrize("language", LANGUAGES)
+def test_managed_disks_has_visible_retained_tables_and_only_regional_descriptions(tmp_path, language):
+    catalog, item, source_path, payload = _extract_upstream(
+        tmp_path, product_key="storage-managed-disks", language=language
+    )
+    assert [key for key, definition in catalog.definitions.items() if definition.region_content_rules] == ["storage-managed-disks"]
+    allowed = {
+        "isn3": {"north-china3"},
+        "notn3": {"east-china3", "east-china2", "north-china2", "east-china", "north-china"},
+        "ise3": {"east-china3"},
+        "note3": {"north-china3", "east-china2", "north-china2"},
+        "zone1": {"east-china", "north-china"},
+    }
+    expected_tables = {
+        "north-china3": {"region3", "ZRS"},
+        "east-china3": {"region3"},
+        "east-china2": {"region2"},
+        "north-china2": {"region2"},
+        "east-china": {"base"},
+        "north-china": {"base"},
+    }
+    assert len(payload["contentGroups"]) == 6
+    for group in payload["contentGroups"]:
+        region = json.loads(group["filterCriteriaJson"])[0]["matchValues"]
+        html = BeautifulSoup(group["content"], "html.parser")
+        for class_name, visible_regions in allowed.items():
+            assert bool(html.select(f"div.{class_name}")) == (region in visible_regions)
+        for suffix in ("base", "region2", "region3", "ZRS"):
+            table_id = "managed-disks-premium" + ("" if suffix == "base" else f"-{suffix}")
+            assert bool(html.find("table", id=table_id)) == (suffix in expected_tables[region])
+        for table in html.find_all("table"):
+            for node in [table, *table.parents]:
+                assert not re.search(r"display\s*:\s*none", str(node.get("style", "")), re.I)
+    assert _l3b(tmp_path, catalog=catalog, item=item, source_path=source_path, payload=payload)["status"] == "passed"
+
+    for mutation in ("rehide-table", "wrong-region-note", "missing-table"):
+        changed = deepcopy(payload)
+        north = next(g for g in changed["contentGroups"] if '"north-china3"' in g["filterCriteriaJson"])
+        html = BeautifulSoup(north["content"], "html.parser")
+        if mutation == "rehide-table":
+            html.find(id="managed-disks-premium-region3")["style"] = "display:none"
+        elif mutation == "missing-table":
+            html.find(id="managed-disks-premium-ZRS").decompose()
+        else:
+            note = html.new_tag("div", attrs={"class": "notn3"})
+            note.string = "Wrong region description"
+            html.div.append(note)
+        north["content"] = str(html)
+        assert _l3b(tmp_path, catalog=catalog, item=item, source_path=source_path, payload=changed)["status"] == "failed", mutation
 
 
 def test_processing_scope_uses_product_definition_strategies_directly() -> None:

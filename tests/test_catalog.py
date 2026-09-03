@@ -26,14 +26,14 @@ EXPECTED_SCOPE = tuple(
 def test_real_catalog_has_expected_scope_and_deterministic_item_order() -> None:
     catalog = ProductCatalog.load(PROJECT_ROOT)
 
-    assert len(catalog.definitions) == 201
-    assert len(EXPECTED_SCOPE) == 184
+    assert len(catalog.definitions) == 200
+    assert len(EXPECTED_SCOPE) == 194
     assert catalog.scope_product_keys == EXPECTED_SCOPE
 
     first = catalog.select(all_products=True)
     second = catalog.select(all_products=True)
     assert first == second
-    assert len(first) == 368
+    assert len(first) == 388
     assert [(item.product_key, item.language) for item in first] == [
         (product_key, language)
         for product_key in EXPECTED_SCOPE

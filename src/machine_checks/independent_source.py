@@ -20,6 +20,7 @@ from src.core.payload_contract import (
     PAYLOAD_CONTRACT_VERSIONS,
 )
 from src.utils.html.normalization import normalize_html
+from src.utils.html.inline_styles import without_display_none
 
 
 class IndependentSourceError(ValueError):
@@ -54,12 +55,15 @@ def locate_pricing_source(
     soft_category_path: Path | None,
     page_global_source_boundary: str | None = None,
     payload_contract_version: str = CURRENT_PAYLOAD_CONTRACT_VERSION,
+    region_content_rules: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     if payload_contract_version not in PAYLOAD_CONTRACT_VERSIONS:
         raise IndependentSourceError(
             f"L3b 不认识 Payload 合同版本 {payload_contract_version!r}。"
         )
     pure = _one(soup.select("div.pure-content"), "pure-content")
+    if region_content_rules and semantic_strategy != "region_filter":
+        raise IndependentSourceError("区域说明规则目前只支持 region_filter。")
     if semantic_strategy == "simple_static":
         boundary = _simple_pricing_boundary(
             soup,
@@ -113,6 +117,11 @@ def locate_pricing_source(
         source_body = _one(
             direct_bodies + direct_static_bodies, "区域定价主体"
         )
+        description_rules = _independent_description_rules(
+            source_body,
+            regions={option["value"] for option in region_control["options"]},
+            rules=region_content_rules,
+        )
         groups: list[dict[str, Any]] = []
         for region in region_control["options"]:
             excluded = _config_row(config_rows, software, region["value"])
@@ -120,6 +129,8 @@ def locate_pricing_source(
                 source_body,
                 source_scope=pricing,
                 excluded=excluded,
+                region=region["value"],
+                description_rules=description_rules,
             )
             groups.append(
                 {
@@ -773,7 +784,6 @@ def _independent_description_projection(
         str(node)
         for node in direct[banner_index + 1 : anchor_index]
         if _independent_is_material(node)
-        and _independent_qa_role(node, ()) is None
     ]
     if anchor_child is not first_anchor:
         clone = deepcopy(anchor_child)
@@ -1294,6 +1304,7 @@ def _project_independent_fragment_index(
     ]
     for unit in units:
         unit.decompose()
+    _independently_reveal_tables(clone)
     if not (
         clone.get_text(" ", strip=True)
         or clone.select_one("img, video, audio, table, iframe")
@@ -1339,12 +1350,21 @@ def _project_one(
     source_scope: Tag,
     excluded: tuple[str, ...],
     targets_already_validated: bool = False,
+    region: str | None = None,
+    description_rules: dict[str, tuple[str, ...]] | None = None,
 ) -> str:
     applicable = excluded
     if not targets_already_validated:
         applicable = _validate_targets(source_scope, excluded)
     clone = deepcopy(fragment)
     _remove_targets(clone, applicable)
+    for class_name, visible_regions in (description_rules or {}).items():
+        for node in list(clone.find_all("div", class_=class_name)):
+            if region in visible_regions:
+                _independently_clear_display_none(node)
+            else:
+                node.decompose()
+    _independently_reveal_tables(clone)
     return normalize_html(str(clone))
 
 
@@ -1354,7 +1374,68 @@ def _project_many(fragments: list[Tag], *, excluded: tuple[str, ...]) -> str:
     for fragment in fragments:
         holder.append(deepcopy(fragment))
     _remove_targets(holder, excluded)
+    _independently_reveal_tables(holder)
     return normalize_html(holder.decode_contents())
+
+
+def _independent_description_rules(
+    body: Tag, *, regions: set[str], rules: list[dict[str, Any]] | None
+) -> dict[str, tuple[str, ...]]:
+    values = [] if rules is None else rules
+    if not isinstance(values, list):
+        raise IndependentSourceError("region_content_rules 必须是列表。")
+    result: dict[str, tuple[str, ...]] = {}
+    for value in values:
+        if not isinstance(value, dict) or set(value) != {
+            "class_name", "visible_regions"
+        }:
+            raise IndependentSourceError("区域说明规则字段无效。")
+        name = value["class_name"]
+        visible = value["visible_regions"]
+        if not isinstance(name, str) or not re.fullmatch(
+            r"[A-Za-z_][A-Za-z0-9_-]*", name
+        ):
+            raise IndependentSourceError("区域说明必须声明单个 class_name。")
+        if name in result:
+            raise IndependentSourceError(f"重复的区域说明 class：{name}。")
+        if (
+            not isinstance(visible, list)
+            or not visible
+            or any(
+                not isinstance(region, str) or region not in regions
+                for region in visible
+            )
+            or len(set(visible)) != len(visible)
+        ):
+            raise IndependentSourceError(f"区域说明 {name!r} 的区域不属于源控件或重复。")
+        nodes = [
+            node for node in body.find_all("div")
+            if name in node.get("class", [])
+        ]
+        if not nodes:
+            raise IndependentSourceError(f"区域说明 class {name!r} 没有匹配 div。")
+        if any(node.find("table") is not None for node in nodes):
+            raise IndependentSourceError(f"区域说明 class {name!r} 包含表格。")
+        result[name] = tuple(visible)
+    return result
+
+
+def _independently_reveal_tables(fragment: Tag) -> None:
+    # Walk styled source elements independently of the production table walk.
+    for node in [fragment, *fragment.find_all(attrs={"style": True})]:
+        if node.name == "table" or node.find("table") is not None:
+            _independently_clear_display_none(node)
+
+
+def _independently_clear_display_none(node: Tag) -> None:
+    style = node.get("style")
+    if style is None:
+        return
+    visible_style = without_display_none(str(style))
+    if visible_style:
+        node["style"] = visible_style
+    else:
+        del node["style"]
 
 
 def _validate_targets(scope: Tag, excluded: tuple[str, ...]) -> tuple[str, ...]:

@@ -57,4 +57,7 @@ def l3b_report(
         page_global_source_boundary=(
             definition.page_global_source_boundary
         ),
+        region_content_rules=[
+            rule.as_dict() for rule in definition.region_content_rules
+        ] or None,
     )

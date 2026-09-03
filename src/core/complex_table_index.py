@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 from bs4 import BeautifulSoup, Tag
 
-from src.core.region_processor import RegionProjectionError
+from src.core.region_processor import RegionProjectionError, reveal_retained_tables
 from src.utils.html.normalization import normalize_html
 
 
@@ -74,6 +74,7 @@ class IndexedFragmentProjector:
         selected_units = [_resolve_element_path(clone, path) for path in paths]
         for unit in selected_units:
             unit.decompose()
+        reveal_retained_tables(clone)
         if not _has_business_content(clone):
             return ""
         return normalize_html(clone.decode_contents())

@@ -2,7 +2,7 @@
   "schema_version": "1.1",
   "product_key": "storage-managed-disks",
   "display_name": "Managed Disks",
-  "slug": "storage-managed-disks",
+  "slug": "storage_managed-disks",
   "page_model": "FlexibleContentPage",
   "capability_status": "known_unsupported",
   "unsupported_reason": "not_yet_qualified_for_extraction",
@@ -46,6 +46,28 @@
     }
   },
   "extraction": {
-    "semantic_strategy": "region_filter"
+    "semantic_strategy": "region_filter",
+    "region_content_rules": [
+      {
+        "class_name": "isn3",
+        "visible_regions": ["north-china3"]
+      },
+      {
+        "class_name": "notn3",
+        "visible_regions": ["east-china3", "east-china2", "north-china2", "east-china", "north-china"]
+      },
+      {
+        "class_name": "ise3",
+        "visible_regions": ["east-china3"]
+      },
+      {
+        "class_name": "note3",
+        "visible_regions": ["north-china3", "east-china2", "north-china2"]
+      },
+      {
+        "class_name": "zone1",
+        "visible_regions": ["east-china", "north-china"]
+      }
+    ]
   }
 }

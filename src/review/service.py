@@ -429,6 +429,7 @@ def read_review_materials(
                 "l3b_report_path": l3b_path.as_posix(),
                 "l3a_result": _read_json_object(l3a_path),
                 "l3b_result": _read_json_object(l3b_path),
+                "region_content_rules": item.get("region_content_rules"),
             }
         )
     return {
@@ -600,6 +601,7 @@ def _build_queue_item(
             "page_model": page_model,
             "semantic_strategy": semantic_strategy,
             "frozen_html_path": _present_path(frozen_path, catalog.project_root),
+            "region_content_rules": row.get("region_content_rules"),
             "payload_path": _present_path(payload_path, catalog.project_root),
             "l3a_report_path": _present_path(
                 check_paths["L3a"], catalog.project_root
@@ -708,6 +710,10 @@ def _verify_queue_product(
         if row.get("semantic_strategy") != semantic_strategy:
             raise ReviewError(
                 f"{item['item_id']} 的 Strategy 与审核清单不一致。"
+            )
+        if item.get("region_content_rules") != row.get("region_content_rules"):
+            raise ReviewError(
+                f"{item['item_id']} 的区域说明规则与 Batch 固定配置不一致。"
             )
         if item.get("page_model", page_model) != page_model:
             raise ReviewError(

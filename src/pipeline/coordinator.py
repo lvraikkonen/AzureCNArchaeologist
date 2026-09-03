@@ -583,6 +583,9 @@ def _validate_reprocessing_items(
             "page_model": item.page_model,
             "semantic_strategy": item.semantic_strategy,
             "page_global_source_boundary": item.page_global_source_boundary,
+            "region_content_rules": [
+                rule.as_dict() for rule in item.region_content_rules
+            ] or None,
             "source_relative_path": item.source_relative_path.as_posix(),
             "frozen_relative_path": item.frozen_relative_path.as_posix(),
         }
@@ -1210,6 +1213,9 @@ def _run_one_check(
         semantic_strategy=item.semantic_strategy,
         soft_category_path=soft_category_path,
         page_global_source_boundary=definition.page_global_source_boundary,
+        region_content_rules=[
+            rule.as_dict() for rule in definition.region_content_rules
+        ] or None,
     )
 
 
@@ -1343,6 +1349,9 @@ def _new_manifest_item(
         "page_model": item.page_model,
         "semantic_strategy": item.semantic_strategy,
         "page_global_source_boundary": item.page_global_source_boundary,
+        "region_content_rules": [
+            rule.as_dict() for rule in item.region_content_rules
+        ] or None,
         "source_relative_path": item.source_relative_path.as_posix(),
         "frozen_relative_path": item.frozen_relative_path.as_posix(),
         "status": "pending",
@@ -1601,6 +1610,9 @@ def _items_for_stored_plan(
             "page_model": item.page_model,
             "semantic_strategy": item.semantic_strategy,
             "page_global_source_boundary": item.page_global_source_boundary,
+            "region_content_rules": [
+                rule.as_dict() for rule in item.region_content_rules
+            ] or None,
             "source_relative_path": item.source_relative_path.as_posix(),
             "frozen_relative_path": item.frozen_relative_path.as_posix(),
         }

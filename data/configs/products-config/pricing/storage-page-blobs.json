@@ -2,7 +2,7 @@
   "schema_version": "1.1",
   "product_key": "storage-page-blobs",
   "display_name": "Page Blobs",
-  "slug": "storage-page-blobs",
+  "slug": "storage_page-blobs",
   "page_model": "FlexibleContentPage",
   "capability_status": "known_unsupported",
   "unsupported_reason": "not_yet_qualified_for_extraction",
