@@ -134,6 +134,7 @@ class ReviewWorkbenchService:
             else:
                 source = locate_pricing_source(
                     soup,
+                    product_key=product_key,
                     semantic_strategy=materials["semantic_strategy"],
                     language=item["language"],
                     soft_category_path=(
@@ -352,7 +353,9 @@ def _content_group_comparisons(
             comparisons,
             payload_path=f"contentGroups[{index}].content",
             label=f"{group_label} · 定价内容",
-            source_boundary="该状态对应的完整定价内容面板",
+            source_boundary=source_group.get(
+                "content_source_boundary", "该状态对应的完整定价内容面板"
+            ),
             source=source_group["content"],
             payload=(
                 payload_group.get("content")

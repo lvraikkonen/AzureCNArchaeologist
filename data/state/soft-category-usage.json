@@ -2622,6 +2622,96 @@
     },
     {
       "schema_version": "1.0",
+      "product_key": "databox",
+      "language": "zh-cn",
+      "semantic_strategy": "complex",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "data-box",
+          "region": "east-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-box",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-box",
+          "region": "east-china3",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-box",
+          "region": "north-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-box",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-box",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "databox",
+      "language": "en-us",
+      "semantic_strategy": "complex",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "data-box",
+          "region": "east-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-box",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-box",
+          "region": "east-china3",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-box",
+          "region": "north-china",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-box",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "data-box",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
       "product_key": "database-migration",
       "language": "en-us",
       "semantic_strategy": "complex",
@@ -6168,6 +6258,390 @@
     },
     {
       "schema_version": "1.0",
+      "product_key": "mysql",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure Database for MySQL",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "Azure_Database_For_MySQL1",
+            "Azure_Database_For_MySQL2",
+            "Azure_Database_For_MySQL3",
+            "Azure_Database_For_MySQL4",
+            "Azure_Database_For_MySQL5",
+            "Azure_Database_For_MySQL6",
+            "Azure_Database_For_MySQL7",
+            "Azure_Database_For_MySQL7-E3",
+            "Azure_Database_For_MySQL8",
+            "Azure_Database_For_MySQL20",
+            "Azure_Database_For_MySQL18",
+            "Azure_Database_For_MySQL10",
+            "Azure_Database_For_MySQL12",
+            "Azure_Database_For_MySQL14",
+            "Azure_Database_For_MySQL19",
+            "Azure_Database_For_MySQL21",
+            "Azure_Database_For_MySQL17",
+            "Azure_Database_For_MySQL22",
+            "Azure_Database_For_MySQL9",
+            "Azure_Database_For_MySQL13",
+            "Azure_Database_For_MySQL30",
+            "Azure_Database_For_MySQL31",
+            "Azure_Database_For_MySQL32",
+            "Azure_Database_For_MySQL34",
+            "Azure_Database_For_MySQL35",
+            "Azure_Database_For_MySQL_IOPS",
+            "Azure_Database_For_MySQL_IOPS_East3",
+            "Azure_Database_Extended_Support_East3",
+            "Azure_Database_Extended_Support_E2N2N3"
+          ]
+        },
+        {
+          "os": "Azure Database for MySQL",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "Azure_Database_For_MySQL8",
+            "Azure_Database_For_MySQL10",
+            "Azure_Database_For_MySQL12",
+            "Azure_Database_For_MySQL14",
+            "Azure_Database_For_MySQL7",
+            "Azure_Database_For_MySQL7-E3",
+            "Azure_Database_For_MySQL18",
+            "Azure_Database_For_MySQL16",
+            "Azure_Database_For_MySQL15",
+            "Azure_Database_For_MySQL20",
+            "Azure_Database_For_MySQL31",
+            "Azure_Database_For_MySQL32",
+            "Azure_Database_For_MySQL34",
+            "Azure_Database_For_MySQL35",
+            "Azure_Database_For_MySQL_IOPS",
+            "Azure_Database_Extended_Support_East3"
+          ]
+        },
+        {
+          "os": "Azure Database for MySQL",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": [
+            "Azure_Database_For_MySQL6",
+            "Azure_Database_For_MySQL4",
+            "Azure_Database_For_MySQL19",
+            "Azure_Database_For_MySQL17",
+            "Azure_Database_For_MySQL7",
+            "Azure_Database_For_MySQL9",
+            "Azure_Database_For_MySQL13",
+            "Azure_Database_For_MySQL30",
+            "Azure_Database_For_MySQL33",
+            "Azure_Database_For_MySQL36",
+            "Azure_Database_For_MySQL37",
+            "Azure_Database_For_MySQL38",
+            "Azure_Database_For_MySQL39",
+            "Azure_Database_For_MySQL40",
+            "Azure_Database_For_MySQL41",
+            "Azure_Database_For_MySQL42",
+            "Azure_Database_For_MySQL43",
+            "Azure_Database_For_MySQL44",
+            "Azure_Database_For_MySQL45",
+            "Azure_Database_For_MySQL32",
+            "Azure_Database_For_MySQL34",
+            "Azure_Database_For_MySQL31",
+            "Azure_Database_For_MySQL35",
+            "Azure_Database_For_MySQL_IOPS",
+            "Azure_Database_Extended_Support_E2N2N3"
+          ]
+        },
+        {
+          "os": "Azure Database for MySQL",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "Azure_Database_For_MySQL1",
+            "Azure_Database_For_MySQL2",
+            "Azure_Database_For_MySQL3",
+            "Azure_Database_For_MySQL4",
+            "Azure_Database_For_MySQL5",
+            "Azure_Database_For_MySQL6",
+            "Azure_Database_For_MySQL7",
+            "Azure_Database_For_MySQL7-E3",
+            "Azure_Database_For_MySQL8",
+            "Azure_Database_For_MySQL20",
+            "Azure_Database_For_MySQL18",
+            "Azure_Database_For_MySQL10",
+            "Azure_Database_For_MySQL11",
+            "Azure_Database_For_MySQL12",
+            "Azure_Database_For_MySQL14",
+            "Azure_Database_For_MySQL19",
+            "Azure_Database_For_MySQL21",
+            "Azure_Database_For_MySQL17",
+            "Azure_Database_For_MySQL22",
+            "Azure_Database_For_MySQL9",
+            "Azure_Database_For_MySQL13",
+            "Azure_Database_For_MySQL30",
+            "Azure_Database_For_MySQL31",
+            "Azure_Database_For_MySQL32",
+            "Azure_Database_For_MySQL34",
+            "Azure_Database_For_MySQL35",
+            "Azure_Database_For_MySQL_IOPS",
+            "Azure_Database_For_MySQL_IOPS_East3",
+            "Azure_Database_Extended_Support_East3",
+            "Azure_Database_Extended_Support_E2N2N3"
+          ]
+        },
+        {
+          "os": "Azure Database for MySQL",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "Azure_Database_For_MySQL8",
+            "Azure_Database_For_MySQL10",
+            "Azure_Database_For_MySQL12",
+            "Azure_Database_For_MySQL14",
+            "Azure_Database_For_MySQL7",
+            "Azure_Database_For_MySQL7-E3",
+            "Azure_Database_For_MySQL18",
+            "Azure_Database_For_MySQL16",
+            "Azure_Database_For_MySQL15",
+            "Azure_Database_For_MySQL20",
+            "Azure_Database_For_MySQL31",
+            "Azure_Database_For_MySQL32",
+            "Azure_Database_For_MySQL34",
+            "Azure_Database_For_MySQL35",
+            "Azure_Database_For_MySQL_IOPS",
+            "Azure_Database_Extended_Support_East3"
+          ]
+        },
+        {
+          "os": "Azure Database for MySQL",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "Azure_Database_For_MySQL6",
+            "Azure_Database_For_MySQL4",
+            "Azure_Database_For_MySQL7-E3",
+            "Azure_Database_For_MySQL19",
+            "Azure_Database_For_MySQL17",
+            "Azure_Database_For_MySQL9",
+            "Azure_Database_For_MySQL13",
+            "Azure_Database_For_MySQL30",
+            "Azure_Database_For_MySQL33",
+            "Azure_Database_For_MySQL36",
+            "Azure_Database_For_MySQL37",
+            "Azure_Database_For_MySQL38",
+            "Azure_Database_For_MySQL39",
+            "Azure_Database_For_MySQL40",
+            "Azure_Database_For_MySQL41",
+            "Azure_Database_For_MySQL42",
+            "Azure_Database_For_MySQL43",
+            "Azure_Database_For_MySQL44",
+            "Azure_Database_For_MySQL45",
+            "Azure_Database_For_MySQL32",
+            "Azure_Database_For_MySQL34",
+            "Azure_Database_For_MySQL31",
+            "Azure_Database_For_MySQL35",
+            "Azure_Database_For_MySQL_IOPS_East3",
+            "Azure_Database_Extended_Support_East3"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "mysql",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Azure Database for MySQL",
+          "region": "east-china",
+          "row_present": true,
+          "table_ids": [
+            "Azure_Database_For_MySQL1",
+            "Azure_Database_For_MySQL2",
+            "Azure_Database_For_MySQL3",
+            "Azure_Database_For_MySQL4",
+            "Azure_Database_For_MySQL5",
+            "Azure_Database_For_MySQL6",
+            "Azure_Database_For_MySQL7",
+            "Azure_Database_For_MySQL7-E3",
+            "Azure_Database_For_MySQL8",
+            "Azure_Database_For_MySQL20",
+            "Azure_Database_For_MySQL18",
+            "Azure_Database_For_MySQL10",
+            "Azure_Database_For_MySQL12",
+            "Azure_Database_For_MySQL14",
+            "Azure_Database_For_MySQL19",
+            "Azure_Database_For_MySQL21",
+            "Azure_Database_For_MySQL17",
+            "Azure_Database_For_MySQL22",
+            "Azure_Database_For_MySQL9",
+            "Azure_Database_For_MySQL13",
+            "Azure_Database_For_MySQL30",
+            "Azure_Database_For_MySQL31",
+            "Azure_Database_For_MySQL32",
+            "Azure_Database_For_MySQL34",
+            "Azure_Database_For_MySQL35",
+            "Azure_Database_For_MySQL_IOPS",
+            "Azure_Database_For_MySQL_IOPS_East3",
+            "Azure_Database_Extended_Support_East3",
+            "Azure_Database_Extended_Support_E2N2N3"
+          ]
+        },
+        {
+          "os": "Azure Database for MySQL",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "Azure_Database_For_MySQL8",
+            "Azure_Database_For_MySQL10",
+            "Azure_Database_For_MySQL12",
+            "Azure_Database_For_MySQL14",
+            "Azure_Database_For_MySQL7",
+            "Azure_Database_For_MySQL7-E3",
+            "Azure_Database_For_MySQL18",
+            "Azure_Database_For_MySQL16",
+            "Azure_Database_For_MySQL15",
+            "Azure_Database_For_MySQL20",
+            "Azure_Database_For_MySQL31",
+            "Azure_Database_For_MySQL32",
+            "Azure_Database_For_MySQL34",
+            "Azure_Database_For_MySQL35",
+            "Azure_Database_For_MySQL_IOPS",
+            "Azure_Database_Extended_Support_East3"
+          ]
+        },
+        {
+          "os": "Azure Database for MySQL",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": [
+            "Azure_Database_For_MySQL6",
+            "Azure_Database_For_MySQL4",
+            "Azure_Database_For_MySQL19",
+            "Azure_Database_For_MySQL17",
+            "Azure_Database_For_MySQL7",
+            "Azure_Database_For_MySQL9",
+            "Azure_Database_For_MySQL13",
+            "Azure_Database_For_MySQL30",
+            "Azure_Database_For_MySQL33",
+            "Azure_Database_For_MySQL36",
+            "Azure_Database_For_MySQL37",
+            "Azure_Database_For_MySQL38",
+            "Azure_Database_For_MySQL39",
+            "Azure_Database_For_MySQL40",
+            "Azure_Database_For_MySQL41",
+            "Azure_Database_For_MySQL42",
+            "Azure_Database_For_MySQL43",
+            "Azure_Database_For_MySQL44",
+            "Azure_Database_For_MySQL45",
+            "Azure_Database_For_MySQL32",
+            "Azure_Database_For_MySQL34",
+            "Azure_Database_For_MySQL31",
+            "Azure_Database_For_MySQL35",
+            "Azure_Database_For_MySQL_IOPS",
+            "Azure_Database_Extended_Support_E2N2N3"
+          ]
+        },
+        {
+          "os": "Azure Database for MySQL",
+          "region": "north-china",
+          "row_present": true,
+          "table_ids": [
+            "Azure_Database_For_MySQL1",
+            "Azure_Database_For_MySQL2",
+            "Azure_Database_For_MySQL3",
+            "Azure_Database_For_MySQL4",
+            "Azure_Database_For_MySQL5",
+            "Azure_Database_For_MySQL6",
+            "Azure_Database_For_MySQL7",
+            "Azure_Database_For_MySQL7-E3",
+            "Azure_Database_For_MySQL8",
+            "Azure_Database_For_MySQL20",
+            "Azure_Database_For_MySQL18",
+            "Azure_Database_For_MySQL10",
+            "Azure_Database_For_MySQL11",
+            "Azure_Database_For_MySQL12",
+            "Azure_Database_For_MySQL14",
+            "Azure_Database_For_MySQL19",
+            "Azure_Database_For_MySQL21",
+            "Azure_Database_For_MySQL17",
+            "Azure_Database_For_MySQL22",
+            "Azure_Database_For_MySQL9",
+            "Azure_Database_For_MySQL13",
+            "Azure_Database_For_MySQL30",
+            "Azure_Database_For_MySQL31",
+            "Azure_Database_For_MySQL32",
+            "Azure_Database_For_MySQL34",
+            "Azure_Database_For_MySQL35",
+            "Azure_Database_For_MySQL_IOPS",
+            "Azure_Database_For_MySQL_IOPS_East3",
+            "Azure_Database_Extended_Support_East3",
+            "Azure_Database_Extended_Support_E2N2N3"
+          ]
+        },
+        {
+          "os": "Azure Database for MySQL",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "Azure_Database_For_MySQL8",
+            "Azure_Database_For_MySQL10",
+            "Azure_Database_For_MySQL12",
+            "Azure_Database_For_MySQL14",
+            "Azure_Database_For_MySQL7",
+            "Azure_Database_For_MySQL7-E3",
+            "Azure_Database_For_MySQL18",
+            "Azure_Database_For_MySQL16",
+            "Azure_Database_For_MySQL15",
+            "Azure_Database_For_MySQL20",
+            "Azure_Database_For_MySQL31",
+            "Azure_Database_For_MySQL32",
+            "Azure_Database_For_MySQL34",
+            "Azure_Database_For_MySQL35",
+            "Azure_Database_For_MySQL_IOPS",
+            "Azure_Database_Extended_Support_East3"
+          ]
+        },
+        {
+          "os": "Azure Database for MySQL",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "Azure_Database_For_MySQL6",
+            "Azure_Database_For_MySQL4",
+            "Azure_Database_For_MySQL7-E3",
+            "Azure_Database_For_MySQL19",
+            "Azure_Database_For_MySQL17",
+            "Azure_Database_For_MySQL9",
+            "Azure_Database_For_MySQL13",
+            "Azure_Database_For_MySQL30",
+            "Azure_Database_For_MySQL33",
+            "Azure_Database_For_MySQL36",
+            "Azure_Database_For_MySQL37",
+            "Azure_Database_For_MySQL38",
+            "Azure_Database_For_MySQL39",
+            "Azure_Database_For_MySQL40",
+            "Azure_Database_For_MySQL41",
+            "Azure_Database_For_MySQL42",
+            "Azure_Database_For_MySQL43",
+            "Azure_Database_For_MySQL44",
+            "Azure_Database_For_MySQL45",
+            "Azure_Database_For_MySQL32",
+            "Azure_Database_For_MySQL34",
+            "Azure_Database_For_MySQL31",
+            "Azure_Database_For_MySQL35",
+            "Azure_Database_For_MySQL_IOPS_East3",
+            "Azure_Database_Extended_Support_East3"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
       "product_key": "network-watcher",
       "language": "zh-cn",
       "semantic_strategy": "region_filter",
@@ -6763,6 +7237,36 @@
         },
         {
           "os": "PrivateLink",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "purview",
+      "language": "zh-cn",
+      "semantic_strategy": "complex",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "purview",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "purview",
+      "language": "en-us",
+      "semantic_strategy": "complex",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "purview",
           "region": "north-china3",
           "row_present": false,
           "table_ids": []

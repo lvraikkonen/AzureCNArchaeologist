@@ -1,6 +1,6 @@
 # 产品状态跟踪
 
-> 数据更新时间：2026-09-02（America/Los_Angeles）
+> 数据更新时间：2026-09-04（America/Los_Angeles）
 >
 > Pricing 来源：<https://www.azure.cn/pricing/>
 >
@@ -11,19 +11,28 @@
 | 项目 | 数量 |
 |---|---:|
 | pricing 页面唯一产品 URL | 102 |
-| 当前 `processing-scope.json` 产品 | 194 |
-| 当前 `product-definitions.json` 基线产品 | 194 |
-| 已验证产品（人工复审已批准） | 194（Pricing：96；Support Article：98） |
-| 已验证 pricing 产品（人工复审已批准） | 96 |
-| 已验证 support article 产品（人工复审已批准） | 98 |
-| 已 Release 并上传 Blob 的唯一产品 | 194（388 份中英文 Payload） |
-| 人工复审拒绝、待修复的 pricing 产品 | 1（`purview`，2/2 个语言条目机器检查通过） |
-| 抽取阻断、未进入人工审核的 pricing 产品 | 1（`databox`，中英文均阻断） |
-| 未找到抽取及审核记录的 pricing 产品 | 4（`batch`、`mysql`、`storage-blobs`、`storage-files`） |
-| 中英文机器验证通过、尚待人工决定的产品 | 0 |
-| `data/configs/products-config/` 下 JSON 产品配置 | 200（Pricing：102；Support Article：98） |
+| 当前 `processing-scope.json` 产品 | 197 |
+| 当前 `product-definitions.json` 基线产品 | 197 |
+| 正式范围内已验证产品（人工复审已批准） | 197（Pricing：99；Support Article：98） |
+| 正式范围内已验证 pricing 产品（人工复审已批准） | 99 |
+| 正式范围内已验证 support article 产品（人工复审已批准） | 98 |
+| 正式范围外已有人工批准记录的产品 | 0 |
+| 已 Release 并上传 Blob 的唯一产品 | 197（394 份中英文 Payload） |
+| 人工复审拒绝、尚未完成修复的 pricing 产品 | 0 |
+| 抽取阻断、未进入人工审核的 pricing 产品 | 0 |
+| 本系统当前待安排的新 pricing 抽取验证（不含 `pending`） | 0 |
+| 暂缓处理的 pricing 产品（`pending`） | 1（`batch`；上游考虑下架，等待最终决定） |
+| 上游直接交付 CMS、本系统不处理的 pricing 产品 | 2（`storage-blobs`、`storage-files`） |
+| 本轮中英文机器验证通过、尚待新人工决定的产品 | 0 |
+| `data/configs/products-config/` 下 JSON 参考配置（含暂缓及上游直交产品） | 200（Pricing：102；Support Article：98） |
 
-当前状态按产品去重，并以最新有效人工决定为准；旧审核队列的待审或拒绝记录若已被后续批准覆盖，不重复计入。正式范围中的 194 个产品均已人工批准，其余 6 个 pricing 产品仍在正式范围外。人工批准不等同于已 Release 或已上传 Blob，发布进度见第 2.2 节。
+当前状态按产品去重，是否已批准以最新有效人工决定为准；修复后新产物尚未复审的产品记为待审，旧拒绝决定保留。旧审核队列的待审或拒绝记录若已被后续批准覆盖，不重复计入。正式范围中的 197 个产品均已人工批准；范围外的 `batch` 为 `pending`，`storage-blobs`、`storage-files` 由上游直接交付 CMS，不再计为本系统待验证产品。人工批准不等同于已 Release 或已上传 Blob，发布进度见第 2.2 节。
+
+最新三产品队列 `purview-databox-mysql-review-20260903-233159` 已由 `claus lv` 完成双语人工批准：3 个批准、0 个拒绝、0 个待审。`purview`、`databox`、`mysql` 已正式扩围并完成 Blob 增量交付；MySQL 上一轮批准及 Purview 历史拒绝均保留，本次只采用最新队列的真实人工决定和绑定产物。
+
+2026-09-04 用户明确剩余产品的处理职责：`batch` 暂缓，等待上游是否下架的最终决定，不标记为已经下架；`storage-blobs`、`storage-files` 由上游源 HTML 同事导出 Markdown 并直接交付 CMS，不经过本系统的抽取、验证、Workbench 审核、Release 或 Blob 上传。此处记录职责分工，不认定上游导入已完成。三者继续保留参考配置和源文件，且均在正式范围及定义基线之外；本轮不删除配置、不运行 Pipeline、不创建发布。
+
+2026-09-03 用户与上下游确认：`managed-instance` 不再为满足非空校验修改源 HTML，由 CMS 兼容空 `content`。上一轮中文非空修正与专用测试已撤销，Current / Frozen HTML 均恢复原样；非空试验队列仅保留历史记录，不继续审核、发布或计入待审产品。原批准和 Blob 交付保持不变，详见 [撤销记录](docs/input-notes/managed-instance-cms-nonempty-correction-20260903.md)。
 
 验证记录依据（以下历史记录中的“待审核”“待修复”描述的是当时状态，最新状态见产品清单和第 2 节）：
 
@@ -45,6 +54,24 @@
 - 2026-09-02 人工批准后正式扩围：新增 10 个已批准试验产品至 Processing Scope 和 Product Definition，正式范围由 184 增至 194。保留原 184 个产品的处理定义基线，仅追加已验证的 10 个产品投影及其来源批次、审核 ID；`storage-managed-disks` 的已审区域说明筛选规则一并纳入基线。本次是跨已审批次的范围同步，不代表重新执行过一轮 194 产品全量回归，也未创建新的 Release 或上传 Blob。
 - 2026-09-02 范围同步后只读核对：Scope 与 Product Definition 均为 194 个产品，原 184 条定义不变；`changes --json` 返回 `no_changes`，检查 194 个产品、388 个语言条目，受影响产品为 0。该命令比较输入与处理基线，不判断是否已发布；不能用它的 `no_changes` 推断本轮 13 个获批产品已上传。
 - 2026-09-02 本轮 13 产品交付完成：按两个已批准的普通定向批次分别封存 11 产品和 2 产品 Release，通过本地 `release-verify` 后上传至 `cms-output/2026-09-02/` 下各自的 Release ID 目录。26 份 Payload 和 2 份 `delivery-manifest.json` 全部成功；远端回读核对确认清单与本地发布内容一致，26 份 Payload 逐字节一致。原有 181 个产品未重传，累计交付 194 个唯一产品；具体 Release ID 和时间见第 2.2 节。
+
+- 2026-09-03 Purview 追加规则修复：按用户确认，仅保留前三个 Category，每组末尾依次追加应用程序说明和 `tabContent1-4`、`tabContent1-5` 的内部正文，去掉后两个页签控件，并补齐数据映射共享说明。[`runs/purview-append-applications-20260903/run.json`](runs/purview-append-applications-20260903/run.json) 的中英文 L3a/L3b 全部通过；[`reviews/purview-append-applications-review-20260903/queue.json`](reviews/purview-append-applications-review-20260903/queue.json) 已入队，审核台双语各 17/17 项源/Payload 比对一致，等待新的人工决定。规则与验证见 [调查记录](docs/input-notes/purview-page-structure-investigation-20260903.md)。
+- 2026-09-03 Managed Instance 中文 CMS 非空修正试验（已撤销）：[`runs/managed-instance-cms-nonempty-rerun-20260903/run.json`](runs/managed-instance-cms-nonempty-rerun-20260903/run.json) 和 [`reviews/managed-instance-cms-nonempty-review-20260903/queue.json`](reviews/managed-instance-cms-nonempty-review-20260903/queue.json) 仅保留历史记录。用户随后确认由 CMS 处理空内容，源 HTML 与中文处理恢复原样，不再审核或交付该非空试验版本。详见 [撤销记录](docs/input-notes/managed-instance-cms-nonempty-correction-20260903.md)。
+- 2026-09-03 Purview / Data Box 最新 HTML 重跑：[`runs/purview-databox-latest-html-rerun-20260903/run.json`](runs/purview-databox-latest-html-rerun-20260903/run.json) 覆盖 2 个产品、4 个语言条目，2 项通过、2 项阻断。`purview` 中英文 L3a/L3b 全部通过，Workbench 双语各 17/17 项比对一致；`databox` 双语新源已同步到 Frozen HTML，但仍没有区域筛选器，当前 `complex` 策略因此阻断，未产生正式 Payload。[`reviews/purview-databox-latest-html-review-20260903/queue.json`](reviews/purview-databox-latest-html-review-20260903/queue.json) 仅将 `purview` 的两个语言条目入队，等待人工复审。本轮使用临时内存试验范围，未变更正式 Scope、Product Definition 基线或产品配置；试验结束后全局配置使用记录已恢复原有 98 个语言条目，本轮查询证据保留在 Run 的 diagnostics 中。43 项相关回归测试通过，未 Release / 上传。
+
+- 2026-09-03 Data Box 临时区域筛选器试验：按用户要求，仅给中英文 Current HTML 增加一个明确标记为试验用途的 `north-china3` 区域控件，不代表真实区域支持范围。[`runs/databox-region-selector-experiment-20260903/run.json`](runs/databox-region-selector-experiment-20260903/run.json) 的两个语言条目均在抽取阶段阻断：中文 Category 导航与正文面板顺序相反；英文类别正文不在软件面板内。未产生 Payload 或新审核队列，未修改正式范围、产品配置、抽取代码或全局配置使用基线，未 Release / 上传。源修改、行号与后续建议见 [试验记录](docs/input-notes/databox-region-selector-experiment-20260903.md)。
+
+- 2026-09-03 Data Box 六区域重跑：按用户要求，将中英文临时区域控件扩展为 6 个区域，保留用户已调整的 `Data Box Disk` → `Data Box` 类别顺序。[`runs/databox-six-region-selector-rerun-20260903/run.json`](runs/databox-six-region-selector-rerun-20260903/run.json) 中中文抽取与 L3a/L3b 通过，生成 12 个内容组；英文仍因两个类别正文位于软件面板外而阻断。没有新审核队列，未修改正式范围、产品配置或抽取代码，未 Release / 上传；详情及源内容提醒见 [试验记录](docs/input-notes/databox-region-selector-experiment-20260903.md)。
+
+- 2026-09-03 Data Box 嵌套修正后重跑：[`runs/databox-nesting-fixed-rerun-20260903/run.json`](runs/databox-nesting-fixed-rerun-20260903/run.json) 的中文抽取及 L3a/L3b 通过，保留 12 个内容组；英文类别嵌套及顺序已修复，但隐藏软件选项仍为 `Storage Blobs`，误用该软件的区域排除规则并因全部表格 ID 零匹配而阻断。本轮未修改源 HTML 或代码，未创建审核队列，未 Release / 上传；英文软件值的修复建议见 [试验记录](docs/input-notes/databox-region-selector-experiment-20260903.md)。
+
+- 2026-09-03 MySQL 最新源首次试验：[`runs/mysql-latest-html-experiment-20260903/run.json`](runs/mysql-latest-html-experiment-20260903/run.json) 的中英文抽取及 L3a/L3b 全部通过，双语各 6 个区域内容组；[`reviews/mysql-latest-html-review-20260903/queue.json`](reviews/mysql-latest-html-review-20260903/queue.json) 已将 1 个产品、2 个语言条目入队，Workbench 双语各 24/24 项比对一致，等待人工审核。原始东部/北部区域过滤后无价格表格，双语源 SLA 数字不一致等人工审核重点见 [试验记录](docs/input-notes/mysql-latest-html-experiment-20260903.md)。未修改源 HTML、正式范围、产品配置、代码或全局配置使用基线；Data Box 本轮未处理，未 Release / 上传。
+
+- 2026-09-03 三产品统一双语重跑：已确认 [MySQL 上一轮人工决定](reviews/mysql-latest-html-review-20260903/decisions/mysql.json) 为批准，并原样保留。[`runs/purview-databox-mysql-latest-html-rerun-20260903/run.json`](runs/purview-databox-mysql-latest-html-rerun-20260903/run.json) 的 `purview`、`databox`、`mysql` 共 6/6 个语言条目全部通过；Data Box 英文软件值已修复，全部历史结构/配置阻断解除。Workbench 双语各产品分别为 17/17、42/42、24/24 项比对一致；[`reviews/purview-databox-mysql-latest-html-review-20260903/queue.json`](reviews/purview-databox-mysql-latest-html-review-20260903/queue.json) 创建时 3 个产品均待新人工决定。MySQL 两份 Payload 与上一轮已批准版本逐字节一致，但新队列不继承旧审批。正式范围及基线仍为 194，未 Release / 上传；详见 [本轮记录](docs/input-notes/purview-databox-mysql-rerun-20260903.md)。
+
+- 2026-09-03 23:31:59 再次统一重跑：[`runs/purview-databox-mysql-rerun-20260903-233159/run.json`](runs/purview-databox-mysql-rerun-20260903-233159/run.json) 的三个产品共 6/6 个语言条目全部通过。Data Box 双语源及 Payload 有更新，Purview / MySQL 的 Payload 与上一轮一致；Workbench 比对仍为双语各 17/17、42/42、24/24。[`reviews/purview-databox-mysql-review-20260903-233159/queue.json`](reviews/purview-databox-mysql-review-20260903-233159/queue.json) 是本轮应使用的新审核队列，创建时 3 个产品均待审；旧队列与 MySQL 原批准保留，不继承旧决定。正式范围与基线不变，未 Release / 上传。
+
+- 2026-09-03 三产品人工批准、正式扩围与交付：上述 23:31:59 队列的 `purview`、`databox`、`mysql` 已全部获批，6 份 Payload 的审核绑定及 Current / Frozen 一致性均通过核对。正式 Scope 和 Product Definition 由 194 增至 197，原 194 条定义不变；补入 6 条配置使用证据并保留原 98 条记录。只读 `changes --json` 检查 197 个产品、394 个语言条目，返回 `no_changes`。本轮 3 产品、6 份 Payload 已封存为 [`purview-databox-mysql-approved-release-20260903-235304`](releases/purview-databox-mysql-approved-release-20260903-235304/release-manifest.json)，于 `2026-09-03T23:54:17-07:00` 上传 Blob 并回读核对通过；原有 194 个产品未重传，累计交付 197 个唯一产品。源 HTML、抽取代码、既有审核决定和批次产物均未修改。
 
 ## 1. Pricing 页面产品清单
 
@@ -71,13 +98,13 @@
 | 19 | Azure 更新管理器 | ["管理和治理"] | `azure-update-management-center` | <https://www.azure.cn/pricing/details/azure-update-management-center> | `simple_static` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 20 | Azure 数据库迁移服务 | ["迁移","数据库"] | `database-migration` | <https://www.azure.cn/pricing/details/database-migration> | `complex` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 21 | Azure Migrate | ["迁移"] | `azure-migrate` | <https://www.azure.cn/pricing/details/azure-migrate/index.html> | `simple_static` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
-| 22 | 托管实例 | ["数据库"] | `managed-instance` | <https://www.azure.cn/pricing/details/managed-instance/index.html> | `complex` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
+| 22 | 托管实例 | ["数据库"] | `managed-instance` | <https://www.azure.cn/pricing/details/managed-instance/index.html> | `complex` | 已人工批准并交付；中文非空修正已撤销，空 content 由 CMS 兼容（2026-09-03） | — |
 | 23 | SQL 数据库 | ["数据库"] | `sql-database` | <https://www.azure.cn/pricing/details/sql-database/index.html> | `complex` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 24 | Azure Synapse Analytics | ["数据库","分析"] | `synapse-analytics` | <https://www.azure.cn/pricing/details/synapse-analytics/index.html> | `complex` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 25 | SQL Server Stretch Database | ["数据库"] | `sql-server-stretch-database` | <https://www.azure.cn/pricing/details/sql-server-stretch-database/index.html> | `simple_static` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 26 | Azure Cosmos DB | ["数据库","物联网"] | `cosmos-db` | <https://www.azure.cn/pricing/details/cosmos-db/index.html> | `complex` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 27 | 用于 Redis 的 Azure 缓存 | ["数据库"] | `cache` | <https://www.azure.cn/pricing/details/cache/index.html> | `region_filter` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
-| 28 | Azure Database for MySQL | ["数据库"] | `mysql` | <https://www.azure.cn/pricing/details/mysql/index.html> | `region_filter` | 未找到抽取及审核记录 | — |
+| 28 | Azure Database for MySQL | ["数据库"] | `mysql` | <https://www.azure.cn/pricing/details/mysql/index.html> | `region_filter` | 人工复审已批准（2026-09-03 三产品队列）；已纳入正式范围并上传 Blob，旧批准保留 | — |
 | 29 | Azure Database for PostgreSQL | ["数据库"] | `postgresql` | <https://www.azure.cn/pricing/details/postgresql/index.html> | `complex` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 30 | Azure 数据工厂 | ["数据库","分析"] | `data-factory` | <https://www.azure.cn/pricing/details/data-factory/index.html> | `simple_static` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 31 | SQL Server Integration Services | ["数据库","分析"] | `data-factory_ssis` | <https://www.azure.cn/pricing/details/data-factory/ssis.html> | `region_filter` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
@@ -93,7 +120,7 @@
 | 41 | 虚拟机 | ["计算"] | `virtual-machines` | <https://www.azure.cn/pricing/details/virtual-machines/index.html> | `complex` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 42 | 虚拟机规模集 | ["计算"] | `virtual-machine-scale-sets` | <https://www.azure.cn/pricing/details/virtual-machine-scale-sets/index.html> | `complex` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 43 | 应用服务 | ["计算","移动","容器","网站"] | `app-service` | <https://www.azure.cn/pricing/details/app-service/index.html> | `complex` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
-| 44 | 批处理 | ["计算","容器"] | `batch` | <https://www.azure.cn/pricing/details/batch/index.html> | `complex` | 未找到抽取及审核记录；等待上游修改 | — |
+| 44 | 批处理 | ["计算","容器"] | `batch` | <https://www.azure.cn/pricing/details/batch/index.html> | `complex` | `pending`：上游考虑下架，暂不抽取，等待最终决定 | — |
 | 45 | Service Fabric | ["计算","容器"] | `service-fabric` | <https://www.azure.cn/pricing/details/service-fabric/index.html> | `simple_static` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 46 | 云服务 | ["计算"] | `cloud-services` | <https://www.azure.cn/pricing/details/cloud-services/index.html> | `complex` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 47 | Azure Functions | ["计算"] | `azure-functions` | <https://www.azure.cn/pricing/details/azure-functions/index.html> | `region_filter` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
@@ -110,7 +137,7 @@
 | 58 | Azure Active Directory B2C | ["标识"] | `active-directory-b2c` | <https://www.azure.cn/pricing/details/active-directory-b2c/index.html> | `simple_static` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 59 | Microsoft Entra 域服务 (Azure AD DS) | ["标识"] | `active-directory-ds` | <https://www.azure.cn/pricing/details/active-directory-ds/index.html> | `region_filter` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 60 | 多重身份验证 | ["标识"] | `multi-factor-authentication` | <https://www.azure.cn/pricing/details/multi-factor-authentication/index.html> | `simple_static` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
-| 61 | Microsoft Purview | ["分析"] | `purview` | <https://www.azure.cn/pricing/details/purview/index.html> | `complex` | 人工复审拒绝（2026-09-02）：仅正确获取第一个 tabContent；双语机器检查通过 | — |
+| 61 | Microsoft Purview | ["分析"] | `purview` | <https://www.azure.cn/pricing/details/purview/index.html> | `complex` | 人工复审已批准（2026-09-03 三产品队列）；已纳入正式范围并上传 Blob，历史拒绝保留 | — |
 | 62 | HDInsight | ["分析"] | `hdinsight` | <https://www.azure.cn/pricing/details/hdinsight/index.html> | `region_filter` | 人工复审已批准（双语审核 2026-09-02） | — |
 | 63 | Power BI Embedded | ["分析"] | `power-bi-embedded` | <https://www.azure.cn/pricing/details/power-bi-embedded/index.html> | `region_filter` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 64 | Azure 分析服务 | ["分析"] | `analysis-services` | <https://www.azure.cn/pricing/details/analysis-services/index.html> | `region_filter` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
@@ -131,15 +158,15 @@
 | 79 | Azure DDos保护 | ["联网"] | `ddos-protection` | <https://www.azure.cn/pricing/details/ddos-protection/> | `complex` | 人工复审已批准（双语审核 2026-09-02） | — |
 | 80 | Azure 虚拟网络管理器 | ["联网"] | `virtual-network-manager` | <https://www.azure.cn/pricing/details/virtual-network-manager/index.html> | `simple_static` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 81 | 存储 | ["存储"] | `storage` | <https://www.azure.cn/pricing/details/storage/index.html> | `simple_static` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
-| 82 | 块 Blob | ["存储"] | `storage-blobs` | <https://www.azure.cn/pricing/details/storage/blobs/index.html> | `complex` | 未找到抽取及审核记录 | — |
+| 82 | 块 Blob | ["存储"] | `storage-blobs` | <https://www.azure.cn/pricing/details/storage/blobs/index.html> | `complex` | 上游导出 Markdown 直接交付 CMS；不由本系统处理，不计入待验证产品 | — |
 | 83 | 页 Blob | ["存储"] | `storage_page-blobs` | <https://www.azure.cn/pricing/details/storage/page-blobs/index.html> | `complex` | 人工复审已批准（双语审核 2026-09-02） | — |
 | 84 | 托管磁盘 | ["存储"] | `storage_managed-disks` | <https://www.azure.cn/pricing/details/storage/managed-disks/index.html> | `region_filter` | 人工复审已批准（双语审核 2026-09-02） | — |
-| 85 | 文件 | ["存储"] | `storage-files` | <https://www.azure.cn/pricing/details/storage/files/index.html> | `region_filter` | 未找到抽取及审核记录 | — |
+| 85 | 文件 | ["存储"] | `storage-files` | <https://www.azure.cn/pricing/details/storage/files/index.html> | `region_filter` | 上游导出 Markdown 直接交付 CMS；不由本系统处理，不计入待验证产品 | — |
 | 86 | 队列 | ["存储"] | `storage_queues` | <https://www.azure.cn/pricing/details/storage/queues/index.html> | `complex` | 人工复审已批准（双语审核 2026-09-02） | — |
 | 87 | 表 | ["存储"] | `storage_tables` | <https://www.azure.cn/pricing/details/storage/tables/index.html> | `region_filter` | 人工复审已批准（双语审核 2026-09-02） | — |
 | 88 | Azure Data Lake 存储 | ["存储"] | `storage_data-lake` | <https://www.azure.cn/pricing/details/storage/data-lake/index.html> | `complex` | 人工复审已批准（双语审核 2026-09-02） | — |
 | 89 | 导入/导出 | ["存储"] | `storage-import-export` | <https://www.azure.cn/pricing/details/storage-import-export/index.html> | `simple_static` | 人工复审已批准（双语审核 2026-09-02） | — |
-| 90 | Azure Data Box | ["存储"] | `databox` | <https://www.azure.cn/pricing/details/databox> | `complex` | 双语抽取阻断（2026-09-02）：未找到可见且非空的区域筛选器；未入人工审核 | — |
+| 90 | Azure Data Box | ["存储"] | `databox` | <https://www.azure.cn/pricing/details/databox> | `complex` | 人工复审已批准（2026-09-03 三产品队列）；双语各 12 个内容组，已纳入正式范围并上传 Blob | — |
 | 91 | 容器注册表 | ["容器"] | `container-registry` | <https://www.azure.cn/pricing/details/container-registry/index.html> | `simple_static` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 92 | Azure Kubernetes 服务（AKS） | ["容器"] | `kubernetes-service` | <https://www.azure.cn/pricing/details/kubernetes-service/index.html> | `simple_static` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 93 | 容器实例 | ["容器"] | `container-instances` | <https://www.azure.cn/pricing/details/container-instances/index.html> | `region_filter` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
@@ -155,9 +182,9 @@
 
 ## 2. 人工审核与发布状态
 
-### 2.1 2026-09-02 最新复审与正式扩围
+### 2.1 2026-09-02 至 2026-09-03 人工批准与正式扩围
 
-新增纳入正式范围的 10 个产品如下。审核 A 为 [`expand-pricing-latest-html-rerun-review-20260902`](reviews/expand-pricing-latest-html-rerun-review-20260902/queue.json)，审核 B 为 [`pricing-review-fixes-review-20260902-220448`](reviews/pricing-review-fixes-review-20260902-220448/queue.json)；两批均已核对产品级双语人工决定及对应机器检查材料。
+2026-09-02 新增纳入正式范围的 10 个产品如下。审核 A 为 [`expand-pricing-latest-html-rerun-review-20260902`](reviews/expand-pricing-latest-html-rerun-review-20260902/queue.json)，审核 B 为 [`pricing-review-fixes-review-20260902-220448`](reviews/pricing-review-fixes-review-20260902-220448/queue.json)；两批均已核对产品级双语人工决定及对应机器检查材料。
 
 | product key | 当前 extraction | 人工批准依据 |
 |---|---|---|
@@ -172,31 +199,40 @@
 | `storage-queues` | `complex` | 审核 A |
 | `storage-tables` | `region_filter` | 审核 A |
 
-此前正式范围内被拒绝的 `anomaly-detector`、`web-pubsub` 已在审核 A 获批，`hdinsight` 已在审核 B 获批。因此当前正式范围共 194 个已批准产品：`simple_static` 41 个、`region_filter` 36 个、`complex` 19 个、`support_article` 98 个。历史拒绝决定原样保留，不改写。
+此前正式范围内被拒绝的 `anomaly-detector`、`web-pubsub` 已在审核 A 获批，`hdinsight` 已在审核 B 获批。该轮扩围后的正式范围为 194 个已批准产品。历史拒绝决定原样保留，不改写。
 
-尚未通过人工审核的 6 个产品均不在正式范围中：
+2026-09-03 新增以下 3 个产品，均来自审核 C：[`purview-databox-mysql-review-20260903-233159`](reviews/purview-databox-mysql-review-20260903-233159/queue.json)。审核人为 `claus lv`，人工决定与最新双语 Payload、Frozen HTML 和 L3a/L3b 材料的绑定均核对有效。
 
-| product key | extraction | 当前阶段 / 原因 |
+| product key | 当前 extraction | 人工批准依据 |
 |---|---|---|
-| `purview` | `complex` | 双语机器检查通过，人工拒绝：只正确获取了第一个 `tabContent` 的内容，需要调查层级结构。 |
-| `databox` | `complex` | 双语抽取阻断，尚未入队：Complex 页面必须声明可见且非空的区域筛选器。 |
-| `batch` | `complex` | 未找到抽取及审核记录；按此前约定等待上游页面修改。 |
-| `mysql` | `region_filter` | 未找到抽取及审核记录。 |
-| `storage-blobs` | `complex` | 未找到抽取及审核记录。 |
-| `storage-files` | `region_filter` | 未找到抽取及审核记录。 |
+| `purview` | `complex` | [审核 C 批准决定](reviews/purview-databox-mysql-review-20260903-233159/decisions/purview.json) |
+| `databox` | `complex` | [审核 C 批准决定](reviews/purview-databox-mysql-review-20260903-233159/decisions/databox.json) |
+| `mysql` | `region_filter` | [审核 C 批准决定](reviews/purview-databox-mysql-review-20260903-233159/decisions/mysql.json) |
+
+当前正式范围与 Product Definition 均为 197 个产品：`simple_static` 41 个、`region_filter` 37 个、`complex` 21 个、`support_article` 98 个。本轮仅追加 3 条已验证定义和来源记录，保留原 194 条定义；同步补入本轮 6 个语言条目的区域配置使用证据，原有 98 条证据不变。未重跑整个正式范围，未修改源 HTML 或抽取代码。
+
+以下 3 个产品继续保持在正式范围之外，2026-09-04 已明确处理职责，不再统一列为待抽取验证产品：
+
+| product key | 参考 extraction（未启用） | 当前阶段 / 原因 |
+|---|---|---|
+| `batch` | `complex` | `pending`：上游考虑下架，暂不抽取；等待最终决定，若确认保留再明确是否恢复试验。 |
+| `storage-blobs` | `complex` | 上游源 HTML 同事导出 Markdown 并直接交付 CMS；本系统不负责抽取、验证或发布，不计入待验证产品。 |
+| `storage-files` | `region_filter` | 上游源 HTML 同事导出 Markdown 并直接交付 CMS；本系统不负责抽取、验证或发布，不计入待验证产品。 |
+
+Data Box 最新双语 Category 导航、正文嵌套及隐藏软件值均已通过机器验证，并获得审核 C 的人工批准；英文软件业务键为 `Azure Data Box`，此前阻断全部解除。本次交付原样使用该批准版本。六区域试验背景、FAQ/SLA 分组及 SEO 元数据的历史核对事项见 [Data Box 修改记录](docs/input-notes/databox-region-selector-experiment-20260903.md)与[本轮三产品记录](docs/input-notes/purview-databox-mysql-rerun-20260903.md)。
 
 ### 2.2 Release / Blob 发布进度
 
 已交付基准为 [`supported-products-expanded-full-release-20260826-021215`](releases/supported-products-expanded-full-release-20260826-021215/release-manifest.json)：181 个产品、362 个双语 Payload，已于 2026-08-26 上传 Blob。
 
-相对于该次交付，本轮新增交付 13 个产品、26 个 Payload，即上表 10 个新增范围产品，加上 `anomaly-detector`、`hdinsight`、`web-pubsub`。已沿原审核记录分别构建并上传以下两份 Release，原来的 181 个产品没有重传：
+相对于该次交付，2026-09-02 新增交付 13 个产品、26 个 Payload，即上表 10 个新增范围产品，加上 `anomaly-detector`、`hdinsight`、`web-pubsub`。已沿原审核记录分别构建并上传以下两份 Release，原来的 181 个产品没有重传：
 
 | 来源审核 | 已交付 Release | 产品数 | Payload 数 | 上传时间（America/Los_Angeles） |
 |---|---|---:|---:|---|
 | `expand-pricing-latest-html-rerun-review-20260902` | [`pricing-approved-release-20260902-224327`](releases/pricing-approved-release-20260902-224327/release-manifest.json) | 11 | 22 | `2026-09-02T22:44:30-07:00` |
 | `pricing-review-fixes-review-20260902-220448` | [`pricing-review-fixes-release-20260902-224327`](releases/pricing-review-fixes-release-20260902-224327/release-manifest.json) | 2 | 4 | `2026-09-02T22:44:43-07:00` |
 
-这两个来源批次的 `batch_kind` 均为 `standard`，因此本次使用 `release-build --kind full`：此处 `full` 表示发布该审核队列的全部有效批准项，而不是发布整个 194 产品范围。`--kind delta` 仅适用于正式 `run --changed` 增量批次及其重新处理链，不能直接用于这两轮普通定向重跑。审核 A 中旧的 `hdinsight`、`storage-managed-disks` 拒绝项没有发布，只采用审核 B 的已修复批准 Payload；`purview` 在本次交付中排除。
+这两个来源批次的 `batch_kind` 均为 `standard`，因此当时使用 `release-build --kind full`：此处 `full` 表示发布该审核队列的全部有效批准项，而不是发布当时整个 194 产品范围。`--kind delta` 仅适用于正式 `run --changed` 增量批次及其重新处理链，不能直接用于这两轮普通定向重跑。审核 A 中旧的 `hdinsight`、`storage-managed-disks` 拒绝项没有发布，只采用审核 B 的已修复批准 Payload；`purview` 在 2026-09-02 的交付中排除，已在下述 2026-09-03 新交付中补齐。
 
 两份 Release 均已通过 `release-verify`，并成功执行 `release-upload`。目标容器为 `cms-output`，实际上传日期目录为 `2026-09-02/`，完整 Blob 前缀分别为：
 
@@ -204,6 +240,16 @@
 - `2026-09-02/pricing-review-fixes-release-20260902-224327/`
 
 每个目录均在全部 Payload 上传成功后最后发布 `delivery-manifest.json`。上传后只读回查确认：两个目录分别恰有 23 个、5 个 Blob（22 + 4 份 Payload，以及各 1 份交付清单）；两份交付清单与本地 Release 的交付投影一致，26 份 Payload 与已封存文件逐字节一致。两份清单均已可供 CMS 消费，本轮 13 个产品没有剩余未交付项。
+
+2026-09-03 再次新增交付 `purview`、`databox`、`mysql`：
+
+| 来源审核 | 已交付 Release | 产品数 | Payload 数 | 上传时间（America/Los_Angeles） |
+|---|---|---:|---:|---|
+| `purview-databox-mysql-review-20260903-233159` | [`purview-databox-mysql-approved-release-20260903-235304`](releases/purview-databox-mysql-approved-release-20260903-235304/release-manifest.json) | 3 | 6 | `2026-09-03T23:54:17-07:00` |
+
+该来源同样为 `standard` 批次，采用仅含审核 C 全部 3 个批准产品的小范围 `full` Release 完成增量交付，未重传原有 194 个产品。Release 已通过本地 `release-verify`，并上传到 `cms-output/2026-09-03/purview-databox-mysql-approved-release-20260903-235304/`。
+
+远端只读回查确认该目录恰有 7 个 Blob：6 份 Payload 与本地 Release 逐字节一致，`delivery-manifest.json` 与本地交付投影一致且在 Payload 全部上传后发布。累计交付为 197 个唯一产品、394 份中英文 Payload；本轮没有尚未交付项。完整过程见[三产品记录](docs/input-notes/purview-databox-mysql-rerun-20260903.md)。
 
 ### 2.3 2026-08-25 全量人工复审历史
 

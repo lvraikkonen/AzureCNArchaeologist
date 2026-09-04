@@ -25,6 +25,16 @@
       "product_keys": [
         "storage-managed-disks"
       ]
+    },
+    {
+      "accepted_on": "2026-09-03",
+      "source_run_name": "purview-databox-mysql-rerun-20260903-233159",
+      "source_review_id": "purview-databox-mysql-review-20260903-233159",
+      "product_keys": [
+        "databox",
+        "mysql",
+        "purview"
+      ]
     }
   ],
   "ignored_fields": [
@@ -364,6 +374,17 @@
       "sources": {
         "zh-cn": "pricing/details/database-migration/index.html",
         "en-us": "pricing/details/database-migration/index.html"
+      }
+    },
+    {
+      "product_key": "databox",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
+      "region_content_rules": null,
+      "sources": {
+        "zh-cn": "pricing/details/databox/index.html",
+        "en-us": "pricing/details/databox/index.html"
       }
     },
     {
@@ -770,6 +791,17 @@
       }
     },
     {
+      "product_key": "mysql",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "page_global_source_boundary": null,
+      "region_content_rules": null,
+      "sources": {
+        "zh-cn": "pricing/details/mysql/index.html",
+        "en-us": "pricing/details/mysql/index.html"
+      }
+    },
+    {
       "product_key": "network-watcher",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
@@ -827,6 +859,17 @@
       "sources": {
         "zh-cn": "SupportArticles/PublicSecurityRegistration/index.html",
         "en-us": "SupportArticles/PublicSecurityRegistration/index.html"
+      }
+    },
+    {
+      "product_key": "purview",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "complex",
+      "page_global_source_boundary": null,
+      "region_content_rules": null,
+      "sources": {
+        "zh-cn": "pricing/details/purview/index.html",
+        "en-us": "pricing/details/purview/index.html"
       }
     },
     {

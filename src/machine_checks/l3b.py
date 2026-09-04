@@ -38,6 +38,7 @@ def run_l3b(
         elif page_model == "FlexibleContentPage":
             expected = locate_pricing_source(
                 soup,
+                product_key=product_key,
                 semantic_strategy=semantic_strategy,
                 language=language,
                 soft_category_path=soft_category_path,
@@ -184,7 +185,9 @@ def _compare_content_groups(
         _compare_html_field(
             fields,
             payload_path=f"contentGroups[{index}].content",
-            source_boundary="该状态对应的完整定价内容面板",
+            source_boundary=expected_group.get(
+                "content_source_boundary", "该状态对应的完整定价内容面板"
+            ),
             expected=expected_group["content"],
             actual=(
                 actual_group.get("content")

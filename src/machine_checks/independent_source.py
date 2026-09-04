@@ -50,6 +50,7 @@ _SIMPLE_STATIC_STATE_TAGS = {"select", "form", "button", "input", "textarea"}
 def locate_pricing_source(
     soup: BeautifulSoup,
     *,
+    product_key: str,
     semantic_strategy: str,
     language: str,
     soft_category_path: Path | None,
@@ -219,6 +220,12 @@ def locate_pricing_source(
             raw_category_control,
             software_panel,
         )
+        if product_key == "purview":
+            if len(software_options) != 1 or software != "purview":
+                raise IndependentSourceError("Purview 追加规则需要唯一的 purview 软件。")
+            leaves, shared_fragments = _independent_purview_content(
+                software_panel, leaves
+            )
         if len(software_options) == 1:
             shared_fragments = [
                 *shared_fragments,
@@ -325,6 +332,11 @@ def locate_pricing_source(
                 }
                 if shared_content:
                     group["sharedContent"] = shared_content
+                if product_key == "purview":
+                    group["content_source_boundary"] = (
+                        "Purview 当前 Category 完整面板，末尾追加应用程序说明及 "
+                        "tabContent1-4、tabContent1-5 正文，去除应用页签控件与包装"
+                    )
                 groups.append(group)
     definitions = []
     if software_control["visible"]:
@@ -1144,6 +1156,117 @@ def _independent_content_leaves(
         list(zip(material, panels)),
         shared_fragments,
     )
+
+
+def _independent_purview_content(
+    software_panel: Tag,
+    leaves: list[tuple[dict[str, str] | None, Tag]],
+) -> tuple[list[tuple[dict[str, str] | None, Tag]], list[Tag]]:
+    """Reconstruct Purview's approved static appendix from the original DOM."""
+
+    primary = [panel for _category, panel in leaves]
+    if software_panel.get("id") != "tabContent1" or [
+        panel.get("id") for panel in primary
+    ] != ["tabContent1-1", "tabContent1-2", "tabContent1-3"]:
+        raise IndependentSourceError("Purview 的三个主类别或软件目标发生变化。")
+    application_panels = [
+        _one(software_panel.find_all(id=target), f"Purview 源面板 {target}")
+        for target in ("tabContent1-4", "tabContent1-5")
+    ]
+    application_body = application_panels[0].parent
+    widget = application_body.parent if isinstance(application_body, Tag) else None
+    applications = widget.parent if isinstance(widget, Tag) else None
+    primary_group = primary[0].parent
+    body = primary_group.parent if isinstance(primary_group, Tag) else None
+    if not all(isinstance(node, Tag) for node in (
+        application_body, widget, applications, primary_group, body
+    )):
+        raise IndependentSourceError("Purview 的两组内容没有完整的源包装关系。")
+    assert isinstance(application_body, Tag) and isinstance(widget, Tag)
+    assert isinstance(applications, Tag) and isinstance(primary_group, Tag)
+    assert isinstance(body, Tag)
+
+    def elements(node: Tag) -> list[Tag]:
+        if any(
+            not isinstance(child, (Tag, Comment)) and str(child).strip()
+            for child in node.children
+        ):
+            raise IndependentSourceError("Purview 包装层中存在未归属的直接文本。")
+        return list(node.find_all(recursive=False))
+
+    blocks = elements(body)
+    if (
+        elements(software_panel) != [body]
+        or body.name != "div"
+        or "tab-content" not in body.get("class", [])
+        or len(blocks) != 3
+        or any(block.name != "div" for block in blocks)
+        or blocks[1] is not primary_group
+        or blocks[2] is not applications
+        or "scroll-table" not in blocks[0].get("class", [])
+        or not blocks[0].get_text(strip=True)
+    ):
+        raise IndependentSourceError("Purview 总说明、主类别和应用程序未构成完整有序正文。")
+    category_parts = elements(primary_group)
+    if (
+        len(category_parts) != 4
+        or "category-container-container" not in category_parts[0].get("class", [])
+        or any(actual is not expected for actual, expected in zip(
+            category_parts[1:], primary
+        ))
+    ):
+        raise IndependentSourceError("Purview 主类别之外还有未归属的材料。")
+    application_parts = elements(applications)
+    if (
+        len(application_parts) != 3
+        or [part.name for part in application_parts[:2]] != ["h3", "div"]
+        or any(not part.get_text(strip=True) for part in application_parts[:2])
+        or application_parts[-1] is not widget
+        or not {"technical-azure-selector", "pricing-detail-tab"}.issubset(
+            widget.get("class", [])
+        )
+    ):
+        raise IndependentSourceError("Purview 应用程序的标题、说明或页签结构不完整。")
+    navigation = _one(
+        widget.find_all("ul", class_="tab-nav", recursive=False),
+        "Purview 应用程序导航",
+    )
+    if (
+        elements(widget) != [navigation, application_body]
+        or application_body.name != "div"
+        or "tab-content" not in application_body.get("class", [])
+        or any(panel.name != "div" for panel in application_panels)
+        or elements(application_body) != application_panels
+        or software_panel.select(".tab-panel") != primary + application_panels
+    ):
+        raise IndependentSourceError("Purview 应用程序面板不构成完整有序集合。")
+    controls = navigation.find_all("a")
+    if (
+        [control.get("data-href") for control in controls]
+        != ["#tabContent1-4", "#tabContent1-5"]
+        or any(not control.get_text(strip=True) for control in controls)
+    ):
+        raise IndependentSourceError("Purview 应用程序导航与两个待追加面板不一致。")
+
+    # Rebuild only the application prose and panel interiors; do not reuse
+    # production's navigation removal or wrapper unwrapping implementation.
+    appendix = deepcopy(applications)
+    appendix.clear()
+    for node in applications.children:
+        if node is widget:
+            for panel in application_panels:
+                for child in panel.children:
+                    appendix.append(deepcopy(child))
+        else:
+            appendix.append(deepcopy(node))
+    for comment in appendix.find_all(string=lambda node: isinstance(node, Comment)):
+        comment.extract()
+    result: list[tuple[dict[str, str] | None, Tag]] = []
+    for category, panel in leaves:
+        combined = deepcopy(panel)
+        combined.append(deepcopy(appendix))
+        result.append((category, combined))
+    return result, [blocks[0]]
 
 
 def _independent_single_software_trailing_fragments(

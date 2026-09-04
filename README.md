@@ -1,716 +1,292 @@
 # AzureCNArchaeologist
 
-AzureCNArchaeologist 是 Azure 中国定价页与支持文章的双语内容抽取和交付系统。它从上游 HTML 与可信配置开始，生成 CMS Business Payload，完成两项独立机器检查、真实人工审核、不可覆盖的 Release，并把最终 Payload 发布到 Azure Blob Storage。
+AzureCNArchaeologist 将 Azure 中国 Pricing 页面和 SLA、ICP、LEGAL、PSR 支持文章的中英文 HTML，抽取为下游 CMS 可消费的 Business Payload。系统负责输入固定、内容抽取、独立机器验证、Workbench 人工审核、Release 封存和 Azure Blob 交付；CMS 负责消费交付结果并导入内容。
 
-本文是项目的首要运行手册。新员工应先读完“关键规则”和“环境准备”，再执行全量或增量流程。更细的实现合同位于 [`docs/`](docs/README.md)。
+本文是项目介绍和日常运行手册。产品支持范围、待处理事项和变更记录统一维护在 [产品状态表](tracking-product-status.md)，实现合同见 [文档索引](docs/README.md)。
 
 ## 目录
 
-- [当前生产基线](#当前生产基线)
-- [尚未完成的 Pricing 产品](#尚未完成的-pricing-产品)
-- [端到端工作流](#端到端工作流)
-- [关键概念](#关键概念)
-- [必须遵守的规则](#必须遵守的规则)
+- [模块与数据](#模块与数据)
 - [环境准备](#环境准备)
-- [目录与配置](#目录与配置)
-- [运行名称规范](#运行名称规范)
-- [全量处理流程](#全量处理流程)
-- [增量处理流程](#增量处理流程)
-- [失败、拒绝与重新处理](#失败拒绝与重新处理)
-- [Release 与 Blob 发布](#release-与-blob-发布)
-- [测试与开发检查](#测试与开发检查)
-- [CLI 命令速查](#cli-命令速查)
-- [安全与数据保留](#安全与数据保留)
-- [进一步阅读](#进一步阅读)
+- [完整工作流](#完整工作流)
+- [上游 HTML 变更后的增量流程](#上游-html-变更后的增量流程)
+- [失败与重新处理](#失败与重新处理)
+- [Blob 与 CMS 交付约定](#blob-与-cms-交付约定)
+- [测试与维护](#测试与维护)
 
-## 当前生产基线
+## 模块与数据
 
-以下状态截至 2026-09-02（America/Los_Angeles），按唯一 Product Key 统计；同一产品的中文和英文不重复计数。详细机器检查、人工决定与发布记录见 [`tracking-product-status.md`](tracking-product-status.md)。
+### 代码模块
 
-| 项目 | 当前值 |
-|---|---:|
-| 当前有效产品配置 | 200（Pricing：102；Support Article：98） |
-| `processing-scope.json` 正式产品 | 194 |
-| `product-definitions.json` 基线产品 | 194 |
-| 正式范围中文和英文处理项 | 388 |
-| 人工审核批准 | 194 个产品 |
-| 已批准但尚未交付 | 0 |
-| 已批准 Pricing | 96 |
-| 已批准 Support Article | 98 |
-| 累计已 Release 并上传 Blob | 194 个唯一产品、388 份 Payload |
-| 尚未通过人工审核、位于正式范围外 | 6 个 Pricing 产品 |
-
-原来被拒绝的 `anomaly-detector`、`hdinsight`、`web-pubsub` 已完成修复、双语重跑和新的 Workbench 人工批准，并已发布。旧审核决定保留不变，不再作为当前未解决项重复统计。
-
-本轮还将 10 个已人工批准的试验产品纳入正式范围与 Product Definition：`data-lake-storage`、`data-transfer`、`ddos-protection`、`hci`、`hub`、`storage-import-export`、`storage-managed-disks`、`storage-page-blobs`、`storage-queues`、`storage-tables`。其中 `hci`、`hub` 已确认为 `simple_static`。原 184 条处理定义保持不变，新增定义及其来源批次、审核 ID 记录在 `product-definitions.json` 的 `scope_expansions` 中。
-
-194 个产品的状态来自已完成的多个审核批次，不表示另行执行过一次 194 产品全量回归。范围同步后的只读 `changes --json` 检查覆盖 194 个产品、388 个语言条目，返回 `no_changes`；输入基线与交付状态仍是两个独立概念。
-
-### 已完成的 Blob 交付
-
-目标容器为 `cms-output`，每份交付均位于 `{上传日期}/{release_id}/`，并以最后发布的 `delivery-manifest.json` 作为 CMS 可消费标志。
-
-| 上传日期 | Release ID | 产品数 | Payload 数 |
-|---|---|---:|---:|
-| 2026-08-26 | [`supported-products-expanded-full-release-20260826-021215`](releases/supported-products-expanded-full-release-20260826-021215/release-manifest.json) | 181 | 362 |
-| 2026-09-02 | [`pricing-approved-release-20260902-224327`](releases/pricing-approved-release-20260902-224327/release-manifest.json) | 11 | 22 |
-| 2026-09-02 | [`pricing-review-fixes-release-20260902-224327`](releases/pricing-review-fixes-release-20260902-224327/release-manifest.json) | 2 | 4 |
-
-2026-09-02 的两份 Release 分别来自 `expand-pricing-latest-html-rerun-review-20260902` 和 `pricing-review-fixes-review-20260902-220448`，合计新增交付 13 个产品，原有 181 个产品没有重传。两份交付清单已发布，26 份远端 Payload 已与本地 Release 逐字节核对一致；HDInsight 和托管磁盘只交付最新审核批准的修复版本。
-
-三份 Release 的 `release_kind` 均为 `full`。这里的 `full` 指单个普通审核队列的全部有效批准项，不是必须打包整个正式范围；本轮两个来源批次均为 `standard`，所以采用两份小范围 Full Release 完成增量交付。只有 `run --changed` 产生的正式增量 Batch 及其重新处理链才能使用 `--kind delta`。
-
-## 尚未完成的 Pricing 产品
-
-当前剩余 6 个 Pricing 产品：人工拒绝 1 个、抽取阻断 1 个、尚无抽取记录 4 个。它们均未纳入正式 Scope / Product Definition，因此不会被日常 `--all` 或 `--changed` 自动处理，也不在已交付的 194 个产品中。
-
-| Product Key | 当前 Strategy | 当前状态 | 后续处理 |
-|---|---|---|---|
-| `purview` | `complex` | 中英文机器检查通过，但人工拒绝：只正确获取了第一个 `tabContent` 的内容。 | 调查多层级、多个 `tabContent` 的抽取边界，修复后双语重跑并重新人工审核。 |
-| `databox` | `complex` | 中英文抽取阻断，未进入 Workbench：缺少符合合同要求的可见且非空的区域筛选器。 | 核对源 HTML 与当前 Complex 合同后重新试验。 |
-| `batch` | `complex` | 当前仓库未找到抽取及审核记录；此前约定暂缓。 | 等待上游页面修改后安排双语抽取试验。 |
-| `mysql` | `region_filter` | 当前仓库未找到抽取及审核记录。 | 待安排双语抽取、机器验证和 Workbench 人工审核。 |
-| `storage-blobs` | `complex` | 当前仓库未找到抽取及审核记录。 | 待安排双语抽取、机器验证和 Workbench 人工审核。 |
-| `storage-files` | `region_filter` | 当前仓库未找到抽取及审核记录。 | 待安排双语抽取、机器验证和 Workbench 人工审核。 |
-
-问题依据：[`purview` 人工拒绝记录](reviews/expand-pricing-latest-html-rerun-review-20260902/decisions/purview.json)、[`databox` 最近双语阻断批次](runs/expand-pricing-wave2-final-rerun2-20260902/run.json)。后续只有完成抽取、机器验证和人工批准后，才能纳入正式支持与发布范围；不能把尚未验证的配置直接视为受支持产品。
-
-Pricing `mariadb` 已确认下线并移除，不属于上述待处理产品。独立的 `sla-mariadb` Support Article 仍保留，且已获批交付。
-
-## 端到端工作流
-
-```mermaid
-flowchart LR
-    A[上游完整双语 HTML 与可信配置] --> B[变化检测或明确全量范围]
-    B --> C[固定 Frozen HTML]
-    C --> D[按 Strategy 抽取 Payload]
-    D --> E[L3a 重复抽取检查]
-    D --> F[L3b 独立源内容核对]
-    E --> G{L3a 与 L3b 都通过?}
-    F --> G
-    G -- 否 --> H[失败或阻断并修复]
-    G -- 是 --> I[Workbench 人工审核]
-    I -- 拒绝 --> H
-    I -- 批准 --> J[Full 或 Delta Release]
-    J --> K[release-verify]
-    K --> L[上传 Payload 到 Blob]
-    L --> M[最后上传 delivery-manifest.json]
-    M --> N[CMS 消费]
-```
-
-任何机器失败、机器阻断、人工拒绝或待审核状态都不能越过对应门槛。Pipeline 没有自动批准，也不会因为某一步“没有抛异常”就把产品视为可发布。
-
-## 关键概念
-
-| 名称 | 含义 |
+| 模块 | 职责 |
 |---|---|
-| Product Key | 项目的稳定产品标识，例如 `service-bus`；不一定等于页面 slug。 |
-| Processing Scope | 当前正式处理范围，来源为 `data/configs/processing-scope.json`。 |
-| Processing Item | 一个产品的一种语言；每个正式产品必须同时拥有 `zh-cn` 和 `en-us`。 |
-| Frozen HTML | 固定在 `data/prod-html/` 或某个 Batch `inputs/` 中的实际处理输入。 |
-| Batch | 一次明确范围的双语抽取、L3a、L3b 运行，保存在 `runs/{run-name}/`。 |
-| L3a | 对同一固定输入重新抽取，并比较完整 Business Payload 是否稳定一致。 |
-| L3b | 不复用生产 Strategy 的内容选择结果，从 Frozen HTML 独立定位源片段并核对全部业务 HTML 字段。 |
-| Review Queue | 从已封存 Batch 中生成的、仅包含机器检查通过产品的人工审核清单。 |
-| Review Decision | 真实审核人对一个完整双语产品作出的批准或拒绝决定。 |
-| Full Release | 从一个普通审核会话收集当前全部有效批准产品形成的交付包；不要求覆盖整个正式 Scope。 |
-| Delta Release | 只交付一个增量 Batch 中当前获批且尚未交付产品的增量包。 |
-| Delivery Manifest | Blob Release 目录的完成标志；CMS 只消费存在该文件的目录。 |
+| `cli.py` / `src/cli.py` | 命令行入口，选择处理范围并调用各阶段服务。 |
+| `src/core/` | 产品目录、双语源定义、Payload 合同与公共规则。 |
+| `src/pipeline/` | 固定输入，编排抽取、检查、Batch 封存及中断恢复。 |
+| `src/strategies/` / `src/extractors/` | 按页面策略抽取业务内容并生成 Payload。 |
+| `src/machine_checks/` | L3a 重复抽取检查，以及独立于生产抽取逻辑的 L3b 源内容核对。 |
+| `src/incremental/` | HTML 与配置变化检测、增量批次状态、程序修复后的重新处理。 |
+| `src/review/` / `dashboard/` | 审核材料、产品级双语 Workbench 和真实人工决定。 |
+| `src/release/` | 从有效批准记录构建并核对不可覆盖的 Full / Delta Release。 |
+| `src/delivery/` | 将指定 Release 上传 Blob，最后发布交付清单。 |
 
-生产抽取支持四种 Strategy：
+抽取策略由产品配置决定：`simple_static` 用于静态定价正文，`region_filter` 用于区域筛选页面，`complex` 用于复杂内容组合，`support_article` 用于支持文章。具体边界见 [Strategy 说明](docs/specs/m3-strategy-boundaries.md)。
 
-| Strategy | 适用页面 |
+### 输入、配置与产物
+
+| 路径 | 用途 |
 |---|---|
-| `simple_static` | 以连续静态正文为主的 Pricing 页面。 |
-| `region_filter` | 使用软件、区域或类别映射过滤内容的 Pricing 页面。 |
-| `complex` | 包含复杂表格、状态和跨区块组合规则的 Pricing 页面。 |
-| `support_article` | SLA、ICP、LEGAL、PSR 等支持文章。 |
+| `data/current_prod_html/` | 上游最新完整快照：`zh-cn/`、`en-us/` 和 `soft-category.json`。 |
+| `data/configs/processing-scope.json` | 正式处理范围；`--all` 不代表处理目录中所有参考配置。 |
+| `data/configs/products-config/` | 双语源路径、页面模型、Strategy 和产品特定抽取边界。 |
+| `data/prod-html/` / `data/configs/soft-category.json` | 已固定的 HTML 与可信区域映射对比基线。 |
+| `data/state/` | Product Definition 对比基线、配置使用证据及增量人工终结记录。 |
+| `runs/{run-name}/` | 一次 Batch 的清单、Payload、机器报告；增量批次另存独立 `inputs/`。 |
+| `reviews/{review-id}/` | 审核清单、材料和不可覆盖的人工决定。 |
+| `releases/{release-id}/` | 已封存 Payload、`release-manifest.json` 和批准决定副本。 |
 
-Strategy 由产品配置决定。不要仅根据页面名称、文件大小或历史 `capability_status` 猜测 Strategy。
-
-## 必须遵守的规则
-
-1. **每个产品始终双语处理。** 即使只变化中文或英文，也必须重新处理该产品的 `zh-cn` 和 `en-us`。
-2. **增量检测前不要先运行 `source-input`。** `source-input` 会推进 `data/prod-html/`；先运行它可能抹掉新旧差异。正常增量入口是 `changes` 和 `run --changed`。
-3. **不要手工修改 Frozen HTML、Payload、检查报告、审核决定或 Release。** 修正应产生新的 Batch、Review ID 或 Release ID。
-4. **机器通过不等于人工批准。** 只有真实审核人在 Workbench 中批准后，产品才能进入 Release。
-5. **所有 ID 只写一次。** `run-name`、`review-id` 和 `release-id` 不能复用或覆盖。
-6. **失败和阻断必须保留。** 不得通过删除失败项、降低计划数或静默跳过来制造成功结果。
-7. **`.env` 绝不能提交。** Azure Storage 连接串不得出现在代码、日志、工单、截图或清单中。
-8. **不要删除仍被引用的运行材料。** `release-verify` 需要 Release 引用的 Run 与 Review；这些本地目录虽然被 Git 忽略，仍是审计链的一部分。
-9. **不要手工提前上传 `delivery-manifest.json`。** 它必须在全部 Payload 成功后由程序最后写入。
+`soft-category.json` 的 `tableIDs` 是表格排除清单，不是保留清单。处理相关配置变化也必须经过增量检测、机器检查和人工审核；不要手工提前改写对比基线来消除差异。
 
 ## 环境准备
 
-### 前置软件
-
-- Git
-- Python 3.10 或更高版本
-- [`uv`](https://docs.astral.sh/uv/)
-- Node.js 22.13 或更高版本，仅运行 Workbench 时需要
-- npm，与 Node.js 一同安装
-
-### 安装 Python 依赖
-
-在项目根目录运行：
+需要 Git、Python 3.10+、uv；Workbench 另需 Node.js 22.13+ 和 npm。以下命令在项目根目录执行，示例使用 Bash / zsh。
 
 ```bash
 uv sync --extra dev
-```
-
-确认 CLI 可以加载：
-
-```bash
+npm --prefix dashboard ci
 uv run python cli.py --help
-uv run python cli.py changes --json
 ```
 
-`changes` 是只读命令，适合作为首次环境检查。它不会创建 Batch 或改写 Frozen HTML。
-
-### 安装 Workbench 依赖
+仅 Blob 上传需要凭据。已有 `.env` 时不要覆盖：
 
 ```bash
-cd dashboard
-npm ci
-cd ..
+test -e .env || cp .env_example .env
 ```
 
-### 配置 Blob 凭据
-
-只有执行 `release-upload` 时需要 `.env`：
-
-```bash
-cp .env_example .env
-```
-
-在 `.env` 中填写：
+在 `.env` 中配置以下两项，真实值不得提交到 Git、日志或文档：
 
 ```dotenv
-AZURE_STORAGE_CONNECTION_STRING=<真实 Azure Storage 连接串>
-AZURE_BLOB_CONTAINER_NAME=cms-output
+AZURE_STORAGE_CONNECTION_STRING=<真实连接串>
+AZURE_BLOB_CONTAINER_NAME=<已创建的目标容器>
 ```
 
-目标容器必须预先存在。进程环境变量优先于 `.env`，便于部署环境通过安全的秘密管理系统注入凭据。
+进程环境变量优先于 `.env`。容器由运维预先创建，程序不会创建容器或修改权限。
 
-## 目录与配置
+## 完整工作流
 
-```text
-AzureCNArchaeologist/
-├── cli.py                              项目本地 CLI 入口
-├── data/
-│   ├── current_prod_html/              上游最新完整快照
-│   │   ├── zh-cn/
-│   │   ├── en-us/
-│   │   └── soft-category.json
-│   ├── prod-html/                      当前全局 Frozen HTML 基线
-│   ├── configs/
-│   │   ├── processing-scope.json       当前正式产品范围
-│   │   ├── products-config/            Product Definition 源配置
-│   │   └── soft-category.json          当前可信映射基线
-│   └── state/
-│       ├── product-definitions.json    处理相关 Product Definition 基线
-│       ├── soft-category-usage.json    产品实际配置查询证据
-│       └── incremental-closures/       明确结束而不交付的决定
-├── runs/{run-name}/                    Batch、Payload、检查结果和固定输入
-├── reviews/{review-id}/                审核清单、材料和人工决定
-├── releases/{release-id}/              已封存 Full/Delta Release
-├── dashboard/                          本地人工审核台
-├── src/
-│   ├── core/                           Catalog、Payload 合同与跨阶段规则
-│   ├── pipeline/                       输入固定和 Pipeline 编排
-│   ├── strategies/                     四种生产抽取 Strategy
-│   ├── extractors/                     Strategy 调用适配
-│   ├── machine_checks/                 L3a 与独立 L3b
-│   ├── review/                         审核清单、Workbench 和决定服务
-│   ├── incremental/                    变化检测、增量状态和重新处理
-│   ├── release/                        Full/Delta Release 构建与核对
-│   └── delivery/                       Azure Blob 上传与完成清单
-├── tests/                              Python 自动化测试
-└── tracking-product-status.md          人工维护的产品验证状态
+```mermaid
+flowchart LR
+    A[上游双语 HTML 与配置] --> B[固定输入并抽取 Payload]
+    B --> C{L3a 与 L3b 均通过}
+    C -- 否 --> D[保留失败或阻断并修复]
+    C -- 是 --> E{Workbench 人工审核}
+    E -- 拒绝 --> D
+    E -- 批准 --> F[构建并核对 Release]
+    F --> G[上传 Payload]
+    G --> H[最后上传 delivery-manifest.json]
+    H --> I[CMS 消费]
 ```
 
-### 权威配置的职责
+一个产品始终同时处理 `zh-cn` 和 `en-us`。L3a 检查重复抽取是否一致，L3b 独立核对源内容与业务 HTML 字段；机器通过不代表内容已获人工批准。
 
-| 文件 | 职责 | 修改原则 |
-|---|---|---|
-| `processing-scope.json` | 决定 `--all` 和增量检测的正式产品范围。 | 只有产品完成机器验证并确认纳入正式范围后更新。 |
-| `products-config/**/*.json` | 声明双语源路径、页面模型、Strategy 与抽取边界。 | 依据真实页面结构修改；不能用旧支持状态代替验证。 |
-| `soft-category.json` | 提供区域、软件和表格 ID 的可信业务映射。 | 上游映射变化必须经过增量影响分析。 |
-| `product-definitions.json` | 保存会影响处理结果的 Product Definition 对比基准。 | 不要把显示名称、slug 或旧 `capability_status` 当作抽取依据。 |
-| `tracking-product-status.md` | 记录产品级机器验证、人工决定与上游问题。 | Scope、Product Definition 和人工状态变化后同步更新。 |
+以下演示正式范围的全量运行。已发布产品的日常上游变化使用下一节的增量流程，不要用全量运行代替变化检测。运行、审核、Release ID 均只写一次，使用小写字母、数字和单连字符，不能删除旧目录来复用名称。
 
-扩展正式产品范围时，至少要核对 `processing-scope.json`、`product-definitions.json` 和 `tracking-product-status.md` 三者一致。不要在未完成验证时直接宣称产品受支持。
+### 1. 准备输入并运行
 
-### 区域页面的静态交付规则
+将完整双语快照及可信配置放入 `data/current_prod_html/`，路径必须与产品配置一致。不要手改 Frozen HTML、Payload 或机器报告。
 
-`soft-category.json` 的 `tableIDs` 是排除清单。RegionFilter 和 Complex 先排除不适用表格，再清理保留表格及其祖先包裹节点上的内联 `display:none`（包括大小写、空白和 `!important` 变体）。价格、表格结构、其它样式及无关隐藏界面均保留；不能依赖 CMS 执行原页面 JavaScript 才显示已交付表格。
-
-个别 RegionFilter 页面的说明文字也按区域切换，可在该产品配置的 `extraction` 中声明：
-
-```json
-"region_content_rules": [
-  { "class_name": "isn3", "visible_regions": ["north-china3"] }
-]
-```
-
-规则只匹配该产品定价正文内具有指定 class 的说明 `div`：列出的区域保留，其它区域移除；未配置产品不启用此功能。目前只有 `storage-managed-disks` 配置了 `isn3/notn3/ise3/note3/zone1`。class 必须实际命中说明节点，区域键必须存在于源控件，不能用此规则包办表格筛选。未知区域、零匹配或命中包含表格的 div 会阻断，需核对上游结构。
-
-这类配置变化属于 Product Definition 的处理变化，会触发该产品中英文增量重跑。Batch 和 Review 保存本次规则，Workbench 按批次规则独立重建片段。修改后仍须通过机器检查和新的人工审核，不能沿用旧批准。
-
-## 运行名称规范
-
-`run-name`、`review-id` 和 `release-id` 必须只包含小写字母、数字和单连字符。建议使用“用途 + 日期 + 时间”：
-
-```text
-full-regression-20260902-093000
-full-review-20260902-093000
-full-release-20260902-093000
-upstream-change-20260905-101500
-upstream-change-review-20260905-101500
-upstream-change-delta-20260905-101500
-```
-
-每次执行都使用新名称。程序不会覆盖同名 Batch、Review 或 Release，也不要通过手工删除目录来复用旧名称。
-
-## 全量处理流程
-
-全量流程适用于正式范围的周期性完整回归、范围扩展后的统一验证或初次建立完整 Release。以下示例名称仅用于说明，实际运行时必须换成新的时间戳。
-
-### 1. 准备完整上游快照
-
-把本轮上游文件放入：
-
-```text
-data/current_prod_html/zh-cn/
-data/current_prod_html/en-us/
-data/current_prod_html/soft-category.json
-```
-
-上游快照必须完整，而不是只复制本轮变化文件。不要在程序中自动修复 HTML；已确认的上游源修正应记录在 [`docs/input-notes/`](docs/input-notes/)。
-
-### 2. 执行全量 Batch
+在同一终端保留以下变量，后续步骤继续使用；若更换终端，应恢复本轮实际 ID，而不是重新生成。
 
 ```bash
-uv run python cli.py run --all \
-  --run-name full-regression-20260902-093000 \
-  --parallel-jobs 6
+FLOW_RUN="full-$(date +%Y%m%d-%H%M%S)"
+FLOW_REVIEW="${FLOW_RUN}-review"
+
+uv run python cli.py run --all --run-name "$FLOW_RUN" --parallel-jobs 4
+uv run python cli.py status --run-name "$FLOW_RUN"
 ```
 
-`run --all` 会对正式范围内每个产品执行：
+核对计划数、通过数、失败和阻断原因。`--parallel-jobs` 支持 2–32；定向运行可将 `--all` 换成 `--product`、`--products` 或 `--category`，范围仍受正式 Scope 约束。
 
-1. 定位并固定中文和英文输入；
-2. 按产品 Strategy 抽取 Payload；
-3. 把 Payload 写入 Batch；
-4. 并列运行 L3a 和 L3b；
-5. 封存完整结果与可读报告。
-
-并行数必须在 2 到 32 之间。首次运行建议从 4 或 6 开始。
-
-### 3. 查看 Batch 状态
+### 2. 创建审核并进入 Workbench
 
 ```bash
-uv run python cli.py status \
-  --run-name full-regression-20260902-093000
+uv run python cli.py review-prepare --run-name "$FLOW_RUN" --review-id "$FLOW_REVIEW"
 ```
 
-如进程中断且保留了 `.building` 目录，使用原名称继续：
+只有中英文抽取、L3a、L3b 全部通过的产品才能入队；不符合条件的项保留原因，不能靠人工批准绕过机器门槛。
+
+另开一个终端，在项目根目录启动前端并保持运行：
 
 ```bash
-uv run python cli.py resume \
-  --run-name full-regression-20260902-093000 \
-  --parallel-jobs 6
+npm --prefix dashboard run dev
 ```
 
-不要对已经封存的 Batch 使用 `resume`。
-
-### 4. 生成人工审核清单
+回到保留本轮变量的终端，启动审核服务：
 
 ```bash
-uv run python cli.py review-prepare \
-  --run-name full-regression-20260902-093000 \
-  --review-id full-review-20260902-093000
+uv run python cli.py review-serve --review-id "$FLOW_REVIEW" --port 0
 ```
 
-只有抽取、L3a 和 L3b 都通过的完整双语产品会进入 Review Queue。机器失败或双语不完整的产品会保留在 `not_queued_items`，不能通过人工决定补录。
+使用服务输出的完整 URL 进入 Workbench；URL 带临时令牌，不要只打开 `/review`，也不要对外分享令牌。真实审核人需检查中英文 Frozen HTML、Payload、L3a / L3b 材料及业务完整性，再提交产品级批准或拒绝。
 
-### 5. 运行 Workbench 并人工审核
-
-终端一：
+审核完成后，在该终端按 `Ctrl+C` 停止审核服务，然后查看决定：
 
 ```bash
-cd dashboard
-npm run dev
+uv run python cli.py review-status --review-id "$FLOW_REVIEW"
 ```
 
-终端二，在项目根目录：
+### 3. 构建、核对并上传
+
+确认有有效批准项后再执行：
 
 ```bash
-uv run python cli.py review-serve \
-  --review-id full-review-20260902-093000
+FLOW_RELEASE="full-release-$(date +%Y%m%d-%H%M%S)"
+uv run python cli.py release-build --kind full --review-id "$FLOW_REVIEW" --release-id "$FLOW_RELEASE"
+uv run python cli.py release-verify --release-id "$FLOW_RELEASE"
 ```
 
-第二个终端会打印带临时令牌的完整审核页面地址。必须使用该地址进入，不要手工只打开 `/review`。
-
-审核以产品为单位，必须查看：
-
-- 中文 Frozen HTML 与 Payload；
-- 英文 Frozen HTML 与 Payload；
-- L3a 报告；
-- L3b 独立源片段与 Payload 对应字段；
-- 页面内容是否符合业务预期。
-
-真实决定只能从 Workbench 提交。CLI 的 `review-show` 仅用于只读查看材料，不能批准产品：
+确认核对通过、Release 中的产品及数量符合交付预期，再上传：
 
 ```bash
-uv run python cli.py review-show \
-  --review-id full-review-20260902-093000 \
-  --product service-bus
+uv run python cli.py release-upload --release-id "$FLOW_RELEASE" --json
 ```
 
-查看审核汇总：
+`full` 指当前审核队列的全部有效批准产品，不一定覆盖整个正式 Scope；普通定向批次也使用它。不同审核 ID 分别构建 Release，不能复制人工决定或伪造增量绑定。拒绝、待审和未入队项不会进入 Release。
 
-```bash
-uv run python cli.py review-status \
-  --review-id full-review-20260902-093000
-```
+保留上传成功输出，并确认目标目录存在 `delivery-manifest.json`；本地 Release 核对通过本身不代表 Blob 已交付。
 
-### 6. 构建 Full Release
+## 上游 HTML 变更后的增量流程
 
-```bash
-uv run python cli.py release-build \
-  --kind full \
-  --review-id full-review-20260902-093000 \
-  --release-id full-release-20260902-093000
-```
+适用于已经纳入正式范围的产品。新结果仍需完整双语机器检查、新的人工批准和新的 Release，不会自动替换已发布内容。
 
-`release-build` 不接受 Product Key 参数。它自动收集该审核会话中当前全部有效批准产品，并把拒绝、待审核和未入队项写入排除清单。
-
-普通定向试验或重跑的审核也使用 `--kind full`，交付范围仅限该审核队列。若已批准结果来自不同审核 ID，应分别构建 Release，不能伪造增量 Batch 绑定或复制旧人工决定来使用 `--kind delta`。
-
-### 7. 核对并上传
-
-```bash
-uv run python cli.py release-verify \
-  --release-id full-release-20260902-093000
-
-uv run python cli.py release-upload \
-  --release-id full-release-20260902-093000
-```
-
-上传命令会再次执行本地 Release 核对，然后上传 Payload，并在全部成功后最后上传 `delivery-manifest.json`。
-
-## 增量处理流程
-
-增量流程用于已经发布的产品发生上游 HTML 或处理相关配置变化。它不会跳过机器检查或沿用旧人工批准。
-
-### 1. 确认没有未结束增量 Batch
+### 1. 确认旧批次已处理完，再更新上游快照
 
 ```bash
 uv run python cli.py incremental-status
 ```
 
-同一时间只能存在一个未结束增量 Batch。只要其中还有失败、阻断、待审核、拒绝或尚未交付产品，就不能启动下一轮 `run --changed`。
+同一时间只允许一个未结束增量 Batch。若仍有未解决产品，先按下一节完成恢复、修复或真实人工终结决定，不要另起 `run --changed`；还需确认上一轮 Release 已完成 Blob 上传，不能只看本地批次状态。
 
-### 2. 放入新的完整上游快照
+更新 `data/current_prod_html/` 内变化的 HTML 和配置，同时保留未变化文件，使目录仍是完整快照。此时不要运行 `source-input`，不要改写 `data/prod-html/`、可信映射或定义对比基线，否则可能抹掉需要检测的差异。
 
-更新 `data/current_prod_html/` 中的中文、英文 HTML 与可信配置。此时不要运行 `source-input`，也不要手工改写 `data/prod-html/`。
-
-### 3. 只读查看变化计划
+### 2. 查看变化计划并执行
 
 ```bash
-uv run python cli.py changes
 uv run python cli.py changes --json
 ```
 
-`changes` 同时比较：
+该命令只读比较上游 HTML、`soft-category.json` 业务映射及 Product Definition 的处理相关字段。任一语言或相关配置变化，都会将该产品的中英文一起纳入计划。`html-changes` 仅比较 HTML，不能替代完整检测。
 
-- 上游 HTML 与 Frozen HTML；
-- `soft-category.json` 的业务映射；
-- Product Definition 的双语路径、页面模型、Strategy 和其他处理相关字段。
-
-`html-changes` 只比较 HTML，是诊断兼容命令，不能作为完整增量决定依据。
-
-`changes` 不比较 Blob 或交付记录。`no_changes` 仅表示当前输入与处理基线没有业务差异，不表示所有已批准 Payload 都已经上传；交付状态应结合审核、Release 和上传成功记录核对。
-
-### 4. 运行受影响产品
+`no_changes` 只说明输入与处理基线没有业务差异，不说明已有 Payload 是否上传。确认计划符合预期后运行：
 
 ```bash
-uv run python cli.py run --changed \
-  --run-name upstream-change-20260905-101500 \
-  --parallel-jobs 6
+FLOW_RUN="upstream-change-$(date +%Y%m%d-%H%M%S)"
+FLOW_REVIEW="${FLOW_RUN}-review"
+
+uv run python cli.py run --changed --run-name "$FLOW_RUN" --parallel-jobs 4 --json
 ```
 
-如果没有业务变化，命令返回 `batch_created: false`，不会创建空 Batch。任一语言或处理相关配置发生变化时，计划都会包含该产品的中文和英文。
+若运行结果为 `batch_created: false`，没有创建空 Batch，应跳过 `status` 及后续审核、发布步骤。本次实际采用的 HTML 和配置会固定在增量 Batch 的 `inputs/` 中，后续全局源变化不会改写它。
 
-增量 Batch 会把实际使用的 HTML 与配置固定在自己的 `inputs/` 目录中。后续全局快照变化不会改变已经开始的 Batch。
+### 3. 完成新的人工审核
 
-### 5. 审核增量结果
+确认已创建并封存增量 Batch 后执行：
 
 ```bash
-uv run python cli.py review-prepare \
-  --run-name upstream-change-20260905-101500 \
-  --review-id upstream-change-review-20260905-101500
-
-uv run python cli.py review-serve \
-  --review-id upstream-change-review-20260905-101500
+uv run python cli.py status --run-name "$FLOW_RUN"
+uv run python cli.py review-prepare --run-name "$FLOW_RUN" --review-id "$FLOW_REVIEW"
+uv run python cli.py review-serve --review-id "$FLOW_REVIEW" --port 0
 ```
 
-新 Batch 必须使用新的审核决定；历史批准不能复用。
+确保 Workbench 前端仍在运行，按完整工作流检查两个语言并提交真实决定。历史批准不能沿用。审核结束后停止审核服务，再查看 `review-status`。
 
-### 6. 构建并上传 Delta Release
+### 4. 创建 Delta Release 并增量上传
 
 ```bash
-uv run python cli.py release-build \
-  --kind delta \
-  --review-id upstream-change-review-20260905-101500 \
-  --release-id upstream-change-delta-20260905-101500
-
-uv run python cli.py release-verify \
-  --release-id upstream-change-delta-20260905-101500
-
-uv run python cli.py release-upload \
-  --release-id upstream-change-delta-20260905-101500
+FLOW_RELEASE="delta-release-$(date +%Y%m%d-%H%M%S)"
+uv run python cli.py release-build --kind delta --review-id "$FLOW_REVIEW" --release-id "$FLOW_RELEASE"
+uv run python cli.py release-verify --release-id "$FLOW_RELEASE"
 ```
 
-Delta Release 只包含该增量 Batch 中当前获批、尚未交付的完整双语产品。一个增量 Batch 可以分多次发布不同审批批次；已经进入旧 Delta Release 的产品不会重复进入后续 Delta Release。
+核对通过且范围正确后上传：
 
-新 Payload 会写入新的上传日期和 Release ID 目录，不覆盖历史数据。CMS 根据最新 Release ID 获取产品的最新有效 Payload。
+```bash
+uv run python cli.py release-upload --release-id "$FLOW_RELEASE" --json
+uv run python cli.py incremental-status
+```
 
-## 失败、拒绝与重新处理
+`delta` 仅适用于 `run --changed` 生成的增量 Batch 及其重新处理链。它只包含本批次当前获批、尚未进入既有 Delta Release 的产品；其余产品不重传。同一 Batch 可分次发布，后续获批产品使用新的 Release ID。
 
-### 常见情况
+所有受影响产品进入已封存 Delta Release，或被真实审核人明确结束而不交付后，增量 Batch 才结束。这个状态按本地记录计算，不检查 Blob；仍须逐份核对上传成功和远端完成清单。
 
-| 情况 | 正确操作 |
+## 失败与重新处理
+
+| 情况 | 处理方式 |
 |---|---|
-| Batch 进程中断，存在 `{run-name}.building` | 修复运行环境后使用 `resume`，不要创建同名新 Batch。 |
-| HTML 缺失、结构矛盾或源边界不明确 | 保持 `blocked`，反馈上游；不要在 Strategy 中加入猜测。 |
-| 抽取或机器检查代码有问题 | 修复代码后，在原增量 Batch 固定输入上运行 `incremental-reprocess-product`。 |
-| 机器检查通过，但人工发现抽取错误并拒绝 | 修复代码后重新处理，并提供拒绝最新结果的 `--rejected-review-id`。 |
-| 上游在一个未结束增量 Batch 期间又提供了新 HTML | 不得用重新处理命令读取新源。由真实审核人决定是否结束旧产品而不交付，再启动下一轮变化检测。 |
-| 人工拒绝但暂时不修复 | 产品保持未解决，增量 Batch 不会自动关闭。 |
-| 产品本轮明确不应交付 | 真实审核人使用 `incremental-end-product` 记录身份和原因。 |
-| Blob 上传留下无 manifest 的部分目录 | CMS 会忽略；不要手工补 manifest 或直接重跑覆盖，应联系维护者和存储管理员处理部分前缀。 |
+| 进程中断，存在 `{run-name}.building` | 使用 `resume --run-name` 继续原运行；已封存 Batch 不能使用 `resume`。 |
+| HTML 缺失、结构或映射不明确 | 保留失败或阻断，反馈上游确认，不猜测内容或绕过验证。 |
+| 普通全量或定向 Batch 失败、被拒绝 | 修复后使用新的运行名和审核 ID；不得改写旧产物。 |
+| 增量批次中发现程序错误 | 修复代码后，在原 Batch 的固定输入上追加重新处理记录。 |
+| 未结束增量批次又收到新 HTML 或处理配置 | 不能用程序修复命令替换固定输入；先解决旧批次，必要时由真实审核人明确结束旧产品而不交付，再进行下一轮变化检测。 |
+| 上传失败，留下不完整 Blob 目录 | 没有完成清单的目录不能被 CMS 消费。保留错误，由维护者核查前缀；不要盲目重传、覆盖或手工补清单。 |
 
-### 在原增量 Batch 中重新处理
-
-重新处理只适用于**程序修复**，始终复用原增量 Batch 已固定的输入：
+程序修复后的增量重新处理示例；姓名和原因必须填写真实信息，产品键替换为本批次实际未解决产品：
 
 ```bash
+FIX_RUN="product-reprocess-$(date +%Y%m%d-%H%M%S)"
+FIX_REVIEW="${FIX_RUN}-review"
+
 uv run python cli.py incremental-reprocess-product \
-  --run-name upstream-change-20260905-101500 \
-  --product service-bus \
-  --new-run-name service-bus-reprocess-20260905-143000 \
-  --requested-by "实际发起人" \
-  --reason "说明程序问题、修复内容和重新处理原因"
+  --run-name "$FLOW_RUN" --product service-bus \
+  --new-run-name "$FIX_RUN" \
+  --requested-by "实际发起人姓名" --reason "程序问题及修复原因"
+
+uv run python cli.py review-prepare --run-name "$FIX_RUN" --review-id "$FIX_REVIEW"
 ```
 
-如果最新机器结果已通过但被人工拒绝，还要增加：
+若最新机器结果已通过但被人工拒绝，重新处理命令必须额外提供 `--rejected-review-id`，指向拒绝最新结果的审核 ID；机器失败时不需要该参数。随后审核 `$FIX_REVIEW`，用它构建新的 `delta` Release 并上传，只有处理链中的最新结果可交付。
 
-```bash
-uv run python cli.py incremental-reprocess-product \
-  --run-name upstream-change-20260905-101500 \
-  --product service-bus \
-  --new-run-name service-bus-reprocess-20260905-143000 \
-  --requested-by "实际发起人" \
-  --reason "说明程序问题、修复内容和重新处理原因" \
-  --rejected-review-id upstream-change-review-20260905-101500
-```
-
-重新处理完成后，为新运行建立新的审核清单：
-
-```bash
-uv run python cli.py review-prepare \
-  --run-name service-bus-reprocess-20260905-143000 \
-  --review-id service-bus-reprocess-review-20260905-143000
-```
-
-只有处理链中的最新记录能进入 Delta Release。旧 Payload、旧检查报告和旧拒绝决定均保持不变。
-
-### 明确结束而不交付
-
-此命令是人工终结决定，不是跳过错误的快捷方式：
+需要明确结束某个产品而不交付时，由真实审核人执行以下命令并填写真实身份及理由；普通拒绝不会自动结束产品：
 
 ```bash
 uv run python cli.py incremental-end-product \
-  --run-name upstream-change-20260905-101500 \
-  --product service-bus \
-  --reviewer "真实审核人" \
-  --reason "说明为什么本轮明确结束且不交付"
+  --run-name "$FLOW_RUN" --product service-bus \
+  --reviewer "真实审核人姓名" --reason "本轮明确结束且不交付的理由"
 ```
 
-只有所有受影响产品都已进入 Delta Release，或被明确结束而不交付，增量 Batch 才会关闭。
+详细限制与重新处理规则见 [增量处理规格](docs/specs/incremental-processing.md)。
 
-## Release 与 Blob 发布
-
-### 本地 Release 结构
-
-```text
-releases/{release-id}/
-├── release-manifest.json
-├── payloads/
-│   ├── zh-cn/
-│   └── en-us/
-└── review-decisions/
-```
-
-Release 先在 `{release-id}.building` 中复制和核对，再整体封存。Release ID、Payload 路径和文件内容都不允许覆盖。
-
-### Blob 结构
+## Blob 与 CMS 交付约定
 
 ```text
 {container}/
-└── YYYY-MM-DD/                         实际上传日期
-    └── {release-id}/
+└── YYYY-MM-DD/                  实际上传日期，使用上传机器本地时区
+    └── {release-id}/            带时间戳，每次发布使用新 ID
         ├── payloads/
         │   ├── zh-cn/...
         │   └── en-us/...
-        └── delivery-manifest.json      最后上传的完成标志
+        └── delivery-manifest.json
 ```
 
-Blob 上传的行为：
+上传服务再次核对 Release，只上传清单内的 Payload，全部成功后最后写入 `delivery-manifest.json`。本地 `release-manifest.json`、人工决定和 Run / Review 引用链不上传。
 
-1. 读取 `.env` 或进程环境中的连接配置；
-2. 再次执行 `release-verify`；
-3. 只上传该 Release 清单列出的 Payload；
-4. 使用 `overwrite=False`，拒绝覆盖已有 Blob；
-5. 全部 Payload 成功后最后上传 `delivery-manifest.json`；
-6. 不上传本地 `release-manifest.json`、审核决定或 Run/Review 引用链。
+CMS 只消费存在完成清单的目录；同一天多个 Release 共用日期前缀，通过各自 Release ID 中的时间戳判断先后。同一产品再次获批发布后，CMS 消费最新有效版本。历史 Blob 不覆盖，当前也没有产品下线或自动删除语义。
 
-CMS 只能消费存在 `delivery-manifest.json` 的目录。同一天可以有多个 Release，它们共享上传日期前缀，通过各自带时间戳的 Release ID 区分先后。
+上传日期与 Release 创建日期可以不同。保存命令返回的实际 Blob 前缀和成功记录；同一路径已存在时上传会报错，当前不支持跳过已有文件或覆盖重试。详见 [Blob 发布规格](docs/specs/blob-delivery.md)。
 
-当前没有产品下线或 Blob 删除语义。不要手工删除历史 Release。
-
-## 测试与开发检查
-
-### Python 测试
-
-运行完整测试：
+## 测试与维护
 
 ```bash
 uv run pytest
-```
-
-重点工作流测试：
-
-```bash
-uv run pytest \
-  tests/test_blob_delivery.py \
-  tests/test_m5_review_release.py \
-  tests/test_m6_incremental.py \
-  tests/test_cli.py
-```
-
-三个历史 Workbench 测试依赖被 Git 忽略的本地 fixture：
-
-```text
-reviews/m5-full-review-workbench/
-```
-
-全新 checkout 没有该目录时，以下测试会报告“找不到审核清单”：
-
-- `test_real_workbench_reconstructs_four_strategy_shapes_without_production_strategy`
-- `test_workbench_projection_is_product_level_and_bilingual`
-- `test_historical_workbench_uses_its_sealed_batch_strategy`
-
-需要验证这三项时，应从受信任的内部运行材料恢复对应 Run/Review fixture。不要伪造审核决定或把生产凭据提交到仓库。缺少 fixture 不影响其他测试的运行，但应在测试报告中明确注明，而不是把失败静默删除。
-
-### Workbench 测试与构建
-
-```bash
-cd dashboard
-npm test
-npm run build
-```
-
-### 提交前检查
-
-```bash
+npm --prefix dashboard test
+npm --prefix dashboard run build
 git diff --check
-git status --short
 ```
 
-确认没有 `.env`、私钥、连接串、运行日志或临时令牌进入 Git 变更。
+部分 [Workbench 测试](tests/test_m5_workbench.py)依赖本地 Run / Review fixture；全新 checkout 缺少材料时，需从可信内部备份恢复并记录测试限制，不伪造审核决定。
 
-## CLI 命令速查
+`runs/`、`reviews/`、`releases/` 默认被 Git 忽略，但属于相互引用的审计材料，不是临时缓存；`release-verify` 仍依赖它们，应统一备份，不能随意删除。不要提交 `.env`、连接串、临时审核令牌或其他凭据。
 
-所有命令都支持标准 `--help`：
+新增正式产品须完成抽取验证和人工审核，并同步 Scope、Product Definition 基线与 [产品状态表](tracking-product-status.md)。本手册不重复维护产品数量、历史批次或交付记录。
 
-```bash
-uv run python cli.py run --help
-```
-
-把示例中的 `run` 换成需要查询的命令名即可。
-
-两个不属于常规端到端入口、但常用于诊断的命令示例：
-
-```bash
-# 会固定输入并推进 Frozen HTML；增量检测前不要运行
-uv run python cli.py source-input --product service-bus
-
-# 只比较 HTML；正式增量判断仍应使用 changes
-uv run python cli.py html-changes --json
-```
-
-| 命令 | 用途 | 是否写入状态 |
-|---|---|---|
-| `source-input` | 定位并固定一个产品、Category 或全部产品的双语 HTML。 | 是；推进 Frozen HTML，增量检测前慎用。 |
-| `html-changes` | 只读比较上游 HTML 与 Frozen HTML。 | 否。 |
-| `changes` | 完整比较 HTML、可信映射和 Product Definition。 | 否。 |
-| `run` | 按单产品、精确多产品、Category、全量或变化范围执行 Pipeline。 | 是。 |
-| `status` | 查看一个 Batch 的封存、通过、失败和阻断状态。 | 否。 |
-| `resume` | 继续一个未封存 Batch。 | 是。 |
-| `review-prepare` | 从封存 Batch 生成机器通过产品的审核清单。 | 是。 |
-| `review-show` | 只读查看一个产品的双语审核材料路径。 | 否。 |
-| `review-serve` | 启动本地审核服务并接受 Workbench 的真实决定。 | 是，仅写不可覆盖决定。 |
-| `review-status` | 查看批准、拒绝和待审核汇总。 | 否。 |
-| `release-build` | 构建 `full` 或 `delta` Release。 | 是。 |
-| `release-verify` | 直接核对 Release 清单、来源引用和 Payload 字节。 | 否。 |
-| `release-upload` | 上传 Release Payload，并最后发布 delivery manifest。 | 是，写 Azure Blob。 |
-| `incremental-status` | 查看当前唯一未结束增量 Batch。 | 否。 |
-| `incremental-reprocess-product` | 在原增量 Batch 固定输入上追加一个产品的双语重新处理记录。 | 是。 |
-| `incremental-end-product` | 由真实审核人明确结束一个产品而不交付。 | 是。 |
-
-`run` 的 `--product`、`--products`、`--category`、`--all` 和 `--changed` 必须且只能选择一个。`--products` 不允许空值、重复 Product Key 或正式范围外产品。
-
-## 安全与数据保留
-
-### 凭据
-
-- `.env` 已被 Git 忽略；仓库只保留不含真实值的 `.env_example`。
-- 配置对象、成功输出和受控错误不得打印连接串。
-- 不要把连接串复制到聊天、工单、测试 fixture 或 Markdown。
-- Blob 容器由运维预先创建；程序不会创建容器或修改权限。
-
-### Workbench
-
-- Python 审核服务只能绑定 `127.0.0.1`。
-- 页面必须使用服务打印的临时令牌地址。
-- 令牌只存在于当前页面内存，不写入 Cookie 或 localStorage。
-- Next.js 页面没有服务端写接口；唯一决定写入口是本地 Python 服务。
-- 每个决定记录真实审核人、实际检查范围和说明，并且不可覆盖。
-
-### 运行材料
-
-`runs/`、`reviews/` 和 `releases/` 默认不提交 Git，但它们不是可随意清理的缓存：
-
-- Review 引用 Run；
-- Release 引用 Review 与 Run；
-- `release-verify` 会沿引用链直接核对文件；
-- 增量状态通过 Run、Delta Release 和结束决定共同计算。
-
-生产运行材料应按照团队的安全备份与保留策略保存。当前没有引用感知的自动清理命令。
-
-## 进一步阅读
-
-新员工建议按以下顺序阅读：
-
-1. [`docs/CONTEXT.md`](docs/CONTEXT.md)：项目领域语言与禁止混淆的概念。
-2. [`docs/specs/core-pipeline.md`](docs/specs/core-pipeline.md)：核心输入、阶段、门槛和模块边界。
-3. [`docs/specs/machine-checks.md`](docs/specs/machine-checks.md)：L3a 与独立 L3b 的检查合同。
-4. [`docs/specs/m5-review-release.md`](docs/specs/m5-review-release.md)：人工审核和不可覆盖 Release。
-5. [`docs/specs/incremental-processing.md`](docs/specs/incremental-processing.md)：变化检测、一个未结束 Batch 和重新处理。
-6. [`docs/specs/blob-delivery.md`](docs/specs/blob-delivery.md)：Blob 目录、delivery manifest 和失败边界。
-7. [`dashboard/README.md`](dashboard/README.md)：Workbench 的本地运行与安全边界。
-8. [`tracking-product-status.md`](tracking-product-status.md)：当前产品级验证和上游问题。
-
-全部规格、架构决定、验收记录和历史材料索引见 [`docs/README.md`](docs/README.md)。
+更多细节见 [核心 Pipeline](docs/specs/core-pipeline.md)、[机器检查](docs/specs/machine-checks.md)、[人工审核与 Release](docs/specs/m5-review-release.md)；命令参数可用 `uv run python cli.py <命令> --help` 查询。

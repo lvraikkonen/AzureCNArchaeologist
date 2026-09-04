@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import logging
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, Comment, Tag
 
 from src.core.complex_table_index import (
     IndexedFragmentProjector,
@@ -117,6 +118,12 @@ class ComplexContentStrategy(BaseStrategy):
                 software_panel,
                 category_tabs,
             )
+            if self.product_config.get("product_key") == "purview":
+                if len(software_scopes) != 1 or software != "purview":
+                    raise ValueError("Purview 追加规则要求唯一的 purview 软件选项。")
+                leaves, shared_fragments = self._purview_content_leaves(
+                    software_panel, leaves
+                )
             shared_fragments = [
                 *shared_fragments,
                 *software_trailing_fragments,
@@ -430,6 +437,118 @@ class ComplexContentStrategy(BaseStrategy):
             ) is None:
                 fragments.append(child)
         return fragments
+
+    def _purview_content_leaves(
+        self,
+        software_panel: Tag,
+        leaves: list[tuple[dict[str, str] | None, Tag]],
+    ) -> tuple[list[tuple[dict[str, str] | None, Tag]], list[Tag]]:
+        """Apply the approved Purview-only append rule to source copies."""
+
+        primary_ids = ["tabContent1-1", "tabContent1-2", "tabContent1-3"]
+        application_ids = ["tabContent1-4", "tabContent1-5"]
+        primary_panels = [panel for _category, panel in leaves]
+        if software_panel.get("id") != "tabContent1" or [
+            panel.get("id") for panel in primary_panels
+        ] != primary_ids:
+            raise ValueError("Purview 必须保留 tabContent1-1 至 tabContent1-3 三个类别。")
+        body = self._exactly_one(
+            self._purview_elements(software_panel), "Purview 软件正文"
+        )
+        blocks = self._purview_elements(body)
+        if (
+            body.name != "div"
+            or "tab-content" not in body.get("class", [])
+            or len(blocks) != 3
+            or any(block.name != "div" for block in blocks)
+            or "scroll-table" not in blocks[0].get("class", [])
+            or not blocks[0].get_text(strip=True)
+            or primary_panels[0].parent is not blocks[1]
+        ):
+            raise ValueError("Purview 正文必须依次为总说明、数据映射分组和应用程序区块。")
+        introduction, primary_group, applications = blocks
+        primary_parts = self._purview_elements(primary_group)
+        if (
+            len(primary_parts) != 4
+            or "category-container-container" not in primary_parts[0].get("class", [])
+            or any(actual is not expected for actual, expected in zip(
+                primary_parts[1:], primary_panels
+            ))
+        ):
+            raise ValueError("Purview 数据映射分组含有未归属的正文或控件。")
+
+        application_parts = self._purview_elements(applications)
+        if (
+            len(application_parts) != 3
+            or [part.name for part in application_parts[:2]] != ["h3", "div"]
+            or any(not part.get_text(strip=True) for part in application_parts[:2])
+            or not {"technical-azure-selector", "pricing-detail-tab"}.issubset(
+                application_parts[-1].get("class", [])
+            )
+        ):
+            raise ValueError("Purview 应用程序区块缺少标题、说明或独立页签容器。")
+        widget_parts = self._purview_elements(application_parts[-1])
+        if (
+            len(widget_parts) != 2
+            or widget_parts[0].name != "ul"
+            or "tab-nav" not in widget_parts[0].get("class", [])
+            or widget_parts[1].name != "div"
+            or "tab-content" not in widget_parts[1].get("class", [])
+        ):
+            raise ValueError("Purview 应用程序页签容器结构发生变化。")
+        navigation, application_body = widget_parts
+        links = navigation.find_all("a")
+        if (
+            [link.get("data-href") for link in links]
+            != [f"#{target}" for target in application_ids]
+            or any(not link.get_text(strip=True) for link in links)
+        ):
+            raise ValueError("Purview 应用程序导航必须依次指向 tabContent1-4 和 tabContent1-5。")
+        application_panels = self._purview_elements(application_body)
+        if (
+            [panel.get("id") for panel in application_panels] != application_ids
+            or any(panel.name != "div" for panel in application_panels)
+            or [panel.get("id") for panel in software_panel.select(".tab-panel")]
+            != primary_ids + application_ids
+        ):
+            raise ValueError("Purview 应用程序面板集合或顺序发生变化。")
+        for panel in application_panels:
+            self._exactly_one(
+                software_panel.find_all(id=panel["id"]),
+                f"Purview 应用程序面板 {panel['id']}",
+            )
+
+        appendix = deepcopy(applications)
+        # The English page includes an obsolete navigation inside a comment.
+        for comment in appendix.find_all(string=lambda node: isinstance(node, Comment)):
+            comment.extract()
+        widget = appendix.select_one(".technical-azure-selector.pricing-detail-tab")
+        assert widget is not None
+        nav_copy = widget.find("ul", class_="tab-nav", recursive=False)
+        body_copy = widget.find("div", class_="tab-content", recursive=False)
+        assert nav_copy is not None and body_copy is not None
+        nav_copy.decompose()
+        for panel in list(body_copy.find_all("div", recursive=False)):
+            panel.unwrap()
+        body_copy.unwrap()
+        widget.unwrap()
+
+        result: list[tuple[dict[str, str] | None, Tag]] = []
+        for category, panel in leaves:
+            combined = deepcopy(panel)
+            combined.append(deepcopy(appendix))
+            result.append((category, combined))
+        return result, [introduction]
+
+    @staticmethod
+    def _purview_elements(node: Tag) -> list[Tag]:
+        elements: list[Tag] = []
+        for child in node.children:
+            if isinstance(child, Tag):
+                elements.append(child)
+            elif not isinstance(child, Comment) and str(child).strip():
+                raise ValueError("Purview 包装层含有无法归属的直接正文文本。")
+        return elements
 
     @staticmethod
     def _exactly_one(candidates: list[Tag], name: str) -> Tag:

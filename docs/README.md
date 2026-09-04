@@ -30,6 +30,7 @@
 - [`reviews/cms-payload-contract-correction.md`](reviews/cms-payload-contract-correction.md)：CMS 筛选选项与公共区块标题合同修正、五产品双语 Batch 和人工审核结果。
 - [`reviews/m7-v1-acceptance.md`](reviews/m7-v1-acceptance.md)：M7 可靠性回归、文档核对、安全检查、支持矩阵和 v1.0 发布判断的连续验收记录。
 - [`reviews/m7-support-matrix.md`](reviews/m7-support-matrix.md)：首批 22 个产品基于当前机器回归和真实人工审核形成的新支持、阻断或待确认结论。
+- [`input-notes/purview-page-structure-investigation-20260903.md`](input-notes/purview-page-structure-investigation-20260903.md)：Purview 双语结构、历史遗漏及用户确认的应用程序正文追加规则。
 - [`input-notes/m3-databricks-en-us-correction.md`](input-notes/m3-databricks-en-us-correction.md)：Databricks 英文输入的已确认修正和仍保留的上游标记问题。
 
 ## 写作规则
