@@ -214,235 +214,245 @@
                             <h2>
                                 Explore pricing options
                             </h2>
-                        </div>
                         <!-- BEGIN: TAB-CONTROL -->
                         <!-- END: TAB-CONTAINER-2 -->
                         <!-- END: TAB-CONTROL -->
                         <div class="tab-content">
-                            <h3>
+                        <h1>
                             Consumption plan
-                            </h3>
-                            <p>
-                                Azure Container Apps consumption plan is billed based on per-second resource
-                                allocation
-                                and requests. The first 180,000 vCPU-seconds, 360,000 GiB-seconds, and 2 million
-                                requests each month are free. Beyond that, you pay for what you use on a per second
-                                basis based on the number of vCPU-s and GiB-s your applications are allocated.
-                            </p>
-                            <p>
-                                Applications scale on-demand based on requests and events. Container Apps replicas
-                                are
-                                billed for active usage when they are running. An application can be configured to
-                                scale
-                                to zero replicas when there are no requests or events to process. No usage charges
-                                apply
-                                when an application is scaled to zero.
-                            </p>
-                            <p>
-                                You can optionally configure Container Apps with a minimum number of replicas to be
-                                always running in idle mode. When an application scales down to its minimum number
-                                of
-                                replicas, usage is charged at a reduced idle rate when a replica is inactive. A
-                                replica
-                                enters active mode and is charged at the active rate when it is starting up, when it
-                                is
-                                processing requests, or when its vCPU or bandwidth usage are above the active
-                                billing
-                                thresholds1.
-                            </p>
-                            <p>
-                                For Container Apps jobs, resources consumed by each execution are billed at the
-                                active
-                                rate from its start to completion. No usage charges apply when a job is not running
-                                executions.
-                            </p>
+                        </h1>
+                        <p>
+                            Azure Container Apps consumption plan is billed based on per-second resource
+                            allocation
+                            and requests. The first 180,000 vCPU-seconds, 360,000 GiB-seconds, and 2 million
+                            requests each month are free. Beyond that, you pay for what you use on a per second
+                            basis based on the number of vCPU-s and GiB-s your applications are allocated.
+                        </p>
+                        <p>
+                            Applications scale on-demand based on requests and events. Container Apps replicas
+                            are
+                            billed for active usage when they are running. An application can be configured to
+                            scale
+                            to zero replicas when there are no requests or events to process. No usage charges
+                            apply
+                            when an application is scaled to zero.
+                        </p>
+                        <p>
+                            You can optionally configure Container Apps with a minimum number of replicas to be
+                            always running in idle mode. When an application scales down to its minimum number
+                            of
+                            replicas, usage is charged at a reduced idle rate when a replica is inactive. A
+                            replica
+                            enters active mode and is charged at the active rate when it is starting up, when it
+                            is
+                            processing requests, or when its vCPU or bandwidth usage are above the active
+                            billing
+                            thresholds1.
+                        </p>
+                        <p>
+                            For Container Apps jobs, resources consumed by each execution are billed at the
+                            active
+                            rate from its start to completion. No usage charges apply when a job is not running
+                            executions.
+                        </p>
 
-                            <br />
+                        <br />
 
-                            <h3>
-                                Resource consumption
-                            </h3>
+                        <h2>
+                            Resource consumption
+                        </h2>
 
-                            <table cellpadding="0" cellspacing="0" class="data-table__table data-table__table--pricing"
-                                width="100%">
-                                <thead>
-                                    <tr style="text-align: left;">
-                                        <th>
-                                            <b>
-                                                Meter
-                                            </b>
-                                        </th>
-                                        <th>
-                                            <b>
-                                                Active Usage Price
-                                            </b>
-                                        </th>
-                                        <th>
-                                            <b>
-                                                Idle Usage Price
-                                            </b>
-                                        </th>
-                                        <th>
-                                            <b>
-                                                Free Grant (Per Month)
-                                            </b>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="data-table__stripe">
-                                        <td>
-                                            vCPU (seconds)
-                                        </td>
-                                        <td>
-                                            ￥0.00024 per second
-                                        </td>
-                                        <td>
-                                            ￥0.00003 per second
-                                        </td>
-                                        <td>
-                                            180,000 vCPU-seconds
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Memory (GiB-Seconds)
-                                        </td>
-                                        <td>
-                                            ￥0.000031 per second
-                                        </td>
-                                        <td>
-                                            ￥0.000031 per second
-                                        </td>
-                                        <td>
-                                            360,000 GiB-seconds
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="tags-date">
-                                <div class="ms-date">
-                                    <sup>1</sup>
-                                A replica is active when vCPU usage is above 0.01 cores or
-                                when data received is above 1,000 bytes per second.
-                                </div>
+                        <table cellpadding="0" cellspacing="0" class="data-table__table data-table__table--pricing"
+                            width="100%">
+                            <thead>
+                                <tr style="text-align: left;">
+                                    <th>
+                                        <b>
+                                            Meter
+                                        </b>
+                                    </th>
+                                    <th>
+                                        <b>
+                                            Active Usage Price
+                                        </b>
+                                    </th>
+                                    <th>
+                                        <b>
+                                            Idle Usage Price
+                                        </b>
+                                    </th>
+                                    <th>
+                                        <b>
+                                            Free Grant (Per Month)
+                                        </b>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="data-table__stripe">
+                                    <td>
+                                        vCPU (seconds)
+                                    </td>
+                                    <td>
+                                        ￥0.00024 per second
+                                    </td>
+                                    <td>
+                                        ￥0.00003 per second
+                                    </td>
+                                    <td>
+                                        180,000 vCPU-seconds
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Memory (GiB-Seconds)
+                                    </td>
+                                    <td>
+                                        ￥0.000031 per second
+                                    </td>
+                                    <td>
+                                        ￥0.000031 per second
+                                    </td>
+                                    <td>
+                                        360,000 GiB-seconds
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="tags-date">
+                            <div class="ms-date">
+                                <sup>1</sup>
+                            A replica is active when vCPU usage is above 0.01 cores or
+                            when data received is above 1,000 bytes per second.
                             </div>
+                        </div>
 
-                            <br/>
+                        <br/>
 
-                            <h3>
-                                Requests
-                            </h3>
-                            <p>
-                                Container Apps are billed based on the total number of requests 2 processed each
-                                month.
-                                The first two million requests are included free each month.
-                            </p>
+                        <h2>
+                            Requests
+                        </h2>
+                        <p>
+                            Container Apps are billed based on the total number of requests 2 processed each
+                            month.
+                            The first two million requests are included free each month.
+                        </p>
 
-                            <table cellpadding="0" cellspacing="0" class="data-table__table data-table__table--pricing"
-                                width="100%">
-                                <thead>
-                                    <tr style="text-align: left;">
-                                        <th>
-                                            <b>
-                                                Meter
-                                            </b>
-                                        </th>
-                                        <th>
-                                            <b>
-                                                Price
-                                            </b>
-                                        </th>
-                                        <th>
-                                            <b>
-                                                Free Grant (Per Month)
-                                            </b>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="data-table__stripe">
-                                        <td style="width: 33.3%;">
-                                            Requests
-                                        </td>
-                                        <td style="width: 33.3%;">
-                                            ¥ 2.54 per million
-                                        </td>
-                                        <td>
-                                            2 Million
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <table cellpadding="0" cellspacing="0" class="data-table__table data-table__table--pricing"
+                            width="100%">
+                            <thead>
+                                <tr style="text-align: left;">
+                                    <th>
+                                        <b>
+                                            Meter
+                                        </b>
+                                    </th>
+                                    <th>
+                                        <b>
+                                            Price
+                                        </b>
+                                    </th>
+                                    <th>
+                                        <b>
+                                            Free Grant (Per Month)
+                                        </b>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="data-table__stripe">
+                                    <td style="width: 33.3%;">
+                                        Requests
+                                    </td>
+                                    <td style="width: 33.3%;">
+                                        ¥ 2.54 per million
+                                    </td>
+                                    <td>
+                                        2 Million
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                            <br />
-                            <h3>
-                                Dedicated plan
-                            </h3>
-                            <p>
-                                Azure Container Apps Dedicated plan provides a single tenancy guarantee, access to
-                                specialized hardware, and more predictable pricing. Billing for the Dedicated plan
-                                is
-                                based on the number of vCPU seconds and gibibyte (GiB) seconds allocated across
-                                instances. In addition, you are billed a base price for the Dedicated plan
-                                management.
-                            </p>
-                            <p>
-                                When creating apps in the Dedicated plan you can choose from several workload
-                                profiles,
-                                each with different amounts of vCPUs and GiBs of memory. You will be billed for the
-                                total number of vCPUs and memory provisioned in this workload profile, per second
-                                that
-                                each instance is running. More than one app can run in a single workload profile
-                                depending on how many resources each app requires and the resources available in the
-                                workload profile. These workload profiles can automatically scale out to multiple
-                                instances as needed. To learn more, see Azure Container Apps Dedicated plan pricing
-                                details.
-                            </p>
+                        <br />
+                        <h1>
+                            Dedicated plan
+                        </h1>
+                        <p>
+                            Azure Container Apps Dedicated plan provides a single tenancy guarantee, access to
+                            specialized hardware, and more predictable pricing. Billing for the Dedicated plan
+                            is
+                            based on the number of vCPU seconds and gibibyte (GiB) seconds allocated across
+                            instances. In addition, you are billed a base price for the Dedicated plan
+                            management.
+                        </p>
+                        <p>
+                            When creating apps in the Dedicated plan you can choose from several workload
+                            profiles,
+                            each with different amounts of vCPUs and GiBs of memory. You will be billed for the
+                            total number of vCPUs and memory provisioned in this workload profile, per second
+                            that
+                            each instance is running. More than one app can run in a single workload profile
+                            depending on how many resources each app requires and the resources available in the
+                            workload profile. These workload profiles can automatically scale out to multiple
+                            instances as needed. To learn more, see Azure Container Apps Dedicated plan pricing
+                            details.
+                        </p>
 
-                            <table cellpadding="0" cellspacing="0" class="data-table__table data-table__table--pricing"
-                                width="100%">
-                                <thead>
-                                    <tr style="text-align: left;">
-                                        <th>
-                                            <b>
-                                                Meter
-                                            </b>
-                                        </th>
-                                        <th>
-                                            <b>
-                                                Price
-                                            </b>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="data-table__stripe">
-                                        <td>
-                                            Dedicated plan management (hour)
-                                        </td>
-                                        <td>
-                                            ¥ 0.636 per hour
-                                        </td>
-                                    </tr>
-                                    <tr class="data-table__stripe">
-                                        <td>
-                                            vCPU (hour)
-                                        </td>
-                                        <td>
-                                            ¥ 0.575 per hour
-                                        </td>
-                                    </tr>
-                                    <tr class="data-table__stripe">
-                                        <td>
-                                            Memory (GiB-hour)
-                                        </td>
-                                        <td>
-                                            ¥ 0.053 per hour
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <table cellpadding="0" cellspacing="0" class="data-table__table data-table__table--pricing"
+                            width="100%">
+                            <thead>
+                                <tr style="text-align: left;">
+                                    <th>
+                                        <b>
+                                            Meter
+                                        </b>
+                                    </th>
+                                    <th>
+                                        <b>
+                                            Price
+                                        </b>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="data-table__stripe">
+                                    <td>
+                                        Management (hour)*
+                                    </td>
+                                    <td>
+                                        ¥ 1.0176 per hour
+                                    </td>
+                                </tr>
+                                <tr class="data-table__stripe">
+                                    <td>
+                                        vCPU (hour)
+                                    </td>
+                                    <td>
+                                        ¥ 0.575 per hour
+                                    </td>
+                                </tr>
+                                <tr class="data-table__stripe">
+                                    <td>
+                                        Memory (GiB-hour)
+                                    </td>
+                                    <td>
+                                        ¥ 0.053 per hour
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="tags-date">
+                            <div class="ms-date">
+                                <sup>*</sup>
+                                This meter applies to the Dedicated plan, private endpoint, and planned maintenance. 
+                                Charges are additive, if multiple features are used within an environment, charges will apply to each feature individually.
+                            </div>
+                        </div>
+
+                        <!--BEGIN: Support and service code chunk-->
+                        <!--END: Support and service code chunk-->
+                        </div>
                         </div>
                     </div>
                 </div>

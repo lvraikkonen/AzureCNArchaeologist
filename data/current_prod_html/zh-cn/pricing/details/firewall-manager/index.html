@@ -68,9 +68,9 @@
         }
 
         .updatetime {
-            color: black;
-            text-align: right;
-            font-size: 12px;
+        color: black;
+        text-align: right;
+        font-size: 12px;
         }
     </style>
     <div class="acn-header-container">
@@ -220,7 +220,7 @@
                                     <h4>
                                         集中网络安全策略和路由管理
                                     </h4>
-                                    <div class="updatetime">更新时间：2026年04月27日</div>
+                                    <div class = "updatetime">更新时间：2026年04月27日</div> 
                                 </div>
                             </div>
                         </div>
@@ -258,142 +258,255 @@
                                     </p>
                                 </li>
                             </ul>
-                        </div>
-                        <div class="pricing-page-section">
-                            <h2>
-                                定价详细信息
-                            </h2>
-                        </div>
-                        <div class="tab-content">
-                            <!-- BEGIN: Table1-Content-->
-                            <div class="tab-panel" id="tabContent2">
-                                <h4>
-                                    Azure 防火墙策略
-                                </h4>
-                                <table cellpadding="0" cellspacing="0" width="100%">
-                                    <tr>
-                                        <th align="left" style="width: 652px;">
-                                            <strong>
-                                                服务类型
-                                            </strong>
-                                        </th>
-                                        <th align="left">
-                                            <strong>
-                                                价格
-                                            </strong>
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Azure 防火墙管理器策略
-                                        </td>
-                                        <td>
-                                            ￥ 636/区域/策略
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            策略分析(每月启用费用)*
-                                        </td>
-                                        <td>
-                                            ￥ 2.18 每策略每小时
-                                        </td>
-                                    </tr>
-                                </table>
-                                <div class="tags-date">
-                                    <div class="ms-date">
-                                        *附加到策略的防火墙数不会影响策略分析的定价。策略分析按小时计费，仅针对所用小时数计费。
+                            <div class="pricing-page-section">
+                                <h2>
+                                    定价详细信息
+                                </h2>
+                            </div>
+                            <!-- BEGIN: TAB-CONTROL -->
+                            <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
+                                <div class="tab-container-container">
+                                    <div class="tab-container-box">
+                                        <div class="tab-container">
+                                            <div class="dropdown-container software-kind-container"
+                                                style="display:none;">
+                                                <label>
+                                                    OS/软件:
+                                                </label>
+                                                <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                                    <span class="selected-item">
+                                                        Azure Firewall Manager
+                                                    </span>
+                                                    <i class="icon">
+                                                    </i>
+                                                    <ol class="tab-items">
+                                                        <li class="active">
+                                                            <a data-href="#tabContent1" href="javascript:void(0)"
+                                                                id="home_managed-disks">
+                                                                Azure Firewall Manager
+                                                            </a>
+                                                        </li>
+                                                    </ol>
+                                                </div>
+                                                <select class="dropdown-select software-box hidden-lg hidden-md"
+                                                    id="software-box">
+                                                    <option data-href="#tabContent1" selected="selected"
+                                                        value="Azure Firewall Manager">
+                                                        Azure Firewall Manager
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="dropdown-container region-container" style="display:none">
+                                                <label>
+                                                    地区:
+                                                </label>
+                                                <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                                    <span class="selected-item">
+                                                        中国东部 2
+                                                    </span>
+                                                    <i class="icon">
+                                                    </i>
+                                                    <ol class="tab-items">
+                                                        <li class="active">
+                                                            <a data-href="#east-china2" href="javascript:void(0)"
+                                                                id="east-china2">
+                                                                中国东部 2
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a data-href="#north-china2" href="javascript:void(0)"
+                                                                id="north-china2">
+                                                                中国北部 2
+                                                            </a>
+                                                        </li>
+                                                        <!-- <li>
+                                                            <a data-href="#east-china" href="javascript:void(0)"
+                                                                id="east-china">
+                                                                中国东部
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a data-href="#north-china" href="javascript:void(0)"
+                                                                id="north-china">
+                                                                中国北部
+                                                            </a>
+                                                        </li> -->
+                                                    </ol>
+                                                </div>
+                                                <select class="dropdown-select region-box hidden-lg hidden-md"
+                                                    id="region-box">
+                                                    <option data-href="#east-china2" selected="selected"
+                                                        value="east-china2">
+                                                        中国东部 2
+                                                    </option>
+                                                    <option data-href="#north-china2" value="north-china2">
+                                                        中国北部 2
+                                                    </option>
+                                                    <option data-href="#east-china" value="east-china">
+                                                        中国东部
+                                                    </option>
+                                                    <option data-href="#north-china" value="north-china">
+                                                        中国北部
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="clearfix">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                <!-- BEGIN: TAB-CONTAINER-1 -->
+                                <div class="tab-content">
+                                    <!-- BEGIN: TAB-CONTENT-1 -->
+                                    <div class="tab-panel" id="tabContent1">
+                                        <!-- BEGIN: Tab level 2 navigator 2 -->
+                                        <!-- BEGIN: Tab level 2 content 3 -->
+                                        <ul class="tab-nav" style="display:none">
+                                            <li class="active">
+                                                <a data-href="#tabContent2" data-toggle="tab" href="javascript:void(0)"
+                                                    id="gpv1">
+                                                    常规用途 v1
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <!-- BEGIN: Table1-Content-->
+                                            <div class="tab-panel" id="tabContent2">
+                                                <h4>
+                                                    Azure 防火墙策略
+                                                </h4>
+                                                <table cellpadding="0" cellspacing="0" width="100%">
+                                                    <tr>
+                                                        <th align="left" style="width: 652px;">
+                                                            <strong>
+                                                                服务类型
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                价格
+                                                            </strong>
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Azure 防火墙管理器策略
+                                                        </td>
+                                                        <td>
+                                                            ￥ 636/区域/策略
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            策略分析(每月启用费用)*
+                                                        </td>
+                                                        <td>
+                                                            ￥ 2.18 每策略每小时
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                <div class = "tags-date">
+                                                    <div class = "ms-date">
+                                                        *附加到策略的防火墙数不会影响策略分析的定价。策略分析按小时计费，仅针对所用小时数计费。
+                                                    </div>
+                                                </div>
 
-                                <br />
+                                                <br />
 
-                                <h4>
-                                    Azure 防火墙管理器集成
-                                </h4>
-                                <table cellpadding="0" cellspacing="0" id="firewall-manager" width="100%">
-                                    <tr>
-                                        <th align="left" style="width: 652px;">
-                                            <strong>
-                                                服务类型
-                                            </strong>
-                                        </th>
-                                        <th align="left">
-                                            <strong>
-                                                价格
-                                            </strong>
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            具有第三方集成的安全虚拟中心
-                                        </td>
-                                        <td>
-                                            ￥ 2.544/部署小时
-                                        </td>
-                                    </tr>
-                                </table>
+                                                <h4>
+                                                    Azure 防火墙管理器集成
+                                                </h4>
+                                                <table cellpadding="0" cellspacing="0" id="firewall-manager"
+                                                    width="100%">
+                                                    <tr>
+                                                        <th align="left" style="width: 652px;">
+                                                            <strong>
+                                                                服务类型
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                价格
+                                                            </strong>
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            具有第三方集成的安全虚拟中心
+                                                        </td>
+                                                        <td>
+                                                            ￥ 2.544/部署小时
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <!-- END: Table1-Content-->
+                                        </div>
+                                    </div>
+                                    <!-- END: TAB-CONTENT-3 -->
+                                </div>
+                                <!-- END: TAB-CONTAINER-1 -->
                             </div>
-                            <!-- END: Table1-Content-->
-                        </div>
-                        <!-- 修改常见问题 -->
-                        <div class="pricing-page-section">
-                            <div class="more-detail">
+                            <!-- END: TAB-CONTROL -->
+                            <!-- 修改常见问题 -->
+                            <div class="pricing-page-section">
+                                <div class="more-detail">
+                                    <h2>
+                                        常见问题
+                                    </h2>
+                                    <em>
+                                        全部展开
+                                    </em>
+                                    <ul>
+                                        <li>
+                                            <i class="icon icon-plus">
+                                            </i>
+                                            <div>
+                                                <a id="Storage_question14">
+                                                    不足 1 小时是否按 1 小时计费？
+                                                </a>
+                                                <section>
+                                                    <p>
+                                                        是，不足 1 小时按 1 小时计费。
+                                                    </p>
+                                                </section>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <i class="icon icon-plus">
+                                            </i>
+                                            <div>
+                                                <a id="Storage_question15">
+                                                    Azure 防火墙管理器如何定价？
+                                                </a>
+                                                <section>
+                                                    <p>
+                                                        客户至少需支付一项基准策略的费用。根据区域数量，每个区域按各区域 ￥636 每区域每个策略
+                                                        收费。如果子策略位于单个中心，则不收费，但基准策略仍按 ￥636 每区域每个策略 收费。
+                                                    </p>
+                                                </section>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!--END: Support and service code chunk-->
+                            <div class="pricing-page-section">
                                 <h2>
-                                    常见问题
+                                    支持和服务级别协议
                                 </h2>
-                                <em>
-                                    全部展开
-                                </em>
-                                <ul>
-                                    <li>
-                                        <i class="icon icon-plus">
-                                        </i>
-                                        <div>
-                                            <a id="Storage_question14">
-                                                不足 1 小时是否按 1 小时计费？
-                                            </a>
-                                            <section>
-                                                <p>
-                                                    是，不足 1 小时按 1 小时计费。
-                                                </p>
-                                            </section>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <i class="icon icon-plus">
-                                        </i>
-                                        <div>
-                                            <a id="Storage_question15">
-                                                Azure 防火墙管理器如何定价？
-                                            </a>
-                                            <section>
-                                                <p>
-                                                    客户至少需支付一项基准策略的费用。根据区域数量，每个区域按各区域 ￥636 每区域每个策略
-                                                    收费。如果子策略位于单个中心，则不收费，但基准策略仍按 ￥636 每区域每个策略 收费。
-                                                </p>
-                                            </section>
-                                        </div>
-                                    </li>
-                                </ul>
+                                <p>
+                                    如有任何疑问或需要帮助，请访问
+                                    <a href="https://support.azure.cn/zh-cn/support/contact" id="storage-contact-page">
+                                        Azure 支持
+                                    </a>
+                                    选择自助服务或者其他任何方式联系我们获得支持。
+                                </p>
+                                <p>
+                                    Azure 防火墙管理器可用性保证已纳入所选部署选项（Azure 防火墙、VPN 网关和虚拟 vWAN）的 SLA 中。有关更多详细信息，请参阅 Azure 防火墙
+                                    SLA、VPN 网关和 Azure 虚拟 WAN。
+                                </p>
                             </div>
-                        </div>
-                        <!--END: Support and service code chunk-->
-                        <div class="pricing-page-section">
-                            <h2>
-                                支持和服务级别协议
-                            </h2>
-                            <p>
-                                如有任何疑问或需要帮助，请访问
-                                <a href="https://support.azure.cn/zh-cn/support/contact" id="storage-contact-page">
-                                    Azure 支持
-                                </a>
-                                选择自助服务或者其他任何方式联系我们获得支持。
-                            </p>
-                            <p>
-                                Azure 防火墙管理器可用性保证已纳入所选部署选项（Azure 防火墙、VPN 网关和虚拟 vWAN）的 SLA 中。有关更多详细信息，请参阅 Azure 防火墙
-                                SLA、VPN 网关和 Azure 虚拟 WAN。
-                            </p>
                         </div>
                     </div>
                 </div>

@@ -1,42 +1,6 @@
 {
   "schema_version": "1.0",
-  "source_run_name": "supported-products-expanded-full-regression-20260825",
-  "scope_expansions": [
-    {
-      "accepted_on": "2026-09-02",
-      "source_run_name": "expand-pricing-latest-html-rerun-20260902",
-      "source_review_id": "expand-pricing-latest-html-rerun-review-20260902",
-      "product_keys": [
-        "data-lake-storage",
-        "data-transfer",
-        "ddos-protection",
-        "hci",
-        "hub",
-        "storage-import-export",
-        "storage-page-blobs",
-        "storage-queues",
-        "storage-tables"
-      ]
-    },
-    {
-      "accepted_on": "2026-09-02",
-      "source_run_name": "pricing-review-fixes-20260902-220448",
-      "source_review_id": "pricing-review-fixes-review-20260902-220448",
-      "product_keys": [
-        "storage-managed-disks"
-      ]
-    },
-    {
-      "accepted_on": "2026-09-03",
-      "source_run_name": "purview-databox-mysql-rerun-20260903-233159",
-      "source_review_id": "purview-databox-mysql-review-20260903-233159",
-      "product_keys": [
-        "databox",
-        "mysql",
-        "purview"
-      ]
-    }
-  ],
+  "source_run_name": "pricing-upstream-mass-update-20260908-233527",
   "ignored_fields": [
     "capability_status",
     "display_name",
@@ -49,6 +13,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/active-directory-b2c/index.html",
         "en-us": "pricing/details/active-directory-b2c/index.html"
@@ -59,6 +24,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/active-directory-ds/index.html",
         "en-us": "pricing/details/active-directory-ds/index.html"
@@ -69,6 +35,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/advisor/index.html",
         "en-us": "pricing/details/advisor/index.html"
@@ -79,6 +46,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/analysis-services/index.html",
         "en-us": "pricing/details/analysis-services/index.html"
@@ -89,6 +57,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/cognitive-services/anomaly-detector/index.html",
         "en-us": "pricing/details/cognitive-services/anomaly-detector/index.html"
@@ -99,6 +68,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/api-management/index.html",
         "en-us": "pricing/details/api-management/index.html"
@@ -109,6 +79,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/app-configuration/index.html",
         "en-us": "pricing/details/app-configuration/index.html"
@@ -119,6 +90,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/app-service/index.html",
         "en-us": "pricing/details/app-service/index.html"
@@ -129,6 +101,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/application-gateway/index.html",
         "en-us": "pricing/details/application-gateway/index.html"
@@ -139,6 +112,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/automation/index.html",
         "en-us": "pricing/details/automation/index.html"
@@ -149,6 +123,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/azure-bastion/index.html",
         "en-us": "pricing/details/azure-bastion/index.html"
@@ -159,6 +134,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/azure-firewall/index.html",
         "en-us": "pricing/details/azure-firewall/index.html"
@@ -169,6 +145,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/azure-functions/index.html",
         "en-us": "pricing/details/azure-functions/index.html"
@@ -179,6 +156,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/azure-migrate/index.html",
         "en-us": "pricing/details/azure-migrate/index.html"
@@ -189,6 +167,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/azure-nat-gateway/index.html",
         "en-us": "pricing/details/azure-nat-gateway/index.html"
@@ -199,6 +178,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/azure-policy/index.html",
         "en-us": "pricing/details/azure-policy/index.html"
@@ -209,6 +189,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/azure-update-management-center/index.html",
         "en-us": "pricing/details/azure-update-management-center/index.html"
@@ -219,6 +200,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/backup/index.html",
         "en-us": "pricing/details/backup/index.html"
@@ -229,6 +211,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/bot-services/index.html",
         "en-us": "pricing/details/bot-services/index.html"
@@ -239,6 +222,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/cache/index.html",
         "en-us": "pricing/details/cache/index.html"
@@ -249,6 +233,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/cloud-services/index.html",
         "en-us": "pricing/details/cloud-services/index.html"
@@ -259,6 +244,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/cognitive-services/index.html",
         "en-us": "pricing/details/cognitive-services/index.html"
@@ -269,6 +255,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/container-apps/index.html",
         "en-us": "pricing/details/container-apps/index.html"
@@ -279,6 +266,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/container-instances/index.html",
         "en-us": "pricing/details/container-instances/index.html"
@@ -289,6 +277,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": "sole_static_formal_selector_before_common_sections",
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/container-registry/index.html",
         "en-us": "pricing/details/container-registry/index.html"
@@ -299,6 +288,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/azure-arc/core-control-plane/index.html",
         "en-us": "pricing/details/azure-arc/core-control-plane/index.html"
@@ -309,6 +299,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/cosmos-db/index.html",
         "en-us": "pricing/details/cosmos-db/index.html"
@@ -319,6 +310,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/data-explorer/index.html",
         "en-us": "pricing/details/data-explorer/index.html"
@@ -329,6 +321,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/data-factory/index.html",
         "en-us": "pricing/details/data-factory/index.html"
@@ -350,6 +343,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/data-factory/data-pipeline.html",
         "en-us": "pricing/details/data-factory/data-pipeline.html"
@@ -371,6 +365,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/database-migration/index.html",
         "en-us": "pricing/details/database-migration/index.html"
@@ -392,6 +387,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/databricks/index.html",
         "en-us": "pricing/details/databricks/index.html"
@@ -413,6 +409,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/virtual-machines/dedicated-host/index.html",
         "en-us": "pricing/details/virtual-machines/dedicated-host/index.html"
@@ -423,6 +420,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/dns/index.html",
         "en-us": "pricing/details/dns/index.html"
@@ -433,6 +431,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/event-grid/index.html",
         "en-us": "pricing/details/event-grid/index.html"
@@ -443,6 +442,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/event-hubs/index.html",
         "en-us": "pricing/details/event-hubs/index.html"
@@ -453,6 +453,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/expressroute/index.html",
         "en-us": "pricing/details/expressroute/index.html"
@@ -463,6 +464,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/firewall-manager/index.html",
         "en-us": "pricing/details/firewall-manager/index.html"
@@ -473,6 +475,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/fluid-relay/index.html",
         "en-us": "pricing/details/fluid-relay/index.html"
@@ -483,6 +486,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/form-recognizer/index.html",
         "en-us": "pricing/details/form-recognizer/index.html"
@@ -493,6 +497,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/frontdoor/index.html",
         "en-us": "pricing/details/frontdoor/index.html"
@@ -514,6 +519,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/hdinsight/index.html",
         "en-us": "pricing/details/hdinsight/index.html"
@@ -524,6 +530,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/hpc-cache/index.html",
         "en-us": "pricing/details/hpc-cache/index.html"
@@ -545,6 +552,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/ICP/icp-addweb.html",
         "en-us": "SupportArticles/ICP/icp-addweb.html"
@@ -555,6 +563,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/ICP/icp-cancel.html",
         "en-us": "SupportArticles/ICP/icp-cancel.html"
@@ -565,6 +574,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/ICP/icp-change.html",
         "en-us": "SupportArticles/ICP/icp-change.html"
@@ -575,6 +585,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/ICP/icp-faq.html",
         "en-us": "SupportArticles/ICP/icp-faq.html"
@@ -585,6 +596,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/ICP/icp-new.html",
         "en-us": "SupportArticles/ICP/icp-new.html"
@@ -595,6 +607,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/ICP/icp-newinsert.html",
         "en-us": "SupportArticles/ICP/icp-newinsert.html"
@@ -605,6 +618,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/ICP/icp-newweb.html",
         "en-us": "SupportArticles/ICP/icp-newweb.html"
@@ -615,6 +629,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/ICP/icp.html",
         "en-us": "SupportArticles/ICP/icp.html"
@@ -625,6 +640,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/iot-edge/index.html",
         "en-us": "pricing/details/iot-edge/index.html"
@@ -635,6 +651,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/iot-hub/index.html",
         "en-us": "pricing/details/iot-hub/index.html"
@@ -645,6 +662,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/ip-addresses/index.html",
         "en-us": "pricing/details/ip-addresses/index.html"
@@ -655,6 +673,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/key-vault/index.html",
         "en-us": "pricing/details/key-vault/index.html"
@@ -665,6 +684,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/kubernetes-service/index.html",
         "en-us": "pricing/details/kubernetes-service/index.html"
@@ -675,6 +695,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/Legal/offer-rate-plans.html",
         "en-us": "SupportArticles/Legal/offer-rate-plans.html"
@@ -685,6 +706,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/Legal/privacy-statement.html",
         "en-us": "SupportArticles/Legal/privacy-statement.html"
@@ -695,6 +717,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/Legal/subscription-agreement.html",
         "en-us": "SupportArticles/Legal/subscription-agreement.html"
@@ -705,6 +728,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/Legal/legal.html",
         "en-us": "SupportArticles/Legal/legal.html"
@@ -715,6 +739,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/load-balancer/index.html",
         "en-us": "pricing/details/load-balancer/index.html"
@@ -725,6 +750,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/logic-apps/index.html",
         "en-us": "pricing/details/logic-apps/index.html"
@@ -735,6 +761,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/machine-learning/index.html",
         "en-us": "pricing/details/machine-learning/index.html"
@@ -745,6 +772,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/managed-grafana/index.html",
         "en-us": "pricing/details/managed-grafana/index.html"
@@ -755,6 +783,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/managed-instance/index.html",
         "en-us": "pricing/details/managed-instance/index.html"
@@ -765,6 +794,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/metrics-advisor/index.html",
         "en-us": "pricing/details/metrics-advisor/index.html"
@@ -775,6 +805,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/monitor/index.html",
         "en-us": "pricing/details/monitor/index.html"
@@ -785,6 +816,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/multi-factor-authentication/index.html",
         "en-us": "pricing/details/multi-factor-authentication/index.html"
@@ -806,6 +838,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/network-watcher/index.html",
         "en-us": "pricing/details/network-watcher/index.html"
@@ -816,6 +849,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/notification-hubs/index.html",
         "en-us": "pricing/details/notification-hubs/index.html"
@@ -826,6 +860,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/postgresql/index.html",
         "en-us": "pricing/details/postgresql/index.html"
@@ -836,6 +871,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/power-bi-embedded/index.html",
         "en-us": "pricing/details/power-bi-embedded/index.html"
@@ -846,6 +882,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/private-link/index.html",
         "en-us": "pricing/details/private-link/index.html"
@@ -856,6 +893,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/PublicSecurityRegistration/index.html",
         "en-us": "SupportArticles/PublicSecurityRegistration/index.html"
@@ -877,6 +915,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/route-server/index.html",
         "en-us": "pricing/details/route-server/index.html"
@@ -887,6 +926,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/scheduler/index.html",
         "en-us": "pricing/details/scheduler/index.html"
@@ -897,6 +937,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/search/index.html",
         "en-us": "pricing/details/search/index.html"
@@ -907,6 +948,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": "sole_static_formal_selector_before_common_sections",
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/service-bus/index.html",
         "en-us": "pricing/details/service-bus/index.html"
@@ -917,6 +959,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/service-fabric/index.html",
         "en-us": "pricing/details/service-fabric/index.html"
@@ -927,6 +970,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/signalr-service/index.html",
         "en-us": "pricing/details/signalr-service/index.html"
@@ -937,6 +981,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/site-recovery/index.html",
         "en-us": "pricing/details/site-recovery/index.html"
@@ -947,6 +992,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/active-directory/index.html",
         "en-us": "SupportArticles/SLA/active-directory/index.html"
@@ -957,6 +1003,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/active-directory-b2c/index.html",
         "en-us": "SupportArticles/SLA/active-directory-b2c/index.html"
@@ -967,6 +1014,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/active-directory-ds/v1_0/index.html",
         "en-us": "SupportArticles/SLA/active-directory-ds/v1_0/index.html"
@@ -977,6 +1025,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/analysis-services/index.html",
         "en-us": "SupportArticles/SLA/analysis-services/index.html"
@@ -987,6 +1036,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/api-management/index.html",
         "en-us": "SupportArticles/SLA/api-management/index.html"
@@ -997,6 +1047,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/app-configuration/index.html",
         "en-us": "SupportArticles/SLA/app-configuration/index.html"
@@ -1007,6 +1058,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/app-service/index.html",
         "en-us": "SupportArticles/SLA/app-service/index.html"
@@ -1017,6 +1069,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/application-gateway/index.html",
         "en-us": "SupportArticles/SLA/application-gateway/index.html"
@@ -1027,6 +1080,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/application-insights/index.html",
         "en-us": "SupportArticles/SLA/application-insights/index.html"
@@ -1037,6 +1091,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/automation/index.html",
         "en-us": "SupportArticles/SLA/automation/index.html"
@@ -1047,6 +1102,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/azure-arc/core-control-plane/index.html",
         "en-us": "SupportArticles/SLA/azure-arc/core-control-plane/index.html"
@@ -1057,6 +1113,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/azure-bastion/v1_0/index.html",
         "en-us": "SupportArticles/SLA/azure-bastion/v1_0/index.html"
@@ -1067,6 +1124,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/azure-defender/index.html",
         "en-us": "SupportArticles/SLA/azure-defender/index.html"
@@ -1077,6 +1135,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/azure-firewall/index.html",
         "en-us": "SupportArticles/SLA/azure-firewall/index.html"
@@ -1087,6 +1146,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/back-up/index.html",
         "en-us": "SupportArticles/SLA/back-up/index.html"
@@ -1097,6 +1157,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/bot-services/index.html",
         "en-us": "SupportArticles/SLA/bot-services/index.html"
@@ -1107,6 +1168,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/cache/index.html",
         "en-us": "SupportArticles/SLA/cache/index.html"
@@ -1117,6 +1179,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/cdn/index.html",
         "en-us": "SupportArticles/SLA/cdn/index.html"
@@ -1127,6 +1190,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/cloud-services/index.html",
         "en-us": "SupportArticles/SLA/cloud-services/index.html"
@@ -1137,6 +1201,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/cognitive-services/index.html",
         "en-us": "SupportArticles/SLA/cognitive-services/index.html"
@@ -1147,6 +1212,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/container-apps/v1_0/index.html",
         "en-us": "SupportArticles/SLA/container-apps/v1_0/index.html"
@@ -1157,6 +1223,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/container-instances/v1_0/index.html",
         "en-us": "SupportArticles/SLA/container-instances/v1_0/index.html"
@@ -1167,6 +1234,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/container-registry/index.html",
         "en-us": "SupportArticles/SLA/container-registry/index.html"
@@ -1177,6 +1245,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/cosmos-db/index.html",
         "en-us": "SupportArticles/SLA/cosmos-db/index.html"
@@ -1187,6 +1256,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/data-explorer/index.html",
         "en-us": "SupportArticles/SLA/data-explorer/index.html"
@@ -1197,6 +1267,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/data-factory/index.html",
         "en-us": "SupportArticles/SLA/data-factory/index.html"
@@ -1207,6 +1278,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/databricks/index.html",
         "en-us": "SupportArticles/SLA/databricks/index.html"
@@ -1217,6 +1289,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/ddos-protection/index.html",
         "en-us": "SupportArticles/SLA/ddos-protection/index.html"
@@ -1227,6 +1300,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/dns/index.html",
         "en-us": "SupportArticles/SLA/dns/index.html"
@@ -1237,6 +1311,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/event-grid/index.html",
         "en-us": "SupportArticles/SLA/event-grid/index.html"
@@ -1247,6 +1322,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/event-hubs/index.html",
         "en-us": "SupportArticles/SLA/event-hubs/index.html"
@@ -1257,6 +1333,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/expressroute/index.html",
         "en-us": "SupportArticles/SLA/expressroute/index.html"
@@ -1267,6 +1344,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/fluid-relay/index.html",
         "en-us": "SupportArticles/SLA/fluid-relay/index.html"
@@ -1277,6 +1355,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/frontdoor/index.html",
         "en-us": "SupportArticles/SLA/frontdoor/index.html"
@@ -1287,6 +1366,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/functions/index.html",
         "en-us": "SupportArticles/SLA/functions/index.html"
@@ -1297,6 +1377,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/hdinsight/index.html",
         "en-us": "SupportArticles/SLA/hdinsight/index.html"
@@ -1307,6 +1388,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/hpc-cache/v1_0/index.html",
         "en-us": "SupportArticles/SLA/hpc-cache/v1_0/index.html"
@@ -1317,6 +1399,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/information-protection/index.html",
         "en-us": "SupportArticles/SLA/information-protection/index.html"
@@ -1327,6 +1410,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/iot-hub/index.html",
         "en-us": "SupportArticles/SLA/iot-hub/index.html"
@@ -1337,6 +1421,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/key-vault/index.html",
         "en-us": "SupportArticles/SLA/key-vault/index.html"
@@ -1347,6 +1432,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/kubernetes-service/index.html",
         "en-us": "SupportArticles/SLA/kubernetes-service/index.html"
@@ -1357,6 +1443,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/load-balancer/index.html",
         "en-us": "SupportArticles/SLA/load-balancer/index.html"
@@ -1367,6 +1454,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/log-analytics/index.html",
         "en-us": "SupportArticles/SLA/Log Analytics/index.html"
@@ -1377,6 +1465,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/logic-apps/v1_0/index.html",
         "en-us": "SupportArticles/SLA/logic-apps/v1_0/index.html"
@@ -1387,6 +1476,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/machine-learning/index.html",
         "en-us": "SupportArticles/SLA/machine-learning/index.html"
@@ -1397,6 +1487,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/managed-disks/index.html",
         "en-us": "SupportArticles/SLA/managed-disks/index.html"
@@ -1407,6 +1498,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/managed-grafana/index.html",
         "en-us": "SupportArticles/SLA/managed-grafana/index.html"
@@ -1417,6 +1509,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/managed-instance/index.html",
         "en-us": "SupportArticles/SLA/managed-instance/index.html"
@@ -1427,6 +1520,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/mariadb/index.html",
         "en-us": "SupportArticles/SLA/mariadb/index.html"
@@ -1437,6 +1531,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/media-services/index.html",
         "en-us": "SupportArticles/SLA/media-services/index.html"
@@ -1447,6 +1542,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/messaging/index.html",
         "en-us": "SupportArticles/SLA/messaging/index.html"
@@ -1457,6 +1553,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/microsoft-sentinel/index.html",
         "en-us": "SupportArticles/SLA/microsoft-sentinel/index.html"
@@ -1467,6 +1564,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/monitor/index.html",
         "en-us": "SupportArticles/SLA/monitor/index.html"
@@ -1477,6 +1575,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/multi-factor-authentication/index.html",
         "en-us": "SupportArticles/SLA/multi-factor-authentication/index.html"
@@ -1487,6 +1586,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/mysql/index.html",
         "en-us": "SupportArticles/SLA/mysql/index.html"
@@ -1497,6 +1597,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/nat-gateway/index.html",
         "en-us": "SupportArticles/SLA/nat-gateway/index.html"
@@ -1507,6 +1608,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/network-watcher/index.html",
         "en-us": "SupportArticles/SLA/network-watcher/index.html"
@@ -1517,6 +1619,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/notification-hubs/index.html",
         "en-us": "SupportArticles/SLA/notification-hubs/index.html"
@@ -1527,6 +1630,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/postgresql/index.html",
         "en-us": "SupportArticles/SLA/postgresql/index.html"
@@ -1537,6 +1641,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/power-bi-embedded/index.html",
         "en-us": "SupportArticles/SLA/power-bi-embedded/index.html"
@@ -1547,6 +1652,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/private-link/index.html",
         "en-us": "SupportArticles/SLA/private-link/index.html"
@@ -1557,6 +1663,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/purview/index.html",
         "en-us": "SupportArticles/SLA/purview/index.html"
@@ -1567,6 +1674,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/route-server/index.html",
         "en-us": "SupportArticles/SLA/route-server/index.html"
@@ -1577,6 +1685,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/scheduler/index.html",
         "en-us": "SupportArticles/SLA/scheduler/index.html"
@@ -1587,6 +1696,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/search/v1_0/index.html",
         "en-us": "SupportArticles/SLA/search/v1_0/index.html"
@@ -1597,6 +1707,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/service-bus/index.html",
         "en-us": "SupportArticles/SLA/service-bus/index.html"
@@ -1607,6 +1718,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/service-fabric/index.html",
         "en-us": "SupportArticles/SLA/service-fabric/index.html"
@@ -1617,6 +1729,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/signalr-service/index.html",
         "en-us": "SupportArticles/SLA/signale-service/index.html"
@@ -1627,6 +1740,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/site-recovery/index.html",
         "en-us": "SupportArticles/SLA/site-recovery/index.html"
@@ -1637,6 +1751,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/spring-cloud/index.html",
         "en-us": "SupportArticles/SLA/spring-cloud/index.html"
@@ -1647,6 +1762,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/sql-data/index.html",
         "en-us": "SupportArticles/SLA/sql-data/index.html"
@@ -1657,6 +1773,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/sql-server-stretch-database/index.html",
         "en-us": "SupportArticles/SLA/sql-server-stretch-database/index.html"
@@ -1667,6 +1784,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/storage/index.html",
         "en-us": "SupportArticles/SLA/storage/index.html"
@@ -1677,6 +1795,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/stream-analytics/index.html",
         "en-us": "SupportArticles/SLA/stream-analytics/index.html"
@@ -1687,6 +1806,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/Legal/sla.html",
         "en-us": "SupportArticles/Legal/sla.html"
@@ -1697,6 +1817,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/synapse-analytics/index.html",
         "en-us": "SupportArticles/SLA/sql-data-warehouse/index.html"
@@ -1707,6 +1828,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/time-series-insights/index.html",
         "en-us": "SupportArticles/SLA/time-series-insights/index.html"
@@ -1717,6 +1839,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/traffic-manager/index.html",
         "en-us": "SupportArticles/SLA/traffic-manager/index.html"
@@ -1727,6 +1850,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/virtual-desktop/v1_0/index.html",
         "en-us": "SupportArticles/SLA/virtual-desktop/v1_0/index.html"
@@ -1737,6 +1861,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/virtual-machine-scale-sets/index.html",
         "en-us": "SupportArticles/SLA/virtual-machine-scale-sets/index.html"
@@ -1747,6 +1872,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/virtual-machines/index.html",
         "en-us": "SupportArticles/SLA/virtual-machines/index.html"
@@ -1757,6 +1883,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/virtual-network/index.html",
         "en-us": "SupportArticles/SLA/virtual-network/index.html"
@@ -1767,6 +1894,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/virtual-network-manager/index.html",
         "en-us": "SupportArticles/SLA/virtual-network-manager/index.html"
@@ -1777,6 +1905,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/vpn-gateway/index.html",
         "en-us": "SupportArticles/SLA/vpn-gateway/index.html"
@@ -1787,6 +1916,7 @@
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "SupportArticles/SLA/web-pubsub/index.html",
         "en-us": "SupportArticles/SLA/web-pubsub/index.html"
@@ -1797,6 +1927,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/spring-cloud/index.html",
         "en-us": "pricing/details/spring-cloud/index.html"
@@ -1807,6 +1938,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/sql-database/index.html",
         "en-us": "pricing/details/sql-database/index.html"
@@ -1817,6 +1949,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/sql-edge/index.html",
         "en-us": "pricing/details/sql-edge/index.html"
@@ -1827,6 +1960,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/sql-server-stretch-database/index.html",
         "en-us": "pricing/details/sql-server-stretch-database/index.html"
@@ -1837,6 +1971,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/data-factory/ssis.html",
         "en-us": "pricing/details/data-factory/ssis.html"
@@ -1847,6 +1982,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/storage/index.html",
         "en-us": "pricing/details/storage/index.html"
@@ -1950,6 +2086,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/stream-analytics/index.html",
         "en-us": "pricing/details/stream-analytics/index.html"
@@ -1960,6 +2097,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/synapse-analytics/index.html",
         "en-us": "pricing/details/synapse-analytics/index.html"
@@ -1970,6 +2108,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/time-series-insights/index.html",
         "en-us": "pricing/details/time-series-insights/index.html"
@@ -1980,6 +2119,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": "sole_static_formal_selector_before_common_sections",
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/traffic-manager/index.html",
         "en-us": "pricing/details/traffic-manager/index.html"
@@ -1990,6 +2130,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/virtual-desktop/index.html",
         "en-us": "pricing/details/virtual-desktop/index.html"
@@ -2000,6 +2141,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/virtual-machine-scale-sets/index.html",
         "en-us": "pricing/details/virtual-machine-scale-sets/index.html"
@@ -2010,6 +2152,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
       "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/virtual-machines/index.html",
         "en-us": "pricing/details/virtual-machines/index.html"
@@ -2020,6 +2163,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/virtual-network/index.html",
         "en-us": "pricing/details/virtual-network/index.html"
@@ -2030,6 +2174,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/virtual-network-manager/index.html",
         "en-us": "pricing/details/virtual-network-manager/index.html"
@@ -2040,6 +2185,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/virtual-wan/index.html",
         "en-us": "pricing/details/virtual-wan/index.html"
@@ -2050,6 +2196,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/vpn-gateway/index.html",
         "en-us": "pricing/details/vpn-gateway/index.html"
@@ -2060,6 +2207,7 @@
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
       "page_global_source_boundary": null,
+      "region_content_rules": null,
       "sources": {
         "zh-cn": "pricing/details/web-pubsub/index.html",
         "en-us": "pricing/details/web-pubsub/index.html"

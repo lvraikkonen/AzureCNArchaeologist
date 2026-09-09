@@ -241,48 +241,159 @@
                                 Azure SQL Edge 将 Microsoft SQL 引擎的业界领先性能和安全性扩展到智能边缘。这一内存占用少的容器针对 IoT
                                 网关和设备进行了优化，通过内置的流、存储和对 AI 的支持提供实时见解。 一次性开发应用程序，并在边缘、数据中心和 Azure 上的任何位置进行部署。
                             </p>
-                            <br />
+                            <br/>
                             <h2>
                                 定价详细信息
                             </h2>
                         </div>
 
-                        <div class="tab-content">
-                            <div class="tab-panel" id="tabContent1">
-                                <p>
-                                    Azure SQL Edge 具有简化的定价，它已针对 IoT 部署设定适当大小。Azure SQL Edge 采用每设备定价模型。购买一个单位的 Azure
-                                    SQL
-                                    Edge 后，就有权在一台设备上运行 Azure SQL Edge。
-                                </p>
-                                <table cellpadding="0" cellspacing="0" width="100%">
-                                    <tr>
-                                        <th align="left">
-                                            <strong>
-                                                产品
-                                            </strong>
-                                        </th>
-                                        <th align="left">
-                                            <strong>
-                                                价格
-                                            </strong>
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Azure SQL Edge
-                                        </td>
-                                        <td>
-                                            ￥0.0822/设备/小时
-                                        </td>
-                                    </tr>
-                                </table>
-                                <div class="tags-date">
-                                    <div class="ms-date">
-                                        Azure SQL Edge 部署到设备时便开始计费，无论 SQL 进程是正在运行、失败还是已停止，都是如此。
+                        <!-- BEGIN: TAB-CONTROL -->
+                        <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
+                            <div class="tab-container-container">
+                                <div class="tab-container-box">
+                                    <div class="tab-container">
+                                        <div class="dropdown-container software-kind-container" style="display:none;">
+                                            <label>
+                                                OS/Software:
+                                            </label>
+                                            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                                <span class="selected-item">
+                                                    Azure SQL Edge
+                                                </span>
+                                                <i class="icon">
+                                                </i>
+                                                <ol class="tab-items">
+                                                    <li class="active">
+                                                        <a data-href="#tabContent1" href="javascript:void(0)"
+                                                            id="home_VPN Gateway">
+                                                            Azure SQL Edge
+                                                        </a>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <select class="dropdown-select software-box hidden-lg hidden-md"
+                                                id="software-box">
+                                                <option data-href="#tabContent1" selected="selected"
+                                                    value="VPN Gateway">
+                                                    Azure SQL Edge
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="dropdown-container region-container"  style="display:none;">
+                                            <label>
+                                                地区:
+                                            </label>
+                                            <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                                                <span class="selected-item">
+                                                    中国北部 3
+                                                </span>
+                                                <i class="icon">
+                                                </i>
+                                                <ol class="tab-items">
+                                                    <li>
+                                                        <a data-href="#north-china3" href="javascript:void(0)"
+                                                            id="north-china3">
+                                                            中国北部 3
+                                                        </a>
+                                                    </li>
+                                                    <li class="active">
+                                                        <a data-href="#east-china2" href="javascript:void(0)"
+                                                            id="east-china2">
+                                                            中国东部 2
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#north-china2" href="javascript:void(0)"
+                                                            id="north-china2">
+                                                            中国北部 2
+                                                        </a>
+                                                    </li>
+                                                    <!-- <li>
+                                                        <a data-href="#east-china" href="javascript:void(0)"
+                                                            id="east-china">
+                                                            中国东部
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-href="#north-china" href="javascript:void(0)"
+                                                            id="north-china">
+                                                            中国北部
+                                                        </a>
+                                                    </li> -->
+                                                </ol>
+                                            </div>
+                                            <select class="dropdown-select region-box hidden-lg hidden-md"
+                                                id="region-box">
+                                                <option data-href="#north-china3" selected="selected"
+                                                    value="north-china3">
+                                                    中国北部 3
+                                                </option>
+                                                <option data-href="#east-china2" selected="selected"
+                                                    value="east-china2">
+                                                    中国东部 2
+                                                </option>
+                                                <option data-href="#north-china2" value="north-china2">
+                                                    中国北部 2
+                                                </option>
+                                                <option data-href="#east-china" value="east-china">
+                                                    中国东部
+                                                </option>
+                                                <option data-href="#north-china" value="north-china">
+                                                    中国北部
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="clearfix">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- END: Table1-Content-->
+                            <!-- BEGIN: TAB-CONTAINER-1 -->
+                            <div class="tab-content">
+                                <div class="tab-panel" id="tabContent1">
+                                    <p>
+                                        Azure SQL Edge 具有简化的定价，它已针对 IoT 部署设定适当大小。Azure SQL Edge 采用每设备定价模型。购买一个单位的 Azure
+                                        SQL
+                                        Edge 后，就有权在一台设备上运行 Azure SQL Edge。
+                                    </p>
+                                    <table cellpadding="0" cellspacing="0" width="100%">
+                                        <tr>
+                                            <th align="left">
+                                                <strong>
+                                                    产品
+                                                </strong>
+                                            </th>
+                                            <th align="left">
+                                                <strong>
+                                                    价格
+                                                </strong>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Azure SQL Edge
+                                            </td>
+                                            <td>
+                                                ￥0.0822/设备/小时
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div class="tags-date">
+                                        <div class="ms-date">
+                                            Azure SQL Edge 部署到设备时便开始计费，无论 SQL 进程是正在运行、失败还是已停止，都是如此。
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END: Table1-Content-->
+                            </div>
+                            <!-- END: TAB-CONTAINER-1 -->
+                        </div>
+                        <!-- BEGIN: TAB-CONTROL -->
+                        <div class="technical-azure-selector tab-control-selector">
+                            <!-- BEGIN: TAB-CONTAINER-1 -->
+                            <div class="tab-control-container tab-active" id="tabContent1">
+                            </div>
+                            <!-- END: TAB-CONTAINER-1 -->
                         </div>
 
                         <div class="pricing-page-section">

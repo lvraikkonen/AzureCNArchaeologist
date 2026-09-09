@@ -232,130 +232,191 @@
                   定价详细信息
                 </h2>
               </div>
-
-            </div>
-            <!-- BEGIN: TAB-CONTROL -->
-            <div class="technical-azure-selector">
-              <!-- BEGIN: TAB-CONTAINER-1 -->
-              <div class="tab-content">
-                <!-- BEGIN: TAB-CONTENT-1 -->
-                <div class="tab-panel" id="tabContent1">
-                  <table cellpadding="0" cellspacing="0" id="Azure-Stack-Hub-region-1" width="100%">
-                    <thead>
-                      <tr>
-                        <th>
-                          Azure 服务
-                        </th>
-                        <th>
-                          价格
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td class="service-name">
-                          <a href="https://www.azure.cn/pricing/details/virtual-machines/">虚拟机</a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>基础虚拟机</td>
-                        <td>￥0.05/内核/小时</td>
-                      </tr>
-                      <tr>
-                        <td>Windows Server 虚拟机*</td>
-                        <td>￥0.29/内核/小时</td>
-                      </tr>
-                      <tr>
-                        <td class="service-name">
-                          <a href="https://www.azure.cn/pricing/details/storage/">存储帐户**</a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Blob 存储</td>
-                        <td>￥0.00005/GB/小时</td>
-                      </tr>
-                      <tr>
-                        <td>表和队列存储</td>
-                        <td>￥0.00015/GB/小时</td>
-                      </tr>
-                      <tr>
-                        <td>标准非托管磁盘</td>
-                        <td>￥0.000095/GB/小时</td>
-                      </tr>
-                      <tr>
-                        <td class="service-name">
-                          <a href="https://www.azure.cn/pricing/details/storage/managed-disks/index.html">托管磁盘</a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>M4 (32 GB)</td>
-                        <td>￥2.44/磁盘/月</td>
-                      </tr>
-                      <tr>
-                        <td>M6 (64 GB)</td>
-                        <td>￥4.78/磁盘/月</td>
-                      </tr>
-                      <tr>
-                        <td>M10 (128 GB)</td>
-                        <td>￥9.36/磁盘/月</td>
-                      </tr>
-                      <tr>
-                        <td>M15 (256 GB)</td>
-                        <td>￥18/磁盘/月</td>
-                      </tr>
-                      <tr>
-                        <td>M20 (512 GB)</td>
-                        <td>￥34.6/磁盘/月</td>
-                      </tr>
-                      <tr>
-                        <td>M30 (1 TB)</td>
-                        <td>￥65.13/磁盘/月</td>
-                      </tr>
-                      <tr>
-                        <td class="service-name">
-                          <a href="https://www.azure.cn/pricing/details/app-service/index.html">应用服务</a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Web 应用, API 应用, Functions</td>
-                        <td>￥0.36/内核/小时</td>
-                      </tr>
-                      <tr>
-                        <td class="service-name">
-                          <a href="https://www.azure.cn/pricing/details/event-hubs/index.html">事件中心</a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>事件中心</td>
-                        <td>￥1.61/内核/小时</td>
-                      </tr>
-                      <tr>
-                        <td class="service-name">
-                          <a href="https://www.azure.cn/pricing/details/site-recovery/index.html">Azure 站点恢复</a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Azure Stack Hub 上的 Azure Site Recovery</td>
-                        <td>￥0.07/内核/小时</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div class="tags-date">
-                    <div class="ms-date">
-                      *所有 VM 系列的每 vcore/小时价格相同，包括已启用 GPU 的 N 系列。可将现有 Windows Server 和 SQL Server 许可证与Azure Stack一起使用，以部署
-                      Windows Server 和 SQL Server 虚拟机。可使用Azure Stack Hub 本机小时计量或现有 Windows Server 许可证部署 Windows
-                      虚拟机。如果使用现有的 Windows Server 许可证，则将仅根据基本虚拟机使用量向你收取使用费。
-                    </div>
-                    <div class="ms-date">
-                      **我们不会对 Azure Stack 上的 Azure 存储服务收取交易记录费用。所有托管磁盘存储服务均有每个磁盘 500 IOPS，以及每个磁盘 60 MB/s 的吞吐量。
+              <!-- BEGIN: TAB-CONTROL -->
+              <div class="technical-azure-selector pricing-detail-tab tab-dropdown">
+                <div class="tab-container-container">
+                  <div class="tab-container-box">
+                    <div class="tab-container">
+                      <div class="dropdown-container software-kind-container" style="display:none;">
+                        <label>
+                          OS/Software:
+                        </label>
+                        <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                          <span class="selected-item">
+                            Azure Stack Hub
+                          </span>
+                          <i class="icon">
+                          </i>
+                          <ol class="tab-items">
+                            <li class="active">
+                              <a data-href="#tabContent1" href="javascript:void(0)" id="home_Azure Private Link">
+                                Azure Stack Hub
+                              </a>
+                            </li>
+                          </ol>
+                        </div>
+                        <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
+                          <option data-href="#tabContent1" selected="selected" value="Azure Stack Hub">
+                            Azure Stack Hub
+                          </option>
+                        </select>
+                      </div>
+                      <div class="dropdown-container region-container">
+                        <!-- <label>地区:</label> -->
+                        <!-- <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+													<span class="selected-item">中国东部 2</span>
+													<i class="icon"></i>
+													<ol class="tab-items">
+														<li class="active"><a href="javascript:void(0)"
+																data-href="#east-china2" id="east-china2">中国东部 2</a>
+														</li>
+														<li><a href="javascript:void(0)" data-href="#north-china2"
+																id="north-china2">中国北部 2</a></li>
+														<li><a href="javascript:void(0)" data-href="#east-china"
+																id="east-china">中国东部</a></li>
+														<li><a href="javascript:void(0)" data-href="#north-china"
+																id="north-china">中国北部</a></li>
+													</ol>
+												</div> -->
+                        <select class="dropdown-select region-box hidden-lg hidden-md" id="region-box">
+                          <option data-href="#east-china2" selected="selected" value="east-china2">
+                            中国东部 2
+                          </option>
+                          <option data-href="#north-china2" value="north-china2">
+                            中国北部 2
+                          </option>
+                          <option data-href="#east-china" value="east-china">
+                            中国东部
+                          </option>
+                          <option data-href="#north-china" value="north-china">
+                            中国北部
+                          </option>
+                        </select>
+                      </div>
+                      <div class="clearfix">
+                      </div>
                     </div>
                   </div>
                 </div>
-                <!-- END: TAB-CONTENT-3 -->
+                <!-- BEGIN: TAB-CONTAINER-1 -->
+                <div class="tab-content">
+                  <!-- BEGIN: TAB-CONTENT-1 -->
+                  <div class="tab-panel" id="tabContent1">
+                    <table cellpadding="0" cellspacing="0" id="Azure-Stack-Hub-region-1" width="100%">
+                      <thead>
+                        <tr>
+                          <th>
+                            Azure 服务
+                          </th>
+                          <th>
+                            价格
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="service-name">
+                            <a href="https://www.azure.cn/pricing/details/virtual-machines/">虚拟机</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>基础虚拟机</td>
+                          <td>￥0.05/内核/小时</td>
+                        </tr>
+                        <tr>
+                          <td>Windows Server 虚拟机*</td>
+                          <td>￥0.29/内核/小时</td>
+                        </tr>
+                        <tr>
+                          <td class="service-name">
+                            <a href="https://www.azure.cn/pricing/details/storage/">存储帐户**</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Blob 存储</td>
+                          <td>￥0.00005/GB/小时</td>
+                        </tr>
+                        <tr>
+                          <td>表和队列存储</td>
+                          <td>￥0.00015/GB/小时</td>
+                        </tr>
+                        <tr>
+                          <td>标准非托管磁盘</td>
+                          <td>￥0.000095/GB/小时</td>
+                        </tr>
+                        <tr>
+                          <td class="service-name">
+                            <a href="https://www.azure.cn/pricing/details/storage/managed-disks/index.html">托管磁盘</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>M4 (32 GB)</td>
+                          <td>￥2.44/磁盘/月</td>
+                        </tr>
+                        <tr>
+                          <td>M6 (64 GB)</td>
+                          <td>￥4.78/磁盘/月</td>
+                        </tr>
+                        <tr>
+                          <td>M10 (128 GB)</td>
+                          <td>￥9.36/磁盘/月</td>
+                        </tr>
+                        <tr>
+                          <td>M15 (256 GB)</td>
+                          <td>￥18/磁盘/月</td>
+                        </tr>
+                        <tr>
+                          <td>M20 (512 GB)</td>
+                          <td>￥34.6/磁盘/月</td>
+                        </tr>
+                        <tr>
+                          <td>M30 (1 TB)</td>
+                          <td>￥65.13/磁盘/月</td>
+                        </tr>
+                        <tr>
+                          <td class="service-name">
+                            <a href="https://www.azure.cn/pricing/details/app-service/index.html">应用服务</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Web 应用, API 应用, Functions</td>
+                          <td>￥0.36/内核/小时</td>
+                        </tr>
+                        <tr>
+                          <td class="service-name">
+                            <a href="https://www.azure.cn/pricing/details/event-hubs/index.html">事件中心</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>事件中心</td>
+                          <td>￥1.61/内核/小时</td>
+                        </tr>
+                        <tr>
+                          <td class="service-name">
+                            <a href="https://www.azure.cn/pricing/details/site-recovery/index.html">Azure 站点恢复</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Azure Stack Hub 上的 Azure Site Recovery</td>
+                          <td>￥0.07/内核/小时</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="tags-date">
+                      <div class="ms-date">
+                        *所有 VM 系列的每 vcore/小时价格相同，包括已启用 GPU 的 N 系列。可将现有 Windows Server 和 SQL Server 许可证与Azure Stack一起使用，以部署 Windows Server 和 SQL Server 虚拟机。可使用Azure Stack Hub 本机小时计量或现有 Windows Server 许可证部署 Windows 虚拟机。如果使用现有的 Windows Server 许可证，则将仅根据基本虚拟机使用量向你收取使用费。
+                      </div>
+                      <div class="ms-date">
+                        **我们不会对 Azure Stack 上的 Azure 存储服务收取交易记录费用。所有托管磁盘存储服务均有每个磁盘 500 IOPS，以及每个磁盘 60 MB/s 的吞吐量。
+                      </div>
+                     </div>
+                  </div>
+                  <!-- END: TAB-CONTENT-3 -->
+                </div>
+                <!-- END: TAB-CONTAINER-1 -->
               </div>
-              <!-- END: TAB-CONTAINER-1 -->
+              <!-- END: TAB-CONTROL -->
             </div>
-            <!-- END: TAB-CONTROL -->
           </div>
         </div>
       </div>

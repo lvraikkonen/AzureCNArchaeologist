@@ -105,10 +105,10 @@
       list-style: none;
     }
 
-     .updatetime {
-        color: black;
-        text-align: right;
-        font-size: 12px;
+    .updatetime {
+      color: black;
+      text-align: right;
+      font-size: 12px;
     }
   </style>
   <div class="acn-header-container">
@@ -182,14 +182,16 @@
                     Azure DDos 保护定价
                     <span>Azure DDos</span>
                     <h4>保护 Azure 资源免受分布式拒绝服务(DDoS)攻击</h4>
-                    <div class = "updatetime">更新时间：2025年09月03日</div>  
+                    <div class="updatetime">更新时间：2025年09月03日</div>
                   </h2>
                 </div>
               </div>
             </div>
-            <h2>
-              定价详细信息
-            </h2>
+            <div class="pricing-page-section">
+              <h2>
+                定价详细信息
+              </h2>
+            </div>
             <div class="technical-azure-selector pricing-detail-tab tab-dropdown tab-fixed-recover">
               <div class="tab-container-container">
                 <div class="tab-container-box">
@@ -200,22 +202,44 @@
                       </label>
                       <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
                         <span class="selected-item">
-                          DDoS 保护
+                          托管实例
                         </span>
                         <i class="icon">
                         </i>
                         <ol class="tab-items">
                           <li class="active">
-                            <a data-href="#tabContent3" href="javascript:void(0)" id="home_ddos-protection"
-                              aria-label="home_ddos-protection" target="_blank">
-                              DDoS 保护
+                            <a data-href="#tabContent3" href="javascript:void(0)" id="home_managed_instance"
+                              aria-label="home_managed_instance" target="_blank">
+                              托管实例
                             </a>
                           </li>
                         </ol>
                       </div>
                       <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
-                        <option data-href="#tabContent3" selected="selected" value="DDoS Protection">
-                          DDoS 保护
+                        <option data-href="#tabContent3" selected="selected" value="Managed Instance">
+                          托管实例
+                        </option>
+                      </select>
+                    </div>
+                    <div class="dropdown-container software-kind-container" style="display:none;">
+                      <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                        <span class="selected-item">
+                          Azure SQL Database
+                        </span>
+                        <i class="icon">
+                        </i>
+                        <ol class="tab-items">
+                          <li class="active">
+                            <a data-href="#tabContent0" href="javascript:void(0)" id="Azure SQL Database"
+                              aria-label="Azure SQL Database" target="_blank">
+                              Azure SQL Database
+                            </a>
+                          </li>
+                        </ol>
+                      </div>
+                      <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
+                        <option data-href="#tabContent0" selected="selected" value="Azure SQL Database">
+                          Azure SQL Database
                         </option>
                       </select>
                     </div>
@@ -251,7 +275,7 @@
                               中国北部 2
                             </a>
                           </li>
-                         
+
                         </ol>
                       </div>
                       <select class="dropdown-select region-box hidden-lg hidden-md" id="region-box">
@@ -325,7 +349,8 @@
                       <p>网络保护在虚拟网络(VNet)级别启用。在虚拟网络上启用网络保护后，该虚拟网络中所有受保护资源类型将自动受到保护。如果在受保护的虚拟网络中部署具有 WAF 的应用程序网关，则 WAF
                         无需额外付费
                         -
-                        你将按照<a style="display: inline;padding:0;margin:0;background: transparent;float: none;" href="https://www.azure.cn/pricing/details/application-gateway/index.html"
+                        你将按照<a style="display: inline;padding:0;margin:0;background: transparent;float: none;"
+                          href="https://www.azure.cn/pricing/details/application-gateway/index.html"
                           target="_blank">较低的非 WAF 费率</a>为应用程序网关付费。如果使用网络保护来保护资源，则将包含 DDoS
                         攻击期间的任何横向扩展费用，并将向客户返还这些扩展资源的费用额度。
                       </p>
@@ -397,6 +422,78 @@
 
               </div>
             </div>
+            <div class="pricing-page-section">
+                            <div class="more-detail">
+                                <h2>
+                                    常见问题
+                                </h2>
+                                <em>
+                                    全部展开
+                                </em>
+                                <ul>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="vm-que-pro">
+                                                应选择哪个 Azure DDoS 防护层?
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    如果需要保护少于 15 个公共 IP 资源，则 IP 保护层是更具成本效益的选项。
+                                                    如果要保护的公共 IP 资源超过 15 个，则网络保护层更具成本效益。
+                                                    网络保护还提供其他功能，包括 DDoS 防护快速响应(DRR)、成本保护保障和 Web 应用程序防火墙(WAF)折扣。
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="vm-que-down">
+                                                资源计数针对的是注册中的单个订阅还是所有订阅？
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    资源将按注册级别计数。Azure DDoS 防护的每月价格将根据与防护计划关联的订阅计费。
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="vm-que-isbuy">
+                                               资源在 Azure DDoS 防护上下文中是如何定义的?
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    资源是附加到 IaaS VM、负载均衡器(经典和标准负载均衡器)、应用程序网关(包括 WAF)群集、Service Fabric 或基于 IaaS 的网络虚拟设备(NVA)的公共 IP。
+                                                    保护还涵盖通过自定义 IP 前缀(BYOIP)引入 Azure 的公共 IP 范围。将来可能会添加其他受保护的资源。
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="icon icon-plus">
+                                        </i>
+                                        <div>
+                                            <a id="vm-que-con">
+                                                如果在一个月的部分时间中使用 Azure DDoS 防护，费用是否不同？
+                                            </a>
+                                            <section>
+                                                <p>
+                                                    如果 Azure DDoS 防护计划在整个月内处于活动状态，则将按每月费用向你收费，而不考虑使用情况。
+                                                    但如果服务仅在当月的部分时间内处于活动状态，则你只会收到按所用小时数计费的按比例帐单。
+                                                </p>
+                                            </section>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
           </div>
         </div>
       </div>

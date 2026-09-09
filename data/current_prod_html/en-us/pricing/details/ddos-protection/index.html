@@ -204,22 +204,44 @@
                       </label>
                       <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
                         <span class="selected-item">
-                          DDoS 保护
+                          托管实例
                         </span>
                         <i class="icon">
                         </i>
                         <ol class="tab-items">
                           <li class="active">
-                            <a data-href="#tabContent3" href="javascript:void(0)" id="home_ddos-protection"
-                              aria-label="home_ddos-protection" target="_blank">
-                              DDoS 保护
+                            <a data-href="#tabContent3" href="javascript:void(0)" id="home_managed_instance"
+                              aria-label="home_managed_instance" target="_blank">
+                              托管实例
                             </a>
                           </li>
                         </ol>
                       </div>
                       <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
-                        <option data-href="#tabContent3" selected="selected" value="DDoS Protection">
-                          DDoS 保护
+                        <option data-href="#tabContent3" selected="selected" value="Managed Instance">
+                          托管实例
+                        </option>
+                      </select>
+                    </div>
+                    <div class="dropdown-container software-kind-container" style="display:none;">
+                      <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
+                        <span class="selected-item">
+                          Azure SQL Database
+                        </span>
+                        <i class="icon">
+                        </i>
+                        <ol class="tab-items">
+                          <li class="active">
+                            <a data-href="#tabContent0" href="javascript:void(0)" id="Azure SQL Database"
+                              aria-label="Azure SQL Database" target="_blank">
+                              Azure SQL Database
+                            </a>
+                          </li>
+                        </ol>
+                      </div>
+                      <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
+                        <option data-href="#tabContent0" selected="selected" value="Azure SQL Database">
+                          Azure SQL Database
                         </option>
                       </select>
                     </div>
@@ -409,6 +431,81 @@
 
                 </div>
 
+              </div>
+            </div>
+            <div class="pricing-page-section">
+              <div class="more-detail">
+                <h2>
+                  FAQ
+                </h2>
+                <em>
+                  Expand All
+                </em>
+                <ul>
+                  <li>
+                    <i class="icon icon-plus">
+                    </i>
+                    <div>
+                      <a id="vm-que-pro">
+                        Which Azure DDoS Protection tier should I choose?
+                      </a>
+                      <section>
+                        <p>
+                          If you need to protect less than 15 public IP resources, the IP Protection tier is the more cost-effective option. 
+                          If you have more than 15 public IP resources to protect, then the Network Protection tier is more cost-effective. 
+                          Network Protection also offers additional features, including DDoS Protection Rapid Response (DRR), cost protection guarantees, and Web Application Firewall (WAF) discounts.
+                        </p>
+                      </section>
+                    </div>
+                  </li>
+                  <li>
+                    <i class="icon icon-plus">
+                    </i>
+                    <div>
+                      <a id="vm-que-down">
+                        Are the resource counts across subscription or all subscriptions within my enrollment？
+                      </a>
+                      <section>
+                        <p>
+                          Resources are counted at the enrollment level. 
+                          Monthly price for Azure DDoS Protection will be billed against the subscription that is associated with the protection plan.
+                        </p>
+                      </section>
+                    </div>
+                  </li>
+                  <li>
+                    <i class="icon icon-plus">
+                    </i>
+                    <div>
+                      <a id="vm-que-isbuy">
+                        How is a resource defined in the context of Azure DDoS Protection?
+                      </a>
+                      <section>
+                        <p>
+                          A resource is a Public IP attached to an IaaS VM, Load Balancer (Classic & Standard Load Balancers), 
+                          Application Gateway (including WAF) cluster, Service Fabric or an IaaS based Network Virtual Appliance (NVA). 
+                          Protection also covers public IP ranges brought to Azure via custom IP prefixes (BYOIPs). 
+                          Additional protected resources may be added in the future.
+                        </p>
+                      </section>
+                    </div>
+                  </li>
+                  <li>
+                    <i class="icon icon-plus">
+                    </i>
+                    <div>
+                      <a id="vm-que-con">
+                        If I use Azure DDoS Protection for a portion of the month, will the fees be different?
+                      </a>
+                      <section>
+                        <p>
+                          If your Azure DDoS Protection plan is active for the entire month, you will be charged the monthly fee regardless of usage. 
+                          However, if your service was active only for a portion of the month, you would only receive a prorated bill for the hours used.
+                        </p>
+                      </section>
+                    </div>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
