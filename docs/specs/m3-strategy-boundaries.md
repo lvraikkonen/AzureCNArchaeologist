@@ -83,6 +83,26 @@
 
 源结构、历史遗漏和用户确认的输出方式见 [Purview 调查记录](../input-notes/purview-page-structure-investigation-20260903.md)。
 
+### 4.4 仅 Category 的 Complex 模式：`databox`
+
+通过产品配置显式声明，其他产品可以在满足相同源结构合同后使用；抽取代码不按 `databox` 名称分支：
+
+```json
+"extraction": {
+  "semantic_strategy": "complex",
+  "complex_mode": "category_only"
+}
+```
+
+- 软件控件必须隐藏且只有一个选项，只负责定位软件正文。
+- 区域控件可以不存在或隐藏；可见区域控件会阻断。隐藏区域选项不成为业务维度。
+- 必须有完整、唯一、有序的 Category 导航与内容面板；保留现有默认项及目标校验。
+- 每个 Category 生成一组完整内容与共享说明，仅输出 `category` 条件；不查询 `(software, region)` 映射，不生成虚构区域或区域副本。
+- 独立 L3b 单独读取源控件和面板验证上述边界，核对完整正文与筛选定义。
+- `complex_mode` 写入 Batch 与审核材料，并参与 Product Definition 增量检测和恢复/重新处理的固定配置核对。历史未声明模式的 Batch 按原规则解释。
+
+Data Box 当前中英文各有 Data Box、Data Box Disk 两个页签，因此各输出两组，而非按隐藏区域数量展开。此变化需要新的人工审核，历史区域版本的批准不自动转移。
+
 ## 5. Support Article
 
 - 每篇文章必须有且只有一个 `h1`，并且它是 `pure-content` 的直接子节点；

@@ -79,7 +79,12 @@ def validate_pricing_payload(
     language: str,
     semantic_strategy: str,
     payload_contract_version: str = CURRENT_PAYLOAD_CONTRACT_VERSION,
+    complex_mode: str | None = None,
 ) -> None:
+    if complex_mode is not None and (
+        complex_mode != "category_only" or semantic_strategy != "complex"
+    ):
+        raise PayloadContractError("无效的 Complex 模式。")
     if payload_contract_version not in PAYLOAD_CONTRACT_VERSIONS:
         raise PayloadContractError(
             f"未知 Pricing Payload 合同版本：{payload_contract_version!r}。"
@@ -134,13 +139,16 @@ def validate_pricing_payload(
         payload_title=payload["title"],
         semantic_strategy=semantic_strategy,
         payload_contract_version=payload_contract_version,
+        complex_mode=complex_mode,
     )
     expected_criteria_keys = tuple(filter_domains)
     for group_index, criteria in enumerate(criteria_rows):
         actual_criteria_keys = tuple(key for key, _value in criteria)
         allowed_criteria_keys = {expected_criteria_keys}
-        if semantic_strategy == "complex" and expected_criteria_keys[-1:] == (
-            "category",
+        if (
+            semantic_strategy == "complex"
+            and complex_mode != "category_only"
+            and expected_criteria_keys[-1:] == ("category",)
         ):
             allowed_criteria_keys.add(expected_criteria_keys[:-1])
         if actual_criteria_keys not in allowed_criteria_keys:
@@ -158,6 +166,10 @@ def validate_pricing_payload(
                     f"contentGroups[{group_index}] 的 {key}={value!r} "
                     "不在页面筛选选项中。"
                 )
+    if complex_mode == "category_only" and {
+        row[0][1] for row in criteria_rows
+    } != set(filter_domains["category"]):
+        raise PayloadContractError("category_only 必须完整覆盖所有 Category 选项。")
     if len(criteria_rows) != len(set(criteria_rows)):
         raise PayloadContractError("Content Group 筛选条件不得重复。")
 
@@ -350,6 +362,7 @@ def _validate_page_config(
     payload_title: str,
     semantic_strategy: str,
     payload_contract_version: str,
+    complex_mode: str | None = None,
 ) -> dict[str, tuple[str, ...]]:
     if not isinstance(value, dict):
         raise PayloadContractError("Payload.pageConfig 必须是对象。")
@@ -379,6 +392,8 @@ def _validate_page_config(
     expected_page_type, expected_enabled, allowed_key_orders = expectations[
         semantic_strategy
     ]
+    if complex_mode == "category_only":
+        allowed_key_orders = (("category",),)
     if value["pageType"] != expected_page_type or value["enableFilters"] is not expected_enabled:
         raise PayloadContractError("pageConfig 与生产 Strategy 不一致。")
     try:

@@ -57,11 +57,17 @@ def locate_pricing_source(
     page_global_source_boundary: str | None = None,
     payload_contract_version: str = CURRENT_PAYLOAD_CONTRACT_VERSION,
     region_content_rules: list[dict[str, Any]] | None = None,
+    complex_mode: str | None = None,
 ) -> dict[str, Any]:
     if payload_contract_version not in PAYLOAD_CONTRACT_VERSIONS:
         raise IndependentSourceError(
             f"L3b 不认识 Payload 合同版本 {payload_contract_version!r}。"
         )
+    if complex_mode is not None and (
+        complex_mode != "category_only" or semantic_strategy != "complex"
+    ):
+        raise IndependentSourceError("无效的 Complex 模式。")
+    category_only = complex_mode == "category_only"
     pure = _one(soup.select("div.pure-content"), "pure-content")
     if region_content_rules and semantic_strategy != "region_filter":
         raise IndependentSourceError("区域说明规则目前只支持 region_filter。")
@@ -91,11 +97,17 @@ def locate_pricing_source(
         pricing,
         configured_boundary=page_global_source_boundary,
     )
-    region_control = _read_filter(pricing, "region")
+    if category_only and not pricing.select("div.dropdown-container.region-container"):
+        region_control = {"visible": False, "options": []}
+    else:
+        region_control = _read_filter(pricing, "region")
     software_control = _read_filter(pricing, "software")
-    if not region_control["visible"]:
+    if category_only:
+        if region_control["visible"] or software_control["visible"]:
+            raise IndependentSourceError("category_only 不允许可见区域或软件筛选器。")
+    elif not region_control["visible"]:
         raise IndependentSourceError("筛选页面没有可见区域控件。")
-    config_rows = _read_soft_category(soft_category_path)
+    config_rows = [] if category_only else _read_soft_category(soft_category_path)
 
     if semantic_strategy == "region_filter":
         if software_control["visible"] or len(software_control["options"]) != 1:
@@ -201,7 +213,7 @@ def locate_pricing_source(
             dict[str, str],
             list[tuple[dict[str, str] | None, dict[str, Any]]],
             dict[str, Any],
-            dict[str, tuple[str, ...]],
+            dict[str | None, tuple[str, ...]],
         ]
     ] = []
     for software_option in software_options:
@@ -220,6 +232,8 @@ def locate_pricing_source(
             raw_category_control,
             software_panel,
         )
+        if category_only and not category_control["options"]:
+            raise IndependentSourceError("category_only 缺少完整的 Category 页签。")
         if product_key == "purview":
             if len(software_options) != 1 or software != "purview":
                 raise IndependentSourceError("Purview 追加规则需要唯一的 purview 软件。")
@@ -237,8 +251,10 @@ def locate_pricing_source(
                 software,
                 region["value"],
             )
-            for region in region_control["options"]
+            for region in ([] if category_only else region_control["options"])
         }
+        if category_only:
+            exclusions_by_region = {None: ()}
         relevant_table_ids = frozenset(
             table_id
             for exclusions in exclusions_by_region.values()
@@ -292,8 +308,10 @@ def locate_pricing_source(
         applicable_by_region,
     ) in prepared_scopes:
         software = software_option["value"]
-        for region in region_control["options"]:
-            applicable_exclusions = applicable_by_region[region["value"]]
+        for region in ([None] if category_only else region_control["options"]):
+            applicable_exclusions = applicable_by_region[
+                None if region is None else region["value"]
+            ]
             shared_content = _project_independent_fragment_index(
                 shared_index,
                 applicable_exclusions,
@@ -310,13 +328,14 @@ def locate_pricing_source(
                         {"filterKey": "software", "matchValues": software}
                     )
                     labels.append(software_option["label"])
-                criteria.append(
-                    {
-                        "filterKey": "region",
-                        "matchValues": region["value"],
-                    }
-                )
-                labels.append(region["label"])
+                if region is not None:
+                    criteria.append(
+                        {
+                            "filterKey": "region",
+                            "matchValues": region["value"],
+                        }
+                    )
+                    labels.append(region["label"])
                 if category is not None:
                     criteria.append(
                         {
@@ -348,14 +367,15 @@ def locate_pricing_source(
                 payload_contract_version=payload_contract_version,
             )
         )
-    definitions.append(
-        _filter_definition(
-            region_control,
-            "region",
-            "dropdown",
-            payload_contract_version=payload_contract_version,
+    if not category_only:
+        definitions.append(
+            _filter_definition(
+                region_control,
+                "region",
+                "dropdown",
+                payload_contract_version=payload_contract_version,
+            )
         )
-    )
     if category_catalog:
         definitions.append(
             _filter_definition(

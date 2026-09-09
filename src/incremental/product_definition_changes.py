@@ -129,6 +129,7 @@ def compare_product_definitions(
             ("semantic_strategy", "Strategy"),
             ("page_global_source_boundary", "页面全局正文边界"),
             ("region_content_rules", "区域说明显示规则"),
+            ("complex_mode", "Complex 维度模式"),
             ("sources", "中英文源路径"),
         ):
             if previous.get(field) == current.get(field):
@@ -157,6 +158,7 @@ def _current_projection(
         "product_key": product_key,
         "page_model": definition.page_model,
         "semantic_strategy": catalog.effective_strategy(product_key),
+        "complex_mode": definition.complex_mode,
         "page_global_source_boundary": (
             definition.page_global_source_boundary
         ),
@@ -222,6 +224,7 @@ def _products_from_run_manifest(
             )
         if any(
             row.get("region_content_rules") != rows[0].get("region_content_rules")
+            or row.get("complex_mode") != rows[0].get("complex_mode")
             for row in rows[1:]
         ):
             raise ProductDefinitionChangeError(
@@ -247,6 +250,7 @@ def _products_from_run_manifest(
                 "page_model": next(iter(page_models)),
                 "semantic_strategy": next(iter(strategies)),
                 "region_content_rules": rows[0].get("region_content_rules"),
+                "complex_mode": rows[0].get("complex_mode"),
                 "sources": sources,
             }
         )

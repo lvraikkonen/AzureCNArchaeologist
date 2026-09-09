@@ -22,6 +22,7 @@
     }
   },
   "extraction": {
-    "semantic_strategy": "complex"
+    "semantic_strategy": "complex",
+    "complex_mode": "category_only"
   }
 }

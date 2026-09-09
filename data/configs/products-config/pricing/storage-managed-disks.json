@@ -54,7 +54,7 @@
       },
       {
         "class_name": "notn3",
-        "visible_regions": ["east-china3", "east-china2", "north-china2", "east-china", "north-china"]
+        "visible_regions": ["east-china3", "east-china2", "north-china2"]
       },
       {
         "class_name": "ise3",
@@ -63,10 +63,6 @@
       {
         "class_name": "note3",
         "visible_regions": ["north-china3", "east-china2", "north-china2"]
-      },
-      {
-        "class_name": "zone1",
-        "visible_regions": ["east-china", "north-china"]
       }
     ]
   }

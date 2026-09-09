@@ -43,6 +43,8 @@ Pricing Business Payload 是交给 CMS 的业务数据。它只包含页面字�
 | `region_filter` | 通常为空；只在 Product Definition 明确声明页面级源边界时可非空 | 至少一组，每组对应源页面的一个区域 | `region` |
 | `complex` | 通常为空；只在 Product Definition 明确声明页面级源边界时可非空 | 至少一组，每组对应源页面实际可选择的状态 | `region`、`category`；软件控件可见时为 `software`、`region`、`category` |
 
+Complex 的显式例外：Product Definition 声明 `extraction.complex_mode: "category_only"` 时，页面仍为 `ComplexFilter`，但筛选器与每组条件都只有 `category`。必须有唯一隐藏软件选项、没有可见区域或软件筛选器、且 Category 导航与内容面板完整对应。每个 Category 恰好一个 Content Group，不允许无条件组，不查询区域排除映射。未声明该模式的 Complex 保持原区域规则。
+
 每个 Content Group 的固定字段顺序如下：
 
 ```json

@@ -152,13 +152,14 @@ class FlexibleBuilder:
                         filter_type="dropdown",
                     )
                 )
-            definitions.append(
-                self._filter_definition(
-                    filter_analysis,
-                    key="region",
-                    filter_type="dropdown",
+            if filter_analysis.get("complex_mode") != "category_only":
+                definitions.append(
+                    self._filter_definition(
+                        filter_analysis,
+                        key="region",
+                        filter_type="dropdown",
+                    )
                 )
-            )
             if tab_analysis.get("category_tabs"):
                 definitions.append(self._category_definition(tab_analysis))
             return {

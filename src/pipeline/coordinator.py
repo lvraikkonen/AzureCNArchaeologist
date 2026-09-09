@@ -583,6 +583,7 @@ def _validate_reprocessing_items(
             "page_model": item.page_model,
             "semantic_strategy": item.semantic_strategy,
             "page_global_source_boundary": item.page_global_source_boundary,
+            "complex_mode": item.complex_mode,
             "region_content_rules": [
                 rule.as_dict() for rule in item.region_content_rules
             ] or None,
@@ -1213,6 +1214,7 @@ def _run_one_check(
         semantic_strategy=item.semantic_strategy,
         soft_category_path=soft_category_path,
         page_global_source_boundary=definition.page_global_source_boundary,
+        complex_mode=definition.complex_mode,
         region_content_rules=[
             rule.as_dict() for rule in definition.region_content_rules
         ] or None,
@@ -1246,6 +1248,7 @@ def _validate_persisted_payload(
             expected_slug=definition.slug,
             language=item.language,
             semantic_strategy=item.semantic_strategy,
+            complex_mode=definition.complex_mode,
         )
         return
     if definition.support_article_type is None:
@@ -1349,6 +1352,7 @@ def _new_manifest_item(
         "page_model": item.page_model,
         "semantic_strategy": item.semantic_strategy,
         "page_global_source_boundary": item.page_global_source_boundary,
+        "complex_mode": item.complex_mode,
         "region_content_rules": [
             rule.as_dict() for rule in item.region_content_rules
         ] or None,
@@ -1610,6 +1614,7 @@ def _items_for_stored_plan(
             "page_model": item.page_model,
             "semantic_strategy": item.semantic_strategy,
             "page_global_source_boundary": item.page_global_source_boundary,
+            "complex_mode": item.complex_mode,
             "region_content_rules": [
                 rule.as_dict() for rule in item.region_content_rules
             ] or None,

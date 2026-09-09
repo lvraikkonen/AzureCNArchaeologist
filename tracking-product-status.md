@@ -166,7 +166,7 @@
 | 87 | 表 | ["存储"] | `storage_tables` | <https://www.azure.cn/pricing/details/storage/tables/index.html> | `region_filter` | 人工复审已批准（双语审核 2026-09-02） | — |
 | 88 | Azure Data Lake 存储 | ["存储"] | `storage_data-lake` | <https://www.azure.cn/pricing/details/storage/data-lake/index.html> | `complex` | 人工复审已批准（双语审核 2026-09-02） | — |
 | 89 | 导入/导出 | ["存储"] | `storage-import-export` | <https://www.azure.cn/pricing/details/storage-import-export/index.html> | `simple_static` | 人工复审已批准（双语审核 2026-09-02） | — |
-| 90 | Azure Data Box | ["存储"] | `databox` | <https://www.azure.cn/pricing/details/databox> | `complex` | 人工复审已批准（2026-09-03 三产品队列）；双语各 12 个内容组，已纳入正式范围并上传 Blob | — |
+| 90 | Azure Data Box | ["存储"] | `databox` | <https://www.azure.cn/pricing/details/databox> | `complex` | 历史区域版本已批准并交付；[2026-09-09 新增 `category_only` 模式](docs/input-notes/databox-category-only-20260909.md)，最新双语各 2 组通过 L3a/L3b，新版本待人工审核 | — |
 | 91 | 容器注册表 | ["容器"] | `container-registry` | <https://www.azure.cn/pricing/details/container-registry/index.html> | `simple_static` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 92 | Azure Kubernetes 服务（AKS） | ["容器"] | `kubernetes-service` | <https://www.azure.cn/pricing/details/kubernetes-service/index.html> | `simple_static` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |
 | 93 | 容器实例 | ["容器"] | `container-instances` | <https://www.azure.cn/pricing/details/container-instances/index.html> | `region_filter` | 人工复审已批准（184 产品全量审核 2026-08-25） | — |

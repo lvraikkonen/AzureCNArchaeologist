@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 class ComplexContentStrategy(BaseStrategy):
-    """Extract source-declared Region × Category states without inventing states."""
+    """Extract configured source dimensions without inventing selectable states."""
 
     def __init__(self, product_config: dict[str, Any], html_file_path: str = ""):
         super().__init__(product_config, html_file_path)
@@ -81,14 +81,31 @@ class ComplexContentStrategy(BaseStrategy):
             else []
         )
 
+        complex_mode = self.product_config.get("extraction", {}).get(
+            "complex_mode"
+        )
+        if complex_mode not in (None, "category_only"):
+            raise ValueError("未知 Complex 模式。")
+        category_only = complex_mode == "category_only"
+        if category_only and (
+            filter_analysis.get("region_visible")
+            or filter_analysis.get("software_visible")
+        ):
+            raise ValueError("category_only 不允许可见区域或软件筛选器。")
+        filter_analysis = {**filter_analysis, "complex_mode": complex_mode}
         region_options = filter_analysis.get("region_options")
-        if not filter_analysis.get("region_visible") or not isinstance(
-            region_options, list
-        ) or not region_options:
+        if not category_only and (
+            not filter_analysis.get("region_visible")
+            or not isinstance(region_options, list)
+            or not region_options
+        ):
             raise ValueError("Complex 页面必须声明可见且非空的区域筛选器。")
-        regions: list[tuple[str, str]] = []
+        # None means one unprojected pass, never a region option or lookup key.
+        regions: list[tuple[str | None, str]] = (
+            [(None, "")] if category_only else []
+        )
         seen_regions: set[str] = set()
-        for region_option in region_options:
+        for region_option in ([] if category_only else region_options):
             region = str(region_option.get("value", "")).strip()
             region_label = str(region_option.get("label", "")).strip()
             if not region or not region_label or region in seen_regions:
@@ -105,7 +122,7 @@ class ComplexContentStrategy(BaseStrategy):
                 dict[str, str],
                 list[tuple[dict[str, str] | None, IndexedFragmentProjector]],
                 IndexedFragmentProjector,
-                dict[str, tuple[str, ...]],
+                dict[str | None, tuple[str, ...]],
             ]
         ] = []
         for software_option, software_panel in software_scopes:
@@ -114,6 +131,8 @@ class ComplexContentStrategy(BaseStrategy):
                 software_panel,
                 grouped_tabs,
             )
+            if category_only and not category_tabs:
+                raise ValueError("category_only 必须声明完整的 Category 页签。")
             leaves, shared_fragments = self._content_leaves(
                 software_panel,
                 category_tabs,
@@ -129,8 +148,9 @@ class ComplexContentStrategy(BaseStrategy):
                 *software_trailing_fragments,
             ]
             exclusions_by_region = {
-                region: self.region_processor.rules.excluded_table_ids(
-                    software, region
+                region: (
+                    () if region is None
+                    else self.region_processor.rules.excluded_table_ids(software, region)
                 )
                 for region, _region_label in regions
             }
@@ -203,8 +223,10 @@ class ComplexContentStrategy(BaseStrategy):
                     content = projector.project(
                         applicable_exclusions
                     )
-                    criteria: tuple[tuple[str, str], ...] = (("region", region),)
-                    labels = (region_label,)
+                    criteria: tuple[tuple[str, str], ...] = (
+                        () if region is None else (("region", region),)
+                    )
+                    labels = () if region is None else (region_label,)
                     if software_is_visible:
                         criteria = (("software", software),) + criteria
                         labels = (software_option["label"],) + labels

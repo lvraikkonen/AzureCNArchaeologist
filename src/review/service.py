@@ -430,6 +430,7 @@ def read_review_materials(
                 "l3a_result": _read_json_object(l3a_path),
                 "l3b_result": _read_json_object(l3b_path),
                 "region_content_rules": item.get("region_content_rules"),
+                "complex_mode": item.get("complex_mode"),
             }
         )
     return {
@@ -581,6 +582,7 @@ def _build_queue_item(
             page_model=page_model,
             semantic_strategy=semantic_strategy,
             payload_contract_version=payload_contract_version,
+            complex_mode=row.get("complex_mode"),
         )
         for check_name in CHECK_NAMES:
             report = _read_json_object(check_paths[check_name])
@@ -602,6 +604,7 @@ def _build_queue_item(
             "semantic_strategy": semantic_strategy,
             "frozen_html_path": _present_path(frozen_path, catalog.project_root),
             "region_content_rules": row.get("region_content_rules"),
+            "complex_mode": row.get("complex_mode"),
             "payload_path": _present_path(payload_path, catalog.project_root),
             "l3a_report_path": _present_path(
                 check_paths["L3a"], catalog.project_root
@@ -711,6 +714,8 @@ def _verify_queue_product(
             raise ReviewError(
                 f"{item['item_id']} 的 Strategy 与审核清单不一致。"
             )
+        if item.get("complex_mode") != row.get("complex_mode"):
+            raise ReviewError(f"{item['item_id']} 的 Complex 模式与 Batch 不一致。")
         if item.get("region_content_rules") != row.get("region_content_rules"):
             raise ReviewError(
                 f"{item['item_id']} 的区域说明规则与 Batch 固定配置不一致。"
@@ -801,6 +806,7 @@ def _verify_queue_product(
             page_model=page_model,
             semantic_strategy=semantic_strategy,
             payload_contract_version=payload_contract_version,
+            complex_mode=row.get("complex_mode"),
         )
     return payload_contract_version
 
@@ -814,6 +820,7 @@ def _validate_business_payload(
     page_model: str,
     semantic_strategy: str,
     payload_contract_version: str,
+    complex_mode: str | None = None,
 ) -> None:
     definition = catalog.get_definition(product_key)
     try:
@@ -826,6 +833,7 @@ def _validate_business_payload(
                 language=language,
                 semantic_strategy=semantic_strategy,
                 payload_contract_version=payload_contract_version,
+                complex_mode=complex_mode,
             )
         else:
             assert definition.support_article_type is not None

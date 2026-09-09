@@ -173,6 +173,7 @@ def _extract_processing_item(
             expected_slug=definition.slug,
             language=item.language,
             semantic_strategy=item.semantic_strategy,
+            complex_mode=definition.complex_mode,
         )
     else:
         if definition.support_article_type is None:
@@ -219,6 +220,10 @@ def _strategy_config(
     }
     if language is not None:
         config["language"] = language
+    if definition.complex_mode is not None:
+        if effective_strategy != "complex":
+            raise ExtractionError("complex_mode 只支持 complex。")
+        config["extraction"]["complex_mode"] = definition.complex_mode
     if definition.region_content_rules:
         if effective_strategy != "region_filter":
             raise ExtractionError("region_content_rules 目前只支持 region_filter。")

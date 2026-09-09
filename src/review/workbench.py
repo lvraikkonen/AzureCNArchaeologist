@@ -147,6 +147,7 @@ class ReviewWorkbenchService:
                         definition.page_global_source_boundary
                     ),
                     region_content_rules=item.get("region_content_rules"),
+                    complex_mode=item.get("complex_mode"),
                     payload_contract_version=materials[
                         "payload_contract_version"
                     ],

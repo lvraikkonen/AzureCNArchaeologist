@@ -71,6 +71,7 @@ class ProductDefinition:
     sources: tuple[ProductSource, ...]
     config_path: Path
     region_content_rules: tuple[RegionContentRule, ...] = ()
+    complex_mode: str | None = None
 
     @property
     def content_family(self) -> str:
@@ -117,6 +118,7 @@ class ProcessingItem:
     source_relative_path: PurePosixPath
     frozen_relative_path: PurePosixPath
     region_content_rules: tuple[RegionContentRule, ...] = ()
+    complex_mode: str | None = None
 
     def as_dict(self) -> dict[str, object]:
         return {
@@ -126,6 +128,7 @@ class ProcessingItem:
             "page_model": self.page_model,
             "semantic_strategy": self.semantic_strategy,
             "page_global_source_boundary": self.page_global_source_boundary,
+            "complex_mode": self.complex_mode,
             "region_content_rules": [
                 rule.as_dict() for rule in self.region_content_rules
             ] or None,
@@ -309,6 +312,7 @@ class ProductCatalog:
                         ),
                         frozen_relative_path=definition.frozen_relative_path(language),
                         region_content_rules=definition.region_content_rules,
+                        complex_mode=definition.complex_mode,
                     )
                 )
         return tuple(items)
@@ -343,6 +347,12 @@ def _read_product_definition(
     )
     if semantic_strategy not in SEMANTIC_STRATEGIES:
         raise CatalogError(f"{config_path} 使用未知 Strategy：{semantic_strategy}。")
+
+    complex_mode = extraction.get("complex_mode")
+    if complex_mode is not None and (
+        complex_mode != "category_only" or semantic_strategy != "complex"
+    ):
+        raise CatalogError("complex_mode 只允许 Complex 的 category_only 模式。")
 
     region_content_rules = _read_region_content_rules(extraction, config_path)
     if region_content_rules and semantic_strategy != "region_filter":
@@ -416,6 +426,7 @@ def _read_product_definition(
         sources=tuple(sources),
         config_path=config_path,
         region_content_rules=region_content_rules,
+        complex_mode=complex_mode,
     )
 
 
