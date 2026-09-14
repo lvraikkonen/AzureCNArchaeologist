@@ -105,10 +105,10 @@
       list-style: none;
     }
 
-     .updatetime {
-        color: black;
-        text-align: right;
-        font-size: 12px;
+    .updatetime {
+      color: black;
+      text-align: right;
+      font-size: 12px;
     }
   </style>
   <div class="acn-header-container">
@@ -181,19 +181,21 @@
                   <h2>
                     Azure DDos Protection pricing
                     <span>
-                        Azure DDos Protection
+                      Azure DDos Protection
                     </span>
                     <h4>
-                        Protect your Azure resources from distributed denial-of-service (DDoS) attacks
+                      Protect your Azure resources from distributed denial-of-service (DDoS) attacks
                     </h4>
-                    <div class = "updatetime">Updated on：2025/09/03</div>
+                    <div class="updatetime">Updated on：2025/09/03</div>
                   </h2>
                 </div>
               </div>
             </div>
-            <h2>
-              Pricing Details
-            </h2>
+            <div class="pricing-page-section">
+              <h2>
+                Pricing Details
+              </h2>
+            </div>
             <div class="technical-azure-selector pricing-detail-tab tab-dropdown tab-fixed-recover">
               <div class="tab-container-container">
                 <div class="tab-container-box">
@@ -204,44 +206,22 @@
                       </label>
                       <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
                         <span class="selected-item">
-                          托管实例
+                          DDoS Protection
                         </span>
                         <i class="icon">
                         </i>
                         <ol class="tab-items">
                           <li class="active">
-                            <a data-href="#tabContent3" href="javascript:void(0)" id="home_managed_instance"
-                              aria-label="home_managed_instance" target="_blank">
-                              托管实例
+                            <a data-href="#tabContent3" href="javascript:void(0)" id="home_ddos_protection"
+                              aria-label="home_ddos_protection" target="_blank">
+                              DDoS Protection
                             </a>
                           </li>
                         </ol>
                       </div>
                       <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
-                        <option data-href="#tabContent3" selected="selected" value="Managed Instance">
-                          托管实例
-                        </option>
-                      </select>
-                    </div>
-                    <div class="dropdown-container software-kind-container" style="display:none;">
-                      <div class="dropdown-box os-tab-nav hidden-sm hidden-xs">
-                        <span class="selected-item">
-                          Azure SQL Database
-                        </span>
-                        <i class="icon">
-                        </i>
-                        <ol class="tab-items">
-                          <li class="active">
-                            <a data-href="#tabContent0" href="javascript:void(0)" id="Azure SQL Database"
-                              aria-label="Azure SQL Database" target="_blank">
-                              Azure SQL Database
-                            </a>
-                          </li>
-                        </ol>
-                      </div>
-                      <select class="dropdown-select software-box hidden-lg hidden-md" id="software-box">
-                        <option data-href="#tabContent0" selected="selected" value="Azure SQL Database">
-                          Azure SQL Database
+                        <option data-href="#tabContent3" selected="selected" value="DDOS Protection">
+                          DDoS Protection
                         </option>
                       </select>
                     </div>
@@ -277,10 +257,16 @@
                               China North 2
                             </a>
                           </li>
-                         
+
                         </ol>
                       </div>
                       <select class="dropdown-select region-box hidden-lg hidden-md" id="region-box">
+                        <option data-href="#east-china3" value="east-china3">
+                          China East 3
+                        </option>
+                        <option data-href="#north-china3" value="north-china3">
+                          China North 3
+                        </option>
                         <option data-href="#east-china2" value="east-china2">
                           China East 2
                         </option>
@@ -304,23 +290,23 @@
                         </span>
                         <ul class="os-tab-nav category-tabs hidden-xs hidden-sm">
                           <li class="active">
-                            <a data-href="#tabContent3-1" href="javascript:void(0)" id="single_database-local"
-                              aria-label="single_database-local" target="_blank">
+                            <a data-href="#tabContent3-1" href="javascript:void(0)" id="Network_Protection"
+                              aria-label="Network_Protection" target="_blank">
                               Network Protection
                             </a>
                           </li>
                           <li>
-                            <a data-href="#tabContent3-2" href="javascript:void(0)" id="single_database-area"
-                              aria-label="single_database-area" target="_blank">
+                            <a data-href="#tabContent3-2" href="javascript:void(0)" id="IP_Protection"
+                              aria-label="IP_Protection" target="_blank">
                               IP Protection
                             </a>
                           </li>
                         </ul>
                         <select class="dropdown-select category-tabs hidden-lg hidden-md">
-                          <option data-href="#tabContent3-1" id="single_database-local" value="local">
+                          <option data-href="#tabContent3-1" id="Network_Protection" value="local">
                             Network Protection
                           </option>
-                          <option data-href="#tabContent3-2" id="single_database-area" value="area">
+                          <option data-href="#tabContent3-2" id="IP_Protection" value="area">
                             IP Protection
                           </option>
                         </select>
@@ -352,7 +338,8 @@
                       <p>Network Protection is enabled at the virtual network (VNet) level. All protected resource types
                         within the virtual network will be automatically protected when Network Protection is enabled on
                         the virtual network. When Azure Application Gateway with WAF is deployed in a protected virtual
-                        network, there are no additional charges for WAF - you pay for the Application Gateway at the <a style="display: inline;padding:0;margin:0;background: transparent;float: none;"
+                        network, there are no additional charges for WAF - you pay for the Application Gateway at the <a
+                          style="display: inline;padding:0;margin:0;background: transparent;float: none;"
                           href="https://www.azure.cn/en-us/pricing/details/application-gateway/index.html"
                           target="_blank">lower non-WAF rate</a>.</p>
 
@@ -451,9 +438,12 @@
                       </a>
                       <section>
                         <p>
-                          If you need to protect less than 15 public IP resources, the IP Protection tier is the more cost-effective option. 
-                          If you have more than 15 public IP resources to protect, then the Network Protection tier is more cost-effective. 
-                          Network Protection also offers additional features, including DDoS Protection Rapid Response (DRR), cost protection guarantees, and Web Application Firewall (WAF) discounts.
+                          If you need to protect less than 15 public IP resources, the IP Protection tier is the more
+                          cost-effective option.
+                          If you have more than 15 public IP resources to protect, then the Network Protection tier is
+                          more cost-effective.
+                          Network Protection also offers additional features, including DDoS Protection Rapid Response
+                          (DRR), cost protection guarantees, and Web Application Firewall (WAF) discounts.
                         </p>
                       </section>
                     </div>
@@ -467,8 +457,9 @@
                       </a>
                       <section>
                         <p>
-                          Resources are counted at the enrollment level. 
-                          Monthly price for Azure DDoS Protection will be billed against the subscription that is associated with the protection plan.
+                          Resources are counted at the enrollment level.
+                          Monthly price for Azure DDoS Protection will be billed against the subscription that is
+                          associated with the protection plan.
                         </p>
                       </section>
                     </div>
@@ -482,9 +473,11 @@
                       </a>
                       <section>
                         <p>
-                          A resource is a Public IP attached to an IaaS VM, Load Balancer (Classic & Standard Load Balancers), 
-                          Application Gateway (including WAF) cluster, Service Fabric or an IaaS based Network Virtual Appliance (NVA). 
-                          Protection also covers public IP ranges brought to Azure via custom IP prefixes (BYOIPs). 
+                          A resource is a Public IP attached to an IaaS VM, Load Balancer (Classic & Standard Load
+                          Balancers),
+                          Application Gateway (including WAF) cluster, Service Fabric or an IaaS based Network Virtual
+                          Appliance (NVA).
+                          Protection also covers public IP ranges brought to Azure via custom IP prefixes (BYOIPs).
                           Additional protected resources may be added in the future.
                         </p>
                       </section>
@@ -499,8 +492,10 @@
                       </a>
                       <section>
                         <p>
-                          If your Azure DDoS Protection plan is active for the entire month, you will be charged the monthly fee regardless of usage. 
-                          However, if your service was active only for a portion of the month, you would only receive a prorated bill for the hours used.
+                          If your Azure DDoS Protection plan is active for the entire month, you will be charged the
+                          monthly fee regardless of usage.
+                          However, if your service was active only for a portion of the month, you would only receive a
+                          prorated bill for the hours used.
                         </p>
                       </section>
                     </div>

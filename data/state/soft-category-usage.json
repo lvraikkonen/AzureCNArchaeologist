@@ -150,25 +150,9 @@
       "lookups": [
         {
           "os": "Anomaly Detector",
-          "region": "east-china",
-          "row_present": true,
-          "table_ids": [
-            "Anomaly_Detector"
-          ]
-        },
-        {
-          "os": "Anomaly Detector",
           "region": "east-china2",
           "row_present": false,
           "table_ids": []
-        },
-        {
-          "os": "Anomaly Detector",
-          "region": "north-china",
-          "row_present": true,
-          "table_ids": [
-            "Anomaly_Detector"
-          ]
         },
         {
           "os": "Anomaly Detector",
@@ -1450,6 +1434,22 @@
       "lookups": [
         {
           "os": "Container Instances - Linux",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "container-instances-linux-table-north2"
+          ]
+        },
+        {
+          "os": "Container Instances - Linux",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "container-instances-linux-table-north3east2"
+          ]
+        },
+        {
+          "os": "Container Instances - Linux",
           "region": "north-china3",
           "row_present": true,
           "table_ids": [
@@ -2028,44 +2028,7 @@
       "language": "zh-cn",
       "semantic_strategy": "complex",
       "uses_soft_category": true,
-      "lookups": [
-        {
-          "os": "data-box",
-          "region": "east-china",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "data-box",
-          "region": "east-china2",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "data-box",
-          "region": "east-china3",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "data-box",
-          "region": "north-china",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "data-box",
-          "region": "north-china2",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "data-box",
-          "region": "north-china3",
-          "row_present": false,
-          "table_ids": []
-        }
-      ]
+      "lookups": []
     },
     {
       "schema_version": "1.0",
@@ -2073,44 +2036,7 @@
       "language": "en-us",
       "semantic_strategy": "complex",
       "uses_soft_category": true,
-      "lookups": [
-        {
-          "os": "data-box",
-          "region": "east-china",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "data-box",
-          "region": "east-china2",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "data-box",
-          "region": "east-china3",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "data-box",
-          "region": "north-china",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "data-box",
-          "region": "north-china2",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "data-box",
-          "region": "north-china3",
-          "row_present": false,
-          "table_ids": []
-        }
-      ]
+      "lookups": []
     },
     {
       "schema_version": "1.0",
@@ -2220,6 +2146,72 @@
     },
     {
       "schema_version": "1.0",
+      "product_key": "ddos-protection",
+      "language": "zh-cn",
+      "semantic_strategy": "complex",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "DDOS Protection",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "DDOS Protection",
+          "region": "east-china3",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "DDOS Protection",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "DDOS Protection",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "ddos-protection",
+      "language": "en-us",
+      "semantic_strategy": "complex",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "DDOS Protection",
+          "region": "east-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "DDOS Protection",
+          "region": "east-china3",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "DDOS Protection",
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
+        },
+        {
+          "os": "DDOS Protection",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
       "product_key": "dedicated-host",
       "language": "zh-cn",
       "semantic_strategy": "region_filter",
@@ -2305,84 +2297,6 @@
             "Azure-Dedicated-Host-1-east3",
             "Azure-Dedicated-Host-1"
           ]
-        }
-      ]
-    },
-    {
-      "schema_version": "1.0",
-      "product_key": "event-hubs",
-      "language": "zh-cn",
-      "semantic_strategy": "region_filter",
-      "uses_soft_category": true,
-      "lookups": [
-        {
-          "os": "Event Hubs",
-          "region": "east-china2",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "Event Hubs",
-          "region": "east-china3",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "Event Hubs",
-          "region": "north-china2",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "Event Hubs",
-          "region": "north-china3",
-          "row_present": false,
-          "table_ids": []
-        }
-      ]
-    },
-    {
-      "schema_version": "1.0",
-      "product_key": "event-hubs",
-      "language": "en-us",
-      "semantic_strategy": "region_filter",
-      "uses_soft_category": true,
-      "lookups": [
-        {
-          "os": "event-hubs",
-          "region": "east-china",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "event-hubs",
-          "region": "east-china2",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "event-hubs",
-          "region": "east-china3",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "event-hubs",
-          "region": "north-china",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "event-hubs",
-          "region": "north-china2",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "event-hubs",
-          "region": "north-china3",
-          "row_present": false,
-          "table_ids": []
         }
       ]
     },
@@ -2594,15 +2508,6 @@
       "lookups": [
         {
           "os": "Azure IoT",
-          "region": "east-china",
-          "row_present": true,
-          "table_ids": [
-            "azure-iot-standard-north3",
-            "azure-iot-basic-north3"
-          ]
-        },
-        {
-          "os": "Azure IoT",
           "region": "east-china2",
           "row_present": true,
           "table_ids": [
@@ -2617,15 +2522,6 @@
           "table_ids": [
             "azure-iot-standard-elsearea",
             "azure-iot-basic-elsearea"
-          ]
-        },
-        {
-          "os": "Azure IoT",
-          "region": "north-china",
-          "row_present": true,
-          "table_ids": [
-            "azure-iot-standard-north3",
-            "azure-iot-basic-north3"
           ]
         },
         {
@@ -4518,20 +4414,8 @@
       "lookups": [
         {
           "os": "notification-hubs",
-          "region": "east-china",
-          "row_present": true,
-          "table_ids": []
-        },
-        {
-          "os": "notification-hubs",
           "region": "east-china3",
           "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "notification-hubs",
-          "region": "north-china",
-          "row_present": true,
           "table_ids": []
         },
         {
@@ -4783,12 +4667,6 @@
       "lookups": [
         {
           "os": "PrivateLink",
-          "region": "east-china",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "PrivateLink",
           "region": "east-china2",
           "row_present": false,
           "table_ids": []
@@ -4796,12 +4674,6 @@
         {
           "os": "PrivateLink",
           "region": "east-china3",
-          "row_present": false,
-          "table_ids": []
-        },
-        {
-          "os": "PrivateLink",
-          "region": "north-china",
           "row_present": false,
           "table_ids": []
         },
@@ -6149,6 +6021,214 @@
           "region": "north-china3",
           "row_present": false,
           "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "storage-managed-disks",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Managed Disks",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "managed-disks-ssd-v2-no-3",
+            "managed-disks-ssd-v2-kz-no3",
+            "managed-disks-premium",
+            "managed-disks-premium-region3",
+            "managed-disks-premium-ZRS",
+            "managed-disks-standard-ssd",
+            "managed-disks-standard-ssd-region3",
+            "managed-disks-standard-ssd-ZRS",
+            "managed-disks-standard-hhd-region3",
+            "managed-disks-standard-hhd-E1N1",
+            "managed-disks-premium-ssd-snapshot-east3",
+            "managed-disks-standard-ssd-snapshot-east3",
+            "managed-disks-standard-hhd-snapshot-east3",
+            "managed-disks-ultra-disk-north-china3",
+            "managed-disks-ultra-disk-north-china3-config",
+            "managed-disks-ultra-disk-snapshots-north-china3",
+            "managed-disks-SSD-V2-snapshots-north-china3",
+            "managed-disks-premium-tufa",
+            "managed-disks-encryption-solution-n2",
+            "managed-disks-encryption-solution-n3"
+          ]
+        },
+        {
+          "os": "Managed Disks",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": [
+            "managed-disks-premium",
+            "managed-disks-premium-region2",
+            "managed-disks-premium-ZRS",
+            "managed-disks-standard-ssd",
+            "managed-disks-standard-ssd-region3",
+            "managed-disks-standard-ssd-ZRS",
+            "managed-disks-standard-hhd",
+            "managed-disks-standard-hhd-E1N1",
+            "managed-disks-premium-ssd-snapshot-east3",
+            "managed-disks-standard-ssd-snapshot-east3",
+            "managed-disks-standard-hhd-snapshot-east3",
+            "managed-disks-premium-tufa",
+            "managed-disks-encryption-solution-n2",
+            "managed-disks-encryption-solution-n3",
+            "managed-disks-ultra-disk-snapshots-north-china3",
+            "managed-disks-SSD-V2-snapshots-north-china3"
+          ]
+        },
+        {
+          "os": "Managed Disks",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "managed-disks-ssd-v2-no-3",
+            "managed-disks-ssd-v2-kz-no3",
+            "managed-disks-premium",
+            "managed-disks-premium-region3",
+            "managed-disks-premium-ZRS",
+            "managed-disks-standard-ssd",
+            "managed-disks-standard-ssd-region3",
+            "managed-disks-standard-ssd-ZRS",
+            "managed-disks-standard-hhd-region3",
+            "managed-disks-standard-hhd-E1N1",
+            "managed-disks-premium-ssd-snapshot-east3",
+            "managed-disks-standard-ssd-snapshot-east3",
+            "managed-disks-standard-hhd-snapshot-east3",
+            "managed-disks-ultra-disk-north-china3",
+            "managed-disks-ultra-disk-north-china3-config",
+            "managed-disks-ultra-disk-snapshots-north-china3",
+            "managed-disks-SSD-V2-snapshots-north-china3",
+            "managed-disks-premium-tufa",
+            "managed-disks-encryption-solution-n3"
+          ]
+        },
+        {
+          "os": "Managed Disks",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "managed-disks-premium",
+            "managed-disks-premium-region2",
+            "managed-disks-standard-ssd",
+            "managed-disks-standard-ssd-region3",
+            "managed-disks-standard-hhd-region3",
+            "managed-disks-standard-hhd-E1N1",
+            "managed-disks-premium-ssd-snapshot-east3",
+            "managed-disks-standard-ssd-snapshot-east3",
+            "managed-disks-standard-hhd-snapshot-east3",
+            "managed-disks-premium-tufa",
+            "managed-disks-encryption-solution-n2",
+            "managed-disks-encryption-solution-n2e2n3"
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "storage-managed-disks",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Managed Disks",
+          "region": "east-china2",
+          "row_present": true,
+          "table_ids": [
+            "managed-disks-ssd-v2-no-3",
+            "managed-disks-ssd-v2-kz-no3",
+            "managed-disks-premium",
+            "managed-disks-premium-region3",
+            "managed-disks-premium-ZRS",
+            "managed-disks-standard-ssd",
+            "managed-disks-standard-ssd-region3",
+            "managed-disks-standard-ssd-ZRS",
+            "managed-disks-standard-hhd-region3",
+            "managed-disks-standard-hhd-E1N1",
+            "managed-disks-premium-ssd-snapshot-east3",
+            "managed-disks-standard-ssd-snapshot-east3",
+            "managed-disks-standard-hhd-snapshot-east3",
+            "managed-disks-ultra-disk-north-china3",
+            "managed-disks-ultra-disk-north-china3-config",
+            "managed-disks-ultra-disk-snapshots-north-china3",
+            "managed-disks-SSD-V2-snapshots-north-china3",
+            "managed-disks-premium-tufa",
+            "managed-disks-encryption-solution-n2",
+            "managed-disks-encryption-solution-n3"
+          ]
+        },
+        {
+          "os": "Managed Disks",
+          "region": "east-china3",
+          "row_present": true,
+          "table_ids": [
+            "managed-disks-premium",
+            "managed-disks-premium-region2",
+            "managed-disks-premium-ZRS",
+            "managed-disks-standard-ssd",
+            "managed-disks-standard-ssd-region3",
+            "managed-disks-standard-ssd-ZRS",
+            "managed-disks-standard-hhd",
+            "managed-disks-standard-hhd-E1N1",
+            "managed-disks-premium-ssd-snapshot-east3",
+            "managed-disks-standard-ssd-snapshot-east3",
+            "managed-disks-standard-hhd-snapshot-east3",
+            "managed-disks-premium-tufa",
+            "managed-disks-encryption-solution-n2",
+            "managed-disks-encryption-solution-n3",
+            "managed-disks-ultra-disk-snapshots-north-china3",
+            "managed-disks-SSD-V2-snapshots-north-china3"
+          ]
+        },
+        {
+          "os": "Managed Disks",
+          "region": "north-china2",
+          "row_present": true,
+          "table_ids": [
+            "managed-disks-ssd-v2-no-3",
+            "managed-disks-ssd-v2-kz-no3",
+            "managed-disks-premium",
+            "managed-disks-premium-region3",
+            "managed-disks-premium-ZRS",
+            "managed-disks-standard-ssd",
+            "managed-disks-standard-ssd-region3",
+            "managed-disks-standard-ssd-ZRS",
+            "managed-disks-standard-hhd-region3",
+            "managed-disks-standard-hhd-E1N1",
+            "managed-disks-premium-ssd-snapshot-east3",
+            "managed-disks-standard-ssd-snapshot-east3",
+            "managed-disks-standard-hhd-snapshot-east3",
+            "managed-disks-ultra-disk-north-china3",
+            "managed-disks-ultra-disk-north-china3-config",
+            "managed-disks-ultra-disk-snapshots-north-china3",
+            "managed-disks-SSD-V2-snapshots-north-china3",
+            "managed-disks-premium-tufa",
+            "managed-disks-encryption-solution-n3"
+          ]
+        },
+        {
+          "os": "Managed Disks",
+          "region": "north-china3",
+          "row_present": true,
+          "table_ids": [
+            "managed-disks-premium",
+            "managed-disks-premium-region2",
+            "managed-disks-standard-ssd",
+            "managed-disks-standard-ssd-region3",
+            "managed-disks-standard-hhd-region3",
+            "managed-disks-standard-hhd-E1N1",
+            "managed-disks-premium-ssd-snapshot-east3",
+            "managed-disks-standard-ssd-snapshot-east3",
+            "managed-disks-standard-hhd-snapshot-east3",
+            "managed-disks-premium-tufa",
+            "managed-disks-encryption-solution-n2",
+            "managed-disks-encryption-solution-n2e2n3"
+          ]
         }
       ]
     },
@@ -13450,25 +13530,9 @@
       "lookups": [
         {
           "os": "VPN Gateway",
-          "region": "east-china",
-          "row_present": true,
-          "table_ids": [
-            "VPN_Gateway_table_Availability_Zones"
-          ]
-        },
-        {
-          "os": "VPN Gateway",
           "region": "east-china2",
           "row_present": true,
           "table_ids": []
-        },
-        {
-          "os": "VPN Gateway",
-          "region": "north-china",
-          "row_present": true,
-          "table_ids": [
-            "VPN_Gateway_table_Availability_Zones"
-          ]
         },
         {
           "os": "VPN Gateway",
@@ -13499,15 +13563,13 @@
         },
         {
           "os": "metrics-advisor",
-          "region": "north-china",
-          "row_present": true,
-          "table_ids": [
-            "metrics_advisor_Desktop1"
-          ]
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
         },
         {
           "os": "metrics-advisor",
-          "region": "north-china2",
+          "region": "north-china3",
           "row_present": false,
           "table_ids": []
         }
@@ -13528,15 +13590,13 @@
         },
         {
           "os": "metrics-advisor",
-          "region": "north-china",
-          "row_present": true,
-          "table_ids": [
-            "metrics_advisor_Desktop1"
-          ]
+          "region": "north-china2",
+          "row_present": false,
+          "table_ids": []
         },
         {
           "os": "metrics-advisor",
-          "region": "north-china2",
+          "region": "north-china3",
           "row_present": false,
           "table_ids": []
         }

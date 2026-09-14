@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "source_run_name": "pricing-upstream-mass-update-20260908-233527",
+  "source_run_name": "pricing-change-20260914-015225",
   "ignored_fields": [
     "capability_status",
     "display_name",
@@ -12,6 +12,7 @@
       "product_key": "active-directory-b2c",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -23,6 +24,7 @@
       "product_key": "active-directory-ds",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -34,6 +36,7 @@
       "product_key": "advisor",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -45,6 +48,7 @@
       "product_key": "analysis-services",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -56,6 +60,7 @@
       "product_key": "anomaly-detector",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -67,6 +72,7 @@
       "product_key": "api-management",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -78,6 +84,7 @@
       "product_key": "app-configuration",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -89,6 +96,7 @@
       "product_key": "app-service",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -100,6 +108,7 @@
       "product_key": "application-gateway",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -111,6 +120,7 @@
       "product_key": "automation",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -122,6 +132,7 @@
       "product_key": "azure-bastion",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -133,6 +144,7 @@
       "product_key": "azure-firewall",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -144,6 +156,7 @@
       "product_key": "azure-functions",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
       "region_content_rules": null,
       "sources": {
@@ -155,6 +168,7 @@
       "product_key": "azure-migrate",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -166,6 +180,7 @@
       "product_key": "azure-nat-gateway",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -177,6 +192,7 @@
       "product_key": "azure-policy",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -188,6 +204,7 @@
       "product_key": "azure-update-management-center",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -199,6 +216,7 @@
       "product_key": "backup",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -210,6 +228,7 @@
       "product_key": "bot-services",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -221,6 +240,7 @@
       "product_key": "cache",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -232,6 +252,7 @@
       "product_key": "cloud-services",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
       "region_content_rules": null,
       "sources": {
@@ -243,6 +264,7 @@
       "product_key": "cognitive-services",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -254,6 +276,7 @@
       "product_key": "container-apps",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -265,6 +288,7 @@
       "product_key": "container-instances",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
       "region_content_rules": null,
       "sources": {
@@ -276,6 +300,7 @@
       "product_key": "container-registry",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": "sole_static_formal_selector_before_common_sections",
       "region_content_rules": null,
       "sources": {
@@ -287,6 +312,7 @@
       "product_key": "core-control-plane",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -298,6 +324,7 @@
       "product_key": "cosmos-db",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -309,6 +336,7 @@
       "product_key": "data-explorer",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -320,6 +348,7 @@
       "product_key": "data-factory",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -331,6 +360,7 @@
       "product_key": "data-lake-storage",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -342,6 +372,7 @@
       "product_key": "data-pipeline",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -353,6 +384,7 @@
       "product_key": "data-transfer",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -364,6 +396,7 @@
       "product_key": "database-migration",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -375,6 +408,7 @@
       "product_key": "databox",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": "category_only",
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -386,6 +420,7 @@
       "product_key": "databricks",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -397,6 +432,7 @@
       "product_key": "ddos-protection",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -408,6 +444,7 @@
       "product_key": "dedicated-host",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -419,6 +456,7 @@
       "product_key": "dns",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -430,6 +468,7 @@
       "product_key": "event-grid",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -440,7 +479,8 @@
     {
       "product_key": "event-hubs",
       "page_model": "FlexibleContentPage",
-      "semantic_strategy": "region_filter",
+      "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -452,6 +492,7 @@
       "product_key": "expressroute",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -463,6 +504,7 @@
       "product_key": "firewall-manager",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -474,6 +516,7 @@
       "product_key": "fluid-relay",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -485,6 +528,7 @@
       "product_key": "form-recognizer",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -496,6 +540,7 @@
       "product_key": "frontdoor",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -507,6 +552,7 @@
       "product_key": "hci",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -518,6 +564,7 @@
       "product_key": "hdinsight",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -529,6 +576,7 @@
       "product_key": "hpc-cache",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -540,6 +588,7 @@
       "product_key": "hub",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -551,6 +600,7 @@
       "product_key": "icp-addweb",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -562,6 +612,7 @@
       "product_key": "icp-cancel",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -573,6 +624,7 @@
       "product_key": "icp-change",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -584,6 +636,7 @@
       "product_key": "icp-faq",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -595,6 +648,7 @@
       "product_key": "icp-new",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -606,6 +660,7 @@
       "product_key": "icp-newinsert",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -617,6 +672,7 @@
       "product_key": "icp-newweb",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -628,6 +684,7 @@
       "product_key": "icp-summary",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -639,6 +696,7 @@
       "product_key": "iot-edge",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -650,6 +708,7 @@
       "product_key": "iot-hub",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -661,6 +720,7 @@
       "product_key": "ip-addresses",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -672,6 +732,7 @@
       "product_key": "key-vault",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -683,6 +744,7 @@
       "product_key": "kubernetes-service",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -694,6 +756,7 @@
       "product_key": "legal-offer-rate-plans",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -705,6 +768,7 @@
       "product_key": "legal-privacy-statement",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -716,6 +780,7 @@
       "product_key": "legal-subscription-agreement",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -727,6 +792,7 @@
       "product_key": "legal-summary",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -738,6 +804,7 @@
       "product_key": "load-balancer",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -749,6 +816,7 @@
       "product_key": "logic-apps",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -760,6 +828,7 @@
       "product_key": "machine-learning",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
       "region_content_rules": null,
       "sources": {
@@ -771,6 +840,7 @@
       "product_key": "managed-grafana",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -782,6 +852,7 @@
       "product_key": "managed-instance",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -793,6 +864,7 @@
       "product_key": "metrics-advisor",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -804,6 +876,7 @@
       "product_key": "monitor",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -815,6 +888,7 @@
       "product_key": "multi-factor-authentication",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -826,6 +900,7 @@
       "product_key": "mysql",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -837,6 +912,7 @@
       "product_key": "network-watcher",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -848,6 +924,7 @@
       "product_key": "notification-hubs",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -859,6 +936,7 @@
       "product_key": "postgresql",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -870,6 +948,7 @@
       "product_key": "power-bi-embedded",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -881,6 +960,7 @@
       "product_key": "private-link",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -892,6 +972,7 @@
       "product_key": "psr-summary",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -903,6 +984,7 @@
       "product_key": "purview",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -914,6 +996,7 @@
       "product_key": "route-server",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -925,6 +1008,7 @@
       "product_key": "scheduler",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -936,6 +1020,7 @@
       "product_key": "search",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -947,6 +1032,7 @@
       "product_key": "service-bus",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": "sole_static_formal_selector_before_common_sections",
       "region_content_rules": null,
       "sources": {
@@ -958,6 +1044,7 @@
       "product_key": "service-fabric",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -969,6 +1056,7 @@
       "product_key": "signalr-service",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -980,6 +1068,7 @@
       "product_key": "site-recovery",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -991,6 +1080,7 @@
       "product_key": "sla-active-directory",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1002,6 +1092,7 @@
       "product_key": "sla-active-directory-b2c",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1013,6 +1104,7 @@
       "product_key": "sla-active-directory-ds",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1024,6 +1116,7 @@
       "product_key": "sla-analysis-services",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1035,6 +1128,7 @@
       "product_key": "sla-api-management",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1046,6 +1140,7 @@
       "product_key": "sla-app-configuration",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1057,6 +1152,7 @@
       "product_key": "sla-app-service",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1068,6 +1164,7 @@
       "product_key": "sla-application-gateway",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1079,6 +1176,7 @@
       "product_key": "sla-application-insights",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1090,6 +1188,7 @@
       "product_key": "sla-automation",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1101,6 +1200,7 @@
       "product_key": "sla-azure-arc",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1112,6 +1212,7 @@
       "product_key": "sla-azure-bastion",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1123,6 +1224,7 @@
       "product_key": "sla-azure-defender",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1134,6 +1236,7 @@
       "product_key": "sla-azure-firewall",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1145,6 +1248,7 @@
       "product_key": "sla-backup",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1156,6 +1260,7 @@
       "product_key": "sla-bot-services",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1167,6 +1272,7 @@
       "product_key": "sla-cache",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1178,6 +1284,7 @@
       "product_key": "sla-cdn",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1189,6 +1296,7 @@
       "product_key": "sla-cloud-services",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1200,6 +1308,7 @@
       "product_key": "sla-cognitive-services",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1211,6 +1320,7 @@
       "product_key": "sla-container-apps",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1222,6 +1332,7 @@
       "product_key": "sla-container-instances",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1233,6 +1344,7 @@
       "product_key": "sla-container-registry",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1244,6 +1356,7 @@
       "product_key": "sla-cosmos-db",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1255,6 +1368,7 @@
       "product_key": "sla-data-explorer",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1266,6 +1380,7 @@
       "product_key": "sla-data-factory",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1277,6 +1392,7 @@
       "product_key": "sla-databricks",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1288,6 +1404,7 @@
       "product_key": "sla-ddos-protection",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1299,6 +1416,7 @@
       "product_key": "sla-dns",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1310,6 +1428,7 @@
       "product_key": "sla-event-grid",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1321,6 +1440,7 @@
       "product_key": "sla-event-hubs",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1332,6 +1452,7 @@
       "product_key": "sla-expressroute",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1343,6 +1464,7 @@
       "product_key": "sla-fluid-relay",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1354,6 +1476,7 @@
       "product_key": "sla-frontdoor",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1365,6 +1488,7 @@
       "product_key": "sla-functions",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1376,6 +1500,7 @@
       "product_key": "sla-hdinsight",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1387,6 +1512,7 @@
       "product_key": "sla-hpc-cache",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1398,6 +1524,7 @@
       "product_key": "sla-information-protection",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1409,6 +1536,7 @@
       "product_key": "sla-iot-hub",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1420,6 +1548,7 @@
       "product_key": "sla-key-vault",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1431,6 +1560,7 @@
       "product_key": "sla-kubernetes-service",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1442,6 +1572,7 @@
       "product_key": "sla-load-balancer",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1453,6 +1584,7 @@
       "product_key": "sla-log-analytics",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1464,6 +1596,7 @@
       "product_key": "sla-logic-apps",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1475,6 +1608,7 @@
       "product_key": "sla-machine-learning",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1486,6 +1620,7 @@
       "product_key": "sla-managed-disks",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1497,6 +1632,7 @@
       "product_key": "sla-managed-grafana",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1508,6 +1644,7 @@
       "product_key": "sla-managed-instance",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1519,6 +1656,7 @@
       "product_key": "sla-mariadb",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1530,6 +1668,7 @@
       "product_key": "sla-media-services",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1541,6 +1680,7 @@
       "product_key": "sla-messaging",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1552,6 +1692,7 @@
       "product_key": "sla-microsoft-sentinel",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1563,6 +1704,7 @@
       "product_key": "sla-monitor",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1574,6 +1716,7 @@
       "product_key": "sla-multi-factor-authentication",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1585,6 +1728,7 @@
       "product_key": "sla-mysql",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1596,6 +1740,7 @@
       "product_key": "sla-nat-gateway",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1607,6 +1752,7 @@
       "product_key": "sla-network-watcher",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1618,6 +1764,7 @@
       "product_key": "sla-notification-hubs",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1629,6 +1776,7 @@
       "product_key": "sla-postgresql",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1640,6 +1788,7 @@
       "product_key": "sla-power-bi-embedded",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1651,6 +1800,7 @@
       "product_key": "sla-private-link",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1662,6 +1812,7 @@
       "product_key": "sla-purview",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1673,6 +1824,7 @@
       "product_key": "sla-route-server",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1684,6 +1836,7 @@
       "product_key": "sla-scheduler",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1695,6 +1848,7 @@
       "product_key": "sla-search",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1706,6 +1860,7 @@
       "product_key": "sla-service-bus",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1717,6 +1872,7 @@
       "product_key": "sla-service-fabric",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1728,6 +1884,7 @@
       "product_key": "sla-signalr-service",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1739,6 +1896,7 @@
       "product_key": "sla-site-recovery",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1750,6 +1908,7 @@
       "product_key": "sla-spring-cloud",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1761,6 +1920,7 @@
       "product_key": "sla-sql-data",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1772,6 +1932,7 @@
       "product_key": "sla-sql-server-stretch-database",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1783,6 +1944,7 @@
       "product_key": "sla-storage",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1794,6 +1956,7 @@
       "product_key": "sla-stream-analytics",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1805,6 +1968,7 @@
       "product_key": "sla-summary",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1816,6 +1980,7 @@
       "product_key": "sla-synapse-analytics",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1827,6 +1992,7 @@
       "product_key": "sla-time-series-insights",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1838,6 +2004,7 @@
       "product_key": "sla-traffic-manager",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1849,6 +2016,7 @@
       "product_key": "sla-virtual-desktop",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1860,6 +2028,7 @@
       "product_key": "sla-virtual-machine-scale-sets",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1871,6 +2040,7 @@
       "product_key": "sla-virtual-machines",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1882,6 +2052,7 @@
       "product_key": "sla-virtual-network",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1893,6 +2064,7 @@
       "product_key": "sla-virtual-network-manager",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1904,6 +2076,7 @@
       "product_key": "sla-vpn-gateway",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1915,6 +2088,7 @@
       "product_key": "sla-web-pubsub",
       "page_model": "SupportArticlePage",
       "semantic_strategy": "support_article",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1926,6 +2100,7 @@
       "product_key": "spring-cloud",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1937,6 +2112,7 @@
       "product_key": "sql-database",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1948,6 +2124,7 @@
       "product_key": "sql-edge",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1959,6 +2136,7 @@
       "product_key": "sql-server-stretch-database",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1970,6 +2148,7 @@
       "product_key": "ssis",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1981,6 +2160,7 @@
       "product_key": "storage",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -1992,6 +2172,7 @@
       "product_key": "storage-import-export",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -2003,6 +2184,7 @@
       "product_key": "storage-managed-disks",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": [
         {
@@ -2028,18 +2210,9 @@
         {
           "class_name": "notn3",
           "visible_regions": [
-            "east-china",
             "east-china2",
             "east-china3",
-            "north-china",
             "north-china2"
-          ]
-        },
-        {
-          "class_name": "zone1",
-          "visible_regions": [
-            "east-china",
-            "north-china"
           ]
         }
       ],
@@ -2052,6 +2225,7 @@
       "product_key": "storage-page-blobs",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -2063,6 +2237,7 @@
       "product_key": "storage-queues",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -2074,6 +2249,7 @@
       "product_key": "storage-tables",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -2085,6 +2261,7 @@
       "product_key": "stream-analytics",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -2096,6 +2273,7 @@
       "product_key": "synapse-analytics",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -2107,6 +2285,7 @@
       "product_key": "time-series-insights",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -2118,6 +2297,7 @@
       "product_key": "traffic-manager",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": "sole_static_formal_selector_before_common_sections",
       "region_content_rules": null,
       "sources": {
@@ -2129,6 +2309,7 @@
       "product_key": "virtual-desktop",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -2140,6 +2321,7 @@
       "product_key": "virtual-machine-scale-sets",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
       "region_content_rules": null,
       "sources": {
@@ -2151,6 +2333,7 @@
       "product_key": "virtual-machines",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "complex",
+      "complex_mode": null,
       "page_global_source_boundary": "after_final_formal_selector_before_common_sections",
       "region_content_rules": null,
       "sources": {
@@ -2162,6 +2345,7 @@
       "product_key": "virtual-network",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -2173,6 +2357,7 @@
       "product_key": "virtual-network-manager",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -2184,6 +2369,7 @@
       "product_key": "virtual-wan",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "simple_static",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -2195,6 +2381,7 @@
       "product_key": "vpn-gateway",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
@@ -2206,6 +2393,7 @@
       "product_key": "web-pubsub",
       "page_model": "FlexibleContentPage",
       "semantic_strategy": "region_filter",
+      "complex_mode": null,
       "page_global_source_boundary": null,
       "region_content_rules": null,
       "sources": {
