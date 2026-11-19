@@ -41,11 +41,14 @@ Git 返回 0 表示相同，1 表示不同，大于 1 表示比较失败。比�
 
 以下变化影响对应产品：
 
+- 产品首次进入正式 Scope，旧基线尚未包含该 Product Definition；
 - 中文或英文 `snapshot_path`；
 - `page_model`；
 - 实际 `semantic_strategy`。
 
 旧 `capability_status` 始终忽略。显示名称、Slug 和纯展示 Category 变化本身不触发重新抽取。
+
+Scope 扩大时，基线未记录的产品作为新增定义进入双语计划；只读检测不会补写旧基线。若基线仍包含当前 Scope 外的产品，继续阻断，避免通过缩减 Scope 静默忽略历史产品。
 
 ## 3. `soft-category.json` 的产品影响范围
 

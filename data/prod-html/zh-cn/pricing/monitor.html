@@ -189,7 +189,7 @@
                                     <h4>
                                         高精度、实时监控所有 Azure 资源的数据
                                     </h4>
-                                    <div class="updatetime">更新时间：2026年6月12日</div>
+                                    <div class="updatetime">更新时间：2026年9月22日</div>
                                 </div>
                             </div>
                         </div>
@@ -295,12 +295,12 @@
                                                 <option data-href="#north-china2" value="north-china2">
                                                     中国北部 2
                                                 </option>
-                                                <option data-href="#east-china" value="east-china">
+                                                <!-- <option data-href="#east-china" value="east-china">
                                                     中国东部
                                                 </option>
                                                 <option data-href="#north-china" value="north-china">
                                                     中国北部
-                                                </option>
+                                                </option> -->
                                             </select>
                                         </div>
                                         <div class="clearfix">
@@ -403,10 +403,6 @@
                                                 </a>
                                                 。
                                             </p>
-                                            <!-- <p>Log Analytics 和 Application Insights 对其>引入的数据收费。对于 Log Analytics
-                                    和基于工作区的Application Insights，可将数据引入为两种不同类型的日志:
-                                    分析日志和基本日志。借助分析日志，数据可用于功能强大的分析查询，其保留选项最长为 2 年，数据存档最长为 7 年。使用基本日志，你可以通过交互方式搜索最长 8
-                                    天的数据，并且此数据可存档长达 7 年。基本日志可用于降低存储用于调试、故障排除和审核的大量详细日志的成本，但不能用于深度分析和警报。</p> -->
                                             <p>
                                                 可计费数据量是使用客户友好、经济高效的方法计算的。计费数据量仅定义为将存储的数据的大小，不包括一组标准列和任何 JSON
                                                 包装器(该包装器属于接收后引入的数据的一部分)。因此，可计费数据量明显小于整个 JSON 打包事件的大小，通常小于
@@ -415,6 +411,87 @@
                                                     了解详细信息。
                                                 </a>
                                             </p>
+
+                                            <br/>
+
+                                            <h3>辅助日志</h3>
+                                            <table cellpadding="0" cellspacing="0" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th align="left">
+                                                            <strong>
+                                                                功能
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left" style="width: 300px;">
+                                                            <strong>
+                                                                价格
+                                                            </strong>
+                                                        </th>
+                                                        <th align="left">
+                                                            <strong>
+                                                                每 GB
+                                                                有效价格
+                                                                <sup>
+                                                                    1
+                                                                </sup>
+                                                            </strong>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <p>引入辅助日志计划:</p>
+                                                            <ul>
+                                                                <li>
+                                                                    包含 30 天的保留期；最多可延长 12 年
+                                                                </li>
+                                                                <li>
+                                                                    30 天交互式查询；使用
+                                                                    <a href="https://docs.azure.cn/zh-cn/azure-monitor/logs/search-jobs?tabs=portal">
+                                                                    搜索作业查询较旧的数据 </a>
+                                                                </li>
+                                                                <li>
+                                                                    单个表上的完整 KQL 查询和查找 Analytics 表
+                                                                </li>
+                                                                <li>
+                                                                    <a href="https://learn.microsoft.com/zh-cn/azure/azure-monitor/logs/summary-rules">
+                                                                    摘要规则
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </td>
+                                                        <td>
+                                                            ￥0.5088/GB
+                                                        </td>
+                                                        <td>
+                                                            ￥0.5088/GB
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                             <div class="tags-date">
+                                                <div class="ms-date">
+                                                    <sup>
+                                                        1
+                                                    </sup>
+                                                    数据大小以 GB 为单位进行测量（10^9 字节）。其计算的详细信息可用于
+                                                    <a
+                                                        href="https://docs.azure.cn/zh-cn/azure-monitor/logs/cost-logs#pricing-model">
+                                                        Log
+                                                        Analytics
+                                                    </a>
+                                                    和
+                                                    <a
+                                                        href="https://docs.azure.cn/zh-cn/azure-monitor/logs/cost-logs">
+                                                        Application
+                                                        Insights
+                                                    </a>
+                                                    。
+                                                </div>
+                                            </div>
+
                                             <br />
                                             <h3>
                                                 分析日志

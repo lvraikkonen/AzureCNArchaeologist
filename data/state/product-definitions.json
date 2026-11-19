@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "source_run_name": "pricing-change-20260914-015225",
+  "source_run_name": "pricing-change-20261014-210439",
   "ignored_fields": [
     "capability_status",
     "display_name",
@@ -858,6 +858,18 @@
       "sources": {
         "zh-cn": "pricing/details/managed-instance/index.html",
         "en-us": "pricing/details/managed-instance/index.html"
+      }
+    },
+    {
+      "product_key": "managed-lustre",
+      "page_model": "FlexibleContentPage",
+      "semantic_strategy": "region_filter",
+      "complex_mode": null,
+      "page_global_source_boundary": null,
+      "region_content_rules": null,
+      "sources": {
+        "zh-cn": "pricing/details/managed-lustre/index.html",
+        "en-us": "pricing/details/managed-lustre/index.html"
       }
     },
     {

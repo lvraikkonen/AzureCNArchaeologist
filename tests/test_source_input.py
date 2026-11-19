@@ -247,9 +247,9 @@ def test_real_scope_freezes_all_declared_files_with_identical_bytes(
     report = SourceInput(catalog, frozen_root=frozen_root).freeze(items)
 
     assert report.succeeded
-    assert report.selected_product_count == 197
-    assert report.selected_item_count == 394
-    assert report.passed_item_count == 394
+    assert report.selected_product_count == 198
+    assert report.selected_item_count == 396
+    assert report.passed_item_count == 396
     for item in items:
         source = (PROJECT_ROOT / "data" / "current_prod_html").joinpath(
             *item.source_relative_path.parts

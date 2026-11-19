@@ -2,15 +2,16 @@
 
 适用于：最新本地源 HTML → pricing 全量或增量抽取及 L3a/L3b → Workbench 人工审核 → 本地 Full / Delta Release → Azure Blob。本文提供操作步骤，命令由操作人逐段执行；不是已完成发布的记录。第 1–7 节为全量流程，第 8 节为后续增量流程，两条流程不要混合执行。
 
-截至 2026-09-13，本轮范围为 **99 个 pricing 产品、198 个中英文处理项**。排除 `batch`、`storage-blobs`、`storage-files`，也不处理 SLA、ICP、LEGAL、PSR。下面从正式 Scope 中生成精确清单，不使用会包含其他内容类型的 `--all`。
+截至 2026-10-14，当前全量目标范围为 **100 个 pricing 产品、200 个中英文处理项**。排除 `batch`、`storage-blobs`、`storage-files`，也不处理 SLA、ICP、LEGAL、PSR。下面从正式 Scope 中生成精确清单，不使用会包含其他内容类型的 `--all`。
 
 ## 使用方法
 
 - **只做全量 run：依次完成第 1、2 节。** 第 2 节核对通过后，本次全量抽取与 L3a/L3b 就完成了。
-- 要继续交付，再执行第 3–7 节：Workbench 人工审核 → Full Release → Blob。第 8 节是后续增量流程，本次不要执行。
+- 全量后要继续交付，再执行第 3–7 节：Workbench 人工审核 → Full Release → Blob。已有基线后收到新的上游快照，使用第 8 节增量流程。
+- **只检查相对上次处理基线的 Delta：执行 8.0 后停止。** 不需要先执行第 1–7 节，也不需要建立新 Run。
 - **macOS：直接使用当前 zsh。Windows：使用 PowerShell 7.6.1（`pwsh`），不要使用 Windows PowerShell 5.1。** 每一步只执行自己平台的代码块。
 - 每次复制一个完整代码块，等它执行完并核对预期结果后，再执行下一块。任何报错先停止；不要一次粘贴整篇手册。
-- 新一轮手动验证从第 1 节生成新 ID，不复用本文或历史记录里的 ID，也不需要清空 `runs/`。
+- 新一轮全量从第 1 节、增量从 8.1 生成新 ID；仅预览不生成 ID。不复用本文或历史记录里的 ID，也不需要清空 `runs/`。
 
 ## 1. 准备环境和本轮记录
 
@@ -180,7 +181,7 @@ keys = sorted(
     if catalog.get_definition(key).content_family == 'pricing'
     and key not in excluded
 )
-assert len(keys) == 99, f'范围变化：得到 {len(keys)} 个产品，请先核实，不要直接发布。'
+assert len(keys) == 100, f'范围变化：得到 {len(keys)} 个产品，请先核实，不要直接发布。'
 record = Path(os.environ['FLOW_RECORD'])
 (record / 'products.txt').write_text(' '.join(keys) + '\n', encoding='utf-8')
 print(f'本轮产品：{len(keys)}；双语处理项：{len(keys) * 2}')
@@ -204,7 +205,7 @@ keys = sorted(
     if catalog.get_definition(key).content_family == 'pricing'
     and key not in excluded
 )
-assert len(keys) == 99, f'范围变化：得到 {len(keys)} 个产品，请先核实，不要直接发布。'
+assert len(keys) == 100, f'范围变化：得到 {len(keys)} 个产品，请先核实，不要直接发布。'
 record = Path(os.environ['FLOW_RECORD'])
 (record / 'products.txt').write_text(' '.join(keys) + '\n', encoding='utf-8')
 print(f'本轮产品：{len(keys)}；双语处理项：{len(keys) * 2}')
@@ -214,7 +215,7 @@ print('\n'.join(keys))
 
 </details>
 
-预期输出 99 个产品、198 个处理项。查看完整产品清单，确认范围正确后继续。
+预期输出 100 个产品、200 个处理项。查看完整产品清单，确认范围正确后继续。
 
 ## 2. 全量抽取并验证 L3a/L3b
 
@@ -232,8 +233,8 @@ print('\n'.join(keys))
   setopt PIPE_FAIL INTERACTIVE_COMMENTS
   : "${FLOW_RECORD:?请先恢复本轮 session.zsh}" "${FLOW_RUN:?请先恢复本轮 session.zsh}"
   read -r -A FLOW_PRODUCTS < "$FLOW_RECORD/products.txt" || exit 1
-  [ "${#FLOW_PRODUCTS[@]}" -eq 99 ] || {
-    printf '产品数组数量不是 99，停止运行并核对 products.txt。\n' >&2
+  [ "${#FLOW_PRODUCTS[@]}" -eq 100 ] || {
+    printf '产品数组数量不是 100，停止运行并核对 products.txt。\n' >&2
     exit 1
   }
   uv run python cli.py run \
@@ -248,7 +249,7 @@ print('\n'.join(keys))
 
 ```powershell
 $FLOW_PRODUCTS = @((Get-Content -LiteralPath "$env:FLOW_RECORD/products.txt" -Raw -Encoding UTF8).Trim() -split '\s+')
-if ($FLOW_PRODUCTS.Count -ne 99) { throw "清单数量不是 99，停止运行。" }
+if ($FLOW_PRODUCTS.Count -ne 100) { throw "清单数量不是 100，停止运行。" }
 uv run python cli.py run --products @FLOW_PRODUCTS --run-name "$env:FLOW_RUN" --parallel-jobs 4 | Tee-Object -FilePath "$env:FLOW_RECORD/run.log"
 ```
 
@@ -276,7 +277,7 @@ uv run python cli.py status --run-name "$env:FLOW_RUN" --json | Tee-Object -File
 
 ### 2.3 核对范围和每项 L3a/L3b
 
-继续前应满足：`planned=198`、`passed=198`，`failed=blocked=pending=0`。再核对产品范围和每一条机器检查，防止只看总数：
+继续前应满足：`planned=200`、`passed=200`，`failed=blocked=pending=0`。再核对产品范围和每一条机器检查，防止只看总数：
 
 ```zsh
 uv run python - <<'PY'
@@ -285,7 +286,7 @@ from pathlib import Path
 
 record = Path(os.environ['FLOW_RECORD'])
 expected = set((record / 'products.txt').read_text(encoding='utf-8').split())
-assert len(expected) == 99, f'产品清单数量错误：{len(expected)}'
+assert len(expected) == 100, f'产品清单数量错误：{len(expected)}'
 run = json.loads((Path('runs') / os.environ['FLOW_RUN'] / 'run.json').read_text(encoding='utf-8'))
 assert run['status'] == 'passed', run['status']
 items = run['items']
@@ -297,7 +298,7 @@ bad = [i['item_id'] for i in items if i['status'] != 'passed'
        or i['extraction']['status'] != 'passed'
        or any(i['checks'][c]['status'] != 'passed' for c in ('L3a', 'L3b'))]
 assert not bad, f'未通过：{bad}'
-print('通过：99 个产品、198 个处理项，抽取 / L3a / L3b 全部 passed。')
+print('通过：100 个产品、200 个处理项，抽取 / L3a / L3b 全部 passed。')
 PY
 ```
 
@@ -311,7 +312,7 @@ from pathlib import Path
 
 record = Path(os.environ['FLOW_RECORD'])
 expected = set((record / 'products.txt').read_text(encoding='utf-8').split())
-assert len(expected) == 99, f'产品清单数量错误：{len(expected)}'
+assert len(expected) == 100, f'产品清单数量错误：{len(expected)}'
 run = json.loads((Path('runs') / os.environ['FLOW_RUN'] / 'run.json').read_text(encoding='utf-8'))
 assert run['status'] == 'passed', run['status']
 items = run['items']
@@ -323,13 +324,13 @@ bad = [i['item_id'] for i in items if i['status'] != 'passed'
        or i['extraction']['status'] != 'passed'
        or any(i['checks'][c]['status'] != 'passed' for c in ('L3a', 'L3b'))]
 assert not bad, f'未通过：{bad}'
-print('通过：99 个产品、198 个处理项，抽取 / L3a / L3b 全部 passed。')
+print('通过：100 个产品、200 个处理项，抽取 / L3a / L3b 全部 passed。')
 '@ | uv run python -
 ```
 
 </details>
 
-**看到“通过：99 个产品、198 个处理项，抽取 / L3a / L3b 全部 passed。”后，全量 run 完成。只做抽取验证可在这里结束。**
+**看到“通过：100 个产品、200 个处理项，抽取 / L3a / L3b 全部 passed。”后，全量 run 完成。只做抽取验证可在这里结束。**
 
 证据保存在 `runs/$FLOW_RUN/` 下的 `run.json`、`payloads/`、`checks/`，具体路径以清单内各处理项为准。有 blocked、failed 或 not_run 时先查明原因，不进入全量发布。要继续人工审核与交付，再从第 3 节开始。
 
@@ -352,7 +353,7 @@ uv run python cli.py review-prepare --run-name "$env:FLOW_RUN" --review-id "$env
 
 </details>
 
-预期 **99 个产品、198 个处理项入队，0 个未入队**。清单位于 `reviews/$FLOW_REVIEW/queue.json`，双语材料位于 `materials/{product-key}.md`。只有两个语言的抽取、L3a、L3b 都通过且材料存在，产品才能入队。
+预期 **100 个产品、200 个处理项入队，0 个未入队**。清单位于 `reviews/$FLOW_REVIEW/queue.json`，双语材料位于 `materials/{product-key}.md`。只有两个语言的抽取、L3a、L3b 都通过且材料存在，产品才能入队。
 
 本轮必须生成新的审核记录，不能沿用此前实验或历史发布的批准。
 
@@ -424,7 +425,7 @@ uv run python cli.py review-status --review-id "$env:FLOW_REVIEW" --json | Tee-O
 
 </details>
 
-本轮完整交付目标是 **approved_products=99、rejected_products=0、pending_products=0**。未达到时先处理剩余项；拒绝的产品修复后必须重新抽取、检查和审核。
+本轮完整交付目标是 **approved_products=100、rejected_products=0、pending_products=0**。未达到时先处理剩余项；拒绝的产品修复后必须重新抽取、检查和审核。
 
 ## 5. 构建并核对本地 Full Release
 
@@ -450,7 +451,7 @@ uv run python cli.py release-verify --release-id "$env:FLOW_RELEASE" --json | Te
 
 </details>
 
-此时生成本地 `releases/$FLOW_RELEASE/`，尚未上传 Blob。`full` 只表示该 Review 当前全部有效批准项，**不会强制等待 99 个产品全部批准**。所以必须检查核对结果 `status=passed`，并对照原始范围：
+此时生成本地 `releases/$FLOW_RELEASE/`，尚未上传 Blob。`full` 只表示该 Review 当前全部有效批准项，**不会强制等待 100 个产品全部批准**。所以必须检查核对结果 `status=passed`，并对照原始范围：
 
 ```zsh
 uv run python - <<'PY'
@@ -463,11 +464,11 @@ manifest = json.loads((Path('releases') / os.environ['FLOW_RELEASE']
 assert manifest['source_review']['review_id'] == os.environ['FLOW_REVIEW']
 assert {p['product_key'] for p in manifest['products']} == expected
 s = manifest['summary']
-assert s['approved_products'] == 99 and s['payload_items'] == 198, s
+assert s['approved_products'] == 100 and s['payload_items'] == 200, s
 assert all(s[k] == 0 for k in (
     'rejected_products', 'awaiting_decision_products', 'not_queued_items'
 )), s
-print('Release 范围核对通过：99 个产品、198 个 Payload，无排除项。')
+print('Release 范围核对通过：100 个产品、200 个 Payload，无排除项。')
 PY
 ```
 
@@ -485,11 +486,11 @@ manifest = json.loads((Path('releases') / os.environ['FLOW_RELEASE']
 assert manifest['source_review']['review_id'] == os.environ['FLOW_REVIEW']
 assert {p['product_key'] for p in manifest['products']} == expected
 s = manifest['summary']
-assert s['approved_products'] == 99 and s['payload_items'] == 198, s
+assert s['approved_products'] == 100 and s['payload_items'] == 200, s
 assert all(s[k] == 0 for k in (
     'rejected_products', 'awaiting_decision_products', 'not_queued_items'
 )), s
-print('Release 范围核对通过：99 个产品、198 个 Payload，无排除项。')
+print('Release 范围核对通过：100 个产品、200 个 Payload，无排除项。')
 '@ | uv run python -
 ```
 
@@ -539,18 +540,18 @@ uv run python cli.py release-upload --release-id "$env:FLOW_RELEASE" --json | Te
 
 </details>
 
-成功输出应包含 `status=uploaded`、正确的 `container_name`、`blob_prefix`、`delivery_manifest_blob_path`，以及 `summary.products=99`、`summary.payload_items=198`。
+成功输出应包含 `status=uploaded`、正确的 `container_name`、`blob_prefix`、`delivery_manifest_blob_path`，以及 `summary.products=100`、`summary.payload_items=200`。
 
 用 Azure Portal 或 Azure Storage Explorer 打开返回的容器和前缀，人工确认：
 
 ```text
 {container}/
 └── {实际上传日期 YYYY-MM-DD}/{FLOW_RELEASE}/
-    ├── payloads/                  中英文共 198 个 JSON
+    ├── payloads/                  中英文共 200 个 JSON
     └── delivery-manifest.json     最后写入的交付完成标志
 ```
 
-打开远端 `delivery-manifest.json`，核对 Release ID、99 个产品、198 个 Payload，以及清单列出的 Blob 是否齐全。上传日期取执行机器本地日期，不一定等于 Release ID 中的日期。
+打开远端 `delivery-manifest.json`，核对 Release ID、100 个产品、200 个 Payload，以及清单列出的 Blob 是否齐全。上传日期取执行机器本地日期，不一定等于 Release ID 中的日期。
 
 上传服务会再次核对本地 Release，先上传 Payload，全部成功后才写完成清单。CMS 只应消费有完成清单的目录。本地 `release-manifest.json`、审核决定及 Run / Review 引用链不会上传；Blob 上传成功也不代表 CMS 已完成导入。
 
@@ -563,7 +564,7 @@ uv run python cli.py release-upload --release-id "$env:FLOW_RELEASE" --json | Te
 | 操作人 / 审核人 | |
 | 抽取、审核、封存、上传完成时间 | |
 | Run ID / Review ID / Release ID | |
-| 产品数 / 双语 Payload 数 | 目标 99 / 198，填写实际核对结果 |
+| 产品数 / 双语 Payload 数 | 目标 100 / 200，填写实际核对结果 |
 | Blob 容器 / 返回的前缀 / 完成清单路径 | |
 | 远端清单及文件核对结果 | |
 | 异常与处理过程 | 无异常也注明 |
@@ -589,7 +590,36 @@ tar.exe -czf "$env:FLOW_RECORD/data-after.tgz" data
 
 适用于已有处理基线、此前交付已完成，随后收到新 HTML 或处理相关配置的情况。任一语言变化，都会重新抽取该产品的中英文，并重新执行 L3a/L3b、人工审核及发布；历史批准不能沿用。
 
-增量数量以本次变化计划为准，记为 **N 个产品、2N 个处理项**，不再固定为 99 / 198。`batch`、`storage-blobs`、`storage-files` 仍在本手册范围外。
+增量数量以本次变化计划为准，记为 **N 个产品、2N 个处理项**，不再固定为 100 / 200。`batch`、`storage-blobs`、`storage-files` 仍在本手册范围外。
+
+### 8.0 仅检查 Delta，不启动运行
+
+依赖已就绪时，在仓库根目录执行以下只读命令；不需要设置 `INC_*` 或创建记录目录：
+
+```zsh
+cd /Users/claus/AzureCNArchaeologist
+setopt PIPE_FAIL INTERACTIVE_COMMENTS
+uv run python cli.py incremental-status --json
+uv run python cli.py changes --json
+```
+
+<details>
+<summary>Windows · PowerShell 7.6.1</summary>
+
+先按 1.1 初始化 PowerShell，再执行：
+
+```powershell
+uv run python cli.py incremental-status --json
+uv run python cli.py changes --json
+```
+
+</details>
+
+执行后停止。这两个命令不会创建 Batch、抽取 Payload、运行 L3a/L3b、发布或推进基线。比较对象是 8.2 所列的当前处理基线，不是 Git HEAD，也不是上次 Release 的 Payload；`git status` 只能补充查看工作区新增、修改和删除文件。
+
+`changes` 只扫描正式 Scope 中登记的产品，不会自动发现上游新增的产品目录。预览时还要核对上游文件清单；新品必须有 `data/configs/products-config/pricing/<product-key>.json`，并登记到 `data/configs/processing-scope.json`，才能进入计划。要正式纳入新品，先核实页面模型、Strategy、双语路径及适用映射并完成配置，再重新预览；保留原 `data/state/product-definitions.json`，不要通过提前固定 HTML 来消除新增差异。Scope 外文件的删除也不会出现在计划中。
+
+HTML 按文件内容比较，空白、缩进等排版变化也会标为 `modified`；任一语言变化都会计划该产品的中英文两项。确认实际差异及完整产品范围后，再从 8.1 开始正式流程。
 
 ### 8.1 确认上一轮结束，建立独立记录
 
@@ -677,7 +707,7 @@ uv run python cli.py changes --json | Tee-Object -FilePath "$env:INC_RECORD/chan
 
 逐项查看 `affected_products` 中的 HTML、映射、产品定义变化原因。`html-changes` 只比较 HTML，不能代替此命令。全量运行后的首次增量仍可能检测出尚未确认的产品定义差异；应核实原因，不要手工改基线消除差异。
 
-**范围限制：** 当前 `changes` 和 `run --changed` 扫描整个正式 Scope，不能与 `--products` 或 `--category` 组合。下面先核对全部受影响项都属于本手册的 pricing 范围，并保存计划产品集：
+**范围限制：** 当前 `changes` 和 `run --changed` 扫描整个正式 Scope，不能与 `--products` 或 `--category` 组合；Scope 外的新增或删除不会自动纳入，先按 8.0 核对上游文件清单。下面先核对全部受影响项都属于本手册的 pricing 范围，并保存计划产品集：
 
 ```zsh
 uv run python - <<'PY'
@@ -1019,7 +1049,7 @@ uv run python cli.py incremental-status
 | --- | --- |
 | Run 中断，留下 `$FLOW_RUN.building` | 输入保持不变，执行 `uv run python cli.py resume --run-name "$FLOW_RUN"`，再查看 status。已封存 Batch 不能 resume。 |
 | 抽取或 L3a/L3b 阻断 / 失败 | 从 `run.json` 和检查报告定位；修复后使用新的 Run 和 Review，不改旧 Payload 或报告。 |
-| 人工拒绝 | 记录具体字段和问题；修复后重新抽取与审核。如仍要求单份 99 产品的 Full Release，应建立新的完整批次和审核会话，不跨 Review 拼接决定。 |
+| 人工拒绝 | 记录具体字段和问题；修复后重新抽取与审核。如仍要求单份 100 产品的 Full Release，应建立新的完整批次和审核会话，不跨 Review 拼接决定。 |
 | 决定误提交 | 创建新的 Review ID 并进行真实审核，不编辑旧决定；最终 Release 只引用选定的一个 Review。 |
 | Release 范围不足 / verify 失败 | 停止上传；核对审核状态和引用材料。构建新的 Release 时使用新的 ID。 |
 | Blob 部分上传失败 | 保留错误和前缀。无完成清单的目录不能交付；当前不支持覆盖、跳过已有文件或自动续传，由维护者核查恢复方案，不反复重跑上传或手工补完成清单。 |

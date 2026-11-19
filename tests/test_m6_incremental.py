@@ -552,6 +552,83 @@ def test_complete_products_remain_precise_when_another_consumer_is_unknown(
     ]
 
 
+@pytest.mark.parametrize("baseline_kind", ["projection", "run_manifest"])
+@pytest.mark.parametrize("already_frozen", [False, True])
+def test_new_scope_product_is_a_read_only_bilingual_change(
+    project_builder, baseline_kind: str, already_frozen: bool,
+) -> None:
+    project_root = project_builder(
+        [{"product_key": "existing-product"}, {"product_key": "new-product"}]
+    )
+    scope_path = project_root / "data/configs/processing-scope.json"
+    expanded_scope = json.loads(scope_path.read_text(encoding="utf-8"))
+    _write_json(scope_path, {**expanded_scope, "product_keys": ["existing-product"]})
+    original = ProductCatalog.load(project_root)
+    _freeze_baseline(original)
+    _prepare_incremental_config(original, previous_rows=[], current_rows=[])
+    baseline_path = project_root / "data/state/product-definitions.json"
+    if baseline_kind == "run_manifest":
+        manifest_path = Path("runs/accepted-baseline/run.json")
+        _write_json(
+            project_root / manifest_path,
+            {"items": [
+                {
+                    "product_key": item.product_key,
+                    "language": item.language,
+                    "page_model": item.page_model,
+                    "semantic_strategy": item.semantic_strategy,
+                    "source_relative_path": item.source_relative_path.as_posix(),
+                }
+                for item in original.select(all_products=True)
+            ]},
+        )
+        _write_json(baseline_path, {
+            "schema_version": "1.0",
+            "source_run_manifest": manifest_path.as_posix(),
+        })
+    _write_json(scope_path, expanded_scope)
+    current = ProductCatalog.load(project_root)
+    if already_frozen:
+        report = SourceInput(current).freeze(current.select(product_key="new-product"))
+        assert report.succeeded
+    before = baseline_path.read_bytes()
+    frozen_root = project_root / "data/prod-html"
+    frozen_before = {path: path.read_bytes() for path in frozen_root.rglob("*.html")}
+
+    plan = detect_incremental_changes(current)
+
+    assert plan.affected_product_count == 1
+    assert plan.affected_item_count == 2
+    assert plan.unchanged_product_keys == ("existing-product",)
+    product = plan.affected_products[0]
+    assert product.product_key == "new-product"
+    assert product.changed_languages == (() if already_frozen else ("zh-cn", "en-us"))
+    assert "product_definition" in product.change_sources
+    assert all(change.change_type == "added" for change in product.changes)
+    assert [item.language for item in product.processing_items] == ["zh-cn", "en-us"]
+    assert plan.product_definition_changes[0].changed_fields == ("product_key",)
+    assert baseline_path.read_bytes() == before
+    assert {path: path.read_bytes() for path in frozen_root.rglob("*.html")} == frozen_before
+
+
+def test_removing_a_scoped_product_still_blocks_definition_comparison(
+    project_builder,
+) -> None:
+    project_root = project_builder(
+        [{"product_key": "existing-product"}, {"product_key": "removed-product"}]
+    )
+    original = ProductCatalog.load(project_root)
+    _freeze_baseline(original)
+    _prepare_incremental_config(original, previous_rows=[], current_rows=[])
+    scope_path = project_root / "data/configs/processing-scope.json"
+    scope = json.loads(scope_path.read_text(encoding="utf-8"))
+    scope["product_keys"] = ["existing-product"]
+    _write_json(scope_path, scope)
+
+    with pytest.raises(ChangeDetectionError, match="多出 removed-product"):
+        detect_incremental_changes(ProductCatalog.load(project_root))
+
+
 def test_processing_product_definition_change_is_a_bilingual_trigger(
     project_builder,
 ) -> None:
@@ -1455,13 +1532,33 @@ def test_interrupted_reprocessing_input_copy_resumes_from_original_batch(
         ).read_bytes()
 
 
-def test_real_region_extraction_records_present_and_missing_mapping_lookups() -> None:
+@pytest.mark.parametrize("language", ["zh-cn", "en-us"])
+def test_real_region_extraction_records_present_and_missing_mapping_lookups(
+    tmp_path: Path, language: str
+) -> None:
     catalog = real_catalog()
-    item = _item(catalog, "automation", "zh-cn")
+    item = _item(catalog, "automation", language)
+    mapping_path = tmp_path / "soft-category.json"
+    # Live Automation mappings only cover retired regions; supply one active row.
+    _write_json(
+        mapping_path,
+        [{"os": "Automation", "region": "east-china2", "tableIDs": ["#Automation-control"]}],
+    )
 
-    result = extract_processing_item_with_usage(catalog, item)
+    result = extract_processing_item_with_usage(
+        catalog, item, soft_category_path=mapping_path
+    )
 
-    assert result.soft_category_lookups
-    assert all(lookup.software and lookup.region for lookup in result.soft_category_lookups)
-    assert any(lookup.row_present for lookup in result.soft_category_lookups)
-    assert any(not lookup.row_present for lookup in result.soft_category_lookups)
+    assert [
+        (lookup.software, lookup.region, lookup.row_present, lookup.table_ids)
+        for lookup in result.soft_category_lookups
+    ] == [
+        ("Automation", "east-china2", True, ("Automation-control",)),
+        ("Automation", "north-china2", False, ()),
+    ]
+    contents_by_region = {
+        json.loads(group["filterCriteriaJson"])[0]["matchValues"]: group["content"]
+        for group in result.payload["contentGroups"]
+    }
+    assert 'id="Automation-control"' not in contents_by_region["east-china2"]
+    assert 'id="Automation-control"' in contents_by_region["north-china2"]

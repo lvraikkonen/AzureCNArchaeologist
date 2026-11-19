@@ -3,8 +3,9 @@ from __future__ import annotations
 import json
 from copy import deepcopy
 
-from tests.m2_helpers import PROJECT_ROOT
-from tests.m3_helpers import l3b_report, product_payload
+from src.extractors.strategy_extractor import extract_processing_item
+from tests.m2_helpers import PROJECT_ROOT, real_catalog
+from tests.m3_helpers import l3b_report, product_item, product_payload
 
 
 def test_l3b_passes_all_three_new_m3_representatives_in_both_languages(tmp_path) -> None:
@@ -20,9 +21,31 @@ def test_l3b_passes_all_three_new_m3_representatives_in_both_languages(tmp_path)
 
 
 def test_region_l3b_detects_content_swapped_between_two_regions(tmp_path) -> None:
-    payload = product_payload("api-management")
-    payload["contentGroups"][0]["content"], payload["contentGroups"][3]["content"] = (
-        payload["contentGroups"][3]["content"],
+    # Current active regions share content; give one region a controlled exclusion.
+    soft_category_path = tmp_path / "soft-category.json"
+    soft_category_path.write_text(
+        json.dumps([{
+            "os": "API Management",
+            "region": "east-china2",
+            "tableIDs": ["#API-Management-preview"],
+        }]),
+        encoding="utf-8",
+    )
+    payload = extract_processing_item(
+        real_catalog(),
+        product_item("api-management", "zh-cn"),
+        soft_category_path=soft_category_path,
+    )
+    assert l3b_report(
+        tmp_path,
+        product_key="api-management",
+        language="zh-cn",
+        payload=payload,
+        soft_category_path=soft_category_path,
+    )["status"] == "passed"
+    assert payload["contentGroups"][0]["content"] != payload["contentGroups"][1]["content"]
+    payload["contentGroups"][0]["content"], payload["contentGroups"][1]["content"] = (
+        payload["contentGroups"][1]["content"],
         payload["contentGroups"][0]["content"],
     )
 
@@ -31,12 +54,13 @@ def test_region_l3b_detects_content_swapped_between_two_regions(tmp_path) -> Non
         product_key="api-management",
         language="zh-cn",
         payload=payload,
+        soft_category_path=soft_category_path,
     )
 
     assert report["status"] == "failed"
     assert {
         "contentGroups[0].content",
-        "contentGroups[3].content",
+        "contentGroups[1].content",
     }.issubset(
         {
             field["payload_path"]

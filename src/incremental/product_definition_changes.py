@@ -102,25 +102,29 @@ def compare_product_definitions(
             )
         previous_by_key[product_key] = row
 
-    expected_keys = set(catalog.scope_product_keys)
-    actual_keys = set(previous_by_key)
-    if expected_keys != actual_keys:
-        missing = sorted(expected_keys - actual_keys)
-        extra = sorted(actual_keys - expected_keys)
-        details: list[str] = []
-        if missing:
-            details.append("缺少 " + "、".join(missing))
-        if extra:
-            details.append("多出 " + "、".join(extra))
+    extra = sorted(set(previous_by_key) - set(catalog.scope_product_keys))
+    if extra:
         raise ProductDefinitionChangeError(
-            "Product Definition 对比基准的产品范围与当前范围不一致："
-            + "；".join(details)
+            "Product Definition 对比基准的产品范围与当前范围不一致：多出 "
+            + "、".join(extra)
             + "。"
         )
 
     changes: list[ProductDefinitionChange] = []
     for product_key in catalog.scope_product_keys:
-        previous = previous_by_key[product_key]
+        previous = previous_by_key.get(product_key)
+        if previous is None:
+            changes.append(
+                ProductDefinitionChange(
+                    product_key=product_key,
+                    changed_fields=("product_key",),
+                    reasons=(
+                        f"产品 {product_key} 已加入正式 Scope，"
+                        "但 Product Definition 对比基准尚未包含该产品。",
+                    ),
+                )
+            )
+            continue
         current = _current_projection(catalog, product_key)
         changed_fields: list[str] = []
         reasons: list[str] = []
@@ -210,8 +214,7 @@ def _products_from_run_manifest(
             raise ProductDefinitionChangeError("来源 Batch 包含无效处理项。")
         grouped.setdefault(row["product_key"], []).append(row)
     products: list[dict[str, object]] = []
-    for product_key in catalog.scope_product_keys:
-        rows = grouped.get(product_key, [])
+    for product_key, rows in grouped.items():
         if [row.get("language") for row in rows] != list(catalog.languages):
             raise ProductDefinitionChangeError(
                 f"来源 Batch 中 {product_key} 不是完整且有序的中英文计划。"

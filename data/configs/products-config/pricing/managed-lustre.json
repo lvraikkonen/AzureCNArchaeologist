@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.1",
+  "product_key": "managed-lustre",
+  "display_name": "Azure Managed Lustre",
+  "slug": "managed-lustre",
+  "page_model": "FlexibleContentPage",
+  "catalog_categories": [
+    "storage"
+  ],
+  "sources": {
+    "zh-cn": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/managed-lustre/index.html",
+      "url": "https://www.azure.cn/pricing/details/managed-lustre/"
+    },
+    "en-us": {
+      "availability": "available",
+      "snapshot_path": "pricing/details/managed-lustre/index.html",
+      "url": "https://www.azure.cn/en-us/pricing/details/managed-lustre/"
+    }
+  },
+  "extraction": {
+    "semantic_strategy": "region_filter"
+  }
+}

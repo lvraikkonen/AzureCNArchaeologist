@@ -3960,6 +3960,36 @@
     },
     {
       "schema_version": "1.0",
+      "product_key": "managed-lustre",
+      "language": "zh-cn",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Managed Lustre",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "product_key": "managed-lustre",
+      "language": "en-us",
+      "semantic_strategy": "region_filter",
+      "uses_soft_category": true,
+      "lookups": [
+        {
+          "os": "Managed Lustre",
+          "region": "north-china3",
+          "row_present": false,
+          "table_ids": []
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
       "product_key": "metrics-advisor",
       "language": "zh-cn",
       "semantic_strategy": "region_filter",
