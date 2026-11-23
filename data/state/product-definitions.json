@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "source_run_name": "pricing-change-20261014-210439",
+  "source_run_name": "upstream-change-20261123-112336",
   "ignored_fields": [
     "capability_status",
     "display_name",
